@@ -20,10 +20,15 @@ This is an **Admin Dashboard** built using **Next.js**, **Magic UI**, **ShadCN U
 - **Database**: MongoDB
 - **Backend**: API routes in Next.js (fullstack)
 
+## View Demo
+
+You can view the live demo of the project here:  
+**[Live Demo](https://nabaraj-admin-dashboard.vercel.app/)**
+
 ## Installation
 
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/NabarajBasnet/AdminDashboard.git
+   git clone https://github.com/yourusername/your-repo.git
    cd your-repo
