@@ -2,10 +2,9 @@ import React from 'react'
 
 const Header = () => {
     return (
-        <div className='fixed top-0 bg-green-400'>
-            <div className='bg-green-400'>
-                Header
-            </div>
+        <div className='flex justify-between py-8 items-center bg-green-400'>
+            <h1 className='text-3xl font-bold'>Toggle</h1>
+            <h1 className='text-3xl font-bold'>Header</h1>
         </div>
     )
 }

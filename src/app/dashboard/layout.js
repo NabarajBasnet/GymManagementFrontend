@@ -9,9 +9,13 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
     return (
         <div className='min-h-screen flex'>
-            <div className="w-[2%] md:w-[14%] bg-red-400"><Sidebar /></div>
-            <div className="w-[98%] md:w-[84%]">
-                <div className="w-full py-8"><Header /></div>
+            <div className="md:w-[14%] bg-red-400 hidden md:flex">
+                <Sidebar />
+            </div>
+            <div className="md:w-[86%]">
+                <div className="w-full">
+                    <Header />
+                </div>
                 <div className="w-full h-screen bg-blue-400">{children}</div>
             </div>
         </div>
