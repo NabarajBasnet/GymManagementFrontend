@@ -2,94 +2,40 @@
 
 import React, { useState } from 'react';
 import { RiDashboard2Line } from 'react-icons/ri';
-import { FaRegUser, FaBox, FaChartLine, FaTags, FaCog } from 'react-icons/fa'; // Example React Icons
+import { FaRegUser, FaBox, FaChartLine, FaTags, FaCog } from 'react-icons/fa';
+import Link from 'next/link';
 
 const Sidebar = () => {
-    const [isExpanded, setIsExpanded] = useState(false);
 
-    // Function to toggle the sidebar view
-    const toggleSidebar = () => {
-        setIsExpanded(!isExpanded);
-    };
+    const sidebarContent = [
+        { icon: FaRegUser, title: 'User', link: '/dashboard/user' },
+        { icon: FaBox, title: 'Box', link: '/dashboard/box' },
+        { icon: FaChartLine, title: 'Chart', link: '/dashboard/chart' },
+        { icon: FaTags, title: 'Tags', link: '/dashboard/tags' },
+        { icon: FaCog, title: 'Cog', link: '/dashboard/Cog' },
+    ];
 
     return (
-        <div className={`fixed left-0 top-0 h-full ${isExpanded ? 'w-64' : 'w-20'} bg-gray-800 transition-all duration-300`}>
-            {/* Sidebar header */}
+        <div className={`fixed left-0 top-0 h-full w-64 bg-gray-800 transition-all duration-300`}>
             <div className="flex items-center justify-between p-4">
-                {isExpanded && <span className="text-white text-2xl font-bold">Admin Panel</span>}
-                <button onClick={toggleSidebar} className="text-white">
-                    {isExpanded ? '←' : '→'}
-                </button>
+                <span className="text-white text-2xl font-bold">Admin Panel</span>
             </div>
 
-            {/* Sidebar content */}
-            <div className="h-full overflow-y-auto mt-10"> {/* This makes the sidebar scrollable */}
+            <div className="h-full overflow-y-auto mt-10">
                 <ul>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <RiDashboard2Line size={24} />
-                        {isExpanded && <span className="ml-4">Dashboard</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaRegUser size={24} />
-                        {isExpanded && <span className="ml-4">Users</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaBox size={24} />
-                        {isExpanded && <span className="ml-4">Products</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaChartLine size={24} />
-                        {isExpanded && <span className="ml-4">Reports</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaTags size={24} />
-                        {isExpanded && <span className="ml-4">Tags</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaCog size={24} />
-                        {isExpanded && <span className="ml-4">Settings</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaRegUser size={24} />
-                        {isExpanded && <span className="ml-4">Users</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaBox size={24} />
-                        {isExpanded && <span className="ml-4">Products</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaChartLine size={24} />
-                        {isExpanded && <span className="ml-4">Reports</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaTags size={24} />
-                        {isExpanded && <span className="ml-4">Tags</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaCog size={24} />
-                        {isExpanded && <span className="ml-4">Settings</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaRegUser size={24} />
-                        {isExpanded && <span className="ml-4">Users</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaBox size={24} />
-                        {isExpanded && <span className="ml-4">Products</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaChartLine size={24} />
-                        {isExpanded && <span className="ml-4">Reports</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaTags size={24} />
-                        {isExpanded && <span className="ml-4">Tags</span>}
-                    </li>
-                    <li className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                        <FaCog size={24} />
-                        {isExpanded && <span className="ml-4">Settings</span>}
-                    </li>
-                    {/* Repeat items */}
+                    {
+                        sidebarContent.map((sidebar, index) => (
+                            <li key={index} className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
+                                <Link href={sidebar.link}>
+                                    <div className='flex items-center'>
+                                        <sidebar.icon className='text-3xl' />
+                                        <h1 className='mx-4'>{sidebar.title}</h1>
+                                    </div>
+                                </Link>
+                            </li>
+                        ))
+                    }
+
                 </ul>
             </div>
         </div>

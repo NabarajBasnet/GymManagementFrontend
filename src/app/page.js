@@ -34,6 +34,7 @@ export default function Home() {
               type="email"
               className="mt-1"
               placeholder="name@example.com"
+              defaultValue='nabarajbasnet@gmail.com'
             />
           </div>
 
