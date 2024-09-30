@@ -2,20 +2,22 @@
 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import { useState } from 'react';
+import MainStateProvider from "@/state/ReduxProvider";
 
 export default function ClientLayout({ children }) {
     return (
-        <div>
+        <MainStateProvider>
             <div>
                 <div>
-                    <Sidebar />
-                </div>
-                <div>
-                    <Header />
-                    {children}
+                    <div>
+                        <Sidebar />
+                    </div>
+                    <div>
+                        <Header />
+                        {children}
+                    </div>
                 </div>
             </div>
-        </div>
+        </MainStateProvider>
     );
 }
