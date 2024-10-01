@@ -1,5 +1,6 @@
 'use client'
 
+import Head from "next/head";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import RTKProvider from "@/state/ReduxProvider";
@@ -11,24 +12,21 @@ export default function ClientLayout({ children }) {
     
     return (
         <RTKProvider>
-            <div className="w-full">
-                <div className="w-full">
-                    <div className="w-full flex">
-                        {adminSidebar&&(
+                    <div className='w-full flex'>
+                        {adminSidebar && (
                             <div className={`hidden md:flex`}>
-                        <Sidebar />
-                        </div>
-                        )}
-                    </div>
-
-                    <div className={`w-full ${adminSidebar?'md:ml-64':''}`}>                    
-                            <Header />
-                            <div className="w-full">
-                                {children}
+                                <Sidebar />
                             </div>
+                        )}
+                        <div className={`w-full ${adminSidebar ? 'md:ml-64' : ''}`}>
+                            <div>
+                                <Header />
+                            </div>
+                            <main className="w-full">
+                                {children}
+                            </main>
                         </div>
-                </div>
-            </div>
+                    </div>
         </RTKProvider>
     );
 }
