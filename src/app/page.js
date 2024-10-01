@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Home() {
 
@@ -42,7 +43,11 @@ export default function Home() {
             Sign In with Email
           </Button>
 
-          <div className="text-center text-gray-600 mb-4">Or continue with</div>
+<div>
+<Link href="/api/auth/login">Login</Link>
+ <Link href="/api/auth/logout">Logout</Link>
+</div>
+         <div className="text-center text-gray-600 mb-4">Or continue with</div>
 
           <Button className="w-full bg-gray-800 text-white flex items-center justify-center py-2 rounded-md">
             <FaGithub className="mr-2" /> GitHub

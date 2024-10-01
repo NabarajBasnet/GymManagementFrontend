@@ -1,6 +1,8 @@
 import localFont from "next/font/local";
 import "./globals.css";
 import RTKProvider from "@/state/ReduxProvider";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,7 +27,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <RTKProvider>
+          <UserProvider>
         {children}
+        </UserProvider>
         </RTKProvider>
       </body>
     </html>
