@@ -2,11 +2,17 @@
 
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import MainStateProvider from "@/state/ReduxProvider";
+import RTKProvider from "@/state/ReduxProvider";
+import { useSelector } from "react-redux";
 
 export default function ClientLayout({ children }) {
+    
+
+    const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
+    console.log('Admin Sidebar In Layout: ',adminSidebar);
+
     return (
-        <MainStateProvider>
+        <RTKProvider>
             <div>
                 <div>
                     <div>
@@ -18,6 +24,6 @@ export default function ClientLayout({ children }) {
                     </div>
                 </div>
             </div>
-        </MainStateProvider>
+        </RTKProvider>
     );
 }

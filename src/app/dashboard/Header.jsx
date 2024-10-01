@@ -1,3 +1,6 @@
+"use client"
+
+
 import React from 'react'
 import { IoMenuSharp } from "react-icons/io5";
 import { ToggleAdminSidebar } from '@/state/slicer';
@@ -16,11 +19,11 @@ const Header = () => {
 
     return (
         <div className='flex justify-between py-8 items-center bg-green-400'>
+            <h1 className='text-3xl font-bold'>Toggle</h1>
             <IoMenuSharp
                 className='text-2xl cursor-pointer'
                 onClick={handleDispatchSidebar}
             />
-            <h1 className='text-3xl font-bold'>Toggle</h1>
             <h1 className='text-3xl font-bold'>Header</h1>
         </div>
     )

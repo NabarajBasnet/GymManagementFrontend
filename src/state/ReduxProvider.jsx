@@ -1,10 +1,12 @@
-import { Provider } from "react-redux";
-import store from "./store";
+"use client"
 
-const MainStateProvider = ({ children }) => {
-    <Provider store={store}>
+import { Provider } from "react-redux"
+import store from "./store"
+
+export default function RTKProvider ({children}){
+    return(
+        <Provider store={store}>
         {children}
-    </Provider>
+        </Provider>
+    )
 }
-
-export default MainStateProvider;
