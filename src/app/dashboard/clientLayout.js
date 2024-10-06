@@ -18,7 +18,7 @@ export default function ClientLayout({ children }) {
                                 <Sidebar />
                             </div>
                         )}
-                        <div className={`w-full ${adminSidebar ? 'md:ml-64' : ''}`}>
+                        <div className={`w-full ${adminSidebar ? 'md:ml-60' : ''}`}>
                             <div>
                                 <Header />
                             </div>
