@@ -38,14 +38,14 @@ const Sidebar = () => {
                 <span className="text-white text-2xl font-bold">Admin Panel</span>
             </div>
 
-            <div className="h-full overflow-y-auto mt-10">
+            <div className="h-full overflow-y-auto ::-webkit-scrollbar:w-8px ::-webkit-scrollbar-thumb:rounded-full mt-10">
                 <ul>
                     {
                         sidebarContent.map((sidebar, index) => (
                             <li key={index} className="flex items-center p-4 text-white cursor-pointer hover:bg-gray-700 transition-colors">
                                 <Link href={sidebar.link}>
                                     <div className='flex items-center'>
-                                        <sidebar.icon className='text-2xl' />
+                                        <sidebar.icon className='text-xl text-yellow-400' />
                                         <h1 className='mx-4'>{sidebar.title}</h1>
                                     </div>
                                 </Link>
