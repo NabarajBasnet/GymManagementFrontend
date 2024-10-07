@@ -1,71 +1,65 @@
 'use client';
 
-const AdminDashboard = () => {
+import {
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import MapChart from "@/components/Map/MapChart";
 
+const AdminDashboard = () => {
 
   return (
     <div>
-      <h1>Admin Dashboard In Next JS</h1>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
-      <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam, obcaecati ducimus a, corrupti repudiandae consectetur voluptate dolor magni officia in deleniti error vero, necessitatibus at. Sunt pariatur repellendus nesciunt voluptates!</p>
+      <div className="p-6">
+        <div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-1">
+                    <BreadcrumbEllipsis className="h-4 w-4" />
+                    <span className="sr-only">Toggle menu</span>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem>Documentation</DropdownMenuItem>
+                    <DropdownMenuItem>Themes</DropdownMenuItem>
+                    <DropdownMenuItem>GitHub</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <h1 className="text-xl font-bold">Home</h1>
+        </div>
+
+        <div>
+          <MapChart />
+        </div>
+
+      </div>
     </div>
   )
 }

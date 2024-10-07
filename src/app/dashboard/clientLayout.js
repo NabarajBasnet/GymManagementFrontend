@@ -14,7 +14,7 @@ export default function ClientLayout({ children }) {
         <RTKProvider>
             <div className='w-full flex'>
                 {adminSidebar && (
-                    <div className={`hidden md:flex`}>
+                    <div className={`hidden md:flex transition-all duration-300`}>
                         <Sidebar />
                     </div>
                 )}
@@ -22,7 +22,7 @@ export default function ClientLayout({ children }) {
                     <div className="w-full mt-16">
                         <Header />
                     </div>
-                    <main className="w-full">
+                    <main className="w-full bg-gray-100 dark:bg-neutral-900">
                         {children}
                     </main>
                 </div>
