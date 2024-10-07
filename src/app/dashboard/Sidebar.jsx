@@ -1,35 +1,33 @@
-'use client'
+'use client';
 
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
-} from "@/components/DashboardUI/SidebarAccrodin"
-import React, { useState } from 'react';
+} from "@/components/DashboardUI/SidebarAccrodin";
+import React from 'react';
 import { RiDashboard2Line } from 'react-icons/ri';
-import { FaRegUser, FaBox, FaChartLine, FaTags, FaCog } from 'react-icons/fa';
+import { FaRegUser, FaBox, FaChartLine, FaTags, FaCog, FaMoneyCheckAlt } from 'react-icons/fa';
+import { BiSolidUserCheck } from 'react-icons/bi';
+import { GiLockers } from 'react-icons/gi';
+import { TiUserAdd } from 'react-icons/ti';
+import { FaUsers } from 'react-icons/fa';
+import { MdPayments } from 'react-icons/md';
+import { FaUsersGear } from 'react-icons/fa6';
+import { RiUserUnfollowFill } from 'react-icons/ri';
 import Link from 'next/link';
-import { FaMoneyCheckAlt } from "react-icons/fa";
-import { BiSolidUserCheck } from "react-icons/bi";
-import { GiLockers } from "react-icons/gi";
-import { TiUserAdd } from "react-icons/ti";
-import { FaUsers } from "react-icons/fa";
-import { MdPayments } from "react-icons/md";
-import { FaUsersGear } from "react-icons/fa6";
-import { RiUserUnfollowFill } from "react-icons/ri";
-
 
 const Sidebar = () => {
 
     const sidebarContent = [
         { icon: FaMoneyCheckAlt, title: 'Membership Plans', link: '/dashboard/membershipplans' },
         {
-            icon: BiSolidUserCheck, title: 'Attedence', link: '/dashboard/attdence',
+            icon: BiSolidUserCheck, title: 'Attendance', link: '/dashboard/attendance',
             subObj: [
-                { icon: FaMoneyCheckAlt, title: 'Member Attdence', link: '/dashboard/attedence' },
-                { icon: FaMoneyCheckAlt, title: 'Staff Attdence', link: '/dashboard/staffattedence' },
-                { icon: FaMoneyCheckAlt, title: 'Guest Attdence', link: '/dashboard/guestattedence' }
+                { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/attendance' },
+                { icon: BiSolidUserCheck, title: 'Staff Attendance', link: '/dashboard/staffattendance' },
+                { icon: BiSolidUserCheck, title: 'Guest Attendance', link: '/dashboard/guestattendance' }
             ]
         },
         { icon: GiLockers, title: 'Lockers', link: '/dashboard/lockers' },
@@ -42,7 +40,7 @@ const Sidebar = () => {
         { icon: FaBox, title: 'Box', link: '/dashboard/box' },
         { icon: FaChartLine, title: 'Chart', link: '/dashboard/chart' },
         { icon: FaTags, title: 'Tags', link: '/dashboard/tags' },
-        { icon: FaCog, title: 'Cog', link: '/dashboard/Cog' },
+        { icon: FaCog, title: 'Settings', link: '/dashboard/settings' },
     ];
 
     return (
@@ -53,55 +51,33 @@ const Sidebar = () => {
 
             <div className="h-full overflow-y-auto mt-3">
                 <ul>
-                    {
-                        sidebarContent.map((sidebar, index) => (
-                            <li key={index} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                <div>
-                                    {
-                                        sidebar.subObj ? (
-                                            <>
-                                                {
-                                                    sidebar.subObj.map((subcnt) => (
-                                                        <Accordion type="single" collapsible className="w-full">
-                                                            <AccordionItem value="item-1">
-                                                                <AccordionTrigger>
-                                                                    <sidebar.icon className='text-xl text-yellow-400' />
-                                                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
-                                                                </AccordionTrigger>
-                                                                {
-                                                                    sidebar.subObj.map((sidecont) => (
-                                                                        <AccordionContent>
-                                                                            <Link href={sidecont.link} className="flex items-center ml-4 cursor-pointer">
-                                                                                <sidecont.icon />
-                                                                                <h1 className='mx-2 text-sm font-semibold'>{sidecont.title}</h1>
-                                                                            </Link>
-                                                                        </AccordionContent>
-                                                                    ))
-                                                                }
-                                                            </AccordionItem>
-                                                        </Accordion>
-                                                    ))
-                                                }
-                                            </>
-                                        ) : (
-                                            <div>
-                                                <div className='flex items-center'>
-                                                    <sidebar.icon className='text-xl text-yellow-400' />
-                                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
-                                                </div>
-                                                {sidebar.subObj && (
-                                                    <div className='flex justify-center items-center '>
-                                                        <sidebar.subObj.icon />
-                                                        <p>{sidebar.subObj.title}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )
-                                    }
-                                </div>
-                            </li>
-                        ))
-                    }
+                    {sidebarContent.map((sidebar, index) => (
+                        <li key={index} className="p-2">
+                            {sidebar.subObj ? (
+                                <Accordion type="single" collapsible className="w-full">
+                                    <AccordionItem value={`item-${index}`}>
+                                        <AccordionTrigger className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
+                                            <sidebar.icon className='text-xl text-yellow-400' />
+                                            <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                        </AccordionTrigger>
+                                        {sidebar.subObj.map((subItem, subIndex) => (
+                                            <AccordionContent key={subIndex}>
+                                                <Link href={subItem.link} className="flex items-center ml-6 p-1 text-gray-300 hover:text-white">
+                                                    <subItem.icon className='text-lg text-yellow-300' />
+                                                    <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
+                                                </Link>
+                                            </AccordionContent>
+                                        ))}
+                                    </AccordionItem>
+                                </Accordion>
+                            ) : (
+                                <Link href={sidebar.link} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
+                                    <sidebar.icon className='text-xl text-yellow-400' />
+                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                </Link>
+                            )}
+                        </li>
+                    ))}
                 </ul>
             </div>
         </div>
