@@ -17,19 +17,21 @@ const Header = () => {
     };
 
     return (
-        <div className='flex justify-between py-6 items-center bg-green-500'>
-            <div className='mx-4'>
-                <IoMenuSharp
-                    className='text-3xl text-white cursor-pointer'
-                    onClick={handleDispatchSidebar}
-                />
-            </div>
+        <div className="w-full">
+            <div className={`fixed top-0 right-0 ${adminSidebar ? 'w-[calc(100%-240px)]' : 'w-full'}  flex justify-between py-4 items-center bg-green-500`}>
+                <div className='mx-4'>
+                    <IoMenuSharp
+                        className='text-3xl text-white cursor-pointer'
+                        onClick={handleDispatchSidebar}
+                    />
+                </div>
 
-            <div className='mx-4'>
-                <RiAccountCircleFill
-                    className='text-3xl text-white cursor-pointer'
-                    onClick={handleDispatchSidebar}
-                />
+                <div className='mx-4'>
+                    <RiAccountCircleFill
+                        className='text-3xl text-white cursor-pointer'
+                        onClick={handleDispatchSidebar}
+                    />
+                </div>
             </div>
         </div>
     )

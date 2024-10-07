@@ -17,6 +17,8 @@ import { MdPayments, MdFitnessCenter, MdEventAvailable } from 'react-icons/md';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import Link from 'next/link';
 import { FaUsersGear } from "react-icons/fa6";
+import { RiDashboard3Fill } from "react-icons/ri";
+
 
 const Sidebar = () => {
 
@@ -139,9 +141,10 @@ const Sidebar = () => {
     return (
         <div className="fixed left-0 top-0 h-full w-60 bg-gray-800 transition-all duration-300 flex flex-col">
 
-            <div className="flex justify-start items-center py-6 bg-blue-600">
-                <span className="text-white w-full text-2xl mx-2 font-bold">Dashboard</span>
-            </div>
+            <Link href={'/dashboard'} className="flex justify-start py-4 bg-blue-600">
+                <RiDashboard3Fill className='text-4xl mx-2 text-white' />
+                <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+            </Link>
 
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
                 <ul>
