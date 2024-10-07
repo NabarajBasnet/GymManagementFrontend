@@ -17,7 +17,7 @@ const Header = () => {
     };
 
     return (
-        <div className='flex justify-between py-8 items-center bg-green-500'>
+        <div className='flex justify-between py-6 items-center bg-green-500'>
             <div className='mx-4'>
                 <IoMenuSharp
                     className='text-3xl text-white cursor-pointer'

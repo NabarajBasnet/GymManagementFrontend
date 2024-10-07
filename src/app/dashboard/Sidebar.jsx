@@ -1,5 +1,6 @@
 'use client';
 
+import '../globals.css'
 import {
     Accordion,
     AccordionContent,
@@ -7,52 +8,145 @@ import {
     AccordionTrigger,
 } from "@/components/DashboardUI/SidebarAccrodin";
 import React from 'react';
-import { RiDashboard2Line } from 'react-icons/ri';
-import { FaRegUser, FaBox, FaChartLine, FaTags, FaCog, FaMoneyCheckAlt } from 'react-icons/fa';
+import { RiDashboard2Line, RiUserUnfollowFill, RiCustomerService2Fill, RiRunLine } from 'react-icons/ri';
 import { BiSolidUserCheck } from 'react-icons/bi';
-import { GiLockers } from 'react-icons/gi';
+import { GiLockers, GiBiceps } from 'react-icons/gi';
 import { TiUserAdd } from 'react-icons/ti';
-import { FaUsers } from 'react-icons/fa';
-import { MdPayments } from 'react-icons/md';
-import { FaUsersGear } from 'react-icons/fa6';
-import { RiUserUnfollowFill } from 'react-icons/ri';
+import { FaUsers, FaMoneyCheckAlt, FaRegUser, FaBox, FaChartLine, FaTags, FaCog, FaDumbbell } from 'react-icons/fa';
+import { MdPayments, MdFitnessCenter, MdEventAvailable } from 'react-icons/md';
+import { AiOutlineSchedule } from 'react-icons/ai';
 import Link from 'next/link';
+import { FaUsersGear } from "react-icons/fa6";
 
 const Sidebar = () => {
 
     const sidebarContent = [
-        { icon: FaMoneyCheckAlt, title: 'Membership Plans', link: '/dashboard/membershipplans' },
         {
-            icon: BiSolidUserCheck, title: 'Attendance', link: '/dashboard/attendance',
+            icon: FaMoneyCheckAlt,
+            title: 'Membership Plans',
+            link: '/dashboard/membershipplans',
+        },
+        {
+            icon: BiSolidUserCheck,
+            title: 'Attendance',
+            link: '/dashboard/attendance',
             subObj: [
-                { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/attendance' },
+                { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/memberattendance' },
                 { icon: BiSolidUserCheck, title: 'Staff Attendance', link: '/dashboard/staffattendance' },
                 { icon: BiSolidUserCheck, title: 'Guest Attendance', link: '/dashboard/guestattendance' }
             ]
         },
-        { icon: GiLockers, title: 'Lockers', link: '/dashboard/lockers' },
-        { icon: TiUserAdd, title: 'New Member', link: '/dashboard/newmember' },
-        { icon: FaUsers, title: 'All Members', link: '/dashboard/allmembers' },
-        { icon: MdPayments, title: 'Payment Details', link: '/dashboard/paymentdetails' },
-        { icon: FaUsersGear, title: 'Staff Management', link: '/dashboard/staffmanagement' },
-        { icon: RiUserUnfollowFill, title: 'Expired Memberships', link: '/dashboard/expiredmemberships' },
-        { icon: FaRegUser, title: 'User', link: '/dashboard/user' },
-        { icon: FaBox, title: 'Box', link: '/dashboard/box' },
-        { icon: FaChartLine, title: 'Chart', link: '/dashboard/chart' },
-        { icon: FaTags, title: 'Tags', link: '/dashboard/tags' },
-        { icon: FaCog, title: 'Settings', link: '/dashboard/settings' },
+        {
+            icon: GiLockers,
+            title: 'Lockers',
+            link: '/dashboard/lockers',
+        },
+        {
+            icon: TiUserAdd,
+            title: 'New Member',
+            link: '/dashboard/newmember',
+        },
+        {
+            icon: FaUsers,
+            title: 'All Members',
+            link: '/dashboard/allmembers',
+        },
+        {
+            icon: MdPayments,
+            title: 'Payment Details',
+            link: '/dashboard/paymentdetails',
+        },
+        {
+            icon: FaUsersGear,
+            title: 'Staff Management',
+            link: '/dashboard/staffmanagement',
+            subObj: [
+                { icon: FaUsersGear, title: 'Trainer Management', link: '/dashboard/trainermanagement' },
+                { icon: FaUsersGear, title: 'Staff Scheduling', link: '/dashboard/staffscheduling' }
+            ]
+        },
+        {
+            icon: RiUserUnfollowFill,
+            title: 'Expired Memberships',
+            link: '/dashboard/expiredmemberships',
+        },
+        {
+            icon: MdEventAvailable,
+            title: 'Class Scheduling',
+            link: '/dashboard/classscheduling',
+            subObj: [
+                { icon: MdEventAvailable, title: 'Yoga Classes', link: '/dashboard/yogaclasses' },
+                { icon: MdEventAvailable, title: 'Spinning Classes', link: '/dashboard/spinningclasses' },
+                { icon: MdEventAvailable, title: 'Zumba Classes', link: '/dashboard/zumbaclasses' }
+            ]
+        },
+        {
+            icon: FaDumbbell,
+            title: 'Equipments',
+            link: '/dashboard/equipmentmanagement',
+            subObj: [
+                { icon: FaDumbbell, title: 'Add Equipment', link: '/dashboard/addequipment' },
+                { icon: FaDumbbell, title: 'View Equipment', link: '/dashboard/viewequipment' },
+                { icon: FaDumbbell, title: 'Maintenance Requests', link: '/dashboard/equipmentmaintenance' }
+            ]
+        },
+        {
+            icon: GiBiceps,
+            title: 'Personal Training',
+            link: '/dashboard/personaltraining',
+            subObj: [
+                { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/traineravailability' },
+                { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/booktrainer' }
+            ]
+        },
+        {
+            icon: MdFitnessCenter,
+            title: 'Fitness Programs',
+            link: '/dashboard/fitnessprograms',
+            subObj: [
+                { icon: MdFitnessCenter, title: 'Weight Loss Program', link: '/dashboard/weightloss' },
+                { icon: MdFitnessCenter, title: 'Muscle Gain Program', link: '/dashboard/musclegain' }
+            ]
+        },
+        {
+            icon: RiCustomerService2Fill,
+            title: 'Customer Support',
+            link: '/dashboard/customersupport',
+        },
+        {
+            icon: FaChartLine,
+            title: 'Analytics & Reports',
+            link: '/dashboard/analytics',
+        },
+        {
+            icon: AiOutlineSchedule,
+            title: 'Schedule Management',
+            link: '/dashboard/schedulemanagement',
+        },
+        {
+            icon: FaTags,
+            title: 'Promotions & Offers',
+            link: '/dashboard/promotions',
+        },
+        {
+            icon: FaCog,
+            title: 'Settings',
+            link: '/dashboard/settings',
+        },
     ];
 
+
     return (
-        <div className={`fixed left-0 top-0 h-full w-60 bg-gray-800 transition-all duration-300`}>
-            <div className="flex justify-start items-center py-8 bg-blue-600">
-                <span className="text-white text-2xl mx-2 font-bold">Dashboard</span>
+        <div className="fixed left-0 top-0 h-full w-60 bg-gray-800 transition-all duration-300 flex flex-col">
+
+            <div className="flex justify-start items-center py-6 bg-blue-600">
+                <span className="text-white w-full text-2xl mx-2 font-bold">Dashboard</span>
             </div>
 
-            <div className="h-full overflow-y-auto mt-3">
+            <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
                 <ul>
                     {sidebarContent.map((sidebar, index) => (
-                        <li key={index} className="p-2">
+                        <li key={index} className="p-1">
                             {sidebar.subObj ? (
                                 <Accordion type="single" collapsible className="w-full">
                                     <AccordionItem value={`item-${index}`}>
