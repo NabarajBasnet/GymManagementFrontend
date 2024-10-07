@@ -23,8 +23,15 @@ import { RiUserUnfollowFill } from "react-icons/ri";
 const Sidebar = () => {
 
     const sidebarContent = [
-        { icon: FaMoneyCheckAlt, title: 'Membership Plans', link: '/dashboard/membershipplans', subObj: { icon: FaMoneyCheckAlt, title: 'Membership Plans', link: '/dashboard/membershipplans' } },
-        { icon: BiSolidUserCheck, title: 'Attedence', link: '/dashboard/attdence' },
+        { icon: FaMoneyCheckAlt, title: 'Membership Plans', link: '/dashboard/membershipplans' },
+        {
+            icon: BiSolidUserCheck, title: 'Attedence', link: '/dashboard/attdence',
+            subObj: [
+                { icon: FaMoneyCheckAlt, title: 'Member Attdence', link: '/dashboard/attedence' },
+                { icon: FaMoneyCheckAlt, title: 'Staff Attdence', link: '/dashboard/staffattedence' },
+                { icon: FaMoneyCheckAlt, title: 'Guest Attdence', link: '/dashboard/guestattedence' }
+            ]
+        },
         { icon: GiLockers, title: 'Lockers', link: '/dashboard/lockers' },
         { icon: TiUserAdd, title: 'New Member', link: '/dashboard/newmember' },
         { icon: FaUsers, title: 'All Members', link: '/dashboard/allmembers' },
@@ -49,21 +56,33 @@ const Sidebar = () => {
                     {
                         sidebarContent.map((sidebar, index) => (
                             <li key={index} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                <Link href={sidebar.link}>
+                                <div>
                                     {
                                         sidebar.subObj ? (
-                                            <Accordion type="single" collapsible className="w-full">
-                                                <AccordionItem value="item-1">
-                                                    <AccordionTrigger>
-                                                        <sidebar.icon className='text-xl text-yellow-400' />
-                                                        <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
-                                                    </AccordionTrigger>
-                                                    <AccordionContent>
-                                                        <sidebar.subObj.icon />
-                                                        <h1 className='mx-2 text-sm font-semibold'>{sidebar.subObj.title}</h1>
-                                                    </AccordionContent>
-                                                </AccordionItem>
-                                            </Accordion>
+                                            <>
+                                                {
+                                                    sidebar.subObj.map((subcnt) => (
+                                                        <Accordion type="single" collapsible className="w-full">
+                                                            <AccordionItem value="item-1">
+                                                                <AccordionTrigger>
+                                                                    <sidebar.icon className='text-xl text-yellow-400' />
+                                                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                                                </AccordionTrigger>
+                                                                {
+                                                                    sidebar.subObj.map((sidecont) => (
+                                                                        <AccordionContent>
+                                                                            <Link href={sidecont.link} className="flex items-center ml-4 cursor-pointer">
+                                                                                <sidecont.icon />
+                                                                                <h1 className='mx-2 text-sm font-semibold'>{sidecont.title}</h1>
+                                                                            </Link>
+                                                                        </AccordionContent>
+                                                                    ))
+                                                                }
+                                                            </AccordionItem>
+                                                        </Accordion>
+                                                    ))
+                                                }
+                                            </>
                                         ) : (
                                             <div>
                                                 <div className='flex items-center'>
@@ -71,7 +90,7 @@ const Sidebar = () => {
                                                     <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
                                                 </div>
                                                 {sidebar.subObj && (
-                                                    <div className='flex justify-start items-center '>
+                                                    <div className='flex justify-center items-center '>
                                                         <sidebar.subObj.icon />
                                                         <p>{sidebar.subObj.title}</p>
                                                     </div>
@@ -79,7 +98,7 @@ const Sidebar = () => {
                                             </div>
                                         )
                                     }
-                                </Link>
+                                </div>
                             </li>
                         ))
                     }
