@@ -143,43 +143,40 @@ const Sidebar = () => {
 
     return (
         <div className={`fixed left-0 transition-all duration-500 top-0 h-full w-60 bg-gray-800 flex flex-col`}>
-            <div className={`transition-all duration-500 ${adminSidebar ? 'opacity-100 -translate-x-0' : 'opacity-0 -translate-x-10'}`}>
-
-                <Link href={'/dashboard'} className="flex justify-start py-4 bg-blue-600">
-                    <RiDashboard3Fill className='text-4xl mx-2 text-white' />
-                    <span className="text-white w-full text-2xl font-bold">Dashboard</span>
-                </Link>
-                <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
-                    <ul>
-                        {sidebarContent.map((sidebar, index) => (
-                            <li key={index} className="p-1">
-                                {sidebar.subObj ? (
-                                    <Accordion type="single" collapsible className="w-full">
-                                        <AccordionItem value={`item-${index}`}>
-                                            <AccordionTrigger className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                                <sidebar.icon className='text-xl text-yellow-400' />
-                                                <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
-                                            </AccordionTrigger>
-                                            {sidebar.subObj.map((subItem, subIndex) => (
-                                                <AccordionContent key={subIndex}>
-                                                    <Link href={subItem.link} className="flex items-center ml-6 p-1 text-gray-300 hover:text-white">
-                                                        <subItem.icon className='text-lg text-yellow-300' />
-                                                        <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
-                                                    </Link>
-                                                </AccordionContent>
-                                            ))}
-                                        </AccordionItem>
-                                    </Accordion>
-                                ) : (
-                                    <Link href={sidebar.link} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                        <sidebar.icon className='text-xl text-yellow-400' />
-                                        <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
-                                    </Link>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+            <Link href={'/dashboard'} className="flex justify-start py-4 bg-blue-600">
+                <RiDashboard3Fill className='text-4xl mx-2 text-white' />
+                <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+            </Link>
+            <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
+                <ul>
+                    {sidebarContent.map((sidebar, index) => (
+                        <li key={index} className="p-1">
+                            {sidebar.subObj ? (
+                                <Accordion type="single" collapsible className="w-full">
+                                    <AccordionItem value={`item-${index}`}>
+                                        <AccordionTrigger className="w-full flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
+                                            <sidebar.icon className='text-xl text-yellow-400' />
+                                            <h1 className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                        </AccordionTrigger>
+                                        {sidebar.subObj.map((subItem, subIndex) => (
+                                            <AccordionContent key={subIndex}>
+                                                <Link href={subItem.link} className="flex items-center ml-6 p-1 text-gray-300 hover:text-white">
+                                                    <subItem.icon className='text-lg text-yellow-300' />
+                                                    <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
+                                                </Link>
+                                            </AccordionContent>
+                                        ))}
+                                    </AccordionItem>
+                                </Accordion>
+                            ) : (
+                                <Link href={sidebar.link} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
+                                    <sidebar.icon className='text-xl text-yellow-400' />
+                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                </Link>
+                            )}
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     );
