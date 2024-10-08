@@ -112,9 +112,8 @@ const MemberAttendance = () => {
             </div>
             <div className='w-full md:flex space-x-4 justify-between px-4'>
                 <div className='w-full md:w-6/12 bg-white'>
-                    <div className='w-full flex justify-between p-2'>
-                        <h1>Member Attendance Record</h1>
-                        <Button>Refresh</Button>
+                    <div className='w-full flex justify-start p-2'>
+                        <Button className='rounded-none'>Refresh</Button>
                     </div>
                     <div className="grid grid-cols-1 space-y-2 px-2">
                         <Input

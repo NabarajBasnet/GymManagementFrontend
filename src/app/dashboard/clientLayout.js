@@ -25,7 +25,9 @@ export default function ClientLayout({ children }) {
                     </div>
                     <main className="w-full min-h-screen bg-gray-100 dark:bg-neutral-900 transition-all duration-500">
                         {children}
-                        <DashboardFooter />
+                        <div className="w-full mt-3">
+                            <DashboardFooter />
+                        </div>
                     </main>
                 </div>
             </div>

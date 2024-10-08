@@ -38,7 +38,7 @@ const Sidebar = () => {
             subObj: [
                 { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/attendance/memberattendance' },
                 { icon: BiSolidUserCheck, title: 'Staff Attendance', link: '/dashboard/attendance/staffattendance' },
-                { icon: BiSolidUserCheck, title: 'Guest Attendance', link: '/dashboard/attendance/guestattendance' }
+                { icon: BiSolidUserCheck, title: 'Attendance History', link: '/dashboard/attendance/attendancehistory' }
             ]
         },
         {
