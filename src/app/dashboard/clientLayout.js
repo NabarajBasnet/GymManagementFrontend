@@ -14,8 +14,10 @@ export default function ClientLayout({ children }) {
         <RTKProvider>
             <div className='w-full flex'>
                 {adminSidebar && (
-                    <div className={`hidden md:flex transition-all duration-300`}>
-                        <Sidebar />
+                    <div className={`hidden md:flex transition-all duration-500`}>
+                        <div className={`transition-all duration-500${adminSidebar ? 'opacity-100 -translate-x-0' : 'opacity-0 -translate-x-10'}`}>
+                            <Sidebar />
+                        </div>
                     </div>
                 )}
                 <div className={`w-full ${adminSidebar ? 'md:ml-60' : ''}`}>
