@@ -1,10 +1,10 @@
 'use client'
 
-import Head from "next/head";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import RTKProvider from "@/state/ReduxProvider";
 import { useSelector } from "react-redux";
+import DashboardFooter from "@/components/DashboardFooter/Footer";
 
 export default function ClientLayout({ children }) {
 
@@ -25,6 +25,7 @@ export default function ClientLayout({ children }) {
                     </div>
                     <main className="w-full min-h-screen bg-gray-100 dark:bg-neutral-900 transition-all duration-500">
                         {children}
+                        <DashboardFooter />
                     </main>
                 </div>
             </div>
