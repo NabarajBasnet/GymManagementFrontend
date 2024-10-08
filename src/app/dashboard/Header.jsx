@@ -186,7 +186,6 @@ const Header = () => {
                                 </SheetTitle>
                             </SheetHeader>
 
-                            {/* Scrollable Sidebar Content */}
                             <SheetDescription className="flex-grow overflow-y-auto">
                                 <div className='min-h-screen'>
                                     <ul>
