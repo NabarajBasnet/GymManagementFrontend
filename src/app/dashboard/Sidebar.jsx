@@ -34,11 +34,11 @@ const Sidebar = () => {
         {
             icon: BiSolidUserCheck,
             title: 'Attendance',
-            link: '/dashboard/attendance',
+            link: '/dashboard/attendance/memberattendance',
             subObj: [
-                { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/memberattendance' },
-                { icon: BiSolidUserCheck, title: 'Staff Attendance', link: '/dashboard/staffattendance' },
-                { icon: BiSolidUserCheck, title: 'Guest Attendance', link: '/dashboard/guestattendance' }
+                { icon: BiSolidUserCheck, title: 'Member Attendance', link: '/dashboard/attendance/memberattendance' },
+                { icon: BiSolidUserCheck, title: 'Staff Attendance', link: '/dashboard/attendance/staffattendance' },
+                { icon: BiSolidUserCheck, title: 'Guest Attendance', link: '/dashboard/attendance/guestattendance' }
             ]
         },
         {
