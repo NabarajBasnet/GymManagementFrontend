@@ -42,7 +42,6 @@ import { Textarea } from "@/components/ui/textarea"
 
 const MemberAttendance = () => {
 
-
     const invoices = [
         {
             invoice: "INV001",
