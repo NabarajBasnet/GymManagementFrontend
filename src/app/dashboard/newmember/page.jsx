@@ -1,5 +1,21 @@
 'use client'
 
+import { usePathname } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+    Breadcrumb,
+    BreadcrumbEllipsis,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,11 +32,48 @@ import {
 
 const newMemberRegistrationForm = () => {
 
+    const pathname = usePathname();
+    console.log('Pathname: ', pathname);
+
     return (
-        <div className="w-full flex justify-center p-1">
+        <div className="w-full p-1">
+            <div className='w-full p-6'>
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
+                                    <DropdownMenuItem>Themes</DropdownMenuItem>
+                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>
+                                {pathname}
+                            </BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <h1 className="text-xl font-bold mt-3">Register New Member</h1>
+            </div>
+
             <div className="w-full flex justify-center">
                 <div className="w-full">
-                    <h2 className="text-xl font-bold text-center">Register New Member</h2>
                     <div className="w-full">
                         <form className="w-full">
                             <div className="bg-gray-300 py-2 my-2 w-full">

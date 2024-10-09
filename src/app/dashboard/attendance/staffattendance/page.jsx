@@ -103,7 +103,7 @@ const StaffAttendance = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold">Staff Attendance</h1>
+                <h1 className="text-xl font-bold mt-3">Staff Attendance</h1>
             </div>
 
             <div className="w-full bg-white">

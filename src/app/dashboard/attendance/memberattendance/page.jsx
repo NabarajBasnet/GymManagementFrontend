@@ -108,7 +108,7 @@ const MemberAttendance = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold">Member Attendance</h1>
+                <h1 className="text-xl font-bold mt-3">Member Attendance</h1>
             </div>
             <div className='w-full md:flex space-x-4 justify-between px-4'>
                 <div className='w-full md:w-6/12 bg-white'>
