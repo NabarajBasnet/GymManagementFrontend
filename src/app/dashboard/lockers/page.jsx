@@ -1,3 +1,5 @@
+import { FaLock } from "react-icons/fa";
+import { FaUnlock } from "react-icons/fa";
 import {
     Select,
     SelectContent,
@@ -124,12 +126,26 @@ const Lockers = () => {
                 </div>
 
                 {/* Lockers Section*/}
-                <div>
-                    {[...Array(9)].map((index) => (
-                        <div>
-                            <h1>Locker</h1>
-                        </div>
-                    ))}
+                <div className="w-full">
+                    <div className="p-4 grid grid-cols-1 md:grid-cols-4 gap-6">
+                        {[...Array(40)].map((index) => (
+                            <div key={index} className="w-full bg-white border border-gray-100 shadow-2xl p-5 cursor-pointer">
+                                <div className="w-full">
+                                    <div className="bg-blue-600 h-4"></div>
+                                    <h1>{1}</h1>
+                                    <p>Member Id: </p>
+                                    <p>Locker Owner: </p>
+                                    <p>Phone Number: </p>
+                                    <p>Renew Date: </p>
+                                    <p>Duration: </p>
+                                    <p>Expire Date: </p>
+                                    <Button className='rounded-none mt-4'>
+                                        <FaLock className="text-xl" />
+                                    </Button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
             </div>
         </div>
