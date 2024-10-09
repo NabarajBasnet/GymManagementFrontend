@@ -163,7 +163,7 @@ const Header = () => {
 
 
     return (
-        <div className={`fixed top-0 right-0 transition-all duration-300 ${adminSidebar ? 'md:w-[calc(100%-256px)] w-full' : 'w-full'} flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
+        <div className={`fixed top-0 right-0 transition-all duration-300 ${adminSidebar ? 'md:w-[calc(100%-240px)] w-full' : 'w-full'} flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
             <div className='mx-4'>
                 <IoMenuSharp
                     className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
