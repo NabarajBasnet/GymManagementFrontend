@@ -120,8 +120,13 @@ const Lockers = () => {
                             </SelectContent>
                         </Select>
                     </div>
-                    <div className="w-full md:w-3/12 flex justify-start items-end">
+                    <div className="w-full md:w-3/12 flex justify-between items-end">
                         <Button className='rounded-none'>Submit</Button>
+                        <div className="block space-y-1">
+                            <h1 className="font-semibold text-black bg-white p-1">Empty: 10</h1>
+                            <h1 className="font-semibold text-green-500 bg-white p-1">Booked: 25</h1>
+                            <h1 className="font-semibold text-red-600 bg-white p-1">Expired: 15</h1>
+                        </div>
                     </div>
                 </div>
 
