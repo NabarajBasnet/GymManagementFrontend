@@ -1,6 +1,6 @@
 'use client';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import '../globals.css'
 import {
     Accordion,
@@ -19,11 +19,18 @@ import { AiOutlineSchedule } from 'react-icons/ai';
 import Link from 'next/link';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
+import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
 
 
 const Sidebar = () => {
 
+    const dispatch = useDispatch();
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
+    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
+
+    const minimizeSidebar = () => {
+        dispatch(MinimizeSidebar());
+    }
 
     const sidebarContent = [
         {
@@ -114,10 +121,18 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 top-0 h-full w-60 bg-gray-800 flex flex-col`}>
+        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} bg-gray-800 flex flex-col`}
+            onMouseEnter={() => minimizeSidebar()}
+        >
             <Link href={'/dashboard'} className="flex justify-start py-4 bg-blue-600">
                 <RiDashboard3Fill className='text-4xl mx-2 text-white' />
-                <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                {
+                    sidebarMinimized ? (
+                        <></>
+                    ) : (
+                        <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                    )
+                }
             </Link>
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
                 <ul>
@@ -128,13 +143,25 @@ const Sidebar = () => {
                                     <AccordionItem value={`item-${index}`}>
                                         <AccordionTrigger className="w-full flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
                                             <sidebar.icon className='text-xl text-yellow-400' />
-                                            <h1 className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                            {
+                                                sidebarMinimized ? (
+                                                    <></>
+                                                ) : (
+                                                    <h1 className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                                )
+                                            }
                                         </AccordionTrigger>
                                         {sidebar.subObj.map((subItem, subIndex) => (
                                             <AccordionContent key={subIndex}>
                                                 <Link href={subItem.link} className="flex items-center ml-6 p-1 text-gray-300 hover:text-white">
                                                     <subItem.icon className='text-lg text-yellow-300' />
-                                                    <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
+                                                    {
+                                                        sidebarMinimized ? (
+                                                            <></>
+                                                        ) : (
+                                                            <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
+                                                        )
+                                                    }
                                                 </Link>
                                             </AccordionContent>
                                         ))}
@@ -143,7 +170,13 @@ const Sidebar = () => {
                             ) : (
                                 <Link href={sidebar.link} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
                                     <sidebar.icon className='text-xl text-yellow-400' />
-                                    <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                    {
+                                        sidebarMinimized ? (
+                                            <></>
+                                        ) : (
+                                            <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                        )
+                                    }
                                 </Link>
                             )}
                         </li>

@@ -4,11 +4,8 @@ import '../globals.css'
 import { RiAccountCircleFill } from "react-icons/ri";
 import React from 'react';
 import { IoMenuSharp } from "react-icons/io5";
-import { ToggleAdminSidebar } from '@/state/slicer';
+import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
 import { useDispatch } from 'react-redux';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import {
     Sheet,
     SheetClose,
@@ -40,11 +37,16 @@ import { RiDashboard3Fill } from "react-icons/ri";
 
 const Header = () => {
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
+    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
 
     const handleDispatchSidebar = () => {
         dispatch(ToggleAdminSidebar());
     };
+
+    const minimizeSidebar = () => {
+        dispatch(MinimizeSidebar());
+    }
 
     const sidebarContent = [
         {
@@ -163,11 +165,11 @@ const Header = () => {
 
 
     return (
-        <div className={`fixed top-0 right-0 transition-all duration-300 ${adminSidebar ? 'md:w-[calc(100%-240px)] w-full' : 'w-full'} flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
+        <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
             <div className='mx-4'>
                 <IoMenuSharp
                     className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
-                    onClick={handleDispatchSidebar}
+                    onClick={minimizeSidebar}
                 />
                 <div>
                     <Sheet>
@@ -227,7 +229,7 @@ const Header = () => {
             <div className='mx-4'>
                 <RiAccountCircleFill
                     className='text-3xl text-gray-800 cursor-pointer'
-                    onClick={handleDispatchSidebar}
+                    onClick={minimizeSidebar}
                 />
             </div>
         </div>
