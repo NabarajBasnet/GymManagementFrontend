@@ -47,10 +47,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { useState } from "react";
 
 
 const AddStaff = () => {
 
+    const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
 
     const invoices = [
@@ -83,18 +85,6 @@ const AddStaff = () => {
             paymentStatus: "Paid",
             totalAmount: "$550.00",
             paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV006",
-            paymentStatus: "Pending",
-            totalAmount: "$200.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV007",
-            paymentStatus: "Unpaid",
-            totalAmount: "$300.00",
-            paymentMethod: "Credit Card",
         },
     ];
 
@@ -159,8 +149,8 @@ const AddStaff = () => {
                         </TableBody>
                         <TableFooter>
                             <TableRow>
-                                <TableCell colSpan={3}>Total</TableCell>
-                                <TableCell className="text-right">$2,500.00</TableCell>
+                                <TableCell colSpan={3}>Total Staffs</TableCell>
+                                <TableCell className="text-right">5</TableCell>
                             </TableRow>
                         </TableFooter>
                     </Table>
@@ -193,205 +183,217 @@ const AddStaff = () => {
                     </Pagination>
                 </div>
             </div>
-
-
-
-            <div className="w-full flex justify-center">
-                <div className="w-full">
-                    <div className="w-full">
-                        <form className="w-full">
-                            <div className="bg-gray-300 py-2 my-2 w-full">
-                                <h1 className="mx-4 font-semibold">Personal Information</h1>
-                            </div>
-                            <div className="p-2 bg-white">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                    <div>
-                                        <Label>First Name</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='First Name'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Last Name</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Last Name'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Address</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Address'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Phone Number</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Phone Number'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Secondary Phone Number</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Secondary Phone Number'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Email Address</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Email Address'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Date Of Birth</Label>
-                                        <Input
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Date Of Birth'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Date Of Birth</Label>
-                                        <Select>
-                                            <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Select Gender" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Gender</SelectLabel>
-                                                    <SelectItem value="Male">Male</SelectItem>
-                                                    <SelectItem value="Female">Female</SelectItem>
-                                                    <SelectItem value="Other">Other</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="bg-gray-300 py-2 my-2 w-full">
-                                <h1 className="mx-4 font-semibold">Membership Information</h1>
-                            </div>
-                            <div className="p-2 bg-white">
-                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                    <div>
-                                        <Label>Staff Role</Label>
-                                        <Select>
-                                            <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Select Role" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Role</SelectLabel>
-                                                    <SelectItem value="Regular">Regular</SelectItem>
-                                                    <SelectItem value="Day Time">Day Time</SelectItem>
-                                                    <SelectItem value="Temporary">Temporary</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div>
-                                        <Label>Select Shift</Label>
-                                        <Select>
-                                            <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Select Shift" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Membership Type</SelectLabel>
-                                                    <SelectItem value="Gym">Gym</SelectItem>
-                                                    <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div>
-                                        <Label>Joined Date</Label>
-                                        <Input
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Date'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Working Duration</Label>
-                                        <Select>
-                                            <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Duration" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Duration</SelectLabel>
-                                                    <SelectItem value="1 Month">1 Month</SelectItem>
-                                                    <SelectItem value="3 Months">3 Months</SelectItem>
-                                                    <SelectItem value="6 Months">6 Months</SelectItem>
-                                                    <SelectItem value="12 Months">12 Months</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div>
-                                        <Label>Hours</Label>
-                                        <Select>
-                                            <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Duration" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Duration</SelectLabel>
-                                                    <SelectItem value="1 Month">1 Month</SelectItem>
-                                                    <SelectItem value="3 Months">3 Months</SelectItem>
-                                                    <SelectItem value="6 Months">6 Months</SelectItem>
-                                                    <SelectItem value="12 Months">12 Months</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div>
-                                        <Label>Checkin Time</Label>
-                                        <Input
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Renew Date'
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <Label>Checkout Time</Label>
-                                        <Input
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Expire Date'
-                                        />
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div className="flex items-center space-x-2 p-2">
-                                <Button variant='destructive' className='rounded-none'>Finalize</Button>
-                                <Button className='rounded-none'>Register</Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div className="flex justify-center items-center px-5 my-6 space-x-4">
+                <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
+                <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
+                <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
             </div>
+            {
+                openForm && (
+                    <>
+                        <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
+                        <div className="fixed inset-0 z-50 flex items-center justify-center">
+                            <div className="w-full flex justify-center">
+                                <div className="w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
+                                    <div className="w-full">
+                                        <form className="w-full">
+                                            <div className="bg-gray-300 py-2 my-2 w-full">
+                                                <h1 className="mx-4 font-semibold">Personal Information</h1>
+                                            </div>
+                                            <div className="p-2 bg-white">
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                                    <div>
+                                                        <Label>First Name</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='First Name'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Last Name</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Last Name'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Address</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Address'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Phone Number</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Phone Number'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Secondary Phone Number</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Secondary Phone Number'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Email Address</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Email Address'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Date Of Birth</Label>
+                                                        <Input
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Date Of Birth'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Date Of Birth</Label>
+                                                        <Select>
+                                                            <SelectTrigger className="w-full rounded-none">
+                                                                <SelectValue placeholder="Select Gender" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Gender</SelectLabel>
+                                                                    <SelectItem value="Male">Male</SelectItem>
+                                                                    <SelectItem value="Female">Female</SelectItem>
+                                                                    <SelectItem value="Other">Other</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="bg-gray-300 py-2 my-2 w-full">
+                                                <h1 className="mx-4 font-semibold">Membership Information</h1>
+                                            </div>
+                                            <div className="p-2 bg-white">
+                                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                                    <div>
+                                                        <Label>Staff Role</Label>
+                                                        <Select>
+                                                            <SelectTrigger className="w-full rounded-none">
+                                                                <SelectValue placeholder="Select Role" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Role</SelectLabel>
+                                                                    <SelectItem value="Regular">Regular</SelectItem>
+                                                                    <SelectItem value="Day Time">Day Time</SelectItem>
+                                                                    <SelectItem value="Temporary">Temporary</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Select Shift</Label>
+                                                        <Select>
+                                                            <SelectTrigger className="w-full rounded-none">
+                                                                <SelectValue placeholder="Select Shift" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Membership Type</SelectLabel>
+                                                                    <SelectItem value="Gym">Gym</SelectItem>
+                                                                    <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Joined Date</Label>
+                                                        <Input
+                                                            type='date'
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Membership Date'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Working Duration</Label>
+                                                        <Select>
+                                                            <SelectTrigger className="w-full rounded-none">
+                                                                <SelectValue placeholder="Duration" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Duration</SelectLabel>
+                                                                    <SelectItem value="1 Month">1 Month</SelectItem>
+                                                                    <SelectItem value="3 Months">3 Months</SelectItem>
+                                                                    <SelectItem value="6 Months">6 Months</SelectItem>
+                                                                    <SelectItem value="12 Months">12 Months</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Hours</Label>
+                                                        <Select>
+                                                            <SelectTrigger className="w-full rounded-none">
+                                                                <SelectValue placeholder="Duration" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                <SelectGroup>
+                                                                    <SelectLabel>Duration</SelectLabel>
+                                                                    <SelectItem value="1 Month">1 Month</SelectItem>
+                                                                    <SelectItem value="3 Months">3 Months</SelectItem>
+                                                                    <SelectItem value="6 Months">6 Months</SelectItem>
+                                                                    <SelectItem value="12 Months">12 Months</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Checkin Time</Label>
+                                                        <Input
+                                                            type='date'
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Membership Renew Date'
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <Label>Checkout Time</Label>
+                                                        <Input
+                                                            type='date'
+                                                            className='rounded-none focus:outline-none'
+                                                            placeholder='Membership Expire Date'
+                                                        />
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                            <div className="flex justify-center items-center my-4 space-x-2 p-2">
+                                                <Button variant='destructive' className='rounded-none'>Reset Form</Button>
+                                                <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Close Form</Button>
+                                                <Button className='rounded-none'>Add Staff</Button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
+                )
+            }
         </div>
     );
 }
