@@ -77,41 +77,12 @@ const Sidebar = () => {
             link: '/dashboard/expiredmemberships',
         },
         {
-            icon: MdEventAvailable,
-            title: 'Class Scheduling',
-            link: '/dashboard/classscheduling',
-            subObj: [
-                { icon: MdEventAvailable, title: 'Yoga Classes', link: '/dashboard/yogaclasses' },
-                { icon: MdEventAvailable, title: 'Spinning Classes', link: '/dashboard/spinningclasses' },
-                { icon: MdEventAvailable, title: 'Zumba Classes', link: '/dashboard/zumbaclasses' }
-            ]
-        },
-        {
-            icon: FaDumbbell,
-            title: 'Equipments',
-            link: '/dashboard/equipmentmanagement',
-            subObj: [
-                { icon: FaDumbbell, title: 'Add Equipment', link: '/dashboard/addequipment' },
-                { icon: FaDumbbell, title: 'View Equipment', link: '/dashboard/viewequipment' },
-                { icon: FaDumbbell, title: 'Maintenance Requests', link: '/dashboard/equipmentmaintenance' }
-            ]
-        },
-        {
             icon: GiBiceps,
             title: 'Personal Training',
             link: '/dashboard/personaltraining',
             subObj: [
                 { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
                 { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/personaltraining/booktrainer' }
-            ]
-        },
-        {
-            icon: MdFitnessCenter,
-            title: 'Fitness Programs',
-            link: '/dashboard/fitnessprograms',
-            subObj: [
-                { icon: MdFitnessCenter, title: 'Weight Loss Program', link: '/dashboard/weightloss' },
-                { icon: MdFitnessCenter, title: 'Muscle Gain Program', link: '/dashboard/musclegain' }
             ]
         },
         {
