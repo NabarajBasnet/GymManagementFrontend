@@ -101,8 +101,8 @@ const Sidebar = () => {
             title: 'Personal Training',
             link: '/dashboard/personaltraining',
             subObj: [
-                { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/traineravailability' },
-                { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/booktrainer' }
+                { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
+                { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/personaltraining/booktrainer' }
             ]
         },
         {
