@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit"
 
 const initialState = {
     adminSidebar: true,
-    sidebarMinimized: true,
+    sidebarMinimized: false,
 }
 
 const MainReduxSlice = createSlice({

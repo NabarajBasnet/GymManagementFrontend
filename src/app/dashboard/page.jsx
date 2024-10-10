@@ -1,6 +1,11 @@
 'use client';
 
 import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable"
+import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -58,7 +63,34 @@ const AdminDashboard = () => {
         <div>
           <MapChart />
         </div>
-
+        <div>
+          <ResizablePanelGroup
+            direction="horizontal"
+            className="w-full rounded-lg border bg-stone-900"
+          >
+            <ResizablePanel defaultSize={50}>
+              <div className="flex h-[200px] items-center justify-center p-6">
+                <span className="font-semibold text-white">One</span>
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel defaultSize={50}>
+              <ResizablePanelGroup direction="vertical">
+                <ResizablePanel defaultSize={75}>
+                  <div className="flex h-full items-center justify-center p-6">
+                    <span className="font-semibold text-white">Two</span>
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel defaultSize={75}>
+                  <div className="flex h-full items-center justify-center p-6">
+                    <span className="font-semibold text-white">Three</span>
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </ResizablePanel>
+          </ResizablePanelGroup>
+        </div>
       </div>
     </div>
   )
