@@ -1,0 +1,399 @@
+'use client'
+
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { usePathname } from "next/navigation";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+    Breadcrumb,
+    BreadcrumbEllipsis,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
+
+const AddStaff = () => {
+
+    const pathname = usePathname();
+
+    const invoices = [
+        {
+            invoice: "INV001",
+            paymentStatus: "Paid",
+            totalAmount: "$250.00",
+            paymentMethod: "Credit Card",
+        },
+        {
+            invoice: "INV002",
+            paymentStatus: "Pending",
+            totalAmount: "$150.00",
+            paymentMethod: "PayPal",
+        },
+        {
+            invoice: "INV003",
+            paymentStatus: "Unpaid",
+            totalAmount: "$350.00",
+            paymentMethod: "Bank Transfer",
+        },
+        {
+            invoice: "INV004",
+            paymentStatus: "Paid",
+            totalAmount: "$450.00",
+            paymentMethod: "Credit Card",
+        },
+        {
+            invoice: "INV005",
+            paymentStatus: "Paid",
+            totalAmount: "$550.00",
+            paymentMethod: "PayPal",
+        },
+        {
+            invoice: "INV006",
+            paymentStatus: "Pending",
+            totalAmount: "$200.00",
+            paymentMethod: "Bank Transfer",
+        },
+        {
+            invoice: "INV007",
+            paymentStatus: "Unpaid",
+            totalAmount: "$300.00",
+            paymentMethod: "Credit Card",
+        },
+    ];
+
+    return (
+        <div className="w-full p-1">
+            <div className='w-full p-6'>
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="start">
+                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
+                                    <DropdownMenuItem>Themes</DropdownMenuItem>
+                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/docs/components">Add Staff</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>
+                                {pathname}
+                            </BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <h1 className="text-xl font-bold mt-3">Add New Staff</h1>
+            </div>
+
+            <div>
+                <div>
+                    <Table>
+                        <TableCaption>A list of your recent invoices.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-[100px]">Invoice</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Method</TableHead>
+                                <TableHead className="text-right">Amount</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {invoices.map((invoice) => (
+                                <TableRow key={invoice.invoice}>
+                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                                    <TableCell>{invoice.paymentStatus}</TableCell>
+                                    <TableCell>{invoice.paymentMethod}</TableCell>
+                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                        <TableFooter>
+                            <TableRow>
+                                <TableCell colSpan={3}>Total</TableCell>
+                                <TableCell className="text-right">$2,500.00</TableCell>
+                            </TableRow>
+                        </TableFooter>
+                    </Table>
+                </div>
+
+                <div className="py-3">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious href="#" />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#" isActive>
+                                    2
+                                </PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">3</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationNext href="#" />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
+            </div>
+
+
+
+            <div className="w-full flex justify-center">
+                <div className="w-full">
+                    <div className="w-full">
+                        <form className="w-full">
+                            <div className="bg-gray-300 py-2 my-2 w-full">
+                                <h1 className="mx-4 font-semibold">Personal Information</h1>
+                            </div>
+                            <div className="p-2 bg-white">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div>
+                                        <Label>First Name</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='First Name'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Last Name</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Last Name'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Address</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Address'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Phone Number</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Phone Number'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Secondary Phone Number</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Secondary Phone Number'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Email Address</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Email Address'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Date Of Birth</Label>
+                                        <Input
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Date Of Birth'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Date Of Birth</Label>
+                                        <Select>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Select Gender" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Gender</SelectLabel>
+                                                    <SelectItem value="Male">Male</SelectItem>
+                                                    <SelectItem value="Female">Female</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-300 py-2 my-2 w-full">
+                                <h1 className="mx-4 font-semibold">Membership Information</h1>
+                            </div>
+                            <div className="p-2 bg-white">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div>
+                                        <Label>Staff Role</Label>
+                                        <Select>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Select Role" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Role</SelectLabel>
+                                                    <SelectItem value="Regular">Regular</SelectItem>
+                                                    <SelectItem value="Day Time">Day Time</SelectItem>
+                                                    <SelectItem value="Temporary">Temporary</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Select Shift</Label>
+                                        <Select>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Select Shift" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Membership Type</SelectLabel>
+                                                    <SelectItem value="Gym">Gym</SelectItem>
+                                                    <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Joined Date</Label>
+                                        <Input
+                                            type='date'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Membership Date'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Working Duration</Label>
+                                        <Select>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Duration" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Duration</SelectLabel>
+                                                    <SelectItem value="1 Month">1 Month</SelectItem>
+                                                    <SelectItem value="3 Months">3 Months</SelectItem>
+                                                    <SelectItem value="6 Months">6 Months</SelectItem>
+                                                    <SelectItem value="12 Months">12 Months</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Hours</Label>
+                                        <Select>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Duration" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Duration</SelectLabel>
+                                                    <SelectItem value="1 Month">1 Month</SelectItem>
+                                                    <SelectItem value="3 Months">3 Months</SelectItem>
+                                                    <SelectItem value="6 Months">6 Months</SelectItem>
+                                                    <SelectItem value="12 Months">12 Months</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Checkin Time</Label>
+                                        <Input
+                                            type='date'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Membership Renew Date'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Checkout Time</Label>
+                                        <Input
+                                            type='date'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Membership Expire Date'
+                                        />
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="flex items-center space-x-2 p-2">
+                                <Button variant='destructive' className='rounded-none'>Finalize</Button>
+                                <Button className='rounded-none'>Register</Button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default AddStaff;
