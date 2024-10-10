@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 
 import { cn } from "@/lib/utils"
 
-// Functional component to handle sidebarMinimized within the AccordionTrigger
 const Accordion = AccordionPrimitive.Root
 
 const AccordionItem = React.forwardRef(({ className, ...props }, ref) => (
@@ -16,7 +15,7 @@ const AccordionItem = React.forwardRef(({ className, ...props }, ref) => (
 AccordionItem.displayName = "AccordionItem"
 
 const AccordionTrigger = React.forwardRef(({ className, children, ...props }, ref) => {
-    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized); // use useSelector inside the component
+    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
 
     return (
         <AccordionPrimitive.Header className="flex">

@@ -29,7 +29,7 @@ const Sidebar = () => {
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
 
     const minimizeSidebar = () => {
-        if(sidebarMinimized){
+        if (sidebarMinimized) {
             dispatch(MinimizeSidebar());
         }
     }
