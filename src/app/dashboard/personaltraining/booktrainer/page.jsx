@@ -136,7 +136,7 @@ const BookTrainer = () => {
                                         />
                                     </div>
                                 </div>
-                                <SelectLabel>Fruits</SelectLabel>
+                                <SelectLabel>Select Trainer</SelectLabel>
                                 <SelectItem value="apple">Apple</SelectItem>
                                 <SelectItem value="banana">Banana</SelectItem>
                                 <SelectItem value="blueberry">Blueberry</SelectItem>
@@ -164,7 +164,7 @@ const BookTrainer = () => {
                                         />
                                     </div>
                                 </div>
-                                <SelectLabel>Fruits</SelectLabel>
+                                <SelectLabel>Select Client</SelectLabel>
                                 <SelectItem value="apple">Apple</SelectItem>
                                 <SelectItem value="banana">Banana</SelectItem>
                                 <SelectItem value="blueberry">Blueberry</SelectItem>
@@ -192,12 +192,10 @@ const BookTrainer = () => {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
+                                <SelectLabel>Select</SelectLabel>
+                                <SelectItem value="1 Month">1 Month</SelectItem>
+                                <SelectItem value="3 Months">3 Months</SelectItem>
+                                <SelectItem value="6 Months">6 Months</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -207,7 +205,7 @@ const BookTrainer = () => {
                     <Label>To</Label>
                     <Input
                         type='date'
-                        placeholder='Select Date From'
+                        placeholder='Select Date To'
                         className='w-full rounded-none'
                     />
                 </div>
@@ -216,14 +214,55 @@ const BookTrainer = () => {
                     <Label>Charge/Fee</Label>
                     <Input
                         type='text'
-                        placeholder='Select Date From'
+                        placeholder='Charge Fee'
                         className='w-full rounded-none'
                     />
                 </div>
 
+                <div className="w-full">
+                    <Label>Discount</Label>
+                    <Input
+                        type='text'
+                        placeholder='Discount'
+                        className='w-full rounded-none'
+                    />
+                </div>
+
+                <div className="w-full">
+                    <Label>Final Charge/Fee</Label>
+                    <Input
+                        type='text'
+                        placeholder='Final Charge'
+                        className='w-full rounded-none'
+                    />
+                </div>
+
+                <div className="w-full">
+                    <Label>Status</Label>
+                    <Select>
+                        <SelectTrigger className="w-full rounded-none">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectLabel>Select</SelectLabel>
+                                <SelectItem value="Booked">Booked</SelectItem>
+                                <SelectItem value="Pending">Pending</SelectItem>
+                                <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                <SelectItem value="Freezed">Freezed</SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+                </div>
+
             </div>
 
-            <div className="w-full bg-white">
+            <div className="flex items-center px-4 mb-2 space-x-3">
+                <Button className='rounded-none'>Book</Button>
+                <Button className='rounded-none'>Edit</Button>
+            </div>
+
+            <div className="w-full bg-white p-3">
                 <div>
                     <div className="flex justify-center p-2">
                         <div className="w-full px-4 flex justify-start border border-gray-400 rounded-none items-center">
