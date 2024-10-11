@@ -17,8 +17,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import React from 'react'
+} from "@/components/ui/table";
+import React from 'react';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -27,17 +27,17 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from '@/components/ui/button'
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dropdown-menu";
+import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 
 const MemberAttendance = () => {
@@ -110,9 +110,9 @@ const MemberAttendance = () => {
                 <h1 className="text-xl font-bold mt-3">Member Attendance</h1>
             </div>
 
-            <div className="md:px-4 px-0">
+            <div>
                 <div className='w-full md:flex md:space-x-4 space-y-4 md:space-y-0 justify-between py-4 md:py-0 px-4'>
-                    <div className='w-full md:w-6/12 bg-white'>
+                    <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className='w-full flex justify-start p-2'>
                             <Button className='rounded-none'>Refresh</Button>
                         </div>
@@ -176,7 +176,7 @@ const MemberAttendance = () => {
 
                         </div>
                     </div>
-                    <div className='w-full md:w-6/12 bg-white'>
+                    <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className="w-full flex justify-center">
                             <div className="w-full">
                                 <h1 className="p-2">Member Attendance Record</h1>
@@ -243,7 +243,6 @@ const MemberAttendance = () => {
                                     </Pagination>
                                 </div>
                             </div>
-
                         </div>
 
                         <div className="w-full">

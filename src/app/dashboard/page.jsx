@@ -224,7 +224,7 @@ const AdminDashboard = () => {
           </ChartContainer>
         </div>
 
-        <div className='bg-white'>
+        <div className='bg-white my-6'>
           <ResizablePanelGroup
             direction="horizontal"
             className="w-full rounded-lg border bg-stone-900"

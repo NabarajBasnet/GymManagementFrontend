@@ -106,75 +106,77 @@ const StaffAttendance = () => {
                 <h1 className="text-xl font-bold mt-3">Staff Attendance</h1>
             </div>
 
-            <div className="w-full bg-white">
-                <div>
-                    <div className='w-full flex justify-start items-center p-2'>
-                        <Button className='rounded-none'>Refresh</Button>
-                    </div>
-
-                    <div className="flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-between border border-gray-400 rounded-full items-center">
-                            <Input
-                                className='w-full border-none bg-none'
-                                placeholder='Search Staff...'
-                            />
-                            <IoSearch className="text-xl" />
+            <div className="w-full flex justify-center">
+                <div className="w-full bg-white mx-4">
+                    <div>
+                        <div className='w-full flex justify-start items-center p-2'>
+                            <Button className='rounded-none'>Refresh</Button>
                         </div>
+
+                        <div className="flex justify-center p-2">
+                            <div className="w-full px-4 flex justify-between border border-gray-400 rounded-full items-center">
+                                <Input
+                                    className='w-full border-none bg-none'
+                                    placeholder='Search Staff...'
+                                />
+                                <IoSearch className="text-xl" />
+                            </div>
+                        </div>
+
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="w-[100px]">Invoice</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Method</TableHead>
+                                    <TableHead className="text-right">Amount</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {invoices.map((invoice) => (
+                                    <TableRow key={invoice.invoice}>
+                                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                                        <TableCell>{invoice.paymentStatus}</TableCell>
+                                        <TableCell>{invoice.paymentMethod}</TableCell>
+                                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                            <TableFooter>
+                                <TableRow>
+                                    <TableCell colSpan={3}>Total</TableCell>
+                                    <TableCell className="text-right">$2,500.00</TableCell>
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
                     </div>
 
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[100px]">Invoice</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead className="text-right">Amount</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {invoices.map((invoice) => (
-                                <TableRow key={invoice.invoice}>
-                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                    <TableCell>{invoice.paymentStatus}</TableCell>
-                                    <TableCell>{invoice.paymentMethod}</TableCell>
-                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TableCell colSpan={3}>Total</TableCell>
-                                <TableCell className="text-right">$2,500.00</TableCell>
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-
-                <div className="py-2 my-2">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious href="#" />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#" isActive>
-                                    2
-                                </PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext href="#" />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
+                    <div className="py-2 my-2">
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious href="#" />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">1</PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#" isActive>
+                                        2
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">3</PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationNext href="#" />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
                 </div>
             </div>
         </div>
