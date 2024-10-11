@@ -2,7 +2,6 @@
 
 import { IoSearch } from "react-icons/io5";
 import Badge from '@mui/material/Badge';
-import MailIcon from '@mui/icons-material/Mail';
 import { IoIosNotifications } from "react-icons/io";
 import '../globals.css'
 import { RiAccountCircleFill } from "react-icons/ri";
@@ -177,7 +176,7 @@ const Header = () => {
                         className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
                         onClick={minimizeSidebar}
                     />
-                    <div className="flex justify-center">
+                    <div className="hidden md:flex justify-center">
                         <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
                             <IoSearch className="text-xl" />
                             <Input
@@ -190,9 +189,20 @@ const Header = () => {
                 <div>
                     <Sheet>
                         <SheetTrigger asChild>
-                            <IoMenuSharp
-                                className='text-3xl md:hidden flex text-blue-600 cursor-pointer'
-                            />
+                            <div className="flex items-center">
+                                <IoMenuSharp
+                                    className='text-3xl md:hidden flex text-blue-600 cursor-pointer'
+                                />
+                                <div className="md:hidden flex justify-center">
+                                    <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                                        <IoSearch className="text-xl" />
+                                        <Input
+                                            className='w-full border-none bg-none bg-transparent'
+                                            placeholder='Search Member...'
+                                        />
+                                    </div>
+                                </div>
+                            </div>
                         </SheetTrigger>
                         <SheetContent className="h-full flex flex-col">
                             <SheetHeader className="bg-white">
