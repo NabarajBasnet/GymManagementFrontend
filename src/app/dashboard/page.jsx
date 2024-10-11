@@ -188,7 +188,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="flex justify-between bg-white py-5">
+        <div className="md:flex justify-between bg-white py-5 rounded-lg">
           <ChartContainer config={chartConfig2} className="min-h-[200px] w-full px-4">
             <BarChart accessibilityLayer data={chartData2}>
               <CartesianGrid vertical={false} />
@@ -258,4 +258,3 @@ const AdminDashboard = () => {
 }
 
 export default AdminDashboard;
-
