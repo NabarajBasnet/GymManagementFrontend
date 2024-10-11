@@ -1,5 +1,8 @@
 "use client";
 
+import Badge from '@mui/material/Badge';
+import MailIcon from '@mui/icons-material/Mail';
+import { IoIosNotifications } from "react-icons/io";
 import '../globals.css'
 import { RiAccountCircleFill } from "react-icons/ri";
 import React from 'react';
@@ -226,11 +229,21 @@ const Header = () => {
                 </div>
             </div>
 
-            <div className='mx-4'>
-                <RiAccountCircleFill
-                    className='text-3xl text-gray-800 cursor-pointer'
-                    onClick={minimizeSidebar}
-                />
+
+            <div className='flex items-center'>
+                <Badge badgeContent={4} color="primary">
+                    <IoIosNotifications
+                        className='text-3xl text-gray-800 cursor-pointer'
+                        onClick={minimizeSidebar}
+                    />
+                </Badge>
+
+                <div className='mx-4'>
+                    <RiAccountCircleFill
+                        className='text-3xl text-gray-800 cursor-pointer'
+                        onClick={minimizeSidebar}
+                    />
+                </div>
             </div>
         </div>
     );

@@ -13,18 +13,6 @@ const MembershipPlans = () => {
                     <p>ADMISSION FEE: 1000</p>
                 </div>
 
-                {/* Opening Offer */}
-                <div className="bg-yellow-500 text-black text-center py-4 mb-6">
-                    <p>OPENING OFFER (valid till 2081/06/30)</p>
-                    <ul className="text-sm">
-                        <li>1st 25 person get 25% off</li>
-                        <li>2nd 20 person get 20% off</li>
-                        <li>3rd 15 person get 15% off</li>
-                        <li>4th 10 person get 10% off</li>
-                        <li>5th 5 person get 5% off</li>
-                    </ul>
-                </div>
-
                 {/* Regular Membership */}
                 <div className="bg-black text-white text-center py-2 mb-2">
                     <p>REGULAR MEMBERSHIP</p>
