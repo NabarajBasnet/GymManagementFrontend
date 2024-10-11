@@ -181,12 +181,12 @@ const MemberAttendance = () => {
                             <div className="w-full">
                                 <h1 className="p-2">Member Attendance Record</h1>
                                 <div className="flex justify-center p-2">
-                                    <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-full items-center">
+                                    <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                                        <IoSearch className="text-xl" />
                                         <Input
                                             className='w-full border-none bg-none'
                                             placeholder='Search Member...'
                                         />
-                                        <IoSearch className="text-xl" />
                                     </div>
                                 </div>
                                 <Table>
@@ -248,12 +248,12 @@ const MemberAttendance = () => {
                         <div className="w-full">
                             <h1 className="p-2">Guest Attendance Record</h1>
                             <div className="flex justify-center p-2">
-                                <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-full items-center">
+                                <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                                    <IoSearch className="text-xl" />
                                     <Input
                                         className='w-full border-none bg-none'
                                         placeholder='Search Guest Member...'
                                     />
-                                    <IoSearch className="text-xl" />
                                 </div>
                             </div>
                             <Table>

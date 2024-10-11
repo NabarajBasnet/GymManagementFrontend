@@ -114,12 +114,12 @@ const StaffAttendance = () => {
                         </div>
 
                         <div className="flex justify-center p-2">
-                            <div className="w-full px-4 flex justify-between border border-gray-400 rounded-full items-center">
+                            <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                                <IoSearch className="text-xl" />
                                 <Input
                                     className='w-full border-none bg-none'
                                     placeholder='Search Staff...'
                                 />
-                                <IoSearch className="text-xl" />
                             </div>
                         </div>
 
