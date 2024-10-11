@@ -1,5 +1,6 @@
 "use client";
 
+import { IoSearch } from "react-icons/io5";
 import Badge from '@mui/material/Badge';
 import MailIcon from '@mui/icons-material/Mail';
 import { IoIosNotifications } from "react-icons/io";
@@ -37,6 +38,7 @@ import { MdPayments, MdFitnessCenter, MdEventAvailable } from 'react-icons/md';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
+import { Input } from "@/components/ui/input";
 
 const Header = () => {
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
@@ -170,10 +172,21 @@ const Header = () => {
     return (
         <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
             <div className='mx-4'>
-                <IoMenuSharp
-                    className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
-                    onClick={minimizeSidebar}
-                />
+                <div className="flex items-center">
+                    <IoMenuSharp
+                        className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
+                        onClick={minimizeSidebar}
+                    />
+                    <div className="flex justify-center">
+                        <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                            <IoSearch className="text-xl" />
+                            <Input
+                                className='w-full border-none bg-none bg-transparent'
+                                placeholder='Search Member...'
+                            />
+                        </div>
+                    </div>
+                </div>
                 <div>
                     <Sheet>
                         <SheetTrigger asChild>
@@ -228,7 +241,6 @@ const Header = () => {
                     </Sheet>
                 </div>
             </div>
-
 
             <div className='flex items-center'>
                 <Badge badgeContent={4} color="primary">
