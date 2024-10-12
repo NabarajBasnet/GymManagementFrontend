@@ -193,11 +193,24 @@ const Header = () => {
                                 />
                                 <div className="md:hidden flex justify-center">
                                     <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                                        <IoSearch className="text-xl" />
-                                        <Input
-                                            className='w-full border-none bg-none bg-transparent'
-                                            placeholder='Search Member...'
-                                        />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <div className="w-full flex items-center">
+                                                    <IoSearch className="text-xl" />
+                                                    <Input
+                                                        className='w-full border-none bg-none bg-transparent'
+                                                        placeholder='Search Member...'
+                                                    />
+                                                </div>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-full rounded-none">
+                                                {recentSearches.map((item, index) => (
+                                                    <div className="w-full" key={index}>
+                                                        <p className="py-2 px-4 hover:bg-gray-200 cursor-pointer">{item}</p>
+                                                    </div>
+                                                ))}
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
                                 </div>
                             </div>
