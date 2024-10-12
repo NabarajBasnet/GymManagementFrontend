@@ -38,12 +38,6 @@ import { AiOutlineSchedule } from 'react-icons/ai';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
 import { Input } from "@/components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
-
 
 const Header = () => {
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
@@ -163,24 +157,11 @@ const Header = () => {
                     />
                     <div className="hidden md:flex justify-center">
                         <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <div className="w-full flex items-center">
-                                        <IoSearch className="text-xl" />
-                                        <Input
-                                            className='w-full border-none bg-none bg-transparent'
-                                            placeholder='Search Member...'
-                                        />
-                                    </div>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-full rounded-none">
-                                    {recentSearches.map((item, index) => (
-                                        <div className="w-full" key={index}>
-                                            <p className="py-2 px-4 hover:bg-gray-200 cursor-pointer">{item}</p>
-                                        </div>
-                                    ))}
-                                </PopoverContent>
-                            </Popover>
+                            <IoSearch className="text-xl" />
+                            <Input
+                                className='w-full border-none bg-none bg-transparent'
+                                placeholder='Search Member...'
+                            />
                         </div>
                     </div>
                 </div>
@@ -243,24 +224,13 @@ const Header = () => {
 
             <div className="w-full md:hidden flex justify-center">
                 <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                    <Popover>
-                        <PopoverTrigger asChild className="w-full">
-                            <div className="w-full flex items-center">
-                                <IoSearch className="text-xl" />
-                                <Input
-                                    className='w-full border-none bg-none bg-transparent'
-                                    placeholder='Search Member...'
-                                />
-                            </div>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-full rounded-none">
-                            {recentSearches.map((item, index) => (
-                                <div className="w-full" key={index}>
-                                    <p className="py-2 px-4 hover:bg-gray-200 cursor-pointer">{item}</p>
-                                </div>
-                            ))}
-                        </PopoverContent>
-                    </Popover>
+                    <div className="w-full flex items-center">
+                        <IoSearch className="text-xl" />
+                        <Input
+                            className='w-full border-none bg-none bg-transparent'
+                            placeholder='Search Member...'
+                        />
+                    </div>
                 </div>
             </div>
 
