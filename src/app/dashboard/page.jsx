@@ -35,6 +35,7 @@ import { RiExchange2Line } from "react-icons/ri";
 import { GiBiceps } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa6";
 import { PiUsersFourFill } from "react-icons/pi";
+import { RiUserShared2Fill } from "react-icons/ri";
 
 const AdminDashboard = () => {
 
@@ -92,42 +93,42 @@ const AdminDashboard = () => {
 
   const gridContents = [
     {
-      icon: HiMiniUsers,
-      text: "New Admission",
-      value: '200',
+      icon: FaUsers,
+      text: "Total Membership",
+      value: '1000',
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     },
     {
       icon: MdAutorenew,
       text: "Renew",
-      value: '500',
+      value: '400',
       color: 'text-green-600',
       bg: 'bg-green-200'
     }, {
-      icon: RiExchange2Line,
-      text: "Client Transformation",
-      value: '15',
+      icon: RiUserShared2Fill,
+      text: "New Admission",
+      value: '75',
       color: 'text-yellow-600',
       bg: 'bg-yellow-200'
     }, {
       icon: GiBiceps,
-      text: "Trainers",
-      value: '4',
-      color: 'text-red-600',
-      bg: 'bg-red-200'
+      text: "Active",
+      value: '300',
+      color: 'text-green-600',
+      bg: 'bg-green-200'
     }, {
       icon: FaUsers,
-      text: "Total Members",
-      value: '800',
+      text: "Average Active",
+      value: '280',
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     }, {
       icon: PiUsersFourFill,
-      text: "Total Active Members",
-      value: '200',
-      color: 'text-green-600',
-      bg: 'bg-green-200'
+      text: "Inactive",
+      value: '700',
+      color: 'text-red-600',
+      bg: 'bg-red-200'
     },
   ];
 
