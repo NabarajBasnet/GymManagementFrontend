@@ -189,7 +189,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="md:flex justify-between bg-white py-5 rounded-lg">
+        <div className="w-full bg-white py-5 rounded-lg">
           <ChartContainer config={chartConfig2} className="min-h-[200px] w-full px-4">
             <BarChart accessibilityLayer data={chartData2}>
               <CartesianGrid vertical={false} />
@@ -223,35 +223,6 @@ const AdminDashboard = () => {
               <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
             </BarChart>
           </ChartContainer>
-        </div>
-
-        <div className='bg-white my-6'>
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="w-full rounded-lg border bg-stone-900"
-          >
-            <ResizablePanel defaultSize={50}>
-              <div className="flex h-[200px] items-center justify-center p-6">
-                <span className="font-semibold text-white">One</span>
-              </div>
-            </ResizablePanel>
-            <ResizableHandle />
-            <ResizablePanel defaultSize={50}>
-              <ResizablePanelGroup direction="vertical">
-                <ResizablePanel defaultSize={75}>
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold text-white">Two</span>
-                  </div>
-                </ResizablePanel>
-                <ResizableHandle />
-                <ResizablePanel defaultSize={75}>
-                  <div className="flex h-full items-center justify-center p-6">
-                    <span className="font-semibold text-white">Three</span>
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
-            </ResizablePanel>
-          </ResizablePanelGroup>
         </div>
       </div>
     </div>
