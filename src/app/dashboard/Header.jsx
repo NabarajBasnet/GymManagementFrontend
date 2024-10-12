@@ -191,28 +191,6 @@ const Header = () => {
                                 <IoMenuSharp
                                     className='text-3xl md:hidden flex text-blue-600 cursor-pointer'
                                 />
-                                <div className="md:hidden flex justify-center">
-                                    <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                                        <Popover>
-                                            <PopoverTrigger asChild>
-                                                <div className="w-full flex items-center">
-                                                    <IoSearch className="text-xl" />
-                                                    <Input
-                                                        className='w-full border-none bg-none bg-transparent'
-                                                        placeholder='Search Member...'
-                                                    />
-                                                </div>
-                                            </PopoverTrigger>
-                                            <PopoverContent className="w-full rounded-none">
-                                                {recentSearches.map((item, index) => (
-                                                    <div className="w-full" key={index}>
-                                                        <p className="py-2 px-4 hover:bg-gray-200 cursor-pointer">{item}</p>
-                                                    </div>
-                                                ))}
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-                                </div>
                             </div>
                         </SheetTrigger>
                         <SheetContent className="h-full flex flex-col">
@@ -260,6 +238,29 @@ const Header = () => {
                             </SheetDescription>
                         </SheetContent>
                     </Sheet>
+                </div>
+            </div>
+
+            <div className="w-full md:hidden flex justify-center">
+                <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                    <Popover>
+                        <PopoverTrigger asChild className="w-full">
+                            <div className="w-full flex items-center">
+                                <IoSearch className="text-xl" />
+                                <Input
+                                    className='w-full border-none bg-none bg-transparent'
+                                    placeholder='Search Member...'
+                                />
+                            </div>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full rounded-none">
+                            {recentSearches.map((item, index) => (
+                                <div className="w-full" key={index}>
+                                    <p className="py-2 px-4 hover:bg-gray-200 cursor-pointer">{item}</p>
+                                </div>
+                            ))}
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
 
