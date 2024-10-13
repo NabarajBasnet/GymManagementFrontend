@@ -33,12 +33,12 @@ const StaffScheduling = () => {
         <div className="w-full flex justify-center min-h-screen items-center">
             <div>
                 <div className="relative w-96" ref={searchRef}>
-                    {/* <Input
+                    <Input
                         placeholder='Search something...'
                         onFocus={() => setIsDropdownOpen(true)}
-                    /> */}
+                    />
 
-                    {/* {isDropdownOpen && (
+                    {isDropdownOpen && (
                         <div>
                             <ul className="shadow-xl border bg-white">
                                 {recentSearches.map((item, index) => (
@@ -50,32 +50,8 @@ const StaffScheduling = () => {
                                 ))}
                             </ul>
                         </div>
-                    )} */}
+                    )}
                 </div>
-
-                <Popover>
-                    <PopoverTrigger asChild>
-                        <div>
-                            <Input
-                                placeholder='Search something...'
-                                onFocus={() => setIsDropdownOpen(true)}
-                            />
-                        </div>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-96 rounded-none">
-                        <div className="w-full rounded-none">
-                            <ul className="w-full">
-                                {recentSearches.map((item, index) => (
-                                    <li
-                                        className="hover:bg-gray-200 cursor-pointer"
-                                        key={index}
-                                        onClick={() => setIsDropdownOpen(false)}
-                                    >{item}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </PopoverContent>
-                </Popover>
             </div>
         </div>
     )
