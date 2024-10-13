@@ -13,15 +13,6 @@ import { useState } from "react";
 const Login = () => {
     return (
         <div className="flex min-h-screen">
-            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
-                <div className="text-white blur-none text-4xl font-bold">
-                    <TypingAnimation
-                        className="text-4xl font-bold text-white"
-                        text="Welcome Back!"
-                    />
-                </div>
-            </div>
-
             <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-8">
                 <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
                     <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
@@ -70,6 +61,15 @@ const Login = () => {
                             Privacy Policy
                         </a>.
                     </p>
+                </div>
+            </div>
+
+            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
+                <div className="text-white blur-none text-4xl font-bold">
+                    <TypingAnimation
+                        className="text-4xl font-bold text-white"
+                        text="Welcome Back!"
+                    />
                 </div>
             </div>
         </div>

@@ -11,6 +11,8 @@ import { useState } from "react";
 
 
 const SignUp = () => {
+
+    
     return (
         <div className="flex min-h-screen">
             <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
@@ -22,8 +24,8 @@ const SignUp = () => {
                 </div>
             </div>
 
-            <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-8">
-                <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+            <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-4">
+                <div className="w-full max-w-md px-8 py-2 bg-white rounded-lg shadow-lg">
                     <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
                     <div className="w-full flex justify-center">
                         <div className="w-3/12 bg-black h-0.5 mb-4"></div>
