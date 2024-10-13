@@ -10,11 +10,6 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable"
-import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
