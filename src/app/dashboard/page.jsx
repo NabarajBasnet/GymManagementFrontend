@@ -185,8 +185,8 @@ const AdminDashboard = () => {
         </div>
 
         <div className="w-full bg-white py-5 rounded-lg">
-          <div className="w-full flex justify-start">
-            <ChartContainer config={chartConfig2} className="min-h-[200px] w-6/12 px-4">
+          <div className="w-full md:flex justify-start">
+            <ChartContainer config={chartConfig2} className="min-h-[200px] md:w-6/12 w-full px-4">
               <BarChart accessibilityLayer data={chartData2}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -205,7 +205,7 @@ const AdminDashboard = () => {
             <div />
 
             <div className="w-full flex justify-start">
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-6/12 px-4">
+              <ChartContainer config={chartConfig} className="min-h-[200px] md:w-6/12 w-full px-4">
                 <BarChart accessibilityLayer data={chartData}>
                   <CartesianGrid vertical={false} />
                   <XAxis
