@@ -3,7 +3,6 @@ import "./globals.css";
 import RTKProvider from "@/state/ReduxProvider";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -28,8 +27,8 @@ export default function RootLayout({ children }) {
       >
         <RTKProvider>
           <UserProvider>
-        {children}
-        </UserProvider>
+            {children}
+          </UserProvider>
         </RTKProvider>
       </body>
     </html>

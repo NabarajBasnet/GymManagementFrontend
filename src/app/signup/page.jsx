@@ -9,9 +9,8 @@ import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useState } from "react";
 import { useForm } from 'react-hook-form'
-import { useToast } from "@/hooks/use-toast";
 import z from 'zod'
-
+import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
 
@@ -37,8 +36,9 @@ const SignUp = () => {
 
             if (response.ok) {
                 toast({
-                    title: "User signup successfull"
-                });
+                    title: "User signup successfull",
+                    description: "Friday, February 10, 2023 at 5:57 PM",
+                })
                 reset();
             }
             console.log('Response : ', response);
@@ -132,6 +132,37 @@ const SignUp = () => {
                         )}
 
                         <Label className="text-sm font-medium">
+                            Password
+                        </Label>
+                        <Input
+                            type="password"
+                            className="mt-1"
+                            placeholder="Password"
+                            {...register('password', {
+                                required: { value: true, message: "Please provide password!" }
+                            })}
+                        />
+                        {errors.password && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.password.message}`}</p>
+                        )}
+
+                        <Label className="text-sm font-medium">
+                            Confirm Password
+                        </Label>
+                        <Input
+                            type="password"
+                            className="mt-1"
+                            placeholder="Confirm Password"
+                            {...register('confirmPassword', {
+                                required: { value: true, message: "Please Confirm Password!" }
+                            })}
+                        />
+                        {errors.confirmPassword && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.confirmPassword.message}`}</p>
+                        )}
+
+
+                        <Label className="text-sm font-medium">
                             Address
                         </Label>
                         <Input
@@ -162,7 +193,7 @@ const SignUp = () => {
                         )}
 
                         <Button type='submit' className="w-full bg-blue-600 text-white font-bold py-2 rounded-md mt-4">
-                            Sign Up
+                            {isSubmitting ? 'Processing...' : 'Sign Up'}
                         </Button>
                     </form>
 
