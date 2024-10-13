@@ -8,11 +8,45 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useState } from "react";
+import { useForm } from 'react-hook-form'
+import { useToast } from "@/hooks/use-toast";
+import z from 'zod'
 
 
 const SignUp = () => {
 
-    
+    const { toast } = useToast();
+
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { isSubmitting, errors }
+    } = useForm()
+
+    const onSignUp = async (data) => {
+        try {
+            console.log('Data: ', data);
+            const response = await fetch('http://localhost:5000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (response.ok) {
+                toast({
+                    title: "User signup successfull"
+                });
+                reset();
+            }
+            console.log('Response : ', response);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
     return (
         <div className="flex min-h-screen">
             <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
@@ -30,7 +64,7 @@ const SignUp = () => {
                     <div className="w-full flex justify-center">
                         <div className="w-3/12 bg-black h-0.5 mb-4"></div>
                     </div>
-                    <div className="mb-4">
+                    <form className="mb-4" onSubmit={handleSubmit(onSignUp)}>
                         <div className="md:flex block items-center md:space-x-4">
                             <div>
                                 <Label className="text-sm font-medium">
@@ -40,7 +74,13 @@ const SignUp = () => {
                                     type="text"
                                     className="mt-1"
                                     placeholder="First Name"
+                                    {...register('firstName', {
+                                        required: { value: true, message: "First name is required!" }
+                                    })}
                                 />
+                                {errors.firstName && (
+                                    <p className="text-sm font-semibold text-red-600">{`${errors.firstName.message}`}</p>
+                                )}
                             </div>
 
                             <div>
@@ -51,7 +91,13 @@ const SignUp = () => {
                                     type="text"
                                     className="mt-1"
                                     placeholder="Last Name"
+                                    {...register('lastName', {
+                                        required: { value: true, message: "Last name is required!" }
+                                    })}
                                 />
+                                {errors.lastName && (
+                                    <p className="text-sm font-semibold text-red-600">{`${errors.lastName.message}`}</p>
+                                )}
                             </div>
                         </div>
 
@@ -62,7 +108,13 @@ const SignUp = () => {
                             type="email"
                             className="mt-1"
                             placeholder="Email Address"
+                            {...register('email', {
+                                required: { value: true, message: "Please provide an email!" }
+                            })}
                         />
+                        {errors.email && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.email.message}`}</p>
+                        )}
 
                         <Label className="text-sm font-medium">
                             Phone Number
@@ -71,8 +123,13 @@ const SignUp = () => {
                             type="tel"
                             className="mt-1"
                             placeholder="Phone Number"
+                            {...register('phoneNumber', {
+                                required: { value: true, message: "Please provide an email!" }
+                            })}
                         />
-
+                        {errors.phoneNumber && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.phoneNumber.message}`}</p>
+                        )}
 
                         <Label className="text-sm font-medium">
                             Address
@@ -81,7 +138,13 @@ const SignUp = () => {
                             type="tel"
                             className="mt-1"
                             placeholder="Address"
+                            {...register('address', {
+                                required: { value: true, message: "Please provide address!" }
+                            })}
                         />
+                        {errors.address && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.address.message}`}</p>
+                        )}
 
                         <Label className="text-sm font-medium">
                             Date Of Birth
@@ -90,12 +153,18 @@ const SignUp = () => {
                             type="date"
                             className="mt-1"
                             placeholder="Date Of Birth"
+                            {...register('dob', {
+                                required: { value: true, message: "Please provide your DOB!" }
+                            })}
                         />
-                    </div>
+                        {errors.dov && (
+                            <p className="text-sm font-semibold text-red-600">{`${errors.dob.message}`}</p>
+                        )}
 
-                    <Button onClick={() => setSignUpForm(!signUpForm)} className="w-full bg-blue-600 text-white font-bold py-2 rounded-md mb-4">
-                        Sign Up
-                    </Button>
+                        <Button type='submit' className="w-full bg-blue-600 text-white font-bold py-2 rounded-md mt-4">
+                            Sign Up
+                        </Button>
+                    </form>
 
                     <div className="text-center text-gray-600 mb-4">Or</div>
 
