@@ -123,14 +123,14 @@ const AttendanceHistory = () => {
                             <div className="w-full">
                                 <Label>From</Label>
                                 <Input
-                                    type='time'
+                                    type='date'
                                     className='w-full rounded-none'
                                 />
                             </div>
                             <div className="w-full">
                                 <Label>To</Label>
                                 <Input
-                                    type='time'
+                                    type='date'
                                     className='w-full rounded-none'
                                 />
                             </div>
@@ -140,11 +140,11 @@ const AttendanceHistory = () => {
                                 <Label>Membership Type</Label>
                                 <Select className='w-full'>
                                     <SelectTrigger className="w-full rounded-none">
-                                        <SelectValue placeholder="Select a fruit" />
+                                        <SelectValue placeholder="Membership Type" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Select</SelectLabel>
                                             <SelectItem value="apple">Apple</SelectItem>
                                             <SelectItem value="banana">Banana</SelectItem>
                                             <SelectItem value="blueberry">Blueberry</SelectItem>
@@ -158,7 +158,7 @@ const AttendanceHistory = () => {
                                 <Label>Member</Label>
                                 <Select className='w-full'>
                                     <SelectTrigger className="w-full rounded-none">
-                                        <SelectValue placeholder="Select a fruit" />
+                                        <SelectValue placeholder="Select Member" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -166,7 +166,7 @@ const AttendanceHistory = () => {
                                                 className='rounded-none'
                                                 placeholder='Search...'
                                             />
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Select</SelectLabel>
                                             <SelectItem value="apple">Apple</SelectItem>
                                             <SelectItem value="banana">Banana</SelectItem>
                                             <SelectItem value="blueberry">Blueberry</SelectItem>
