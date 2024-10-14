@@ -1,15 +1,13 @@
 'use client'
 
+import * as React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { FaGithub } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
-import { useState } from "react";
 import { useForm } from 'react-hook-form'
-
 
 const Login = () => {
 
@@ -36,7 +34,6 @@ const Login = () => {
                 reset()
                 router.push('/dashboard');
             }
-
         } catch (error) {
             console.log('Error: ', error);
         }
