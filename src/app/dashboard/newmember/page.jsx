@@ -1,5 +1,18 @@
 'use client'
 
+
+"use client"
+
+import * as React from "react"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
@@ -34,6 +47,14 @@ import { useState } from "react";
 
 const newMemberRegistrationForm = () => {
 
+    const [dob, setDob] = useState()
+    const [membershipDate, setMembershipDate] = useState()
+    const [membershipRenewDate, setMembershipRenewDate] = useState()
+    const [membershipExpireDate, setMembershipExpireDate] = useState()
+
+    const dates = { dob, membershipDate, membershipRenewDate, membershipExpireDate }
+    console.log('Dates: ', dates);
+
     const [gender, setGender] = useState('')
     const [membershipOption, setMembershipOption] = useState('')
     const [membershipType, setMembershipType] = useState('')
@@ -42,7 +63,6 @@ const newMemberRegistrationForm = () => {
     const [actionTaker, setActionTaker] = useState('')
 
     const selectedOptions = { gender, membershipOption, membershipType, membershipDuration, paymentMethod, actionTaker };
-    console.log('Selected Options: ', selectedOptions);
 
     const {
         register,
@@ -60,11 +80,6 @@ const newMemberRegistrationForm = () => {
                 phoneNumber,
                 secondPhoneNumber,
                 email,
-                dob,
-
-                membershipDate,
-                membershipRenewDate,
-                membershipExpireDate,
 
                 discountAmmount,
                 discountReason,
@@ -74,7 +89,7 @@ const newMemberRegistrationForm = () => {
                 receiptNo,
                 remark,
             } = data;
-            console.log("Data: ", data);
+            const date = new Date();
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -242,22 +257,28 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Date Of Birth</Label>
-                                        <Input
-                                            {
-                                            ...register('dob', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Date of birth is required!"
-                                                }
-                                            })
-                                            }
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Date Of Birth'
-                                        />
-                                        {errors.dob && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.dob.message}`}</p>
-                                        )}
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left rounded-none font-normal",
+                                                        !dob && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {dob ? format(dob, "PPP") : <span>Date Of Birth</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={dob}
+                                                    onSelect={setDob}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                     <div>
@@ -319,22 +340,28 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Date</Label>
-                                        <Input
-                                            {
-                                            ...register('membershipDate', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Membership Date is required!"
-                                                }
-                                            })
-                                            }
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Date'
-                                        />
-                                        {errors.membershipDate && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipDate.message}`}</p>
-                                        )}
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left rounded-none font-normal",
+                                                        !membershipDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {membershipDate ? format(membershipDate, "PPP") : <span>Membership Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipDate}
+                                                    onSelect={setMembershipDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                     <div>
@@ -357,32 +384,54 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Renew Date</Label>
-                                        <Input
-                                            {
-                                            ...register('membershipRenewDate')
-                                            }
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Renew Date'
-                                        />
-                                        {errors.membershipRenewDate && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipRenewDate.message}`}</p>
-                                        )}
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left rounded-none font-normal",
+                                                        !membershipRenewDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipRenewDate}
+                                                    onSelect={setMembershipRenewDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                     <div>
                                         <Label>Membership Expire Date</Label>
-                                        <Input
-                                            {
-                                            ...register('membershipExpireDate')
-                                            }
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Expire Date'
-                                        />
-                                        {errors.membershipExpireDate && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
-                                        )}
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left rounded-none font-normal",
+                                                        !membershipExpireDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon className="mr-2 h-4 w-4" />
+                                                    {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipExpireDate}
+                                                    onSelect={setMembershipExpireDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                     </div>
 
                                 </div>
