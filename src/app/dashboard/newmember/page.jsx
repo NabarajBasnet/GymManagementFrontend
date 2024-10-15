@@ -1,14 +1,5 @@
 'use client'
 
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
@@ -48,9 +39,6 @@ const newMemberRegistrationForm = () => {
     const [membershipRenewDate, setMembershipRenewDate] = useState();
     const [membershipExpireDate, setMembershipExpireDate] = useState();
 
-    const dates = { dob, membershipDate, membershipRenewDate, membershipExpireDate };
-    console.log('Dates: ', dates);
-
     const [gender, setGender] = useState('')
     const [membershipOption, setMembershipOption] = useState('')
     const [membershipType, setMembershipType] = useState('')
@@ -64,32 +52,8 @@ const newMemberRegistrationForm = () => {
         register,
         reset,
         formState: { errors, isSubmitting },
-        handleSubmit,
-        setError
+        handleSubmit
     } = useForm();
-
-    console.log('Form Errors: ', errors);
-
-    if (!dob) {
-        setError('dob', {
-            type: 'manual',
-            message: 'Date Of Birth is required',
-        });
-    };
-
-    if (!membershipDate) {
-        setError('membershipDate', {
-            type: 'manual',
-            message: 'Membership date is required',
-        });
-    };
-
-    if (!membershipRenewDate) {
-        setError('membershipRenewDate', {
-            type: 'manual',
-            message: 'Membership renew date is required',
-        });
-    };
 
     const onRegisterMember = async (data) => {
         try {
@@ -100,6 +64,11 @@ const newMemberRegistrationForm = () => {
                 phoneNumber,
                 secondPhoneNumber,
                 email,
+                dob,
+
+                membershipDate,
+                membershipRenewDate,
+                membershipExpireDate,
 
                 discountAmmount,
                 discountReason,
@@ -110,6 +79,10 @@ const newMemberRegistrationForm = () => {
                 remark,
             } = data;
             const date = new Date();
+            console.log("DOB: ", data.dob);
+            console.log("membershipDate: ", data.membershipDate);
+            console.log("membershipRenewDate: ", data.membershipRenewDate);
+            console.log("membershipExpireDate: ", data.membershipExpireDate);
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -278,10 +251,16 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Date Of Birth</Label>
                                         <Input
-                                            value={dob}
-                                            onChange={(e) => setDob(e.target.value)}
+                                            {
+                                            ...register('dob', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Date of birth is required!"
+                                                }
+                                            })
+                                            }
                                             type='date'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-none focus:outline-none cursor-pointer'
                                             placeholder='Date Of Birth'
                                         />
                                         {errors.dob && (
@@ -349,8 +328,14 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Membership Date</Label>
                                         <Input
-                                            value={membershipDate}
-                                            onChange={(e) => setMembershipDate(e.target.value)}
+                                            {
+                                            ...register('membershipDate', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Membership Date is required!"
+                                                }
+                                            })
+                                            }
                                             type='date'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Date'
@@ -381,8 +366,9 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Membership Renew Date</Label>
                                         <Input
-                                            value={membershipRenewDate}
-                                            onChange={(e) => setMembershipRenewDate(e.target.value)}
+                                            {
+                                            ...register('membershipRenewDate')
+                                            }
                                             type='date'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Renew Date'
@@ -395,16 +381,17 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Membership Expire Date</Label>
                                         <Input
-                                            value={membershipExpireDate}
-                                            onChange={(e) => setMembershipExpireDate(e.target.value)}
+                                            {
+                                            ...register('membershipExpireDate')
+                                            }
                                             type='date'
                                             disabled
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Expire Date'
                                         />
-                                        {/* {errors.membershipExpireDate && (
+                                        {errors.membershipExpireDate && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
-                                        )} */}
+                                        )}
                                     </div>
 
                                 </div>
