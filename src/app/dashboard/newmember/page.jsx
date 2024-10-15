@@ -204,14 +204,14 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Duration</Label>
+                                        <Label>Membership Duration</Label>
                                         <Select>
                                             <SelectTrigger className="w-full rounded-none">
-                                                <SelectValue placeholder="Duration" />
+                                                <SelectValue placeholder="Membership Duration" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectLabel>Duration</SelectLabel>
+                                                    <SelectLabel>Membership Duration</SelectLabel>
                                                     <SelectItem value="1 Month">1 Month</SelectItem>
                                                     <SelectItem value="3 Months">3 Months</SelectItem>
                                                     <SelectItem value="6 Months">6 Months</SelectItem>
@@ -296,7 +296,8 @@ const newMemberRegistrationForm = () => {
                                         <Input
                                             type='text'
                                             defaultValue={'1000'}
-                                            className='rounded-none focus:outline-none'
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Admission Fee'
                                         />
                                     </div>
@@ -305,7 +306,8 @@ const newMemberRegistrationForm = () => {
                                         <Label>Final Ammount</Label>
                                         <Input
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Final Ammount'
                                         />
                                     </div>
@@ -323,7 +325,8 @@ const newMemberRegistrationForm = () => {
                                         <Label>Due Ammount</Label>
                                         <Input
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Due Ammount'
                                         />
                                     </div>
