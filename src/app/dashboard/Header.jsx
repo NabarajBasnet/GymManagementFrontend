@@ -5,7 +5,7 @@ import Badge from '@mui/material/Badge';
 import { IoIosNotifications } from "react-icons/io";
 import '../globals.css'
 import { RiAccountCircleFill } from "react-icons/ri";
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { IoMenuSharp } from "react-icons/io5";
 import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
 import { useDispatch } from 'react-redux';
@@ -40,24 +40,37 @@ import { RiDashboard3Fill } from "react-icons/ri";
 import { Input } from "@/components/ui/input";
 
 const Header = () => {
-    const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
+    const searchRef = useRef(null);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
 
-    const handleDispatchSidebar = () => {
-        dispatch(ToggleAdminSidebar());
-    };
+    console.log('Search Ref: ', searchRef);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setRenderSearchDropdown(false);
+            };
+        };
+
+        document.addEventListener("mousedown", handleClickOutside)
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside)
+        }
+    }, [searchRef]);
 
     const minimizeSidebar = () => {
         dispatch(MinimizeSidebar());
     }
 
-    const [recentSearches, setRecentSearches] = useState([
+    const recentSearches = [
         'Gym Management',
         'Personal Training',
         'New Member Registration',
         'Payment Details',
-    ]);
+    ];
 
     const sidebarContent = [
         {
@@ -150,19 +163,36 @@ const Header = () => {
     return (
         <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 items-center backdrop-blur-sm bg-white bg-opacity-70 z-50`}>
             <div className='mx-4'>
-                <div className="flex items-center">
+                <div className="flex items-center" ref={searchRef}>
                     <IoMenuSharp
                         className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
                         onClick={minimizeSidebar}
                     />
-                    <div className="hidden md:flex justify-center">
-                        <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                    <div className="w-full hidden md:flex justify-center relative">
+                        <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
                             <IoSearch className="text-xl" />
                             <Input
+                                onFocus={() => setRenderSearchDropdown(true)}
                                 className='w-full border-none bg-none bg-transparent'
                                 placeholder='Search Member...'
                             />
                         </div>
+                        {
+                            renderSearchDropdown && (
+                                <div className="w-full absolute top-full max-h-72 border bg-white shadow-xl overflow-y-auto z-10" style={{ left: 0 }}>
+                                    {
+                                        recentSearches.map((item, index) => (
+                                            <div
+                                                key={index}
+                                                className="hover:bg-gray-200 px-4 py-2 cursor-pointer"
+                                                onClick={() => setRenderSearchDropdown(!renderSearchDropdown)}>
+                                                <p>{item}</p>
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            )
+                        }
                     </div>
                 </div>
                 <div>
@@ -228,7 +258,7 @@ const Header = () => {
                         <IoSearch className="text-xl" />
                         <Input
                             className='w-full border-none bg-none bg-transparent'
-                            placeholder='Search Member...'
+                            placeholder='Search Member Mobile...'
                         />
                     </div>
                 </div>
