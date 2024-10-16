@@ -252,15 +252,32 @@ const Header = () => {
                 </div>
             </div>
 
-            <div className="w-full md:hidden flex justify-center">
-                <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
+            <div className="w-full md:hidden flex justify-center" ref={searchRef}>
+                <div className="w-full relative flex justify-between border border-gray-400 rounded-none items-center">
                     <div className="w-full flex items-center">
                         <IoSearch className="text-xl" />
                         <Input
+                            onFocus={() => setRenderSearchDropdown(true)}
                             className='w-full border-none bg-none bg-transparent'
                             placeholder='Search Member Mobile...'
                         />
                     </div>
+                    {
+                        renderSearchDropdown && (
+                            <div className="w-full absolute top-full max-h-72 bg-white shadow-2xl border border-gray-300">
+                                {
+                                    recentSearches.map((item, index) => (
+                                        <div
+                                            onClick={() => setRenderSearchDropdown(true)}
+                                            key={index}
+                                            className="hover:bg-gray-300 cursor-pointer">
+                                            <p className="px-4 py-2 text-sm font-semibold text-red-600">{item}</p>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        )
+                    }
                 </div>
             </div>
 
