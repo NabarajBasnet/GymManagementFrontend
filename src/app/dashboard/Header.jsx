@@ -46,8 +46,6 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
 
-    console.log('Search Ref: ', searchRef);
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {

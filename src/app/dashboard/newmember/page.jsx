@@ -32,7 +32,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { useState } from "react";
 
-
 const newMemberRegistrationForm = () => {
 
     const membershipData = {

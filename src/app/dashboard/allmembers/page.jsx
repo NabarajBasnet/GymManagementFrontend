@@ -1,3 +1,5 @@
+'use client'
+
 import { IoSearch } from "react-icons/io5";
 import {
     Breadcrumb,
@@ -34,9 +36,24 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-
+import { useQuery } from "@tanstack/react-query";
 
 const AllMembers = () => {
+
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/members');
+            const resBody = await response.json();
+            console.log('Response Body: ', resBody);
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
+    const { data: members, isLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
 
     const invoices = [
         {
