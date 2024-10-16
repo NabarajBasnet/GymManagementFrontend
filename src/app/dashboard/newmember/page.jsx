@@ -34,10 +34,91 @@ import { useState } from "react";
 
 const newMemberRegistrationForm = () => {
 
-    const [dob, setDob] = useState()
-    const [membershipDate, setMembershipDate] = useState();
-    const [membershipRenewDate, setMembershipRenewDate] = useState();
-    const [membershipExpireDate, setMembershipExpireDate] = useState();
+    const membershipData = {
+        admissionFee: {
+            title: "ADMISSION FEE",
+            fee: 1000
+        },
+        regularMembership: {
+            title: "REGULAR MEMBERSHIP",
+            plans: [
+                {
+                    type: "GYM",
+                    fees: {
+                        "1 Month": 4000,
+                        "3 Month": 10500,
+                        "6 Month": 18000,
+                        "1 Year": 30000,
+                    }
+                },
+                {
+                    type: "GYM & CARDIO",
+                    fees: {
+                        "1 Month": 5000,
+                        "3 Month": 12000,
+                        "6 Month": 21000,
+                        "1 Year": 36000,
+                    }
+                }
+            ]
+        },
+        daytimeMembership: {
+            title: "DAYTIME MEMBERSHIP (10 AM - 4 PM)",
+            plans: [
+                {
+                    type: "GYM",
+                    fees: {
+                        "1 Month": 3000,
+                        "3 Month": 7500,
+                        "6 Month": 12000,
+                        "1 Year": 18000,
+                    }
+                },
+                {
+                    type: "GYM & CARDIO",
+                    fees: {
+                        "1 Month": 4000,
+                        "3 Month": 10500,
+                        "6 Month": 18000,
+                        "1 Year": 30000,
+                    }
+                }
+            ]
+        },
+        personalTraining: {
+            title: "PERSONAL TRAINING",
+            plans: [
+                {
+                    type: "Rates",
+                    fees: {
+                        "1 Session": 2500,
+                        "12 Sessions": 15000,
+                        "16 Sessions": 20000,
+                        "20 Sessions": 25000,
+                    }
+                }
+            ]
+        },
+        lockerCharge: {
+            title: "LOCKER CHARGE",
+            plans: [
+                {
+                    type: "Rates",
+                    fees: {
+                        "1 Month": 500,
+                        "3 Month": 1200,
+                        "6 Month": 1800,
+                        "1 Year": 2500,
+                    }
+                }
+            ]
+        },
+        oneDayPass: {
+            title: "ONE DAY PASS",
+            fee: 500
+        }
+    };
+
 
     const [gender, setGender] = useState('')
     const [membershipOption, setMembershipOption] = useState('')
@@ -45,8 +126,6 @@ const newMemberRegistrationForm = () => {
     const [membershipDuration, setMembershipDuration] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('')
     const [actionTaker, setActionTaker] = useState('')
-
-    const selectedOptions = { gender, membershipOption, membershipType, membershipDuration, paymentMethod, actionTaker };
 
     const {
         register,
@@ -65,24 +144,53 @@ const newMemberRegistrationForm = () => {
                 secondPhoneNumber,
                 email,
                 dob,
-
                 membershipDate,
                 membershipRenewDate,
                 membershipExpireDate,
-
                 discountAmmount,
                 discountReason,
                 discountCode,
-
+                admissionFee,
+                finalAmmount,
                 paidAmmount,
+                dueAmmount,
                 receiptNo,
+                referenceCode,
                 remark,
             } = data;
-            const date = new Date();
-            console.log("DOB: ", data.dob);
-            console.log("membershipDate: ", data.membershipDate);
-            console.log("membershipRenewDate: ", data.membershipRenewDate);
-            console.log("membershipExpireDate: ", data.membershipExpireDate);
+
+
+            const membersFinalData = {
+                firstName,
+                lastName,
+                address,
+                phoneNumber,
+                secondPhoneNumber,
+                email,
+                dob,
+                gender,
+                membershipOption,
+                membershipType,
+                membershipDate,
+                membershipDuration,
+                membershipRenewDate,
+                membershipExpireDate,
+                paymentMethod,
+                discountAmmount,
+                discountReason,
+                discountCode,
+                admissionFee,
+                finalAmmount,
+                paidAmmount,
+                dueAmmount,
+                receiptNo,
+                referenceCode,
+                remark,
+                actionTaker
+            };
+
+            console.log("Final Data: ", membersFinalData);
+
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -270,7 +378,7 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Gender</Label>
-                                        <Select onOpenChange={(value) => setGender(value)}>
+                                        <Select onValueChange={(value) => setGender(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Select Gender" />
                                             </SelectTrigger>
@@ -294,7 +402,7 @@ const newMemberRegistrationForm = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                                     <div>
                                         <Label>Membership Option</Label>
-                                        <Select onOpenChange={(value) => setMembershipOption(value)}>
+                                        <Select onValueChange={(value) => setMembershipOption(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Option" />
                                             </SelectTrigger>
@@ -311,7 +419,7 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Type</Label>
-                                        <Select onOpenChange={(value) => setMembershipType(value)}>
+                                        <Select onValueChange={(value) => setMembershipType(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Type" />
                                             </SelectTrigger>
@@ -347,7 +455,7 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Duration</Label>
-                                        <Select onOpenChange={(value) => setMembershipDuration(value)}>
+                                        <Select onValueChange={(value) => setMembershipDuration(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Duration" />
                                             </SelectTrigger>
@@ -404,7 +512,7 @@ const newMemberRegistrationForm = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                                     <div>
                                         <Label>Payment Method</Label>
-                                        <Select onOpenChange={(value) => setPaymentMethod(value)}>
+                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Payment Method" />
                                             </SelectTrigger>
@@ -472,6 +580,9 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Admission Fee</Label>
                                         <Input
+                                            {
+                                            ...register('admissionFee')
+                                            }
                                             type='text'
                                             defaultValue={'1000'}
                                             disabled
@@ -483,6 +594,9 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Final Ammount</Label>
                                         <Input
+                                            {
+                                            ...register('finalAmmount')
+                                            }
                                             type='text'
                                             disabled
                                             className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
@@ -513,6 +627,9 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Due Ammount</Label>
                                         <Input
+                                            {
+                                            ...register('dueAmmount')
+                                            }
                                             type='text'
                                             disabled
                                             className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
@@ -541,6 +658,26 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
+                                        <Label>Reference Code</Label>
+                                        <Input
+                                            {
+                                            ...register('referenceCode', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Mention reference code!"
+                                                }
+                                            })
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Reference Code'
+                                        />
+                                        {errors.referenceCode && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.referenceCode.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
                                         <Label>Remark</Label>
                                         <Input
                                             {
@@ -554,7 +691,7 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Action Taker</Label>
-                                        <Select onOpenChange={(value) => setActionTaker(value)}>
+                                        <Select onValueChange={(value) => setActionTaker(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Action Taker" />
                                             </SelectTrigger>

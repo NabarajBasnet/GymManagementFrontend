@@ -1,0 +1,84 @@
+{
+    "admissionFee": {
+        "title": "ADMISSION FEE",
+        "fee": 1000
+    },
+    "regularMembership": {
+        "title": "REGULAR MEMBERSHIP",
+        "plans": [
+            {
+                "type": "GYM",
+                "fees": {
+                    "1 Month": 4000,
+                    "3 Month": 10500,
+                    "6 Month": 18000,
+                    "1 Year": 30000
+                }
+            },
+            {
+                "type": "GYM & CARDIO",
+                "fees": {
+                    "1 Month": 5000,
+                    "3 Month": 12000,
+                    "6 Month": 21000,
+                    "1 Year": 36000
+                }
+            }
+        ]
+    },
+    "daytimeMembership": {
+        "title": "DAYTIME MEMBERSHIP (10 AM - 4 PM)",
+        "plans": [
+            {
+                "type": "GYM",
+                "fees": {
+                    "1 Month": 3000,
+                    "3 Month": 7500,
+                    "6 Month": 12000,
+                    "1 Year": 18000
+                }
+            },
+            {
+                "type": "GYM & CARDIO",
+                "fees": {
+                    "1 Month": 4000,
+                    "3 Month": 10500,
+                    "6 Month": 18000,
+                    "1 Year": 30000
+                }
+            }
+        ]
+    },
+    "personalTraining": {
+        "title": "PERSONAL TRAINING",
+        "plans": [
+            {
+                "type": "Rates",
+                "fees": {
+                    "1 Session": 2500,
+                    "12 Sessions": 15000,
+                    "16 Sessions": 20000,
+                    "20 Sessions": 25000
+                }
+            }
+        ]
+    },
+    "lockerCharge": {
+        "title": "LOCKER CHARGE",
+        "plans": [
+            {
+                "type": "Rates",
+                "fees": {
+                    "1 Month": 500,
+                    "3 Month": 1200,
+                    "6 Month": 1800,
+                    "1 Year": 2500
+                }
+            }
+        ]
+    },
+    "oneDayPass": {
+        "title": "ONE DAY PASS",
+        "fee": 500
+    }
+}
