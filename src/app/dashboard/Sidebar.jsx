@@ -21,7 +21,6 @@ import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
 import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
 
-
 const Sidebar = () => {
 
     const dispatch = useDispatch();
@@ -123,7 +122,7 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} bg-gray-800 flex flex-col`}
+        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} bg-gray-800 z-50 flex flex-col`}
             onMouseEnter={() => minimizeSidebar()}
         >
             <Link href={'/dashboard'} className="flex justify-start py-4 bg-blue-600">

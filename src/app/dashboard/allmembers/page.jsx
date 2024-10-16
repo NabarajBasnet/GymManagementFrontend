@@ -1,5 +1,7 @@
 'use client'
 
+import { MdEmail } from "react-icons/md";
+import { FaUserEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import {
     Breadcrumb,
@@ -37,6 +39,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/Loader/Loader";
 
 const AllMembers = () => {
 
@@ -44,49 +47,16 @@ const AllMembers = () => {
         try {
             const response = await fetch('http://localhost:5000/api/members');
             const resBody = await response.json();
-            console.log('Response Body: ', resBody);
+            return resBody;
         } catch (error) {
             console.log('Error: ', error);
         }
     };
 
-    const { data: members, isLoading } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['members'],
         queryFn: getAllMembers
     });
-
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        }
-    ];
 
     return (
         <div className="w-full">
@@ -123,70 +93,95 @@ const AllMembers = () => {
                 <h1 className="text-xl font-bold mt-3">All Members</h1>
             </div>
 
-            <div className="w-full bg-white p-4">
-                <div className="flex items-center border px-4 my-2">
-                    <IoSearch />
-                    <Input
-                        className='rounded-none border-none'
-                        placeholder='Search member...'
-                    />
-                </div>
-                <div>
-                    <Table>
-                        <TableHeader>
-                            <TableRow className='bg-gray-200 text-black'>
-                                <TableHead>Invoice</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead className="text-right">Amount</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {invoices.map((invoice) => (
-                                <TableRow key={invoice.invoice}>
-                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                    <TableCell>{invoice.paymentStatus}</TableCell>
-                                    <TableCell>{invoice.paymentMethod}</TableCell>
-                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <div className="w-full bg-white p-4">
+                    <div className="flex items-center border px-4 my-2">
+                        <IoSearch />
+                        <Input
+                            className='rounded-none border-none'
+                            placeholder='Search member...'
+                        />
+                    </div>
+                    <div>
+                        <Table>
+                            <TableHeader>
+                                <TableRow className='bg-gray-200 text-black'>
+                                    <TableHead>Member Id</TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Address</TableHead>
+                                    <TableHead>Option</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Duration</TableHead>
+                                    <TableHead>Renew</TableHead>
+                                    <TableHead>Expire Date</TableHead>
+                                    <TableHead>Contact No</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Fee</TableHead>
+                                    <TableHead>Action</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TableCell colSpan={3}>Total Member Attendance</TableCell>
-                                <TableCell className="text-right">5</TableCell>
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
+                            </TableHeader>
+                            <TableBody>
+                                {data.members.map((member) => (
+                                    <TableRow key={member._id}>
+                                        <TableCell className="font-medium">{member._id}</TableCell>
+                                        <TableCell>{member.firstName + ' ' + member.lastName}</TableCell>
+                                        <TableCell>{member.address}</TableCell>
+                                        <TableCell>{member.membershipOption}</TableCell>
+                                        <TableCell>{member.membershipType}</TableCell>
+                                        <TableCell>{member.membershipDuration}</TableCell>
+                                        <TableCell>{member.membershipRenewDate}</TableCell>
+                                        <TableCell>{member.membershipExpireDate}</TableCell>
+                                        <TableCell>{member.phoneNumber}</TableCell>
+                                        <TableCell>{'Active'}</TableCell>
+                                        <TableCell>{member.paidAmmount}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center justify-between">
+                                                <FaUserEdit />
+                                                <MdEmail />
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                            <TableFooter>
+                                <TableRow>
+                                    <TableCell colSpan={3}>Total Member Attendance</TableCell>
+                                    <TableCell className="text-right">5</TableCell>
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    </div>
 
-                <div className="py-3">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious href="#" />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#" isActive>
-                                    2
-                                </PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext href="#" />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
+                    <div className="py-3">
+                        <Pagination>
+                            <PaginationContent>
+                                <PaginationItem>
+                                    <PaginationPrevious href="#" />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">1</PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#" isActive>
+                                        2
+                                    </PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationLink href="#">3</PaginationLink>
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
+                                <PaginationItem>
+                                    <PaginationNext href="#" />
+                                </PaginationItem>
+                            </PaginationContent>
+                        </Pagination>
+                    </div>
                 </div>
-            </div>
+            )}
         </div>
     )
 }
