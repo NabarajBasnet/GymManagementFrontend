@@ -1,16 +1,6 @@
 'use client'
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { IoMdClose } from "react-icons/io";
 import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
@@ -208,6 +198,9 @@ const newMemberRegistrationForm = () => {
             })
             if (response.ok) {
                 reset();
+                setTimeout(() => {
+                    setSignUpAlert(false);
+                }, 2500);
                 setSignUpAlert(true);
             }
 
@@ -254,6 +247,20 @@ const newMemberRegistrationForm = () => {
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Register New Member</h1>
             </div>
+
+            {signUpAlert && (
+                <div className="fixed bottom-10 bg-white border shadow-2xl right-10 flex items-center justify-between p-4">
+                    <div className="block">
+                        <h1 className="font-bold">Successfull</h1>
+                        <p className="text-sm font-semibold">New member registration successfull.</p>
+                    </div>
+                    <div>
+                        <IoMdClose
+                            onClick={() => setSignUpAlert(false)}
+                            className="cursor-pointer ml-4" />
+                    </div>
+                </div>
+            )}
 
             <div className="w-full flex justify-center">
                 <div className="w-full">
