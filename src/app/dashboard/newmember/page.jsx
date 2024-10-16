@@ -1,5 +1,16 @@
 'use client'
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
@@ -119,7 +130,7 @@ const newMemberRegistrationForm = () => {
         }
     };
 
-
+    const [signUpAlert, setSignUpAlert] = useState(false);
     const [gender, setGender] = useState('')
     const [membershipOption, setMembershipOption] = useState('')
     const [membershipType, setMembershipType] = useState('')
@@ -159,7 +170,6 @@ const newMemberRegistrationForm = () => {
                 remark,
             } = data;
 
-
             const membersFinalData = {
                 firstName,
                 lastName,
@@ -189,12 +199,24 @@ const newMemberRegistrationForm = () => {
                 actionTaker
             };
 
-            console.log("Final Data: ", membersFinalData);
+            const response = await fetch('http://localhost:5000/api/members', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membersFinalData)
+            })
+            if (response.ok) {
+                reset();
+                setSignUpAlert(true);
+            }
 
         } catch (error) {
             console.log('Error: ', error);
         }
     };
+
+
 
     return (
         <div className="w-full p-1">
@@ -710,7 +732,7 @@ const newMemberRegistrationForm = () => {
                             </div>
                             <div className="flex items-center space-x-2 p-2">
                                 <Button variant='destructive' className='rounded-none'>Finalize</Button>
-                                <Button type='submit' className='rounded-none'>Register</Button>
+                                <Button type='submit' className='rounded-none'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
                             </div>
                         </form>
                     </div>
