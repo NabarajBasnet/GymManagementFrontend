@@ -71,6 +71,7 @@
 
 ::-webkit-scrollbar {
   width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -80,8 +81,15 @@
 ::-webkit-scrollbar-thumb {
   background: #525252;
   border-radius: 9999px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #e7e5e4;
+  background: #78716c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #78716c;
+  width: 8px;
+  height: 8px;
 }

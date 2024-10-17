@@ -186,7 +186,7 @@ const AllMembers = () => {
                                         <TableCell>{member.membershipOption}</TableCell>
                                         <TableCell>{member.membershipType}</TableCell>
                                         <TableCell>{member.membershipDuration}</TableCell>
-                                        <TableCell>{member.membershipRenewDate}</TableCell>
+                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
                                         <TableCell>{member.membershipExpireDate}</TableCell>
                                         <TableCell>{member.phoneNumber}</TableCell>
                                         <TableCell>{'Active'}</TableCell>
