@@ -135,9 +135,9 @@ const AllMembers = () => {
                             <TableBody>
                                 {data.members.map((member) => (
                                     <TableRow key={member._id}>
-                                        <TableCell className="font-medium">{member._id}</TableCell>
-                                        <TableCell>{member.firstName + ' ' + member.lastName}</TableCell>
-                                        <TableCell>{member.address}</TableCell>
+                                        <TableCell><p className='text-sm font-semibold'>{member._id}</p></TableCell>
+                                        <TableCell className='text-sm'>{member.firstName} {member.lastName}</TableCell>
+                                        <TableCell className='text-sm'>{member.address}</TableCell>
                                         <TableCell>{member.membershipOption}</TableCell>
                                         <TableCell>{member.membershipType}</TableCell>
                                         <TableCell>{member.membershipDuration}</TableCell>
@@ -148,8 +148,8 @@ const AllMembers = () => {
                                         <TableCell>{member.paidAmmount}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center justify-between">
-                                                <FaUserEdit className='cursor-pointer' />
-                                                <MdEmail className='cursor-pointer' />
+                                                <FaUserEdit className='cursor-pointer text-md' />
+                                                <MdEmail className='cursor-pointer text-md' />
                                             </div>
                                         </TableCell>
                                     </TableRow>
