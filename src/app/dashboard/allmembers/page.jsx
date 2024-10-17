@@ -40,13 +40,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { useState } from "react";
 
 const AllMembers = () => {
 
-    const getAllMembers = async () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
+    const getAllMembers = async ({ queryKey }) => {
+        const [, page] = queryKey
         try {
-            const response = await fetch('http://localhost:5000/api/members');
+            const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
+            console.log('Res body: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -54,9 +59,16 @@ const AllMembers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members'],
+        queryKey: (['members', currentPage]),
         queryFn: getAllMembers
     });
+    console.log('Data: ', data)
+    const totalPages = data || data.totalPages;
+    console.log("Total Pages: ", totalPages);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className="w-full">
@@ -138,8 +150,8 @@ const AllMembers = () => {
                                         <TableCell>{member.paidAmmount}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center justify-between">
-                                                <FaUserEdit />
-                                                <MdEmail />
+                                                <FaUserEdit className='cursor-pointer' />
+                                                <MdEmail className='cursor-pointer' />
                                             </div>
                                         </TableCell>
                                     </TableRow>
@@ -155,27 +167,23 @@ const AllMembers = () => {
                     </div>
 
                     <div className="py-3">
-                        <Pagination>
+                        <Pagination className={'cursor-pointer'}>
                             <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationPrevious href="#" />
+                                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                 </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
+                                {[...Array(totalPages)].map((_, i) => (
+                                    <PaginationItem key={i}>
+                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
                                 <PaginationItem>
                                     <PaginationEllipsis />
                                 </PaginationItem>
                                 <PaginationItem>
-                                    <PaginationNext href="#" />
+                                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                 </PaginationItem>
                             </PaginationContent>
                         </Pagination>
