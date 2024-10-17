@@ -40,7 +40,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const AllMembers = () => {
 
@@ -67,6 +67,34 @@ const AllMembers = () => {
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
+
+    // Search Bar Dropdown
+    const [searchMemberHistory, setSearchMemberHistory] = useState([
+        'Nabaraj Basnet',
+        'Phill Heath',
+        'Ronie Colemon',
+        'Jay Cutlar',
+        'Lee Hany',
+        'Big Ramy',
+    ]);
+
+    const searchRef = useRef(null);
+    const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && searchRef.current.contains(event.target)) {
+                setRenderSearchDropdown(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside)
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside)
+        }
+    }, [searchRef]);
+
 
     return (
         <div className="w-full">
@@ -106,15 +134,32 @@ const AllMembers = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full bg-white p-4">
-                    <div className="flex items-center border px-4 my-2">
-                        <IoSearch />
-                        <Input
-                            className='rounded-none border-none'
-                            placeholder='Search member...'
-                        />
+                <div className="w-full bg-white p-4" ref={searchRef}>
+                    <div className="w-full relative">
+                        <div className="w-full flex items-center border px-4 my-2">
+                            <IoSearch />
+                            <Input
+                                onFocus={() => setRenderSearchDropdown(!renderSearchDropdown)}
+                                className='rounded-none border-none'
+                                placeholder='Search member...'
+                            />
+                        </div>
+                        {
+                            renderSearchDropdown ? (
+                                <div className="w-full absolute top-full bg-white shadow-2xl z-50">
+                                    {searchMemberHistory.map((item) => (
+                                        <div className="w-full">
+                                            <p className="hover:bg-gray-200 cursor-pointer py-2 px-4">{item}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <>
+                                </>
+                            )
+                        }
                     </div>
-                    <div>
+                    <div className="w-full">
                         <Table>
                             <TableHeader>
                                 <TableRow className='bg-gray-200 text-black'>
