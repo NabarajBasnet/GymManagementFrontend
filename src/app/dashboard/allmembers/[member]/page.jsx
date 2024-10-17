@@ -30,12 +30,27 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useForm } from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const Member = (props) => {
 
     const memberId = props.params.member
     console.log('Member Id: ', memberId);
+
+    const getSingleMember = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/members/${memberId}`)
+            const memberResponse = await response.json();
+            console.log("Member: ", memberResponse);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    useEffect(() => {
+        getSingleMember()
+    }, []);
+
 
     const [membershipExpireDate, setMembershipExpireDate] = useState('');
 
