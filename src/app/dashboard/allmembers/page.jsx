@@ -41,6 +41,7 @@ import { Input } from "@/components/ui/input";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 const AllMembers = () => {
 
@@ -94,7 +95,6 @@ const AllMembers = () => {
             document.removeEventListener('mousedown', handleClickOutside)
         }
     }, [searchRef]);
-
 
     return (
         <div className="w-full">
@@ -193,7 +193,9 @@ const AllMembers = () => {
                                         <TableCell>{member.paidAmmount}</TableCell>
                                         <TableCell>
                                             <div className="flex items-center justify-between">
-                                                <FaUserEdit className='cursor-pointer text-md' />
+                                                <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                    <FaUserEdit className='cursor-pointer text-md' />
+                                                </Link>
                                                 <MdEmail className='cursor-pointer text-md' />
                                             </div>
                                         </TableCell>
