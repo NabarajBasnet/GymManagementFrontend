@@ -34,6 +34,45 @@ import { useState } from "react";
 
 const newMemberRegistrationForm = () => {
 
+    const [membershipExpireDate, setMembershipExpireDate] = useState('');
+
+    const newExpireDate = new Date(membershipExpireDate === 'string' ? membershipExpireDate : new Date());
+    const formattedMembershipDate = newExpireDate === "string" ? newExpireDate : newExpireDate.toISOString().split('T')[0]
+
+    const handleMembershipSelection = (duration) => {
+        console.log("Selected Duration: ", duration);
+
+
+        switch (duration) {
+            case "1 Month":
+                newExpireDate.setMonth(newExpireDate.getMonth() + 1);
+                break;
+
+            case "3 Months":
+                newExpireDate.setMonth(newExpireDate.getMonth() + 3);
+                break;
+
+            case "6 Months":
+                newExpireDate.setMonth(newExpireDate.getMonth() + 6);
+                break;
+
+            case "12 Months":
+                newExpireDate.setFullYear(newExpireDate.getFullYear() + 1);
+                break;
+
+            default:
+                break;
+        }
+        setMembershipExpireDate(newExpireDate);
+    };
+
+    const formattedMembershipExpireDate =
+        typeof membershipExpireDate === 'string'
+            ? membershipExpireDate
+            : membershipExpireDate.toISOString().split('T')[0];
+
+    console.log('Formatted Membership Expire Date: ', formattedMembershipExpireDate);
+
     const membershipData = {
         admissionFee: {
             title: "ADMISSION FEE",
@@ -472,6 +511,8 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
+                                            value={formattedMembershipDate}
+                                            onChange={(e) => setMembershipExpireDate(e.target.value)}
                                             type='date'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Date'
@@ -483,7 +524,7 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Duration</Label>
-                                        <Select onValueChange={(value) => setMembershipDuration(value)}>
+                                        <Select onValueChange={(value) => handleMembershipSelection(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Duration" />
                                             </SelectTrigger>
@@ -502,9 +543,8 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Membership Renew Date</Label>
                                         <Input
-                                            {
-                                            ...register('membershipRenewDate')
-                                            }
+                                            value={membershipExpireDate}
+                                            onChange={(e) => setMembershipExpireDate(e.target.value)}
                                             type='date'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Renew Date'
@@ -520,6 +560,7 @@ const newMemberRegistrationForm = () => {
                                             {
                                             ...register('membershipExpireDate')
                                             }
+                                            value={formattedMembershipExpireDate}
                                             type='date'
                                             disabled
                                             className='rounded-none focus:outline-none'

@@ -51,7 +51,6 @@ const AllMembers = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
-            console.log('Res body: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -62,9 +61,8 @@ const AllMembers = () => {
         queryKey: (['members', currentPage]),
         queryFn: getAllMembers
     });
-    console.log('Data: ', data)
-    const totalPages = data || data.totalPages;
-    console.log("Total Pages: ", totalPages);
+
+    const { totalPages } = data || {};
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
