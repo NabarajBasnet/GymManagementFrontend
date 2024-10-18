@@ -165,7 +165,7 @@ const AllMembers = () => {
                     <div className="w-full">
                         <Table>
                             <TableHeader>
-                                <TableRow className='bg-gray-200 text-black'>
+                                <TableRow className='bg-gray-200 py-6 text-black'>
                                     {/* <TableHead>Member Id</TableHead> */}
                                     <TableHead>Name</TableHead>
                                     {/* <TableHead>Address</TableHead> */}
