@@ -99,6 +99,7 @@ const Member = (props) => {
     const [membershipDuration, setMembershipDuration] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('')
     const [actionTaker, setActionTaker] = useState('')
+    const [memberStatus, setMemberStatus] = useState('')
 
     const {
         register,
@@ -158,10 +159,11 @@ const Member = (props) => {
                 receiptNo,
                 referenceCode,
                 remark,
-                actionTaker
+                actionTaker,
+                memberStatus
             };
 
-            const response = await fetch('http://localhost:5000/api/members', {
+            const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -514,6 +516,22 @@ const Member = (props) => {
                                             )}
                                         </div>
 
+                                        <div>
+                                            <Label>Status</Label>
+                                            <Select onValueChange={(value) => setMemberStatus(value)}>
+                                                <SelectTrigger className="w-full rounded-none">
+                                                    <SelectValue placeholder={singleMember.member.status} />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Status</SelectLabel>
+                                                        <SelectItem value="Active">Active</SelectItem>
+                                                        <SelectItem value="Inactive">Inactive</SelectItem>
+                                                        <SelectItem value="OnHold">Hold</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
                                     </div>
                                 </div>
 

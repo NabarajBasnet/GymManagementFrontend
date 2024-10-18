@@ -49,9 +49,12 @@ const AllMembers = () => {
     const limit = 10;
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
+        console.log('Page: ', page);
+
         try {
             const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
+            console.log('Members: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -63,7 +66,7 @@ const AllMembers = () => {
         queryFn: getAllMembers
     });
 
-    const { totalPages } = data || {};
+    const { totalPages, totalMembers, members } = data || {};
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -163,49 +166,59 @@ const AllMembers = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow className='bg-gray-200 text-black'>
-                                    <TableHead>Member Id</TableHead>
+                                    {/* <TableHead>Member Id</TableHead> */}
                                     <TableHead>Name</TableHead>
-                                    <TableHead>Address</TableHead>
+                                    {/* <TableHead>Address</TableHead> */}
                                     <TableHead>Option</TableHead>
                                     <TableHead>Type</TableHead>
                                     <TableHead>Duration</TableHead>
                                     <TableHead>Renew</TableHead>
                                     <TableHead>Expire Date</TableHead>
                                     <TableHead>Contact No</TableHead>
+                                    <TableHead>Receipt No</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead>Fee</TableHead>
                                     <TableHead>Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {data.members.map((member) => (
-                                    <TableRow key={member._id}>
-                                        <TableCell><p className='text-sm font-semibold'>{member._id}</p></TableCell>
-                                        <TableCell className='text-sm'>{member.firstName} {member.lastName}</TableCell>
-                                        <TableCell className='text-sm'>{member.address}</TableCell>
-                                        <TableCell>{member.membershipOption}</TableCell>
-                                        <TableCell>{member.membershipType}</TableCell>
-                                        <TableCell>{member.membershipDuration}</TableCell>
-                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
-                                        <TableCell>{member.membershipExpireDate}</TableCell>
-                                        <TableCell>{member.phoneNumber}</TableCell>
-                                        <TableCell>{'Active'}</TableCell>
-                                        <TableCell>{member.paidAmmount}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center justify-between">
-                                                <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                    <FaUserEdit className='cursor-pointer text-md' />
-                                                </Link>
-                                                <MdEmail className='cursor-pointer text-md' />
-                                            </div>
+                                {members && members.length > 0 ? (
+                                    members.map((member) => (
+                                        <TableRow key={member._id}>
+                                            {/* <TableCell><p>{member._id}</p></TableCell> */}
+                                            <TableCell className='text-sm'>{member.firstName} {member.lastName}</TableCell>
+                                            {/* <TableCell className='text-sm'>{member.address}</TableCell> */}
+                                            <TableCell>{member.membershipOption}</TableCell>
+                                            <TableCell>{member.membershipType}</TableCell>
+                                            <TableCell>{member.membershipDuration}</TableCell>
+                                            <TableCell>{new Date(member.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
+                                            <TableCell>{member.membershipExpireDate}</TableCell>
+                                            <TableCell>{member.phoneNumber}</TableCell>
+                                            <TableCell>{member.receiptNo}</TableCell>
+                                            <TableCell>{'Active'}</TableCell>
+                                            <TableCell>{member.paidAmmount}</TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center justify-between">
+                                                    <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                        <FaUserEdit className='cursor-pointer text-md' />
+                                                    </Link>
+                                                    <MdEmail className='cursor-pointer text-md' />
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan={13} className="text-center">
+                                            No members found.
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                )}
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
-                                    <TableCell colSpan={3}>Total Member Attendance</TableCell>
-                                    <TableCell className="text-right">5</TableCell>
+                                    <TableCell colSpan={3}>Total Members</TableCell>
+                                    <TableCell className="text-right">{totalMembers}</TableCell>
                                 </TableRow>
                             </TableFooter>
                         </Table>
