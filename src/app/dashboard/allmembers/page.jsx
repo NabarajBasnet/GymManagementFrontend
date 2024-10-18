@@ -137,7 +137,7 @@ const AllMembers = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full bg-white p-4" ref={searchRef}>
+                <div className="w-full bg-white p-4">
                     <div className="w-full relative">
                         <div className="w-full flex items-center border px-4 my-2">
                             <IoSearch />
@@ -149,26 +149,25 @@ const AllMembers = () => {
                         </div>
                         {
                             renderSearchDropdown ? (
-                                <div className="w-full absolute top-full bg-white shadow-2xl z-50">
-                                    {searchMemberHistory.map((item) => (
-                                        <div className="w-full">
+                                <div className="w-full absolute top-full bg-white shadow-2xl z-40 max-h-48 overflow-y-auto">
+                                    {searchMemberHistory.map((item, index) => (
+                                        <div key={index} className="w-full">
                                             <p className="hover:bg-gray-200 cursor-pointer py-2 px-4">{item}</p>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <>
-                                </>
+                                <></>
                             )
                         }
                     </div>
                     <div className="w-full">
                         <Table>
                             <TableHeader>
-                                <TableRow className='bg-gray-200 py-6 text-black'>
-                                    {/* <TableHead>Member Id</TableHead> */}
+                                <TableRow className='bg-gray-200 text-black'>
+                                    <TableHead>Member Id</TableHead>
                                     <TableHead>Name</TableHead>
-                                    {/* <TableHead>Address</TableHead> */}
+                                    <TableHead>Address</TableHead>
                                     <TableHead>Option</TableHead>
                                     <TableHead>Type</TableHead>
                                     <TableHead>Duration</TableHead>
@@ -185,9 +184,9 @@ const AllMembers = () => {
                                 {members && members.length > 0 ? (
                                     members.map((member) => (
                                         <TableRow key={member._id}>
-                                            {/* <TableCell><p>{member._id}</p></TableCell> */}
+                                            <TableCell><p className='text-sm font-semibold'>{member._id}</p></TableCell>
                                             <TableCell className='text-sm'>{member.firstName} {member.lastName}</TableCell>
-                                            {/* <TableCell className='text-sm'>{member.address}</TableCell> */}
+                                            <TableCell className='text-sm'>{member.address}</TableCell>
                                             <TableCell>{member.membershipOption}</TableCell>
                                             <TableCell>{member.membershipType}</TableCell>
                                             <TableCell>{member.membershipDuration}</TableCell>
