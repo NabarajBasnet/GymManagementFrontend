@@ -152,7 +152,11 @@ const AllMembers = () => {
                                 <div className="w-full absolute top-full bg-white shadow-2xl z-40 max-h-48 overflow-y-auto">
                                     {searchMemberHistory.map((item, index) => (
                                         <div key={index} className="w-full">
-                                            <p className="hover:bg-gray-200 cursor-pointer py-2 px-4">{item}</p>
+                                            <p
+                                                onClick={() => setRenderSearchDropdown(!renderSearchDropdown)}
+                                                className="hover:bg-gray-200 cursor-pointer py-2 px-4"
+                                            >
+                                                {item}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -161,66 +165,66 @@ const AllMembers = () => {
                             )
                         }
                     </div>
-                    <div className="w-full">
-                        <Table>
-                            <TableHeader>
-                                <TableRow className='bg-gray-200 text-black'>
-                                    <TableHead>Member Id</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Address</TableHead>
-                                    <TableHead>Option</TableHead>
-                                    <TableHead>Type</TableHead>
-                                    <TableHead>Duration</TableHead>
-                                    <TableHead>Renew</TableHead>
-                                    <TableHead>Expire Date</TableHead>
-                                    <TableHead>Contact No</TableHead>
-                                    <TableHead>Receipt No</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Fee</TableHead>
-                                    <TableHead>Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {members && members.length > 0 ? (
-                                    members.map((member) => (
-                                        <TableRow key={member._id}>
-                                            <TableCell><p className='text-sm font-semibold'>{member._id}</p></TableCell>
-                                            <TableCell className='text-sm'>{member.firstName} {member.lastName}</TableCell>
-                                            <TableCell className='text-sm'>{member.address}</TableCell>
-                                            <TableCell>{member.membershipOption}</TableCell>
-                                            <TableCell>{member.membershipType}</TableCell>
-                                            <TableCell>{member.membershipDuration}</TableCell>
-                                            <TableCell>{new Date(member.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
-                                            <TableCell>{member.membershipExpireDate}</TableCell>
-                                            <TableCell>{member.phoneNumber}</TableCell>
-                                            <TableCell>{member.receiptNo}</TableCell>
-                                            <TableCell>{'Active'}</TableCell>
-                                            <TableCell>{member.paidAmmount}</TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center justify-between">
-                                                    <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                        <FaUserEdit className='cursor-pointer text-md' />
-                                                    </Link>
-                                                    <MdEmail className='cursor-pointer text-md' />
-                                                </div>
+                    <div className="w-full flex justify-start">
+                        <div className="w-full overflow-x-auto">
+                            <Table className='w-full overflow-x-auto'>
+                                <TableHeader>
+                                    <TableRow className='bg-gray-200 text-black'>
+                                        <TableHead>Member Id</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Option</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Duration</TableHead>
+                                        <TableHead>Renew</TableHead>
+                                        <TableHead>Expire Date</TableHead>
+                                        <TableHead>Contact No</TableHead>
+                                        <TableHead>Receipt No</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Fee</TableHead>
+                                        <TableHead>Action</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {members && members.length > 0 ? (
+                                        members.map((member) => (
+                                            <TableRow key={member._id}>
+                                                <TableCell><p>{member._id}</p></TableCell>
+                                                <TableCell>{member.firstName} {member.lastName}</TableCell>
+                                                <TableCell>{member.membershipOption}</TableCell>
+                                                <TableCell>{member.membershipType}</TableCell>
+                                                <TableCell>{member.membershipDuration}</TableCell>
+                                                <TableCell>{new Date(member.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
+                                                <TableCell>{member.membershipExpireDate}</TableCell>
+                                                <TableCell>{member.phoneNumber}</TableCell>
+                                                <TableCell>{member.receiptNo}</TableCell>
+                                                <TableCell>{member.status}</TableCell>
+                                                <TableCell>{member.paidAmmount}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center justify-center space-x-1">
+                                                        <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                            <FaUserEdit className='cursor-pointer text-md' />
+                                                        </Link>
+                                                        <MdEmail className='cursor-pointer text-md' />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow>
+                                            <TableCell colSpan={13} className="text-center">
+                                                No members found.
                                             </TableCell>
                                         </TableRow>
-                                    ))
-                                ) : (
+                                    )}
+                                </TableBody>
+                                <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={13} className="text-center">
-                                            No members found.
-                                        </TableCell>
+                                        <TableCell colSpan={3}>Total Members</TableCell>
+                                        <TableCell className="text-right">{totalMembers}</TableCell>
                                     </TableRow>
-                                )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total Members</TableCell>
-                                    <TableCell className="text-right">{totalMembers}</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
+                                </TableFooter>
+                            </Table>
+                        </div>
                     </div>
 
                     <div className="py-3">
