@@ -173,7 +173,14 @@ const AllMembers = () => {
                                         <TableHead>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Duration</TableHead>
+                                        <TableHead>Option</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Duration</TableHead>
+                                        <TableHead>Renew Date</TableHead>
                                         <TableHead>Expire Date</TableHead>
+                                        <TableHead>Contact No</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Fee</TableHead>
                                         <TableHead>Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -184,7 +191,14 @@ const AllMembers = () => {
                                                 <TableCell><p>{member._id}</p></TableCell>
                                                 <TableCell>{member.fullName}</TableCell>
                                                 <TableCell>{member.membershipDuration}</TableCell>
+                                                <TableCell>{member.membershipOption}</TableCell>
+                                                <TableCell>{member.membershipType}</TableCell>
+                                                <TableCell>{member.membershipDuration}</TableCell>
+                                                <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
                                                 <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                <TableCell>{member.contactNo}</TableCell>
+                                                <TableCell>{member.status}</TableCell>
+                                                <TableCell>{member.paidAmmount}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center justify-center space-x-1">
                                                         <Link href={`/dashboard/allmembers/${member._id}`}>
