@@ -39,6 +39,7 @@ const newMemberRegistrationForm = () => {
 
     // Members details
     const [gender, setGender] = useState('');
+    const [status, setStatus] = useState('');
 
     // Payment Details
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -91,18 +92,53 @@ const newMemberRegistrationForm = () => {
     const onRegisterMember = async (data) => {
         try {
             const {
+                // Personal Information from data
                 fullName,
+                contactNo,
                 email,
                 dob,
+                secondaryContactNo,
+                address,
+
+                // Membership Information from data
+
+                // Payment Details from data
+                discountAmmount,
+                discountReason,
+                discountCode,
+                paidAmmount,
+                receiptNo,
+                referenceCode,
+                remark
             } = data;
 
             const membersFinalData = {
                 fullName,
+                contactNo,
                 email,
                 dob,
+                secondaryContactNo,
+                gender,
+                address,
+                status,
+                membershipOption,
+                membershipType,
+                membershipShift,
                 membershipDate,
                 membershipDuration,
                 membershipExpireDate,
+                paymentMethod,
+                discountAmmount,
+                discountReason,
+                discountCode,
+                admissionFee: 1000,
+                finalAmmount: 5000,
+                paidAmmount,
+                receiptNo,
+                dueAmmount: 0,
+                referenceCode,
+                remark,
+                actionTaker
             };
 
             console.log('Final member date: ', membersFinalData);
@@ -322,6 +358,23 @@ const newMemberRegistrationForm = () => {
                                         {errors.address && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.address.message}`}</p>
                                         )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Gender</Label>
+                                        <Select onValueChange={(value) => setStatus(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Status</SelectLabel>
+                                                    <SelectItem value="Active">Active</SelectItem>
+                                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                                    <SelectItem value="OnHold">Hold</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                 </div>
