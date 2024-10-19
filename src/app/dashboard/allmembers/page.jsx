@@ -186,29 +186,35 @@ const AllMembers = () => {
                                 </TableHeader>
                                 <TableBody>
                                     {members && members.length > 0 ? (
-                                        members.map((member) => (
-                                            <TableRow key={member._id}>
-                                                <TableCell><p>{member._id}</p></TableCell>
-                                                <TableCell>{member.fullName}</TableCell>
-                                                <TableCell>{member.membershipDuration}</TableCell>
-                                                <TableCell>{member.membershipOption}</TableCell>
-                                                <TableCell>{member.membershipType}</TableCell>
-                                                <TableCell>{member.membershipDuration}</TableCell>
-                                                <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
-                                                <TableCell>{member.contactNo}</TableCell>
-                                                <TableCell>{member.status}</TableCell>
-                                                <TableCell>{member.paidAmmount}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center justify-center space-x-1">
-                                                        <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                            <FaUserEdit className='cursor-pointer text-lg' />
-                                                        </Link>
-                                                        <MdEmail className='cursor-pointer text-lg' />
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                        members.map((member) => {
+                                            const textColor =
+                                                member.status === 'Active' ? 'text-green-500' :
+                                                    member.status === 'OnHold' ? 'text-yellow-500' :
+                                                        'text-red-500';
+                                            return (
+                                                <TableRow key={member._id} className={textColor}>
+                                                    <TableCell><p>{member._id}</p></TableCell>
+                                                    <TableCell>{member.fullName}</TableCell>
+                                                    <TableCell>{member.membershipDuration}</TableCell>
+                                                    <TableCell>{member.membershipOption}</TableCell>
+                                                    <TableCell>{member.membershipType}</TableCell>
+                                                    <TableCell>{member.membershipDuration}</TableCell>
+                                                    <TableCell>{new Date(member.membershipDate).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell>{member.contactNo}</TableCell>
+                                                    <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                    <TableCell>{member.paidAmmount}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center justify-center space-x-1">
+                                                            <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                                <FaUserEdit className='cursor-pointer text-lg' />
+                                                            </Link>
+                                                            <MdEmail className='cursor-pointer text-lg' />
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            );
+                                        })
                                     ) : (
                                         <TableRow>
                                             <TableCell colSpan={13} className="text-center">
