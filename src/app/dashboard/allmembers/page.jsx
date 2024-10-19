@@ -172,15 +172,8 @@ const AllMembers = () => {
                                     <TableRow className='bg-gray-200 text-black'>
                                         <TableHead>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
-                                        {/* <TableHead>Option</TableHead> */}
-                                        {/* <TableHead>Type</TableHead> */}
                                         <TableHead>Duration</TableHead>
-                                        {/* <TableHead>Renew</TableHead> */}
                                         <TableHead>Expire Date</TableHead>
-                                        {/* <TableHead>Contact No</TableHead> */}
-                                        {/* <TableHead>Receipt No</TableHead> */}
-                                        {/* <TableHead>Status</TableHead> */}
-                                        {/* <TableHead>Fee</TableHead> */}
                                         <TableHead>Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
@@ -190,21 +183,14 @@ const AllMembers = () => {
                                             <TableRow key={member._id}>
                                                 <TableCell><p>{member._id}</p></TableCell>
                                                 <TableCell>{member.fullName}</TableCell>
-                                                {/* <TableCell>{member.membershipOption}</TableCell> */}
-                                                <TableCell>{member.membershipType}</TableCell>
                                                 <TableCell>{member.membershipDuration}</TableCell>
-                                                {/* <TableCell>{member.membershipRenewDate}</TableCell> */}
-                                                <TableCell>{member.membershipExpireDate}</TableCell>
-                                                {/* <TableCell>{member.phoneNumber}</TableCell> */}
-                                                {/* <TableCell>{member.receiptNo}</TableCell> */}
-                                                {/* <TableCell>{member.status}</TableCell> */}
-                                                {/* <TableCell>{member.paidAmmount}</TableCell> */}
+                                                <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center justify-center space-x-1">
                                                         <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                            <FaUserEdit className='cursor-pointer text-md' />
+                                                            <FaUserEdit className='cursor-pointer text-lg' />
                                                         </Link>
-                                                        <MdEmail className='cursor-pointer text-md' />
+                                                        <MdEmail className='cursor-pointer text-lg' />
                                                     </div>
                                                 </TableCell>
                                             </TableRow>

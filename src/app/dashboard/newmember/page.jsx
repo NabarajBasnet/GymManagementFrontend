@@ -34,7 +34,20 @@ import { useState } from "react";
 const newMemberRegistrationForm = () => {
 
     const [signUpAlert, setSignUpAlert] = useState(false);
-    const [membershipDuration, setMembershipDuration] = useState('')
+    const [membershipDuration, setMembershipDuration] = useState('');
+
+
+    // Members details
+    const [gender, setGender] = useState('');
+
+    // Payment Details
+    const [paymentMethod, setPaymentMethod] = useState('');
+    const [actionTaker, setActionTaker] = useState('');
+
+    // Membership details
+    const [membershipOption, setMembershipOption] = useState('');
+    const [membershipType, setMembershipType] = useState('');
+    const [membershipShift, setMembershipShift] = useState('');
 
     // Date Detais
     const [membershipDate, setMembershipDate] = useState(new Date());
@@ -48,7 +61,7 @@ const newMemberRegistrationForm = () => {
     } = useForm();
 
     const handleMembershipSelection = (duration) => {
-
+        setMembershipDuration(duration);
         const newMembershipExpireDate = new Date(membershipDate)
 
         switch (duration) {
@@ -81,8 +94,6 @@ const newMemberRegistrationForm = () => {
                 fullName,
                 email,
                 dob,
-                membershipDate,
-                membershipExpireDate,
             } = data;
 
             const membersFinalData = {
@@ -197,6 +208,26 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
+                                        <Label>Contact No</Label>
+                                        <Input
+                                            {
+
+                                            ...register('contactNo', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Enter contact number here!"
+                                                }
+                                            })
+                                            }
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Contact Number'
+                                        />
+                                        {errors.contactNo && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.contactNo.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
                                         <Label>Email Address</Label>
                                         <Input
                                             {
@@ -235,6 +266,64 @@ const newMemberRegistrationForm = () => {
                                         )}
                                     </div>
 
+
+                                    <div>
+                                        <Label>Secondary Contact No</Label>
+                                        <Input
+                                            {
+
+                                            ...register('secondaryContactNo', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Enter secondary contact number here!"
+                                                }
+                                            })
+                                            }
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Secondary Contact Number'
+                                        />
+                                        {errors.secondaryContactNo && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.secondaryContactNo.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Gender</Label>
+                                        <Select onValueChange={(value) => setGender(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Gender" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Gender</SelectLabel>
+                                                    <SelectItem value="Male">Male</SelectItem>
+                                                    <SelectItem value="Female">Female</SelectItem>
+                                                    <SelectItem value="Other">Other</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Address</Label>
+                                        <Input
+                                            {
+
+                                            ...register('address', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Enter address!"
+                                                }
+                                            })
+                                            }
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Address'
+                                        />
+                                        {errors.address && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.address.message}`}</p>
+                                        )}
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -243,6 +332,59 @@ const newMemberRegistrationForm = () => {
                             </div>
                             <div className="p-2 bg-white">
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+                                    <div>
+                                        <Label>Membership Option</Label>
+                                        <Select onValueChange={(value) => setMembershipOption(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Membership Option" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Membership Option</SelectLabel>
+                                                    <SelectItem value="Regular Membership">Regular Membership</SelectItem>
+                                                    <SelectItem value="Daytime Membership">Daytime Membership</SelectItem>
+                                                    <SelectItem value="Temporary Membership">Temporary Membership</SelectItem>
+                                                    <SelectItem value="Guest">Guest</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+
+                                    <div>
+                                        <Label>Membership Type</Label>
+                                        <Select onValueChange={(value) => setMembershipType(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Membership Type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Membership Type</SelectLabel>
+                                                    <SelectItem value="Gym">Gym</SelectItem>
+                                                    <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
+                                                    <SelectItem value="Gym, Cardio & Jumba">Gym, Cardio & Jumba</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Membership Shift</Label>
+                                        <Select onValueChange={(value) => setMembershipShift(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Membership Shift" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Membership Shift</SelectLabel>
+                                                    <SelectItem value="Morning">Morning</SelectItem>
+                                                    <SelectItem value="Day">Day</SelectItem>
+                                                    <SelectItem value="Evening">Evening</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
 
                                     <div>
                                         <Label>Membership Start Date</Label>
@@ -291,6 +433,210 @@ const newMemberRegistrationForm = () => {
                                         {errors.membershipExpireDate && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
                                         )}
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-300 py-2 my-2 w-full">
+                                <h1 className="mx-4 font-semibold">Payment Details</h1>
+                            </div>
+                            <div className="p-2 bg-white">
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div>
+                                        <Label>Payment Method</Label>
+                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Payment Method" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Payment Method</SelectLabel>
+                                                    <SelectItem value="Fonepay">Fonepay</SelectItem>
+                                                    <SelectItem value="Cash">Cash</SelectItem>
+                                                    <SelectItem value="Card">Card</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div>
+                                        <Label>Discount Ammount</Label>
+                                        <Input
+                                            {
+                                            ...register('discountAmmount')
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Discount Ammount'
+                                        />
+                                        {errors.discountAmmount && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.discountAmmount.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Discount Reason</Label>
+                                        <Input
+                                            {
+                                            ...register('discountReason', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Mention discount reason!"
+                                                }
+                                            })
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Discount Reason'
+                                        />
+                                        {errors.discountReason && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.discountReason.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Discount Code</Label>
+                                        <Input
+                                            {
+                                            ...register('discountCode')
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Discount Code'
+                                        />
+                                        {errors.discountCode && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.discountCode.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Admission Fee</Label>
+                                        <Input
+                                            {
+                                            ...register('admissionFee')
+                                            }
+                                            type='text'
+                                            defaultValue={'1000'}
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            placeholder='Admission Fee'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Final Ammount</Label>
+                                        <Input
+                                            {
+                                            ...register('finalAmmount')
+                                            }
+                                            type='text'
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            placeholder='Final Ammount'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Paid Ammount</Label>
+                                        <Input
+                                            {
+                                            ...register('paidAmmount', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Mention paid ammount!"
+                                                }
+                                            })
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Paid Ammount'
+                                        />
+                                        {errors.paidAmmount && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.paidAmmount.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Due Ammount</Label>
+                                        <Input
+                                            {
+                                            ...register('dueAmmount')
+                                            }
+                                            type='text'
+                                            disabled
+                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            placeholder='Due Ammount'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Receipt No</Label>
+                                        <Input
+                                            {
+                                            ...register('receiptNo', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Mention receipt no!"
+                                                }
+                                            })
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Receipt No'
+                                        />
+                                        {errors.receiptNo && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.receiptNo.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Reference Code</Label>
+                                        <Input
+                                            {
+                                            ...register('referenceCode', {
+                                                required: {
+                                                    value: true,
+                                                    message: "Mention reference code!"
+                                                }
+                                            })
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Reference Code'
+                                        />
+                                        {errors.referenceCode && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.referenceCode.message}`}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Remark</Label>
+                                        <Input
+                                            {
+                                            ...register('remark')
+                                            }
+                                            type='text'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Remark'
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <Label>Action Taker</Label>
+                                        <Select onValueChange={(value) => setActionTaker(value)}>
+                                            <SelectTrigger className="w-full rounded-none">
+                                                <SelectValue placeholder="Action Taker" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Action Taker</SelectLabel>
+                                                    <SelectItem value="Admin">Admin</SelectItem>
+                                                    <SelectItem value="Author">Author</SelectItem>
+                                                    <SelectItem value="Member">Member</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
 
                                 </div>
