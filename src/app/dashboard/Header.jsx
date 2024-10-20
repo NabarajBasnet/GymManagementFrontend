@@ -40,11 +40,29 @@ import { RiDashboard3Fill } from "react-icons/ri";
 import { Input } from "@/components/ui/input";
 
 const Header = () => {
+
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
     const searchRef = useRef(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
+
+    const todaysDate = new Date().toISOString().split('T')[0];
+    const currentTime = new Date().toISOString().split('T')[1];
+
+    const date = new Date();
+    const formatedDate = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+
+    const formatedTime = date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+    });
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -247,6 +265,11 @@ const Header = () => {
                             </SheetDescription>
                         </SheetContent>
                     </Sheet>
+                </div>
+
+                <div>
+                    <h1>Today's Date: {formatedDate}</h1>
+                    <h1>Current Time: {formatedTime}</h1>
                 </div>
             </div>
 
