@@ -1,5 +1,7 @@
 'use client'
 
+import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
+import * as React from "react"
 import { MdEmail } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
@@ -49,7 +51,6 @@ const AllMembers = () => {
     const limit = 10;
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
-        console.log('Page: ', page);
 
         try {
             const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
@@ -165,6 +166,7 @@ const AllMembers = () => {
                             )
                         }
                     </div>
+
                     <div className="w-full flex justify-start">
                         <div className="w-full overflow-x-auto">
                             <Table className='w-full overflow-x-auto'>
@@ -173,14 +175,61 @@ const AllMembers = () => {
                                         <TableHead>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Duration</TableHead>
-                                        <TableHead>Option</TableHead>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Duration</TableHead>
-                                        <TableHead>Renew Date</TableHead>
-                                        <TableHead>Expire Date</TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Option</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Type</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Renew</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Expire</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
                                         <TableHead>Contact No</TableHead>
-                                        <TableHead>Shift</TableHead>
-                                        <TableHead>Status</TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Shift</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
+                                        <TableHead>
+                                            <div className="flex items-center">
+                                                <h1>Status</h1>
+                                                <div className="flex flex-col justify-center -space-y-3">
+                                                    <MdArrowDropUp className="text-xl" />
+                                                    <MdArrowDropDown className="text-xl" />
+                                                </div>
+                                            </div>
+                                        </TableHead>
                                         <TableHead>Fee</TableHead>
                                         <TableHead>Action</TableHead>
                                     </TableRow>
@@ -199,7 +248,6 @@ const AllMembers = () => {
                                                     <TableCell>{member.membershipDuration}</TableCell>
                                                     <TableCell>{member.membershipOption}</TableCell>
                                                     <TableCell>{member.membershipType}</TableCell>
-                                                    <TableCell>{member.membershipDuration}</TableCell>
                                                     <TableCell>{new Date(member.membershipDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{member.contactNo}</TableCell>
@@ -209,9 +257,9 @@ const AllMembers = () => {
                                                     <TableCell>
                                                         <div className="flex items-center justify-center space-x-1">
                                                             <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                                <FaUserEdit className='cursor-pointer text-lg' />
+                                                                <FaUserEdit className='cursor-pointer text-md' />
                                                             </Link>
-                                                            <MdEmail className='cursor-pointer text-lg' />
+                                                            <MdEmail className='cursor-pointer text-md' />
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>
