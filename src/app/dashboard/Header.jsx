@@ -193,39 +193,13 @@ const Header = () => {
 
 
     return (
-        <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 items-center backdrop-blur-sm bg-gray-200 bg-opacity-70 z-50`}>
+        <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center backdrop-blur-sm bg-gray-200 bg-opacity-70 z-50`}>
             <div className='mx-4'>
                 <div className="flex items-center" ref={searchRef}>
                     <IoMenuSharp
                         className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
                         onClick={minimizeSidebar}
                     />
-                    <div className="w-full hidden md:flex justify-center relative">
-                        <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                            <IoSearch className="text-xl" />
-                            <Input
-                                onFocus={() => setRenderSearchDropdown(true)}
-                                className='w-full border-none bg-none bg-transparent'
-                                placeholder='Search Member...'
-                            />
-                        </div>
-                        {
-                            renderSearchDropdown && (
-                                <div className="w-full absolute top-full max-h-72 border bg-white shadow-xl overflow-y-auto z-10" style={{ left: 0 }}>
-                                    {
-                                        recentSearches.map((item, index) => (
-                                            <div
-                                                key={index}
-                                                className="hover:bg-gray-200 px-4 py-2 cursor-pointer"
-                                                onClick={() => setRenderSearchDropdown(!renderSearchDropdown)}>
-                                                <p>{item}</p>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                            )
-                        }
-                    </div>
                 </div>
                 <div>
                     <Sheet>
@@ -285,41 +259,19 @@ const Header = () => {
 
             </div>
 
-            <div className="w-full md:hidden flex justify-center" ref={searchRef}>
-                <div className="w-full relative flex justify-between border border-gray-400 rounded-none items-center">
-                    <div className="w-full flex items-center">
-                        <IoSearch className="text-xl" />
-                        <Input
-                            onFocus={() => setRenderSearchDropdown(true)}
-                            className='w-full border-none bg-none bg-transparent'
-                            placeholder='Search Member Mobile...'
-                        />
-                    </div>
-                    {
-                        renderSearchDropdown && (
-                            <div className="w-full absolute top-full max-h-72 bg-white shadow-2xl border border-gray-300">
-                                {
-                                    recentSearches.map((item, index) => (
-                                        <div
-                                            onClick={() => setRenderSearchDropdown(true)}
-                                            key={index}
-                                            className="hover:bg-gray-300 cursor-pointer">
-                                            <p className="px-4 py-2 text-sm font-semibold text-red-600">{item}</p>
-                                        </div>
-                                    ))
-                                }
-                            </div>
-                        )
-                    }
+            <div className="flex items-center md:hidden space-x-8">
+                <h1 className="text-lg font-semibold">{currentDateTime.date}</h1>
+                <h1 className="text-lg font-semibold">{currentDateTime.time}</h1>
+            </div>
+
+
+            <div className='flex items-center space-x-4'>
+
+                <div className="hidden items-center md:flex space-x-4">
+                    <h1 className="text-lg font-semibold">{currentDateTime.date}</h1>
+                    <h1 className="text-lg font-semibold">{currentDateTime.time}</h1>
                 </div>
-            </div>
 
-            <div className="flex items-center space-x-6">
-                <h1 className="text-xl font-semibold">Date: {currentDateTime.date}</h1>
-                <h1 className="text-xl font-semibold">Time: {currentDateTime.time}</h1>
-            </div>
-
-            <div className='flex items-center'>
                 <Badge badgeContent={4} color="primary">
                     <IoIosNotifications
                         className='text-3xl text-gray-800 cursor-pointer'
