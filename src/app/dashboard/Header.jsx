@@ -47,22 +47,38 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
 
-    const todaysDate = new Date().toISOString().split('T')[0];
-    const currentTime = new Date().toISOString().split('T')[1];
-
-    const date = new Date();
-    const formatedDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit'
+    const [currentDateTime, setCurrentDateTime] = useState({
+        date: '',
+        time: ''
     });
 
-    const formatedTime = date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: "2-digit",
-        second: "2-digit",
-        hour12: true,
-    });
+    useEffect(() => {
+        const updateDateTime = () => {
+            const date = new Date();
+            const formatedDate = date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+
+            const formatedTime = date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+            });
+
+            setCurrentDateTime({
+                date: formatedDate,
+                time: formatedTime
+            });
+        };
+
+        const intervalId = setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        return () => clearInterval(intervalId);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -267,10 +283,6 @@ const Header = () => {
                     </Sheet>
                 </div>
 
-                <div>
-                    <h1>Today's Date: {formatedDate}</h1>
-                    <h1>Current Time: {formatedTime}</h1>
-                </div>
             </div>
 
             <div className="w-full md:hidden flex justify-center" ref={searchRef}>
@@ -300,6 +312,11 @@ const Header = () => {
                         )
                     }
                 </div>
+            </div>
+
+            <div className="flex items-center space-x-6">
+                <h1 className="text-xl font-semibold">Date: {currentDateTime.date}</h1>
+                <h1 className="text-xl font-semibold">Time: {currentDateTime.time}</h1>
             </div>
 
             <div className='flex items-center'>
