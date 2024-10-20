@@ -179,6 +179,7 @@ const AllMembers = () => {
                                         <TableHead>Renew Date</TableHead>
                                         <TableHead>Expire Date</TableHead>
                                         <TableHead>Contact No</TableHead>
+                                        <TableHead>Shift</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Fee</TableHead>
                                         <TableHead>Action</TableHead>
@@ -202,6 +203,7 @@ const AllMembers = () => {
                                                     <TableCell>{new Date(member.membershipDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{member.contactNo}</TableCell>
+                                                    <TableCell>{member.membershipShift}</TableCell>
                                                     <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
                                                     <TableCell>{member.paidAmmount}</TableCell>
                                                     <TableCell>

@@ -395,15 +395,14 @@ const newMemberRegistrationForm = () => {
                                             <SelectContent>
                                                 <SelectGroup>
                                                     <SelectLabel>Membership Option</SelectLabel>
-                                                    <SelectItem value="Regular Membership">Regular Membership</SelectItem>
-                                                    <SelectItem value="Daytime Membership">Daytime Membership</SelectItem>
-                                                    <SelectItem value="Temporary Membership">Temporary Membership</SelectItem>
+                                                    <SelectItem value="Regular">Regular Membership</SelectItem>
+                                                    <SelectItem value="Day">Daytime Membership</SelectItem>
+                                                    <SelectItem value="Temporary">Temporary Membership</SelectItem>
                                                     <SelectItem value="Guest">Guest</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
                                     </div>
-
 
                                     <div>
                                         <Label>Membership Type</Label>
