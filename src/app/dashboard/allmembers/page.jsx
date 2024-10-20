@@ -55,7 +55,6 @@ const AllMembers = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
-            console.log('Members: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
