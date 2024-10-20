@@ -361,7 +361,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Gender</Label>
+                                        <Label>Status</Label>
                                         <Select onValueChange={(value) => setStatus(value)}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Status" />

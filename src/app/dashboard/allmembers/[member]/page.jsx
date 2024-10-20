@@ -258,6 +258,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.fullName}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='First Name'
                                                             />
@@ -278,6 +279,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.contactNo}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Contact Number'
                                                             />
@@ -297,6 +299,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.email}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Email Address'
                                                             />
@@ -317,6 +320,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 type='date'
+                                                                defaultValue={new Date(data.member.dob).toISOString().split('T')[0]}
                                                                 className='rounded-none focus:outline-none cursor-pointer'
                                                                 placeholder='Date Of Birth'
                                                             />
@@ -338,6 +342,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.secondaryContactNo}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Secondary Contact Number'
                                                             />
@@ -350,7 +355,7 @@ const Member = (props) => {
                                                             <Label>Gender</Label>
                                                             <Select onValueChange={(value) => setGender(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Gender" />
+                                                                    <SelectValue placeholder={data.member.gender} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -375,6 +380,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.address}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Address'
                                                             />
@@ -384,10 +390,10 @@ const Member = (props) => {
                                                         </div>
 
                                                         <div>
-                                                            <Label>Gender</Label>
+                                                            <Label>Status</Label>
                                                             <Select onValueChange={(value) => setStatus(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Status" />
+                                                                    <SelectValue placeholder={data.member.status} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -413,7 +419,7 @@ const Member = (props) => {
                                                             <Label>Membership Option</Label>
                                                             <Select onValueChange={(value) => setMembershipOption(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Membership Option" />
+                                                                    <SelectValue placeholder={data.member.membershipOption} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -431,7 +437,7 @@ const Member = (props) => {
                                                             <Label>Membership Type</Label>
                                                             <Select onValueChange={(value) => setMembershipType(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Membership Type" />
+                                                                    <SelectValue placeholder={data.member.membershipType} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -448,7 +454,7 @@ const Member = (props) => {
                                                             <Label>Membership Shift</Label>
                                                             <Select onValueChange={(value) => setMembershipShift(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Membership Shift" />
+                                                                    <SelectValue placeholder={data.member.membershipShift} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -467,6 +473,7 @@ const Member = (props) => {
                                                                 value={membershipDate.toISOString().split('T')[0]}
                                                                 onChange={(e) => setMembershipDate(new Date(e.target.value))}
                                                                 type='date'
+                                                                defaultValue={new Date(data.member.membershipDate).toISOString().split('T')[0]}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Membership Date'
                                                             />
@@ -479,7 +486,7 @@ const Member = (props) => {
                                                             <Label>Membership Duration</Label>
                                                             <Select onValueChange={(value) => handleMembershipSelection(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Membership Duration" />
+                                                                    <SelectValue placeholder={data.member.membershipDuration} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -502,6 +509,7 @@ const Member = (props) => {
                                                                 type='date'
                                                                 disabled
                                                                 value={membershipExpireDate}
+                                                                defaultValue={new Date(data.member.membershipExpireDate).toISOString().split('T')[0]}
                                                                 className='rounded-none focus:outline-none disabled:text-red-600'
                                                                 placeholder='Membership Expire Date'
                                                             />
@@ -522,7 +530,7 @@ const Member = (props) => {
                                                             <Label>Payment Method</Label>
                                                             <Select onValueChange={(value) => setPaymentMethod(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Payment Method" />
+                                                                    <SelectValue placeholder={data.member.paymentMethod} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -542,6 +550,7 @@ const Member = (props) => {
                                                                 ...register('discountAmmount')
                                                                 }
                                                                 type='text'
+                                                                defaultValue={data.member.discountAmmount}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Discount Ammount'
                                                             />
@@ -561,6 +570,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.discountReason}
                                                                 type='text'
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Discount Reason'
@@ -577,6 +587,7 @@ const Member = (props) => {
                                                                 ...register('discountCode')
                                                                 }
                                                                 type='text'
+                                                                defaultValue={data.member.discountCode}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Discount Code'
                                                             />
@@ -607,6 +618,7 @@ const Member = (props) => {
                                                                 }
                                                                 type='text'
                                                                 disabled
+                                                                defaultValue={data.member.paidAmmount}
                                                                 className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Final Ammount'
                                                             />
@@ -624,6 +636,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 type='text'
+                                                                defaultValue={data.member.paidAmmount}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Paid Ammount'
                                                             />
@@ -640,6 +653,7 @@ const Member = (props) => {
                                                                 }
                                                                 type='text'
                                                                 disabled
+                                                                defaultValue={data.member.dueAmmount}
                                                                 className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Due Ammount'
                                                             />
@@ -656,6 +670,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.receiptNo}
                                                                 type='text'
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Receipt No'
@@ -676,6 +691,7 @@ const Member = (props) => {
                                                                     }
                                                                 })
                                                                 }
+                                                                defaultValue={data.member.referenceCode}
                                                                 type='text'
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Reference Code'
@@ -691,6 +707,7 @@ const Member = (props) => {
                                                                 {
                                                                 ...register('remark')
                                                                 }
+                                                                defaultValue={data.member.remark}
                                                                 type='text'
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Remark'
@@ -701,7 +718,7 @@ const Member = (props) => {
                                                             <Label>Action Taker</Label>
                                                             <Select onValueChange={(value) => setActionTaker(value)}>
                                                                 <SelectTrigger className="w-full rounded-none">
-                                                                    <SelectValue placeholder="Action Taker" />
+                                                                    <SelectValue placeholder={data.member.actionTaker} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
                                                                     <SelectGroup>
@@ -719,7 +736,7 @@ const Member = (props) => {
 
                                                 <div className="flex items-center space-x-2 p-2">
                                                     <Button variant='destructive' className='rounded-none'>Finalize</Button>
-                                                    <Button type='submit' className='rounded-none'>{isSubmitting ? 'Processing...' : 'Submit'}</Button>
+                                                    <Button type='submit' className='rounded-none'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                                                 </div>
                                             </form>
                                         ) : (
