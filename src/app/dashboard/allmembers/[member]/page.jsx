@@ -138,16 +138,16 @@ const Member = (props) => {
                 email,
                 dob,
                 secondaryContactNo,
-                gender,
+                gender: gender || data.gender,
                 address,
-                status,
-                membershipOption,
-                membershipType,
-                membershipShift,
+                status: status || data.status,
+                membershipOption: membershipOption || data.membershipOption,
+                membershipType: membershipType || data.membershipType,
+                membershipShift: membershipShift || data.membershipShift,
                 membershipDate,
                 membershipDuration,
                 membershipExpireDate,
-                paymentMethod,
+                paymentMethod: paymentMethod || data.paymentMethod,
                 discountAmmount,
                 discountReason,
                 discountCode,
@@ -158,7 +158,7 @@ const Member = (props) => {
                 dueAmmount: 0,
                 referenceCode,
                 remark,
-                actionTaker
+                actionTaker: actionTaker || data.actionTaker
             };
 
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
