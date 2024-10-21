@@ -1,3 +1,5 @@
+'use client'
+
 import {
     Pagination,
     PaginationContent,
@@ -18,7 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -38,9 +40,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 
 const MemberAttendance = () => {
+
+    const [memberId, setMemberId] = useState('');
+    const [validationResult, setValidationResult] = useState(null);
+
+    const handleValidation = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/validate-qr`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ memberId })
+            })
+
+            const validationResponseResult = await response.json();
+            console.log("Validation result: ", validationResponseResult);
+            setValidationResult(validationResponseResult);
+            return validationResponseResult;
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
+    useEffect(() => {
+        handleValidation()
+    }, [memberId]);
 
     const invoices = [
         {
@@ -118,12 +147,18 @@ const MemberAttendance = () => {
                         </div>
                         <div className="grid grid-cols-1 space-y-2 px-2">
                             <Input
-                                className='w-full bg-gray-100 rounded-none '
+                                type='text'
+                                placeholder='Scan QR code here'
+                                value={memberId}
+                                onChange={(e) => setMemberId(e.target.value)}
+                                autoFocus
+                                className='w-full focus:border-blue-600 rounded-none '
                             />
 
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Full Name</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
@@ -131,6 +166,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Option</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
@@ -138,6 +174,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Category</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
@@ -145,6 +182,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Date</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
@@ -153,14 +191,15 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Renew Date</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
 
-
                             <div className="flex justify-between items-center">
                                 <Label className='3/12'>Expire Date</Label>
                                 <Input
+                                    disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
                             </div>
