@@ -47,8 +47,10 @@ const MemberAttendance = () => {
 
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleValidation = async () => {
+        setLoading(true);
         try {
             const response = await fetch(`http://localhost:5000/api/validate-qr/${memberId}`, {
                 method: "POST",
@@ -58,8 +60,13 @@ const MemberAttendance = () => {
                 credentials: 'include',
                 body: JSON.stringify({ memberId })
             });
+            if (response.ok) {
+                setLoading(false);
+            };
+            if (response.status === 403) {
+                alert("Membership has expired!")
+            }
             const validationResponseResult = await response.json();
-            console.log("Validation result: ", validationResponseResult);
             setValidationResult(validationResponseResult);
             return validationResponseResult;
         } catch (error) {
@@ -134,6 +141,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Full Name</Label>
                                 <Input
+                                    value={validationResult?.member?.fullName || ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -142,6 +150,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Option</Label>
                                 <Input
+                                    value={validationResult?.member?.membershipOption || ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -150,6 +159,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Category</Label>
                                 <Input
+                                    value={validationResult?.member?.membershipType || ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -158,6 +168,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Membership Date</Label>
                                 <Input
+                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -167,6 +178,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='w-3/12'>Renew Date</Label>
                                 <Input
+                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -175,6 +187,7 @@ const MemberAttendance = () => {
                             <div className="flex justify-between items-center">
                                 <Label className='3/12'>Expire Date</Label>
                                 <Input
+                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipExpireDate).toISOString().split('T')[0] : ''}
                                     disabled
                                     className='w-9/12 bg-gray-100 rounded-none '
                                 />
@@ -184,6 +197,7 @@ const MemberAttendance = () => {
                             <div className="w-full flex justify-between items-start">
                                 <Label className='w-3/12'>Message</Label>
                                 <Textarea
+                                    value={validationResult?.message || ''}
                                     disabled
                                     className='w-9/12 bg-gray-200 rounded-none cursor-not-allowed h-40'
                                 />
@@ -333,4 +347,4 @@ const MemberAttendance = () => {
     )
 }
 
-export default MemberAttendance
+export default MemberAttendance;
