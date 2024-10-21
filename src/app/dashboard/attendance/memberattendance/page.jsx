@@ -50,14 +50,14 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/validate-qr`, {
+            const response = await fetch(`http://localhost:5000/api/validate-qr/${memberId}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify({ memberId })
-            })
-
+            });
             const validationResponseResult = await response.json();
             console.log("Validation result: ", validationResponseResult);
             setValidationResult(validationResponseResult);
@@ -77,30 +77,6 @@ const MemberAttendance = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
         }
     ];
 
