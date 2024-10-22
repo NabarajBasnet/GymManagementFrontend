@@ -41,13 +41,73 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import Loader from "@/components/Loader/Loader";
 
 
 const MemberAttendance = () => {
 
+    const queryClient = useQueryClient()
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const getTemporaryAttendanceHistory = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
+    const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
+        queryKey: ['temporaryMemberAttendanceHistory'],
+        queryFn: getTemporaryAttendanceHistory
+    });
+
+    console.log('History: ', temporaryMemberAttendanceHistory);
+
+    const postTemporaryAttendanceHistory = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    memberId,
+                    fullName: validationResult.member.fullName,
+                    membershipOption: validationResult.member.membershipOption
+                })
+            });
+            const responseBody = await response.json();
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
+    const postPermamentAttendanceHistory = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/permanent-member-attendance-history`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    memberId,
+                    fullName: validationResult.member.fullName,
+                    membershipOption: validationResult.member.membershipOption
+                })
+            });
+            const responseBody = await response.json();
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
 
     const handleValidation = async () => {
         setLoading(true);
@@ -63,6 +123,14 @@ const MemberAttendance = () => {
             if (response.ok) {
                 setLoading(false);
             };
+
+            if (response.status === 200) {
+                queryClient.invalidateQueries(['temporaryMemberAttendanceHistory']);
+                postPermamentAttendanceHistory();
+                postTemporaryAttendanceHistory();
+                getTemporaryAttendanceHistory();
+            };
+
             if (response.status === 403) {
                 alert("Membership has expired!")
             }
@@ -218,128 +286,73 @@ const MemberAttendance = () => {
                                         />
                                     </div>
                                 </div>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[100px]">Invoice</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Method</TableHead>
-                                            <TableHead className="text-right">Amount</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {invoices.map((invoice) => (
-                                            <TableRow key={invoice.invoice}>
-                                                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                                <TableCell>{invoice.paymentStatus}</TableCell>
-                                                <TableCell>{invoice.paymentMethod}</TableCell>
-                                                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TableCell colSpan={3}>Total Member Attendance</TableCell>
-                                            <TableCell className="text-right">5</TableCell>
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
+                                {
+                                    isAttendanceHistory ? (
+                                        <Loader />
+                                    ) : (
+                                        <div>
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="w-[100px]">Member Id</TableHead>
+                                                        <TableHead>Full Name</TableHead>
+                                                        <TableHead>Option</TableHead>
+                                                        <TableHead className="text-right">Check In</TableHead>
+                                                        <TableHead className="text-right">Expires In</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {temporaryMemberAttendanceHistory?.temporarymemberattendancehistory.map((attendance) => (
+                                                        <TableRow key={attendance._id}>
+                                                            <TableCell className="font-medium">{attendance.memberId}</TableCell>
+                                                            <TableCell>{attendance.fullName}</TableCell>
+                                                            <TableCell>{attendance.membershipOption}</TableCell>
+                                                            <TableCell className="text-right">{attendance.checkInTime}</TableCell>
+                                                            <TableCell className="text-right">{attendance.expiration}</TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                                <TableFooter>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3}>Total Member Attendance</TableCell>
+                                                        <TableCell className="text-right">5</TableCell>
+                                                    </TableRow>
+                                                </TableFooter>
+                                            </Table>
 
-                                <div className="py-4">
-                                    <Pagination>
-                                        <PaginationContent>
-                                            <PaginationItem>
-                                                <PaginationPrevious href="#" />
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#">1</PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#" isActive>
-                                                    2
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#">3</PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationEllipsis />
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationNext href="#" />
-                                            </PaginationItem>
-                                        </PaginationContent>
-                                    </Pagination>
-                                </div>
+                                            <div className="py-4">
+                                                <Pagination>
+                                                    <PaginationContent>
+                                                        <PaginationItem>
+                                                            <PaginationPrevious href="#" />
+                                                        </PaginationItem>
+                                                        <PaginationItem>
+                                                            <PaginationLink href="#">1</PaginationLink>
+                                                        </PaginationItem>
+                                                        <PaginationItem>
+                                                            <PaginationLink href="#" isActive>
+                                                                2
+                                                            </PaginationLink>
+                                                        </PaginationItem>
+                                                        <PaginationItem>
+                                                            <PaginationLink href="#">3</PaginationLink>
+                                                        </PaginationItem>
+                                                        <PaginationItem>
+                                                            <PaginationEllipsis />
+                                                        </PaginationItem>
+                                                        <PaginationItem>
+                                                            <PaginationNext href="#" />
+                                                        </PaginationItem>
+                                                    </PaginationContent>
+                                                </Pagination>
+                                            </div>
+                                        </div>
+                                    )
+                                }
+
                             </div>
                         </div>
 
-                        <div className="w-full">
-                            <h1 className="p-2">Guest Attendance Record</h1>
-                            <div className="flex justify-center p-2">
-                                <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                                    <IoSearch className="text-xl" />
-                                    <Input
-                                        className='w-full border-none bg-none'
-                                        placeholder='Search Guest Member...'
-                                    />
-                                </div>
-                            </div>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Invoice</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {invoices.map((invoice) => (
-                                        <TableRow key={invoice.invoice}>
-                                            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                            <TableCell>{invoice.paymentStatus}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={3}>Total Guest Member Attendance</TableCell>
-                                        <TableCell className="text-right">5</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
-
-                            <div className="py-4">
-                                <Pagination>
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <PaginationPrevious href="#" />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">1</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#" isActive>
-                                                2
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">3</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationEllipsis />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationNext href="#" />
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            </div>
-
-                        </div>
                     </div>
                 </div>
             </div>
