@@ -29,7 +29,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useForm } from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const newMemberRegistrationForm = () => {
 
@@ -52,6 +52,7 @@ const newMemberRegistrationForm = () => {
 
     // Date Detais
     const [membershipDate, setMembershipDate] = useState(new Date());
+    const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
     const {
@@ -63,7 +64,7 @@ const newMemberRegistrationForm = () => {
 
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
-        const newMembershipExpireDate = new Date(membershipDate)
+        const newMembershipExpireDate = new Date(membershipRenewDate)
 
         switch (duration) {
             case "1 Month":
@@ -87,6 +88,10 @@ const newMemberRegistrationForm = () => {
         }
         setMembershipExpireDate(newMembershipExpireDate.toISOString().split('T')[0]);
     };
+
+    useEffect(() => {
+        handleMembershipSelection(membershipDuration);
+    }, [membershipRenewDate])
 
 
     const onRegisterMember = async (data) => {
@@ -125,6 +130,7 @@ const newMemberRegistrationForm = () => {
                 membershipType,
                 membershipShift,
                 membershipDate,
+                membershipRenewDate,
                 membershipDuration,
                 membershipExpireDate,
                 paymentMethod,
@@ -141,7 +147,6 @@ const newMemberRegistrationForm = () => {
                 actionTaker
             };
 
-            console.log('Final member date: ', membersFinalData);
 
             const response = await fetch('http://localhost:5000/api/members', {
                 method: "POST",
@@ -439,7 +444,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Membership Start Date</Label>
+                                        <Label>Membership Date</Label>
                                         <Input
                                             value={membershipDate.toISOString().split('T')[0]}
                                             onChange={(e) => setMembershipDate(new Date(e.target.value))}
@@ -447,9 +452,17 @@ const newMemberRegistrationForm = () => {
                                             className='rounded-none focus:outline-none'
                                             placeholder='Membership Date'
                                         />
-                                        {/* {errors.membershipDate && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipDate.message}`}</p>
-                                        )}*/}
+                                    </div>
+
+                                    <div>
+                                        <Label>Membership Renew Date</Label>
+                                        <Input
+                                            value={membershipRenewDate.toISOString().split('T')[0]}
+                                            onChange={(e) => setMembershipRenewDate(new Date(e.target.value))}
+                                            type='date'
+                                            className='rounded-none focus:outline-none'
+                                            placeholder='Membership Date'
+                                        />
                                     </div>
 
                                     <div>

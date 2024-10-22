@@ -29,7 +29,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { useForm } from 'react-hook-form';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 
@@ -56,6 +56,7 @@ const Member = (props) => {
 
     // Date Detais
     const [membershipDate, setMembershipDate] = useState(new Date());
+    const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
     const {
@@ -67,7 +68,7 @@ const Member = (props) => {
 
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
-        const newMembershipExpireDate = new Date(membershipDate)
+        const newMembershipExpireDate = new Date(membershipRenewDate)
 
         switch (duration) {
             case "1 Month":
@@ -92,6 +93,10 @@ const Member = (props) => {
         setMembershipExpireDate(newMembershipExpireDate.toISOString().split('T')[0]);
     };
 
+    useEffect(() => {
+        handleMembershipSelection(membershipDuration);
+    }, [membershipRenewDate]);
+
     const getMemberDetails = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`);
@@ -107,8 +112,6 @@ const Member = (props) => {
         queryFn: getMemberDetails
     });
 
-    console.log('Data: ', data);
-
     const onEditMembersDetails = async (data) => {
         try {
             const {
@@ -119,8 +122,6 @@ const Member = (props) => {
                 dob,
                 secondaryContactNo,
                 address,
-
-                // Membership Information from data
 
                 // Payment Details from data
                 discountAmmount,
@@ -145,7 +146,8 @@ const Member = (props) => {
                 membershipType: membershipType || data.membershipType,
                 membershipShift: membershipShift || data.membershipShift,
                 membershipDate,
-                membershipDuration,
+                membershipRenewDate,
+                membershipDuration: membershipDuration || data.membershipDuration,
                 membershipExpireDate,
                 paymentMethod: paymentMethod || data.paymentMethod,
                 discountAmmount,
@@ -477,9 +479,18 @@ const Member = (props) => {
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Membership Date'
                                                             />
-                                                            {/* {errors.membershipDate && (
-                                                        <p className="text-sm font-semibold text-red-600">{`${errors.membershipDate.message}`}</p>
-                                                    )}*/}
+                                                        </div>
+
+                                                        <div>
+                                                            <Label>Membership Renew Date</Label>
+                                                            <Input
+                                                                value={membershipRenewDate.toISOString().split('T')[0]}
+                                                                onChange={(e) => setMembershipRenewDate(new Date(e.target.value))}
+                                                                type='date'
+                                                                defaultValue={new Date(data.member.membershipDate).toISOString().split('T')[0]}
+                                                                className='rounded-none focus:outline-none'
+                                                                placeholder='Membership Renew Date'
+                                                            />
                                                         </div>
 
                                                         <div>
