@@ -77,8 +77,6 @@ const MemberAttendance = () => {
         queryFn: getTemporaryAttendanceHistory
     });
 
-    console.log('History: ', temporaryMemberAttendanceHistory);
-
     const postTemporaryAttendanceHistory = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`, {
@@ -93,6 +91,7 @@ const MemberAttendance = () => {
                 })
             });
             const responseBody = await response.json();
+            console.log(responseBody);
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -133,7 +132,6 @@ const MemberAttendance = () => {
             };
 
             if (response.status === 200) {
-                queryClient.invalidateQueries(['temporaryMemberAttendanceHistory']);
                 postPermamentAttendanceHistory();
                 postTemporaryAttendanceHistory();
                 getTemporaryAttendanceHistory();

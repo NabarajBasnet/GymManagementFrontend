@@ -369,9 +369,9 @@ const newMemberRegistrationForm = () => {
                                             <SelectContent>
                                                 <SelectGroup>
                                                     <SelectLabel>Status</SelectLabel>
-                                                    <SelectItem value="Active">Active</SelectItem>
-                                                    <SelectItem value="Inactive">Inactive</SelectItem>
-                                                    <SelectItem value="OnHold">Hold</SelectItem>
+                                                    <SelectItem value="Active" className='bg-green-600'>Active</SelectItem>
+                                                    <SelectItem value="Inactive" className='bg-red-600'>Inactive</SelectItem>
+                                                    <SelectItem value="OnHold" className='bg-yellow-400'>Hold</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
