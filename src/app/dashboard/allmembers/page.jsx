@@ -44,6 +44,7 @@ import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { debounce } from "@mui/material";
 
 const AllMembers = () => {
 
@@ -73,18 +74,30 @@ const AllMembers = () => {
     };
 
     // Search Bar Dropdown
-    const [searchMemberHistory, setSearchMemberHistory] = useState([
-        'Nabaraj Basnet',
-        'Phill Heath',
-        'Ronie Colemon',
-        'Jay Cutlar',
-        'Lee Hany',
-        'Big Ramy',
-    ]);
-
     const searchRef = useRef(null);
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [results, setResults] = useState([]);
+
+    console.log("Results: ", results);
+
+    const fetchSearchResults = async (searchQuery) => {
+        if (searchQuery.trim() === '') {
+            setResults([]);
+            return;
+        };
+
+        const response = await fetch(`http://localhost:5000/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const data = await response.json();
+        setResults(data);
+    }
+
+    const debouncedFetchResults = debounce(fetchSearchResults, 300);
+
+    const handleChange = (event) => {
+        setSearchQuery(event.target.value);
+        debouncedFetchResults(event.target.value);
+    };
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -145,25 +158,129 @@ const AllMembers = () => {
                                 onFocus={() => setRenderSearchDropdown(!renderSearchDropdown)}
                                 className='rounded-none border-none'
                                 placeholder='Search member...'
+                                value={searchQuery}
+                                onChange={(e) => handleChange(e)}
                             />
                         </div>
-                        {
-                            renderSearchDropdown ? (
-                                <div className="w-full absolute top-full bg-white shadow-2xl z-40 max-h-48 overflow-y-auto">
-                                    {searchMemberHistory.map((item, index) => (
-                                        <div key={index} className="w-full">
-                                            <p
-                                                onClick={() => setRenderSearchDropdown(!renderSearchDropdown)}
-                                                className="hover:bg-gray-200 cursor-pointer py-2 px-4"
-                                            >
-                                                {item}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            ) : (
-                                <></>
-                            )
-                        }
+                        {renderSearchDropdown && (
+                            <div className="w-full absolute top-full bg-white shadow-2xl z-40 max-h-48 overflow-y-auto">
+                                {results && Array.isArray(results) && results.length > 0 ? (
+                                    <Table className='w-full overflow-x-auto'>
+                                        <TableHeader>
+                                            <TableRow className='bg-gray-200 text-black'>
+                                                <TableHead>Member Id</TableHead>
+                                                <TableHead>Full Name</TableHead>
+                                                <TableHead>Duration</TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Option</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Type</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Renew</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Expire</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>Contact No</TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Shift</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>
+                                                    <div className="flex items-center">
+                                                        <h1>Status</h1>
+                                                        <div className="flex flex-col justify-center -space-y-3">
+                                                            <MdArrowDropUp className="text-xl" />
+                                                            <MdArrowDropDown className="text-xl" />
+                                                        </div>
+                                                    </div>
+                                                </TableHead>
+                                                <TableHead>Fee</TableHead>
+                                                <TableHead>Action</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {results.map((member) => {
+                                                const textColor =
+                                                    member.status === 'Active' ? 'text-green-500' :
+                                                        member.status === 'OnHold' ? 'text-yellow-500' :
+                                                            'text-red-500';
+                                                return (
+                                                    <TableRow key={member._id} className={textColor}>
+                                                        <TableCell><p>{member._id}</p></TableCell>
+                                                        <TableCell>{member.fullName}</TableCell>
+                                                        <TableCell>{member.membershipDuration}</TableCell>
+                                                        <TableCell>{member.membershipOption}</TableCell>
+                                                        <TableCell>{member.membershipType}</TableCell>
+                                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{member.contactNo}</TableCell>
+                                                        <TableCell>{member.membershipShift}</TableCell>
+                                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                        <TableCell>{member.paidAmmount}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center justify-center space-x-1">
+                                                                <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                                    <FaUserEdit className='cursor-pointer text-md' />
+                                                                </Link>
+                                                                <MdEmail className='cursor-pointer text-md' />
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })}
+                                        </TableBody>
+                                        <TableFooter>
+                                            <TableRow>
+                                                <TableCell colSpan={3}>Total Members</TableCell>
+                                                <TableCell className="text-right">{totalMembers}</TableCell>
+                                            </TableRow>
+                                        </TableFooter>
+                                    </Table>
+                                ) : (
+                                    <Table className='w-full overflow-x-auto'>
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell colSpan={13} className="text-center">
+                                                    No members found.
+                                                </TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>
+                                )}
+                            </div>
+                        )}
                     </div>
 
                     <div className="w-full flex justify-start">
@@ -247,7 +364,7 @@ const AllMembers = () => {
                                                     <TableCell>{member.membershipDuration}</TableCell>
                                                     <TableCell>{member.membershipOption}</TableCell>
                                                     <TableCell>{member.membershipType}</TableCell>
-                                                    <TableCell>{new Date(member.membershipDate).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{member.contactNo}</TableCell>
                                                     <TableCell>{member.membershipShift}</TableCell>
