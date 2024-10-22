@@ -52,6 +52,16 @@ const MemberAttendance = () => {
     const [validationResult, setValidationResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const reloadPage = () => {
+        window.location.reload();
+    };
+
+    const onEnterPres = (e) => {
+        if (e.key === 'Enter') {
+            reloadPage();
+        }
+    };
+
     const getTemporaryAttendanceHistory = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`);
@@ -83,7 +93,6 @@ const MemberAttendance = () => {
                 })
             });
             const responseBody = await response.json();
-
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -103,7 +112,6 @@ const MemberAttendance = () => {
                 })
             });
             const responseBody = await response.json();
-
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -194,7 +202,7 @@ const MemberAttendance = () => {
                 <div className='w-full md:flex md:space-x-4 space-y-4 md:space-y-0 justify-between py-4 md:py-0 px-4'>
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className='w-full flex justify-start p-2'>
-                            <Button className='rounded-none'>Refresh</Button>
+                            <Button className='rounded-none' onClick={reloadPage}>Refresh</Button>
                         </div>
                         <div className="grid grid-cols-1 space-y-2 px-2">
                             <Input
@@ -204,6 +212,7 @@ const MemberAttendance = () => {
                                 onChange={(e) => setMemberId(e.target.value)}
                                 autoFocus
                                 className='w-full focus:border-blue-600 rounded-none '
+                                onKeyPress={(e) => onEnterPres(e)}
                             />
 
                             <div className="flex justify-between items-center">
