@@ -129,6 +129,9 @@ const MemberAttendance = () => {
             });
             if (response.ok) {
                 setLoading(false);
+                postPermamentAttendanceHistory();
+                postTemporaryAttendanceHistory();
+                getTemporaryAttendanceHistory();
             };
 
             if (response.status === 200) {
@@ -152,14 +155,6 @@ const MemberAttendance = () => {
         handleValidation()
     }, [memberId]);
 
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        }
-    ];
 
     return (
         <div className='w-full'>

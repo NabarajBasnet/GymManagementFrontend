@@ -1,5 +1,6 @@
 'use client'
 
+import { IoMdClose } from "react-icons/io";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import * as React from "react"
 import { MdEmail } from "react-icons/md";
@@ -73,16 +74,6 @@ const AllMembers = () => {
         setCurrentPage(page);
     };
 
-    // Search Bar Dropdown
-    const [searchMemberHistory, setSearchMemberHistory] = useState([
-        'Nabaraj Basnet',
-        'Phill Heath',
-        'Ronie Colemon',
-        'Jay Cutlar',
-        'Lee Hany',
-        'Big Ramy',
-    ]);
-
     const searchRef = useRef(null);
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
@@ -97,7 +88,6 @@ const AllMembers = () => {
 
         const response = await fetch(`http://localhost:5000/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
-        console.log('Data: ',data.members);
         setResults(data.members);
     }
 
@@ -173,14 +163,72 @@ const AllMembers = () => {
                         </div>
                         {
                             renderSearchDropdown ? (
-                                <div className="w-full absolute top-full bg-white shadow-2xl z-50 max-h-48 overflow-y-auto">
-                                    {Array.isArray(results) && results.length > 0 ? (
-                                        results.map((member) => (
-                                            <p key={member._id}>{member._id}: {member.fullName}</p>
-                                        ))
-                                    ) : (
-                                        <p>No members found.</p>
-                                    )}
+                                <div className="w-full absolute top-full bg-white shadow-2xl z-50 overflow-auto">
+                                    <div className='w-full flex bg-gray-100 justify-between items-center py-3 px-4'>
+                                        <p></p>
+                                        <IoMdClose
+                                            className="cursor-pointer text-lg"
+                                            onClick={() => setRenderSearchDropdown(false)}
+                                        />
+                                    </div>
+                                    <div className="w-full overflow-auto h-80">
+                                        <Table className='w-full'>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Member Id</TableHead>
+                                                    <TableHead>Full Name</TableHead>
+                                                    <TableHead>Duration</TableHead>
+                                                    <TableHead>Option</TableHead>
+                                                    <TableHead>Type</TableHead>
+                                                    <TableHead>Renew</TableHead>
+                                                    <TableHead>Expire</TableHead>
+                                                    <TableHead>Contact No</TableHead>
+                                                    <TableHead>Shift</TableHead>
+                                                    <TableHead>Status</TableHead>
+                                                    <TableHead>Fee</TableHead>
+                                                    <TableHead>Action</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+
+                                                {Array.isArray(results) && results.length > 0 ? (
+                                                    results.map((member) => {
+                                                        const textColor =
+                                                            member.status === 'Active' ? 'text-green-500' :
+                                                                member.status === 'OnHold' ? 'text-yellow-500' :
+                                                                    'text-red-500';
+                                                        return (
+                                                            <TableRow key={member._id} className={textColor}>
+                                                                <TableCell><p>{member._id}</p></TableCell>
+                                                                <TableCell>{member.fullName}</TableCell>
+                                                                <TableCell>{member.membershipDuration}</TableCell>
+                                                                <TableCell>{member.membershipOption}</TableCell>
+                                                                <TableCell>{member.membershipType}</TableCell>
+                                                                <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                                <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                                <TableCell>{member.contactNo}</TableCell>
+                                                                <TableCell>{member.membershipShift}</TableCell>
+                                                                <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                                <TableCell>{member.paidAmmount}</TableCell>
+                                                                <TableCell>
+                                                                    <div className="flex items-center justify-center space-x-1">
+                                                                        <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                                            <FaUserEdit className='cursor-pointer text-md' />
+                                                                        </Link>
+                                                                        <MdEmail className='cursor-pointer text-md' />
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <div className="w-full absolute top-full bg-white shadow-2xl z-50 h-16 overflow-y-auto">
+                                                        <p>No members found.</p>
+                                                    </div>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
                                 </div>
                             ) : null
                         }
