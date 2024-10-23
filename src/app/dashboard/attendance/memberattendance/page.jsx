@@ -50,7 +50,7 @@ const MemberAttendance = () => {
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
     const [loading, setLoading] = useState(false);
-
+    
     const getTemporaryAttendanceHistory = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`);
@@ -261,8 +261,31 @@ const MemberAttendance = () => {
                                                             <TableCell className="font-medium">{attendance.memberId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.membershipOption}</TableCell>
-                                                            <TableCell className="text-right">{attendance.checkInTime}</TableCell>
-                                                            <TableCell className="text-right">{attendance.expiration}</TableCell>
+                                                            <TableCell>
+                                                                {new Date(attendance.checkInTime).toLocaleDateString('en-GB', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                })}{" "}
+                                                                {new Date(attendance.checkInTime).toLocaleTimeString('en-GB', {
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    second: '2-digit',
+                                                                })}
+                                                            </TableCell>
+
+                                                            <TableCell>
+                                                                {new Date(attendance.expiration).toLocaleDateString('en-GB', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                })}{" "}
+                                                                {new Date(attendance.expiration).toLocaleTimeString('en-GB', {
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    second: '2-digit',
+                                                                })}
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))}
                                                 </TableBody>
