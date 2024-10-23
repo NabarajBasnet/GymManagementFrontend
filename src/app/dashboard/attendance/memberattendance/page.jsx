@@ -72,7 +72,7 @@ const MemberAttendance = () => {
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
 
 
-    const halndlePageChange = (page) => {
+    const handlePageChange = (page) => {
         setCurentPage(page);
     };
 
