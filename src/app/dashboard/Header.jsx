@@ -1,5 +1,6 @@
 "use client";
 
+import { HiUsers } from "react-icons/hi2";
 import { IoSearch } from "react-icons/io5";
 import Badge from '@mui/material/Badge';
 import { IoIosNotifications } from "react-icons/io";
@@ -139,6 +140,11 @@ const Header = () => {
             icon: MdPayments,
             title: 'Payment Details',
             link: '/dashboard/paymentdetails',
+        },
+        {
+            icon: HiUsers,
+            title: 'Users',
+            link: '/dashboard/users',
         },
         {
             icon: FaUsersGear,

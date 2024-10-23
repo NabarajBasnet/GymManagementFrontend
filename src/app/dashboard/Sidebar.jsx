@@ -1,5 +1,6 @@
 'use client';
 
+import { HiUsers } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import '../globals.css'
 import {
@@ -68,6 +69,11 @@ const Sidebar = () => {
             icon: MdPayments,
             title: 'Payment Details',
             link: '/dashboard/paymentdetails',
+        },
+        {
+            icon: HiUsers,
+            title: 'Users',
+            link: '/dashboard/users',
         },
         {
             icon: FaUsersGear,

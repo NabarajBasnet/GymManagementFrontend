@@ -41,7 +41,6 @@ const SignUp = () => {
                 })
                 reset();
             }
-            console.log('Response : ', response);
         } catch (error) {
             console.log("Error: ", error);
         }
