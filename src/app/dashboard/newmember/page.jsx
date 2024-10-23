@@ -112,6 +112,7 @@ const newMemberRegistrationForm = () => {
     // Payment Details
 
     const [finalAmmount, setFinalAmmount] = useState('');
+    const [discountAmmount, setDiscountAmmount] = useState('');
     const [paidAmmount, setPaidAmmount] = useState('');
     const [dueAmmount, setDueAmmount] = useState('');
 
@@ -150,7 +151,7 @@ const newMemberRegistrationForm = () => {
             }
 
             const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
-            setFinalAmmount(admissionFee + selectedFee);
+            setFinalAmmount(admissionFee + selectedFee - discountAmmount);
         } else {
             setFinalAmmount(0);
         }
@@ -159,7 +160,7 @@ const newMemberRegistrationForm = () => {
 
     useEffect(() => {
         calculateFinalAmmount()
-    }, [membershipOption, membershipType, membershipDuration]);
+    }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
 
     const {
         register,
@@ -214,7 +215,6 @@ const newMemberRegistrationForm = () => {
                 // Membership Information from data
 
                 // Payment Details from data
-                discountAmmount,
                 discountReason,
                 discountCode,
                 paidAmmount,
@@ -634,9 +634,8 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Discount Ammount</Label>
                                         <Input
-                                            {
-                                            ...register('discountAmmount')
-                                            }
+                                            value={discountAmmount}
+                                            onChange={(e) => setDiscountAmmount(e.target.value)}
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Discount Ammount'
