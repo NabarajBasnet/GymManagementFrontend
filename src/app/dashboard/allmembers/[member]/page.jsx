@@ -243,7 +243,6 @@ const Member = (props) => {
                 discountAmmount,
                 discountReason,
                 discountCode,
-                paidAmmount,
                 receiptNo,
                 referenceCode,
                 remark
@@ -270,10 +269,10 @@ const Member = (props) => {
                 discountReason,
                 discountCode,
                 admissionFee: 1000,
-                finalAmmount: 5000,
+                finalAmmount,
                 paidAmmount,
                 receiptNo,
-                dueAmmount: 0,
+                dueAmmount,
                 referenceCode,
                 remark,
                 actionTaker: actionTaker || data.actionTaker
@@ -847,7 +846,6 @@ const Member = (props) => {
                                                 </div>
 
                                                 <div className="flex items-center space-x-2 p-2">
-                                                    <Button variant='destructive' className='rounded-none'>Finalize</Button>
                                                     <Button type='submit' className='rounded-none'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                                                 </div>
                                             </form>
