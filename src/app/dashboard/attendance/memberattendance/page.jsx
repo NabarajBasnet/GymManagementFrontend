@@ -89,6 +89,10 @@ const MemberAttendance = () => {
             const validationResponseResult = await response.json();
             setValidationResult(validationResponseResult);
 
+            if (response.status === 400) {
+                alert('Member already checkedin!')
+            }
+
             if (response.status === 200) {
                 queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
             } else if (response.status === 403) {
@@ -303,7 +307,7 @@ const MemberAttendance = () => {
                                                 <TableFooter>
                                                     <TableRow>
                                                         <TableCell colSpan={3}>Total Member Attendance</TableCell>
-                                                        <TableCell className="text-right">5</TableCell>
+                                                        <TableCell className="text-right">{totalAttendance}</TableCell>
                                                     </TableRow>
                                                 </TableFooter>
                                             </Table>
