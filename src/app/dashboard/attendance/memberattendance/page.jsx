@@ -50,10 +50,13 @@ const MemberAttendance = () => {
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
     const [loading, setLoading] = useState(false);
-    
-    const getTemporaryAttendanceHistory = async () => {
+    const [currentPage, setCurentPage] = useState(1);
+    const limit = 6;
+
+    const getTemporaryAttendanceHistory = async ({ queryKey }) => {
+        const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`);
+            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -61,9 +64,17 @@ const MemberAttendance = () => {
     };
 
     const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
-        queryKey: ['temporaryMemberAttendanceHistory'],
+        queryKey: ['temporaryMemberAttendanceHistory', currentPage],
         queryFn: getTemporaryAttendanceHistory,
     });
+
+
+    const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
+
+
+    const halndlePageChange = (page) => {
+        setCurentPage(page);
+    };
 
     const handleValidation = async () => {
         setLoading(true);
@@ -298,27 +309,23 @@ const MemberAttendance = () => {
                                             </Table>
 
                                             <div className="py-4">
-                                                <Pagination>
+                                                <Pagination className={'cursor-pointer'}>
                                                     <PaginationContent>
                                                         <PaginationItem>
-                                                            <PaginationPrevious href="#" />
+                                                            <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                                         </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#">1</PaginationLink>
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#" isActive>
-                                                                2
-                                                            </PaginationLink>
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#">3</PaginationLink>
-                                                        </PaginationItem>
+                                                        {[...Array(totalPages)].map((_, i) => (
+                                                            <PaginationItem key={i}>
+                                                                <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                                                    {i + 1}
+                                                                </PaginationLink>
+                                                            </PaginationItem>
+                                                        ))}
                                                         <PaginationItem>
                                                             <PaginationEllipsis />
                                                         </PaginationItem>
                                                         <PaginationItem>
-                                                            <PaginationNext href="#" />
+                                                            <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                                         </PaginationItem>
                                                     </PaginationContent>
                                                 </Pagination>
