@@ -33,6 +33,60 @@ import { useEffect, useState } from "react";
 
 const newMemberRegistrationForm = () => {
 
+    const membershipPlans = [
+        {
+            title: "ADMISSION FEE",
+            type: "Admission",
+            admissionFee: 1000
+        },
+        {
+            regularMemberships: [
+                {
+                    option: "Regular",
+                    type: "Gym",
+                    gymRegularFees: {
+                        "1 Month": 4000,
+                        "3 Months": 10500,
+                        "6 Months": 18000,
+                        "12 Months": 30000
+                    }
+                },
+                {
+                    option: "Regular",
+                    type: "Gym & Cardio",
+                    gymCardioRegularFees: {
+                        "1 Month": 5000,
+                        "3 Months": 12000,
+                        "6 Months": 21000,
+                        "12 Months": 36000
+                    }
+                },
+            ],
+            daytimeMemberships: [
+                {
+                    option: "Day",
+                    type: "Gym",
+                    gymDayFees: {
+                        "1 Month": 3000,
+                        "3 Months": 7500,
+                        "6 Months": 12000,
+                        "12 Months": 18000
+                    }
+                },
+                {
+                    option: "Day",
+                    type: "Gym & Cardio",
+                    gymCardioDayFees: {
+                        "1 Month": 4000,
+                        "3 Months": 10500,
+                        "6 Months": 18000,
+                        "12 Months": 30000
+                    }
+                },
+            ]
+        }
+    ];
+
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
 
@@ -54,6 +108,58 @@ const newMemberRegistrationForm = () => {
     const [membershipDate, setMembershipDate] = useState(new Date());
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
+
+    // Payment Details
+
+    const [finalAmmount, setFinalAmmount] = useState('');
+    const [paidAmmount, setPaidAmmount] = useState('');
+    const [dueAmmount, setDueAmmount] = useState('');
+
+    const calculateFinalAmmount = () => {
+        let selectedPlan = null;
+
+        membershipPlans.forEach((plan) => {
+            if (plan.regularMemberships) {
+                plan.regularMemberships.forEach((regular) => {
+                    if (regular.option === membershipOption && regular.type === membershipType) {
+                        selectedPlan = regular;
+                    }
+                });
+            }
+
+            if (plan.daytimeMemberships) {
+                plan.daytimeMemberships.forEach((day) => {
+                    if (day.option === membershipOption && day.type === membershipType) {
+                        selectedPlan = day;
+                    }
+                });
+            }
+        });
+
+        if (selectedPlan) {
+            let selectedFee = 0;
+
+            if (membershipOption === "Regular" && membershipType === "Gym") {
+                selectedFee = selectedPlan.gymRegularFees[membershipDuration];
+            } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
+                selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
+            } else if (membershipOption === "Day" && membershipType === "Gym") {
+                selectedFee = selectedPlan.gymDayFees[membershipDuration];
+            } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
+                selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
+            }
+
+            const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
+            setFinalAmmount(admissionFee + selectedFee);
+        } else {
+            setFinalAmmount(0);
+        }
+
+    };
+
+    useEffect(() => {
+        calculateFinalAmmount()
+    }, [membershipOption, membershipType, membershipDuration]);
 
     const {
         register,
@@ -138,7 +244,7 @@ const newMemberRegistrationForm = () => {
                 discountReason,
                 discountCode,
                 admissionFee: 1000,
-                finalAmmount: 5000,
+                finalAmmount,
                 paidAmmount,
                 receiptNo,
                 dueAmmount: 0,
@@ -597,6 +703,7 @@ const newMemberRegistrationForm = () => {
                                             }
                                             type='text'
                                             disabled
+                                            value={finalAmmount}
                                             className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Final Ammount'
                                         />
