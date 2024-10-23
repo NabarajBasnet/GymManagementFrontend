@@ -46,27 +46,15 @@ import Loader from "@/components/Loader/Loader";
 
 
 const MemberAttendance = () => {
-
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const reloadPage = () => {
-        window.location.reload();
-    };
-
-    const onEnterPres = (e) => {
-        if (e.key === 'Enter') {
-            reloadPage();
-        }
-    };
-
     const getTemporaryAttendanceHistory = async () => {
         try {
             const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`);
-            const responseBody = await response.json();
-            return responseBody;
+            return await response.json();
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -74,43 +62,40 @@ const MemberAttendance = () => {
 
     const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
         queryKey: ['temporaryMemberAttendanceHistory'],
-        queryFn: getTemporaryAttendanceHistory
+        queryFn: getTemporaryAttendanceHistory,
     });
 
     const postTemporaryAttendanceHistory = async () => {
+        if (!validationResult || !validationResult.member) return;
         try {
-            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     memberId,
                     fullName: validationResult.member.fullName,
-                    membershipOption: validationResult.member.membershipOption
-                })
+                    membershipOption: validationResult.member.membershipOption,
+                }),
             });
-            const responseBody = await response.json();
-            console.log(responseBody);
+            return await response.json();
         } catch (error) {
             console.log('Error: ', error);
         }
     };
 
     const postPermamentAttendanceHistory = async () => {
+        if (!validationResult || !validationResult.member) return;
         try {
-            const response = await fetch(`http://localhost:5000/api/permanent-member-attendance-history`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+            const response = await fetch(`http://localhost:5000/api/permanent-member-attendance-history/create`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     memberId,
                     fullName: validationResult.member.fullName,
-                    membershipOption: validationResult.member.membershipOption
-                })
+                    membershipOption: validationResult.member.membershipOption,
+                }),
             });
-            const responseBody = await response.json();
+            return await response.json();
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -120,41 +105,46 @@ const MemberAttendance = () => {
         setLoading(true);
         try {
             const response = await fetch(`http://localhost:5000/api/validate-qr/${memberId}`, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({ memberId })
+                body: JSON.stringify({ memberId }),
             });
-            if (response.ok) {
-                setLoading(false);
-                postPermamentAttendanceHistory();
-                postTemporaryAttendanceHistory();
-                getTemporaryAttendanceHistory();
-            };
 
-            if (response.status === 200) {
-                postPermamentAttendanceHistory();
-                postTemporaryAttendanceHistory();
-                getTemporaryAttendanceHistory();
-            };
-
-            if (response.status === 403) {
-                alert("Membership has expired!")
-            }
             const validationResponseResult = await response.json();
             setValidationResult(validationResponseResult);
-            return validationResponseResult;
+
+            if (response.status === 200) {
+                await postPermamentAttendanceHistory();
+                await postTemporaryAttendanceHistory();
+                queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
+            } else if (response.status === 403) {
+                alert('Membership has expired!');
+            }
+
+            setLoading(false);
         } catch (error) {
             console.log('Error: ', error);
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        handleValidation()
+        if (memberId) {
+            handleValidation();
+        }
     }, [memberId]);
 
+    const reloadPage = async () => {
+        queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
+        window.location.reload();
+    };
+
+    const onEnterPres = (e) => {
+        if (e.key === 'Enter') {
+            reloadPage();
+        }
+    };
 
     return (
         <div className='w-full'>
