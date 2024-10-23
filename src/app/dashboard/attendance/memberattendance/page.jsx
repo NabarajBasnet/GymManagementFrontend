@@ -65,42 +65,6 @@ const MemberAttendance = () => {
         queryFn: getTemporaryAttendanceHistory,
     });
 
-    const postTemporaryAttendanceHistory = async () => {
-        if (!validationResult || !validationResult.member) return;
-        try {
-            const response = await fetch(`http://localhost:5000/api/temporary-member-attendance-history/create`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    memberId,
-                    fullName: validationResult.member.fullName,
-                    membershipOption: validationResult.member.membershipOption,
-                }),
-            });
-            return await response.json();
-        } catch (error) {
-            console.log('Error: ', error);
-        }
-    };
-
-    const postPermamentAttendanceHistory = async () => {
-        if (!validationResult || !validationResult.member) return;
-        try {
-            const response = await fetch(`http://localhost:5000/api/permanent-member-attendance-history/create`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    memberId,
-                    fullName: validationResult.member.fullName,
-                    membershipOption: validationResult.member.membershipOption,
-                }),
-            });
-            return await response.json();
-        } catch (error) {
-            console.log('Error: ', error);
-        }
-    };
-
     const handleValidation = async () => {
         setLoading(true);
         try {
@@ -115,8 +79,6 @@ const MemberAttendance = () => {
             setValidationResult(validationResponseResult);
 
             if (response.status === 200) {
-                await postPermamentAttendanceHistory();
-                await postTemporaryAttendanceHistory();
                 queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
             } else if (response.status === 403) {
                 alert('Membership has expired!');
