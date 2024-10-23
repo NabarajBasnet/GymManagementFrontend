@@ -116,6 +116,15 @@ const newMemberRegistrationForm = () => {
     const [paidAmmount, setPaidAmmount] = useState('');
     const [dueAmmount, setDueAmmount] = useState('');
 
+    const calculateDueAmmount = () => {
+        const due = finalAmmount - paidAmmount;
+        setDueAmmount(due);
+    };
+
+    useEffect(() => {
+        calculateDueAmmount();
+    }, [finalAmmount, discountAmmount, paidAmmount]);
+
     const calculateFinalAmmount = () => {
         let selectedPlan = null;
 
@@ -155,7 +164,6 @@ const newMemberRegistrationForm = () => {
         } else {
             setFinalAmmount(0);
         }
-
     };
 
     useEffect(() => {
@@ -166,7 +174,8 @@ const newMemberRegistrationForm = () => {
         register,
         reset,
         formState: { errors, isSubmitting },
-        handleSubmit
+        handleSubmit,
+        setError
     } = useForm();
 
     const handleMembershipSelection = (duration) => {
@@ -212,12 +221,9 @@ const newMemberRegistrationForm = () => {
                 secondaryContactNo,
                 address,
 
-                // Membership Information from data
-
                 // Payment Details from data
                 discountReason,
                 discountCode,
-                paidAmmount,
                 receiptNo,
                 referenceCode,
                 remark
@@ -247,12 +253,11 @@ const newMemberRegistrationForm = () => {
                 finalAmmount,
                 paidAmmount,
                 receiptNo,
-                dueAmmount: 0,
+                dueAmmount,
                 referenceCode,
                 remark,
                 actionTaker
             };
-
 
             const response = await fetch('http://localhost:5000/api/members', {
                 method: "POST",
@@ -640,29 +645,21 @@ const newMemberRegistrationForm = () => {
                                             className='rounded-none focus:outline-none'
                                             placeholder='Discount Ammount'
                                         />
-                                        {errors.discountAmmount && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.discountAmmount.message}`}</p>
-                                        )}
                                     </div>
 
                                     <div>
                                         <Label>Discount Reason</Label>
                                         <Input
                                             {
-                                            ...register('discountReason', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Mention discount reason!"
-                                                }
-                                            })
+                                            ...register('discountReason')
                                             }
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Discount Reason'
                                         />
-                                        {errors.discountReason && (
+                                        {/* {errors.discountReason && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.discountReason.message}`}</p>
-                                        )}
+                                        )} */}
                                     </div>
 
                                     <div>
@@ -675,9 +672,6 @@ const newMemberRegistrationForm = () => {
                                             className='rounded-none focus:outline-none'
                                             placeholder='Discount Code'
                                         />
-                                        {errors.discountCode && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.discountCode.message}`}</p>
-                                        )}
                                     </div>
 
                                     <div>
@@ -711,21 +705,12 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Paid Ammount</Label>
                                         <Input
-                                            {
-                                            ...register('paidAmmount', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Mention paid ammount!"
-                                                }
-                                            })
-                                            }
+                                            value={paidAmmount}
+                                            onChange={(e) => setPaidAmmount(e.target.value)}
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Paid Ammount'
                                         />
-                                        {errors.paidAmmount && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.paidAmmount.message}`}</p>
-                                        )}
                                     </div>
 
                                     <div>
@@ -734,6 +719,7 @@ const newMemberRegistrationForm = () => {
                                             {
                                             ...register('dueAmmount')
                                             }
+                                            value={dueAmmount}
                                             type='text'
                                             disabled
                                             className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
@@ -765,20 +751,12 @@ const newMemberRegistrationForm = () => {
                                         <Label>Reference Code</Label>
                                         <Input
                                             {
-                                            ...register('referenceCode', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Mention reference code!"
-                                                }
-                                            })
+                                            ...register('referenceCode')
                                             }
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Reference Code'
                                         />
-                                        {errors.referenceCode && (
-                                            <p className="text-sm font-semibold text-red-600">{`${errors.referenceCode.message}`}</p>
-                                        )}
                                     </div>
 
                                     <div>
