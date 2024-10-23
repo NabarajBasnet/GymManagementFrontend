@@ -154,7 +154,7 @@ const AllMembers = () => {
                         <div className="w-full flex items-center border px-4 my-2">
                             <IoSearch />
                             <Input
-                                onFocus={() => setRenderSearchDropdown(!renderSearchDropdown)}
+                                onFocus={() => setRenderSearchDropdown(true)}
                                 className='rounded-none border-none'
                                 placeholder='Search member...'
                                 value={searchQuery}
@@ -164,15 +164,16 @@ const AllMembers = () => {
                         {
                             renderSearchDropdown ? (
                                 <div className="w-full absolute top-full bg-white shadow-2xl z-50 overflow-auto">
-                                    <div className='w-full flex bg-gray-100 justify-between items-center py-3 px-4'>
+                                    <div className="w-full flex bg-gray-100 justify-between items-center py-3 px-4">
                                         <p></p>
                                         <IoMdClose
                                             className="cursor-pointer text-lg"
                                             onClick={() => setRenderSearchDropdown(false)}
                                         />
                                     </div>
-                                    <div className="w-full overflow-auto h-80">
-                                        <Table className='w-full'>
+
+                                    <div className="w-full h-80 flex justify-center overflow-auto">
+                                        <Table className="w-full">
                                             <TableHeader>
                                                 <TableRow>
                                                     <TableHead>Member Id</TableHead>
@@ -190,16 +191,17 @@ const AllMembers = () => {
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-
                                                 {Array.isArray(results) && results.length > 0 ? (
                                                     results.map((member) => {
                                                         const textColor =
-                                                            member.status === 'Active' ? 'text-green-500' :
-                                                                member.status === 'OnHold' ? 'text-yellow-500' :
-                                                                    'text-red-500';
+                                                            member.status === 'Active'
+                                                                ? 'text-green-500'
+                                                                : member.status === 'OnHold'
+                                                                    ? 'text-yellow-500'
+                                                                    : 'text-red-500';
                                                         return (
                                                             <TableRow key={member._id} className={textColor}>
-                                                                <TableCell><p>{member._id}</p></TableCell>
+                                                                <TableCell className='pl-2'>{member._id}</TableCell>
                                                                 <TableCell>{member.fullName}</TableCell>
                                                                 <TableCell>{member.membershipDuration}</TableCell>
                                                                 <TableCell>{member.membershipOption}</TableCell>
@@ -213,18 +215,20 @@ const AllMembers = () => {
                                                                 <TableCell>
                                                                     <div className="flex items-center justify-center space-x-1">
                                                                         <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                                            <FaUserEdit className='cursor-pointer text-md' />
+                                                                            <FaUserEdit className="cursor-pointer text-md" />
                                                                         </Link>
-                                                                        <MdEmail className='cursor-pointer text-md' />
+                                                                        <MdEmail className="cursor-pointer text-md" />
                                                                     </div>
                                                                 </TableCell>
                                                             </TableRow>
                                                         );
                                                     })
                                                 ) : (
-                                                    <div className="w-full absolute top-full bg-white shadow-2xl z-50 h-16 overflow-y-auto">
-                                                        <p>No members found.</p>
-                                                    </div>
+                                                    <TableRow>
+                                                        <TableCell colSpan="12" className="text-center">
+                                                            No members found.
+                                                        </TableCell>
+                                                    </TableRow>
                                                 )}
                                             </TableBody>
                                         </Table>
