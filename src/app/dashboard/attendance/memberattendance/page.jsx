@@ -153,7 +153,7 @@ const MemberAttendance = () => {
             <div className='w-full p-4'>
                 {membershipAlert ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-                        <div className="bg-white p-8 rounded-lg shadow-lg w-80">
+                        <div className="bg-white p-4 rounded-sm shadow-lg w-[30rem]">
                             <h2 className="text-lg font-bold mb-4">Membership Alert</h2>
                             <p className="mb-6">{alertMessage}</p>
                             <div className="w-full flex justify-center">

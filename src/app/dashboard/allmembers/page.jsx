@@ -1,5 +1,6 @@
 'use client'
 
+import { Button } from "@/components/ui/button.jsx";
 import { IoMdClose } from "react-icons/io";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import * as React from "react"
@@ -48,6 +49,9 @@ import Link from "next/link";
 import { debounce } from "@mui/material";
 
 const AllMembers = () => {
+
+    const [qrState, setQrState] = useState('')
+    const [qrMessage, setQrMessage] = useState('')
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
@@ -111,9 +115,48 @@ const AllMembers = () => {
         }
     }, [searchRef]);
 
+    const sendQrInEmail = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/qr/send-qr`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id })
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                setQrState(true);
+                setQrMessage(responseBody.message);
+            }
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
     return (
         <div className="w-full">
             <div className='w-full p-6'>
+                {
+                    qrState ? (
+                        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                            <div className="bg-white p-8 rounded-sm shadow-lg w-[45rem]">
+                                <h2 className="text-lg font-bold mb-4">Email Alert</h2>
+                                <p className="mb-6">{qrMessage}</p>
+                                <div className="w-full flex justify-center">
+                                    <Button
+                                        onClick={() => setQrState(false)}
+                                        className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
+                                    >
+                                        Close
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <></>
+                    )
+                }
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -215,9 +258,12 @@ const AllMembers = () => {
                                                                 <TableCell>
                                                                     <div className="flex items-center justify-center space-x-1">
                                                                         <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                                            <FaUserEdit className="cursor-pointer text-md" />
+                                                                            <FaUserEdit className="cursor-pointer text-lg" />
                                                                         </Link>
-                                                                        <MdEmail className="cursor-pointer text-md" />
+                                                                        <MdEmail
+                                                                            onClick={() => sendQrInEmail(member._id)}
+                                                                            className="cursor-pointer text-lg"
+                                                                        />
                                                                     </div>
                                                                 </TableCell>
                                                             </TableRow>
@@ -328,9 +374,12 @@ const AllMembers = () => {
                                                     <TableCell>
                                                         <div className="flex items-center justify-center space-x-1">
                                                             <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                                <FaUserEdit className='cursor-pointer text-md' />
+                                                                <FaUserEdit className='cursor-pointer text-lg' />
                                                             </Link>
-                                                            <MdEmail className='cursor-pointer text-md' />
+                                                            <MdEmail
+                                                                onClick={() => sendQrInEmail(member._id)}
+                                                                className='cursor-pointer text-lg'
+                                                            />
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>
