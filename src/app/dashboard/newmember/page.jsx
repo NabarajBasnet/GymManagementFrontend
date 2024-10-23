@@ -792,7 +792,6 @@ const newMemberRegistrationForm = () => {
                             </div>
 
                             <div className="flex items-center space-x-2 p-2">
-                                <Button variant='destructive' className='rounded-none'>Finalize</Button>
                                 <Button type='submit' className='rounded-none'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
                             </div>
                         </form>

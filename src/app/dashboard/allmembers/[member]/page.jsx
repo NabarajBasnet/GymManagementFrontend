@@ -37,6 +37,60 @@ const Member = (props) => {
 
     const memberId = props.params.member;
 
+    const membershipPlans = [
+        {
+            title: "ADMISSION FEE",
+            type: "Admission",
+            admissionFee: 1000
+        },
+        {
+            regularMemberships: [
+                {
+                    option: "Regular",
+                    type: "Gym",
+                    gymRegularFees: {
+                        "1 Month": 4000,
+                        "3 Months": 10500,
+                        "6 Months": 18000,
+                        "12 Months": 30000
+                    }
+                },
+                {
+                    option: "Regular",
+                    type: "Gym & Cardio",
+                    gymCardioRegularFees: {
+                        "1 Month": 5000,
+                        "3 Months": 12000,
+                        "6 Months": 21000,
+                        "12 Months": 36000
+                    }
+                },
+            ],
+            daytimeMemberships: [
+                {
+                    option: "Day",
+                    type: "Gym",
+                    gymDayFees: {
+                        "1 Month": 3000,
+                        "3 Months": 7500,
+                        "6 Months": 12000,
+                        "12 Months": 18000
+                    }
+                },
+                {
+                    option: "Day",
+                    type: "Gym & Cardio",
+                    gymCardioDayFees: {
+                        "1 Month": 4000,
+                        "3 Months": 10500,
+                        "6 Months": 18000,
+                        "12 Months": 30000
+                    }
+                },
+            ]
+        }
+    ];
+
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
 
@@ -58,6 +112,68 @@ const Member = (props) => {
     const [membershipDate, setMembershipDate] = useState(new Date());
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
+
+    // Payment Details
+
+    const [finalAmmount, setFinalAmmount] = useState('');
+    const [discountAmmount, setDiscountAmmount] = useState('');
+    const [paidAmmount, setPaidAmmount] = useState('');
+    const [dueAmmount, setDueAmmount] = useState('');
+
+    const calculateDueAmmount = () => {
+        const due = finalAmmount - paidAmmount;
+        setDueAmmount(due);
+    };
+
+    useEffect(() => {
+        calculateDueAmmount();
+    }, [finalAmmount, discountAmmount, paidAmmount]);
+
+    const calculateFinalAmmount = () => {
+        let selectedPlan = null;
+
+        membershipPlans.forEach((plan) => {
+            if (plan.regularMemberships) {
+                plan.regularMemberships.forEach((regular) => {
+                    if (regular.option === membershipOption && regular.type === membershipType) {
+                        selectedPlan = regular;
+                    }
+                });
+            }
+
+            if (plan.daytimeMemberships) {
+                plan.daytimeMemberships.forEach((day) => {
+                    if (day.option === membershipOption && day.type === membershipType) {
+                        selectedPlan = day;
+                    }
+                });
+            }
+        });
+
+        if (selectedPlan) {
+            let selectedFee = 0;
+
+            if (membershipOption === "Regular" && membershipType === "Gym") {
+                selectedFee = selectedPlan.gymRegularFees[membershipDuration];
+            } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
+                selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
+            } else if (membershipOption === "Day" && membershipType === "Gym") {
+                selectedFee = selectedPlan.gymDayFees[membershipDuration];
+            } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
+                selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
+            }
+
+            const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
+            setFinalAmmount(admissionFee + selectedFee - discountAmmount);
+        } else {
+            setFinalAmmount(0);
+        }
+    };
+
+    useEffect(() => {
+        calculateFinalAmmount()
+    }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
+
 
     const {
         register,
@@ -557,9 +673,8 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Discount Ammount</Label>
                                                             <Input
-                                                                {
-                                                                ...register('discountAmmount')
-                                                                }
+                                                                value={discountAmmount}
+                                                                onChange={(e) => setDiscountAmmount(e.target.value)}
                                                                 type='text'
                                                                 defaultValue={data.member.discountAmmount}
                                                                 className='rounded-none focus:outline-none'
@@ -574,12 +689,7 @@ const Member = (props) => {
                                                             <Label>Discount Reason</Label>
                                                             <Input
                                                                 {
-                                                                ...register('discountReason', {
-                                                                    required: {
-                                                                        value: true,
-                                                                        message: "Mention discount reason!"
-                                                                    }
-                                                                })
+                                                                ...register('discountReason')
                                                                 }
                                                                 defaultValue={data.member.discountReason}
                                                                 type='text'
@@ -629,7 +739,8 @@ const Member = (props) => {
                                                                 }
                                                                 type='text'
                                                                 disabled
-                                                                defaultValue={data.member.paidAmmount}
+                                                                value={finalAmmount}
+                                                                defaultValue={data.member.finalAmmount}
                                                                 className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Final Ammount'
                                                             />
@@ -638,30 +749,20 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Paid Ammount</Label>
                                                             <Input
-                                                                {
-                                                                ...register('paidAmmount', {
-                                                                    required: {
-                                                                        value: true,
-                                                                        message: "Mention paid ammount!"
-                                                                    }
-                                                                })
-                                                                }
+                                                                value={paidAmmount}
+                                                                onChange={(e) => setPaidAmmount(e.target.value)}
                                                                 type='text'
                                                                 defaultValue={data.member.paidAmmount}
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Paid Ammount'
                                                             />
-                                                            {errors.paidAmmount && (
-                                                                <p className="text-sm font-semibold text-red-600">{`${errors.paidAmmount.message}`}</p>
-                                                            )}
                                                         </div>
 
                                                         <div>
                                                             <Label>Due Ammount</Label>
                                                             <Input
-                                                                {
-                                                                ...register('dueAmmount')
-                                                                }
+                                                                value={dueAmmount}
+                                                                onChange={(e) => setDueAmmount(e.target.value)}
                                                                 type='text'
                                                                 disabled
                                                                 defaultValue={data.member.dueAmmount}
