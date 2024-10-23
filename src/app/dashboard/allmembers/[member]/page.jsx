@@ -94,7 +94,7 @@ const Member = (props) => {
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
     const [reasonForUpdate, setReasonForUpdate] = useState('');
-
+    const [toastMessage, setToastMessage] = useState('');
 
     // Members details
     const [gender, setGender] = useState('');
@@ -276,7 +276,8 @@ const Member = (props) => {
                 dueAmmount,
                 referenceCode,
                 remark,
-                actionTaker: actionTaker || data.actionTaker
+                actionTaker: actionTaker || data.actionTaker,
+                reasonForUpdate,
             };
 
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
@@ -286,11 +287,14 @@ const Member = (props) => {
                 },
                 body: JSON.stringify(membersFinalData)
             })
+            const responseBody = await response.json();
+            setToastMessage(responseBody.message)
+
             if (response.ok) {
                 reset();
                 setTimeout(() => {
                     setSignUpAlert(false);
-                }, 2500);
+                }, 4000);
                 setSignUpAlert(true);
             }
 
@@ -339,8 +343,8 @@ const Member = (props) => {
             {signUpAlert && (
                 <div className="fixed bottom-10 bg-white border shadow-2xl right-10 flex items-center justify-between p-4">
                     <div className="block">
-                        <h1 className="font-bold">Successfull</h1>
-                        <p className="text-sm font-semibold">Patch request successfull.</p>
+                        <h1 className="font-bold">Patch request</h1>
+                        <p className="text-sm font-semibold">{toastMessage}</p>
                     </div>
                     <div>
                         <IoMdClose
