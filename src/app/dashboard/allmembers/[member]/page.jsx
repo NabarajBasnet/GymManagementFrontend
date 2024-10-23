@@ -93,6 +93,7 @@ const Member = (props) => {
 
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
+    const [reasonForUpdate, setReasonForUpdate] = useState('');
 
 
     // Members details
@@ -810,6 +811,22 @@ const Member = (props) => {
                                                             {errors.referenceCode && (
                                                                 <p className="text-sm font-semibold text-red-600">{`${errors.referenceCode.message}`}</p>
                                                             )}
+                                                        </div>
+
+                                                        <div>
+                                                            <Label>Reason for Update</Label>
+                                                            <Select onValueChange={(value) => setReasonForUpdate(value)}>
+                                                                <SelectTrigger className="w-full rounded-none">
+                                                                    <SelectValue placeholder={'Reason for update'} />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectGroup>
+                                                                        <SelectLabel>Update reason</SelectLabel>
+                                                                        <SelectItem value="Normal Change">Normal Change</SelectItem>
+                                                                        <SelectItem value="Renew">Renew</SelectItem>
+                                                                    </SelectGroup>
+                                                                </SelectContent>
+                                                            </Select>
                                                         </div>
 
                                                         <div>

@@ -43,6 +43,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 
 const MemberAttendance = () => {
@@ -52,6 +64,8 @@ const MemberAttendance = () => {
     const [loading, setLoading] = useState(false);
     const [currentPage, setCurentPage] = useState(1);
     const limit = 6;
+    const [membershipAlert, setMembershipAlert] = useState(null);
+    const [alertMessage, setAlertMessage] = useState('');
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
@@ -68,9 +82,7 @@ const MemberAttendance = () => {
         queryFn: getTemporaryAttendanceHistory,
     });
 
-
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
-
 
     const handlePageChange = (page) => {
         setCurentPage(page);
@@ -89,14 +101,26 @@ const MemberAttendance = () => {
             const validationResponseResult = await response.json();
             setValidationResult(validationResponseResult);
 
+            if (response.status === 401) {
+                setMembershipAlert(true);
+                setAlertMessage(validationResponseResult.message);
+            }
+
             if (response.status === 400) {
-                alert('Member already checkedin!')
+                setMembershipAlert(true);
+                setAlertMessage(validationResponseResult.message);
+            }
+
+            if (response.status === 500) {
+                setMembershipAlert(true);
+                setAlertMessage(validationResponseResult.error);
             }
 
             if (response.status === 200) {
                 queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
             } else if (response.status === 403) {
-                alert('Membership has expired!');
+                setMembershipAlert(true);
+                setAlertMessage(validationResponseResult.message);
             }
 
             setLoading(false);
@@ -117,8 +141,9 @@ const MemberAttendance = () => {
         window.location.reload();
     };
 
-    const onEnterPres = (e) => {
+    const onEnterPress = (e) => {
         if (e.key === 'Enter') {
+            setMembershipAlert(false);
             reloadPage();
         }
     };
@@ -126,6 +151,26 @@ const MemberAttendance = () => {
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
+                {membershipAlert ? (
+                    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+                        <div className="bg-white p-8 rounded-lg shadow-lg w-80">
+                            <h2 className="text-lg font-bold mb-4">Membership Alert</h2>
+                            <p className="mb-6">{alertMessage}</p>
+                            <div className="w-full flex justify-center">
+                                <Button
+                                    onKeyPress={(e) => onEnterPress(e)}
+                                    onClick={() => setMembershipAlert(false)}
+                                    className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
+                                >
+                                    Close
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                    </>
+                )}
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -172,7 +217,7 @@ const MemberAttendance = () => {
                                 onChange={(e) => setMemberId(e.target.value)}
                                 autoFocus
                                 className='w-full focus:border-blue-600 rounded-none '
-                                onKeyPress={(e) => onEnterPres(e)}
+                                onKeyPress={(e) => onEnterPress(e)}
                             />
 
                             <div className="flex justify-between items-center">
@@ -236,7 +281,7 @@ const MemberAttendance = () => {
                                 <Textarea
                                     value={validationResult?.message || ''}
                                     disabled
-                                    className='w-9/12 bg-gray-200 rounded-none cursor-not-allowed h-40'
+                                    className='w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none cursor-not-allowed h-40'
                                 />
                             </div>
 
