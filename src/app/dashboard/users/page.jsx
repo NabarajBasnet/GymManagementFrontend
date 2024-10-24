@@ -54,10 +54,12 @@ import { IoMdClose } from "react-icons/io";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import Loader from "@/components/Loader/Loader";
+import { useForm } from "react-hook-form";
 
 
 const Users = () => {
 
+    const [fetchedUser, setFetchedUser] = useState(null);
     const [usersMessage, setUsersMessage] = useState('');
     const [userEditForm, setUserEditForm] = useState(false);
 
@@ -81,6 +83,42 @@ const Users = () => {
 
     const { users, message } = data || {};
 
+    const getSingleUser = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/users/${id}`);
+            const reponseBody = await response.json();
+            if (response.ok) {
+                setUserEditForm(true);
+            };
+            const { user, message } = reponseBody;
+            setUsersMessage(message);
+            setFetchedUser(user);
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data: user } = useQuery({
+        queryKey: ['user'],
+        queryFn: getSingleUser
+    });
+
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { isSubmitting, errors },
+        setError,
+    } = useForm();
+
+    const editUserDetails = async (data) => {
+        try {
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
+
     return (
         <div className="w-full">
             <div className="w-full">
@@ -97,16 +135,30 @@ const Users = () => {
                                         />
                                     </div>
 
-                                    <form className="w-full">
+                                    <form className="w-full" onSubmit={handleSubmit(editUserDetails)}>
                                         <div className="w-full flex items-center space-x-4">
                                             <div className="w-full">
                                                 <Label>First Name</Label>
-                                                <Input className="rounded-none" placeholder="First Name" />
+                                                <Input
+                                                    {
+                                                    ...register('firstName')
+                                                    }
+                                                    className="rounded-none"
+                                                    placeholder="First Name"
+                                                    defaultValue={fetchedUser.firstName}
+                                                />
                                             </div>
 
                                             <div className="w-full">
                                                 <Label>Last Name</Label>
-                                                <Input className="rounded-none" placeholder="Last Name" />
+                                                <Input
+                                                    {
+                                                    ...register('lasstName')
+                                                    }
+                                                    className="rounded-none"
+                                                    placeholder="Last Name"
+                                                    defaultValue={fetchedUser.lastName}
+                                                />
                                             </div>
                                         </div>
 
@@ -114,7 +166,7 @@ const Users = () => {
                                             <Label>User Role</Label>
                                             <Select>
                                                 <SelectTrigger className="rounded-none">
-                                                    <SelectValue placeholder="Assign role" />
+                                                    <SelectValue placeholder={fetchedUser.role} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
@@ -130,35 +182,59 @@ const Users = () => {
 
                                         <div className="w-full">
                                             <Label>Email</Label>
-                                            <Input className="rounded-none" placeholder="Email" />
+                                            <Input
+                                                {
+                                                ...register('email')
+                                                }
+                                                className="rounded-none"
+                                                placeholder="Email"
+                                                defaultValue={fetchedUser.email}
+                                            />
                                         </div>
 
                                         <div className="w-full">
                                             <Label>Phone Number</Label>
-                                            <Input className="rounded-none" placeholder="Phone Number" />
+                                            <Input
+                                                {
+                                                ...register('phoneNumber')
+                                                }
+                                                className="rounded-none"
+                                                placeholder="Phone Number"
+                                                defaultValue={fetchedUser.phoneNumber}
+                                            />
                                         </div>
 
                                         <div className="w-full">
                                             <Label>Address</Label>
-                                            <Input className="rounded-none" placeholder="Address" />
+                                            <Input
+                                                {
+                                                ...register('address')
+                                                }
+                                                className="rounded-none"
+                                                defaultValue={fetchedUser.address}
+                                                placeholder="Address"
+                                            />
                                         </div>
+
+                                        <div className="w-full flex mt-4 space-x-4 justify-center">
+                                            <Button
+                                                type='submit'
+                                                onClick={() => setUserEditForm(false)}
+                                                className="rounded-none text-white font-bold py-2 px-4"
+                                            >
+                                                Submit
+                                            </Button>
+                                            <Button
+                                                variant="destructive"
+                                                onClick={() => setUserEditForm(false)}
+                                                className="rounded-none text-white font-bold py-2 px-4"
+                                            >
+                                                Cancel
+                                            </Button>
+                                        </div>
+
                                     </form>
 
-                                    <div className="w-full flex mt-4 space-x-4 justify-center">
-                                        <Button
-                                            onClick={() => setUserEditForm(false)}
-                                            className="rounded-none text-white font-bold py-2 px-4"
-                                        >
-                                            Submit
-                                        </Button>
-                                        <Button
-                                            variant="destructive"
-                                            onClick={() => setUserEditForm(false)}
-                                            className="rounded-none text-white font-bold py-2 px-4"
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -223,7 +299,7 @@ const Users = () => {
                                                     <TableCell>
                                                         <div className="flex justify-center items-center">
                                                             <FaUserEdit
-                                                                onClick={() => setUserEditForm(true)}
+                                                                onClick={() => getSingleUser(user._id)}
                                                                 className="text-lg cursor-pointer"
                                                             />
                                                             <TiUserDelete className="text-lg mx-2 cursor-pointer" />

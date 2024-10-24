@@ -209,7 +209,7 @@ const AllMembers = () => {
                                         />
                                     </div>
 
-                                    <div className="w-full h-80 flex justify-center overflow-auto">
+                                    <div className="w-full h-full flex justify-center overflow-auto">
                                         <Table className="w-full">
                                             <TableHeader>
                                                 <TableRow>
@@ -278,125 +278,128 @@ const AllMembers = () => {
                         }
                     </div>
 
-                    <div className="w-full flex justify-start">
-                        <div className="w-full overflow-x-auto">
-                            <Table className='w-full overflow-x-auto'>
-                                <TableHeader>
-                                    <TableRow className='bg-gray-200 text-black'>
-                                        <TableHead>Member Id</TableHead>
-                                        <TableHead>Full Name</TableHead>
-                                        <TableHead>Duration</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Option</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                    {renderSearchDropdown ? (
+                        <></>
+                    ) : (
+                        <div className="w-full flex justify-start">
+                            <div className="w-full overflow-x-auto">
+                                <Table className='w-full overflow-x-auto'>
+                                    <TableHeader>
+                                        <TableRow className='bg-gray-200 text-black'>
+                                            <TableHead>Member Id</TableHead>
+                                            <TableHead>Full Name</TableHead>
+                                            <TableHead>Duration</TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Option</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Type</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                                            </TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Type</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Renew</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                                            </TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Renew</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Expire</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                                            </TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Expire</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>Contact No</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Shift</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                                            </TableHead>
+                                            <TableHead>Contact No</TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Shift</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Status</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
+                                            </TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    <h1>Status</h1>
+                                                    <div className="flex flex-col justify-center -space-y-3">
+                                                        <MdArrowDropUp className="text-xl" />
+                                                        <MdArrowDropDown className="text-xl" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>Fee</TableHead>
-                                        <TableHead>Action</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {members && members.length > 0 ? (
-                                        members.map((member) => {
-                                            const textColor =
-                                                member.status === 'Active' ? 'text-green-500' :
-                                                    member.status === 'OnHold' ? 'text-yellow-500' :
-                                                        'text-red-500';
-                                            return (
-                                                <TableRow key={member._id} className={textColor}>
-                                                    <TableCell><p>{member._id}</p></TableCell>
-                                                    <TableCell>{member.fullName}</TableCell>
-                                                    <TableCell>{member.membershipDuration}</TableCell>
-                                                    <TableCell>{member.membershipOption}</TableCell>
-                                                    <TableCell>{member.membershipType}</TableCell>
-                                                    <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell>{member.contactNo}</TableCell>
-                                                    <TableCell>{member.membershipShift}</TableCell>
-                                                    <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                                    <TableCell>{member.paidAmmount}</TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center justify-center space-x-1">
-                                                            <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                                <FaUserEdit className='cursor-pointer text-lg' />
-                                                            </Link>
-                                                            <MdEmail
-                                                                onClick={() => sendQrInEmail(member._id)}
-                                                                className='cursor-pointer text-lg'
-                                                            />
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={13} className="text-center">
-                                                No members found.
-                                            </TableCell>
+                                            </TableHead>
+                                            <TableHead>Fee</TableHead>
+                                            <TableHead>Action</TableHead>
                                         </TableRow>
-                                    )}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={3}>Total Members</TableCell>
-                                        <TableCell className="text-right">{totalMembers}</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {members && members.length > 0 ? (
+                                            members.map((member) => {
+                                                const textColor =
+                                                    member.status === 'Active' ? 'text-green-500' :
+                                                        member.status === 'OnHold' ? 'text-yellow-500' :
+                                                            'text-red-500';
+                                                return (
+                                                    <TableRow key={member._id} className={textColor}>
+                                                        <TableCell><p>{member._id}</p></TableCell>
+                                                        <TableCell>{member.fullName}</TableCell>
+                                                        <TableCell>{member.membershipDuration}</TableCell>
+                                                        <TableCell>{member.membershipOption}</TableCell>
+                                                        <TableCell>{member.membershipType}</TableCell>
+                                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{member.contactNo}</TableCell>
+                                                        <TableCell>{member.membershipShift}</TableCell>
+                                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                        <TableCell>{member.paidAmmount}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center justify-center space-x-1">
+                                                                <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                                    <FaUserEdit className='cursor-pointer text-lg' />
+                                                                </Link>
+                                                                <MdEmail
+                                                                    onClick={() => sendQrInEmail(member._id)}
+                                                                    className='cursor-pointer text-lg'
+                                                                />
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={13} className="text-center">
+                                                    No members found.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TableCell colSpan={3}>Total Members</TableCell>
+                                            <TableCell className="text-right">{totalMembers}</TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            </div>
                         </div>
-                    </div>
-
+                    )}
                     <div className="py-3">
                         <Pagination className={'cursor-pointer'}>
                             <PaginationContent>

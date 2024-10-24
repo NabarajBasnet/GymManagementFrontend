@@ -84,22 +84,16 @@ const StaffAttendance = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
                                     <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+                            <BreadcrumbLink>Attendance</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage>Staff Attendance</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
