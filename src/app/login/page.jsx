@@ -1,5 +1,7 @@
 'use client'
 
+import { MdDone } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 import * as React from 'react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,8 +18,13 @@ const Login = () => {
         register,
         reset,
         formState: { isSubmitting, errors },
-        handleSubmit
+        handleSubmit,
+        setError
     } = useForm();
+
+    const [responseMessage, setResponseMessage] = React.useState('');
+    const [responseStatus, setResponseStatus] = React.useState('');
+    const [toast, setToast] = React.useState(false);
 
     const onLoginUser = async (data) => {
         try {
@@ -30,19 +37,77 @@ const Login = () => {
                 body: JSON.stringify(data)
             })
 
-            if (response.ok) {
-                reset()
+            const responseBody = await response.json();
+            setResponseStatus(response.status);
+
+            if (response.status === 404) {
+                setError(
+                    "email", {
+                    type: "manual",
+                    message: responseMessage
+                }
+                )
+            };
+
+            if (response.status === 403) {
+                setError(
+                    "password", {
+                    type: "manual",
+                    message: responseMessage
+                }
+                )
+            };
+
+            if (response.status === 400) {
+                setError(
+                    ["password", "email"], {
+                    type: "manual",
+                    message: responseMessage
+                }
+                )
+            };
+
+            if (response.status === 200) {
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false);
+                }, [5000]);
                 router.push('/dashboard');
-            }
+            };
+
+            setResponseMessage(responseBody.message);
+            if (response.ok) {
+                reset();
+            };
         } catch (error) {
             console.log('Error: ', error);
-        }
+        };
     };
 
     return (
         <div className="flex min-h-screen">
             <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-8">
                 <form onSubmit={handleSubmit(onLoginUser)} className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+                    {toast ? (
+                        <div className="w-full flex justify-center">
+                            <div className="fixed top-5 bg-white border shadow-2xl flex items-center justify-between p-4">
+                                <div>
+                                    <MdDone className="text-4xl mx-4 text-green-600" />
+                                </div>
+                                <div className="block">
+                                    <p className="text-sm font-semibold">{responseMessage}</p>
+                                </div>
+                                <div>
+                                    <IoMdClose
+                                        onClick={() => setToast(false)}
+                                        className="cursor-pointer ml-4" />
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                        </>
+                    )}
                     <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
                     <div className="w-full flex justify-center">
                         <div className="w-3/12 bg-black h-0.5 mb-4"></div>
