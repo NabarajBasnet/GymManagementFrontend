@@ -175,8 +175,11 @@ const newMemberRegistrationForm = () => {
         reset,
         formState: { errors, isSubmitting },
         handleSubmit,
-        setError
+        setError,
+        clearErrors
     } = useForm();
+
+    console.log('Form errors: ', errors);
 
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
@@ -209,8 +212,55 @@ const newMemberRegistrationForm = () => {
         handleMembershipSelection(membershipDuration);
     }, [membershipRenewDate])
 
-
     const onRegisterMember = async (data) => {
+
+        // Clear any previous errors
+        clearErrors();
+
+        // Manual validation for state-managed fields
+        let isValid = true;
+
+        if (!gender) {
+            setError("gender", { type: "manual", message: "Gender is required" });
+            isValid = false;
+        }
+
+        if (!status) {
+            setError("status", { type: "manual", message: "Status is required" });
+            isValid = false;
+        }
+
+        if (!membershipOption) {
+            setError("membershipOption", { type: "manual", message: "Membership option is required" });
+            isValid = false;
+        }
+
+        if (!membershipType) {
+            setError("membershipType", { type: "manual", message: "Membership type is required" });
+            isValid = false;
+        }
+
+        if (!membershipShift) {
+            setError("membershipShift", { type: "manual", message: "Membership shift is required" });
+            isValid = false;
+        }
+
+        if (!paymentMethod) {
+            setError("paymentMethod", { type: "manual", message: "Payment method is required" });
+            isValid = false;
+        }
+
+        if (!actionTaker) {
+            setError("actionTaker", { type: "manual", message: "Select action taker" });
+            isValid = false;
+        }
+
+        // Stop the form submission if validation fails
+        if (!isValid) {
+            return;
+        }
+
+
         try {
             const {
                 // Personal Information from data
@@ -259,6 +309,24 @@ const newMemberRegistrationForm = () => {
                 actionTaker
             };
 
+            if (discountAmmount && !discountReason) {
+                setError(
+                    'discountReason', {
+                    type: 'manual',
+                    message: "Discount reason is required"
+                }
+                )
+            };
+
+            if (!paidAmmount) {
+                setError(
+                    'paidAmmount', {
+                    type: 'manual',
+                    message: "Paid ammount is required"
+                }
+                )
+            }
+
             const response = await fetch('http://localhost:5000/api/members', {
                 method: "POST",
                 headers: {
@@ -292,24 +360,16 @@ const newMemberRegistrationForm = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
                                     <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+                            <BreadcrumbLink>Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>
-
-                            </BreadcrumbPage>
+                            <BreadcrumbPage>New Member</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -441,7 +501,12 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Gender</Label>
-                                        <Select onValueChange={(value) => setGender(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setGender(value);
+                                            if (value) {
+                                                clearErrors("gender");
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Gender" />
                                             </SelectTrigger>
@@ -454,6 +519,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.gender && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.gender.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -478,7 +546,12 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Status</Label>
-                                        <Select onValueChange={(value) => setStatus(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setStatus(value);
+                                            if (value) {
+                                                clearErrors('status')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Status" />
                                             </SelectTrigger>
@@ -491,6 +564,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.status && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.status.message}`}</p>
+                                        )}
                                     </div>
 
                                 </div>
@@ -504,7 +580,12 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Option</Label>
-                                        <Select onValueChange={(value) => setMembershipOption(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setMembershipOption(value);
+                                            if (value) {
+                                                clearErrors('membershipOption')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Option" />
                                             </SelectTrigger>
@@ -518,11 +599,19 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.membershipOption && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipOption.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
                                         <Label>Membership Type</Label>
-                                        <Select onValueChange={(value) => setMembershipType(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setMembershipType(value);
+                                            if (value) {
+                                                clearErrors('membershipType')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Type" />
                                             </SelectTrigger>
@@ -535,11 +624,19 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.membershipType && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipType.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
                                         <Label>Membership Shift</Label>
-                                        <Select onValueChange={(value) => setMembershipShift(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setMembershipShift(value);
+                                            if (value) {
+                                                clearErrors('membershipShift')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Shift" />
                                             </SelectTrigger>
@@ -552,6 +649,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.membershipShift && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipShift.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -578,7 +678,12 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Duration</Label>
-                                        <Select onValueChange={(value) => handleMembershipSelection(value)}>
+                                        <Select onValueChange={(value) => {
+                                            handleMembershipSelection(value);
+                                            if (value) {
+                                                clearErrors('membershipDuration')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Membership Duration" />
                                             </SelectTrigger>
@@ -592,6 +697,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.membershipDuration && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipDuration.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -621,7 +729,12 @@ const newMemberRegistrationForm = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                                     <div>
                                         <Label>Payment Method</Label>
-                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setPaymentMethod(value);
+                                            if (value) {
+                                                clearErrors('paymentMethod')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Payment Method" />
                                             </SelectTrigger>
@@ -634,6 +747,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.paymentMethod && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.paymentMethod.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -653,13 +769,14 @@ const newMemberRegistrationForm = () => {
                                             {
                                             ...register('discountReason')
                                             }
+                                            onChange={(e) => clearErrors("discountReason")}
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Discount Reason'
                                         />
-                                        {/* {errors.discountReason && (
+                                        {errors.discountReason && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.discountReason.message}`}</p>
-                                        )} */}
+                                        )}
                                     </div>
 
                                     <div>
@@ -706,11 +823,19 @@ const newMemberRegistrationForm = () => {
                                         <Label>Paid Ammount</Label>
                                         <Input
                                             value={paidAmmount}
-                                            onChange={(e) => setPaidAmmount(e.target.value)}
+                                            onChange={(e) => {
+                                                setPaidAmmount(e.target.value);
+                                                if (e.target.value) {
+                                                    clearErrors('paidAmmount')
+                                                }
+                                            }}
                                             type='text'
                                             className='rounded-none focus:outline-none'
                                             placeholder='Paid Ammount'
                                         />
+                                        {errors.paidAmmount && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.paidAmmount.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -773,7 +898,12 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Action Taker</Label>
-                                        <Select onValueChange={(value) => setActionTaker(value)}>
+                                        <Select onValueChange={(value) => {
+                                            setActionTaker(value);
+                                            if (value) {
+                                                clearErrors('actionTaker')
+                                            }
+                                        }}>
                                             <SelectTrigger className="w-full rounded-none">
                                                 <SelectValue placeholder="Action Taker" />
                                             </SelectTrigger>
@@ -786,6 +916,9 @@ const newMemberRegistrationForm = () => {
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
+                                        {errors.actionTaker && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
+                                        )}
                                     </div>
 
                                 </div>

@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select";
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 
 const Member = (props) => {
@@ -91,6 +91,7 @@ const Member = (props) => {
         }
     ];
 
+    const queryClient = useQueryClient();
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
     const [reasonForUpdate, setReasonForUpdate] = useState('');
@@ -181,7 +182,8 @@ const Member = (props) => {
         reset,
         formState: { errors, isSubmitting },
         handleSubmit,
-        setError
+        setError,
+        clearErrors,
     } = useForm();
 
     const handleMembershipSelection = (duration) => {
@@ -219,6 +221,9 @@ const Member = (props) => {
         try {
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`);
             const responseBody = await response.json();
+            if (response.ok) {
+                reset();
+            }
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -288,7 +293,7 @@ const Member = (props) => {
                     message: "Specify paid ammount."
                 }
                 );
-            };
+            }
 
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
                 method: "PATCH",
@@ -301,6 +306,8 @@ const Member = (props) => {
             setToastMessage(responseBody.message)
 
             if (response.ok) {
+                queryClient.invalidateQueries(['member']);
+                queryClient.invalidateQueries(['members']);
                 reset();
                 setTimeout(() => {
                     setSignUpAlert(false);
@@ -758,7 +765,12 @@ const Member = (props) => {
                                                             <Label>Paid Ammount</Label>
                                                             <Input
                                                                 value={paidAmmount}
-                                                                onChange={(e) => setPaidAmmount(e.target.value)}
+                                                                onChange={(e) => {
+                                                                    setPaidAmmount(e.target.value);
+                                                                    if (e.target.value) {
+                                                                        clearErrors("paidAmmount");
+                                                                    }
+                                                                }}
                                                                 type='text'
                                                                 defaultValue={data.member.paidAmmount}
                                                                 className='rounded-none focus:outline-none'

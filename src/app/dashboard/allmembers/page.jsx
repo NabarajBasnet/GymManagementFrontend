@@ -251,7 +251,7 @@ const AllMembers = () => {
                                                                 <TableCell>{member.paidAmmount}</TableCell>
                                                                 <TableCell>
                                                                     <div className="flex items-center justify-center space-x-1">
-                                                                        <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                                        <Link href={`/dashboard/allmembers/${member._id}`} target="_blank" rel="noopener noreferrer">
                                                                             <FaUserEdit className="cursor-pointer text-lg" />
                                                                         </Link>
                                                                         <MdEmail
