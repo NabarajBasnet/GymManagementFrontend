@@ -180,7 +180,8 @@ const Member = (props) => {
         register,
         reset,
         formState: { errors, isSubmitting },
-        handleSubmit
+        handleSubmit,
+        setError
     } = useForm();
 
     const handleMembershipSelection = (duration) => {
@@ -278,6 +279,15 @@ const Member = (props) => {
                 remark,
                 actionTaker: actionTaker || data.actionTaker,
                 reasonForUpdate,
+            };
+
+            if (!paidAmmount) {
+                setError(
+                    "paidAmmount", {
+                    type: "manual",
+                    message: "Specify paid ammount."
+                }
+                );
             };
 
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
@@ -754,6 +764,11 @@ const Member = (props) => {
                                                                 className='rounded-none focus:outline-none'
                                                                 placeholder='Paid Ammount'
                                                             />
+                                                            {
+                                                                errors.paidAmmount && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.paidAmmount.message}</p>
+                                                                )
+                                                            }
                                                         </div>
 
                                                         <div>
