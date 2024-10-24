@@ -48,7 +48,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { IoMdClose } from "react-icons/io";
@@ -60,6 +60,7 @@ import { useForm } from "react-hook-form";
 
 const Users = () => {
 
+    const queryClient = useQueryClient();
     const [fetchedUser, setFetchedUser] = useState(null);
     const [usersMessage, setUsersMessage] = useState('');
     const [userEditForm, setUserEditForm] = useState(false);
@@ -102,10 +103,16 @@ const Users = () => {
             const { user, message } = reponseBody;
             setUsersMessage(message);
             setFetchedUser(user);
+            return user;
         } catch (error) {
             console.log("Error: ", error);
         };
     };
+
+    const { data: user } = useQuery({
+        queryKey: ['user'],
+        queryFn: getSingleUser
+    });
 
     const {
         register,
@@ -133,6 +140,7 @@ const Users = () => {
             console.log("Response body: ", responseBody);
             if (response.ok) {
                 setUserEditForm(false);
+                queryClient.invalidateQueries(['user']);
             }
             setToast(true);
             setTimeout(() => {
