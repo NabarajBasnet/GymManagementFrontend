@@ -151,6 +151,25 @@ const Users = () => {
         }
     };
 
+    const deleteUser = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/users/delete/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+            })
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 4000);
+            const responseBody = await response.json();
+            setUsersMessage(responseBody.message)
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
     return (
         <div className="w-full">
             <div className="w-full">
@@ -362,7 +381,10 @@ const Users = () => {
                                                                 onClick={() => getSingleUser(user._id)}
                                                                 className="text-lg cursor-pointer"
                                                             />
-                                                            <MdDelete className="text-lg text-red-600 mx-2 cursor-pointer" />
+                                                            <MdDelete
+                                                                className="text-lg text-red-600 mx-2 cursor-pointer"
+                                                                onClick={() => deleteUser(user._id)}
+                                                            />
                                                             <IoIosMail className="text-lg cursor-pointer" />
                                                         </div>
                                                     </TableCell>
