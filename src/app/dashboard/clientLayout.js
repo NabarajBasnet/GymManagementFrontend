@@ -23,7 +23,7 @@ export default function ClientLayout({ children }) {
                     )}
 
                     <div className={`w-full transition-all duration-500 ${sidebarMinimized ? 'md:ml-12' : 'md:ml-60'}`}>
-                        <div className="w-full mt-16">
+                        <div className="w-full mt-14">
                             <Header />
                         </div>
                         <main className="w-full min-h-screen bg-gray-100 dark:bg-neutral-900 transition-all duration-500">
