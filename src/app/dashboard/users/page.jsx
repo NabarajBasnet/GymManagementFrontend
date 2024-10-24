@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select"
 import { IoIosMail } from "react-icons/io";
 import { TiUserDelete } from "react-icons/ti";
+import { MdDelete } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import {
     Table,
@@ -63,26 +64,33 @@ const Users = () => {
     const [usersMessage, setUsersMessage] = useState('');
     const [userEditForm, setUserEditForm] = useState(false);
     const [toast, setToast] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 6;
 
-    const getAllUsers = async () => {
+    const getAllUsers = async ({ queryKey }) => {
+        const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:5000/api/users`);
+            const response = await fetch(`http://localhost:5000/api/users?page=${page}&limmit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setUsersMessage(responseBody.message);
-            }
+            };
             return responseBody;
         } catch (error) {
             console.log('Error: ', error);
-        }
+        };
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: (['users']),
+        queryKey: (['users', currentPage]),
         queryFn: getAllUsers
     });
 
-    const { users, message } = data || {};
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
+
+    const { users, message, totalPages, totalUsers } = data || {};
 
     const getSingleUser = async (id) => {
         try {
@@ -98,11 +106,6 @@ const Users = () => {
             console.log("Error: ", error);
         };
     };
-
-    const { data: user } = useQuery({
-        queryKey: ['user'],
-        queryFn: getSingleUser
-    });
 
     const {
         register,
@@ -123,10 +126,11 @@ const Users = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ finalData })
+                body: JSON.stringify(finalData)
             });
 
             const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (response.ok) {
                 setUserEditForm(false);
             }
@@ -191,7 +195,7 @@ const Users = () => {
                                                 <Label>Last Name</Label>
                                                 <Input
                                                     {
-                                                    ...register('lasstName')
+                                                    ...register('lastName')
                                                     }
                                                     className="rounded-none"
                                                     placeholder="Last Name"
@@ -351,7 +355,7 @@ const Users = () => {
                                                                 onClick={() => getSingleUser(user._id)}
                                                                 className="text-lg cursor-pointer"
                                                             />
-                                                            <TiUserDelete className="text-lg mx-2 cursor-pointer" />
+                                                            <MdDelete className="text-lg text-red-600 mx-2 cursor-pointer" />
                                                             <IoIosMail className="text-lg cursor-pointer" />
                                                         </div>
                                                     </TableCell>
@@ -365,34 +369,30 @@ const Users = () => {
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
-                                            <TableCell colSpan={3}>Total</TableCell>
-                                            <TableCell className="text-right">$2,500.00</TableCell>
+                                            <TableCell colSpan={3}>Total users</TableCell>
+                                            <TableCell className="text-right">{totalUsers}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
 
                                 <div className="py-3">
-                                    <Pagination>
+                                    <Pagination className={'cursor-pointer'}>
                                         <PaginationContent>
                                             <PaginationItem>
-                                                <PaginationPrevious href="#" />
+                                                <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                             </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#">1</PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#" isActive>
-                                                    2
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                            <PaginationItem>
-                                                <PaginationLink href="#">3</PaginationLink>
-                                            </PaginationItem>
+                                            {[...Array(totalPages)].map((_, i) => (
+                                                <PaginationItem key={i}>
+                                                    <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                                        {i + 1}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            ))}
                                             <PaginationItem>
                                                 <PaginationEllipsis />
                                             </PaginationItem>
                                             <PaginationItem>
-                                                <PaginationNext href="#" />
+                                                <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                             </PaginationItem>
                                         </PaginationContent>
                                     </Pagination>
