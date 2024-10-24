@@ -62,6 +62,7 @@ const Users = () => {
     const [fetchedUser, setFetchedUser] = useState(null);
     const [usersMessage, setUsersMessage] = useState('');
     const [userEditForm, setUserEditForm] = useState(false);
+    const [toast, setToast] = useState(false);
 
     const getAllUsers = async () => {
         try {
@@ -111,9 +112,29 @@ const Users = () => {
         setError,
     } = useForm();
 
+
+    const [role, setUserRole] = useState('');
     const editUserDetails = async (data) => {
         try {
+            const { firstName, lastName, email, phoneNumber, address, dob } = data
+            const finalData = { firstName, lastName, email, phoneNumber, address, dob, role }
+            const response = await fetch(`http://localhost:5000/api/users/patch/${fetchedUser._id}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ finalData })
+            });
 
+            const responseBody = await response.json();
+            if (response.ok) {
+                setUserEditForm(false);
+            }
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 4000);
+            setUsersMessage(responseBody.message);
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -122,6 +143,23 @@ const Users = () => {
     return (
         <div className="w-full">
             <div className="w-full">
+                {toast ? (
+                    <div className="fixed bottom-10 bg-white border shadow-2xl right-10 flex items-center justify-between p-4">
+                        <div className="block">
+                            <h1 className="font-bold">Patch request</h1>
+                            <p className="text-sm font-semibold">{usersMessage}</p>
+                        </div>
+                        <div>
+                            <IoMdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer ml-4" />
+                        </div>
+                    </div>
+                ) : (
+                    <>
+                    </>
+                )}
+
                 {
                     userEditForm ? (
                         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
@@ -164,7 +202,7 @@ const Users = () => {
 
                                         <div>
                                             <Label>User Role</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setUserRole(value)}>
                                                 <SelectTrigger className="rounded-none">
                                                     <SelectValue placeholder={fetchedUser.role} />
                                                 </SelectTrigger>
@@ -216,13 +254,25 @@ const Users = () => {
                                             />
                                         </div>
 
+                                        <div className="w-full">
+                                            <Label>DOB</Label>
+                                            <Input
+                                                {
+                                                ...register('dob')
+                                                }
+                                                type='date'
+                                                className="rounded-none"
+                                                defaultValue={new Date(fetchedUser.dob).toISOString().split('T')[0]}
+                                                placeholder="DOB"
+                                            />
+                                        </div>
+
                                         <div className="w-full flex mt-4 space-x-4 justify-center">
                                             <Button
                                                 type='submit'
-                                                onClick={() => setUserEditForm(false)}
                                                 className="rounded-none text-white font-bold py-2 px-4"
                                             >
-                                                Submit
+                                                {isSubmitting ? 'Processing...' : "Submit"}
                                             </Button>
                                             <Button
                                                 variant="destructive"
@@ -232,7 +282,6 @@ const Users = () => {
                                                 Cancel
                                             </Button>
                                         </div>
-
                                     </form>
 
                                 </div>
@@ -292,7 +341,7 @@ const Users = () => {
                                             users.map((user) => (
                                                 <TableRow key={user._id}>
                                                     <TableCell className="font-medium">{user.firstName + user.lastName}</TableCell>
-                                                    <TableCell>{'Role'}</TableCell>
+                                                    <TableCell>{user.role}</TableCell>
                                                     <TableCell>{user.email}</TableCell>
                                                     <TableCell>{user.phoneNumber}</TableCell>
                                                     <TableCell>{user.address}</TableCell>
