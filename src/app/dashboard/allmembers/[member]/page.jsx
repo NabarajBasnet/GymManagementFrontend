@@ -223,6 +223,8 @@ const Member = (props) => {
             const responseBody = await response.json();
             if (response.ok) {
                 reset();
+                setDiscountAmmount(responseBody.member.discountAmmount);
+                setPaidAmmount(responseBody.member.paidAmmount);
             }
             return responseBody;
         } catch (error) {
@@ -290,10 +292,37 @@ const Member = (props) => {
                 setError(
                     "paidAmmount", {
                     type: "manual",
-                    message: "Specify paid ammount."
+                    message: "Specify paid ammount"
                 }
                 );
             }
+
+            if (discountAmmount && !discountReason) {
+                setError(
+                    "discountReason", {
+                    type: "manual",
+                    message: "Discount reason is required"
+                }
+                );
+            };
+
+            if (!actionTaker) {
+                setError(
+                    "actionTaker", {
+                    type: "manual",
+                    message: "Select action taker"
+                }
+                );
+            };
+
+            if (!reasonForUpdate) {
+                setError(
+                    "reasonForUpdate", {
+                    type: "manual",
+                    message: "Select reason for update"
+                }
+                );
+            };
 
             const response = await fetch(`http://localhost:5000/api/members/${memberId}`, {
                 method: "PATCH",
@@ -531,9 +560,9 @@ const Member = (props) => {
                                                                 <SelectContent>
                                                                     <SelectGroup>
                                                                         <SelectLabel>Status</SelectLabel>
-                                                                        <SelectItem value="Active">Active</SelectItem>
-                                                                        <SelectItem value="Inactive">Inactive</SelectItem>
-                                                                        <SelectItem value="OnHold">Hold</SelectItem>
+                                                                        <SelectItem value="Active" className='bg-green-600'>Active</SelectItem>
+                                                                        <SelectItem value="Inactive" className='bg-red-600'>Inactive</SelectItem>
+                                                                        <SelectItem value="OnHold" className='bg-yellow-400'>Hold</SelectItem>
                                                                     </SelectGroup>
                                                                 </SelectContent>
                                                             </Select>
@@ -706,6 +735,7 @@ const Member = (props) => {
                                                                 {
                                                                 ...register('discountReason')
                                                                 }
+                                                                onChange={(e) => clearErrors('discountReason')}
                                                                 defaultValue={data.member.discountReason}
                                                                 type='text'
                                                                 className='rounded-none focus:outline-none'
@@ -840,7 +870,12 @@ const Member = (props) => {
 
                                                         <div>
                                                             <Label>Reason for Update</Label>
-                                                            <Select onValueChange={(value) => setReasonForUpdate(value)}>
+                                                            <Select onValueChange={(value) => {
+                                                                setReasonForUpdate(value);
+                                                                if (value) {
+                                                                    clearErrors('reasonForUpdate');
+                                                                }
+                                                            }}>
                                                                 <SelectTrigger className="w-full rounded-none">
                                                                     <SelectValue placeholder={'Reason for update'} />
                                                                 </SelectTrigger>
@@ -852,6 +887,9 @@ const Member = (props) => {
                                                                     </SelectGroup>
                                                                 </SelectContent>
                                                             </Select>
+                                                            {errors.reasonForUpdate && (
+                                                                <p className="text-sm font-semibold text-red-600">{`${errors.reasonForUpdate.message}`}</p>
+                                                            )}
                                                         </div>
 
                                                         <div>
@@ -869,7 +907,12 @@ const Member = (props) => {
 
                                                         <div>
                                                             <Label>Action Taker</Label>
-                                                            <Select onValueChange={(value) => setActionTaker(value)}>
+                                                            <Select onValueChange={(value) => {
+                                                                setActionTaker(value);
+                                                                if (value) {
+                                                                    clearErrors('actionTaker')
+                                                                }
+                                                            }}>
                                                                 <SelectTrigger className="w-full rounded-none">
                                                                     <SelectValue placeholder={data.member.actionTaker} />
                                                                 </SelectTrigger>
@@ -882,6 +925,9 @@ const Member = (props) => {
                                                                     </SelectGroup>
                                                                 </SelectContent>
                                                             </Select>
+                                                            {errors.actionTaker && (
+                                                                <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
+                                                            )}
                                                         </div>
 
                                                     </div>
