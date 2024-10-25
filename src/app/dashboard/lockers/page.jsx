@@ -46,12 +46,12 @@ const Lockers = () => {
         formState: { isSubmitting, errors }
     } = useForm();
 
+    const [currentLockerNumber, setCurrentLockerNumber] = useState('');
     const [memberName, setMemberName] = useState('');
     const [renewDate, setRenewDate] = useState(new Date());
     const [duration, setDuration] = useState('');
     const [expireDate, setExpirewDate] = useState(new Date());
     const [paymentMethod, setPaymentMethod] = useState('');
-
 
     const registerLocker = async () => {
         try {
@@ -97,21 +97,20 @@ const Lockers = () => {
             </div>
 
             {
-                lockerFormState ? (
+                lockerFormState && currentLockerNumber ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
-                        <div className="bg-white rounded-lg shadow-xl p-8 md:w-1/2 w-full">
+                        <div className="bg-white md:rounded-lg rounded-none shadow-xl p-8 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
-                            <form className="space-y-6">
-
+                            <form className="space-y-3 h-full">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Locker Number</Label>
                                         <Input
                                             {...register('lockerNumber')}
                                             disabled
-                                            defaultValue={'1'}
-                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
-                                            placeholder='Locker Number'
+                                            defaultValue={currentLockerNumber}
+                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                            placeholder="Locker Number"
                                         />
                                         {errors.lockerNumber && (
                                             <p className="text-sm font-semibold text-red-600">{errors.lockerNumber.message}</p>
@@ -128,8 +127,8 @@ const Lockers = () => {
                                                 <SelectGroup>
                                                     <SelectLabel>Select Member</SelectLabel>
                                                     <Input
-                                                        className='rounded-lg mb-2 border-gray-300'
-                                                        placeholder='Search member'
+                                                        className="rounded-lg mb-2 border-gray-300"
+                                                        placeholder="Search member"
                                                     />
                                                     <SelectItem value="apple">Apple</SelectItem>
                                                     <SelectItem value="banana">Banana</SelectItem>
@@ -148,9 +147,11 @@ const Lockers = () => {
                                     <div>
                                         <Label>Renew Date</Label>
                                         <Input
-                                            {...register('renewDate', { required: { value: true, message: "Renew date is required" } })}
-                                            type='date'
-                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                            {...register('renewDate', {
+                                                required: { value: true, message: "Renew date is required" },
+                                            })}
+                                            type="date"
+                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.renewDate && (
                                             <p className="text-sm font-semibold text-red-600">{errors.renewDate.message}</p>
@@ -183,9 +184,11 @@ const Lockers = () => {
                                     <div>
                                         <Label>Expire Date</Label>
                                         <Input
-                                            {...register('expireDate', { required: { value: true, message: "Expire date is required" } })}
-                                            type='date'
-                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                            {...register('expireDate', {
+                                                required: { value: true, message: "Expire date is required" },
+                                            })}
+                                            type="date"
+                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.expireDate && (
                                             <p className="text-sm font-semibold text-red-600">{errors.expireDate.message}</p>
@@ -195,8 +198,10 @@ const Lockers = () => {
                                     <div>
                                         <Label>Fee</Label>
                                         <Input
-                                            {...register('fee', { required: { value: true, message: "Fee is required" } })}
-                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                            {...register('fee', {
+                                                required: { value: true, message: "Fee is required" },
+                                            })}
+                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.fee && (
                                             <p className="text-sm font-semibold text-red-600">{errors.fee.message}</p>
@@ -228,8 +233,10 @@ const Lockers = () => {
                                     <div>
                                         <Label>Receipt No</Label>
                                         <Input
-                                            {...register('receiptNo', { required: { value: true, message: "Receipt number is required" } })}
-                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                            {...register('receiptNo', {
+                                                required: { value: true, message: "Receipt number is required" },
+                                            })}
+                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.receiptNo && (
                                             <p className="text-sm font-semibold text-red-600">{errors.receiptNo.message}</p>
@@ -238,9 +245,18 @@ const Lockers = () => {
                                 </div>
 
                                 <div className="w-full flex justify-center mt-8 space-x-4">
-                                    <Button className="bg-blue-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-blue-600 transition-all">Submit</Button>
-                                    <Button onClick={() => setLockerFormState(false)} className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 transition-all">Close</Button>
-                                    <Button className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">Reset</Button>
+                                    <Button className="bg-blue-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-blue-600 transition-all">
+                                        Submit
+                                    </Button>
+                                    <Button
+                                        onClick={() => setLockerFormState(false)}
+                                        className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 transition-all"
+                                    >
+                                        Close
+                                    </Button>
+                                    <Button className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">
+                                        Reset
+                                    </Button>
                                 </div>
                             </form>
                         </div>
@@ -329,7 +345,10 @@ const Lockers = () => {
                                     <p className="text-sm text-gray-700 font-semibold my-1">Duration: 3 Months</p>
                                     <p className="text-sm text-gray-700 font-semibold my-1">Expire Date: 2024-12-01</p>
 
-                                    <Button onClick={() => setLockerFormState(true)} className="rounded-lg bg-blue-600 text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
+                                    <Button onClick={() => {
+                                        setCurrentLockerNumber(index + 1);
+                                        setLockerFormState(true);
+                                    }} className="rounded-lg bg-blue-600 text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
                                         <FaLock
                                             className="text-xl" /> Manage
                                     </Button>
