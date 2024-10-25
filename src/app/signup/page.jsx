@@ -26,7 +26,7 @@ const SignUp = () => {
     const onSignUp = async (data) => {
         try {
             console.log('Data: ', data);
-            const response = await fetch('http://localhost:5000/api/auth/signup', {
+            const response = await fetch('https://revivefitnessserverapi.nabarajbasnet.com/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
