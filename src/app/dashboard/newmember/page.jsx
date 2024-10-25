@@ -327,7 +327,7 @@ const newMemberRegistrationForm = () => {
                 )
             }
 
-            const response = await fetch('http://localhost:5000/api/members', {
+            const response = await fetch('https://revivefitnessserverapi.nabarajbasnet.com/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

@@ -59,8 +59,9 @@ const AllMembers = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`http://localhost:5000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`https://revivefitnessserverapi.nabarajbasnet.com/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
+            console.log('Response body: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -90,7 +91,7 @@ const AllMembers = () => {
             return;
         };
 
-        const response = await fetch(`http://localhost:5000/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`https://revivefitnessserverapi.nabarajbasnet.com/api/members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
@@ -117,7 +118,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/qr/send-qr`, {
+            const response = await fetch(`https://revivefitnessserverapi.nabarajbasnet.com/api/qr/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
