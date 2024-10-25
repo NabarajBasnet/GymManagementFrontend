@@ -165,7 +165,7 @@ const Users = () => {
             }, 4000);
             const responseBody = await response.json();
             setUsersMessage(responseBody.message)
-            if(response.ok){
+            if (response.ok) {
                 queryClient.invalidateQueries(['user']);
             }
         } catch (error) {
