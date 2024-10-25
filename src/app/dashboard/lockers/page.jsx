@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import * as React from "react"
 import { useForm } from "react-hook-form";
@@ -46,15 +46,16 @@ const Lockers = () => {
         formState: { isSubmitting, errors }
     } = useForm();
 
-    const [currentLockerNumber, setCurrentLockerNumber] = useState('');
+    const [lockerNumber, setCurrentLockerNumber] = useState('');
     const [memberName, setMemberName] = useState('');
-    const [renewDate, setRenewDate] = useState(new Date());
     const [duration, setDuration] = useState('');
-    const [expireDate, setExpirewDate] = useState(new Date());
     const [paymentMethod, setPaymentMethod] = useState('');
 
-    const registerLocker = async () => {
+    const registerLocker = async (data) => {
         try {
+            const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
+            const finalData = {lockerNumber, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
+            console.log("Final data: ", finalData);
 
         } catch (error) {
             console.log("Error: ", error);
@@ -97,18 +98,18 @@ const Lockers = () => {
             </div>
 
             {
-                lockerFormState && currentLockerNumber ? (
+                lockerFormState && lockerNumber ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
                         <div className="bg-white md:rounded-lg rounded-none shadow-xl p-8 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
-                            <form className="space-y-3 h-full">
+                            <form className="space-y-3 h-full" onSubmit={handleSubmit(registerLocker)}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Locker Number</Label>
                                         <Input
                                             {...register('lockerNumber')}
                                             disabled
-                                            defaultValue={currentLockerNumber}
+                                            defaultValue={lockerNumber}
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                             placeholder="Locker Number"
                                         />
@@ -119,7 +120,12 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Member Name</Label>
-                                        <Select>
+                                        <Select onValueChange={(value) => {
+                                            setMemberName(value);
+                                            if (value) {
+                                                clearErrors('memberName')
+                                            }
+                                        }}>
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                                 <SelectValue placeholder="Select Member" />
                                             </SelectTrigger>
@@ -160,7 +166,12 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Duration</Label>
-                                        <Select>
+                                        <Select onValueChange={(value) => {
+                                            setDuration(value);
+                                            if (value) {
+                                                clearErrors('duration')
+                                            }
+                                        }}>
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                                 <SelectValue placeholder="Select Duration" />
                                             </SelectTrigger>
@@ -212,7 +223,12 @@ const Lockers = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Payment Method</Label>
-                                        <Select>
+                                        <Select onValueChange={(value) => {
+                                            setPaymentMethod(value);
+                                            if (value) {
+                                                clearErrors('paymentMethod')
+                                            }
+                                        }}>
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                                 <SelectValue placeholder="Select Payment Method" />
                                             </SelectTrigger>
@@ -229,6 +245,21 @@ const Lockers = () => {
                                             <p className="text-sm font-semibold text-red-600">{errors.paymentMethod.message}</p>
                                         )}
                                     </div>
+
+                                    {paymentMethod === 'Fonepay' && (
+                                        <div>
+                                            <Label>Reference Code</Label>
+                                            <Input
+                                                {...register('referenceCode', {
+                                                    required: { value: true, message: "Reference code is required" },
+                                                })}
+                                                className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                            />
+                                            {errors.referenceCode && (
+                                                <p className="text-sm font-semibold text-red-600">{errors.referenceCode.message}</p>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <div>
                                         <Label>Receipt No</Label>
