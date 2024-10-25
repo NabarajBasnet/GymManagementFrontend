@@ -28,7 +28,7 @@ const Login = () => {
 
     const onLoginUser = async (data) => {
         try {
-            const response = await fetch('https://revivefitnessapi.nabarajbasnet.com/api/auth/login', {
+            const response = await fetch('https://revivefitnessapi.getinshapewithshreejan.com/api/auth/login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

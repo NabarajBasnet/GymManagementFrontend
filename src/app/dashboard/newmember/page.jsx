@@ -327,7 +327,7 @@ const newMemberRegistrationForm = () => {
                 )
             }
 
-            const response = await fetch('https://revivefitnessapi.nabarajbasnet.com/api/members', {
+            const response = await fetch('https://revivefitnessapi.getinshapewithshreejan.com/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
