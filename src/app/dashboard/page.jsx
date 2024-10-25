@@ -133,7 +133,7 @@ const AdminDashboard = () => {
     }, {
       icon: FaUsers,
       text: "Average Active",
-      value: dailyAverageActiveMembers,
+      value: Number(dailyAverageActiveMembers),
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     }, {
