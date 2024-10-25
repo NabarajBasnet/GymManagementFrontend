@@ -98,13 +98,6 @@ const Header = () => {
         dispatch(MinimizeSidebar());
     }
 
-    const recentSearches = [
-        'Gym Management',
-        'Personal Training',
-        'New Member Registration',
-        'Payment Details',
-    ];
-
     const sidebarContent = [
         {
             icon: FaMoneyCheckAlt,
@@ -197,7 +190,6 @@ const Header = () => {
         },
     ];
 
-
     return (
         <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center backdrop-blur-sm bg-gray-100 bg-opacity-60 z-50`}>
             <div className='mx-4'>
@@ -266,16 +258,15 @@ const Header = () => {
             </div>
 
             <div className="flex items-center md:hidden space-x-8">
-                <h1 className="text-lg font-semibold">{currentDateTime.date}</h1>
-                <h1 className="text-lg font-semibold">{currentDateTime.time}</h1>
+                <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.date}</h1>
+                <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.time}</h1>
             </div>
-
 
             <div className='flex items-center space-x-4'>
 
                 <div className="hidden items-center md:flex space-x-4">
-                    <h1 className="text-lg font-semibold">{currentDateTime.date}</h1>
-                    <h1 className="text-lg font-semibold">{currentDateTime.time}</h1>
+                    <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.date}</h1>
+                    <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.time}</h1>
                 </div>
 
                 <Badge badgeContent={4} color="primary">
