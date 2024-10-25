@@ -99,201 +99,150 @@ const Lockers = () => {
             {
                 lockerFormState ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
-                        <div className="flex justify-center bg-transparent p-4 rounded-sm shadow-lg w-full">
-                            <div className="bg-gray-50 p-4 rounded-sm shadow-lg md:w-6/12 w-full transform transition-transform duration-500 ease-out scale-100">
-                                <h1>Lockers</h1>
-                                <form className="w-full">
-                                    <div className="w-full flex space-x-2 justify-between items-center">
-                                        <div className="w-full">
-                                            <Label>Locker Number</Label>
-                                            <Input
-                                                {
-                                                ...register('lockerNumber')
-                                                }
-                                                disabled
-                                                defaultValue={'1'}
-                                                className='rounded-none bg-white'
-                                                placeholder=''
-                                            />
-                                            {
-                                                errors.lockerNumber && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.lockerNumber.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                        <div className="bg-white rounded-lg shadow-xl p-8 md:w-1/2 w-full">
+                            <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
+                            <form className="space-y-6">
 
-                                        <div className="w-full">
-                                            <Label>Member Name</Label>
-                                            <Select>
-                                                <SelectTrigger className="bg-white">
-                                                    <SelectValue placeholder="Member Name" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <Input
-                                                            className='rounded-none'
-                                                            placeholder='Serach member'
-                                                        />
-                                                        <SelectItem value="apple">Apple</SelectItem>
-                                                        <SelectItem value="banana">Banana</SelectItem>
-                                                        <SelectItem value="grapes">Grapes</SelectItem>
-                                                        <SelectItem value="pineapple">Pineapple</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                            {
-                                                errors.memberName && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.memberName.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Locker Number</Label>
+                                        <Input
+                                            {...register('lockerNumber')}
+                                            disabled
+                                            defaultValue={'1'}
+                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                            placeholder='Locker Number'
+                                        />
+                                        {errors.lockerNumber && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.lockerNumber.message}</p>
+                                        )}
                                     </div>
 
-                                    <div className="w-full">
-                                        <div className="w-full">
-                                            <Label>Renew Date</Label>
-                                            <Input
-                                                {
-                                                ...register('renewDate', {
-                                                    required: {
-                                                        value: true,
-                                                        message: "Renew date is required"
-                                                    }
-                                                })
-                                                }
-                                                type='date'
-                                                className='bg-white rounded-none'
-                                                placeholder=''
-                                            />
-                                            {
-                                                errors.renewDate && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.renewDate.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                                    <div>
+                                        <Label>Member Name</Label>
+                                        <Select>
+                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                                <SelectValue placeholder="Select Member" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Select Member</SelectLabel>
+                                                    <Input
+                                                        className='rounded-lg mb-2 border-gray-300'
+                                                        placeholder='Search member'
+                                                    />
+                                                    <SelectItem value="apple">Apple</SelectItem>
+                                                    <SelectItem value="banana">Banana</SelectItem>
+                                                    <SelectItem value="grapes">Grapes</SelectItem>
+                                                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.memberName && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
+                                        )}
+                                    </div>
+                                </div>
 
-                                        <div className="w-full">
-                                            <Label>Duration</Label>
-                                            <Select>
-                                                <SelectTrigger className="bg-white">
-                                                    <SelectValue placeholder="Duration" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value="1 Month">1 Month</SelectItem>
-                                                        <SelectItem value="3 Months">3 Months</SelectItem>
-                                                        <SelectItem value="6 Months">6 Months</SelectItem>
-                                                        <SelectItem value="12 Months">12 Months</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                            {
-                                                errors.duration && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.duration.message}`}</p>
-                                                )
-                                            }
-                                        </div>
-
-                                        <div className="w-full">
-                                            <Label>Expire Date</Label>
-                                            <Input
-                                                {
-                                                ...register('expireDate', {
-                                                    required: {
-                                                        value: true,
-                                                        message: "Expire date is required"
-                                                    }
-                                                })
-                                                }
-                                                type='date'
-                                                className='bg-white rounded-none'
-                                                placeholder=''
-                                            />
-                                            {
-                                                errors.expireDate && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.expireDate.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Renew Date</Label>
+                                        <Input
+                                            {...register('renewDate', { required: { value: true, message: "Renew date is required" } })}
+                                            type='date'
+                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                        />
+                                        {errors.renewDate && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.renewDate.message}</p>
+                                        )}
                                     </div>
 
-                                    <div className="w-full">
-                                        <div className="w-full">
-                                            <Label>Fee</Label>
-                                            <Input
-                                                {
-                                                ...register('fee', {
-                                                    required: {
-                                                        value: true,
-                                                        message: "Fee date is required"
-                                                    }
-                                                })
-                                                }
-                                                className='bg-white rounded-none'
-                                                placeholder=''
-                                            />
-                                            {
-                                                errors.fee && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.fee.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                                    <div>
+                                        <Label>Duration</Label>
+                                        <Select>
+                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                                <SelectValue placeholder="Select Duration" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Select Duration</SelectLabel>
+                                                    <SelectItem value="1 Month">1 Month</SelectItem>
+                                                    <SelectItem value="3 Months">3 Months</SelectItem>
+                                                    <SelectItem value="6 Months">6 Months</SelectItem>
+                                                    <SelectItem value="12 Months">12 Months</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.duration && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.duration.message}</p>
+                                        )}
+                                    </div>
+                                </div>
 
-                                        <div className="w-full">
-                                            <Label>Payment Method</Label>
-                                            <Select>
-                                                <SelectTrigger className="bg-white">
-                                                    <SelectValue placeholder="Payment Method" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value="Fonepay">Fonepay</SelectItem>
-                                                        <SelectItem value="Cash">Cash</SelectItem>
-                                                        <SelectItem value="Card">Card</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                            {
-                                                errors.paymentMethod && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.paymentMethod.message}`}</p>
-                                                )
-                                            }
-                                        </div>
-
-                                        <div className="w-full">
-                                            <Label>Receipt No</Label>
-                                            <Input
-                                                {
-                                                ...register('receiptNo', {
-                                                    required: {
-                                                        value: true,
-                                                        message: "Receipt no is required"
-                                                    }
-                                                })
-                                                }
-                                                className='bg-white rounded-none'
-                                                placeholder=''
-                                            />
-                                            {
-                                                errors.receiptNo && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.receiptNo.message}`}</p>
-                                                )
-                                            }
-                                        </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Expire Date</Label>
+                                        <Input
+                                            {...register('expireDate', { required: { value: true, message: "Expire date is required" } })}
+                                            type='date'
+                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                        />
+                                        {errors.expireDate && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.expireDate.message}</p>
+                                        )}
                                     </div>
 
-                                    <div className="w-full flex justify-center items-center mt-4">
-                                        <div className="flex space-x-3 mx-auto">
-                                            <Button className="bg-green-500 rounded-sm">Submit</Button>
-                                            <Button onClick={() => setLockerFormState(false)} className="bg-red-500 rounded-sm">Close</Button>
-                                            <Button className='rounded-sm'>Reset</Button>
-                                        </div>
+                                    <div>
+                                        <Label>Fee</Label>
+                                        <Input
+                                            {...register('fee', { required: { value: true, message: "Fee is required" } })}
+                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                        />
+                                        {errors.fee && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.fee.message}</p>
+                                        )}
                                     </div>
-                                </form>
-                            </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <Label>Payment Method</Label>
+                                        <Select>
+                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
+                                                <SelectValue placeholder="Select Payment Method" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Payment Method</SelectLabel>
+                                                    <SelectItem value="Fonepay">Fonepay</SelectItem>
+                                                    <SelectItem value="Cash">Cash</SelectItem>
+                                                    <SelectItem value="Card">Card</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                        {errors.paymentMethod && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.paymentMethod.message}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Receipt No</Label>
+                                        <Input
+                                            {...register('receiptNo', { required: { value: true, message: "Receipt number is required" } })}
+                                            className='rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none'
+                                        />
+                                        {errors.receiptNo && (
+                                            <p className="text-sm font-semibold text-red-600">{errors.receiptNo.message}</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="w-full flex justify-center mt-8 space-x-4">
+                                    <Button className="bg-blue-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-blue-600 transition-all">Submit</Button>
+                                    <Button onClick={() => setLockerFormState(false)} className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 transition-all">Close</Button>
+                                    <Button className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">Reset</Button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 ) : (
