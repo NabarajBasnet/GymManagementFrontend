@@ -50,7 +50,7 @@ const AdminDashboard = () => {
     queryFn: getTotalMembers
   });
 
-  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers } = data || {};
+  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers, renewedFromLastWeek } = data || {};
 
   const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
@@ -115,7 +115,7 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renew",
-      value: '400',
+      value: renewedFromLastWeek,
       color: 'text-green-600',
       bg: 'bg-green-200'
     }, {
@@ -133,7 +133,7 @@ const AdminDashboard = () => {
     }, {
       icon: FaUsers,
       text: "Average Active",
-      value: Number(dailyAverageActiveMembers),
+      value: dailyAverageActiveMembers,
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     }, {
