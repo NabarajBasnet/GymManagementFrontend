@@ -31,8 +31,26 @@ import { GiBiceps } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa6";
 import { PiUsersFourFill } from "react-icons/pi";
 import { RiUserShared2Fill } from "react-icons/ri";
+import { useQuery } from "@tanstack/react-query";
 
 const AdminDashboard = () => {
+
+  const getTotalMembers = async () => {
+    try {
+      const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/members`);
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const { data } = useQuery({
+    queryKey: ['membersLength'],
+    queryFn: getTotalMembers
+  });
+
+  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers } = data || {};
 
   const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
@@ -90,7 +108,7 @@ const AdminDashboard = () => {
     {
       icon: FaUsers,
       text: "Total Membership",
-      value: '1000',
+      value: totalMembers,
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     },
@@ -109,19 +127,19 @@ const AdminDashboard = () => {
     }, {
       icon: GiBiceps,
       text: "Active",
-      value: '300',
+      value: totalActiveMembers,
       color: 'text-green-600',
       bg: 'bg-green-200'
     }, {
       icon: FaUsers,
       text: "Average Active",
-      value: '280',
+      value: dailyAverageActiveMembers,
       color: 'text-blue-600',
       bg: 'bg-blue-200'
     }, {
       icon: PiUsersFourFill,
       text: "Inactive",
-      value: '700',
+      value: totalInactiveMembers,
       color: 'text-red-600',
       bg: 'bg-red-200'
     },
