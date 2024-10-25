@@ -219,7 +219,7 @@ const Member = (props) => {
 
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`https://revivefitnessserverapi.nabarajbasnet.com/api/members/${memberId}`);
+            const response = await fetch(`https://revivefitnessapi.nabarajbasnet.com/api/members/${memberId}`);
             const responseBody = await response.json();
             if (response.ok) {
                 reset();
@@ -324,7 +324,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`https://revivefitnessserverapi.nabarajbasnet.com/api/members/${memberId}`, {
+            const response = await fetch(`https://revivefitnessapi.nabarajbasnet.com/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
