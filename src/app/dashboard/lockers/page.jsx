@@ -98,13 +98,15 @@ const Lockers = () => {
             const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
             console.log("Final data: ", finalData);
-            const response = await fetch(`http://localhost:5000/api/locker/create`, {
-                method: "PATCH",
+            const response = await fetch('http://localhost:5000/api/lockers', {
+                method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(finalData)
-            });
+                body: JSON.stringify(data),
+                credentials: 'include',
+            })
+
             if (response.ok) {
                 alert('Ok response')
             }
@@ -173,8 +175,10 @@ const Lockers = () => {
                                         <Label>Member Name</Label>
                                         <Select
                                             onValueChange={(value) => {
-                                                setMemberName(value);
-                                                if (value) {
+                                                const selectedMember = members.find((member) => member._id === value);
+                                                if (selectedMember) {
+                                                    setMemberName(selectedMember.fullName);
+                                                    setMemberId(selectedMember._id);
                                                     clearErrors('memberName');
                                                 }
                                             }}
@@ -196,7 +200,6 @@ const Lockers = () => {
                                                             <SelectItem
                                                                 key={member._id}
                                                                 value={member._id}
-                                                                onClick={() => setMemberId(member._id)}
                                                             >
                                                                 {member.fullName}
                                                             </SelectItem>
@@ -209,6 +212,7 @@ const Lockers = () => {
                                             <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
                                         )}
                                     </div>
+
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
