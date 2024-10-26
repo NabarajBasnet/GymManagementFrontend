@@ -23,7 +23,10 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import * as React from 'react';
+import { PieChart } from '@mui/x-charts/PieChart';
+
 import { HiMiniUsers } from "react-icons/hi2";
 import { MdAutorenew } from "react-icons/md";
 import { RiExchange2Line } from "react-icons/ri";
@@ -51,6 +54,58 @@ const AdminDashboard = () => {
   });
 
   const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers, membersRenewedThisWeek } = data || {};
+
+  const gridContents = [
+    {
+      icon: FaUsers,
+      text: "Total Membership",
+      value: totalMembers,
+      color: 'text-blue-600',
+      bg: 'bg-blue-200'
+    },
+    {
+      icon: MdAutorenew,
+      text: "Renew",
+      value: membersRenewedThisWeek || "Null",
+      color: 'text-green-600',
+      bg: 'bg-green-200'
+    }, {
+      icon: RiUserShared2Fill,
+      text: "New Admission",
+      value: '75',
+      color: 'text-yellow-600',
+      bg: 'bg-yellow-200'
+    }, {
+      icon: GiBiceps,
+      text: "Active",
+      value: totalActiveMembers,
+      color: 'text-green-600',
+      bg: 'bg-green-200'
+    }, {
+      icon: FaUsers,
+      text: "Average Active",
+      value: dailyAverageActiveMembers,
+      color: 'text-blue-600',
+      bg: 'bg-blue-200'
+    }, {
+      icon: PiUsersFourFill,
+      text: "Inactive",
+      value: totalInactiveMembers,
+      color: 'text-red-600',
+      bg: 'bg-red-200'
+    },
+  ];
+
+  const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
+  const xLabels = [
+    'Page A',
+    'Page B',
+    'Page C',
+    'Page D',
+    'Page E',
+    'Page F',
+    'Page G',
+  ];
 
   const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
@@ -104,46 +159,7 @@ const AdminDashboard = () => {
     },
   };
 
-  const gridContents = [
-    {
-      icon: FaUsers,
-      text: "Total Membership",
-      value: totalMembers,
-      color: 'text-blue-600',
-      bg: 'bg-blue-200'
-    },
-    {
-      icon: MdAutorenew,
-      text: "Renew",
-      value: membersRenewedThisWeek || "Null",
-      color: 'text-green-600',
-      bg: 'bg-green-200'
-    }, {
-      icon: RiUserShared2Fill,
-      text: "New Admission",
-      value: '75',
-      color: 'text-yellow-600',
-      bg: 'bg-yellow-200'
-    }, {
-      icon: GiBiceps,
-      text: "Active",
-      value: totalActiveMembers,
-      color: 'text-green-600',
-      bg: 'bg-green-200'
-    }, {
-      icon: FaUsers,
-      text: "Average Active",
-      value: dailyAverageActiveMembers,
-      color: 'text-blue-600',
-      bg: 'bg-blue-200'
-    }, {
-      icon: PiUsersFourFill,
-      text: "Inactive",
-      value: totalInactiveMembers,
-      color: 'text-red-600',
-      bg: 'bg-red-200'
-    },
-  ];
+
 
   return (
     <div className="w-full">
@@ -203,8 +219,8 @@ const AdminDashboard = () => {
         </div>
 
         <div className="w-full bg-white py-5 rounded-lg">
-          <div className="w-full md:flex justify-start">
-            <ChartContainer config={chartConfig2} className="min-h-[200px] md:w-6/12 w-full px-4">
+          <div className="w-full justify-start">
+            <ChartContainer config={chartConfig2} className="min-h-[200px] w-full px-4">
               <BarChart accessibilityLayer data={chartData2}>
                 <CartesianGrid vertical={false} />
                 <XAxis
@@ -222,8 +238,8 @@ const AdminDashboard = () => {
             </ChartContainer>
             <div />
 
-            <div className="w-full flex justify-start">
-              <ChartContainer config={chartConfig} className="min-h-[200px] md:w-6/12 w-full px-4">
+            <div className="md:flex items-center">
+              <ChartContainer config={chartConfig} className="min-h-[200px] w-full px-4">
                 <BarChart accessibilityLayer data={chartData}>
                   <CartesianGrid vertical={false} />
                   <XAxis
@@ -239,6 +255,20 @@ const AdminDashboard = () => {
                   <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
                 </BarChart>
               </ChartContainer>
+
+              <PieChart
+                series={[
+                  {
+                    data: [
+                      { id: 0, value: 10, label: 'series A' },
+                      { id: 1, value: 15, label: 'series B' },
+                      { id: 2, value: 20, label: 'series C' },
+                    ],
+                  },
+                ]}
+                width={600}
+                height={300}
+              />
             </div>
           </div>
         </div>
