@@ -533,30 +533,51 @@ const Lockers = () => {
                     ) : (
                         <div className="w-full mt-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {lockers.map((locker) => (
-                                    <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-3">
-                                        <div className="w-full">
-                                            <div className={`${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} h-2 rounded-t-lg`}></div>
-                                            <h1 className="w-full text-xl space-x-4 font-bold text-gray-800 mt-2"> <span>Locker</span> <span>{locker.lockerNumber}</span></h1>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Member ID:</span> <span>{locker.memberId}</span> </p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span> Member Name:</span> <span>{locker.memberName}</span> </p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Renew Date:</span> <span>{locker.renewDate ? new Date(locker.renewDate).toISOString().split('T')[0] : ''}</span></p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Duration:</span> <span>{locker.duration}</span> </p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Expire Date:</span> <span>{locker.expireDate ? new Date(locker.expireDate).toISOString().split('T')[0] : ''}</span></p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Fee:</span> <span>{locker.fee}</span></p>
-                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Status: </span> <span>{locker.isAssigned ? 'Assigned' : 'Empty'}</span></p>
-                                            <Button onClick={() => {
-                                                setCurrentLockerNumber(locker.lockerNumber);
-                                                setLockerFormState(true);
-                                                setLockerId(locker._id);
-                                                getSingleLockerInfo(locker._id);
-                                            }} className={`rounded-lg ${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all`}>
-                                                <FaLock
-                                                    className="text-xl" /> Manage
-                                            </Button>
+                                {Array.isArray(lockers) && lockers.length > 0 ? (
+                                    lockers.map((locker) => (
+                                        <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-3">
+                                            <div className="w-full">
+                                                <div className={`${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} h-2 rounded-t-lg`}></div>
+                                                <h1 className="w-full text-xl space-x-4 font-bold text-gray-800 mt-2">
+                                                    <span>Locker</span> <span>{locker.lockerNumber}</span>
+                                                </h1>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Member ID:</span> <span>{locker.memberId}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span> Member Name:</span> <span>{locker.memberName}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Renew Date:</span>
+                                                    <span>{locker.renewDate ? new Date(locker.renewDate).toISOString().split('T')[0] : ''}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Duration:</span> <span>{locker.duration}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Expire Date:</span>
+                                                    <span>{locker.expireDate ? new Date(locker.expireDate).toISOString().split('T')[0] : ''}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Fee:</span> <span>{locker.fee}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Status: </span> <span>{locker.isAssigned ? 'Assigned' : 'Empty'}</span>
+                                                </p>
+                                                <Button onClick={() => {
+                                                    setCurrentLockerNumber(locker.lockerNumber);
+                                                    setLockerFormState(true);
+                                                    setLockerId(locker._id);
+                                                    getSingleLockerInfo(locker._id);
+                                                }} className={`rounded-lg ${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all`}>
+                                                    <FaLock className="text-xl" /> Manage
+                                                </Button>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))
+                                ) : (
+                                    <p>Locker not found.</p>
+                                )}
                             </div>
                         </div>
                     )
