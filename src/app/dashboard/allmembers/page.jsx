@@ -1,5 +1,6 @@
 'use client'
 
+import { MdDone } from "react-icons/md";
 import { Button } from "@/components/ui/button.jsx";
 import { IoMdClose } from "react-icons/io";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
@@ -118,7 +119,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`https://revivefitnessapi.nabarajbasnet.com/api/qr/send-qr`, {
+            const response = await fetch(`https://revivefitnessapi.nabarajbasnet.com/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -140,17 +141,18 @@ const AllMembers = () => {
             <div className='w-full p-6'>
                 {
                     qrState ? (
-                        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-                            <div className="bg-white p-8 rounded-sm shadow-lg w-[45rem]">
-                                <h2 className="text-lg font-bold mb-4">Email Alert</h2>
-                                <p className="mb-6">{qrMessage}</p>
-                                <div className="w-full flex justify-center">
-                                    <Button
+                        <div className="w-full flex justify-center">
+                            <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
+                                <div>
+                                    <MdDone className="text-4xl mx-4 text-green-600" />
+                                </div>
+                                <div className="block">
+                                    <p className="text-sm font-semibold">{qrMessage}</p>
+                                </div>
+                                <div>
+                                    <IoMdClose
                                         onClick={() => setQrState(false)}
-                                        className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
-                                    >
-                                        Close
-                                    </Button>
+                                        className="cursor-pointer ml-4" />
                                 </div>
                             </div>
                         </div>
