@@ -465,68 +465,68 @@ const Lockers = () => {
             }
 
             <div className="w-full bg-gray-50 min-h-screen p-8">
-                {/* Filter Section */}
-                <div className="w-full md:flex justify-start md:space-x-6 items-end bg-white p-6 rounded-xl shadow-lg">
-                    <div className="w-full md:w-3/12">
-                        <Label className="text-sm font-semibold text-gray-600">Locker Number</Label>
-                        <Select className="w-full">
-                            <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
-                                <SelectValue placeholder="Select a locker" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Lockers</SelectLabel>
-                                    <SelectItem value="1">Locker 1</SelectItem>
-                                    <SelectItem value="2">Locker 2</SelectItem>
-                                    <SelectItem value="3">Locker 3</SelectItem>
-                                    {/* Add more lockers */}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-full md:w-3/12">
-                        <Label className="text-sm font-semibold text-gray-600">Status</Label>
-                        <Select className="w-full">
-                            <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
-                                <SelectValue placeholder="Select status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Status</SelectLabel>
-                                    <SelectItem value="empty">Empty</SelectItem>
-                                    <SelectItem value="booked">Booked</SelectItem>
-                                    <SelectItem value="expired">Expired</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-full md:w-3/12">
-                        <Label className="text-sm font-semibold text-gray-600">Locker Filter</Label>
-                        <Select className="w-full">
-                            <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
-                                <SelectValue placeholder="Filter lockers" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Filter</SelectLabel>
-                                    <SelectItem value="available">Available</SelectItem>
-                                    <SelectItem value="occupied">Occupied</SelectItem>
-                                    <SelectItem value="maintenance">Under Maintenance</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-full md:w-3/12 flex justify-between items-end">
-                        <Button className="rounded-lg bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 transition-all shadow-md">Submit</Button>
-                        <div className="space-y-1">
-                            <h1 className="font-medium text-gray-700 bg-white px-2 py-1 shadow-sm rounded-lg">Empty: 10</h1>
-                            <h1 className="font-medium text-green-500 bg-white px-2 py-1 shadow-sm rounded-lg">Assigned: 25</h1>
-                            <h1 className="font-medium text-red-600 bg-white px-2 py-1 shadow-sm rounded-lg">Expired: 15</h1>
+                {isLoading ? (
+                    <></>
+                ) : (
+                    <div className="w-full md:flex justify-start md:space-x-6 items-end bg-white p-6 rounded-xl shadow-lg">
+                        <div className="w-full md:w-3/12">
+                            <Label className="text-sm font-semibold text-gray-600">Locker Number</Label>
+                            <Select className="w-full">
+                                <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
+                                    <SelectValue placeholder="Sort by order" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Order</SelectLabel>
+                                        <SelectItem value="Ascending">Ascending</SelectItem>
+                                        <SelectItem value="Descending">Descending</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="w-full md:w-3/12">
+                            <Label className="text-sm font-semibold text-gray-600">Status</Label>
+                            <Select className="w-full">
+                                <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
+                                    <SelectValue placeholder="Select status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Status</SelectLabel>
+                                        <SelectItem value="Empty">Empty</SelectItem>
+                                        <SelectItem value="Booked">Booked</SelectItem>
+                                        <SelectItem value="Expired">Expired</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="w-full md:w-3/12">
+                            <Label className="text-sm font-semibold text-gray-600">Locker Filter</Label>
+                            <Select className="w-full">
+                                <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
+                                    <SelectValue placeholder="Filter lockers" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Filter</SelectLabel>
+                                        <SelectItem value="Available">Available</SelectItem>
+                                        <SelectItem value="Occupied">Occupied</SelectItem>
+                                        <SelectItem value="UnderMaintenance">Under Maintenance</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="w-full md:w-3/12 flex justify-between items-end">
+                            <Button className="rounded-lg bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 transition-all shadow-md">Submit</Button>
+                            <div className="space-y-1">
+                                <h1 className="font-medium text-gray-700 bg-white px-2 py-1 shadow-sm rounded-lg">Empty: 10</h1>
+                                <h1 className="font-medium text-green-500 bg-white px-2 py-1 shadow-sm rounded-lg">Assigned: 25</h1>
+                                <h1 className="font-medium text-red-600 bg-white px-2 py-1 shadow-sm rounded-lg">Expired: 15</h1>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
 
-                {/* Lockers Section */}
                 {
                     isLoading ? (
                         <Loader />
