@@ -32,6 +32,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import * as React from "react"
 import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
+import Loader from "@/components/Loader/Loader";
 
 const Lockers = () => {
 
@@ -46,17 +48,66 @@ const Lockers = () => {
         formState: { isSubmitting, errors }
     } = useForm();
 
+    const [lockerId, setLockerId] = useState('');
+    const [memberId, setMemberId] = useState('');
     const [lockerNumber, setCurrentLockerNumber] = useState('');
     const [memberName, setMemberName] = useState('');
     const [duration, setDuration] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
 
+    const getAllLockers = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/lockers`);
+            const responseBody = await response.json();
+            console.log('Response Body: ', responseBody)
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['lockers'],
+        queryFn: getAllLockers
+    });
+
+    const { lockers } = data || {}
+
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/members`);
+            const responseBody = await response.json();
+            console.log('Response Body: ', responseBody)
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data: allmembers, isLoading: isMemberLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
+
+
+    const { members } = allmembers || {}
+    console.log('Members: ', members)
+
     const registerLocker = async (data) => {
         try {
             const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
-            const finalData = {lockerNumber, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
+            const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
             console.log("Final data: ", finalData);
-
+            const response = await fetch(`http://localhost:5000/api/locker/create`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(finalData)
+            });
+            if (response.ok) {
+                alert('Ok response')
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -120,12 +171,14 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Member Name</Label>
-                                        <Select onValueChange={(value) => {
-                                            setMemberName(value);
-                                            if (value) {
-                                                clearErrors('memberName')
-                                            }
-                                        }}>
+                                        <Select
+                                            onValueChange={(value) => {
+                                                setMemberName(value);
+                                                if (value) {
+                                                    clearErrors('memberName');
+                                                }
+                                            }}
+                                        >
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
                                                 <SelectValue placeholder="Select Member" />
                                             </SelectTrigger>
@@ -136,10 +189,19 @@ const Lockers = () => {
                                                         className="rounded-lg mb-2 border-gray-300"
                                                         placeholder="Search member"
                                                     />
-                                                    <SelectItem value="apple">Apple</SelectItem>
-                                                    <SelectItem value="banana">Banana</SelectItem>
-                                                    <SelectItem value="grapes">Grapes</SelectItem>
-                                                    <SelectItem value="pineapple">Pineapple</SelectItem>
+                                                    {isMemberLoading ? (
+                                                        <h1>Loading members...</h1>
+                                                    ) : (
+                                                        members?.map((member) => (
+                                                            <SelectItem
+                                                                key={member._id}
+                                                                value={member._id}
+                                                                onClick={() => setMemberId(member._id)}
+                                                            >
+                                                                {member.fullName}
+                                                            </SelectItem>
+                                                        ))
+                                                    )}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
@@ -362,32 +424,41 @@ const Lockers = () => {
                 </div>
 
                 {/* Lockers Section */}
-                <div className="w-full mt-8">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[...Array(20)].map((_, index) => (
-                            <div key={index} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-5">
-                                <div className="w-full">
-                                    <div className="bg-blue-600 h-2 rounded-t-lg"></div>
-                                    <h1 className="text-xl font-bold text-gray-800 mt-2">Locker {index + 1}</h1>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Member ID: 12345</p>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Locker Owner: John Doe</p>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Phone Number: 123-456-7890</p>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Renew Date: 2024-10-01</p>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Duration: 3 Months</p>
-                                    <p className="text-sm text-gray-700 font-semibold my-1">Expire Date: 2024-12-01</p>
+                {
+                    isLoading ? (
+                        <Loader />
+                    ) : (
+                        <div className="w-full mt-8">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                {lockers.map((locker) => (
+                                    <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-5">
+                                        <div className="w-full">
+                                            <div className="bg-blue-600 h-2 rounded-t-lg"></div>
+                                            <h1 className="text-xl font-bold text-gray-800 mt-2">Locker {locker.lockerNumber}</h1>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Member ID: {locker.memberId}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Member Name: {locker.memberName}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Renew Date: {locker.renewDate}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Duration: {locker.duration}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Expire Date: {locker.expireDate}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Fee: {locker.fee}</p>
+                                            <p className="text-sm text-gray-700 font-semibold my-1">Status: {locker.isAssigned}</p>
 
-                                    <Button onClick={() => {
-                                        setCurrentLockerNumber(index + 1);
-                                        setLockerFormState(true);
-                                    }} className="rounded-lg bg-blue-600 text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
-                                        <FaLock
-                                            className="text-xl" /> Manage
-                                    </Button>
-                                </div>
+                                            <Button onClick={() => {
+                                                setCurrentLockerNumber(locker.lockerNumber);
+                                                setLockerFormState(true);
+                                                setLockerId(locker._id);
+                                            }} className="rounded-lg bg-blue-600 text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
+                                                <FaLock
+                                                    className="text-xl" /> Manage
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </div>
+                    )
+                }
+
             </div>
         </div>
     )
