@@ -59,6 +59,7 @@ const Lockers = () => {
     const [memberName, setMemberName] = useState('');
     const [duration, setDuration] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
+    const [fetchedLocker, setFetchedLocker] = useState({})
 
     const getAllLockers = async () => {
         try {
@@ -98,7 +99,7 @@ const Lockers = () => {
         try {
             const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
-            const response = await fetch('http://localhost:5000/api/lockers/patch', {
+            const response = await fetch('http://localhost:5000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -142,9 +143,31 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/lockers/${id}`);
             const responseBody = await response.json();
+            setFetchedLocker(responseBody.lockerDetails);
             return responseBody;
         } catch (error) {
             console.log('Error: ', error);
+        }
+    };
+
+    const resetLocker = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/lockers/patch/${id}`, {
+                method: "PATCH",
+                body: JSON.stringify({})
+            })
+            if (response.ok) {
+                setLockerFormState(false);
+                setToast(true)
+                setTimeout(() => {
+                    setToast(false)
+                }, 5000);
+                queryClient.invalidateQueries(['lockers']);
+            }
+            const responseBody = await response.json();
+            setResponseMessage(responseBody.message);
+        } catch (error) {
+            console.log("Error: ", error);
         }
     };
 
@@ -238,7 +261,7 @@ const Lockers = () => {
                                             }}
                                         >
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder="Select Member" />
+                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.memberName : ''} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -277,6 +300,11 @@ const Lockers = () => {
                                                 required: { value: true, message: "Renew date is required" },
                                             })}
                                             type="date"
+                                            defaultValue={
+                                                fetchedLocker && fetchedLocker.renewDate && !isNaN(new Date(fetchedLocker.renewDate))
+                                                    ? new Date(fetchedLocker.renewDate).toISOString().split('T')[0]
+                                                    : ''
+                                            }
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.renewDate && (
@@ -293,7 +321,7 @@ const Lockers = () => {
                                             }
                                         }}>
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder="Select Duration" />
+                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.duration : ''} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -319,6 +347,11 @@ const Lockers = () => {
                                                 required: { value: true, message: "Expire date is required" },
                                             })}
                                             type="date"
+                                            defaultValue={
+                                                fetchedLocker && fetchedLocker.expireDate && !isNaN(new Date(fetchedLocker.expireDate))
+                                                    ? new Date(fetchedLocker.expireDate).toISOString().split('T')[0]
+                                                    : ''
+                                            }
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.expireDate && (
@@ -332,6 +365,7 @@ const Lockers = () => {
                                             {...register('fee', {
                                                 required: { value: true, message: "Fee is required" },
                                             })}
+                                            defaultValue={fetchedLocker ? fetchedLocker.fee : ''}
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.fee && (
@@ -350,7 +384,7 @@ const Lockers = () => {
                                             }
                                         }}>
                                             <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder="Select Payment Method" />
+                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.paymentMethod : ''} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
@@ -373,6 +407,7 @@ const Lockers = () => {
                                                 {...register('referenceCode', {
                                                     required: { value: true, message: "Reference code is required" },
                                                 })}
+                                                defaultValue={fetchedLocker ? fetchedLocker.referenceCode : ''}
                                                 className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                             />
                                             {errors.referenceCode && (
@@ -387,6 +422,7 @@ const Lockers = () => {
                                             {...register('receiptNo', {
                                                 required: { value: true, message: "Receipt number is required" },
                                             })}
+                                            defaultValue={fetchedLocker ? fetchedLocker.receiptNo : ''}
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.receiptNo && (
@@ -405,9 +441,18 @@ const Lockers = () => {
                                     >
                                         Close
                                     </Button>
-                                    <Button className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">
-                                        Reset
-                                    </Button>
+                                    {
+                                        fetchedLocker ? (
+                                            <Button
+                                                onClick={() => resetLocker(fetchedLocker._id)}
+                                                className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">
+                                                Reset
+                                            </Button>
+                                        ) : (
+                                            <>
+                                            </>
+                                        )
+                                    }
                                 </div>
                             </form>
                         </div>
@@ -504,6 +549,7 @@ const Lockers = () => {
                                                 setCurrentLockerNumber(locker.lockerNumber);
                                                 setLockerFormState(true);
                                                 setLockerId(locker._id);
+                                                getSingleLockerInfo(locker._id);
                                             }} className={`rounded-lg ${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all`}>
                                                 <FaLock
                                                     className="text-xl" /> Manage
