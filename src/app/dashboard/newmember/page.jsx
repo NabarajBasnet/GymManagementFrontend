@@ -1,5 +1,6 @@
 'use client'
 
+import { MdDone } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
@@ -87,6 +88,8 @@ const newMemberRegistrationForm = () => {
         }
     ];
 
+    const [toast, setToast] = useState(false);
+    const [responseMessage, setResponseMessage] = useState('');
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
 
@@ -178,8 +181,6 @@ const newMemberRegistrationForm = () => {
         setError,
         clearErrors
     } = useForm();
-
-    console.log('Form errors: ', errors);
 
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
@@ -334,7 +335,27 @@ const newMemberRegistrationForm = () => {
                 },
                 body: JSON.stringify(membersFinalData)
             })
+            const responseBody = await response.json();
+            if (response.status === 401) {
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 7000);
+                setResponseMessage(responseBody.message);
+                setError(
+                    'userRegistered', {
+                    type: "manual",
+                    message: "User exists with this email"
+                }
+                )
+            }
+
             if (response.ok) {
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 7000);
+                setResponseMessage(responseBody.message);
                 reset();
                 setTimeout(() => {
                     setSignUpAlert(false);
@@ -375,6 +396,27 @@ const newMemberRegistrationForm = () => {
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Register New Member</h1>
             </div>
+
+            {toast ? (
+                <div className="w-full flex justify-center">
+                    <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
+                        <div>
+                            <MdDone className="text-4xl mx-4 text-green-600" />
+                        </div>
+                        <div className="block">
+                            <p className="text-sm font-semibold">{responseMessage}</p>
+                        </div>
+                        <div>
+                            <IoMdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer ml-4" />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <>
+                </>
+            )}
 
             {signUpAlert && (
                 <div className="fixed bottom-10 bg-white border shadow-2xl right-10 flex items-center justify-between p-4">
@@ -450,11 +492,15 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
+                                            onChange={() => clearErrors('userRegistered')}
                                             className='rounded-none focus:outline-none'
                                             placeholder='Email Address'
                                         />
                                         {errors.email && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.email.message}`}</p>
+                                        )}
+                                        {errors.userRegistered && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.userRegistered.message}`}</p>
                                         )}
                                     </div>
 
