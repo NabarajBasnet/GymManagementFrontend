@@ -91,7 +91,7 @@ const AllMembers = () => {
             return;
         };
 
-        const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
