@@ -1,5 +1,7 @@
 'use client';
 
+import { MdDone } from "react-icons/md";
+import { IoMdClose } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
 import { FaUnlock } from "react-icons/fa";
 import {
@@ -32,12 +34,15 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import * as React from "react"
 import { useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 
 const Lockers = () => {
 
+    const queryClient = useQueryClient()
     const [lockerFormState, setLockerFormState] = useState(false);
+    const [responseMessage, setResponseMessage] = useState('');
+    const [toast, setToast] = useState(false);
 
     const {
         register,
@@ -59,7 +64,6 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/lockers`);
             const responseBody = await response.json();
-            console.log('Response Body: ', responseBody)
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -77,7 +81,6 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://localhost:5000/api/members`);
             const responseBody = await response.json();
-            console.log('Response Body: ', responseBody)
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -89,29 +92,59 @@ const Lockers = () => {
         queryFn: getAllMembers
     });
 
-
     const { members } = allmembers || {}
-    console.log('Members: ', members)
 
     const registerLocker = async (data) => {
         try {
             const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
-            console.log("Final data: ", finalData);
-            const response = await fetch('http://localhost:5000/api/lockers', {
+            const response = await fetch('http://localhost:5000/api/lockers/patch', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(finalData),
                 credentials: 'include',
             })
 
-            if (response.ok) {
-                alert('Ok response')
+            if (response.status === 400) {
+                setToast(true)
+                setTimeout(() => {
+                    setToast(false)
+                }, 5000);
+                queryClient.invalidateQueries(['lockers']);
             }
+
+            if (response.status === 500) {
+                setToast(true)
+                setTimeout(() => {
+                    setToast(false)
+                }, 5000);
+                queryClient.invalidateQueries(['lockers']);
+            }
+
+            if (response.ok) {
+                setLockerFormState(false);
+                setToast(true)
+                setTimeout(() => {
+                    setToast(false)
+                }, 5000);
+                queryClient.invalidateQueries(['lockers']);
+            }
+            const responseBody = await response.json();
+            setResponseMessage(responseBody.message);
         } catch (error) {
             console.log("Error: ", error);
+        }
+    };
+
+    const getSingleLockerInfo = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/lockers/${id}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log('Error: ', error);
         }
     };
 
@@ -149,6 +182,27 @@ const Lockers = () => {
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Lockers</h1>
             </div>
+
+            {toast ? (
+                <div className="w-full flex justify-center">
+                    <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
+                        <div>
+                            <MdDone className="text-4xl mx-4 text-green-600" />
+                        </div>
+                        <div className="block">
+                            <p className="text-sm font-semibold">{responseMessage}</p>
+                        </div>
+                        <div>
+                            <IoMdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer ml-4" />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <>
+                </>
+            )}
 
             {
                 lockerFormState && lockerNumber ? (
@@ -343,7 +397,7 @@ const Lockers = () => {
 
                                 <div className="w-full flex justify-center mt-8 space-x-4">
                                     <Button className="bg-blue-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-blue-600 transition-all">
-                                        Submit
+                                        {isSubmitting ? 'Submitting...' : "Submit"}
                                     </Button>
                                     <Button
                                         onClick={() => setLockerFormState(false)}
@@ -421,7 +475,7 @@ const Lockers = () => {
                         <Button className="rounded-lg bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 transition-all shadow-md">Submit</Button>
                         <div className="space-y-1">
                             <h1 className="font-medium text-gray-700 bg-white px-2 py-1 shadow-sm rounded-lg">Empty: 10</h1>
-                            <h1 className="font-medium text-green-500 bg-white px-2 py-1 shadow-sm rounded-lg">Booked: 25</h1>
+                            <h1 className="font-medium text-green-500 bg-white px-2 py-1 shadow-sm rounded-lg">Assigned: 25</h1>
                             <h1 className="font-medium text-red-600 bg-white px-2 py-1 shadow-sm rounded-lg">Expired: 15</h1>
                         </div>
                     </div>
@@ -433,25 +487,24 @@ const Lockers = () => {
                         <Loader />
                     ) : (
                         <div className="w-full mt-8">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {lockers.map((locker) => (
-                                    <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-5">
+                                    <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-3">
                                         <div className="w-full">
-                                            <div className="bg-blue-600 h-2 rounded-t-lg"></div>
-                                            <h1 className="text-xl font-bold text-gray-800 mt-2">Locker {locker.lockerNumber}</h1>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Member ID: {locker.memberId}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Member Name: {locker.memberName}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Renew Date: {locker.renewDate}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Duration: {locker.duration}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Expire Date: {locker.expireDate}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Fee: {locker.fee}</p>
-                                            <p className="text-sm text-gray-700 font-semibold my-1">Status: {locker.isAssigned}</p>
-
+                                            <div className={`${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} h-2 rounded-t-lg`}></div>
+                                            <h1 className="w-full text-xl space-x-4 font-bold text-gray-800 mt-2"> <span>Locker</span> <span>{locker.lockerNumber}</span></h1>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Member ID:</span> <span>{locker.memberId}</span> </p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span> Member Name:</span> <span>{locker.memberName}</span> </p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Renew Date:</span> <span>{locker.renewDate ? new Date(locker.renewDate).toISOString().split('T')[0] : ''}</span></p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Duration:</span> <span>{locker.duration}</span> </p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Expire Date:</span> <span>{locker.expireDate ? new Date(locker.expireDate).toISOString().split('T')[0] : ''}</span></p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Fee:</span> <span>{locker.fee}</span></p>
+                                            <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1"><span>Status: </span> <span>{locker.isAssigned ? 'Assigned' : 'Empty'}</span></p>
                                             <Button onClick={() => {
                                                 setCurrentLockerNumber(locker.lockerNumber);
                                                 setLockerFormState(true);
                                                 setLockerId(locker._id);
-                                            }} className="rounded-lg bg-blue-600 text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all">
+                                            }} className={`rounded-lg ${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all`}>
                                                 <FaLock
                                                     className="text-xl" /> Manage
                                             </Button>
@@ -462,9 +515,8 @@ const Lockers = () => {
                         </div>
                     )
                 }
-
             </div>
-        </div>
+        </div >
     )
 }
 
