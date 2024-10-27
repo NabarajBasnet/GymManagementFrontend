@@ -219,7 +219,7 @@ const Member = (props) => {
 
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:5000/api/members/${memberId}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
             const responseBody = await response.json();
             if (response.ok) {
                 reset();
@@ -324,7 +324,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`http://88.198.112.156:5000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
