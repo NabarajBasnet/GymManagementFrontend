@@ -69,7 +69,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:5000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -90,7 +90,7 @@ const MemberAttendance = () => {
     const handleValidation = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:5000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

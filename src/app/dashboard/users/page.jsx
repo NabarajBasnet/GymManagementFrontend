@@ -70,7 +70,7 @@ const Users = () => {
     const getAllUsers = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/users?page=${page}&limmit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:5000/api/users?page=${page}&limmit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setUsersMessage(responseBody.message);
@@ -94,7 +94,7 @@ const Users = () => {
 
     const getSingleUser = async (id) => {
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/users/${id}`);
+            const response = await fetch(`http://88.198.112.156:5000/api/users/${id}`);
             const reponseBody = await response.json();
             if (response.ok) {
                 setUserEditForm(true);
@@ -127,7 +127,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, address, dob } = data
             const finalData = { firstName, lastName, email, phoneNumber, address, dob, role }
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/users/patch/${fetchedUser._id}`, {
+            const response = await fetch(`http://88.198.112.156:5000/api/users/patch/${fetchedUser._id}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -153,7 +153,7 @@ const Users = () => {
 
     const deleteUser = async (id) => {
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/users/delete/${id}`, {
+            const response = await fetch(`http://88.198.112.156:5000/api/users/delete/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

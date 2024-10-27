@@ -60,7 +60,7 @@ const AllMembers = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:5000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
             console.log('Response body: ', resBody);
             return resBody;
@@ -92,7 +92,7 @@ const AllMembers = () => {
             return;
         };
 
-        const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`http://88.198.112.156:5000/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
@@ -119,7 +119,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`https://revivefitnessapi.nabarajbasnet.com/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:5000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
