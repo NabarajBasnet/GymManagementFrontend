@@ -25,7 +25,6 @@ const SignUp = () => {
 
     const onSignUp = async (data) => {
         try {
-            console.log('Data: ', data);
             const response = await fetch('http://88.198.112.156:3000/api/auth/signup', {
                 method: 'POST',
                 headers: {
@@ -33,7 +32,8 @@ const SignUp = () => {
                 },
                 body: JSON.stringify(data),
             });
-
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (response.ok) {
                 toast({
                     title: "User signup successfull",
