@@ -1,14 +1,5 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -17,7 +8,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,22 +16,43 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import * as React from 'react';
-import { PieChart } from '@mui/x-charts/PieChart';
-
-import { HiMiniUsers } from "react-icons/hi2";
 import { MdAutorenew } from "react-icons/md";
-import { RiExchange2Line } from "react-icons/ri";
 import { GiBiceps } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa6";
 import { PiUsersFourFill } from "react-icons/pi";
 import { RiUserShared2Fill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
+import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`https://revivefitnessapi.getinshapewithshreejan.com/api/members`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -69,25 +81,29 @@ const AdminDashboard = () => {
       value: membersRenewedThisWeek || "Null",
       color: 'text-green-600',
       bg: 'bg-green-200'
-    }, {
+    },
+    {
       icon: RiUserShared2Fill,
       text: "New Admission",
       value: '75',
       color: 'text-yellow-600',
       bg: 'bg-yellow-200'
-    }, {
+    },
+    {
       icon: GiBiceps,
       text: "Active",
       value: totalActiveMembers,
       color: 'text-green-600',
       bg: 'bg-green-200'
-    }, {
+    },
+    {
       icon: FaUsers,
       text: "Average Active",
       value: dailyAverageActiveMembers,
       color: 'text-blue-600',
       bg: 'bg-blue-200'
-    }, {
+    },
+    {
       icon: PiUsersFourFill,
       text: "Inactive",
       value: totalInactiveMembers,
@@ -96,70 +112,43 @@ const AdminDashboard = () => {
     },
   ];
 
-  const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
-  const xLabels = [
-    'Page A',
-    'Page B',
-    'Page C',
-    'Page D',
-    'Page E',
-    'Page F',
-    'Page G',
-  ];
-
-  const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-    { month: "July", desktop: 214, mobile: 140 },
-    { month: "August", desktop: 214, mobile: 140 },
-    { month: "September", desktop: 214, mobile: 140 },
-    { month: "October", desktop: 214, mobile: 140 },
-    { month: "November", desktop: 214, mobile: 140 },
-    { month: "December", desktop: 214, mobile: 140 },
-  ];
-
-  const chartConfig = {
-    desktop: {
-      label: "Active",
-      color: "#fbbf24"
-    },
-    mobile: {
-      label: "Inactive",
-      color: "#dc2626",
-    },
+  const barChartData = {
+    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+    datasets: [{
+      label: 'Monthly New Admissions',
+      data: [50, 60, 70, 80, 90, 100],
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
+      borderColor: 'rgba(75, 192, 192, 1)',
+      borderWidth: 1
+    }]
   };
 
-  const chartData2 = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-    { month: "July", desktop: 250, mobile: 145 },
-    { month: "August", desktop: 232, mobile: 130 },
-    { month: "September", desktop: 190, mobile: 150 },
-    { month: "October", desktop: 205, mobile: 160 },
-    { month: "November", desktop: 220, mobile: 140 },
-    { month: "December", desktop: 234, mobile: 175 },
-  ];
-
-  const chartConfig2 = {
-    desktop: {
-      label: "New Admission",
-      color: "#22c55e",
-    },
-    mobile: {
-      label: "Renew",
-      color: "#2563eb",
-    },
+  const lineChartData = {
+    labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    datasets: [{
+      label: 'Daily Active Members',
+      data: [10, 20, 30, 40, 50, 60, 70],
+      borderColor: 'rgba(54, 162, 235, 1)',
+      backgroundColor: 'rgba(54, 162, 235, 0.2)',
+      fill: true
+    }]
   };
 
+  const pieChartData = {
+    labels: ['Active Members', 'Inactive Members'],
+    datasets: [{
+      data: [totalActiveMembers || 0, totalInactiveMembers || 0],
+      backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
+    }]
+  };
 
+  const doughnutChartData = {
+    labels: ['Renewed Members', 'New Admissions'],
+    datasets: [{
+      data: [membersRenewedThisWeek || 0, 75],
+      backgroundColor: ['rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)']
+    }]
+  };
 
   return (
     <div className="w-full">
@@ -199,100 +188,39 @@ const AdminDashboard = () => {
 
         <div className="w-full py-5">
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
-            {
-              gridContents.map((grid) => (
-                <div key={grid.value} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl">
-                  <div className="flex items-center">
-                    <div className={`${grid.bg} p-2 rounded-full`}>
-                      <grid.icon className={`text-5xl ${grid.color}`} />
-                    </div>
-
-                    <div className="px-4">
-                      <p className="text-sm font-semibold text-gray-500">{grid.text}</p>
-                      <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1>
-                    </div>
+            {gridContents.map((grid) => (
+              <div key={grid.text} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl">
+                <div className="flex items-center">
+                  <div className={`${grid.bg} p-2 rounded-full`}>
+                    <grid.icon className={`text-5xl ${grid.color}`} />
+                  </div>
+                  <div className="px-4">
+                    <p className="text-sm font-semibold text-gray-500">{grid.text}</p>
+                    <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1>
                   </div>
                 </div>
-              ))
-            }
+              </div>
+            ))}
           </div>
         </div>
 
-        <div className="w-full bg-white py-5 rounded-lg">
-          <div className="w-full justify-start">
-            <ChartContainer config={chartConfig2} className="min-h-[200px] w-full px-4">
-              <BarChart accessibilityLayer data={chartData2}>
-                <CartesianGrid vertical={false} />
-                <XAxis
-                  dataKey="month"
-                  tickLine={false}
-                  tickMargin={10}
-                  axisLine={false}
-                  tickFormatter={(value) => value.slice(0, 3)}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <ChartLegend content={<ChartLegendContent />} />
-                <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-              </BarChart>
-            </ChartContainer>
-            <div />
-
-            <div className="md:flex items-center">
-              <ChartContainer config={chartConfig} className="min-h-[200px] w-full px-4">
-                <BarChart accessibilityLayer data={chartData}>
-                  <CartesianGrid vertical={false} />
-                  <XAxis
-                    dataKey="month"
-                    tickLine={false}
-                    tickMargin={10}
-                    axisLine={false}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                  />
-                  <ChartTooltip content={<ChartTooltipContent />} />
-                  <ChartLegend content={<ChartLegendContent />} />
-                  <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-                  <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-                </BarChart>
-              </ChartContainer>
-
-              <div className="hidden md:flex">
-                <PieChart
-                  series={[
-                    {
-                      data: [
-                        { id: 0, value: 10, label: 'series A' },
-                        { id: 1, value: 15, label: 'series B' },
-                        { id: 2, value: 20, label: 'series C' },
-                      ],
-                    },
-                  ]}
-                  width={400}
-                  height={200}
-                />
-              </div>
-            </div>
-
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
           </div>
-          <div className="w-full md:hidden flex justify-start">
-            <PieChart
-              series={[
-                {
-                  data: [
-                    { id: 0, value: 10, label: 'series A' },
-                    { id: 1, value: 15, label: 'series B' },
-                    { id: 2, value: 20, label: 'series C' },
-                  ],
-                },
-              ]}
-              width={400}
-              height={200}
-            />
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <Line data={lineChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-lg">
+            <Doughnut data={doughnutChartData} options={{ responsive: true, maintainAspectRatio: false }} />
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default AdminDashboard;
