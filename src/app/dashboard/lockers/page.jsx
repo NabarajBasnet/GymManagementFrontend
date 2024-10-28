@@ -182,7 +182,7 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('http://88.198.112.156:3000:3000/api/lockers/put', {
+            const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -382,11 +382,7 @@ const Lockers = () => {
                                                 clearErrors('renewDate');
                                             }}
                                             type="date"
-                                            defaultValue={
-                                                fetchedLocker && fetchedLocker.renewDate && !isNaN(new Date(fetchedLocker.renewDate))
-                                                    ? new Date(fetchedLocker.renewDate).toISOString().split('T')[0]
-                                                    : ''
-                                            }
+                                            defaultValue={fetchedLocker ? new Date(fetchedLocker.renewDate) : ''}
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                         />
                                         {errors.renewDate && (
