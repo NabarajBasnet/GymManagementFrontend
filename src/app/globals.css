@@ -69,6 +69,10 @@
   }
 }
 
+input:disabled,
+textarea:disabled {
+  color: black !important;
+}
 
 ::-webkit-scrollbar {
   width: 6px;
