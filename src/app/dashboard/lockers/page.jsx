@@ -50,6 +50,25 @@ const Lockers = () => {
     const [lockerFormState, setLockerFormState] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const [toast, setToast] = useState(false);
+    const [renderDropdown, setRenderDropdown] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const searchRef = React.useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setRenderDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [searchRef]);
+
+    const handleSearchFocus = () => {
+        setRenderDropdown(true);
+    };
 
     const {
         register,
@@ -162,6 +181,7 @@ const Lockers = () => {
 
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
+
             const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
@@ -307,44 +327,45 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Member Name</Label>
-                                        <Select
-                                            onValueChange={(value) => {
-                                                const selectedMember = members.find((member) => member._id === value);
-                                                if (selectedMember) {
-                                                    setMemberName(selectedMember.fullName);
-                                                    setMemberId(selectedMember._id);
-                                                    clearErrors('memberName');
-                                                }
-                                            }}
-                                        >
-                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.memberName : ''} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Select Member</SelectLabel>
+
+                                        <div ref={searchRef} className='w-full flex justify-center'>
+                                            <div className='relative w-full'>
+                                                <div className='w-full'>
                                                     <Input
-                                                        className="rounded-lg mb-2 border-gray-300"
-                                                        placeholder="Search member"
+                                                        value={searchQuery}
+                                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                                        onFocus={handleSearchFocus}
+                                                        className='w-full rounded-lg'
+                                                        placeholder='Search members...'
                                                     />
-                                                    {isMemberLoading ? (
-                                                        <h1>Loading members...</h1>
-                                                    ) : (
-                                                        members?.map((member) => (
-                                                            <SelectItem
-                                                                key={member._id}
-                                                                value={member._id}
-                                                            >
-                                                                {member.fullName}
-                                                            </SelectItem>
-                                                        ))
+                                                    {errors.memberName && (
+                                                        <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
                                                     )}
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                        {errors.memberName && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
-                                        )}
+                                                </div>
+                                                {renderDropdown && (
+                                                    <div className='w-full absolute bg-white shadow-2xl max-h-screen overflow-y-auto z-10'>
+                                                        {members?.filter((member) => {
+                                                            const matchByName = member.fullName.toLowerCase().includes(searchQuery.toLowerCase());
+                                                            return matchByName;
+                                                        })
+                                                            .map((member) => (
+                                                                <p
+                                                                    onClick={() => {
+                                                                        setMemberName(member.fullName);
+                                                                        setSearchQuery(member.fullName);
+                                                                        setRenderDropdown(false);
+                                                                    }}
+                                                                    className='px-4 py-2 cursor-pointer hover:bg-gray-100'
+                                                                    key={member._id}
+                                                                    value={member._id}
+                                                                >
+                                                                    {member.fullName}
+                                                                </p>
+                                                            ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
