@@ -206,7 +206,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.fullName || ""}
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 disabled:text-black bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
@@ -215,7 +215,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipOption || ""}
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black text-black"
                                 />
                             </div>
 
@@ -224,7 +224,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipType || ""}
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black text-black"
                                 />
                             </div>
 
@@ -239,7 +239,7 @@ const MemberAttendance = () => {
                                             : ""
                                     }
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
                                 />
                             </div>
 
@@ -254,7 +254,7 @@ const MemberAttendance = () => {
                                             : ""
                                     }
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
                                 />
                             </div>
 
@@ -269,7 +269,7 @@ const MemberAttendance = () => {
                                             : ""
                                     }
                                     disabled
-                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black"
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
                                 />
                             </div>
 
@@ -278,7 +278,7 @@ const MemberAttendance = () => {
                                 <Textarea
                                     value={validationResult?.message || ""}
                                     disabled
-                                    className="w-9/12 bg-gray-100 text-black font-semibold rounded-none cursor-not-allowed h-40 disabled:text-black"
+                                    className="w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none disabled:text-green-600 cursor-not-allowed h-40"
                                 />
                             </div>
                         </div>
@@ -378,7 +378,6 @@ const MemberAttendance = () => {
                                         </div>
                                     )
                                 }
-
                             </div>
                         </div>
 

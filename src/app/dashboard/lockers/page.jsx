@@ -1,5 +1,12 @@
 'use client';
 
+import Badge from '@mui/material/Badge';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { MdDone } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
@@ -95,9 +102,65 @@ const Lockers = () => {
 
     const { members } = allmembers || {}
 
+    // Manage locker membrship expire date
+    const [renewDate, setRenewDate] = useState(new Date());
+    const [expireDate, setExpireDate] = useState(new Date());
+
+    const handleLockerExpireDate = (duration) => {
+
+        const newLockerExpireDate = new Date(expireDate);
+
+        switch (duration) {
+            case '1 Month':
+                newLockerExpireDate.setMonth(newLockerExpireDate.getMonth() + 1)
+                break;
+
+            case '3 Months':
+                newLockerExpireDate.setMonth(newLockerExpireDate.getMonth() + 3);
+                break;
+
+            case '6 Months':
+                newLockerExpireDate.setMonth(newLockerExpireDate.getMonth() + 6);
+                break;
+
+            case '12 Months':
+                newLockerExpireDate.setFullYear(newLockerExpireDate.getFullYear() + 1)
+                break;
+
+            default:
+                break;
+        }
+
+        setExpireDate(newLockerExpireDate.toISOString().split('T')[0]);
+    };
+
+    useEffect(() => {
+        handleLockerExpireDate(duration);
+    }, [renewDate, duration]);
+
     const registerLocker = async (data) => {
         try {
-            const { renewDate, expireDate, fee, referenceCode, receiptNo } = data;
+            if (!renewDate) {
+                setError(
+                    "renewDate",
+                    {
+                        type: 'manual',
+                        message: 'Please select renew date'
+                    }
+                )
+            };
+
+            if (!expireDate) {
+                setError(
+                    "expireDate",
+                    {
+                        type: 'manual',
+                        message: 'Please select expire date'
+                    }
+                )
+            };
+
+            const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
             const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
                 method: 'PUT',
@@ -184,22 +247,16 @@ const Lockers = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
                                     <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Components</BreadcrumbLink>
+                            <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage>Lockers</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -296,9 +353,11 @@ const Lockers = () => {
                                     <div>
                                         <Label>Renew Date</Label>
                                         <Input
-                                            {...register('renewDate', {
-                                                required: { value: true, message: "Renew date is required" },
-                                            })}
+                                            value={renewDate.toISOString().split('T')[0]}
+                                            onChange={(e) => {
+                                                setRenewDate(e.target.value);
+                                                clearErrors('renewDate');
+                                            }}
                                             type="date"
                                             defaultValue={
                                                 fetchedLocker && fetchedLocker.renewDate && !isNaN(new Date(fetchedLocker.renewDate))
@@ -343,9 +402,11 @@ const Lockers = () => {
                                     <div>
                                         <Label>Expire Date</Label>
                                         <Input
-                                            {...register('expireDate', {
-                                                required: { value: true, message: "Expire date is required" },
-                                            })}
+                                            value={expireDate}
+                                            onChange={(e) => {
+                                                setExpireDate(e.target.value);
+                                                clearErrors('expireDate');
+                                            }}
                                             type="date"
                                             defaultValue={
                                                 fetchedLocker && fetchedLocker.expireDate && !isNaN(new Date(fetchedLocker.expireDate))
@@ -517,11 +578,49 @@ const Lockers = () => {
                             </Select>
                         </div>
                         <div className="w-full md:w-3/12 flex justify-between items-end">
-                            <Button className="rounded-lg bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 transition-all shadow-md">Submit</Button>
-                            <div className="space-y-1">
-                                <h1 className="font-medium text-gray-700 bg-white px-2 py-1 shadow-sm rounded-lg">Empty: 10</h1>
-                                <h1 className="font-medium text-green-500 bg-white px-2 py-1 shadow-sm rounded-lg">Assigned: 25</h1>
-                                <h1 className="font-medium text-red-600 bg-white px-2 py-1 shadow-sm rounded-lg">Expired: 15</h1>
+                            <Button className="rounded-lg mt-4 md:mt-0 bg-blue-600 text-white px-6 py-2 hover:bg-blue-700 transition-all shadow-md">Submit</Button>
+                            <div className="space-x-2 md:space-y-0">
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Badge badgeContent={4} color="primary">
+                                                <div className='bg-green-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
+                                                </div>
+                                            </Badge>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Assigned lockers</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Badge badgeContent={4} color="primary">
+                                                <div className='bg-yellow-400 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
+                                                </div>
+                                            </Badge>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Empty lockers</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
+
+                                <TooltipProvider>
+                                    <Tooltip>
+                                        <TooltipTrigger asChild>
+                                            <Badge badgeContent={4} color="primary">
+                                                <div className='bg-red-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
+                                                </div>
+                                            </Badge>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                            <p>Expired lockers</p>
+                                        </TooltipContent>
+                                    </Tooltip>
+                                </TooltipProvider>
                             </div>
                         </div>
                     </div>
