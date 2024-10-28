@@ -70,21 +70,25 @@ const Users = () => {
     const getAllUsers = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limmit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setUsersMessage(responseBody.message);
-            };
+            }
             return responseBody;
         } catch (error) {
             console.log('Error: ', error);
-        };
+        }
     };
-
+    
     const { data, isLoading } = useQuery({
-        queryKey: (['users', currentPage]),
-        queryFn: getAllUsers
+        queryKey: ['users', currentPage],
+        queryFn: getAllUsers,
+        staleTime: 1000, 
+        cacheTime: 0, 
+        keepPreviousData: true, 
     });
+    
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -121,12 +125,11 @@ const Users = () => {
         setError,
     } = useForm();
 
-
     const [role, setUserRole] = useState('');
     const editUserDetails = async (data) => {
         try {
-            const { firstName, lastName, email, phoneNumber, address, dob } = data
-            const finalData = { firstName, lastName, email, phoneNumber, address, dob, role }
+            const { firstName, lastName, email, phoneNumber, address, dob } = data;
+            const finalData = { firstName, lastName, email, phoneNumber, address, dob, role };
             const response = await fetch(`http://88.198.112.156:3000/api/users/patch/${fetchedUser._id}`, {
                 method: "PATCH",
                 headers: {
@@ -134,12 +137,12 @@ const Users = () => {
                 },
                 body: JSON.stringify(finalData)
             });
-
+    
             const responseBody = await response.json();
             console.log("Response body: ", responseBody);
             if (response.ok) {
                 setUserEditForm(false);
-                queryClient.invalidateQueries(['user']);
+                queryClient.invalidateQueries(['users']);
             }
             setToast(true);
             setTimeout(() => {
@@ -150,6 +153,7 @@ const Users = () => {
             console.log('Error: ', error);
         }
     };
+    
 
     const deleteUser = async (id) => {
         try {
@@ -158,20 +162,20 @@ const Users = () => {
                 headers: {
                     'Content-Type': "application/json"
                 },
-            })
+            });
+            const responseBody = await response.json();
             setToast(true);
             setTimeout(() => {
                 setToast(false);
             }, 4000);
-            const responseBody = await response.json();
-            setUsersMessage(responseBody.message)
+            setUsersMessage(responseBody.message);
             if (response.ok) {
-                queryClient.invalidateQueries(['user']);
+                queryClient.invalidateQueries(['users']);
             }
         } catch (error) {
             console.log("Error: ", error);
         }
-    };
+    };    
 
     return (
         <div className="w-full">

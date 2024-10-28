@@ -454,7 +454,7 @@ const newMemberRegistrationForm = () => {
                                             })
                                             }
                                             className='rounded-none focus:outline-none'
-                                            placeholder='First Name'
+                                            placeholder='Full Name'
                                         />
                                         {errors.firstName && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.firstName.message}`}</p>
