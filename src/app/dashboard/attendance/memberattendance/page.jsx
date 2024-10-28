@@ -218,7 +218,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.fullName || ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -227,7 +227,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipOption || ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -236,7 +236,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipType || ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -245,7 +245,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -255,7 +255,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -264,7 +264,7 @@ const MemberAttendance = () => {
                                 <Input
                                     value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipExpireDate).toISOString().split('T')[0] : ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className='w-9/12 rounded-none '
                                 />
                             </div>
 
@@ -274,7 +274,7 @@ const MemberAttendance = () => {
                                 <Textarea
                                     value={validationResult?.message || ''}
                                     disabled
-                                    className='w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none cursor-not-allowed h-40'
+                                    className='w-9/12 text-green-600 font-semibold rounded-none cursor-not-allowed h-40'
                                 />
                             </div>
 
