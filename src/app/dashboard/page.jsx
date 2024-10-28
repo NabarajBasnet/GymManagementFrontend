@@ -117,9 +117,16 @@ const AdminDashboard = () => {
     datasets: [{
       label: 'Monthly New Admissions',
       data: [50, 60, 70, 80, 90, 100],
-      backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      borderColor: 'rgba(75, 192, 192, 1)',
-      borderWidth: 1
+      backgroundColor: [
+        'rgba(255, 99, 132, 0.8)',
+        'rgba(54, 162, 235, 0.8)',
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(75, 192, 192, 0.8)',
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(255, 159, 64, 0.8)',
+      ],
+      borderRadius: 10,
+      barThickness: 20
     }]
   };
 
@@ -128,9 +135,12 @@ const AdminDashboard = () => {
     datasets: [{
       label: 'Daily Active Members',
       data: [10, 20, 30, 40, 50, 60, 70],
-      borderColor: 'rgba(54, 162, 235, 1)',
-      backgroundColor: 'rgba(54, 162, 235, 0.2)',
-      fill: true
+      borderColor: 'rgba(75, 192, 192, 1)',
+      backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      borderWidth: 3,
+      tension: 0.4,
+      pointRadius: 5,
+      pointBackgroundColor: 'rgba(75, 192, 192, 1)'
     }]
   };
 
@@ -138,7 +148,12 @@ const AdminDashboard = () => {
     labels: ['Active Members', 'Inactive Members'],
     datasets: [{
       data: [totalActiveMembers || 0, totalInactiveMembers || 0],
-      backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)']
+      backgroundColor: [
+        'rgba(255, 206, 86, 0.8)',
+        'rgba(255, 99, 132, 0.8)',
+      ],
+      borderWidth: 2,
+      hoverOffset: 8,
     }]
   };
 
@@ -146,9 +161,49 @@ const AdminDashboard = () => {
     labels: ['Renewed Members', 'New Admissions'],
     datasets: [{
       data: [membersRenewedThisWeek || 0, 75],
-      backgroundColor: ['rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)']
+      backgroundColor: [
+        'rgba(153, 102, 255, 0.8)',
+        'rgba(255, 159, 64, 0.8)',
+      ],
+      borderWidth: 2,
+      hoverOffset: 8,
     }]
   };
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'top',
+        labels: {
+          font: {
+            size: 14,
+          },
+          color: '#555',
+        }
+      },
+      tooltip: {
+        titleFont: { size: 16 },
+        bodyFont: { size: 14 },
+        padding: 10,
+        backgroundColor: 'rgba(0,0,0,0.7)',
+        borderColor: '#ddd',
+        borderWidth: 1,
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { color: '#777', font: { size: 12 } }
+      },
+      y: {
+        grid: { color: '#eee' },
+        ticks: { color: '#777', font: { size: 12 } }
+      }
+    }
+  };
+
 
   return (
     <div className="w-full">
@@ -204,18 +259,18 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Bar data={barChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
+            <Bar data={barChartData} options={chartOptions} />
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Line data={lineChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
+            <Line data={lineChartData} options={chartOptions} />
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Pie data={pieChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
+            <Pie data={pieChartData} options={chartOptions} />
           </div>
-          <div className="bg-white p-4 rounded-lg shadow-lg">
-            <Doughnut data={doughnutChartData} options={{ responsive: true, maintainAspectRatio: false }} />
+          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
+            <Doughnut data={doughnutChartData} options={chartOptions} />
           </div>
         </div>
       </div>
