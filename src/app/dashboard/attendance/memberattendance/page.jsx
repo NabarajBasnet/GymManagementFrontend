@@ -192,80 +192,95 @@ const MemberAttendance = () => {
                         </div>
                         <div className="grid grid-cols-1 space-y-2 px-2">
                             <Input
-                                type='text'
-                                placeholder='Scan QR code here'
+                                type="text"
+                                placeholder="Scan QR code here"
                                 value={memberId}
                                 onChange={(e) => setMemberId(e.target.value)}
                                 autoFocus
-                                className='w-full focus:border-blue-600 rounded-none '
+                                className="w-full focus:border-blue-600 rounded-none text-black"
                                 onKeyPress={(e) => onEnterPress(e)}
                             />
 
                             <div className="flex justify-between items-center">
-                                <Label className='w-3/12'>Full Name</Label>
+                                <Label className="w-3/12">Full Name</Label>
                                 <Input
-                                    value={validationResult?.member?.fullName || ''}
+                                    value={validationResult?.member?.fullName || ""}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <Label className='w-3/12'>Membership Option</Label>
+                                <Label className="w-3/12">Membership Option</Label>
                                 <Input
-                                    value={validationResult?.member?.membershipOption || ''}
+                                    value={validationResult?.member?.membershipOption || ""}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <Label className='w-3/12'>Membership Category</Label>
+                                <Label className="w-3/12">Membership Category</Label>
                                 <Input
-                                    value={validationResult?.member?.membershipType || ''}
+                                    value={validationResult?.member?.membershipType || ""}
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <Label className='w-3/12'>Membership Date</Label>
+                                <Label className="w-3/12">Membership Date</Label>
                                 <Input
-                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
-                                />
-                            </div>
-
-
-                            <div className="flex justify-between items-center">
-                                <Label className='w-3/12'>Renew Date</Label>
-                                <Input
-                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipDate).toISOString().split('T')[0] : ''}
-                                    disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
                             <div className="flex justify-between items-center">
-                                <Label className='3/12'>Expire Date</Label>
+                                <Label className="w-3/12">Renew Date</Label>
                                 <Input
-                                    value={validationResult?.member?.membershipDate ? new Date(validationResult.member.membershipExpireDate).toISOString().split('T')[0] : ''}
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
                                     disabled
-                                    className='w-9/12 bg-gray-100 rounded-none '
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
                                 />
                             </div>
 
+                            <div className="flex justify-between items-center">
+                                <Label className="3/12">Expire Date</Label>
+                                <Input
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipExpireDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none text-black"
+                                />
+                            </div>
 
                             <div className="w-full flex justify-between items-start">
-                                <Label className='w-3/12'>Message</Label>
+                                <Label className="w-3/12">Message</Label>
                                 <Textarea
-                                    value={validationResult?.message || ''}
+                                    value={validationResult?.message || ""}
                                     disabled
-                                    className='w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none cursor-not-allowed h-40'
+                                    className="w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none cursor-not-allowed h-40"
                                 />
                             </div>
-
                         </div>
                     </div>
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
