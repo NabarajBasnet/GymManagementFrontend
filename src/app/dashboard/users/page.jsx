@@ -80,15 +80,15 @@ const Users = () => {
             console.log('Error: ', error);
         }
     };
-    
+
     const { data, isLoading } = useQuery({
         queryKey: ['users', currentPage],
         queryFn: getAllUsers,
-        staleTime: 1000, 
-        cacheTime: 0, 
-        keepPreviousData: true, 
+        staleTime: 1000,
+        cacheTime: 0,
+        keepPreviousData: true,
     });
-    
+
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -137,7 +137,7 @@ const Users = () => {
                 },
                 body: JSON.stringify(finalData)
             });
-    
+
             const responseBody = await response.json();
             console.log("Response body: ", responseBody);
             if (response.ok) {
@@ -153,7 +153,7 @@ const Users = () => {
             console.log('Error: ', error);
         }
     };
-    
+
 
     const deleteUser = async (id) => {
         try {
@@ -175,7 +175,7 @@ const Users = () => {
         } catch (error) {
             console.log("Error: ", error);
         }
-    };    
+    };
 
     return (
         <div className="w-full">
@@ -377,7 +377,7 @@ const Users = () => {
                                         {Array.isArray(users) && users.length > 0 ? (
                                             users.map((user) => (
                                                 <TableRow key={user._id}>
-                                                    <TableCell className="font-medium">{user.firstName + user.lastName}</TableCell>
+                                                    <TableCell className="font-medium">{user.firstName + ' ' + user.lastName}</TableCell>
                                                     <TableCell>{user.role}</TableCell>
                                                     <TableCell>{user.email}</TableCell>
                                                     <TableCell>{user.phoneNumber}</TableCell>
