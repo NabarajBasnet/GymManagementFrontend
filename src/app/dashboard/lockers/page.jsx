@@ -182,7 +182,7 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
+            const response = await fetch('http://88.198.112.156:3000:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -216,6 +216,7 @@ const Lockers = () => {
                 queryClient.invalidateQueries(['lockers']);
             }
             const responseBody = await response.json();
+            console.log('Reponse body: ', responseBody);
             setResponseMessage(responseBody.message);
         } catch (error) {
             console.log("Error: ", error);
@@ -353,6 +354,7 @@ const Lockers = () => {
                                                                     onClick={() => {
                                                                         setMemberName(member.fullName);
                                                                         setSearchQuery(member.fullName);
+                                                                        setMemberId(member._id)
                                                                         setRenderDropdown(false);
                                                                     }}
                                                                     className='px-4 py-2 cursor-pointer hover:bg-gray-100'
