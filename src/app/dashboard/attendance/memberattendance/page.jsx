@@ -121,17 +121,17 @@ const MemberAttendance = () => {
         if (memberId) {
             setTimeout(() => {
                 handleValidation();
-            }, 500)
+            }, 800)
         }
     }, [memberId]);
 
     const reloadPage = async () => {
         queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
-        window.location.reload();
     };
 
     const onEnterPress = (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
             setMembershipAlert(false);
             reloadPage();
         }
