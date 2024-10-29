@@ -54,8 +54,8 @@ import { debounce } from "@mui/material";
 const AllMembers = () => {
 
     const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({icon:MdDone,message:''});
-    const [errorMessage, setErrorMessage] = useState({icon:MdError,message:''});
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [qrState, setQrState] = useState('')
     const [qrMessage, setQrMessage] = useState('')
 
@@ -140,50 +140,50 @@ const AllMembers = () => {
         }
     };
 
-    const deleteMember = async(id)=>{
-        try{
-            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`,{
-                method:"DELETE",
-                headers:{
-                    'Content-Type':"application/json"
+    const deleteMember = async (id) => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': "application/json"
                 },
-                credentials:"include"
+                credentials: "include"
             });
             const responseBody = await response.json();
-            if(response.status===401 || response.status===403 || response.status===500){
+            if (response.status === 401 || response.status === 403 || response.status === 500) {
                 setToast(true);
-                setTimeout(()=>{
+                setTimeout(() => {
                     setToast(false)
-                },5000);
+                }, 5000);
                 setErrorMessage({
-                    icon:MdError,
-                    message:responseBody.message || 'Unauthorized action'
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
                 });
             }
-            else{
-                if(response.status===200){
+            else {
+                if (response.status === 200) {
                     setToast(true);
-                setTimeout(()=>{
-                    setToast(false)
-                },5000);
-                setSuccessMessage({
-                    icon:MdError,
-                    message:responseBody.message || 'Unauthorized action'
-                })
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 5000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
                 }
             }
 
-        }catch(error){
-            console.log("Error: ",error);
+        } catch (error) {
+            console.log("Error: ", error);
             setToast(true);
-            setTimeout(()=>{
+            setTimeout(() => {
                 setToast(false)
-            },5000);
+            }, 5000);
             setErrorMessage({
-                icon:MdError,
-                message:"An unexpected error occurred."
+                icon: MdError,
+                message: "An unexpected error occurred."
             })
-            
+
         };
     };
 
@@ -212,13 +212,13 @@ const AllMembers = () => {
                     )
                 }
                 {
-                toast?(
-                    <div>
-                    </div>
-                ):(
-                    <div>
-                    </div>
-                )
+                    toast ? (
+                        <div>
+                        </div>
+                    ) : (
+                        <div>
+                        </div>
+                    )
                 }
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -442,6 +442,9 @@ const AllMembers = () => {
                                                                 <MdEmail
                                                                     onClick={() => sendQrInEmail(member._id)}
                                                                     className='cursor-pointer text-lg'
+                                                                />
+                                                                <MdDelete
+                                                                    className='cursor-pointer text-lg text-red-600'
                                                                 />
                                                             </div>
                                                         </TableCell>

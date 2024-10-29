@@ -83,9 +83,8 @@ const MemberAttendance = () => {
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
     const [returnedResponse, setReturnedResponse] = useState(null);
-    console.log("Returned Response: ", returnedResponse);
     const handlePageChange = (page) => {
-        setCurentPage(page);
+       setCurentPage(page);
     };
 
     const handleValidation = async () => {

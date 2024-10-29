@@ -1,5 +1,14 @@
 'use client'
 
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
@@ -116,7 +125,6 @@ const Member = (props) => {
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
     // Payment Details
-
     const [finalAmmount, setFinalAmmount] = useState('');
     const [discountAmmount, setDiscountAmmount] = useState('');
     const [paidAmmount, setPaidAmmount] = useState('');
@@ -421,7 +429,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 defaultValue={data.member.fullName}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='First Name'
                                                             />
                                                             {errors.firstName && (
@@ -442,7 +450,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 defaultValue={data.member.contactNo}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Contact Number'
                                                             />
                                                             {errors.contactNo && (
@@ -462,7 +470,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 defaultValue={data.member.email}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Email Address'
                                                             />
                                                             {errors.email && (
@@ -483,7 +491,7 @@ const Member = (props) => {
                                                                 }
                                                                 type='date'
                                                                 defaultValue={new Date(data.member.dob).toISOString().split('T')[0]}
-                                                                className='rounded-none focus:outline-none cursor-pointer'
+                                                                className='rounded-md focus:outline-none cursor-pointer'
                                                                 placeholder='Date Of Birth'
                                                             />
                                                             {errors.dob && (
@@ -505,7 +513,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 defaultValue={data.member.secondaryContactNo}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Secondary Contact Number'
                                                             />
                                                             {errors.secondaryContactNo && (
@@ -516,7 +524,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Gender</Label>
                                                             <Select onValueChange={(value) => setGender(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.gender} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -543,7 +551,7 @@ const Member = (props) => {
                                                                 })
                                                                 }
                                                                 defaultValue={data.member.address}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Address'
                                                             />
                                                             {errors.address && (
@@ -554,7 +562,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Status</Label>
                                                             <Select onValueChange={(value) => setStatus(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.status} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -580,7 +588,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Membership Option</Label>
                                                             <Select onValueChange={(value) => setMembershipOption(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.membershipOption} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -598,7 +606,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Membership Type</Label>
                                                             <Select onValueChange={(value) => setMembershipType(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.membershipType} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -615,7 +623,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Membership Shift</Label>
                                                             <Select onValueChange={(value) => setMembershipShift(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.membershipShift} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -631,32 +639,61 @@ const Member = (props) => {
 
                                                         <div>
                                                             <Label>Membership Start Date</Label>
-                                                            <Input
-                                                                value={membershipDate.toISOString().split('T')[0]}
-                                                                onChange={(e) => setMembershipDate(new Date(e.target.value))}
-                                                                type='date'
-                                                                defaultValue={new Date(data.member.membershipDate).toISOString().split('T')[0]}
-                                                                className='rounded-none focus:outline-none'
-                                                                placeholder='Membership Date'
-                                                            />
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant={"outline"}
+                                                                        className={cn(
+                                                                            "w-full justify-start text-left font-normal",
+                                                                            !data?.member.membershipDate && "text-muted-foreground"
+                                                                        )}
+                                                                    >
+                                                                        <CalendarIcon />
+                                                                        {data?.member.membershipDate ? format(data?.member.membershipDate, "PPP") : <span>Membership Date</span>}
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0">
+                                                                    <Calendar
+                                                                        mode="single"
+                                                                        disabled
+                                                                        selected={data?.member.membershipDate}
+                                                                        onSelect={setMembershipDate}
+                                                                        initialFocus
+                                                                    />
+                                                                </PopoverContent>
+                                                            </Popover>
                                                         </div>
 
                                                         <div>
                                                             <Label>Membership Renew Date</Label>
-                                                            <Input
-                                                                value={membershipRenewDate.toISOString().split('T')[0]}
-                                                                onChange={(e) => setMembershipRenewDate(new Date(e.target.value))}
-                                                                type='date'
-                                                                defaultValue={new Date(data.member.membershipDate).toISOString().split('T')[0]}
-                                                                className='rounded-none focus:outline-none'
-                                                                placeholder='Membership Renew Date'
-                                                            />
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant={"outline"}
+                                                                        className={cn(
+                                                                            "w-full justify-start text-left font-normal",
+                                                                            !data?.member.membershipRenewDate && "text-muted-foreground"
+                                                                        )}
+                                                                    >
+                                                                        <CalendarIcon />
+                                                                        {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0">
+                                                                    <Calendar
+                                                                        mode="single"
+                                                                        selected={membershipRenewDate}
+                                                                        onSelect={setMembershipRenewDate}
+                                                                        initialFocus
+                                                                    />
+                                                                </PopoverContent>
+                                                            </Popover>
                                                         </div>
 
                                                         <div>
                                                             <Label>Membership Duration</Label>
                                                             <Select onValueChange={(value) => handleMembershipSelection(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.membershipDuration} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -673,17 +710,28 @@ const Member = (props) => {
 
                                                         <div>
                                                             <Label>Membership Expire Date</Label>
-                                                            <Input
-                                                                {
-                                                                ...register('membershipExpireDate')
-                                                                }
-                                                                type='date'
-                                                                disabled
-                                                                value={membershipExpireDate}
-                                                                defaultValue={new Date(data.member.membershipExpireDate).toISOString().split('T')[0]}
-                                                                className='rounded-none focus:outline-none disabled:text-red-600'
-                                                                placeholder='Membership Expire Date'
-                                                            />
+                                                            <Popover>
+                                                                <PopoverTrigger asChild>
+                                                                    <Button
+                                                                        variant={"outline"}
+                                                                        className={cn(
+                                                                            "w-full justify-start text-left font-normal",
+                                                                            !data?.member.membershipExpireDate && "text-muted-foreground"
+                                                                        )}
+                                                                    >
+                                                                        <CalendarIcon />
+                                                                        {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Renew Date</span>}
+                                                                    </Button>
+                                                                </PopoverTrigger>
+                                                                <PopoverContent className="w-auto p-0">
+                                                                    <Calendar
+                                                                        mode="single"
+                                                                        selected={membershipExpireDate}
+                                                                        onSelect={setMembershipExpireDate}
+                                                                        initialFocus
+                                                                    />
+                                                                </PopoverContent>
+                                                            </Popover>
                                                             {errors.membershipExpireDate && (
                                                                 <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
                                                             )}
@@ -700,7 +748,7 @@ const Member = (props) => {
                                                         <div>
                                                             <Label>Payment Method</Label>
                                                             <Select onValueChange={(value) => setPaymentMethod(value)}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.paymentMethod} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -721,7 +769,7 @@ const Member = (props) => {
                                                                 onChange={(e) => setDiscountAmmount(e.target.value)}
                                                                 type='text'
                                                                 defaultValue={data.member.discountAmmount}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Discount Ammount'
                                                             />
                                                             {errors.discountAmmount && (
@@ -738,7 +786,7 @@ const Member = (props) => {
                                                                 onChange={(e) => clearErrors('discountReason')}
                                                                 defaultValue={data.member.discountReason}
                                                                 type='text'
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Discount Reason'
                                                             />
                                                             {errors.discountReason && (
@@ -754,7 +802,7 @@ const Member = (props) => {
                                                                 }
                                                                 type='text'
                                                                 defaultValue={data.member.discountCode}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Discount Code'
                                                             />
                                                             {errors.discountCode && (
@@ -771,7 +819,7 @@ const Member = (props) => {
                                                                 type='text'
                                                                 defaultValue={'1000'}
                                                                 disabled
-                                                                className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Admission Fee'
                                                             />
                                                         </div>
@@ -786,7 +834,7 @@ const Member = (props) => {
                                                                 disabled
                                                                 value={finalAmmount}
                                                                 defaultValue={data.member.finalAmmount}
-                                                                className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Final Ammount'
                                                             />
                                                         </div>
@@ -803,7 +851,7 @@ const Member = (props) => {
                                                                 }}
                                                                 type='text'
                                                                 defaultValue={data.member.paidAmmount}
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Paid Ammount'
                                                             />
                                                             {
@@ -821,7 +869,7 @@ const Member = (props) => {
                                                                 type='text'
                                                                 disabled
                                                                 defaultValue={data.member.dueAmmount}
-                                                                className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                                                 placeholder='Due Ammount'
                                                             />
                                                         </div>
@@ -839,7 +887,7 @@ const Member = (props) => {
                                                                 }
                                                                 defaultValue={data.member.receiptNo}
                                                                 type='text'
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Receipt No'
                                                             />
                                                             {errors.receiptNo && (
@@ -860,7 +908,7 @@ const Member = (props) => {
                                                                 }
                                                                 defaultValue={data.member.referenceCode}
                                                                 type='text'
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Reference Code'
                                                             />
                                                             {errors.referenceCode && (
@@ -876,7 +924,7 @@ const Member = (props) => {
                                                                     clearErrors('reasonForUpdate');
                                                                 }
                                                             }}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={'Reason for update'} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -900,7 +948,7 @@ const Member = (props) => {
                                                                 }
                                                                 defaultValue={data.member.remark}
                                                                 type='text'
-                                                                className='rounded-none focus:outline-none'
+                                                                className='rounded-md focus:outline-none'
                                                                 placeholder='Remark'
                                                             />
                                                         </div>
@@ -913,7 +961,7 @@ const Member = (props) => {
                                                                     clearErrors('actionTaker')
                                                                 }
                                                             }}>
-                                                                <SelectTrigger className="w-full rounded-none">
+                                                                <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.actionTaker} />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
@@ -934,7 +982,7 @@ const Member = (props) => {
                                                 </div>
 
                                                 <div className="flex items-center space-x-2 p-2">
-                                                    <Button type='submit' className='rounded-none'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+                                                    <Button type='submit' className='rounded-md'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                                                 </div>
                                             </form>
                                         ) : (

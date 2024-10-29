@@ -31,6 +31,15 @@ import {
 } from "@/components/ui/select";
 import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
 
 const newMemberRegistrationForm = () => {
 
@@ -93,7 +102,6 @@ const newMemberRegistrationForm = () => {
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
 
-
     // Members details
     const [gender, setGender] = useState('');
     const [status, setStatus] = useState('');
@@ -108,12 +116,12 @@ const newMemberRegistrationForm = () => {
     const [membershipShift, setMembershipShift] = useState('');
 
     // Date Detais
+    const [dob, setDob] = useState(new Date());
     const [membershipDate, setMembershipDate] = useState(new Date());
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
-    const [membershipExpireDate, setMembershipExpireDate] = useState(null);
+    const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
 
     // Payment Details
-
     const [finalAmmount, setFinalAmmount] = useState('');
     const [discountAmmount, setDiscountAmmount] = useState('');
     const [paidAmmount, setPaidAmmount] = useState('');
@@ -206,7 +214,8 @@ const newMemberRegistrationForm = () => {
             default:
                 break;
         }
-        setMembershipExpireDate(newMembershipExpireDate.toISOString().split('T')[0]);
+        setMembershipExpireDate(newMembershipExpireDate);
+        console.log("newMembershipExpireDate: ", newMembershipExpireDate);
     };
 
     useEffect(() => {
@@ -327,7 +336,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-
+            console.log("Members Final Data: ", membersFinalData);
             const response = await fetch('http://88.198.112.156:3000/api/members', {
                 method: "POST",
                 headers: {
@@ -453,7 +462,7 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Full Name'
                                         />
                                         {errors.firstName && (
@@ -473,7 +482,7 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Contact Number'
                                         />
                                         {errors.contactNo && (
@@ -493,7 +502,7 @@ const newMemberRegistrationForm = () => {
                                             })
                                             }
                                             onChange={() => clearErrors('userRegistered')}
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Email Address'
                                         />
                                         {errors.email && (
@@ -508,28 +517,21 @@ const newMemberRegistrationForm = () => {
                                         <Label>Date Of Birth</Label>
                                         <Input
                                             {
-                                            ...register('dob', {
-                                                required: {
-                                                    value: true,
-                                                    message: "Date of birth is required!"
-                                                }
-                                            })
+                                            ...register('dob')
                                             }
                                             type='date'
-                                            className='rounded-none focus:outline-none cursor-pointer'
-                                            placeholder='Date Of Birth'
+                                            className='rounded-md focus:outline-none'
+                                            placeholder='Membership Expire Date'
                                         />
                                         {errors.dob && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.dob.message}`}</p>
                                         )}
                                     </div>
 
-
                                     <div>
                                         <Label>Secondary Contact No</Label>
                                         <Input
                                             {
-
                                             ...register('secondaryContactNo', {
                                                 required: {
                                                     value: true,
@@ -537,7 +539,7 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Secondary Contact Number'
                                         />
                                         {errors.secondaryContactNo && (
@@ -553,7 +555,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors("gender");
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Gender" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -582,7 +584,7 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             })
                                             }
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Address'
                                         />
                                         {errors.address && (
@@ -598,7 +600,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('status')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Status" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -632,7 +634,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('membershipOption')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Membership Option" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -658,7 +660,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('membershipType')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Membership Type" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -683,7 +685,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('membershipShift')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Membership Shift" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -702,24 +704,60 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Date</Label>
-                                        <Input
-                                            value={membershipDate.toISOString().split('T')[0]}
-                                            onChange={(e) => setMembershipDate(new Date(e.target.value))}
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Date'
-                                        />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left font-normal",
+                                                        !membershipDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon />
+                                                    {membershipDate ? format(membershipDate, "PPP") : <span>Membership Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipDate}
+                                                    onSelect={setMembershipDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {errors.membershipDate && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipDate.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
                                         <Label>Membership Renew Date</Label>
-                                        <Input
-                                            value={new Date(membershipRenewDate).toISOString().split('T')[0]}
-                                            onChange={(e) => setMembershipRenewDate(new Date(e.target.value))}
-                                            type='date'
-                                            className='rounded-none focus:outline-none'
-                                            placeholder='Membership Date'
-                                        />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left font-normal",
+                                                        !membershipRenewDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon />
+                                                    {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipRenewDate}
+                                                    onSelect={setMembershipRenewDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                        {errors.membershipRenewDate && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.membershipRenewDate.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div>
@@ -730,7 +768,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('membershipDuration')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Membership Duration" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -750,16 +788,28 @@ const newMemberRegistrationForm = () => {
 
                                     <div>
                                         <Label>Membership Expire Date</Label>
-                                        <Input
-                                            {
-                                            ...register('membershipExpireDate')
-                                            }
-                                            type='date'
-                                            disabled
-                                            value={new Date(membershipExpireDate).toISOString().split('T')[0]}
-                                            className='rounded-none focus:outline-none disabled:text-red-600'
-                                            placeholder='Membership Expire Date'
-                                        />
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-full justify-start text-left font-normal",
+                                                        !membershipExpireDate && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    <CalendarIcon />
+                                                    {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipExpireDate}
+                                                    onSelect={setMembershipExpireDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
                                         {errors.membershipExpireDate && (
                                             <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
                                         )}
@@ -781,7 +831,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('paymentMethod')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Payment Method" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -804,7 +854,7 @@ const newMemberRegistrationForm = () => {
                                             value={discountAmmount}
                                             onChange={(e) => setDiscountAmmount(e.target.value)}
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Discount Ammount'
                                         />
                                     </div>
@@ -817,7 +867,7 @@ const newMemberRegistrationForm = () => {
                                             }
                                             onChange={(e) => clearErrors("discountReason")}
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Discount Reason'
                                         />
                                         {errors.discountReason && (
@@ -832,7 +882,7 @@ const newMemberRegistrationForm = () => {
                                             ...register('discountCode')
                                             }
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Discount Code'
                                         />
                                     </div>
@@ -846,7 +896,7 @@ const newMemberRegistrationForm = () => {
                                             type='text'
                                             defaultValue={'1000'}
                                             disabled
-                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Admission Fee'
                                         />
                                     </div>
@@ -860,7 +910,7 @@ const newMemberRegistrationForm = () => {
                                             type='text'
                                             disabled
                                             value={finalAmmount}
-                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Final Ammount'
                                         />
                                     </div>
@@ -876,7 +926,7 @@ const newMemberRegistrationForm = () => {
                                                 }
                                             }}
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Paid Ammount'
                                         />
                                         {errors.paidAmmount && (
@@ -893,7 +943,7 @@ const newMemberRegistrationForm = () => {
                                             value={dueAmmount}
                                             type='text'
                                             disabled
-                                            className='rounded-none disabled:bg-gray-300 text-black focus:outline-none'
+                                            className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
                                             placeholder='Due Ammount'
                                         />
                                     </div>
@@ -910,7 +960,7 @@ const newMemberRegistrationForm = () => {
                                             })
                                             }
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Receipt No'
                                         />
                                         {errors.receiptNo && (
@@ -925,7 +975,7 @@ const newMemberRegistrationForm = () => {
                                             ...register('referenceCode')
                                             }
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Reference Code'
                                         />
                                     </div>
@@ -937,7 +987,7 @@ const newMemberRegistrationForm = () => {
                                             ...register('remark')
                                             }
                                             type='text'
-                                            className='rounded-none focus:outline-none'
+                                            className='rounded-md focus:outline-none'
                                             placeholder='Remark'
                                         />
                                     </div>
@@ -950,7 +1000,7 @@ const newMemberRegistrationForm = () => {
                                                 clearErrors('actionTaker')
                                             }
                                         }}>
-                                            <SelectTrigger className="w-full rounded-none">
+                                            <SelectTrigger className="w-full rounded-md">
                                                 <SelectValue placeholder="Action Taker" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -971,7 +1021,7 @@ const newMemberRegistrationForm = () => {
                             </div>
 
                             <div className="flex items-center space-x-2 p-2">
-                                <Button type='submit' className='rounded-none'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
+                                <Button type='submit' className='rounded-md'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
                             </div>
                         </form>
                     </div>

@@ -1,140 +1,45 @@
-// 'use client'
+"use client"
 
-// import React, { useState, useRef, useEffect } from 'react';
+import * as React from "react"
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
-// const SearchBar = () => {
-//     // State for search query and dropdown visibility
-//     const [searchQuery, setSearchQuery] = useState("");
-//     const [isDropdownOpen, setDropdownOpen] = useState(false);
-//     const [recentSearches, setRecentSearches] = useState([
-//         'Gym Management',
-//         'Personal Training',
-//         'New Member Registration',
-//         'Payment Details',
-//     ]);
-
-//     const searchRef = useRef(null);  // Reference to detect click outside
-
-//     // Close dropdown when clicking outside the search bar
-//     useEffect(() => {
-//         const handleClickOutside = (event) => {
-//             if (searchRef.current && !searchRef.current.contains(event.target)) {
-//                 setDropdownOpen(false);
-//             }
-//         };
-//         document.addEventListener("mousedown", handleClickOutside);
-//         return () => {
-//             document.removeEventListener("mousedown", handleClickOutside);
-//         };
-//     }, [searchRef]);
-
-//     // Handle search input changes
-//     const handleInputChange = (event) => {
-//         setSearchQuery(event.target.value);
-//     };
-
-//     return (
-//         <div className='w-full flex justify-center min-h-screen items-center'>
-//             <div className="relative w-96" ref={searchRef}>
-//                 <input
-//                     type="text"
-//                     placeholder="Search..."
-//                     value={searchQuery}
-//                     onFocus={() => setDropdownOpen(true)}
-//                     onChange={handleInputChange}
-//                     className="border border-gray-400 w-full px-4 py-2 rounded"
-//                 />
-
-//                 {isDropdownOpen && (
-//                     <div className="absolute w-full bg-white border border-gray-400 mt-1 rounded shadow-lg">
-//                         <ul>
-//                             {recentSearches.map((item, index) => (
-//                                 <li
-//                                     key={index}
-//                                     onClick={() => {
-//                                         setSearchQuery(item);
-//                                         setDropdownOpen(false);
-//                                     }}
-//                                     className="px-4 py-2 cursor-pointer hover:bg-gray-200"
-//                                 >
-//                                     {item}
-//                                 </li>
-//                             ))}
-//                         </ul>
-//                     </div>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default SearchBar;
-
-
-'use client'
-
-import { Input } from "@/components/ui/input";
-import { useRef, useState, useEffect } from "react";
-
-const TrainerManagement = () => {
-    const searchRef = useRef(null);
-    const [renderDropdown, setRenderDropdown] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
-
-    const history = ['History 1', 'History 2', 'History 3', 'History 4'];
-
-    // Handle click outside to close the dropdown
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setRenderDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [searchRef]);
-
-    const handleSearchFocus = () => {
-        setRenderDropdown(true);
-    };
-
-    const handleSelectHistory = (item) => {
-        setSearchQuery(item); // Set the input value to the selected history
-        setRenderDropdown(false);
-    };
-
+const DatePickerDemo = () => {
+    const [date, setDate] = React.useState()
+    console.log("Date: ", date);
     return (
-        <div className='w-full flex justify-center items-center min-h-screen'>
-            <div ref={searchRef} className='w-9/12 flex justify-center'>
-                <div className='relative w-full'>
-                    <div className='w-full'>
-                        <Input
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onFocus={handleSearchFocus}
-                            className='w-full rounded-none'
-                            placeholder='Search...'
-                        />
-                    </div>
-                    {renderDropdown && (
-                        <div className='w-full absolute bg-white shadow-xl max-h-40 overflow-y-auto z-10'>
-                            {history.map((item, index) => (
-                                <div 
-                                    key={index} 
-                                    onClick={() => handleSelectHistory(item)} 
-                                    className="hover:bg-gray-200 cursor-pointer px-4 py-2"
-                                >
-                                    <p>{item}</p>
-                                </div>
-                            ))}
-                        </div>
-                    )}
-                </div>
-            </div>
+        <div className="flex justify-center items-center min-h-screen">
+            <Popover>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant={"outline"}
+                        className={cn(
+                            "w-[280px] justify-start text-left font-normal",
+                            !date && "text-muted-foreground"
+                        )}
+                    >
+                        <CalendarIcon />
+                        {date ? format(date, "PPP") : <span>Pick a date</span>}
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0">
+                    <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        initialFocus
+                    />
+                </PopoverContent>
+            </Popover>
         </div>
     )
 }
-
-export default TrainerManagement;
+export default DatePickerDemo;
