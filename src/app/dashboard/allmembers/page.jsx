@@ -1,5 +1,7 @@
 'use client'
 
+import { MdError } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
 import { Button } from "@/components/ui/button.jsx";
 import { IoMdClose } from "react-icons/io";
@@ -51,6 +53,9 @@ import { debounce } from "@mui/material";
 
 const AllMembers = () => {
 
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({icon:MdDone,message:''});
+    const [errorMessage, setErrorMessage] = useState({icon:MdError,message:''});
     const [qrState, setQrState] = useState('')
     const [qrMessage, setQrMessage] = useState('')
 
@@ -60,7 +65,7 @@ const AllMembers = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
             console.log('Response body: ', resBody);
             return resBody;
@@ -84,7 +89,6 @@ const AllMembers = () => {
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [results, setResults] = useState('');
-
 
     const fetchSearchResults = async (searchQuery) => {
         if (searchQuery.trim() === '') {
@@ -136,6 +140,53 @@ const AllMembers = () => {
         }
     };
 
+    const deleteMember = async(id)=>{
+        try{
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`,{
+                method:"DELETE",
+                headers:{
+                    'Content-Type':"application/json"
+                },
+                credentials:"include"
+            });
+            const responseBody = await response.json();
+            if(response.status===401 || response.status===403 || response.status===500){
+                setToast(true);
+                setTimeout(()=>{
+                    setToast(false)
+                },5000);
+                setErrorMessage({
+                    icon:MdError,
+                    message:responseBody.message || 'Unauthorized action'
+                });
+            }
+            else{
+                if(response.status===200){
+                    setToast(true);
+                setTimeout(()=>{
+                    setToast(false)
+                },5000);
+                setSuccessMessage({
+                    icon:MdError,
+                    message:responseBody.message || 'Unauthorized action'
+                })
+                }
+            }
+
+        }catch(error){
+            console.log("Error: ",error);
+            setToast(true);
+            setTimeout(()=>{
+                setToast(false)
+            },5000);
+            setErrorMessage({
+                icon:MdError,
+                message:"An unexpected error occurred."
+            })
+            
+        };
+    };
+
     return (
         <div className="w-full">
             <div className='w-full p-6'>
@@ -159,6 +210,15 @@ const AllMembers = () => {
                     ) : (
                         <></>
                     )
+                }
+                {
+                toast?(
+                    <div>
+                    </div>
+                ):(
+                    <div>
+                    </div>
+                )
                 }
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -260,6 +320,9 @@ const AllMembers = () => {
                                                                         <MdEmail
                                                                             onClick={() => sendQrInEmail(member._id)}
                                                                             className="cursor-pointer text-lg"
+                                                                        />
+                                                                        <MdDelete
+                                                                            className="cursor-pointer text-red-600 text-lg"
                                                                         />
                                                                     </div>
                                                                 </TableCell>

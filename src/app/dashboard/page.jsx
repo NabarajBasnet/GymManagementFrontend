@@ -78,7 +78,7 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renew",
-      value: membersRenewedThisWeek || "Null",
+      value: 'N',
       color: 'text-green-600',
       bg: 'bg-green-200'
     },
