@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button.jsx";
 import { IoMdClose } from "react-icons/io";
 import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import * as React from "react"
-import { MdEmail } from "react-icons/md";
+import { MdEmail, MdClose } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import {
@@ -45,7 +45,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
@@ -53,11 +53,17 @@ import { debounce } from "@mui/material";
 
 const AllMembers = () => {
 
+    const queryClient = useQueryClient();
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [qrState, setQrState] = useState('')
     const [qrMessage, setQrMessage] = useState('')
+    const [responseType, setResponseType] = useState('')
+    const responseResultType = ['Success', 'Failure'];
+    const [confirmDeleteMember, setConfirmDeleteMember] = useState(false);
+    const [toDeleteMemberId, setToDeleteMemberId] = useState('');
+    const [isMemberDeleting, setIsMemberDeleting] = useState('');
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 15;
@@ -131,16 +137,47 @@ const AllMembers = () => {
                 body: JSON.stringify({ id })
             });
             const responseBody = await response.json();
-            if (response.ok) {
-                setQrState(true);
-                setQrMessage(responseBody.message);
+            console.log("Response body: ", responseBody);
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
             }
         } catch (error) {
             console.log('Error: ', error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || error
+            });
         }
     };
 
     const deleteMember = async (id) => {
+        setIsMemberDeleting(true);
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
@@ -150,11 +187,13 @@ const AllMembers = () => {
                 credentials: "include"
             });
             const responseBody = await response.json();
-            if (response.status === 401 || response.status === 403 || response.status === 500) {
+
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
                 setToast(true);
                 setTimeout(() => {
                     setToast(false)
-                }, 5000);
+                }, 10000);
                 setErrorMessage({
                     icon: MdError,
                     message: responseBody.message || 'Unauthorized action'
@@ -162,15 +201,19 @@ const AllMembers = () => {
             }
             else {
                 if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
                     setToast(true);
                     setTimeout(() => {
                         setToast(false)
-                    }, 5000);
+                    }, 10000);
                     setSuccessMessage({
                         icon: MdError,
                         message: responseBody.message || 'Unauthorized action'
                     })
                 }
+                setIsMemberDeleting(false);
+                setConfirmDeleteMember(false);
+                queryClient.invalidateQueries(['members']);
             }
 
         } catch (error) {
@@ -178,12 +221,11 @@ const AllMembers = () => {
             setToast(true);
             setTimeout(() => {
                 setToast(false)
-            }, 5000);
+            }, 10000);
             setErrorMessage({
                 icon: MdError,
                 message: "An unexpected error occurred."
             })
-
         };
     };
 
@@ -211,15 +253,57 @@ const AllMembers = () => {
                         <></>
                     )
                 }
-                {
-                    toast ? (
-                        <div>
+                {toast ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div>
+                                {
+                                    responseType === 'Success' ? (
+                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                                    ) : (
+                                        <MdError className="text-3xl mx-4 text-red-600" />
+                                    )
+                                }
+                            </div>
+                            <div className="block">
+                                {
+                                    responseType === 'Success' ? (
+                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                    ) : (
+                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                    )
+                                }
+                            </div>
+                            <div>
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-3xl ml-4" />
+                            </div>
                         </div>
-                    ) : (
-                        <div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+
+                {confirmDeleteMember ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl px-3 rounded-md py-2 relative`}>
+                            <div>
+                                <p className="text-red-600 text-sm font-semibold px-6 text-center my-4">Are you sure want to delete? This action will remove all the data from the server and will not be recover.</p>
+                            </div>
+                            <div className="flex justify-center items-center space-x-4">
+                                <Button onClick={() => setConfirmDeleteMember(false)}
+                                    className='rounded-md'
+                                >Cancel</Button>
+                                <Button className='bg-red-600 rounded-md hover:bg-red-600' onClick={() => deleteMember(toDeleteMemberId)}>{isMemberDeleting ? 'Processing...' : "Delete"}</Button>
+                            </div>
                         </div>
-                    )
-                }
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -322,6 +406,10 @@ const AllMembers = () => {
                                                                             className="cursor-pointer text-lg"
                                                                         />
                                                                         <MdDelete
+                                                                            onClick={() => {
+                                                                                setConfirmDeleteMember(true);
+                                                                                setToDeleteMemberId(member._id);
+                                                                            }}
                                                                             className="cursor-pointer text-red-600 text-lg"
                                                                         />
                                                                     </div>
@@ -444,7 +532,11 @@ const AllMembers = () => {
                                                                     className='cursor-pointer text-lg'
                                                                 />
                                                                 <MdDelete
-                                                                    className='cursor-pointer text-lg text-red-600'
+                                                                    onClick={() => {
+                                                                        setConfirmDeleteMember(true);
+                                                                        setToDeleteMemberId(member._id);
+                                                                    }}
+                                                                    className="cursor-pointer text-red-600 text-lg"
                                                                 />
                                                             </div>
                                                         </TableCell>
