@@ -119,7 +119,9 @@ const MemberAttendance = () => {
 
     useEffect(() => {
         if (memberId) {
-            handleValidation();
+            setTimeout(() => {
+                handleValidation();
+            }, 500)
         }
     }, [memberId]);
 

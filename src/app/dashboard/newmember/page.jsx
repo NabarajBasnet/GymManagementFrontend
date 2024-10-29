@@ -714,7 +714,7 @@ const newMemberRegistrationForm = () => {
                                     <div>
                                         <Label>Membership Renew Date</Label>
                                         <Input
-                                            value={membershipRenewDate.toISOString().split('T')[0]}
+                                            value={new Date(membershipRenewDate).toISOString().split('T')[0]}
                                             onChange={(e) => setMembershipRenewDate(new Date(e.target.value))}
                                             type='date'
                                             className='rounded-none focus:outline-none'
@@ -756,7 +756,7 @@ const newMemberRegistrationForm = () => {
                                             }
                                             type='date'
                                             disabled
-                                            value={membershipExpireDate}
+                                            value={new Date(membershipExpireDate).toISOString().split('T')[0]}
                                             className='rounded-none focus:outline-none disabled:text-red-600'
                                             placeholder='Membership Expire Date'
                                         />
