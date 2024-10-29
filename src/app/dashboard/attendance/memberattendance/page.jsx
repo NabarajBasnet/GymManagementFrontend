@@ -43,6 +43,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { useForm } from "react-hook-form";
 
 const MemberAttendance = () => {
     const queryClient = useQueryClient();
@@ -53,6 +54,14 @@ const MemberAttendance = () => {
     const limit = 6;
     const [membershipAlert, setMembershipAlert] = useState(null);
     const [alertMessage, setAlertMessage] = useState('');
+    const {
+        register,
+        reset,
+        handleSubmit,
+        setError,
+        clearErrors,
+        formState: { isSubmitting, errors }
+    } = useForm();
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
@@ -70,15 +79,18 @@ const MemberAttendance = () => {
     });
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
-
+    const [returnedResponse, setReturnedResponse] = useState(null);
+    console.log("Returned Response: ", returnedResponse);
     const handlePageChange = (page) => {
         setCurentPage(page);
     };
 
     const handleValidation = async () => {
         setLoading(true);
+        console.log('Member Id: ', memberId.length);
+
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -111,6 +123,8 @@ const MemberAttendance = () => {
             }
 
             setLoading(false);
+            setReturnedResponse(response);
+            return response;
         } catch (error) {
             console.log('Error: ', error);
             setLoading(false);
@@ -118,10 +132,10 @@ const MemberAttendance = () => {
     };
 
     useEffect(() => {
-        if (memberId) {
+        if (memberId && memberId.length === 24) {  // Check if memberId has 24 characters
             setTimeout(() => {
                 handleValidation();
-            }, 800)
+            },);
         }
     }, [memberId]);
 
@@ -133,7 +147,7 @@ const MemberAttendance = () => {
         if (e.key === 'Enter') {
             e.preventDefault();
             setMembershipAlert(false);
-            reloadPage();
+            // window.location.reload();
         }
     };
 
@@ -192,16 +206,30 @@ const MemberAttendance = () => {
                         <div className='w-full flex justify-start p-2'>
                             <Button className='rounded-none' onClick={reloadPage}>Refresh</Button>
                         </div>
-                        <div className="grid grid-cols-1 space-y-2 px-2">
+                        <form onSubmit={handleSubmit(handleValidation)} className="grid grid-cols-1 space-y-2 px-2">
                             <Input
                                 type="text"
                                 placeholder="Scan QR code here"
+                                // {
+                                //     ...register('memberId',{
+                                //         required:{
+                                //             value:true,
+                                //             message:"Please scan qr code"
+                                //         }
+                                //     })
+                                // }
+
                                 value={memberId}
                                 onChange={(e) => setMemberId(e.target.value)}
                                 autoFocus
                                 className="w-full focus:border-blue-600 rounded-none text-black"
                                 onKeyPress={(e) => onEnterPress(e)}
                             />
+                            {
+                                errors.memberId && (
+                                    <p className="text-sm font-semibold text-red-600">{`${errors.memberId.message}`}</p>
+                                )
+                            }
 
                             <div className="flex justify-between items-center">
                                 <Label className="w-3/12">Full Name</Label>
@@ -283,7 +311,7 @@ const MemberAttendance = () => {
                                     className="w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none disabled:text-green-600 cursor-not-allowed h-40"
                                 />
                             </div>
-                        </div>
+                        </form>
                     </div>
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className="w-full flex justify-center">
