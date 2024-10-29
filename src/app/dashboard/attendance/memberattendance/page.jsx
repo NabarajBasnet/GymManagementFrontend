@@ -20,7 +20,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -54,6 +54,8 @@ const MemberAttendance = () => {
     const limit = 6;
     const [membershipAlert, setMembershipAlert] = useState(null);
     const [alertMessage, setAlertMessage] = useState('');
+    const [isValidationComplete, setIsValidationComplete] = useState(false);
+
     const {
         register,
         reset,
@@ -62,6 +64,7 @@ const MemberAttendance = () => {
         clearErrors,
         formState: { isSubmitting, errors }
     } = useForm();
+
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
@@ -87,7 +90,6 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         setLoading(true);
-
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
@@ -115,6 +117,7 @@ const MemberAttendance = () => {
             }
 
             if (response.status === 200) {
+                setIsValidationComplete(true);
                 queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
             } else if (response.status === 403) {
                 setMembershipAlert(true);
@@ -129,14 +132,6 @@ const MemberAttendance = () => {
             setLoading(false);
         }
     };
-
-    // useEffect(() => {
-    //     if (memberId && memberId.length === 24) {
-    //         setTimeout(() => {
-    //             handleValidation();
-    //         },);
-    //     }
-    // }, [memberId]);
 
     const reloadPage = () => {
         queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
@@ -153,7 +148,14 @@ const MemberAttendance = () => {
                             <p className="mb-6">{alertMessage}</p>
                             <div className="w-full flex justify-center">
                                 <Button
-                                    onClick={() => setMembershipAlert(false)}
+                                    onClick={() => {
+                                        setMembershipAlert(false);
+                                    }}
+                                    onKeyPress={(e) => {
+                                        if (e.key === 'Enter') {
+                                            setMembershipAlert(false);
+                                        }
+                                    }}
                                     className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
                                 >
                                     Close
@@ -215,7 +217,11 @@ const MemberAttendance = () => {
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
-                                        handleValidation();
+                                        if (!isValidationComplete) {
+                                            handleValidation();
+                                        } else {
+                                            window.location.reload();
+                                        }
                                     }
                                 }}
                             />
