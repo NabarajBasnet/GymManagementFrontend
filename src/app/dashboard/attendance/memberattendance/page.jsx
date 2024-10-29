@@ -87,7 +87,6 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         setLoading(true);
-        console.log('Member Id: ', memberId.length);
 
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
@@ -147,7 +146,7 @@ const MemberAttendance = () => {
         if (e.key === 'Enter') {
             e.preventDefault();
             setMembershipAlert(false);
-            // window.location.reload();
+            window.location.reload();
         }
     };
 
