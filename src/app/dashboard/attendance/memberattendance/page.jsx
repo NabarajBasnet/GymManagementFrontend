@@ -130,13 +130,18 @@ const MemberAttendance = () => {
         }
     };
 
-    useEffect(() => {
-        if (memberId && memberId.length === 24) {
-            setTimeout(() => {
-                handleValidation();
-            },);
-        }
-    }, [memberId]);
+    // useEffect(() => {
+    //     if (memberId && memberId.length === 24) {
+    //         setTimeout(() => {
+    //             handleValidation();
+    //         },);
+    //     }
+    // }, [memberId]);
+
+    const reloadPage = () => {
+        queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
+        window.location.reload();
+    };
 
     return (
         <div className='w-full'>
@@ -190,9 +195,14 @@ const MemberAttendance = () => {
                 <div className='w-full md:flex md:space-x-4 space-y-4 md:space-y-0 justify-between py-4 md:py-0 px-4'>
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className='w-full flex justify-start p-2'>
-                            <Button className='rounded-none' onClick={() => {
-                                window.location.reload()
-                            }}>Refresh</Button>
+                            <Button
+                                className="rounded-none"
+                                onClick={() => {
+                                    window.location.reload();
+                                }}
+                            >
+                                Refresh
+                            </Button>
                         </div>
                         <form className="grid grid-cols-1 space-y-2 px-2">
                             <Input
@@ -204,16 +214,16 @@ const MemberAttendance = () => {
                                 className="w-full focus:border-blue-600 rounded-none text-black"
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        window.location.reload();
+                                        e.preventDefault();
+                                        handleValidation();
                                     }
                                 }}
                             />
-                            {
-                                errors.memberId && (
-                                    <p className="text-sm font-semibold text-red-600">{`${errors.memberId.message}`}</p>
-                                )
-                            }
-
+                            {errors.memberId && (
+                                <p className="text-sm font-semibold text-red-600">
+                                    {errors.memberId.message}
+                                </p>
+                            )}
                             <div className="flex justify-between items-center">
                                 <Label className="w-3/12">Full Name</Label>
                                 <Input
