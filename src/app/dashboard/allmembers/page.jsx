@@ -232,7 +232,7 @@ const AllMembers = () => {
     return (
         <div className="w-full">
             <div className='w-full p-6'>
-                {
+                {/* {
                     qrState ? (
                         <div className="w-full flex justify-center">
                             <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
@@ -252,7 +252,7 @@ const AllMembers = () => {
                     ) : (
                         <></>
                     )
-                }
+                } */}
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
