@@ -90,7 +90,7 @@ const MemberAttendance = () => {
         console.log('Member Id: ', memberId.length);
 
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
