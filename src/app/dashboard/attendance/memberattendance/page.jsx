@@ -131,24 +131,12 @@ const MemberAttendance = () => {
     };
 
     useEffect(() => {
-        if (memberId && memberId.length === 24) {  // Check if memberId has 24 characters
+        if (memberId && memberId.length === 24) {
             setTimeout(() => {
                 handleValidation();
             },);
         }
     }, [memberId]);
-
-    const reloadPage = async () => {
-        queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
-    };
-
-    const onEnterPress = (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            setMembershipAlert(false);
-            window.location.reload();
-        }
-    };
 
     return (
         <div className='w-full'>
@@ -160,7 +148,6 @@ const MemberAttendance = () => {
                             <p className="mb-6">{alertMessage}</p>
                             <div className="w-full flex justify-center">
                                 <Button
-                                    onKeyPress={(e) => onEnterPress(e)}
                                     onClick={() => setMembershipAlert(false)}
                                     className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
                                 >
@@ -203,26 +190,23 @@ const MemberAttendance = () => {
                 <div className='w-full md:flex md:space-x-4 space-y-4 md:space-y-0 justify-between py-4 md:py-0 px-4'>
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className='w-full flex justify-start p-2'>
-                            <Button className='rounded-none' onClick={reloadPage}>Refresh</Button>
+                            <Button className='rounded-none' onClick={() => {
+                                window.location.reload()
+                            }}>Refresh</Button>
                         </div>
-                        <form onSubmit={handleSubmit(handleValidation)} className="grid grid-cols-1 space-y-2 px-2">
+                        <form className="grid grid-cols-1 space-y-2 px-2">
                             <Input
                                 type="text"
                                 placeholder="Scan QR code here"
-                                // {
-                                //     ...register('memberId',{
-                                //         required:{
-                                //             value:true,
-                                //             message:"Please scan qr code"
-                                //         }
-                                //     })
-                                // }
-
                                 value={memberId}
                                 onChange={(e) => setMemberId(e.target.value)}
                                 autoFocus
                                 className="w-full focus:border-blue-600 rounded-none text-black"
-                                onKeyPress={(e) => onEnterPress(e)}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        window.location.reload();
+                                    }
+                                }}
                             />
                             {
                                 errors.memberId && (
