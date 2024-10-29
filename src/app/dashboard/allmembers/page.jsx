@@ -67,6 +67,7 @@ const AllMembers = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 15;
+    
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
 

@@ -45,6 +45,16 @@ import Loader from "@/components/Loader/Loader";
 const Member = (props) => {
 
     const memberId = props.params.member;
+    const queryClient = useQueryClient();
+
+    const {
+        register,
+        reset,
+        formState: { errors, isSubmitting },
+        handleSubmit,
+        setError,
+        clearErrors,
+    } = useForm();
 
     const membershipPlans = [
         {
@@ -100,7 +110,6 @@ const Member = (props) => {
         }
     ];
 
-    const queryClient = useQueryClient();
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [membershipDuration, setMembershipDuration] = useState('');
     const [reasonForUpdate, setReasonForUpdate] = useState('');
@@ -123,6 +132,8 @@ const Member = (props) => {
     const [membershipDate, setMembershipDate] = useState(new Date());
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
+
+    const [expireDate, setExpireDate] = useState(null)
 
     // Payment Details
     const [finalAmmount, setFinalAmmount] = useState('');
@@ -184,19 +195,30 @@ const Member = (props) => {
         calculateFinalAmmount()
     }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
 
+    const getMemberDetails = async () => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                reset();
+                setDiscountAmmount(responseBody.member.discountAmmount);
+                setPaidAmmount(responseBody.member.paidAmmount);
+                queryClient.invalidateQueries(['member']);
+            }
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
 
-    const {
-        register,
-        reset,
-        formState: { errors, isSubmitting },
-        handleSubmit,
-        setError,
-        clearErrors,
-    } = useForm();
+    const { data, isLoading: isMemberFetching } = useQuery({
+        queryKey: ['member'],
+        queryFn: getMemberDetails
+    });
 
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
-        const newMembershipExpireDate = new Date(membershipRenewDate)
+        const newMembershipExpireDate = new Date(membershipRenewDate);
 
         switch (duration) {
             case "1 Month":
@@ -218,32 +240,12 @@ const Member = (props) => {
             default:
                 break;
         }
-        setMembershipExpireDate(newMembershipExpireDate.toISOString().split('T')[0]);
+        setMembershipExpireDate(newMembershipExpireDate);
     };
 
     useEffect(() => {
         handleMembershipSelection(membershipDuration);
     }, [membershipRenewDate]);
-
-    const getMemberDetails = async () => {
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
-            const responseBody = await response.json();
-            if (response.ok) {
-                reset();
-                setDiscountAmmount(responseBody.member.discountAmmount);
-                setPaidAmmount(responseBody.member.paidAmmount);
-            }
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    }
-
-    const { data, isLoading: isMemberFetching } = useQuery({
-        queryKey: ['member'],
-        queryFn: getMemberDetails
-    });
 
     const onEditMembersDetails = async (data) => {
         try {
@@ -676,7 +678,7 @@ const Member = (props) => {
                                                                         )}
                                                                     >
                                                                         <CalendarIcon />
-                                                                        {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
+                                                                        {membershipRenewDate ? format(!membershipRenewDate ? data.member.membershipRenewDate : membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0">
@@ -720,7 +722,17 @@ const Member = (props) => {
                                                                         )}
                                                                     >
                                                                         <CalendarIcon />
-                                                                        {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Renew Date</span>}
+                                                                        {
+                                                                            membershipDuration === '1 Month' || membershipDuration === '3 Months' || membershipDuration === '6 Months' || membershipDuration === '12 Months' ? (
+                                                                                <>
+                                                                                    {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
+                                                                                </>
+                                                                            ) : (
+                                                                                <>
+                                                                                    {membershipExpireDate ? format(data.member.membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
+                                                                                </>
+                                                                            )
+                                                                        }
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0">
