@@ -40,10 +40,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useForm } from "react-hook-form";
+import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
+
 
 const MemberAttendance = () => {
     const queryClient = useQueryClient();
@@ -56,6 +58,11 @@ const MemberAttendance = () => {
     const [alertMessage, setAlertMessage] = useState('');
     const [isValidationComplete, setIsValidationComplete] = useState(false);
 
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+
     const {
         register,
         reset,
@@ -64,7 +71,6 @@ const MemberAttendance = () => {
         clearErrors,
         formState: { isSubmitting, errors }
     } = useForm();
-
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
@@ -84,7 +90,7 @@ const MemberAttendance = () => {
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
     const [returnedResponse, setReturnedResponse] = useState(null);
     const handlePageChange = (page) => {
-       setCurentPage(page);
+        setCurentPage(page);
     };
 
     const handleValidation = async () => {
@@ -97,30 +103,19 @@ const MemberAttendance = () => {
                 body: JSON.stringify({ memberId }),
             });
 
-            const validationResponseResult = await response.json();
-            setValidationResult(validationResponseResult);
+            const responseBody = await response.json();
+            setValidationResult(responseBody);
+            console.log("Validation Response Result: ", responseBody);
 
-            if (response.status === 401) {
-                setMembershipAlert(true);
-                setAlertMessage(validationResponseResult.message);
-            }
+            const responseResultType = ['Success', 'Failure'];
 
-            if (response.status === 400) {
-                setMembershipAlert(true);
-                setAlertMessage(validationResponseResult.message);
-            }
-
-            if (response.status === 500) {
-                setMembershipAlert(true);
-                setAlertMessage(validationResponseResult.error);
-            }
-
-            if (response.status === 200) {
-                setIsValidationComplete(true);
-                queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
-            } else if (response.status === 403) {
-                setMembershipAlert(true);
-                setAlertMessage(validationResponseResult.message);
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message
+                })
             }
 
             setLoading(false);
@@ -132,6 +127,12 @@ const MemberAttendance = () => {
         }
     };
 
+    useEffect(() => {
+        if (memberId.length >= 24) {
+            handleValidation();
+        }
+    }, [memberId]);
+
     const reloadPage = () => {
         queryClient.invalidateQueries('temporaryMemberAttendanceHistory');
         window.location.reload();
@@ -140,32 +141,37 @@ const MemberAttendance = () => {
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
-                {membershipAlert ? (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-                        <div className="bg-white p-4 rounded-sm shadow-lg w-[30rem]">
-                            <h2 className="text-lg font-bold mb-4">Membership Alert</h2>
-                            <p className="mb-6">{alertMessage}</p>
-                            <div className="w-full flex justify-center">
-                                <Button
-                                    onClick={() => {
-                                        setMembershipAlert(false);
-                                    }}
-                                    onKeyPress={(e) => {
-                                        if (e.key === 'Enter') {
-                                            setMembershipAlert(false);
-                                            window.location.reload();
-                                        }
-                                    }}
-                                    className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
-                                >
-                                    Close
-                                </Button>
+                {toast ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div>
+                                {
+                                    responseType === 'Success' ? (
+                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                                    ) : (
+                                        <MdError className="text-3xl mx-4 text-red-600" />
+                                    )
+                                }
+                            </div>
+                            <div className="block">
+                                {
+                                    responseType === 'Success' ? (
+                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                    ) : (
+                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                    )
+                                }
+                            </div>
+                            <div>
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-3xl ml-4" />
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <>
-                    </>
+                    <></>
                 )}
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -198,7 +204,7 @@ const MemberAttendance = () => {
                     <div className='w-full md:w-6/12 bg-white rounded-lg'>
                         <div className='w-full flex justify-start p-2'>
                             <Button
-                                className="rounded-none"
+                                className="rounded-md"
                                 onClick={() => {
                                     window.location.reload();
                                 }}
@@ -217,11 +223,7 @@ const MemberAttendance = () => {
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
                                         e.preventDefault();
-                                        if (!isValidationComplete) {
-                                            handleValidation();
-                                        } else {
-                                            window.location.reload();
-                                        }
+                                        window.location.reload();
                                     }
                                 }}
                             />
