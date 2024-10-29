@@ -154,6 +154,7 @@ const MemberAttendance = () => {
                                     onKeyPress={(e) => {
                                         if (e.key === 'Enter') {
                                             setMembershipAlert(false);
+                                            window.location.reload();
                                         }
                                     }}
                                     className="w-full rounded-none bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4"
