@@ -1,10 +1,8 @@
 'use client'
 
-import { MdOutlineDone, MdClose, MdError, MdDone } from "react-icons/md";
+import { MdDelete, MdOutlineDone, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
-import { FaUserEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
-import { IoMdMail } from "react-icons/io";
+import { FaUserEdit } from "react-icons/fa";;
 import {
     Table,
     TableBody,
@@ -48,101 +46,103 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import Loader from "@/components/Loader/Loader";
+import { useForm } from "react-hook-form";
 
 const Users = () => {
 
     const queryClient = useQueryClient();
-    const [toast, setToast] = useState(true);
+    const [toast, setToast] = useState(false);
     const [responseType, setResponseType] = useState('');
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const responseResultType = ['Success', 'Failure'];
+    const [editForm, setEditForm] = useState(true);
+    const [memberId, setMemberId] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 8;
 
-    const fetchAllUsers = async () => {
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        clearErrors
+    } = useForm();
+
+    const [userRole, setUserRole] = useState('');
+
+    const fetchAllUsers = async ({ queryKey }) => {
+        const [, page] = queryKey;
         try {
-
+            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}`);
+            const responseBody = await response.json();
+            return responseBody;
         } catch (error) {
             console.log("Error: ", error);
         }
     };
 
-    const { date: users, isLoading } = useQuery({
-        queryKey: ['users'],
+    const { data: allUsers, isLoading } = useQuery({
+        queryKey: ['users', currentPage],
         queryFn: fetchAllUsers
     });
 
-    console.log("All Users: ", users);;
+    const { users, totalUsers, totalPages } = allUsers || {};
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     const fetchSingleUser = async (id) => {
         try {
-
+            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            if (response.status !== 200) {
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+                setToast(true);
+            };
+            if (response.status === 200 && response.ok) {
+                setEditForm(true);
+            }
+            return responseBody;
         } catch (error) {
             console.log("Error: ", error);
         }
     };
 
-    const { data: user, isLoading: isSingleUserLoading } = useQuery({
+    const { data: singleUser, isLoading: isSingleUserLoading } = useQuery({
         queryKey: ['user'],
         queryFn: fetchSingleUser
     });
+
+    const { user } = singleUser || {}
 
     console.log("User: ", user);;
 
     const editUser = async (id) => {
         try {
-
         } catch (error) {
             console.log("Error: ", error);
         }
     };
-
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV006",
-            paymentStatus: "Pending",
-            totalAmount: "$200.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV007",
-            paymentStatus: "Unpaid",
-            totalAmount: "$300.00",
-            paymentMethod: "Credit Card",
-        },
-    ];
 
     return (
         <div className="w-full">
@@ -207,76 +207,220 @@ const Users = () => {
                     <></>
                 )}
 
-                <div className="w-full px-4">
-                    <div className="w-full px-4 flex justify-between items-center border rounded-md bg-white shadow-md">
-                        <Input
-                            placeholder='Search user'
-                            className='border-none outline-none focus:outline-none bg-none'
-                        />
-                        <CiSearch
-                            className="text-xl"
-                        />
-                    </div>
-                </div>
+                {
+                    editForm ? (
+                        <div>
+                            <form className="w-full" onSubmit={handleSubmit(editUser)}>
+                                <div className="w-full flex items-center space-x-4">
+                                    <div className="w-full">
+                                        <Label>First Name</Label>
+                                        <Input
+                                            {
+                                            ...register('firstName')
+                                            }
+                                            className="rounded-none"
+                                            placeholder="First Name"
+                                            defaultValue={user?.firstName}
+                                        />
+                                    </div>
 
-                <div className="px-4">
-                    <div className="rounded-md bg-white shadow-md my-4">
-                        <Table>
-                            <TableCaption className='my-4'>A list of users.</TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Invoice</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {invoices.map((invoice) => (
-                                    <TableRow key={invoice.invoice}>
-                                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                        <TableCell>{invoice.paymentStatus}</TableCell>
-                                        <TableCell>{invoice.paymentMethod}</TableCell>
-                                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total</TableCell>
-                                    <TableCell className="text-right">$2,500.00</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    </div>
-                </div>
+                                    <div className="w-full">
+                                        <Label>Last Name</Label>
+                                        <Input
+                                            {
+                                            ...register('lastName')
+                                            }
+                                            className="rounded-none"
+                                            placeholder="Last Name"
+                                            defaultValue={user?.lastName}
+                                        />
+                                    </div>
+                                </div>
 
-                <div className="bg-white py-4 mx-4 rounded-md shadow-md">
-                    <Pagination>
-                        <PaginationContent>
-                            <PaginationItem>
-                                <PaginationPrevious href="#" />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">1</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#" isActive>
-                                    2
-                                </PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationLink href="#">3</PaginationLink>
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationEllipsis />
-                            </PaginationItem>
-                            <PaginationItem>
-                                <PaginationNext href="#" />
-                            </PaginationItem>
-                        </PaginationContent>
-                    </Pagination>
-                </div>
+                                <div>
+                                    <Label>User Role</Label>
+                                    <Select onValueChange={(value) => setUserRole(value)}>
+                                        <SelectTrigger className="rounded-none">
+                                            <SelectValue placeholder={user?.role} />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Select</SelectLabel>
+                                                <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                                <SelectItem value="Admin">Admin</SelectItem>
+                                                <SelectItem value="Moderator">Moderator</SelectItem>
+                                                <SelectItem value="User">User</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+
+                                <div className="w-full">
+                                    <Label>Email</Label>
+                                    <Input
+                                        {
+                                        ...register('email')
+                                        }
+                                        className="rounded-none"
+                                        placeholder="Email"
+                                        defaultValue={data?.email}
+                                    />
+                                </div>
+
+                                <div className="w-full">
+                                    <Label>Phone Number</Label>
+                                    <Input
+                                        {
+                                        ...register('phoneNumber')
+                                        }
+                                        className="rounded-none"
+                                        placeholder="Phone Number"
+                                        defaultValue={data?.phoneNumber}
+                                    />
+                                </div>
+
+                                <div className="w-full">
+                                    <Label>Address</Label>
+                                    <Input
+                                        {
+                                        ...register('address')
+                                        }
+                                        className="rounded-none"
+                                        defaultValue={data?.address}
+                                        placeholder="Address"
+                                    />
+                                </div>
+
+                                <div className="w-full">
+                                    <Label>DOB</Label>
+                                    <Input
+                                        {
+                                        ...register('dob')
+                                        }
+                                        type='date'
+                                        className="rounded-none"
+                                        defaultValue={new Date(data?.dob).toISOString().split('T')[0]}
+                                        placeholder="DOB"
+                                    />
+                                </div>
+
+                                <div className="w-full flex mt-4 space-x-4 justify-center">
+                                    <Button
+                                        type='submit'
+                                        className="rounded-none text-white font-bold py-2 px-4"
+                                    >
+                                        {isSubmitting ? 'Processing...' : "Submit"}
+                                    </Button>
+                                    <Button
+                                        variant="destructive"
+                                        onClick={() => setEditForm(false)}
+                                        className="rounded-none text-white font-bold py-2 px-4"
+                                    >
+                                        Cancel
+                                    </Button>
+                                </div>
+                            </form>
+                        </div>
+                    ) : (
+                        <></>
+                    )
+                }
+
+                {isLoading ? (
+                    <Loader />
+                ) : (
+                    <div className="w-full px-4">
+                        <div className="w-full">
+                            <div className="w-full px-4 flex justify-between items-center border rounded-md bg-white shadow-md">
+                                <Input
+                                    placeholder='Search user'
+                                    className='border-none outline-none focus:outline-none bg-none'
+                                />
+                                <CiSearch
+                                    className="text-xl"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="w-full px-4">
+                            <div className="w-full rounded-md bg-white shadow-md my-4">
+                                <Table>
+                                    <TableCaption className='my-4'>A list of users.</TableCaption>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-[100px]">Full Name</TableHead>
+                                            <TableHead>Role</TableHead>
+                                            <TableHead>Email address</TableHead>
+                                            <TableHead>Phone Number</TableHead>
+                                            <TableHead>DOB</TableHead>
+                                            <TableHead>Address</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {Array.isArray(users) && users.length > 0 ? (
+                                            users.map((user) => (
+                                                <TableRow key={user._id}>
+                                                    <TableCell className="font-medium">{user.firstName + ' ' + user.lastName}</TableCell>
+                                                    <TableCell>{user.role}</TableCell>
+                                                    <TableCell>{user.email}</TableCell>
+                                                    <TableCell>{user.phoneNumber}</TableCell>
+                                                    <TableCell>{new Date(user.dob).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell>{user.address}</TableCell>
+                                                    <TableCell className="text-right flex items-center space-x-2">
+                                                        <FaUserEdit
+                                                            onClick={() => fetchSingleUser(user._id)}
+                                                            className="text-xl cursor-pointer"
+                                                        />
+
+                                                        <MdEmail className="text-xl cursor-pointer" />
+
+                                                        <MdDelete className="text-xl text-red-600 cursor-pointer" />
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={7} className="text-center font-bold text-sm">
+                                                    No users found.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TableCell colSpan={3}>Total</TableCell>
+                                            <TableCell className="text-right">{totalUsers}</TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            </div>
+                        </div>
+
+                        <div className="bg-white py-4 mx-4 rounded-md shadow-md">
+                            <Pagination className={'cursor-pointer'}>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                                    </PaginationItem>
+                                    {[...Array(totalPages)].map((_, i) => (
+                                        <PaginationItem key={i}>
+                                            <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                                {i + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
+                                    <PaginationItem>
+                                        <PaginationEllipsis />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     )
