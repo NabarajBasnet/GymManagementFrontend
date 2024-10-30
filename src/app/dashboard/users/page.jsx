@@ -137,7 +137,7 @@ const Users = () => {
 
     console.log("User: ", user);;
 
-    const editUser = async (id) => {
+    const editUser = async () => {
         try {
         } catch (error) {
             console.log("Error: ", error);
@@ -210,116 +210,116 @@ const Users = () => {
                 {
                     editForm ? (
                         <div>
-                            <form className="w-full" onSubmit={handleSubmit(editUser)}>
-                                <div className="w-full flex items-center space-x-4">
-                                    <div className="w-full">
-                                        <Label>First Name</Label>
-                                        <Input
-                                            {
-                                            ...register('firstName')
-                                            }
-                                            className="rounded-none"
-                                            placeholder="First Name"
-                                            defaultValue={user?.firstName}
-                                        />
+                            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
+                                <div className="flex justify-center bg-transparent p-4 rounded-sm shadow-lg w-full">
+                                    <div className="bg-white p-4 rounded-sm shadow-lg md:w-8/12 w-full transform transition-transform duration-500 ease-out scale-100">
+                                        <form className="w-full" onSubmit={handleSubmit(editUser)}>
+                                            <div className="w-full flex items-center space-x-4">
+                                                <div className="w-full">
+                                                    <Label>First Name</Label>
+                                                    <Input
+                                                        {
+                                                        ...register('firstName')
+                                                        }
+                                                        className="rounded-none"
+                                                        placeholder="First Name"
+                                                    />
+                                                </div>
+
+                                                <div className="w-full">
+                                                    <Label>Last Name</Label>
+                                                    <Input
+                                                        {
+                                                        ...register('lastName')
+                                                        }
+                                                        className="rounded-none"
+                                                        placeholder="Last Name"
+                                                    />
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <Label>User Role</Label>
+                                                <Select onValueChange={(value) => setUserRole(value)}>
+                                                    <SelectTrigger className="rounded-none">
+                                                        <SelectValue placeholder={'Role'} />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Select</SelectLabel>
+                                                            <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                                            <SelectItem value="Admin">Admin</SelectItem>
+                                                            <SelectItem value="Moderator">Moderator</SelectItem>
+                                                            <SelectItem value="User">User</SelectItem>
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
+
+                                            <div className="w-full">
+                                                <Label>Email</Label>
+                                                <Input
+                                                    {
+                                                    ...register('email')
+                                                    }
+                                                    className="rounded-none"
+                                                    placeholder="Email"
+                                                />
+                                            </div>
+
+                                            <div className="w-full">
+                                                <Label>Phone Number</Label>
+                                                <Input
+                                                    {
+                                                    ...register('phoneNumber')
+                                                    }
+                                                    className="rounded-none"
+                                                    placeholder="Phone Number"
+                                                />
+                                            </div>
+
+                                            <div className="w-full">
+                                                <Label>Address</Label>
+                                                <Input
+                                                    {
+                                                    ...register('address')
+                                                    }
+                                                    className="rounded-none"
+                                                    placeholder="Address"
+                                                />
+                                            </div>
+
+                                            <div className="w-full">
+                                                <Label>DOB</Label>
+                                                <Input
+                                                    {
+                                                    ...register('dob')
+                                                    }
+                                                    type='date'
+                                                    className="rounded-none"
+                                                    placeholder="DOB"
+                                                />
+                                            </div>
+
+                                            <div className="w-full flex mt-4 space-x-4 justify-center">
+                                                <Button
+                                                    type='submit'
+                                                    className="rounded-none text-white font-bold py-2 px-4"
+                                                >
+                                                    {isSubmitting ? 'Processing...' : "Submit"}
+                                                </Button>
+                                                <Button
+                                                    variant="destructive"
+                                                    onClick={() => setEditForm(false)}
+                                                    className="rounded-none text-white font-bold py-2 px-4"
+                                                >
+                                                    Cancel
+                                                </Button>
+                                            </div>
+                                        </form>
                                     </div>
-
-                                    <div className="w-full">
-                                        <Label>Last Name</Label>
-                                        <Input
-                                            {
-                                            ...register('lastName')
-                                            }
-                                            className="rounded-none"
-                                            placeholder="Last Name"
-                                            defaultValue={user?.lastName}
-                                        />
-                                    </div>
                                 </div>
-
-                                <div>
-                                    <Label>User Role</Label>
-                                    <Select onValueChange={(value) => setUserRole(value)}>
-                                        <SelectTrigger className="rounded-none">
-                                            <SelectValue placeholder={user?.role} />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectGroup>
-                                                <SelectLabel>Select</SelectLabel>
-                                                <SelectItem value="Super Admin">Super Admin</SelectItem>
-                                                <SelectItem value="Admin">Admin</SelectItem>
-                                                <SelectItem value="Moderator">Moderator</SelectItem>
-                                                <SelectItem value="User">User</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
-                                </div>
-
-                                <div className="w-full">
-                                    <Label>Email</Label>
-                                    <Input
-                                        {
-                                        ...register('email')
-                                        }
-                                        className="rounded-none"
-                                        placeholder="Email"
-                                        defaultValue={data?.email}
-                                    />
-                                </div>
-
-                                <div className="w-full">
-                                    <Label>Phone Number</Label>
-                                    <Input
-                                        {
-                                        ...register('phoneNumber')
-                                        }
-                                        className="rounded-none"
-                                        placeholder="Phone Number"
-                                        defaultValue={data?.phoneNumber}
-                                    />
-                                </div>
-
-                                <div className="w-full">
-                                    <Label>Address</Label>
-                                    <Input
-                                        {
-                                        ...register('address')
-                                        }
-                                        className="rounded-none"
-                                        defaultValue={data?.address}
-                                        placeholder="Address"
-                                    />
-                                </div>
-
-                                <div className="w-full">
-                                    <Label>DOB</Label>
-                                    <Input
-                                        {
-                                        ...register('dob')
-                                        }
-                                        type='date'
-                                        className="rounded-none"
-                                        defaultValue={new Date(data?.dob).toISOString().split('T')[0]}
-                                        placeholder="DOB"
-                                    />
-                                </div>
-
-                                <div className="w-full flex mt-4 space-x-4 justify-center">
-                                    <Button
-                                        type='submit'
-                                        className="rounded-none text-white font-bold py-2 px-4"
-                                    >
-                                        {isSubmitting ? 'Processing...' : "Submit"}
-                                    </Button>
-                                    <Button
-                                        variant="destructive"
-                                        onClick={() => setEditForm(false)}
-                                        className="rounded-none text-white font-bold py-2 px-4"
-                                    >
-                                        Cancel
-                                    </Button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
                     ) : (
                         <></>
@@ -331,7 +331,7 @@ const Users = () => {
                 ) : (
                     <div className="w-full px-4">
                         <div className="w-full">
-                            <div className="w-full px-4 flex justify-between items-center border rounded-md bg-white shadow-md">
+                            <div className="w-full px-4 py-1 flex justify-between items-center border rounded-md bg-white shadow-md">
                                 <Input
                                     placeholder='Search user'
                                     className='border-none outline-none focus:outline-none bg-none'
@@ -342,7 +342,7 @@ const Users = () => {
                             </div>
                         </div>
 
-                        <div className="w-full px-4">
+                        <div className="w-full">
                             <div className="w-full rounded-md bg-white shadow-md my-4">
                                 <Table>
                                     <TableCaption className='my-4'>A list of users.</TableCaption>
@@ -397,7 +397,7 @@ const Users = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white py-4 mx-4 rounded-md shadow-md">
+                        <div className="bg-white py-4 rounded-md shadow-md">
                             <Pagination className={'cursor-pointer'}>
                                 <PaginationContent>
                                     <PaginationItem>
