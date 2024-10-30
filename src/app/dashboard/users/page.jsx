@@ -16,16 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -137,10 +127,50 @@ const Users = () => {
 
     console.log("User: ", user);;
 
-    const editUser = async () => {
+    const editUser = async (data) => {
+
+        const { firstName, lastName, email, phoneNumber, dob, address } = data;
+        const finalData = { firstName, lastName, email, phoneNumber, dob, address, userRole };
+        const response = await fetch(`http://88.198.112.156:3000/api/users/patch/${memberId}`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(finalData),
+            credentials: 'include'
+        });
+        const responseBody = await response.json();
+        if (response.status !== 200) {
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message
+            })
+        }
+        else if (response.status === 200) {
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 10000);
+            setSuccessMessage({
+                icon: MdDone,
+                message: responseBody.message
+            })
+        }
         try {
         } catch (error) {
             console.log("Error: ", error);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message
+            })
         }
     };
 
