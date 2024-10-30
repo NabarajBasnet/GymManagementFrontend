@@ -1,5 +1,6 @@
 'use client'
 
+import { MdOutlineDone, MdClose, MdError, MdDone } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { FaUserEdit } from "react-icons/fa";
 import { MdDelete } from "react-icons/md";
@@ -48,11 +49,55 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Input } from "@/components/ui/input";
-
-
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 
 const Users = () => {
 
+    const queryClient = useQueryClient();
+    const [toast, setToast] = useState(true);
+    const [responseType, setResponseType] = useState('');
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const responseResultType = ['Success', 'Failure'];
+
+    const fetchAllUsers = async () => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { date: users, isLoading } = useQuery({
+        queryKey: ['users'],
+        queryFn: fetchAllUsers
+    });
+
+    console.log("All Users: ", users);;
+
+    const fetchSingleUser = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data: user, isLoading: isSingleUserLoading } = useQuery({
+        queryKey: ['user'],
+        queryFn: fetchSingleUser
+    });
+
+    console.log("User: ", user);;
+
+    const editUser = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
 
     const invoices = [
         {
@@ -126,10 +171,41 @@ const Users = () => {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-
                     <h1 className="text-2xl font-bold py-4">Users</h1>
-
                 </div>
+
+                {toast ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div>
+                                {
+                                    responseType === 'Success' ? (
+                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                                    ) : (
+                                        <MdError className="text-3xl mx-4 text-red-600" />
+                                    )
+                                }
+                            </div>
+                            <div className="block">
+                                {
+                                    responseType === 'Success' ? (
+                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                    ) : (
+                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                    )
+                                }
+                            </div>
+                            <div>
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-3xl ml-4" />
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
 
                 <div className="w-full px-4">
                     <div className="w-full px-4 flex justify-between items-center border rounded-md bg-white shadow-md">
