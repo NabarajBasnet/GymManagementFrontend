@@ -1,6 +1,6 @@
 'use client'
 
-import { MdDelete, MdOutlineDone, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
+import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
 import { FaUserEdit } from "react-icons/fa";;
 import {
@@ -60,25 +60,26 @@ const Users = () => {
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const responseResultType = ['Success', 'Failure'];
-    const [editForm, setEditForm] = useState(true);
-    const [memberId, setMemberId] = useState('');
+    const [editForm, setEditForm] = useState(false);
+    const [userId, setUserId] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 8;
+    const [confirmDeleteUser, setConfirmDeleteUser] = useState({ value: false, userId: '' });
+    const [isUserDeleting, setIsUserDeleting] = useState(false);
+    const [user, setUser] = useState();
 
     const {
         register,
-        reset,
         handleSubmit,
-        formState: { errors, isSubmitting },
-        clearErrors
+        formState: { isSubmitting },
     } = useForm();
 
-    const [userRole, setUserRole] = useState('');
+    const [role, setUserRole] = useState('');
 
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -99,9 +100,10 @@ const Users = () => {
 
     const fetchSingleUser = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const response = await fetch(`http://localhost:3000/api/users/${id}`);
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
+            setUser(responseBody.user);
+            setUserId(responseBody.user._id)
             if (response.status !== 200) {
                 setErrorMessage({
                     icon: MdError,
@@ -118,52 +120,99 @@ const Users = () => {
         }
     };
 
-    const { data: singleUser, isLoading: isSingleUserLoading } = useQuery({
-        queryKey: ['user'],
-        queryFn: fetchSingleUser
-    });
-
-    const { user } = singleUser || {}
-
-    console.log("User: ", user);;
-
     const editUser = async (data) => {
+        try {
+            const { firstName, lastName, email, phoneNumber, dob, address } = data;
+            const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
+            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(finalData),
+                credentials: 'include'
+            });
+            const responseBody = await response.json();
+            if (response.status === 200) {
+                setToast(true);
+                setResponseType(responseResultType[0]);
+                setTimeout(() => {
+                    setToast(false);
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                })
+                setEditForm(false);
+                queryClient.invalidateQueries(['users'])
+            }
 
-        const { firstName, lastName, email, phoneNumber, dob, address } = data;
-        const finalData = { firstName, lastName, email, phoneNumber, dob, address, userRole };
-        const response = await fetch(`http://88.198.112.156:3000/api/users/patch/${memberId}`, {
-            method: "PATCH",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(finalData),
-            credentials: 'include'
-        });
-        const responseBody = await response.json();
-        if (response.status !== 200) {
+            if (response.status !== 200) {
+                setToast(true);
+                setResponseType(responseResultType[1]);
+                setTimeout(() => {
+                    setToast(false);
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message
+                })
+            }
+        } catch (error) {
+            console.log("Error: ", error);
             setToast(true);
+            setResponseType(responseResultType[1]);
             setTimeout(() => {
                 setToast(false);
             }, 10000);
             setErrorMessage({
                 icon: MdError,
-                message: responseBody.message
+                message: error.message
             })
         }
-        else if (response.status === 200) {
-            setToast(true);
-            setTimeout(() => {
-                setToast(false);
-            }, 10000);
-            setSuccessMessage({
-                icon: MdDone,
-                message: responseBody.message
-            })
-        }
+    };
+
+    const deleteUser = async (id) => {
+        setIsUserDeleting(true);
         try {
+            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            });
+            const responseBody = await response.json();
+            if (response.status === 200) {
+                setToast(true);
+                setResponseType(responseResultType[0]);
+                setConfirmDeleteUser({ value: false, userId: '' });
+                setTimeout(() => {
+                    setToast(false);
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                })
+                queryClient.invalidateQueries(['users']);
+                setIsUserDeleting(false);
+            }
+
+            if (response.status !== 200) {
+                setToast(true);
+                setResponseType(responseResultType[1]);
+                setTimeout(() => {
+                    setToast(false);
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message
+                })
+            }
         } catch (error) {
             console.log("Error: ", error);
             setToast(true);
+            setResponseType(responseResultType[1]);
             setTimeout(() => {
                 setToast(false);
             }, 10000);
@@ -238,6 +287,28 @@ const Users = () => {
                 )}
 
                 {
+                    confirmDeleteUser.value ? (
+                        <div className="fixed inset-0 flex items-center justify-center z-50">
+                            <div className="absolute inset-0 bg-black opacity-50"></div>
+                            <div className={`bg-white border shadow-2xl px-3 rounded-md py-2 relative`}>
+                                <div>
+                                    <p className="text-red-600 text-sm font-semibold px-6 text-center my-4">Are you sure want to delete? This action will remove all the data from the server and will not be recover.</p>
+                                </div>
+                                <div className="flex justify-center items-center space-x-4">
+                                    <Button onClick={() => setConfirmDeleteUser({ value: false, userId: '' })}
+                                        className='rounded-md'
+                                    >Cancel</Button>
+                                    <Button className='bg-red-600 rounded-md hover:bg-red-600' onClick={() => deleteUser(confirmDeleteUser.userId)}>{isUserDeleting ? 'Deleting...' : "Delete"}</Button>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <>
+                        </>
+                    )
+                }
+
+                {
                     editForm ? (
                         <div>
                             <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
@@ -251,6 +322,7 @@ const Users = () => {
                                                         {
                                                         ...register('firstName')
                                                         }
+                                                        defaultValue={user.firstName}
                                                         className="rounded-none"
                                                         placeholder="First Name"
                                                     />
@@ -262,6 +334,7 @@ const Users = () => {
                                                         {
                                                         ...register('lastName')
                                                         }
+                                                        defaultValue={user.lastName}
                                                         className="rounded-none"
                                                         placeholder="Last Name"
                                                     />
@@ -272,7 +345,7 @@ const Users = () => {
                                                 <Label>User Role</Label>
                                                 <Select onValueChange={(value) => setUserRole(value)}>
                                                     <SelectTrigger className="rounded-none">
-                                                        <SelectValue placeholder={'Role'} />
+                                                        <SelectValue placeholder={user.role} />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -292,6 +365,7 @@ const Users = () => {
                                                     {
                                                     ...register('email')
                                                     }
+                                                    defaultValue={user.email}
                                                     className="rounded-none"
                                                     placeholder="Email"
                                                 />
@@ -303,6 +377,7 @@ const Users = () => {
                                                     {
                                                     ...register('phoneNumber')
                                                     }
+                                                    defaultValue={user.phoneNumber}
                                                     className="rounded-none"
                                                     placeholder="Phone Number"
                                                 />
@@ -314,6 +389,7 @@ const Users = () => {
                                                     {
                                                     ...register('address')
                                                     }
+                                                    defaultValue={user.address}
                                                     className="rounded-none"
                                                     placeholder="Address"
                                                 />
@@ -325,6 +401,7 @@ const Users = () => {
                                                     {
                                                     ...register('dob')
                                                     }
+                                                    defaultValue={new Date(user.dob).toISOString().split("T")[0]}
                                                     type='date'
                                                     className="rounded-none"
                                                     placeholder="DOB"
@@ -405,7 +482,10 @@ const Users = () => {
 
                                                         <MdEmail className="text-xl cursor-pointer" />
 
-                                                        <MdDelete className="text-xl text-red-600 cursor-pointer" />
+                                                        <MdDelete
+                                                            onClick={() => setConfirmDeleteUser({ value: true, userId: user._id })}
+                                                            className="text-xl text-red-600 cursor-pointer"
+                                                        />
                                                     </TableCell>
                                                 </TableRow>
                                             ))
