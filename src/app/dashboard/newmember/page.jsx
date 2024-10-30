@@ -4,8 +4,6 @@ import { MdDone } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -215,7 +213,6 @@ const newMemberRegistrationForm = () => {
                 break;
         }
         setMembershipExpireDate(newMembershipExpireDate);
-        console.log("newMembershipExpireDate: ", newMembershipExpireDate);
     };
 
     useEffect(() => {
@@ -224,10 +221,8 @@ const newMemberRegistrationForm = () => {
 
     const onRegisterMember = async (data) => {
 
-        // Clear any previous errors
         clearErrors();
 
-        // Manual validation for state-managed fields
         let isValid = true;
 
         if (!gender) {
@@ -265,15 +260,12 @@ const newMemberRegistrationForm = () => {
             isValid = false;
         }
 
-        // Stop the form submission if validation fails
         if (!isValid) {
             return;
         }
 
-
         try {
             const {
-                // Personal Information from data
                 fullName,
                 contactNo,
                 email,
@@ -281,7 +273,6 @@ const newMemberRegistrationForm = () => {
                 secondaryContactNo,
                 address,
 
-                // Payment Details from data
                 discountReason,
                 discountCode,
                 receiptNo,
@@ -336,7 +327,6 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            console.log("Members Final Data: ", membersFinalData);
             const response = await fetch('http://88.198.112.156:3000/api/members', {
                 method: "POST",
                 headers: {

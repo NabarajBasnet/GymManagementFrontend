@@ -40,8 +40,6 @@ import {
 } from "./allmembertable.jsx";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
@@ -57,8 +55,6 @@ const AllMembers = () => {
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [qrState, setQrState] = useState('')
-    const [qrMessage, setQrMessage] = useState('')
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
     const [confirmDeleteMember, setConfirmDeleteMember] = useState(false);
@@ -67,14 +63,13 @@ const AllMembers = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 15;
-    
+
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
 
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
-            console.log('Response body: ', resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -138,7 +133,6 @@ const AllMembers = () => {
                 body: JSON.stringify({ id })
             });
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
@@ -233,27 +227,6 @@ const AllMembers = () => {
     return (
         <div className="w-full">
             <div className='w-full p-6'>
-                {/* {
-                    qrState ? (
-                        <div className="w-full flex justify-center">
-                            <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
-                                <div>
-                                    <MdDone className="text-4xl mx-4 text-green-600" />
-                                </div>
-                                <div className="block">
-                                    <p className="text-sm font-semibold">{qrMessage}</p>
-                                </div>
-                                <div>
-                                    <IoMdClose
-                                        onClick={() => setQrState(false)}
-                                        className="cursor-pointer ml-4" />
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <></>
-                    )
-                } */}
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
