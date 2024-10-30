@@ -338,8 +338,8 @@ const AllMembers = () => {
                                                     <TableHead>Full Name</TableHead>
                                                     <TableHead>Duration</TableHead>
                                                     <TableHead>Option</TableHead>
-                                                    <TableHead>Type</TableHead>
                                                     <TableHead>Renew</TableHead>
+                                                    <TableHead>Type</TableHead>
                                                     <TableHead>Expire</TableHead>
                                                     <TableHead>Contact No</TableHead>
                                                     <TableHead>Shift</TableHead>
@@ -363,8 +363,8 @@ const AllMembers = () => {
                                                                 <TableCell>{member.fullName}</TableCell>
                                                                 <TableCell>{member.membershipDuration}</TableCell>
                                                                 <TableCell>{member.membershipOption}</TableCell>
-                                                                <TableCell>{member.membershipType}</TableCell>
                                                                 <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                                <TableCell>{member.membershipType}</TableCell>
                                                                 <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                                 <TableCell>{member.contactNo}</TableCell>
                                                                 <TableCell>{member.membershipShift}</TableCell>
@@ -428,7 +428,7 @@ const AllMembers = () => {
                                             </TableHead>
                                             <TableHead>
                                                 <div className="flex items-center">
-                                                    <h1>Type</h1>
+                                                    <h1>Renew</h1>
                                                     <div className="flex flex-col justify-center -space-y-3">
                                                         <MdArrowDropUp className="text-xl" />
                                                         <MdArrowDropDown className="text-xl" />
@@ -437,7 +437,7 @@ const AllMembers = () => {
                                             </TableHead>
                                             <TableHead>
                                                 <div className="flex items-center">
-                                                    <h1>Renew</h1>
+                                                    <h1>Type</h1>
                                                     <div className="flex flex-col justify-center -space-y-3">
                                                         <MdArrowDropUp className="text-xl" />
                                                         <MdArrowDropDown className="text-xl" />
@@ -489,8 +489,8 @@ const AllMembers = () => {
                                                         <TableCell>{member.fullName}</TableCell>
                                                         <TableCell>{member.membershipDuration}</TableCell>
                                                         <TableCell>{member.membershipOption}</TableCell>
-                                                        <TableCell>{member.membershipType}</TableCell>
                                                         <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{member.membershipType}</TableCell>
                                                         <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                         <TableCell>{member.contactNo}</TableCell>
                                                         <TableCell>{member.membershipShift}</TableCell>
