@@ -12,8 +12,6 @@ import {
 import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -46,6 +44,11 @@ const Member = (props) => {
 
     const memberId = props.params.member;
     const queryClient = useQueryClient();
+
+    // Memberships default dates from database
+    const [membershipDateDatabase, setMembershipDateDatabase] = useState()
+    const [membershipRenewDateDatabase, setMembershipRenewDateDatabase] = useState()
+    const [membershipExpireDateDatabase, setMembershipExpireDateDatabase] = useState()
 
     const {
         register,
@@ -133,8 +136,6 @@ const Member = (props) => {
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
-    const [expireDate, setExpireDate] = useState(null)
-
     // Payment Details
     const [finalAmmount, setFinalAmmount] = useState('');
     const [discountAmmount, setDiscountAmmount] = useState('');
@@ -191,14 +192,13 @@ const Member = (props) => {
         }
     };
 
-    useEffect(() => {
-        calculateFinalAmmount()
-    }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
-
     const getMemberDetails = async () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
             const responseBody = await response.json();
+            setMembershipDateDatabase(responseBody.member.membershipDate);
+            setMembershipRenewDateDatabase(responseBody.member.membershipRenewDate);
+            setMembershipExpireDateDatabase(responseBody.member.membershipExpireDate);
             if (response.ok) {
                 reset();
                 setDiscountAmmount(responseBody.member.discountAmmount);
@@ -219,7 +219,6 @@ const Member = (props) => {
     const handleMembershipSelection = (duration) => {
         setMembershipDuration(duration);
         const newMembershipExpireDate = new Date(membershipRenewDate);
-
         switch (duration) {
             case "1 Month":
                 newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 1);
@@ -243,14 +242,14 @@ const Member = (props) => {
         setMembershipExpireDate(newMembershipExpireDate);
     };
 
-    useEffect(() => {
-        handleMembershipSelection(membershipDuration);
-    }, [membershipRenewDate]);
+    const handleDurationChange = (duration) => {
+        setMembershipDuration(duration);
+        handleMembershipSelection(duration);
+    };
 
     const onEditMembersDetails = async (data) => {
         try {
             const {
-                // Personal Information from data
                 fullName,
                 contactNo,
                 email,
@@ -258,7 +257,6 @@ const Member = (props) => {
                 secondaryContactNo,
                 address,
 
-                // Payment Details from data
                 discountAmmount,
                 discountReason,
                 discountCode,
@@ -282,7 +280,7 @@ const Member = (props) => {
                 membershipDate,
                 membershipRenewDate,
                 membershipDuration: membershipDuration || data.membershipDuration,
-                membershipExpireDate,
+                membershipExpireDate: !membershipExpireDate ? data.membershipExpireDate : membershipExpireDate,
                 paymentMethod: paymentMethod || data.paymentMethod,
                 discountAmmount,
                 discountReason,
@@ -387,7 +385,9 @@ const Member = (props) => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Register New Member</h1>
+                <div className="flex justify-between items-center">
+                    <h1 className="text-xl font-bold my-3">Register New Member</h1>
+                </div>
             </div>
 
             {signUpAlert && (
@@ -647,11 +647,11 @@ const Member = (props) => {
                                                                         variant={"outline"}
                                                                         className={cn(
                                                                             "w-full justify-start text-left font-normal",
-                                                                            !data?.member.membershipDate && "text-muted-foreground"
+                                                                            !membershipDateDatabase && "text-muted-foreground"
                                                                         )}
                                                                     >
                                                                         <CalendarIcon />
-                                                                        {data?.member.membershipDate ? format(data?.member.membershipDate, "PPP") : <span>Membership Date</span>}
+                                                                        {membershipDateDatabase ? format(membershipDateDatabase, "PPP") : <span>Membership Date</span>}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0">
@@ -674,11 +674,11 @@ const Member = (props) => {
                                                                         variant={"outline"}
                                                                         className={cn(
                                                                             "w-full justify-start text-left font-normal",
-                                                                            !data?.member.membershipRenewDate && "text-muted-foreground"
+                                                                            !membershipRenewDateDatabase && "text-muted-foreground"
                                                                         )}
                                                                     >
                                                                         <CalendarIcon />
-                                                                        {membershipRenewDate ? format(!membershipRenewDate ? data.member.membershipRenewDate : membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
+                                                                        {membershipRenewDateDatabase ? format(!membershipRenewDateDatabase ? membershipRenewDateDatabase : membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
                                                                     </Button>
                                                                 </PopoverTrigger>
                                                                 <PopoverContent className="w-auto p-0">
@@ -694,7 +694,7 @@ const Member = (props) => {
 
                                                         <div>
                                                             <Label>Membership Duration</Label>
-                                                            <Select onValueChange={(value) => handleMembershipSelection(value)}>
+                                                            <Select onValueChange={(value) => handleDurationChange(value)}>
                                                                 <SelectTrigger className="w-full rounded-md">
                                                                     <SelectValue placeholder={data.member.membershipDuration} />
                                                                 </SelectTrigger>
@@ -723,15 +723,11 @@ const Member = (props) => {
                                                                     >
                                                                         <CalendarIcon />
                                                                         {
-                                                                            membershipDuration === '1 Month' || membershipDuration === '3 Months' || membershipDuration === '6 Months' || membershipDuration === '12 Months' ? (
-                                                                                <>
-                                                                                    {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
-                                                                                </>
-                                                                            ) : (
-                                                                                <>
-                                                                                    {membershipExpireDate ? format(data.member.membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
-                                                                                </>
-                                                                            )
+                                                                            membershipExpireDate
+                                                                                ? format(membershipExpireDate, "PPP")
+                                                                                : data?.member.membershipExpireDate
+                                                                                    ? format(new Date(data.member.membershipExpireDate), "PPP")
+                                                                                    : <span>Membership Expire Date</span>
                                                                         }
                                                                     </Button>
                                                                 </PopoverTrigger>
@@ -748,6 +744,7 @@ const Member = (props) => {
                                                                 <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
                                                             )}
                                                         </div>
+
 
                                                     </div>
                                                 </div>
