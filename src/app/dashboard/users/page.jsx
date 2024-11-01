@@ -51,6 +51,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import Loader from "@/components/Loader/Loader";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 const Users = () => {
 
@@ -67,6 +68,7 @@ const Users = () => {
     const [confirmDeleteUser, setConfirmDeleteUser] = useState({ value: false, userId: '' });
     const [isUserDeleting, setIsUserDeleting] = useState(false);
     const [user, setUser] = useState();
+    const router = useRouter();
 
     const {
         register,
@@ -81,6 +83,9 @@ const Users = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
+            if (responseBody.redirect) {
+                router.push(responseBody.redirect);
+            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
