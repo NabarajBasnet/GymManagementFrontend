@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
 
 const Login = () => {
 
