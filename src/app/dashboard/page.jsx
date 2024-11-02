@@ -71,7 +71,7 @@ const AdminDashboard = () => {
     queryFn: getTotalMembers
   });
 
-  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers, membersRenewedThisWeek } = data || {};
+  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers, totalNewAdmissions, membersRenewedThisWeek, newAdmissionsPastWeek } = data || {};
 
   const gridContents = [
     {
@@ -91,7 +91,7 @@ const AdminDashboard = () => {
     {
       icon: RiUserShared2Fill,
       text: "New Admission",
-      value: '75',
+      value: totalNewAdmissions,
       color: 'text-yellow-600',
       bg: 'bg-yellow-200'
     },
@@ -230,7 +230,7 @@ const AdminDashboard = () => {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                <BreadcrumbLink>Dashboard</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
             </BreadcrumbList>

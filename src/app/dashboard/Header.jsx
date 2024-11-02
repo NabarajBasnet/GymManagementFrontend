@@ -134,7 +134,6 @@ const Header = () => {
                 credentials: "include"
             });
             const responseBody = await response.json();
-            console.log("Response Result: ", responseBody);
             const responseResultType = ['Success', 'Failure'];
 
             if (response.ok) {
