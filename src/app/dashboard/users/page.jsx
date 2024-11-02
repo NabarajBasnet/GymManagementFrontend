@@ -74,6 +74,7 @@ const Users = () => {
         register,
         handleSubmit,
         formState: { isSubmitting },
+        reset
     } = useForm();
 
     const [role, setUserRole] = useState('');
@@ -83,9 +84,6 @@ const Users = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
-            if (responseBody.redirect) {
-                router.push(responseBody.redirect);
-            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -104,6 +102,7 @@ const Users = () => {
     };
 
     const fetchSingleUser = async (id) => {
+        reset();
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
             const responseBody = await response.json();
@@ -118,6 +117,7 @@ const Users = () => {
             };
             if (response.status === 200 && response.ok) {
                 setEditForm(true);
+                reset();
             }
             return responseBody;
         } catch (error) {

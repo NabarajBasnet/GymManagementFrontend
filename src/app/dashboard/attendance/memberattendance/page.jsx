@@ -105,7 +105,6 @@ const MemberAttendance = () => {
 
             const responseBody = await response.json();
             setValidationResult(responseBody);
-            console.log("Validation Response Result: ", responseBody);
 
             const responseResultType = ['Success', 'Failure'];
 

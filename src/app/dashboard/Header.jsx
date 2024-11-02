@@ -1,19 +1,12 @@
 "use client";
 
+import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
+import { useRouter } from "next/navigation";
 import {
-    Cloud,
-    CreditCard,
-    Github,
-    Keyboard,
-    LifeBuoy,
     LogOut,
-    Mail,
-    MessageSquare,
     Plus,
-    PlusCircle,
     Settings,
     User,
-    UserPlus,
     Users,
 } from "lucide-react"
 import {
@@ -24,28 +17,23 @@ import {
     DropdownMenuLabel,
     DropdownMenuPortal,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuSub,
     DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HiUsers } from "react-icons/hi2";
-import { IoSearch } from "react-icons/io5";
 import Badge from '@mui/material/Badge';
 import { IoIosNotifications } from "react-icons/io";
 import '../globals.css'
 import { RiAccountCircleFill } from "react-icons/ri";
 import React, { useEffect, useRef, useState } from 'react';
 import { IoMenuSharp } from "react-icons/io5";
-import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
+import { MinimizeSidebar } from '@/state/slicer';
 import { useDispatch } from 'react-redux';
 import {
     Sheet,
-    SheetClose,
     SheetContent,
     SheetDescription,
-    SheetFooter,
     SheetHeader,
     SheetTitle,
     SheetTrigger,
@@ -59,12 +47,12 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/DashboardUI/SidebarAccrodin";
-import { RiDashboard2Line, RiUserUnfollowFill, RiCustomerService2Fill, RiRunLine } from 'react-icons/ri';
+import { RiUserUnfollowFill, RiCustomerService2Fill, RiRunLine } from 'react-icons/ri';
 import { BiSolidUserCheck } from 'react-icons/bi';
 import { GiLockers, GiBiceps } from 'react-icons/gi';
 import { TiUserAdd } from 'react-icons/ti';
-import { FaUsers, FaMoneyCheckAlt, FaRegUser, FaBox, FaChartLine, FaTags, FaCog, FaDumbbell } from 'react-icons/fa';
-import { MdPayments, MdFitnessCenter, MdEventAvailable } from 'react-icons/md';
+import { FaUsers, FaMoneyCheckAlt, FaChartLine, FaTags, FaCog, FaDumbbell } from 'react-icons/fa';
+import { MdPayments } from 'react-icons/md';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
@@ -77,6 +65,13 @@ const Header = () => {
     const searchRef = useRef(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
+    const router = useRouter();
+    const [loading, setLoading] = useState(false);
+
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
 
     const [currentDateTime, setCurrentDateTime] = useState({
         date: '',
@@ -126,7 +121,49 @@ const Header = () => {
 
     const minimizeSidebar = () => {
         dispatch(MinimizeSidebar());
-    }
+    };
+
+    const logoutUser = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                credentials: "include"
+            });
+            const responseBody = await response.json();
+            console.log("Response Result: ", responseBody);
+            const responseResultType = ['Success', 'Failure'];
+
+            if (response.ok) {
+                setLoading(false);
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false);
+                }, 6000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                })
+                router.push("/login");
+            };
+        } catch (error) {
+            const responseResultType = ['Success', 'Failure'];
+            console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 6000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message
+            })
+        };
+    };
 
     const sidebarContent = [
         {
@@ -229,6 +266,30 @@ const Header = () => {
                         onClick={minimizeSidebar}
                     />
                 </div>
+                {toast ? (
+                    <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-[1000] flex items-center justify-between bg-white border shadow-2xl p-4 rounded">
+                        <div>
+                            {responseType === 'Success' ? (
+                                <MdDone className="text-3xl mx-4 text-green-600" />
+                            ) : (
+                                <MdError className="text-3xl mx-4 text-red-600" />
+                            )}
+                        </div>
+                        <div className="block">
+                            {responseType === 'Success' ? (
+                                <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                            ) : (
+                                <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                            )}
+                        </div>
+                        <div>
+                            <MdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer text-3xl ml-4"
+                            />
+                        </div>
+                    </div>
+                ) : null}
                 <div>
                     <Sheet>
                         <SheetTrigger asChild>
@@ -311,7 +372,6 @@ const Header = () => {
                         <div className='mx-4'>
                             <RiAccountCircleFill
                                 className='text-3xl text-gray-800 cursor-pointer'
-                                onClick={minimizeSidebar}
                             />
                         </div>
                     </DropdownMenuTrigger>
@@ -322,22 +382,10 @@ const Header = () => {
                             <DropdownMenuItem>
                                 <User />
                                 <span>Profile</span>
-                                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                <span>Billing</span>
-                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
                             </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <Settings />
                                 <span>Settings</span>
-                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Keyboard />
-                                <span>Keyboard shortcuts</span>
-                                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
@@ -347,56 +395,25 @@ const Header = () => {
                                 <span>Team</span>
                             </DropdownMenuItem>
                             <DropdownMenuSub>
-                                <DropdownMenuSubTrigger>
-                                    <UserPlus />
-                                    <span>Invite users</span>
-                                </DropdownMenuSubTrigger>
                                 <DropdownMenuPortal>
                                     <DropdownMenuSubContent>
-                                        <DropdownMenuItem>
-                                            <Mail />
-                                            <span>Email</span>
-                                        </DropdownMenuItem>
-                                        <DropdownMenuItem>
-                                            <MessageSquare />
-                                            <span>Message</span>
-                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem>
-                                            <PlusCircle />
-                                            <span>More...</span>
-                                        </DropdownMenuItem>
                                     </DropdownMenuSubContent>
                                 </DropdownMenuPortal>
                             </DropdownMenuSub>
                             <DropdownMenuItem>
                                 <Plus />
                                 <span>New Team</span>
-                                <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <Github />
-                            <span>GitHub</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <LifeBuoy />
-                            <span>Support</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem disabled>
-                            <Cloud />
-                            <span>API</span>
-                        </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => logoutUser()}>
                             <LogOut />
-                            <span>Log out</span>
-                            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                            <span className="cursor-pointer">{loading ? 'Processing...' : "Log out"}</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-
             </div>
         </div>
     );
