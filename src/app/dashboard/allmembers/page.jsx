@@ -70,6 +70,7 @@ const AllMembers = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
+            console.log("Response body: ", resBody);
             return resBody;
         } catch (error) {
             console.log('Error: ', error);
