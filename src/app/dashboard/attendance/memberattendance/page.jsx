@@ -108,6 +108,10 @@ const MemberAttendance = () => {
 
             const responseResultType = ['Success', 'Failure'];
 
+            if (response.status === 402) {
+                alert("Membership is expired")
+            }
+
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
