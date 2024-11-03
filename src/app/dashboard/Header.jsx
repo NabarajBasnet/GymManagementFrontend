@@ -196,11 +196,6 @@ const Header = () => {
             link: '/dashboard/allmembers',
         },
         {
-            icon: MdPayments,
-            title: 'Payment Details',
-            link: '/dashboard/paymentdetails',
-        },
-        {
             icon: HiUsers,
             title: 'Users',
             link: '/dashboard/users',
@@ -211,11 +206,6 @@ const Header = () => {
             link: '/dashboard/staffmanagement',
         },
         {
-            icon: RiUserUnfollowFill,
-            title: 'Expired Memberships',
-            link: '/dashboard/expiredmemberships',
-        },
-        {
             icon: GiBiceps,
             title: 'Personal Training',
             link: '/dashboard/personaltraining',
@@ -223,6 +213,16 @@ const Header = () => {
                 { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
                 { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/personaltraining/booktrainer' }
             ]
+        },
+        {
+            icon: MdPayments,
+            title: 'Payment Details',
+            link: '/dashboard/paymentdetails',
+        },
+        {
+            icon: RiUserUnfollowFill,
+            title: 'Expired Memberships',
+            link: '/dashboard/expiredmemberships',
         },
         {
             icon: RiCustomerService2Fill,
