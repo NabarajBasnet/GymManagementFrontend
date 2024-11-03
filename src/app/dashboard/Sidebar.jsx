@@ -79,11 +79,6 @@ const Sidebar = () => {
             icon: FaUsersGear,
             title: 'Staff Management',
             link: '/dashboard/staffmanagement',
-            subObj: [
-                { icon: FaUsersGear, title: 'Trainer Management', link: '/dashboard/staffmanagement/trainermanagement' },
-                { icon: FaUsersGear, title: 'Staff Scheduling', link: '/dashboard/staffmanagement/staffscheduling' },
-                { icon: FaUsersGear, title: 'All Staffs', link: '/dashboard/staffmanagement/allstaffs' }
-            ]
         },
         {
             icon: RiUserUnfollowFill,

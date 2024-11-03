@@ -209,11 +209,6 @@ const Header = () => {
             icon: FaUsersGear,
             title: 'Staff Management',
             link: '/dashboard/staffmanagement',
-            subObj: [
-                { icon: FaUsersGear, title: 'Trainer Management', link: '/dashboard/staffmanagement/trainermanagement' },
-                { icon: FaUsersGear, title: 'Staff Scheduling', link: '/dashboard/staffmanagement/staffscheduling' },
-                { icon: FaUsersGear, title: 'All Staffs', link: '/dashboard/staffmanagement/allstaffs' }
-            ]
         },
         {
             icon: RiUserUnfollowFill,
@@ -308,7 +303,7 @@ const Header = () => {
                                 </SheetTitle>
                             </SheetHeader>
 
-                            <SheetDescription className="flex-grow overflow-y-auto">
+                            <div className="flex-grow overflow-y-auto">
                                 <div className='min-h-screen'>
                                     <ul>
                                         {sidebarContent.map((sidebar, index) => (
@@ -318,13 +313,13 @@ const Header = () => {
                                                         <AccordionItem value={`item-${index}`}>
                                                             <AccordionTrigger className="w-full flex items-center p-2 cursor-pointer hover:bg-gray-100 transition-colors">
                                                                 <sidebar.icon className='text-xl' />
-                                                                <h1 className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                                                <span className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</span>
                                                             </AccordionTrigger>
                                                             {sidebar.subObj.map((subItem, subIndex) => (
                                                                 <AccordionContent key={subIndex}>
                                                                     <Link href={subItem.link} className="flex items-center ml-6 p-1">
                                                                         <subItem.icon className='text-lg' />
-                                                                        <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
+                                                                        <span className='mx-2 text-sm font-semibold'>{subItem.title}</span>
                                                                     </Link>
                                                                 </AccordionContent>
                                                             ))}
@@ -333,30 +328,30 @@ const Header = () => {
                                                 ) : (
                                                     <Link href={sidebar.link} className="flex items-center p-2 cursor-pointer hover:bg-gray-100 transition-colors">
                                                         <sidebar.icon className='text-xl' />
-                                                        <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                                        <span className='mx-2 text-sm font-semibold'>{sidebar.title}</span>
                                                     </Link>
                                                 )}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
-                            </SheetDescription>
+                            </div>
+
                         </SheetContent>
                     </Sheet>
                 </div>
-
             </div>
 
             <div className="flex items-center md:hidden space-x-8">
-                <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.date}</h1>
-                <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.time}</h1>
+                <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
+                <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
             </div>
 
             <div className='flex items-center space-x-4'>
 
                 <div className="hidden items-center md:flex space-x-4">
-                    <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.date}</h1>
-                    <h1 className="text-sm md:text-lg font-semibold">{currentDateTime.time}</h1>
+                    <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
+                    <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
                 </div>
 
                 <Badge badgeContent={4} color="primary">
