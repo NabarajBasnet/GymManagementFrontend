@@ -8,7 +8,8 @@ import {
     Settings,
     User,
     Users,
-} from "lucide-react"
+} from "lucide-react";
+import { FaUserCircle } from "react-icons/fa";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,8 +18,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuPortal,
     DropdownMenuSeparator,
+    DropdownMenuShortcut,
     DropdownMenuSub,
     DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { HiUsers } from "react-icons/hi2";
@@ -56,15 +59,12 @@ import { MdPayments } from 'react-icons/md';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
-import { Input } from "@/components/ui/input";
 
 const Header = () => {
 
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
     const searchRef = useRef(null);
-    const [searchQuery, setSearchQuery] = useState('');
-    const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
@@ -105,19 +105,6 @@ const Header = () => {
 
         return () => clearInterval(intervalId);
     }, []);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (searchRef.current && !searchRef.current.contains(event.target)) {
-                setRenderSearchDropdown(false);
-            };
-        };
-
-        document.addEventListener("mousedown", handleClickOutside)
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside)
-        }
-    }, [searchRef]);
 
     const minimizeSidebar = () => {
         dispatch(MinimizeSidebar());
@@ -337,6 +324,55 @@ const Header = () => {
                                 </div>
                             </div>
 
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <div className='flex items-center cursor-pointer p-2 bg-blue-700'>
+                                        <FaUserCircle className="text-3xl mr-2 text-white" />
+                                        <div>
+                                            <h1 className='font-bold text-sm text-white'>Revive Fitness</h1>
+                                            <p className='font-semibold text-[11px] text-white'>revivefitness.np@gmail.com</p>
+                                        </div>
+                                    </div>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-56">
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem>
+                                            <User />
+                                            <span>Profile</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem>
+                                            <Settings />
+                                            <span>Settings</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuGroup>
+                                        <DropdownMenuItem>
+                                            <Users />
+                                            <span>Team</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSub>
+                                            <DropdownMenuPortal>
+                                                <DropdownMenuSubContent>
+                                                    <DropdownMenuSeparator />
+                                                </DropdownMenuSubContent>
+                                            </DropdownMenuPortal>
+                                        </DropdownMenuSub>
+                                        <DropdownMenuItem>
+                                            <Plus />
+                                            <span>New Team</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuGroup>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={() => logoutUser()}>
+                                        <LogOut />
+                                        <span className="cursor-pointer">{loading ? 'Processing...' : "Log out"}</span>
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                         </SheetContent>
                     </Sheet>
                 </div>

@@ -1,5 +1,28 @@
 'use client';
 
+import {
+    LogOut,
+    Settings,
+    User,
+    UserPlus,
+    Users,
+    Plus,
+} from "lucide-react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { FaUserCircle } from "react-icons/fa";
 import { HiUsers } from "react-icons/hi2";
 import { useSelector, useDispatch } from 'react-redux';
 import '../globals.css'
@@ -21,8 +44,60 @@ import Link from 'next/link';
 import { FaUsersGear } from "react-icons/fa6";
 import { RiDashboard3Fill } from "react-icons/ri";
 import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
+import { useRouter } from "next/navigation";
+import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
+import { useState } from "react";
 
 const Sidebar = () => {
+
+    const [loading, setLoading] = useState(false);
+    const router = useRouter();
+
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+
+    const logoutUser = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                credentials: "include"
+            });
+            const responseBody = await response.json();
+            const responseResultType = ['Success', 'Failure'];
+
+            if (response.ok) {
+                setLoading(false);
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false);
+                }, 6000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                })
+                router.push("/login");
+            };
+        } catch (error) {
+            const responseResultType = ['Success', 'Failure'];
+            console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false);
+            }, 6000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message
+            })
+        };
+    };
 
     const dispatch = useDispatch();
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
@@ -123,9 +198,33 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} bg-gray-800 z-50 flex flex-col`}
+        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-50 flex bg-gray-800 flex-col`}
             onMouseEnter={() => minimizeSidebar()}
         >
+            {toast ? (
+                <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-[1000] flex items-center justify-between bg-white border shadow-2xl p-4 rounded">
+                    <div>
+                        {responseType === 'Success' ? (
+                            <MdDone className="text-3xl mx-4 text-green-600" />
+                        ) : (
+                            <MdError className="text-3xl mx-4 text-red-600" />
+                        )}
+                    </div>
+                    <div className="block">
+                        {responseType === 'Success' ? (
+                            <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                        ) : (
+                            <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                        )}
+                    </div>
+                    <div>
+                        <MdClose
+                            onClick={() => setToast(false)}
+                            className="cursor-pointer text-3xl ml-4"
+                        />
+                    </div>
+                </div>
+            ) : null}
             <Link href={'/dashboard'} className="flex justify-start py-4">
                 <RiDashboard3Fill className='text-3xl mx-2 text-white' />
                 {
@@ -185,6 +284,56 @@ const Sidebar = () => {
                     ))}
                 </ul>
             </div>
+
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <div className='flex items-center cursor-pointer p-2 hover:bg-gray-700'>
+                        <FaUserCircle className="text-3xl mr-2 text-white" />
+                        <div>
+                            <h1 className='font-bold text-sm text-white'>Revive Fitness</h1>
+                            <p className='font-semibold text-[11px] text-white'>revivefitness.np@gmail.com</p>
+                        </div>
+                    </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <User />
+                            <span>Profile</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Settings />
+                            <span>Settings</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <Users />
+                            <span>Team</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSub>
+                            <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                    <DropdownMenuSeparator />
+                                </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                        </DropdownMenuSub>
+                        <DropdownMenuItem>
+                            <Plus />
+                            <span>New Team</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => logoutUser()}>
+                        <LogOut />
+                        <span className="cursor-pointer">{loading ? 'Processing...' : "Log out"}</span>
+                    </DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
         </div>
     );
 };
