@@ -1,3 +1,14 @@
+'use client';
+
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import {
     Pagination,
     PaginationContent,
@@ -6,7 +17,7 @@ import {
     PaginationLink,
     PaginationNext,
     PaginationPrevious,
-} from "@/components/ui/pagination"
+} from "@/components/ui/pagination";
 import {
     Table,
     TableBody,
@@ -16,13 +27,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
     Select,
     SelectContent,
@@ -31,8 +42,8 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
-import React from 'react'
+} from "@/components/ui/select";
+import React, { useEffect } from 'react';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -41,12 +52,70 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+} from "@/components/ui/breadcrumb";
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const AttendanceHistory = () => {
+
+    const [endDate, setEndDate] = useState();
+    const [startDate, setStartDate] = useState();
+    const [membershipType, setMembershipType] = useState();
+    const [id, setId] = useState('');
+
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch(`http:localhost:3000/api/members`);
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data: membersDetails, isLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
+
+    console.log("Members: ", membersDetails);
+
+    const getAllStaffs = async () => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const getMemberAttendanceHistory = async () => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const getStaffAttendanceHistory = async () => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    useEffect(() => {
+        if (membershipType === 'Members') {
+            getMemberAttendanceHistory()
+        }
+        else if (membershipType === 'Staffs') {
+            getStaffAttendanceHistory
+        }
+    }, [membershipType]);
 
     const invoices = [
         {
@@ -54,31 +123,7 @@ const AttendanceHistory = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
+        }
     ];
 
     return (
@@ -112,74 +157,91 @@ const AttendanceHistory = () => {
 
             <div className='w-full flex justify-center'>
                 <div className='w-full bg-white mx-4'>
-                    <div className='w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4'>
-                        <div className='w-full flex items-center space-x-2'>
+                    <div className="w-full p-4 space-y-4">
+                        <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                             <div className="w-full">
                                 <Label>From</Label>
-                                <Input
-                                    type='date'
-                                    className='w-full rounded-none'
-                                />
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full justify-start text-left font-normal p-2 rounded-md border",
+                                                !startDate && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2" />
+                                            {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                        <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
                             <div className="w-full">
                                 <Label>To</Label>
-                                <Input
-                                    type='date'
-                                    className='w-full rounded-none'
-                                />
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant={"outline"}
+                                            className={cn(
+                                                "w-full justify-start text-left font-normal p-2 rounded-md border",
+                                                !endDate && "text-muted-foreground"
+                                            )}
+                                        >
+                                            <CalendarIcon className="mr-2" />
+                                            {endDate ? format(endDate, "PPP") : <span>End Date</span>}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-auto p-0">
+                                        <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
+                                    </PopoverContent>
+                                </Popover>
                             </div>
-                        </div>
-                        <div className="w-full flex items-center justify-between space-x-2">
-                            <div className="w-full">
+
+                            <div className="w-full flex flex-col space-y-2">
                                 <Label>Membership Type</Label>
-                                <Select className='w-full'>
-                                    <SelectTrigger className="w-full rounded-none">
+                                <Select className="w-full" onValueChange={(value) => setMembershipType(value)}>
+                                    <SelectTrigger className="w-full rounded-md border p-2">
                                         <SelectValue placeholder="Membership Type" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Select</SelectLabel>
-                                            <SelectItem value="apple">Apple</SelectItem>
-                                            <SelectItem value="banana">Banana</SelectItem>
-                                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                                            <SelectItem value="grapes">Grapes</SelectItem>
-                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                            <SelectLabel>Select Type</SelectLabel>
+                                            <SelectItem value="Staffs">Staff</SelectItem>
+                                            <SelectItem value="Members">Members</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
                             </div>
-                            <div className="w-full">
-                                <Label>Member</Label>
-                                <Select className='w-full'>
-                                    <SelectTrigger className="w-full rounded-none">
-                                        <SelectValue placeholder="Select Member" />
+
+                            <div className="w-full flex flex-col space-y-2">
+                                <Label>Person</Label>
+                                <Select className="w-full">
+                                    <SelectTrigger className="w-full rounded-md border p-2">
+                                        <SelectValue placeholder="Select Person" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <Input
-                                                className='rounded-none'
-                                                placeholder='Search...'
-                                            />
+                                            <Input className="w-full p-2 border-b mb-2" placeholder="Search..." />
                                             <SelectLabel>Select</SelectLabel>
-                                            <SelectItem value="apple">Apple</SelectItem>
-                                            <SelectItem value="banana">Banana</SelectItem>
-                                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                                            <SelectItem value="grapes">Grapes</SelectItem>
-                                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                                            <SelectItem value="member1">Member 1</SelectItem>
+                                            <SelectItem value="member2">Member 2</SelectItem>
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
                             </div>
                         </div>
-                        <div className="w-full flex justify-center items-end">
-                            <Button className='w-6/12 rounded-none'>
+
+                        <div className="w-full flex justify-center">
+                            <Button className="w-full max-w-xs rounded-md bg-blue-600 text-white p-2 hover:bg-blue-700">
                                 Submit
                             </Button>
                         </div>
                     </div>
-                    <div className="w-full flex justify-between items-center p-6 bg-gray-100">
-                        <h1 className="w-full md:w-4/12 font-semibold">Late Count 0</h1>
-                        <h1 className="w-full md:w-4/12 font-semibold">Salary Deduction 0</h1>
+
+                    <div className="w-full flex justify-between items-center py-4 bg-gray-100">
                         <Input
                             placeholder='Search...'
                             className='w-full md:w-4/12 rounded-none'
