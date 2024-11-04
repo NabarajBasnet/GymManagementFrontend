@@ -1,5 +1,16 @@
 'use client'
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -44,6 +55,10 @@ const Member = (props) => {
 
     const memberId = props.params.member;
     const queryClient = useQueryClient();
+
+    // membershipHold
+    const [membershipHoldForm, setMembershipHoldForm] = useState(false);
+    const [membershipHoldDate, setMembershipHoldDate] = useState(null);
 
     // Memberships default dates from database
     const [membershipDateDatabase, setMembershipDateDatabase] = useState()
@@ -138,6 +153,7 @@ const Member = (props) => {
 
     // Payment Details
     const [finalAmmount, setFinalAmmount] = useState('');
+    console.log("Final Ammount: ", finalAmmount);
     const [discountAmmount, setDiscountAmmount] = useState('');
     const [paidAmmount, setPaidAmmount] = useState('');
     const [dueAmmount, setDueAmmount] = useState('');
@@ -192,9 +208,13 @@ const Member = (props) => {
         }
     };
 
+    useEffect(() => {
+        calculateFinalAmmount();
+    }, [membershipDuration, paidAmmount, discountAmmount]);
+
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`);
             const responseBody = await response.json();
             setMembershipDateDatabase(responseBody.member.membershipDate);
             setMembershipRenewDateDatabase(responseBody.member.membershipRenewDate);
@@ -332,7 +352,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -357,38 +377,125 @@ const Member = (props) => {
         }
     };
 
+    const holdMembership = async()=>{
+
+        const membershipHoldData= {membershipHoldDate, status:'OnHold'};
+
+        try{
+        const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`,{
+            method:"PATCH",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify(membershipHoldData)
+        })      
+
+        if(response.ok){
+            ''
+        }
+
+        }catch(error){
+            console.log("Error: ",error);
+        };
+    };
+
     return (
         <div className="w-full p-1">
             <div className='w-full p-6'>
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Member</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>
-                                {data?.member ? `${data.member.fullName}` : `${''}`}
-                            </BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <div className="flex justify-between items-center">
-                    <h1 className="text-xl font-bold my-3">Register New Member</h1>
+                <div className='w-full'>
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="flex items-center gap-1">
+                                        <BreadcrumbEllipsis className="h-4 w-4" />
+                                    </DropdownMenuTrigger>
+                                </DropdownMenu>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/docs/components">Member</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>
+                                    {data?.member ? `${data.member.fullName}` : `${''}`}
+                                </BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-xl font-bold my-3">Register New Member</h1>
+                    </div>
+                </div>
+                <div className="w-full">
+                    <div className='w-full flex justify-start space-x-4 items-center'>
+                        <Button>Start</Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="destructive">Hold</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        <h1 className="font-bold font-xl my-2">Note:"Stop/Start Date will be by default of today's Date"</h1>
+                                        <p className="font-semibold font-sm">If you want to override the default Stop Date then set into below date box</p>
+
+                                        <div className="my-4">
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <Button
+                                                        variant={"outline"}
+                                                        className={cn(
+                                                            "w-full justify-start text-left font-normal",
+                                                            !membershipHoldDate && "text-muted-foreground"
+                                                        )}
+                                                    >
+                                                        <CalendarIcon />
+                                                        {membershipHoldDate ? format(membershipHoldDate, "PPP") : <span>Membership Hold Date</span>}
+                                                    </Button>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={membershipHoldDate}
+                                                        onSelect={setMembershipHoldDate}
+                                                        initialFocus
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                        </div>
+
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={()=>holdMembership()}>Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                        <h1 className="font-bold">
+                            Hold Date: {membershipHoldDate ? format(membershipHoldDate, "yyyy-MM-dd") : `Default Date: ${new Date().toISOString().split("T")[0]}`}
+                        </h1>
+                    </div>
                 </div>
             </div>
+
+            {
+                membershipHoldForm ? (
+                    <div>
+
+                    </div>
+                ) : (
+                    <>
+                    </>
+                )
+            }
 
             {signUpAlert && (
                 <div className="fixed bottom-10 bg-white border shadow-2xl right-10 flex items-center justify-between p-4">

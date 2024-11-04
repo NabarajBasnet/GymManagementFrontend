@@ -166,7 +166,7 @@ const AdminDashboard = () => {
   const doughnutChartData = {
     labels: ['Renewed Members', 'New Admissions'],
     datasets: [{
-      data: [membersRenewedThisWeek || 0, 75],
+      data: [membersRenewedThisWeek || 0, totalNewAdmissions || 0],
       backgroundColor: [
         'rgba(153, 102, 255, 0.8)',
         'rgba(255, 159, 64, 0.8)',

@@ -28,7 +28,7 @@ const Login = () => {
 
     const onLoginUser = async (data) => {
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/auth/login', {
+            const response = await fetch('http://localhost:3000/api/auth/login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -114,7 +114,7 @@ const Login = () => {
                     </div>
                     <div className="mb-4">
                         <Label className="text-sm font-medium">
-                            First Name
+                            Username or email address
                         </Label>
                         <Input
                             type="email"
