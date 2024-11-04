@@ -219,7 +219,7 @@ const Member = (props) => {
 
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
             const responseBody = await response.json();
             setMembershipDateDatabase(responseBody.member.membershipDate);
             setMembershipRenewDateDatabase(responseBody.member.membershipRenewDate);
@@ -357,7 +357,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -385,7 +385,7 @@ const Member = (props) => {
     const holdMembership = async () => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
         try {
-            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
