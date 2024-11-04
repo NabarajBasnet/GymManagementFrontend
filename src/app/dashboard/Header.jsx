@@ -100,7 +100,7 @@ const Header = () => {
             });
         };
 
-        const intervalId = setInterval(updateDateTime, 20000);
+        const intervalId = setInterval(updateDateTime, 1000);
         updateDateTime();
 
         return () => clearInterval(intervalId);
@@ -380,14 +380,14 @@ const Header = () => {
 
             <div className="flex items-center md:hidden space-x-8">
                 <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
-                {/* <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1> */}
+                <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
             </div>
 
             <div className='flex items-center space-x-4'>
 
                 <div className="hidden items-center md:flex space-x-4">
                     <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
-                    {/* <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1> */}
+                    <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
                 </div>
 
                 <Badge badgeContent={4} color="primary">

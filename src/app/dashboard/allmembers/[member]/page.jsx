@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
     AlertDialog,
@@ -11,15 +11,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
@@ -50,11 +50,18 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { MdError, MdDone, MdDelete, MdClose } from "react-icons/md";
 
 const Member = (props) => {
 
     const memberId = props.params.member;
     const queryClient = useQueryClient();
+
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+    const responseResultType = ['Success', 'Failure'];
 
     // membershipHold
     const [membershipHoldForm, setMembershipHoldForm] = useState(false);
@@ -214,7 +221,7 @@ const Member = (props) => {
 
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
             const responseBody = await response.json();
             setMembershipDateDatabase(responseBody.member.membershipDate);
             setMembershipRenewDateDatabase(responseBody.member.membershipRenewDate);
@@ -352,7 +359,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -377,31 +384,98 @@ const Member = (props) => {
         }
     };
 
-    const holdMembership = async()=>{
+    const holdMembership = async () => {
 
-        const membershipHoldData= {membershipHoldDate, status:'OnHold'};
+        const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
-        try{
-        const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`,{
-            method:"PATCH",
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify(membershipHoldData)
-        })      
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membershipHoldData)
+            });
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
 
-        if(response.ok){
-            ''
-        }
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+                setIsMemberDeleting(false);
+                setConfirmDeleteMember(false);
+                queryClient.invalidateQueries(['members']);
+            }
 
-        }catch(error){
-            console.log("Error: ",error);
+        } catch (error) {
+            console.log("Error: ", error);
+            console.log("Error: ", error);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: "An unexpected error occurred."
+            })
         };
     };
 
     return (
         <div className="w-full p-1">
             <div className='w-full p-6'>
+                {toast ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div>
+                                {
+                                    responseType === 'Success' ? (
+                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                                    ) : (
+                                        <MdError className="text-3xl mx-4 text-red-600" />
+                                    )
+                                }
+                            </div>
+                            <div className="block">
+                                {
+                                    responseType === 'Success' ? (
+                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                    ) : (
+                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                    )
+                                }
+                            </div>
+                            <div>
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-3xl ml-4" />
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <div className='w-full'>
                     <Breadcrumb>
                         <BreadcrumbList>
@@ -433,7 +507,7 @@ const Member = (props) => {
                     </div>
                 </div>
                 <div className="w-full">
-                    <div className='w-full flex justify-start space-x-4 items-center'>
+                    <div className='w-full md:flex justify-between space-x-3 items-center bg-white p-2'>
                         <Button>Start</Button>
                         <AlertDialog>
                             <AlertDialogTrigger asChild>
@@ -475,13 +549,24 @@ const Member = (props) => {
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={()=>holdMembership()}>Continue</AlertDialogAction>
+                                    <AlertDialogAction onClick={() => holdMembership()}>Continue</AlertDialogAction>
                                 </AlertDialogFooter>
                             </AlertDialogContent>
                         </AlertDialog>
-                        <h1 className="font-bold">
-                            Hold Date: {membershipHoldDate ? format(membershipHoldDate, "yyyy-MM-dd") : `Default Date: ${new Date().toISOString().split("T")[0]}`}
-                        </h1>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
+                                Hold Date: {data?.member.membershipHoldDate ? format(data.member.membershipHoldDate, "yyyy-MM-dd") : `${new Date().toISOString().split("T")[0]}`}
+                            </h1>
+                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border" >
+                                Paused Days: {data?.member.daysOfMembershipHold ? format(data.member.daysOfMembershipHold, "yyyy-MM-dd") : ``}
+                            </h1>
+                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
+                                Minimum Days To hold: 7
+                            </h1>
+                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
+                                Resumed Date: {data?.member?.membershipExpireDate ? format(data.member.membershipExpireDate, "yyyy-MM-dd") : ``}
+                            </h1>
+                        </div>
                     </div>
                 </div>
             </div>
