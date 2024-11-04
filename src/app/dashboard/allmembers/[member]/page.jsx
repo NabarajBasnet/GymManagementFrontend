@@ -70,6 +70,7 @@ const Member = (props) => {
     // Memberships default dates from database
     const [membershipDateDatabase, setMembershipDateDatabase] = useState()
     const [membershipRenewDateDatabase, setMembershipRenewDateDatabase] = useState()
+    const [membershipExpireDateDatabase, setMembershipExpireDateDatabase] = useState()
 
     const {
         register,
@@ -383,7 +384,9 @@ const Member = (props) => {
     };
 
     const holdMembership = async () => {
+
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
+
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",

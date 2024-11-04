@@ -3,13 +3,9 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { FaGithub } from "react-icons/fa";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
-import { useState } from "react";
 import { useForm } from 'react-hook-form'
-import z from 'zod'
 import { useToast } from "@/hooks/use-toast";
 
 const SignUp = () => {
@@ -33,7 +29,6 @@ const SignUp = () => {
                 body: JSON.stringify(data),
             });
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (response.ok) {
                 toast({
                     title: "User signup successfull",
