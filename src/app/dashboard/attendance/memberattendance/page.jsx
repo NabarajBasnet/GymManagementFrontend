@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
     Pagination,
@@ -32,8 +32,6 @@ import {
 } from "@/components/ui/breadcrumb";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
@@ -41,22 +39,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useState, useEffect } from "react";
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useForm } from "react-hook-form";
-import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
+import { MdError, MdClose, MdDone } from "react-icons/md";
 
 
 const MemberAttendance = () => {
     const queryClient = useQueryClient();
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
-    const [loading, setLoading] = useState(false);
     const [currentPage, setCurentPage] = useState(1);
     const limit = 6;
-    const [membershipAlert, setMembershipAlert] = useState(null);
-    const [alertMessage, setAlertMessage] = useState('');
-    const [isValidationComplete, setIsValidationComplete] = useState(false);
 
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -64,18 +58,14 @@ const MemberAttendance = () => {
     const [responseType, setResponseType] = useState('')
 
     const {
-        register,
-        reset,
-        handleSubmit,
-        setError,
-        clearErrors,
-        formState: { isSubmitting, errors }
+
+        formState: { errors }
     } = useForm();
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -88,15 +78,15 @@ const MemberAttendance = () => {
     });
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
-    const [returnedResponse, setReturnedResponse] = useState(null);
     const handlePageChange = (page) => {
         setCurentPage(page);
     };
 
+    const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
+
     const handleValidation = async () => {
-        setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -110,7 +100,11 @@ const MemberAttendance = () => {
 
             if (response.status === 402) {
                 alert("Membership is expired")
-            }
+            };
+
+            if (response.status === 403 && responseBody.member.status === 'OnHold') {
+                setMembershipHoldToggle(true);
+            };
 
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
@@ -119,10 +113,8 @@ const MemberAttendance = () => {
                     icon: MdError,
                     message: responseBody.message
                 })
-            }
+            };
 
-            setLoading(false);
-            setReturnedResponse(response);
             return response;
         } catch (error) {
             console.log('Error: ', error);
@@ -141,13 +133,78 @@ const MemberAttendance = () => {
         window.location.reload();
     };
 
+    const [activating, setActivating] = useState(false);
+
+    const activateMembership = async () => {
+        setActivating(true);
+        const responseResultType = ['Success', 'Failure'];
+
+        const membershipHoldData = { membershipHoldDate: '', status: 'Active' };
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membershipHoldData)
+            });
+            const responseBody = await response.json();
+
+            if (response.status === 400 || response.status === 404 || response.status === 402 || response.status === 406 || response.status === 401) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+
+            else {
+                if (response.status === 200) {
+                    setActivating(false);
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+                else {
+                    setActivating(true);
+                }
+                setIsMemberDeleting(false);
+                setConfirmDeleteMember(false);
+                queryClient.invalidateQueries(['members']);
+            }
+
+        } catch (error) {
+            console.log("Error: ", error);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: "An unexpected error occurred."
+            })
+        };
+    };
+
+
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <div className={`bg-white border flex justify-between items-center shadow-2xl p-4 relative`}>
                             <div>
                                 {
                                     responseType === 'Success' ? (
@@ -166,6 +223,7 @@ const MemberAttendance = () => {
                                     )
                                 }
                             </div>
+
                             <div>
                                 <MdClose
                                     onClick={() => setToast(false)}
@@ -176,6 +234,51 @@ const MemberAttendance = () => {
                 ) : (
                     <></>
                 )}
+
+                {membershipHoldToggle ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl p-4 relative`}>
+                            <div>
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        {
+                                            responseType === 'Success' ? (
+                                                <MdDone className="text-3xl mx-4 text-green-600" />
+                                            ) : (
+                                                <MdError className="text-3xl mx-4 text-red-600" />
+                                            )
+                                        }
+                                    </div>
+                                    <div className="block">
+                                        {
+                                            responseType === 'Success' ? (
+                                                <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                            ) : (
+                                                <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                            )
+                                        }
+                                    </div>
+                                    <div>
+                                        <MdClose
+                                            onClick={() => setMembershipHoldToggle(false)}
+                                            className="cursor-pointer text-3xl ml-4" />
+                                    </div>
+                                </div>
+                                <div className="block">
+                                    <h1 className="my-4 text-sm font-semibold">{`Membership paused for ${validationResult?.member?.holdedDays} Days. Are you sure want to activate?`}</h1>
+                                    <div className="w-full flex justify-end space-x-2">
+                                        <Button onClick={() => setMembershipHoldToggle(false)} className='bg-red-600 hover:bg-red-700 transition-all duration-500'>Cancel</Button>
+                                        <Button onClick={() => activateMembership()} className='bg-green-600 hover:bg-green-700 transition-all duration-500'>{activating ? 'Processing...' : "Activate"}</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>

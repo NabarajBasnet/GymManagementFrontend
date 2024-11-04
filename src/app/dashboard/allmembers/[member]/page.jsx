@@ -50,7 +50,7 @@ import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
-import { MdError, MdDone, MdDelete, MdClose } from "react-icons/md";
+import { MdError, MdDone, MdClose } from "react-icons/md";
 
 const Member = (props) => {
 
@@ -70,7 +70,6 @@ const Member = (props) => {
     // Memberships default dates from database
     const [membershipDateDatabase, setMembershipDateDatabase] = useState()
     const [membershipRenewDateDatabase, setMembershipRenewDateDatabase] = useState()
-    const [membershipExpireDateDatabase, setMembershipExpireDateDatabase] = useState()
 
     const {
         register,
@@ -160,7 +159,6 @@ const Member = (props) => {
 
     // Payment Details
     const [finalAmmount, setFinalAmmount] = useState('');
-    console.log("Final Ammount: ", finalAmmount);
     const [discountAmmount, setDiscountAmmount] = useState('');
     const [paidAmmount, setPaidAmmount] = useState('');
     const [dueAmmount, setDueAmmount] = useState('');
@@ -221,7 +219,7 @@ const Member = (props) => {
 
     const getMemberDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`);
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`);
             const responseBody = await response.json();
             setMembershipDateDatabase(responseBody.member.membershipDate);
             setMembershipRenewDateDatabase(responseBody.member.membershipRenewDate);
@@ -359,7 +357,7 @@ const Member = (props) => {
                 );
             };
 
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -385,11 +383,9 @@ const Member = (props) => {
     };
 
     const holdMembership = async () => {
-
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
-
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -397,7 +393,6 @@ const Member = (props) => {
                 body: JSON.stringify(membershipHoldData)
             });
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
 
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
@@ -428,7 +423,6 @@ const Member = (props) => {
             }
 
         } catch (error) {
-            console.log("Error: ", error);
             console.log("Error: ", error);
             setToast(true);
             setTimeout(() => {
@@ -506,67 +500,68 @@ const Member = (props) => {
                         <h1 className="text-xl font-bold my-3">Register New Member</h1>
                     </div>
                 </div>
-                <div className="w-full">
-                    <div className='w-full md:flex justify-between space-x-3 items-center bg-white p-2'>
-                        <Button>Start</Button>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button variant="destructive">Hold</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        <h1 className="font-bold font-xl my-2">Note:"Stop/Start Date will be by default of today's Date"</h1>
-                                        <p className="font-semibold font-sm">If you want to override the default Stop Date then set into below date box</p>
 
-                                        <div className="my-4">
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal",
-                                                            !membershipHoldDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon />
-                                                        {membershipHoldDate ? format(membershipHoldDate, "PPP") : <span>Membership Hold Date</span>}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={membershipHoldDate}
-                                                        onSelect={setMembershipHoldDate}
-                                                        initialFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
+            </div>
 
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={() => holdMembership()}>Continue</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
-                                Hold Date: {data?.member.membershipHoldDate ? format(data.member.membershipHoldDate, "yyyy-MM-dd") : `${new Date().toISOString().split("T")[0]}`}
-                            </h1>
-                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border" >
-                                Paused Days: {data?.member.daysOfMembershipHold ? format(data.member.daysOfMembershipHold, "yyyy-MM-dd") : ``}
-                            </h1>
-                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
-                                Minimum Days To hold: 7
-                            </h1>
-                            <h1 className="font-semibold bg-gray-100 text-sm p-2 border">
-                                Resumed Date: {data?.member?.membershipExpireDate ? format(data.member.membershipExpireDate, "yyyy-MM-dd") : ``}
-                            </h1>
-                        </div>
+            <div className="w-full bg-white p-4 rounded-lg shadow-lg">
+                <div className="flex items-center justify-start space-x-4 mb-4">
+                    <Button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Start</Button>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">Hold</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="max-w-lg p-6 rounded-lg shadow-lg">
+                            <AlertDialogHeader>
+                                <AlertDialogTitle className="text-xl font-semibold">Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription className="mt-4">
+                                    <h1 className="font-bold text-md text-red-600 mb-2">Note: "Stop/Start Date will be by default set to today's Date"</h1>
+                                    <p className="font-medium text-sm mb-4">If you want to override the default Stop Date, please select a date below:</p>
+                                    <div className="my-4">
+                                        <Popover>
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={`w-full flex items-center justify-between text-left ${!membershipHoldDate ? "text-gray-500" : ""}`}
+                                                >
+                                                    <CalendarIcon />
+                                                    <span>{membershipHoldDate ? format(membershipHoldDate, "PPP") : "Membership Hold Date"}</span>
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="w-auto p-0">
+                                                <Calendar
+                                                    mode="single"
+                                                    selected={membershipHoldDate}
+                                                    onSelect={setMembershipHoldDate}
+                                                    initialFocus
+                                                />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter className="flex justify-end space-x-2">
+                                <AlertDialogCancel className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => holdMembership()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Continue</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
+                        Hold Date: {data?.member.membershipHoldDate ? format(data.member.membershipHoldDate, "yyyy-MM-dd") : `${new Date().toISOString().split("T")[0]}`}
+                    </div>
+                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
+                        Paused Days: {data?.member.holdedDays ? data.member.holdedDays : `0`}
+                    </div>
+                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
+                        Minimum Days to Hold: 7
+                    </div>
+                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
+                        Resumed Date: {data?.member?.resumedDate ? format(data.member.resumedDate, "yyyy-MM-dd") : ``}
+                    </div>
+                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
+                        Remaining Days: {data?.member?.remainingDaysOnHold ? data.member.remainingDaysOnHold : `Remaining Days`}
                     </div>
                 </div>
             </div>
