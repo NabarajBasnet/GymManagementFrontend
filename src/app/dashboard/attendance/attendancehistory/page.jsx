@@ -1,5 +1,14 @@
 'use client';
 
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,18 +19,8 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover";
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -44,19 +43,11 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import React, { useEffect } from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 const AttendanceHistory = () => {
@@ -65,66 +56,68 @@ const AttendanceHistory = () => {
     const [startDate, setStartDate] = useState();
     const [membershipType, setMembershipType] = useState();
     const [id, setId] = useState('');
+    const [searchQuery, setSearchQuery] = useState('');
+    const [renderDropdown, setRenderDropdown] = useState(false);
+    const [PermanentMemberAttendance, setPermanentMemberAttendance] = useState([]);
+    const [totalPages, setTotalPages] = useState();
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
 
-    const getAllMembers = async () => {
+    const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http:localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
-            return responseBody;
+            return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
         }
     };
 
-    const { data: membersDetails, isLoading } = useQuery({
+    const { data: allMembers, isLoading } = useQuery({
         queryKey: ['members'],
-        queryFn: getAllMembers
+        queryFn: fetchAllMembers,
     });
 
-    console.log("Members: ", membersDetails);
-
-    const getAllStaffs = async () => {
-        try {
-
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
-
-    const getMemberAttendanceHistory = async () => {
-        try {
-
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
-
-    const getStaffAttendanceHistory = async () => {
-        try {
-
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
+    const searchRef = useRef(null);
 
     useEffect(() => {
-        if (membershipType === 'Members') {
-            getMemberAttendanceHistory()
-        }
-        else if (membershipType === 'Staffs') {
-            getStaffAttendanceHistory
-        }
-    }, [membershipType]);
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setRenderDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [searchRef]);
 
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
+    const handleSearchFocus = () => {
+        setRenderDropdown(true);
+    };
+
+    const fetchAttendanceHistory = async ({ queryKey }) => {
+        const [, id, page] = queryKey;
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/members-attendance-history/${id}?page=${page}&limit=${limit}`);
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            setPermanentMemberAttendance(responseBody.memberAttendance);
+            setTotalPages(responseBody.totalPages);
+            return responseBody.memberAttendance;
+        } catch (error) {
+            console.log("Error: ", error);
         }
-    ];
+    };
+
+    const { data: attendanceData } = useQuery({
+        queryKey: ['attendance', id, currentPage],
+        queryFn: fetchAttendanceHistory,
+        enabled: !!id,
+    });
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className='w-full'>
@@ -138,7 +131,7 @@ const AttendanceHistory = () => {
                         <BreadcrumbItem>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <BreadcrumbSeparator />
                                 </DropdownMenuTrigger>
                             </DropdownMenu>
                         </BreadcrumbItem>
@@ -148,7 +141,7 @@ const AttendanceHistory = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Attendance History</BreadcrumbPage>
+                            Attendance History
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -216,56 +209,78 @@ const AttendanceHistory = () => {
                                 </Select>
                             </div>
 
-                            <div className="w-full flex flex-col space-y-2">
-                                <Label>Person</Label>
-                                <Select className="w-full">
-                                    <SelectTrigger className="w-full rounded-md border p-2">
-                                        <SelectValue placeholder="Select Person" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <Input className="w-full p-2 border-b mb-2" placeholder="Search..." />
-                                            <SelectLabel>Select</SelectLabel>
-                                            <SelectItem value="member1">Member 1</SelectItem>
-                                            <SelectItem value="member2">Member 2</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
+                            <div className="w-full">
+                                <Label>Member Name</Label>
+                                <div ref={searchRef} className="w-full flex justify-center">
+                                    <div className="relative w-full">
+                                        <div className="w-full">
+                                            <Input
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onFocus={handleSearchFocus}
+                                                className="w-full rounded-lg"
+                                                placeholder="Search members..."
+                                            />
+                                        </div>
+                                        {renderDropdown && (
+                                            <div className="w-full absolute bg-white shadow-2xl max-h-screen overflow-y-auto z-10">
+                                                {allMembers?.filter((member) =>
+                                                    member.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                                                ).map((member) => (
+                                                    <p
+                                                        onClick={() => {
+                                                            setSearchQuery(member.fullName);
+                                                            setId(member._id);
+                                                            setRenderDropdown(false);
+                                                        }}
+                                                        className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                        key={member._id}
+                                                        value={member._id}
+                                                    >
+                                                        {member.fullName}
+                                                    </p>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="w-full">
+                                <Label className='text-white'>''</Label>
+                                <Button className="w-full md:mb-1 rounded-md bg-blue-600 text-white hover:bg-blue-700">
+                                    Submit
+                                </Button>
                             </div>
                         </div>
 
-                        <div className="w-full flex justify-center">
-                            <Button className="w-full max-w-xs rounded-md bg-blue-600 text-white p-2 hover:bg-blue-700">
-                                Submit
-                            </Button>
-                        </div>
                     </div>
 
-                    <div className="w-full flex justify-between items-center py-4 bg-gray-100">
-                        <Input
-                            placeholder='Search...'
-                            className='w-full md:w-4/12 rounded-none'
-                        />
-                    </div>
                     <div className="w-full">
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="w-[100px]">Invoice</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
+                                    <TableHead>Member Id</TableHead>
+                                    <TableHead>Full Name</TableHead>
+                                    <TableHead>Membership Option</TableHead>
+                                    <TableHead className="text-right">Check In Time</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {invoices.map((invoice) => (
-                                    <TableRow key={invoice.invoice}>
-                                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                        <TableCell>{invoice.paymentStatus}</TableCell>
-                                        <TableCell>{invoice.paymentMethod}</TableCell>
-                                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                                {PermanentMemberAttendance && PermanentMemberAttendance.length > 0 ? (
+                                    PermanentMemberAttendance.map((attendance) => (
+                                        <TableRow key={attendance._id}>
+                                            <TableCell className="font-medium">{attendance.memberId}</TableCell>
+                                            <TableCell>{attendance.fullName}</TableCell>
+                                            <TableCell>{attendance.membershipOption}</TableCell>
+                                            <TableCell className="text-right">{attendance.checkInTime}</TableCell>
+                                        </TableRow>
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell colSpan="4" className="text-center text-sm font-semibold">Member attendance not found.</TableCell>
                                     </TableRow>
-                                ))}
+                                )}
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
@@ -274,38 +289,33 @@ const AttendanceHistory = () => {
                                 </TableRow>
                             </TableFooter>
                         </Table>
-
-                        <div className="py-4">
-                            <Pagination>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious href="#" />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#" isActive>
-                                            2
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">3</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationNext href="#" />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                        </div>
                     </div>
                 </div>
             </div>
+            <div className="py-3">
+                <Pagination className={'cursor-pointer'}>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+                        </PaginationItem>
+                        {[...Array(totalPages)].map((_, i) => (
+                            <PaginationItem key={i}>
+                                <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationEllipsis />
+                        </PaginationItem>
+                        <PaginationItem>
+                            <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            </div>
         </div>
-    )
-}
+    );
+};
 
 export default AttendanceHistory;

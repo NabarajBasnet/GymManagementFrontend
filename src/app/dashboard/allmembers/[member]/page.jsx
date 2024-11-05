@@ -564,7 +564,7 @@ const Member = (props) => {
                         Resumed Date: {data?.member?.resumedDate ? format(data.member.resumedDate, "yyyy-MM-dd") : ``}
                     </div>
                     <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Remaining Days: {data?.member?.remainingDaysOnHold ? data.member.remainingDaysOnHold : `Remaining Days`}
+                        Remaining Days: {data?.member?.remainingDaysOnHold ? data.member.remainingDaysOnHold : `NaN`}
                     </div>
                 </div>
             </div>
