@@ -45,7 +45,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { MdDone, MdError, MdClose } from "react-icons/md";
 import useMember from "@/hooks/Members";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -117,6 +117,8 @@ const MemberDetails = ({ memberId }) => {
         }
     ];
 
+    const { register, reset, handleSubmit, formState: { errors, isSubmitting }, setError, control } = useForm()
+
     // Hooks
     const { getSingleUserDetails } = useMember();
 
@@ -127,6 +129,18 @@ const MemberDetails = ({ memberId }) => {
     });
 
     const { member, message } = data || {};
+
+    useEffect(() => {
+        if (data) {
+            reset({
+                fullName: member.fullName,
+                contactNo:member.contactNo,
+                email:member.email,
+                dob:member.dob,
+                secondContactNo:member.secondContactNo,
+            });
+        }
+    }, [data, reset]);
 
     // Functions
     const calculateFinalAmmount = () => {
@@ -312,7 +326,7 @@ const MemberDetails = ({ memberId }) => {
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
                                 <BreadcrumbPage>
-                                    {member ? `${member.fullName}` : `${''}`}
+                                    {data ? `${member.fullName}` : `${''}`}
                                 </BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
@@ -342,7 +356,7 @@ const MemberDetails = ({ memberId }) => {
                                             <PopoverTrigger asChild>
                                                 <Button
                                                     variant={"outline"}
-                                                    className={`w-full flex items-center justify-between text-left ${!new Date()? "text-gray-500" : ""}`}
+                                                    className={`w-full flex items-center justify-between text-left ${!new Date() ? "text-gray-500" : ""}`}
                                                 >
                                                     <CalendarIcon />
                                                     <span>{new Date() ? format(new Date(), "PPP") : "Membership Hold Date"}</span>
@@ -391,10 +405,10 @@ const MemberDetails = ({ memberId }) => {
                 <div className="w-full">
                     <div className="w-full">
                         {
-                            member && (
+                            data && (
                                 <div className="w-full">
                                     {
-                                        member ? (
+                                        data ? (
                                             <form className="w-full">
                                                 <div className="bg-gray-300 py-2 my-2 w-full">
                                                     <h1 className="mx-4 font-semibold">Personal Information</h1>
@@ -404,24 +418,25 @@ const MemberDetails = ({ memberId }) => {
                                                         <div>
                                                             <Label>Member Full Name</Label>
                                                             <Input
+                                                            {...register("fullName")}
                                                                 className='rounded-md focus:outline-none'
-                                                                placeholder='First Name'
+                                                                type='text'
                                                             />
                                                         </div>
 
                                                         <div>
                                                             <Label>Contact No</Label>
                                                             <Input
+                                                            {...register("contactNo")}
                                                                 className='rounded-md focus:outline-none'
-                                                                placeholder='Contact Number'
                                                             />
                                                         </div>
 
                                                         <div>
                                                             <Label>Email Address</Label>
                                                             <Input
+                                                            {...register("email")}
                                                                 className='rounded-md focus:outline-none'
-                                                                placeholder='Email Address'
                                                             />
                                                         </div>
 
@@ -429,17 +444,16 @@ const MemberDetails = ({ memberId }) => {
                                                             <Label>Date Of Birth</Label>
                                                             <Input
                                                                 type='date'
+                                                            {...register("dob")}
                                                                 className='rounded-md focus:outline-none cursor-pointer'
-                                                                placeholder='Date Of Birth'
                                                             />
                                                         </div>
-
 
                                                         <div>
                                                             <Label>Secondary Contact No</Label>
                                                             <Input
                                                                 className='rounded-md focus:outline-none'
-                                                                placeholder='Secondary Contact Number'
+                                                                {...register("secondContactNo")}
                                                             />
                                                         </div>
 
@@ -464,7 +478,6 @@ const MemberDetails = ({ memberId }) => {
                                                             <Label>Address</Label>
                                                             <Input
                                                                 className='rounded-md focus:outline-none'
-                                                                placeholder='Address'
                                                             />
                                                         </div>
 
