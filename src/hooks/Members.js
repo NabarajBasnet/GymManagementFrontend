@@ -17,7 +17,6 @@ const useMember = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/members/${memberId}`);
             const responseBody = await response.json();
-            console.log("BODY: ", responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -25,7 +24,25 @@ const useMember = () => {
         };
     };
 
-    return { getAllMembers, getSingleUserDetails };
+    // Update member details
+    const updateMemberDetails = async ({ memberId, data }) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                credentials: 'include',
+            })
+            return response.json();
+        } catch (error) {
+            console.log("Error: ", error);
+            return error;
+        }
+    }
+
+    return { getAllMembers, getSingleUserDetails, updateMemberDetails };
 }
 
 export default useMember;

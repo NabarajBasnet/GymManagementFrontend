@@ -110,11 +110,13 @@ const MemberDetails = ({ memberId }) => {
         }
     ];
 
+    // React hook form
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }, setError, control } = useForm()
 
     // Hooks
-    const { getSingleUserDetails } = useMember();
+    const { getSingleUserDetails, updateMemberDetails } = useMember();
 
+    // Get member details
     const { data, isLoading } = useQuery({
         queryKey: ['member', memberId],
         queryFn: () => getSingleUserDetails(memberId),
@@ -123,6 +125,10 @@ const MemberDetails = ({ memberId }) => {
 
     const { member, message } = data || {};
 
+    // Update member details
+
+
+    // Populate Data
     useEffect(() => {
         if (data) {
             reset({
