@@ -53,7 +53,18 @@ const MemberDetails = ({ memberId }) => {
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
 
+    const [membershipOption, setMembershipOption] = useState();
+    const [membershipType, setMembershipType] = useState();
     const [membershipDuration, setMembershipDuration] = useState('');
+
+    // price states and date states
+    const [finalAmount, setFinalAmount] = useState();
+    const [discountAmount, setDiscountAmount] = useState();
+    const [dueAmount, setDueAmount] = useState();
+    const [paidAmount, setPaidAmount] = useState();
+    const [membershipRenewDate, setMembershipRenewDate] = useState(null);
+    const [membershipExpireDate, setMembershipExpireDate] = useState(null);
+
 
     // Objects 
     const membershipPlans = [
@@ -114,7 +125,7 @@ const MemberDetails = ({ memberId }) => {
     const { register, reset, handleSubmit, formState: { errors, isSubmitting }, setError, control } = useForm()
 
     // Hooks
-    const { getSingleUserDetails, updateMemberDetails } = useMember();
+    const { getSingleUserDetails } = useMember();
 
     // Get member details
     const { data, isLoading } = useQuery({
@@ -122,12 +133,7 @@ const MemberDetails = ({ memberId }) => {
         queryFn: () => getSingleUserDetails(memberId),
         enabled: !!memberId,
     });
-
     const { member, message } = data || {};
-
-    // Update member details
-
-
     // Populate Data
     useEffect(() => {
         if (data) {
@@ -159,133 +165,182 @@ const MemberDetails = ({ memberId }) => {
         }
     }, [data, reset]);
 
-    // Functions
-    const calculateFinalAmmount = () => {
-        let selectedPlan = null;
+    // Handle Membership Information Logic
+    // This function will take membershipoption, membership type, membership renew date, membership duration
+    // and based on those selected data this function will set expire date and set the final amount and will also calculate the due amount
 
-        membershipPlans.forEach((plan) => {
-            if (plan.regularMemberships) {
-                plan.regularMemberships.forEach((regular) => {
-                    if (regular.option === membershipOption && regular.type === membershipType) {
-                        selectedPlan = regular;
-                    }
-                });
+    const handleMembershipInformation = (membershipOption, membershipType, membershipRenewDate, membershipDuration) => {
+        // Calculate expire date
+        const calculateMembershipExpireDate = (membershipDuration) => {
+            const newMembershipExpireDate = new Date(membershipRenewDate);
+            switch (membershipDuration) {
+                case "1 Month":
+                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 1);
+                    break;
+
+                case "3 Months":
+                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 3);
+                    break;
+
+                case "6 Months":
+                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 6);
+                    break;
+
+                case "12 Months":
+                    newMembershipExpireDate.setFullYear(newMembershipExpireDate.getFullYear() + 1);
+                    break;
+
+                default:
+                    break;
             }
+            setMembershipExpireDate(newMembershipExpireDate);
+        };
+        calculateMembershipExpireDate(membershipDuration);
 
-            if (plan.daytimeMemberships) {
-                plan.daytimeMemberships.forEach((day) => {
-                    if (day.option === membershipOption && day.type === membershipType) {
-                        selectedPlan = day;
-                    }
-                });
-            }
-        });
+        // Calculate final amount
+        const calculateFinalAmount = () => {
+            let selectedPlan = null;
 
-        if (selectedPlan) {
-            let selectedFee = 0;
-
-            if (membershipOption === "Regular" && membershipType === "Gym") {
-                selectedFee = selectedPlan.gymRegularFees[membershipDuration];
-            } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
-                selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-            } else if (membershipOption === "Day" && membershipType === "Gym") {
-                selectedFee = selectedPlan.gymDayFees[membershipDuration];
-            } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
-                selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
-            }
-
-            const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
-            setFinalAmmount(admissionFee + selectedFee - discountAmmount);
-        } else {
-            setFinalAmmount(0);
-        }
-    };
-
-    const handleMembershipSelection = (duration) => {
-        setMembershipDuration(duration);
-        const newMembershipExpireDate = new Date(membershipRenewDate);
-        switch (duration) {
-            case "1 Month":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 1);
-                break;
-
-            case "3 Months":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 3);
-                break;
-
-            case "6 Months":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 6);
-                break;
-
-            case "12 Months":
-                newMembershipExpireDate.setFullYear(newMembershipExpireDate.getFullYear() + 1);
-                break;
-
-            default:
-                break;
-        }
-        setMembershipExpireDate(newMembershipExpireDate);
-    };
-
-    const handleDurationChange = (duration) => {
-        setMembershipDuration(duration);
-        handleMembershipSelection(duration);
-    };
-
-    const holdMembership = async () => {
-
-        const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
-
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
-                method: "PATCH",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(membershipHoldData)
-            });
-            const responseBody = await response.json();
-
-            if (response.status !== 200) {
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-            }
-            else {
-                if (response.status === 200) {
-                    setResponseType(responseResultType[0]);
-                    setToast(true);
-                    setTimeout(() => {
-                        setToast(false)
-                    }, 10000);
-                    setSuccessMessage({
-                        icon: MdError,
-                        message: responseBody.message || 'Unauthorized action'
-                    })
+            membershipPlans.forEach((plan) => {
+                if (plan.regularMemberships) {
+                    plan.regularMemberships.forEach((regular) => {
+                        if (regular.option === membershipOption && regular.type === membershipType) {
+                            selectedPlan = regular;
+                        }
+                    });
                 }
-                setIsMemberDeleting(false);
-                setConfirmDeleteMember(false);
-                queryClient.invalidateQueries(['members']);
-            }
 
+                if (plan.daytimeMemberships) {
+                    plan.daytimeMemberships.forEach((day) => {
+                        if (day.option === membershipOption && day.type === membershipType) {
+                            selectedPlan = day;
+                        }
+                    });
+                }
+            });
+
+            if (selectedPlan) {
+                let selectedFee = 0;
+
+                if (membershipOption === "Regular" && membershipType === "Gym") {
+                    selectedFee = selectedPlan.gymRegularFees[membershipDuration];
+                } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
+                    selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
+                } else if (membershipOption === "Day" && membershipType === "Gym") {
+                    selectedFee = selectedPlan.gymDayFees[membershipDuration];
+                } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
+                    selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
+                }
+
+                const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
+                setFinalAmount(admissionFee + selectedFee - discountAmmount);
+            } else {
+                setFinalAmount(0);
+            }
+        };
+        calculateFinalAmount();
+
+        // Calculate due amount
+        const calculateDueAmount = () => {
+            setDueAmount(finalAmount - paidAmount);
+        };
+        calculateDueAmount();
+    };
+
+    useEffect(() => {
+        handleMembershipInformation(membershipOption, membershipType, membershipRenewDate, membershipDuration);
+    }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
+
+    // Update member details
+    const updateMemberDetails = async (data) => {
+
+        const {
+            fullName,
+            contactNo,
+            email,
+            dob,
+            secondaryContactNo,
+            gender,
+            address,
+            status,
+            membershipOption,
+            membershipType,
+            membershipShift,
+            membershipDate,
+            membershipRenewDate,
+            membershipDuration,
+            membershipExpireDate,
+            paymentMethod,
+            discountReason,
+            discountCode,
+            paidAmmount,
+            dueAmmount,
+            receiptNo,
+            referenceCode,
+            reasonForUpdate,
+            remark,
+            actionTaker } = data;
+        try {
         } catch (error) {
             console.log("Error: ", error);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: "An unexpected error occurred."
-            })
-        };
+        }
     };
+
+    // Functions
+    // const holdMembership = async () => {
+
+    //     const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
+
+    //     try {
+    //         const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+    //             method: "PATCH",
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify(membershipHoldData)
+    //         });
+    //         const responseBody = await response.json();
+
+    //         if (response.status !== 200) {
+    //             setResponseType(responseResultType[1]);
+    //             setToast(true);
+    //             setTimeout(() => {
+    //                 setToast(false)
+    //             }, 10000);
+    //             setErrorMessage({
+    //                 icon: MdError,
+    //                 message: responseBody.message || 'Unauthorized action'
+    //             });
+    //         }
+    //         else {
+    //             if (response.status === 200) {
+    //                 setResponseType(responseResultType[0]);
+    //                 setToast(true);
+    //                 setTimeout(() => {
+    //                     setToast(false)
+    //                 }, 10000);
+    //                 setSuccessMessage({
+    //                     icon: MdError,
+    //                     message: responseBody.message || 'Unauthorized action'
+    //                 })
+    //             }
+    //             setIsMemberDeleting(false);
+    //             setConfirmDeleteMember(false);
+    //             queryClient.invalidateQueries(['members']);
+    //         }
+
+    //     } catch (error) {
+    //         console.log("Error: ", error);
+    //         setToast(true);
+    //         setTimeout(() => {
+    //             setToast(false)
+    //         }, 10000);
+    //         setErrorMessage({
+    //             icon: MdError,
+    //             message: "An unexpected error occurred."
+    //         })
+    //     };
+    // };
 
     return (
         <div className="w-full p-1">
@@ -426,7 +481,7 @@ const MemberDetails = ({ memberId }) => {
                                 <div className="w-full">
                                     {
                                         data ? (
-                                            <form className="w-full">
+                                            <form className="w-full" onSubmit={handleSubmit(updateMemberDetails)}>
                                                 <div className="bg-gray-300 py-2 my-2 w-full">
                                                     <h1 className="mx-4 font-semibold">Personal Information</h1>
                                                 </div>
@@ -508,7 +563,7 @@ const MemberDetails = ({ memberId }) => {
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <select
-                                                                        {...field} {...register('status')}
+                                                                        {...field}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
@@ -537,13 +592,13 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipOption')}
+                                                                        onChange={(e) => setMembershipOption(e.target.value)}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
                                                                         <option value="Regular">Regular</option>
                                                                         <option value="Daytime">Daytime</option>
                                                                         <option value="Temporary">Temporary</option>
-                                                                        <option value="Personal Training">Personal Training</option>
                                                                     </select>
                                                                 )}
                                                             />
@@ -557,6 +612,7 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipType')}
+                                                                        onChange={(e) => setMembershipType(e.taget.value)}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
@@ -634,6 +690,7 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipDuration')}
+                                                                        onChange={(e) => setMembershipDuration(e.target.value)}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
