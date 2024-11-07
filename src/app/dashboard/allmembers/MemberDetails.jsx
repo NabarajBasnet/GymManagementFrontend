@@ -36,15 +36,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { useForm, Controller } from 'react-hook-form';
 import { MdDone, MdError, MdClose } from "react-icons/md";
 import useMember from "@/hooks/Members";
@@ -61,6 +52,8 @@ const MemberDetails = ({ memberId }) => {
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
+
+    const [membershipDuration, setMembershipDuration] = useState('');
 
     // Objects 
     const membershipPlans = [
@@ -481,19 +474,15 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="gender"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder="Select Gender" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Gender</SelectLabel>
-                                                                                <SelectItem value="Male">Male</SelectItem>
-                                                                                <SelectItem value="Female">Female</SelectItem>
-                                                                                <SelectItem value="Other">Other</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('gender')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Male">Male</option>
+                                                                        <option value="Female">Female</option>
+                                                                        <option value="Other">Other</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -512,19 +501,15 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="status"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder={''} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Status</SelectLabel>
-                                                                                <SelectItem value="Active" className='bg-green-600'>Active</SelectItem>
-                                                                                <SelectItem value="Inactive" className='bg-red-600'>Inactive</SelectItem>
-                                                                                <SelectItem value="OnHold" className='bg-yellow-400'>Hold</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('status')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Active" className="text-white bg-green-600">Active</option>
+                                                                        <option value="Inactive" className="text-white bg-red-600">Inactive</option>
+                                                                        <option value="OnHold" className="text-white bg-yellow-500">OnHold</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -544,20 +529,16 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipOption"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder={'Select Membership'} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Membership Option</SelectLabel>
-                                                                                <SelectItem value="Regular">Regular</SelectItem>
-                                                                                <SelectItem value="Daytime">Daytime</SelectItem>
-                                                                                <SelectItem value="Temporary">Temporary</SelectItem>
-                                                                                <SelectItem value="Guest">Guest</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('membershipOption')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Regular">Regular</option>
+                                                                        <option value="Daytime">Daytime</option>
+                                                                        <option value="Temporary">Temporary</option>
+                                                                        <option value="Personal Training">Personal Training</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -568,19 +549,14 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipType"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder={''} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Membership Type</SelectLabel>
-                                                                                <SelectItem value="Gym">Gym</SelectItem>
-                                                                                <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
-                                                                                <SelectItem value="Gym, Cardio & Jumba">Gym, Cardio & Jumba</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('membershipType')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Gym">Gym</option>
+                                                                        <option value="Gym & Cardio">Gym & Cardio</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -591,53 +567,24 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipShift"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder={''} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Membership Shift</SelectLabel>
-                                                                                <SelectItem value="Morning">Morning</SelectItem>
-                                                                                <SelectItem value="Day">Day</SelectItem>
-                                                                                <SelectItem value="Evening">Evening</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('membershipShift')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Morning">Morning</option>
+                                                                        <option value="Day">Day</option>
+                                                                        <option value="Evening">Evening</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
 
                                                         <div>
                                                             <Label>Membership Start Date</Label>
-                                                            <Controller
-                                                                name="membershipDate"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Popover>
-                                                                        <PopoverTrigger asChild>
-                                                                            <Button
-                                                                                variant={"outline"}
-                                                                                className={cn(
-                                                                                    "w-full justify-start text-left font-normal",
-                                                                                    !field.value && "text-muted-foreground"
-                                                                                )}
-                                                                            >
-                                                                                <CalendarIcon />
-                                                                                {field.value ? format(field.value, "PPP") : <span>Membership Date</span>}
-                                                                            </Button>
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-auto p-0">
-                                                                            <Calendar
-                                                                                mode="single"
-                                                                                disabled
-                                                                                selected={field.value}
-                                                                                onSelect={field.onChange}
-                                                                                initialFocus
-                                                                            />
-                                                                        </PopoverContent>
-                                                                    </Popover>
-                                                                )}
+                                                            <Input
+                                                                {...register("membershipDate")}
+                                                                type='date'
                                                             />
                                                         </div>
 
@@ -679,20 +626,16 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipDuration"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Membership Duration</SelectLabel>
-                                                                                <SelectItem value="1 Month">1 Month</SelectItem>
-                                                                                <SelectItem value="3 Months">3 Months</SelectItem>
-                                                                                <SelectItem value="6 Months">6 Months</SelectItem>
-                                                                                <SelectItem value="12 Months">12 Months</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('membershipDuration')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="1 Month">1 Month</option>
+                                                                        <option value="3 Months">3 Months</option>
+                                                                        <option value="6 Months">6 Months</option>
+                                                                        <option value="12 Months">12 Months</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -744,19 +687,15 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="paymentMethod"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Select {...field}>
-                                                                        <SelectTrigger className="w-full rounded-md">
-                                                                            <SelectValue placeholder={'Select'} />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Payment Method</SelectLabel>
-                                                                                <SelectItem value="Fonepay">Fonepay</SelectItem>
-                                                                                <SelectItem value="Cash">Cash</SelectItem>
-                                                                                <SelectItem value="Card">Card</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
+                                                                    <select
+                                                                        {...field} {...register('paymentMethod')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Fonepay">Fonepay</option>
+                                                                        <option value="Cash">Cash</option>
+                                                                        <option value="Card">Card</option>
+                                                                    </select>
                                                                 )}
                                                             />
                                                         </div>
@@ -848,18 +787,21 @@ const MemberDetails = ({ memberId }) => {
 
                                                         <div>
                                                             <Label>Reason for Update</Label>
-                                                            <Select>
-                                                                <SelectTrigger className="w-full rounded-md">
-                                                                    <SelectValue placeholder={'Reason for update'} />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectGroup>
-                                                                        <SelectLabel>Update reason</SelectLabel>
-                                                                        <SelectItem value="Normal Change">Normal Change</SelectItem>
-                                                                        <SelectItem value="Renew">Renew</SelectItem>
-                                                                    </SelectGroup>
-                                                                </SelectContent>
-                                                            </Select>
+                                                            <Controller
+                                                                name="reasonForUpdate"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <select
+                                                                        {...field} {...register('reasonForUpdate')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Normal Change">Normal Change</option>
+                                                                        <option value="Renew">Renew</option>
+                                                                        <option value="Extend">Extend</option>
+                                                                    </select>
+                                                                )}
+                                                            />
                                                         </div>
 
                                                         <div>
@@ -874,19 +816,20 @@ const MemberDetails = ({ memberId }) => {
 
                                                         <div>
                                                             <Label>Action Taker</Label>
-                                                            <Select >
-                                                                <SelectTrigger className="w-full rounded-md">
-                                                                    <SelectValue placeholder={'Select'} />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectGroup>
-                                                                        <SelectLabel>Action Taker</SelectLabel>
-                                                                        <SelectItem value="Admin">Admin</SelectItem>
-                                                                        <SelectItem value="Author">Author</SelectItem>
-                                                                        <SelectItem value="Member">Member</SelectItem>
-                                                                    </SelectGroup>
-                                                                </SelectContent>
-                                                            </Select>
+                                                            <Controller
+                                                                name="actionTaker"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <select
+                                                                        {...field} {...register('actionTaker')}
+                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                    >
+                                                                        <option value="">Select</option>
+                                                                        <option value="Admin">Admin</option>
+                                                                        <option value="Author">Author</option>
+                                                                    </select>
+                                                                )}
+                                                            />
                                                         </div>
 
                                                     </div>
@@ -911,5 +854,3 @@ const MemberDetails = ({ memberId }) => {
 }
 
 export default MemberDetails;
-
-
