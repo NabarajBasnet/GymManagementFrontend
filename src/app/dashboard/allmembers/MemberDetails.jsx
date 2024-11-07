@@ -53,18 +53,19 @@ const MemberDetails = ({ memberId }) => {
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
 
-    const [membershipOption, setMembershipOption] = useState();
-    const [membershipType, setMembershipType] = useState();
+    const [membershipOption, setMembershipOption] = useState('');
+    const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
-
-    // price states and date states
-    const [finalAmount, setFinalAmount] = useState();
-    const [discountAmount, setDiscountAmount] = useState();
-    const [dueAmount, setDueAmount] = useState();
-    const [paidAmount, setPaidAmount] = useState();
-    const [membershipRenewDate, setMembershipRenewDate] = useState(null);
+    const [finalAmount, setFinalAmount] = useState(0);
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [dueAmount, setDueAmount] = useState(0);
+    const [paidAmount, setPaidAmount] = useState(0);
+    const [membershipRenewDate, setMembershipRenewDate] = useState('');
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
+    console.log("Due amount: ", dueAmount);
+    console.log("Final Amount: ", finalAmount);
+    console.log("Expire Date: ", membershipExpireDate);
 
     // Objects 
     const membershipPlans = [
@@ -122,7 +123,7 @@ const MemberDetails = ({ memberId }) => {
     ];
 
     // React hook form
-    const { register, reset, handleSubmit, formState: { errors, isSubmitting }, setError, control } = useForm()
+    const { register, reset, handleSubmit, setValue, formState: { errors, isSubmitting }, setError, control } = useForm()
 
     // Hooks
     const { getSingleUserDetails } = useMember();
@@ -162,40 +163,48 @@ const MemberDetails = ({ memberId }) => {
                 receiptNo: member.receiptNo,
                 remark: member.remark,
             });
-        }
+        };
+
     }, [data, reset]);
 
-    // Handle Membership Information Logic
-    // This function will take membershipoption, membership type, membership renew date, membership duration
-    // and based on those selected data this function will set expire date and set the final amount and will also calculate the due amount
+    // Function to handle membership calculations
+    const handleMembershipInformation = () => {
+        // Calculate membership expiration date
+        const calculateMembershipExpireDate = () => {
+            if (membershipRenewDate && membershipDuration) {
+                const newExpireDate = new Date(membershipRenewDate);
 
-    const handleMembershipInformation = (membershipOption, membershipType, membershipRenewDate, membershipDuration) => {
-        // Calculate expire date
-        const calculateMembershipExpireDate = (membershipDuration) => {
-            const newMembershipExpireDate = new Date(membershipRenewDate);
-            switch (membershipDuration) {
-                case "1 Month":
-                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 1);
-                    break;
+                if (isNaN(newExpireDate.getTime())) {
+                    console.error("Invalid date format for membershipRenewDate:", membershipRenewDate);
+                    return;
+                }
 
-                case "3 Months":
-                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 3);
-                    break;
+                switch (membershipDuration) {
+                    case "1 Month":
+                        newExpireDate.setMonth(newExpireDate.getMonth() + 1);
+                        break;
+                    case "3 Months":
+                        newExpireDate.setMonth(newExpireDate.getMonth() + 3);
+                        break;
+                    case "6 Months":
+                        newExpireDate.setMonth(newExpireDate.getMonth() + 6);
+                        break;
+                    case "12 Months":
+                        newExpireDate.setFullYear(newExpireDate.getFullYear() + 1);
+                        break;
+                    default:
+                        console.warn("Unhandled membership duration:", membershipDuration);
+                        break;
+                }
 
-                case "6 Months":
-                    newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 6);
-                    break;
+                setMembershipExpireDate(newExpireDate);
+                setValue('membershipExpireDate', newExpireDate.toISOString().split('T')[0]);
 
-                case "12 Months":
-                    newMembershipExpireDate.setFullYear(newMembershipExpireDate.getFullYear() + 1);
-                    break;
-
-                default:
-                    break;
+                console.log("Membership Expire Date set to:", newExpireDate);
+            } else {
+                console.warn("Membership Renew Date or Duration is missing.");
             }
-            setMembershipExpireDate(newMembershipExpireDate);
         };
-        calculateMembershipExpireDate(membershipDuration);
 
         // Calculate final amount
         const calculateFinalAmount = () => {
@@ -232,28 +241,35 @@ const MemberDetails = ({ memberId }) => {
                     selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
                 }
 
-                const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
-                setFinalAmount(admissionFee + selectedFee - discountAmmount);
+                const admissionFee = membershipPlans.find(plan => plan.type === "Admission")?.admissionFee || 0;
+                setFinalAmount(admissionFee + selectedFee - (discountAmount || 0));
+                setValue('finalAmount', admissionFee + selectedFee - (discountAmount || 0));
+
             } else {
                 setFinalAmount(0);
+                setValue('finalAmount', 0)
             }
         };
-        calculateFinalAmount();
 
-        // Calculate due amount
-        const calculateDueAmount = () => {
-            setDueAmount(finalAmount - paidAmount);
-        };
-        calculateDueAmount();
+        // Call sub-functions
+        calculateMembershipExpireDate();
+        calculateFinalAmount();
     };
 
+    // Update due amount in a separate effect to ensure finalAmount is up-to-date
     useEffect(() => {
-        handleMembershipInformation(membershipOption, membershipType, membershipRenewDate, membershipDuration);
+        setDueAmount(finalAmount - (paidAmount || 0));
+    }, [finalAmount, paidAmount]);
+
+    // Main useEffect to handle changes in membership details
+    useEffect(() => {
+        handleMembershipInformation();
     }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
+
 
     // Update member details
     const updateMemberDetails = async (data) => {
-
+        console.log("Data: ", data);
         const {
             fullName,
             contactNo,
@@ -592,7 +608,11 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipOption')}
-                                                                        onChange={(e) => setMembershipOption(e.target.value)}
+                                                                        value={membershipOption}
+                                                                        onChange={(e) => {
+                                                                            setMembershipOption(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
@@ -612,7 +632,11 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipType')}
-                                                                        onChange={(e) => setMembershipType(e.taget.value)}
+                                                                        value={membershipType}
+                                                                        onChange={(e) => {
+                                                                            setMembershipType(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
@@ -656,28 +680,12 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipRenewDate"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Popover>
-                                                                        <PopoverTrigger asChild>
-                                                                            <Button
-                                                                                variant={"outline"}
-                                                                                className={cn(
-                                                                                    "w-full justify-start text-left font-normal",
-                                                                                    !field.value && "text-muted-foreground"
-                                                                                )}
-                                                                            >
-                                                                                <CalendarIcon />
-                                                                                {field.value ? format(field.value, "PPP") : <span>Membership Renew Date</span>}
-                                                                            </Button>
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-auto p-0">
-                                                                            <Calendar
-                                                                                mode="single"
-                                                                                selected={field.value}
-                                                                                onSelect={field.onChange}
-                                                                                initialFocus
-                                                                            />
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        {...register('membershipRenewDate')}
+                                                                        type='date'
+                                                                    //   value={membershipRenewDate}
+                                                                    //   onChange={(e)=>setMembershipRenewDate(e.target.value)}    
+                                                                    />
                                                                 )}
                                                             />
                                                         </div>
@@ -690,7 +698,11 @@ const MemberDetails = ({ memberId }) => {
                                                                 render={({ field }) => (
                                                                     <select
                                                                         {...field} {...register('membershipDuration')}
-                                                                        onChange={(e) => setMembershipDuration(e.target.value)}
+                                                                        value={membershipDuration}
+                                                                        onChange={(e) => {
+                                                                            setMembershipDuration(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option value="">Select</option>
@@ -804,10 +816,10 @@ const MemberDetails = ({ memberId }) => {
                                                         <div>
                                                             <Label>Final Ammount</Label>
                                                             <Input
+                                                                {...register('finalAmount')}
                                                                 type='text'
                                                                 disabled
                                                                 className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                                placeholder='Final Ammount'
                                                             />
                                                         </div>
 
@@ -914,6 +926,6 @@ const MemberDetails = ({ memberId }) => {
             </div>
         </div>
     )
-}
+};
 
 export default MemberDetails;
