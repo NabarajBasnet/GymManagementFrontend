@@ -63,6 +63,7 @@ const MemberDetails = ({ memberId }) => {
     const [membershipRenewDate, setMembershipRenewDate] = useState('');
     const [membershipExpireDate, setMembershipExpireDate] = useState(null);
 
+    console.log("Membership Type: ", membershipType);
     console.log("Due amount: ", dueAmount);
     console.log("Final Amount: ", finalAmount);
     console.log("Expire Date: ", membershipExpireDate);
@@ -99,7 +100,7 @@ const MemberDetails = ({ memberId }) => {
             ],
             daytimeMemberships: [
                 {
-                    option: "Day",
+                    option: "Daytime",
                     type: "Gym",
                     gymDayFees: {
                         "1 Month": 3000,
@@ -109,7 +110,7 @@ const MemberDetails = ({ memberId }) => {
                     }
                 },
                 {
-                    option: "Day",
+                    option: "Daytime",
                     type: "Gym & Cardio",
                     gymCardioDayFees: {
                         "1 Month": 4000,
@@ -123,7 +124,7 @@ const MemberDetails = ({ memberId }) => {
     ];
 
     // React hook form
-    const { register, reset, handleSubmit, setValue, formState: { errors, isSubmitting }, setError, control } = useForm()
+    const { register, reset, handleSubmit, setValue, formState: { errors, isSubmitting }, setError, control } = useForm();
 
     // Hooks
     const { getSingleUserDetails } = useMember();
@@ -175,9 +176,8 @@ const MemberDetails = ({ memberId }) => {
                 const newExpireDate = new Date(membershipRenewDate);
 
                 if (isNaN(newExpireDate.getTime())) {
-                    console.error("Invalid date format for membershipRenewDate:", membershipRenewDate);
                     return;
-                }
+                };
 
                 switch (membershipDuration) {
                     case "1 Month":
@@ -217,7 +217,7 @@ const MemberDetails = ({ memberId }) => {
                             selectedPlan = regular;
                         }
                     });
-                }
+                };
 
                 if (plan.daytimeMemberships) {
                     plan.daytimeMemberships.forEach((day) => {
@@ -225,7 +225,7 @@ const MemberDetails = ({ memberId }) => {
                             selectedPlan = day;
                         }
                     });
-                }
+                };
             });
 
             if (selectedPlan) {
@@ -235,11 +235,11 @@ const MemberDetails = ({ memberId }) => {
                     selectedFee = selectedPlan.gymRegularFees[membershipDuration];
                 } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
                     selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-                } else if (membershipOption === "Day" && membershipType === "Gym") {
+                } else if (membershipOption === "Daytime" && membershipType === "Gym") {
                     selectedFee = selectedPlan.gymDayFees[membershipDuration];
-                } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
+                } else if (membershipOption === "Daytime" && membershipType === "Gym & Cardio") {
                     selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
-                }
+                };
 
                 const admissionFee = membershipPlans.find(plan => plan.type === "Admission")?.admissionFee || 0;
                 setFinalAmount(admissionFee + selectedFee - (discountAmount || 0));
@@ -247,8 +247,8 @@ const MemberDetails = ({ memberId }) => {
 
             } else {
                 setFinalAmount(0);
-                setValue('finalAmount', 0)
-            }
+                setValue('finalAmount', 0); 0
+            };
         };
 
         // Call sub-functions
@@ -607,8 +607,8 @@ const MemberDetails = ({ memberId }) => {
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <select
-                                                                        {...field} {...register('membershipOption')}
-                                                                        value={membershipOption}
+                                                                        {...field}
+                                                                        value={field.value}
                                                                         onChange={(e) => {
                                                                             setMembershipOption(e.target.value);
                                                                             field.onChange(e);
@@ -631,8 +631,8 @@ const MemberDetails = ({ memberId }) => {
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <select
-                                                                        {...field} {...register('membershipType')}
-                                                                        value={membershipType}
+                                                                        {...field}
+                                                                        value={field.value}
                                                                         onChange={(e) => {
                                                                             setMembershipType(e.target.value);
                                                                             field.onChange(e);
@@ -697,8 +697,8 @@ const MemberDetails = ({ memberId }) => {
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <select
-                                                                        {...field} {...register('membershipDuration')}
-                                                                        value={membershipDuration}
+                                                                        {...field}
+                                                                        value={field.value}
                                                                         onChange={(e) => {
                                                                             setMembershipDuration(e.target.value);
                                                                             field.onChange(e);
