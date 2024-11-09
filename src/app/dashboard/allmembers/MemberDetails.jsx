@@ -151,11 +151,11 @@ const MemberDetails = ({ memberId }) => {
                 membershipDuration: member.membershipDuration,
                 membershipExpireDate: member.membershipExpireDate ? new Date(member.membershipExpireDate).toISOString().split("T")[0] : "" && setMembershipExpireDate(new Date(member.membershipExpireDate)),
                 paymentMethod: member.paymentMethod,
-                discountAmmount: member.discountAmmount,
+                discountAmount: member.discountAmount,
                 discountReason: member.discountReason,
                 discountCode: member.discountCode,
-                paidAmmount: member.paidAmmount,
-                dueAmmount: member.dueAmmount,
+                paidAmount: member.paidAmount,
+                dueAmount: member.dueAmount,
                 receiptNo: member.receiptNo,
                 remark: member.remark,
             });
@@ -760,7 +760,7 @@ const MemberDetails = ({ memberId }) => {
                                                         </div>
 
                                                         <div>
-                                                            <Label>Discount Ammount</Label>
+                                                            <Label>Discount Amount</Label>
                                                             <Controller
                                                                 name="discountAmount"
                                                                 control={control}
@@ -810,7 +810,7 @@ const MemberDetails = ({ memberId }) => {
                                                         </div>
 
                                                         <div>
-                                                            <Label>Final Ammount</Label>
+                                                            <Label>Final Amount</Label>
                                                             <Input
                                                                 {...register('finalAmount')}
                                                                 type='text'
@@ -820,14 +820,14 @@ const MemberDetails = ({ memberId }) => {
                                                         </div>
 
                                                         <div>
-                                                            <Label>Paid Ammount</Label>
+                                                            <Label>Paid Amount</Label>
                                                             <Controller
                                                                 name="paidAmount"
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <Input
                                                                         {...field}
-                                                                        {...register("paidAmmount")}
+                                                                        {...register("paidAmount")}
                                                                         value={field.value}
                                                                         onChange={(e) => {
                                                                             setPaidAmount(e.target.value);
