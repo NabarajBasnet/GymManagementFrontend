@@ -56,10 +56,10 @@ const MemberDetails = ({ memberId }) => {
     const [membershipOption, setMembershipOption] = useState('');
     const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
-    const [finalAmount, setFinalAmount] = useState(0);
-    const [discountAmount, setDiscountAmount] = useState(0);
-    const [dueAmount, setDueAmount] = useState(0);
-    const [paidAmount, setPaidAmount] = useState(0);
+    const [finalAmmount, setFinalAmmount] = useState(0);
+    const [discountAmmount, setDiscountAmmount] = useState(0);
+    const [dueAmmount, setDueAmmount] = useState(0);
+    const [paidAmmount, setPaidAmmount] = useState(0);
     const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
     const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
 
@@ -151,11 +151,11 @@ const MemberDetails = ({ memberId }) => {
                 membershipDuration: member.membershipDuration,
                 membershipExpireDate: member.membershipExpireDate ? new Date(member.membershipExpireDate).toISOString().split("T")[0] : "" && setMembershipExpireDate(new Date(member.membershipExpireDate)),
                 paymentMethod: member.paymentMethod,
-                discountAmount: member.discountAmount,
+                discountAmmount: member.discountAmmount,
                 discountReason: member.discountReason,
                 discountCode: member.discountCode,
-                paidAmount: member.paidAmount,
-                dueAmount: member.dueAmount,
+                paidAmmount: member.paidAmmount,
+                dueAmmount: member.dueAmmount,
                 receiptNo: member.receiptNo,
                 remark: member.remark,
             });
@@ -199,7 +199,7 @@ const MemberDetails = ({ memberId }) => {
         };
 
         // Calculate final amount
-        const calculateFinalAmount = () => {
+        const calculateFinalAmmount = () => {
             let selectedPlan = null;
             membershipPlans.forEach((plan) => {
                 if (plan.regularMemberships) {
@@ -233,25 +233,25 @@ const MemberDetails = ({ memberId }) => {
                 };
 
                 const admissionFee = membershipPlans.find(plan => plan.type === "Admission")?.admissionFee || 0;
-                setFinalAmount(admissionFee + selectedFee - (discountAmount || 0));
-                setValue('finalAmount', admissionFee + selectedFee - (discountAmount || 0));
+                setFinalAmmount(admissionFee + selectedFee - (discountAmmount || 0));
+                setValue('finalAmmount', admissionFee + selectedFee - (discountAmmount || 0));
 
             } else {
-                setFinalAmount(0);
-                setValue('finalAmount', 0); 0
+                setFinalAmmount(0);
+                setValue('finalAmmount', 0); 0
             };
         };
 
         // Call sub-functions
         calculateMembershipExpireDate();
-        calculateFinalAmount();
+        calculateFinalAmmount();
     };
 
     // Update due amount in a separate effect to ensure finalAmount is up-to-date
     useEffect(() => {
-        setDueAmount(finalAmount - paidAmount);
-        setValue('dueAmount', finalAmount - paidAmount);
-    }, [finalAmount, paidAmount]);
+        setDueAmmount(finalAmmount - paidAmmount);
+        setValue('dueAmmount', finalAmmount - paidAmmount);
+    }, [finalAmmount, paidAmmount]);
 
     // Main useEffect to handle changes in membership details
     useEffect(() => {
@@ -762,15 +762,15 @@ const MemberDetails = ({ memberId }) => {
                                                         <div>
                                                             <Label>Discount Amount</Label>
                                                             <Controller
-                                                                name="discountAmount"
+                                                                name="discountAmmount"
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <Input
                                                                         {...field}
-                                                                        {...register("discountAmount")}
+                                                                        {...register("discountAmmount")}
                                                                         value={field.value}
                                                                         onChange={(e) => {
-                                                                            setDiscountAmount(e.target.value);
+                                                                            setDiscountAmmount(e.target.value);
                                                                             field.onChange(e);
                                                                         }}
                                                                         type='text'
@@ -812,7 +812,7 @@ const MemberDetails = ({ memberId }) => {
                                                         <div>
                                                             <Label>Final Amount</Label>
                                                             <Input
-                                                                {...register('finalAmount')}
+                                                                {...register('finalAmmount')}
                                                                 type='text'
                                                                 disabled
                                                                 className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
@@ -822,15 +822,15 @@ const MemberDetails = ({ memberId }) => {
                                                         <div>
                                                             <Label>Paid Amount</Label>
                                                             <Controller
-                                                                name="paidAmount"
+                                                                name="paidAmmount"
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <Input
                                                                         {...field}
-                                                                        {...register("paidAmount")}
+                                                                        {...register("paidAmmount")}
                                                                         value={field.value}
                                                                         onChange={(e) => {
-                                                                            setPaidAmount(e.target.value);
+                                                                            setPaidAmmount(e.target.value);
                                                                             field.onChange(e);
                                                                         }}
                                                                         type='text'
@@ -841,9 +841,9 @@ const MemberDetails = ({ memberId }) => {
                                                         </div>
 
                                                         <div>
-                                                            <Label>Due Ammount</Label>
+                                                            <Label>Due Amount</Label>
                                                             <Input
-                                                                {...register('dueAmount')}
+                                                                {...register('dueAmmount')}
                                                                 type='text'
                                                                 disabled
                                                                 className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'

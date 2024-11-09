@@ -327,7 +327,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://localhost:3000/api/members', {
+            const response = await fetch('http://88.198.112.156:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -839,7 +839,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Discount Ammount</Label>
+                                        <Label>Discount Amount</Label>
                                         <Input
                                             value={discountAmmount}
                                             onChange={(e) => setDiscountAmmount(e.target.value)}
@@ -892,7 +892,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Final Ammount</Label>
+                                        <Label>Final Amount</Label>
                                         <Input
                                             {
                                             ...register('finalAmmount')
@@ -906,7 +906,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Paid Ammount</Label>
+                                        <Label>Paid Amount</Label>
                                         <Input
                                             value={paidAmmount}
                                             onChange={(e) => {
@@ -925,7 +925,7 @@ const newMemberRegistrationForm = () => {
                                     </div>
 
                                     <div>
-                                        <Label>Due Ammount</Label>
+                                        <Label>Due Amount</Label>
                                         <Input
                                             {
                                             ...register('dueAmmount')
