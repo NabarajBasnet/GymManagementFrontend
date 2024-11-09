@@ -102,7 +102,7 @@ const Lockers = () => {
         queryFn: getAllLockers
     });
 
-    const { lockers } = data || {}
+    const { lockers, assignedLockers, emptyLockers, expiredLockers } = data || {}
 
     const getAllMembers = async () => {
         try {
@@ -602,7 +602,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={4} color="primary">
+                                            <Badge badgeContent={assignedLockers} color="primary">
                                                 <div className='bg-green-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
@@ -616,7 +616,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={4} color="primary">
+                                            <Badge badgeContent={emptyLockers} color="primary">
                                                 <div className='bg-yellow-400 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
@@ -630,7 +630,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={4} color="primary">
+                                            <Badge badgeContent={expiredLockers} color="primary">
                                                 <div className='bg-red-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
