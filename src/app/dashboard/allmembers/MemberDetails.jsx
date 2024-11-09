@@ -681,10 +681,14 @@ const MemberDetails = ({ memberId }) => {
                                                                 control={control}
                                                                 render={({ field }) => (
                                                                     <Input
+                                                                        {...field}
                                                                         {...register('membershipRenewDate')}
                                                                         type='date'
-                                                                    //   value={membershipRenewDate}
-                                                                    //   onChange={(e)=>setMembershipRenewDate(e.target.value)}    
+                                                                        value={field.value}
+                                                                        onChange={(e) => {
+                                                                            setMembershipRenewDate(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
                                                                     />
                                                                 )}
                                                             />
