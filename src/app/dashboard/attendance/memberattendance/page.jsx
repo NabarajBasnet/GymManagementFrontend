@@ -95,18 +95,22 @@ const MemberAttendance = () => {
 
             const responseBody = await response.json();
             setValidationResult(responseBody);
-
             const responseResultType = ['Success', 'Failure'];
 
-            if (response.status === 402) {
-                alert("Membership is expired")
+            if (response.status === 200) {
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                });
             };
 
             if (response.status === 403 && responseBody.member.status === 'OnHold') {
                 setMembershipHoldToggle(true);
             };
 
-            if (response.status !==403 &&response.status !==402 ) {
+            if (response.status !== 403 && response.status !== 200) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
                 setErrorMessage({
@@ -139,38 +143,29 @@ const MemberAttendance = () => {
         setActivating(true);
         const responseResultType = ['Success', 'Failure'];
         const membershipHoldData = { status: 'Active' };
-    
+
         try {
-            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(membershipHoldData)
             });
-    
+
             const responseBody = await response.json();
-    
-            if (!response.ok) {
-                setResponseType(responseResultType[1]);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-            } else {
+            if (response.status === 200) {
                 setResponseType(responseResultType[0]);
+                setMembershipHoldToggle(false);
+                setToast(true);
                 setSuccessMessage({
                     icon: MdDone,
-                    message: responseBody.message || 'Membership activated successfully'
+                    message: responseBody.message
                 });
+                setTimeout(() => setToast(false), 10000);
             }
-    
-            setToast(true);
-            setTimeout(() => setToast(false), 10000);
-            
+
             setActivating(false);
-            setIsMemberDeleting(false);
-            setConfirmDeleteMember(false);
             queryClient.invalidateQueries(['members']);
         } catch (error) {
             console.error("Error:", error);
@@ -181,58 +176,57 @@ const MemberAttendance = () => {
             });
             setTimeout(() => setToast(false), 10000);
         } finally {
-            setActivating(false); 
+            setActivating(false);
         }
-    };    
-
+    };
 
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
-            {toast && (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="bg-white border flex justify-between items-center shadow-2xl p-4 relative">
-            {responseType === 'Success' ? (
-                <MdDone className="text-3xl mx-4 text-green-600" />
-            ) : (
-                <MdError className="text-3xl mx-4 text-red-600" />
-            )}
-            <p className={`text-sm font-semibold ${responseType === 'Success' ? 'text-green-600' : 'text-red-600'}`}>
-                {responseType === 'Success' ? successMessage.message : errorMessage.message}
-            </p>
-            <MdClose onClick={() => setToast(false)} className="cursor-pointer text-3xl ml-4" />
-        </div>
-    </div>
-)}
-
-{membershipHoldToggle && (
-    <div className="fixed inset-0 flex items-center justify-center z-50">
-        <div className="absolute inset-0 bg-black opacity-50"></div>
-        <div className="bg-white border shadow-2xl p-4 relative">
-            <div className="flex items-center justify-between">
-                {responseType === 'Success' ? (
-                    <MdDone className="text-3xl mx-4 text-green-600" />
-                ) : (
-                    <MdError className="text-3xl mx-4 text-red-600" />
+                {toast && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className="bg-white border flex justify-between items-center shadow-2xl p-4 relative">
+                            {responseType === 'Success' ? (
+                                <MdDone className="text-3xl mx-4 text-green-600" />
+                            ) : (
+                                <MdError className="text-3xl mx-4 text-red-600" />
+                            )}
+                            <p className={`text-sm font-semibold ${responseType === 'Success' ? 'text-green-600' : 'text-red-600'}`}>
+                                {responseType === 'Success' ? successMessage.message : errorMessage.message}
+                            </p>
+                            <MdClose onClick={() => setToast(false)} className="cursor-pointer text-3xl ml-4" />
+                        </div>
+                    </div>
                 )}
-                <p className={`text-sm font-semibold ${responseType === 'Success' ? 'text-green-600' : 'text-red-600'}`}>
-                    {responseType === 'Success' ? successMessage.message : errorMessage.message}
-                </p>
-                <MdClose onClick={() => setMembershipHoldToggle(false)} className="cursor-pointer text-3xl ml-4" />
-            </div>
-            <h1 className="my-4 text-sm font-semibold">
-                {`Membership paused for ${validationResult?.member?.pausedDays} Days. Are you sure you want to activate?`}
-            </h1>
-            <div className="w-full flex justify-end space-x-2">
-                <Button onClick={() => setMembershipHoldToggle(false)} className="bg-red-600 hover:bg-red-700 transition-all duration-500">Cancel</Button>
-                <Button onClick={activateMembership} className="bg-green-600 hover:bg-green-700 transition-all duration-500">
-                    {activating ? 'Processing...' : 'Activate'}
-                </Button>
-            </div>
-        </div>
-    </div>
-)}
+
+                {membershipHoldToggle && (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className="bg-white border shadow-2xl p-4 relative">
+                            <div className="flex items-center justify-between">
+                                {responseType === 'Success' ? (
+                                    <MdDone className="text-3xl mx-4 text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl mx-4 text-red-600" />
+                                )}
+                                <p className={`text-sm font-semibold text-red-600`}>
+                                    Membership on hold
+                                </p>
+                                <MdClose onClick={() => setMembershipHoldToggle(false)} className="cursor-pointer text-3xl ml-4" />
+                            </div>
+                            <h1 className="my-4 text-sm font-semibold">
+                                {`Membership paused for ${validationResult?.member?.pausedDays} Days. Are you sure you want to activate?`}
+                            </h1>
+                            <div className="w-full flex justify-end space-x-2">
+                                <Button onClick={() => setMembershipHoldToggle(false)} className="bg-red-600 hover:bg-red-700 transition-all duration-500">Cancel</Button>
+                                <Button onClick={activateMembership} className="bg-green-600 hover:bg-green-700 transition-all duration-500">
+                                    {activating ? 'Processing...' : 'Activate'}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 <Breadcrumb>
                     <BreadcrumbList>
