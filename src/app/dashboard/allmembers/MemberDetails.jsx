@@ -60,13 +60,8 @@ const MemberDetails = ({ memberId }) => {
     const [discountAmount, setDiscountAmount] = useState(0);
     const [dueAmount, setDueAmount] = useState(0);
     const [paidAmount, setPaidAmount] = useState(0);
-    const [membershipRenewDate, setMembershipRenewDate] = useState('');
-    const [membershipExpireDate, setMembershipExpireDate] = useState(null);
-
-    console.log("Membership Type: ", membershipType);
-    console.log("Due amount: ", dueAmount);
-    console.log("Final Amount: ", finalAmount);
-    console.log("Expire Date: ", membershipExpireDate);
+    const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
+    const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
 
     // Objects 
     const membershipPlans = [
@@ -152,9 +147,9 @@ const MemberDetails = ({ memberId }) => {
                 membershipType: member.membershipType,
                 membershipShift: member.membershipShift,
                 membershipDate: member.membershipDate ? new Date(member.membershipDate).toISOString().split("T")[0] : '',
-                membershipRenewDate: member.membershipRenewDate ? new Date(member.membershipRenewDate).toISOString().split("T")[0] : '',
+                membershipRenewDate: member.membershipRenewDate ? new Date(member.membershipRenewDate).toISOString().split("T")[0] : '' && setMembershipRenewDate(new Date(member.membershipRenewDate)),
                 membershipDuration: member.membershipDuration,
-                membershipExpireDate: member.membershipExpireDate ? new Date(member.membershipExpireDate).toISOString().split("T")[0] : "",
+                membershipExpireDate: member.membershipExpireDate ? new Date(member.membershipExpireDate).toISOString().split("T")[0] : "" && setMembershipExpireDate(new Date(member.membershipExpireDate)),
                 paymentMethod: member.paymentMethod,
                 discountAmmount: member.discountAmmount,
                 discountReason: member.discountReason,
@@ -196,11 +191,8 @@ const MemberDetails = ({ memberId }) => {
                         console.warn("Unhandled membership duration:", membershipDuration);
                         break;
                 }
-
-                setMembershipExpireDate(newExpireDate);
+                setMembershipExpireDate(newExpireDate.toISOString().split('T')[0]);
                 setValue('membershipExpireDate', newExpireDate.toISOString().split('T')[0]);
-
-                console.log("Membership Expire Date set to:", newExpireDate);
             } else {
                 console.warn("Membership Renew Date or Duration is missing.");
             }
@@ -209,7 +201,6 @@ const MemberDetails = ({ memberId }) => {
         // Calculate final amount
         const calculateFinalAmount = () => {
             let selectedPlan = null;
-
             membershipPlans.forEach((plan) => {
                 if (plan.regularMemberships) {
                     plan.regularMemberships.forEach((regular) => {
@@ -258,7 +249,8 @@ const MemberDetails = ({ memberId }) => {
 
     // Update due amount in a separate effect to ensure finalAmount is up-to-date
     useEffect(() => {
-        setDueAmount(finalAmount - (paidAmount || 0));
+        setDueAmount(finalAmount - paidAmount);
+        setValue('dueAmount', finalAmount - paidAmount);
     }, [finalAmount, paidAmount]);
 
     // Main useEffect to handle changes in membership details
@@ -725,28 +717,16 @@ const MemberDetails = ({ memberId }) => {
                                                                 name="membershipExpireDate"
                                                                 control={control}
                                                                 render={({ field }) => (
-                                                                    <Popover>
-                                                                        <PopoverTrigger asChild>
-                                                                            <Button
-                                                                                variant={"outline"}
-                                                                                className={cn(
-                                                                                    "w-full justify-start text-left font-normal",
-                                                                                    !field.value && "text-muted-foreground"
-                                                                                )}
-                                                                            >
-                                                                                <CalendarIcon />
-                                                                                {field.value ? format(field.value, "PPP") : <span>Membership Renew Date</span>}
-                                                                            </Button>
-                                                                        </PopoverTrigger>
-                                                                        <PopoverContent className="w-auto p-0">
-                                                                            <Calendar
-                                                                                mode="single"
-                                                                                selected={field.value}
-                                                                                onSelect={field.onChange}
-                                                                                initialFocus
-                                                                            />
-                                                                        </PopoverContent>
-                                                                    </Popover>
+                                                                    <Input
+                                                                        {...field}
+                                                                        {...register('membershipExpireDate')}
+                                                                        type='date'
+                                                                        value={field.value}
+                                                                        onChange={(e) => {
+                                                                            setMembershipExpireDate(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
+                                                                    />
                                                                 )}
                                                             />
                                                         </div>
@@ -781,10 +761,22 @@ const MemberDetails = ({ memberId }) => {
 
                                                         <div>
                                                             <Label>Discount Ammount</Label>
-                                                            <Input
-                                                                {...register('discountAmmount')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
+                                                            <Controller
+                                                                name="discountAmount"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        {...register("discountAmount")}
+                                                                        value={field.value}
+                                                                        onChange={(e) => {
+                                                                            setDiscountAmount(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
+                                                                        type='text'
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                )}
                                                             />
                                                         </div>
 
@@ -829,17 +821,29 @@ const MemberDetails = ({ memberId }) => {
 
                                                         <div>
                                                             <Label>Paid Ammount</Label>
-                                                            <Input
-                                                                {...register("paidAmmount")}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
+                                                            <Controller
+                                                                name="paidAmount"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        {...register("paidAmmount")}
+                                                                        value={field.value}
+                                                                        onChange={(e) => {
+                                                                            setPaidAmount(e.target.value);
+                                                                            field.onChange(e);
+                                                                        }}
+                                                                        type='text'
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                )}
                                                             />
                                                         </div>
 
                                                         <div>
                                                             <Label>Due Ammount</Label>
                                                             <Input
-                                                                {...register('dueAmmount')}
+                                                                {...register('dueAmount')}
                                                                 type='text'
                                                                 disabled
                                                                 className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
