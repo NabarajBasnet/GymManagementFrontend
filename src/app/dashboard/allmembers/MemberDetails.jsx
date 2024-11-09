@@ -54,7 +54,6 @@ const MemberDetails = ({ memberId }) => {
     const responseResultType = ['Success', 'Failure'];
 
     const [membershipHoldDate, setMembershipHoldDate] = useState('');
-    console.log("Membership Hold Date: ", membershipHoldDate);
     const [membershipOption, setMembershipOption] = useState('');
     const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
@@ -260,10 +259,9 @@ const MemberDetails = ({ memberId }) => {
         handleMembershipInformation();
     }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
 
-
+    // Functions
     // Update member details
     const updateMemberDetails = async (data) => {
-        console.log("Data: ", data);
         const {
             fullName,
             contactNo,
@@ -300,7 +298,6 @@ const MemberDetails = ({ memberId }) => {
                 body: JSON.stringify(data)
             })
             const responseBody = await response.json();
-            console.log("Body: ", responseBody);
             if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
@@ -339,61 +336,58 @@ const MemberDetails = ({ memberId }) => {
         }
     };
 
-    // Functions
-    // const holdMembership = async () => {
+    // Hold membership
+    const holdMembership = async () => {
 
-    //     const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
+        const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
-    //     try {
-    //         const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
-    //             method: "PATCH",
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify(membershipHoldData)
-    //         });
-    //         const responseBody = await response.json();
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membershipHoldData)
+            });
+            const responseBody = await response.json();
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+                queryClient.invalidateQueries(['members']);
+            }
 
-    //         if (response.status !== 200) {
-    //             setResponseType(responseResultType[1]);
-    //             setToast(true);
-    //             setTimeout(() => {
-    //                 setToast(false)
-    //             }, 10000);
-    //             setErrorMessage({
-    //                 icon: MdError,
-    //                 message: responseBody.message || 'Unauthorized action'
-    //             });
-    //         }
-    //         else {
-    //             if (response.status === 200) {
-    //                 setResponseType(responseResultType[0]);
-    //                 setToast(true);
-    //                 setTimeout(() => {
-    //                     setToast(false)
-    //                 }, 10000);
-    //                 setSuccessMessage({
-    //                     icon: MdError,
-    //                     message: responseBody.message || 'Unauthorized action'
-    //                 })
-    //             }
-    //             setIsMemberDeleting(false);
-    //             setConfirmDeleteMember(false);
-    //             queryClient.invalidateQueries(['members']);
-    //         }
-
-    //     } catch (error) {
-    //         console.log("Error: ", error);
-    //         setToast(true);
-    //         setTimeout(() => {
-    //             setToast(false)
-    //         }, 10000);
-    //         setErrorMessage({
-    //             icon: MdError,
-    //             message: "An unexpected error occurred."
-    //         })
-    //     };
-    // };
+        } catch (error) {
+            console.log("Error: ", error);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: "An unexpected error occurred."
+            })
+        };
+    };
 
     return (
         <div className="w-full p-1">
@@ -457,10 +451,9 @@ const MemberDetails = ({ memberId }) => {
                         </BreadcrumbList>
                     </Breadcrumb>
                     <div className="flex justify-between items-center">
-                        <h1 className="text-xl font-bold my-3">Register New Member</h1>
+                        <h1 className="text-xl font-bold my-3">Update Member Details</h1>
                     </div>
                 </div>
-
             </div>
 
             <div className="w-full bg-white p-4 rounded-lg shadow-lg">
@@ -501,27 +494,24 @@ const MemberDetails = ({ memberId }) => {
                             </AlertDialogHeader>
                             <AlertDialogFooter className="flex justify-end space-x-2">
                                 <AlertDialogCancel className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">Cancel</AlertDialogCancel>
-                                <AlertDialogAction className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Continue</AlertDialogAction>
+                                <AlertDialogAction onClick={() => holdMembership()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">Continue</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Hold Date:
+                        Hold Date: {data && data.member && data.member.membershipHoldDate ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0] : 'N/A'}
                     </div>
                     <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Paused Days:
+                        Paused Days: {data ? member.pausedDays : ''}
                     </div>
                     <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Minimum Days to Hold: 7
+                        Remaining Days: {data ? member.remainingDaysOfMembership : ''}
                     </div>
                     <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Resumed Date:
-                    </div>
-                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Remaining Days:
+                        Resumed Date: {data && data.member && data.member.resumedDate ? new Date(data.member.resumedDate).toISOString().split("T")[0] : 'N/A'}
                     </div>
                 </div>
             </div>

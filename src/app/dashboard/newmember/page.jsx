@@ -72,7 +72,7 @@ const newMemberRegistrationForm = () => {
             ],
             daytimeMemberships: [
                 {
-                    option: "Day",
+                    option: "Daytime",
                     type: "Gym",
                     gymDayFees: {
                         "1 Month": 3000,
@@ -82,7 +82,7 @@ const newMemberRegistrationForm = () => {
                     }
                 },
                 {
-                    option: "Day",
+                    option: "Daytime",
                     type: "Gym & Cardio",
                     gymCardioDayFees: {
                         "1 Month": 4000,
@@ -162,9 +162,9 @@ const newMemberRegistrationForm = () => {
                 selectedFee = selectedPlan.gymRegularFees[membershipDuration];
             } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
                 selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-            } else if (membershipOption === "Day" && membershipType === "Gym") {
+            } else if (membershipOption === "Daytime" && membershipType === "Gym") {
                 selectedFee = selectedPlan.gymDayFees[membershipDuration];
-            } else if (membershipOption === "Day" && membershipType === "Gym & Cardio") {
+            } else if (membershipOption === "Daytime" && membershipType === "Gym & Cardio") {
                 selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
             }
 
@@ -327,7 +327,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://88.198.112.156:3000/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -630,10 +630,9 @@ const newMemberRegistrationForm = () => {
                                             <SelectContent>
                                                 <SelectGroup>
                                                     <SelectLabel>Membership Option</SelectLabel>
-                                                    <SelectItem value="Regular">Regular Membership</SelectItem>
-                                                    <SelectItem value="Day">Daytime Membership</SelectItem>
-                                                    <SelectItem value="Temporary">Temporary Membership</SelectItem>
-                                                    <SelectItem value="Guest">Guest</SelectItem>
+                                                    <SelectItem value="Regular">Regular</SelectItem>
+                                                    <SelectItem value="Daytime">Daytime</SelectItem>
+                                                    <SelectItem value="Temporary">Temporary</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
@@ -658,7 +657,6 @@ const newMemberRegistrationForm = () => {
                                                     <SelectLabel>Membership Type</SelectLabel>
                                                     <SelectItem value="Gym">Gym</SelectItem>
                                                     <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
-                                                    <SelectItem value="Gym, Cardio & Jumba">Gym, Cardio & Jumba</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
