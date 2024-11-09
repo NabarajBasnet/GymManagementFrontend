@@ -53,6 +53,8 @@ const MemberDetails = ({ memberId }) => {
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
 
+    const [membershipHoldDate, setMembershipHoldDate] = useState('');
+    console.log("Membership Hold Date: ", membershipHoldDate);
     const [membershipOption, setMembershipOption] = useState('');
     const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
@@ -288,62 +290,18 @@ const MemberDetails = ({ memberId }) => {
             reasonForUpdate,
             remark,
             actionTaker } = data;
-          
-            if(!paymentMethod){
-                setError('paymentMethod',{
-                    type:"manual",
-                    message:"Select payment method"
-                })
-            }
-            if(!reasonForUpdate){
-                setError('reasonForUpdate',{
-                    type:"manual",
-                    message:"Select reason for update"
-                })
-            }
-            if(!actionTaker){
-                setError('actionTaker',{
-                    type:"manual",
-                    message:"Select action taker name"
-                })
-            }
 
-            try {
-                const response = await fetch(`http://localhost:3000/api/members/${memberId}`,{
-                    method:"PATCH",
-                    headers:{
-                        'Content-Type':"application/json"
-                    },
-                    body:JSON.stringify({data})
-                })
-                const responseBody = await response.json();
-                console.log("Body: ",responseBody);
-                if (response.status === 400 ||  response.status === 402 || response.status === 404 ||response.status === 500    ) {
-                    setResponseType(responseResultType[1]);
-                    setToast(true);
-                    setTimeout(() => {
-                        setToast(false)
-                    }, 10000);
-                    setErrorMessage({
-                        icon: MdError,
-                        message: responseBody.message || 'Unauthorized action'
-                    });
-                }
-                else {
-                    if (response.status === 200) {
-                        setResponseType(responseResultType[0]);
-                        setToast(true);
-                        setTimeout(() => {
-                            setToast(false)
-                        }, 10000);
-                        setSuccessMessage({
-                            icon: MdError,
-                            message: responseBody.message || 'Unauthorized action'
-                        })
-                    }
-                }
-            } catch (error) {
-                console.log('Error: ', error);
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            const responseBody = await response.json();
+            console.log("Body: ", responseBody);
+            if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
                 setTimeout(() => {
@@ -351,9 +309,34 @@ const MemberDetails = ({ memberId }) => {
                 }, 10000);
                 setErrorMessage({
                     icon: MdError,
-                    message: error.message || error
+                    message: responseBody.message || 'Unauthorized action'
                 });
             }
+            else {
+                if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+            }
+        } catch (error) {
+            console.log('Error: ', error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || error
+            });
+        }
     };
 
     // Functions
@@ -491,9 +474,9 @@ const MemberDetails = ({ memberId }) => {
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-xl font-semibold">Are you absolutely sure?</AlertDialogTitle>
                                 <AlertDialogDescription className="mt-4">
-                                    <h1 className="font-bold text-md text-red-600 mb-2">Note: "Stop/Start Date will be by default set to today's Date"</h1>
-                                    <p className="font-medium text-sm mb-4">If you want to override the default Stop Date, please select a date below:</p>
-                                    <div className="my-4">
+                                    <span className="font-bold text-md text-red-600 mb-2">Note: "Stop/Start Date will be by default set to today's Date"</span>
+                                    <span className="font-medium text-sm mb-4">If you want to override the default Stop Date, please select a date below:</span>
+                                    <span className="my-4">
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <Button
@@ -501,19 +484,19 @@ const MemberDetails = ({ memberId }) => {
                                                     className={`w-full flex items-center justify-between text-left ${!new Date() ? "text-gray-500" : ""}`}
                                                 >
                                                     <CalendarIcon />
-                                                    <span>{new Date() ? format(new Date(), "PPP") : "Membership Hold Date"}</span>
+                                                    <span>{membershipHoldDate ? format(membershipHoldDate, "PPP") : "Membership Hold Date"}</span>
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent className="w-auto p-0">
                                                 <Calendar
                                                     mode="single"
-                                                    // selected={}
-                                                    // onSelect={}
+                                                    selected={membershipHoldDate}
+                                                    onSelect={setMembershipHoldDate}
                                                     initialFocus
                                                 />
                                             </PopoverContent>
                                         </Popover>
-                                    </div>
+                                    </span>
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter className="flex justify-end space-x-2">
@@ -947,7 +930,7 @@ const MemberDetails = ({ memberId }) => {
                                                                     </select>
                                                                 )}
                                                             />
-                                                            {errors.reasonForUpdate&&(
+                                                            {errors.reasonForUpdate && (
                                                                 <p className="text-sm font-semibold text-red-600">{`${errors.reasonForUpdate.message}`}</p>
                                                             )}
                                                         </div>
@@ -978,7 +961,7 @@ const MemberDetails = ({ memberId }) => {
                                                                     </select>
                                                                 )}
                                                             />
-                                                            {errors.actionTaker&&(
+                                                            {errors.actionTaker && (
                                                                 <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
                                                             )}
                                                         </div>
