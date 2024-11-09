@@ -288,10 +288,72 @@ const MemberDetails = ({ memberId }) => {
             reasonForUpdate,
             remark,
             actionTaker } = data;
-        try {
-        } catch (error) {
-            console.log("Error: ", error);
-        }
+          
+            if(!paymentMethod){
+                setError('paymentMethod',{
+                    type:"manual",
+                    message:"Select payment method"
+                })
+            }
+            if(!reasonForUpdate){
+                setError('reasonForUpdate',{
+                    type:"manual",
+                    message:"Select reason for update"
+                })
+            }
+            if(!actionTaker){
+                setError('actionTaker',{
+                    type:"manual",
+                    message:"Select action taker name"
+                })
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/members/${memberId}`,{
+                    method:"PATCH",
+                    headers:{
+                        'Content-Type':"application/json"
+                    },
+                    body:JSON.stringify({data})
+                })
+                const responseBody = await response.json();
+                console.log("Body: ",responseBody);
+                if (response.status === 400 ||  response.status === 402 || response.status === 404 ||response.status === 500    ) {
+                    setResponseType(responseResultType[1]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setErrorMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    });
+                }
+                else {
+                    if (response.status === 200) {
+                        setResponseType(responseResultType[0]);
+                        setToast(true);
+                        setTimeout(() => {
+                            setToast(false)
+                        }, 10000);
+                        setSuccessMessage({
+                            icon: MdError,
+                            message: responseBody.message || 'Unauthorized action'
+                        })
+                    }
+                }
+            } catch (error) {
+                console.log('Error: ', error);
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: error.message || error
+                });
+            }
     };
 
     // Functions
@@ -406,7 +468,7 @@ const MemberDetails = ({ memberId }) => {
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
                                 <BreadcrumbPage>
-                                    {data ? `${member.fullName}` : `${''}`}
+                                    {data ? `${member.fullName || 'Member Name'}` : `${''}`}
                                 </BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
@@ -885,6 +947,9 @@ const MemberDetails = ({ memberId }) => {
                                                                     </select>
                                                                 )}
                                                             />
+                                                            {errors.reasonForUpdate&&(
+                                                                <p className="text-sm font-semibold text-red-600">{`${errors.reasonForUpdate.message}`}</p>
+                                                            )}
                                                         </div>
 
                                                         <div>
@@ -913,6 +978,9 @@ const MemberDetails = ({ memberId }) => {
                                                                     </select>
                                                                 )}
                                                             />
+                                                            {errors.actionTaker&&(
+                                                                <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
+                                                            )}
                                                         </div>
 
                                                     </div>
