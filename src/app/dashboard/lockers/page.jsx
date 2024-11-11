@@ -40,7 +40,7 @@ import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import * as React from "react"
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 
@@ -76,7 +76,8 @@ const Lockers = () => {
         handleSubmit,
         setError,
         clearErrors,
-        formState: { isSubmitting, errors }
+        formState: { isSubmitting, errors },
+        control
     } = useForm();
 
     const [lockerId, setLockerId] = useState('');
@@ -91,6 +92,7 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/lockers`);
             const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -306,7 +308,7 @@ const Lockers = () => {
             )}
 
             {
-                lockerFormState && lockerNumber ? (
+                lockerFormState && data.lockers ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 transition-opacity duration-500 ease-out opacity-100">
                         <div className="bg-white md:rounded-lg rounded-none shadow-xl p-8 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
@@ -317,7 +319,6 @@ const Lockers = () => {
                                         <Input
                                             {...register('lockerNumber')}
                                             disabled
-                                            defaultValue={lockerNumber}
                                             className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                             placeholder="Locker Number"
                                         />

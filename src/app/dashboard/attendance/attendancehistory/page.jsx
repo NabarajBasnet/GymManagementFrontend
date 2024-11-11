@@ -101,10 +101,9 @@ const AttendanceHistory = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members-attendance-history/${id}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
             setPermanentMemberAttendance(responseBody.memberAttendance);
             setTotalPages(responseBody.totalPages);
-            return responseBody.memberAttendance;
+            return responseBody;
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -115,6 +114,9 @@ const AttendanceHistory = () => {
         queryFn: fetchAttendanceHistory,
         enabled: !!id,
     });
+
+    const { totalMemberAttendance } = attendanceData || {}
+
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
@@ -246,12 +248,6 @@ const AttendanceHistory = () => {
                                 </div>
                             </div>
 
-                            <div className="w-full">
-                                <Label className='text-white'>''</Label>
-                                <Button className="w-full md:mb-1 rounded-md bg-blue-600 text-white hover:bg-blue-700">
-                                    Submit
-                                </Button>
-                            </div>
                         </div>
 
                     </div>
@@ -273,7 +269,13 @@ const AttendanceHistory = () => {
                                             <TableCell className="font-medium">{attendance.memberId}</TableCell>
                                             <TableCell>{attendance.fullName}</TableCell>
                                             <TableCell>{attendance.membershipOption}</TableCell>
-                                            <TableCell className="text-right">{attendance.checkInTime}</TableCell>
+                                            <TableCell className='text-right'>
+                                                {new Date(attendance.checkInTime).toLocaleDateString()} -  {new Date(attendance.checkInTime).toLocaleTimeString('en-US', {
+                                                    hour: 'numeric',
+                                                    minute: 'numeric',
+                                                    hour12: true
+                                                })}
+                                            </TableCell>
                                         </TableRow>
                                     ))
                                 ) : (
@@ -284,8 +286,8 @@ const AttendanceHistory = () => {
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
-                                    <TableCell colSpan={3}>Total</TableCell>
-                                    <TableCell className="text-right">$2,500.00</TableCell>
+                                    <TableCell >Total checked in time</TableCell>
+                                    <TableCell className="text-left">{totalMemberAttendance}</TableCell>
                                 </TableRow>
                             </TableFooter>
                         </Table>
