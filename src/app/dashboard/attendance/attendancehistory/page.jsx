@@ -67,7 +67,7 @@ const AttendanceHistory = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
-            console.log("Response body",responseBody );
+            console.log("Response body", responseBody);
             return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
@@ -287,13 +287,8 @@ const AttendanceHistory = () => {
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
-<<<<<<< HEAD
                                     <TableCell >Total checked in time</TableCell>
                                     <TableCell className="text-left">{totalMemberAttendance}</TableCell>
-=======
-                                    <TableCell colSpan={3}>Total checked in time</TableCell>
-                                    <TableCell>{PermanentMemberAttendance.length}</TableCell>
->>>>>>> aa6e39a453a9f3426c3addbee5f5dabf9d484fee
                                 </TableRow>
                             </TableFooter>
                         </Table>
