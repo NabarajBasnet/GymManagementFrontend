@@ -226,7 +226,7 @@ const AttendanceHistory = () => {
                                             />
                                         </div>
                                         {renderDropdown && (
-                                            <div className="w-full absolute bg-white shadow-2xl max-h-screen overflow-y-auto z-10">
+                                            <div className="w-full absolute bg-white shadow-2xl max-h-96 overflow-y-auto z-10">
                                                 {allMembers?.filter((member) =>
                                                     member.fullName.toLowerCase().includes(searchQuery.toLowerCase())
                                                 ).map((member) => (
