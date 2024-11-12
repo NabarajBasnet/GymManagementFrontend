@@ -231,7 +231,7 @@ const Sidebar = () => {
                     sidebarMinimized ? (
                         <></>
                     ) : (
-                        <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                        <span className="text-white w-full text-2xl font-bold">Revive Fitness</span>
                     )
                 }
             </Link>

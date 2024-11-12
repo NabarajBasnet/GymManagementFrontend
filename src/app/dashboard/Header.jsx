@@ -285,7 +285,7 @@ const Header = () => {
                                 <SheetTitle>
                                     <Link href={'/dashboard'} className="flex justify-start py-3 bg-blue-600">
                                         <RiDashboard3Fill className='text-4xl mx-2 text-white' />
-                                        <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                                        <span className="text-white w-full text-2xl font-bold">Revive Fitness</span>
                                     </Link>
                                 </SheetTitle>
                             </SheetHeader>
