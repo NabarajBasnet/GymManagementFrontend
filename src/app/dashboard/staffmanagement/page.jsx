@@ -50,12 +50,35 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import * as React from 'react';
+import { useQuery } from "@tanstack/react-query";
+import { DataArray } from "@mui/icons-material";
 
 
 const AddStaff = () => {
 
+    // States
     const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
+
+    // Functions
+    const fetchAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: fetchAllStaffs
+    });
+
+    const { staffs } = data || {}
+    console.log("Data: ", data);
 
     const invoices = [
         {
@@ -63,31 +86,7 @@ const AddStaff = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
+        }
     ];
 
     return (
@@ -105,11 +104,6 @@ const AddStaff = () => {
                                     <BreadcrumbEllipsis className="h-4 w-4" />
                                     <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
@@ -237,35 +231,55 @@ const AddStaff = () => {
                     <div className="w-full">
                         <div>
                             <Table>
-                                <TableCaption>A list of your recent invoices.</TableCaption>
+                                <TableCaption>A list of staffs.</TableCaption>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[100px]">Invoice</TableHead>
+                                        <TableHead className="w-[100px]">Staff Id</TableHead>
+                                        <TableHead>Full Name</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Contact Number</TableHead>
+                                        <TableHead>Address</TableHead>
+                                        <TableHead>DOB</TableHead>
+                                        <TableHead>Check In Time</TableHead>
+                                        <TableHead>Check Out Time</TableHead>
+                                        <TableHead>Joined Date</TableHead>
+                                        <TableHead>Work Hours</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
+                                        <TableHead>Salary</TableHead>
+                                        <TableHead>Role</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {invoices.map((invoice) => (
-                                        <TableRow key={invoice.invoice}>
-                                            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                            <TableCell>{invoice.paymentStatus}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-                                        </TableRow>
-                                    ))}
+                                    {Array.isArray(staffs) && staffs > 0 ? (
+                                        <div>
+                                            {staffs((staff) => (
+                                                <TableRow key={staff._id}>
+                                                    <TableCell className="font-medium">{staff._id}</TableCell>
+                                                    <TableCell>{staff.fullName}</TableCell>
+                                                    <TableCell>{staff.email}</TableCell>
+                                                    <TableCell>{staff.contactNo}</TableCell>
+                                                    <TableCell>{staff.address}</TableCell>
+                                                    <TableCell>{staff.dob}</TableCell>
+                                                    <TableCell>{staff.checkInTime}</TableCell>
+                                                    <TableCell>{staff.checkOutTime}</TableCell>
+                                                    <TableCell>{staff.joinedDate}</TableCell>
+                                                    <TableCell>{staff.totalHoursToWork}</TableCell>
+                                                    <TableCell>{staff.employmentStatus}</TableCell>
+                                                    <TableCell>{staff.salary}</TableCell>
+                                                    <TableCell>{staff.role}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <>
+                                            <span>No staffs found.</span>
+                                        </>
+                                    )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={3}>Total Staffs</TableCell>
-                                        <TableCell className="text-right">5</TableCell>
+                                        <TableCell className="text-right">{staffs}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
