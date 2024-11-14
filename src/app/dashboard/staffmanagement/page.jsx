@@ -333,8 +333,8 @@ const AddStaff = () => {
                                 <div className="fixed inset-0 z-50 flex items-center justify-center">
                                     <div className="w-full flex justify-center">
                                         <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
-                                            <div className="w-full">
-                                                <form className="w-full max-h-[90vh] overflow-y-auto md:h-auto min-h-screen">
+                                            <div className="w-full md:flex md:justify-center md:items-center">
+                                                <form className="w-full max-h-[90vh] overflow-y-auto">
                                                     <div className="bg-gray-300 py-2 my-2 w-full">
                                                         <h1 className="mx-4 font-semibold">Staff Registration Information</h1>
                                                     </div>
