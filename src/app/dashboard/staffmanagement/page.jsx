@@ -1,5 +1,7 @@
 'use client'
 
+import { MdDelete, MdEmail } from "react-icons/md";
+import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import {
     Pagination,
@@ -52,7 +54,6 @@ import { useState } from "react";
 import * as React from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { DataArray } from "@mui/icons-material";
-
 
 const AddStaff = () => {
 
@@ -229,7 +230,7 @@ const AddStaff = () => {
             <div className="w-full flex justify-between items-start">
                 <div className="w-full bg-white">
                     <div className="w-full">
-                        <div>
+                        <div className="w-full">
                             <Table>
                                 <TableCaption>A list of staffs.</TableCaption>
                                 <TableHeader>
@@ -247,12 +248,13 @@ const AddStaff = () => {
                                         <TableHead>Status</TableHead>
                                         <TableHead>Salary</TableHead>
                                         <TableHead>Role</TableHead>
+                                        <TableHead>Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {Array.isArray(staffs) && staffs > 0 ? (
-                                        <div>
-                                            {staffs((staff) => (
+                                    {Array.isArray(staffs) && staffs.length > 0 ? (
+                                        <TableBody>
+                                            {staffs.map((staff) => (
                                                 <TableRow key={staff._id}>
                                                     <TableCell className="font-medium">{staff._id}</TableCell>
                                                     <TableCell>{staff.fullName}</TableCell>
@@ -267,19 +269,26 @@ const AddStaff = () => {
                                                     <TableCell>{staff.employmentStatus}</TableCell>
                                                     <TableCell>{staff.salary}</TableCell>
                                                     <TableCell>{staff.role}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center">
+                                                            <MdEmail className="cursor-pointer" />
+                                                            <FaUserEdit className="cursor-pointer" />
+                                                            <MdDelete className="text-red-600 cursor-pointer" />
+                                                        </div>
+                                                    </TableCell>
                                                 </TableRow>
                                             ))}
-                                        </div>
+                                        </TableBody>
                                     ) : (
-                                        <>
-                                            <span>No staffs found.</span>
-                                        </>
+                                        <div className="w-full flex justify-center">
+                                            <p className="text-sm font-semibold text-center">No staff found.</p>
+                                        </div>
                                     )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={3}>Total Staffs</TableCell>
-                                        <TableCell className="text-right">{staffs}</TableCell>
+                                        <TableCell className="text-right">{staffs?staffs.length:''}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
