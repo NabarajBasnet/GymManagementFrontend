@@ -62,486 +62,461 @@ const AddStaff = () => {
     const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
 
-    const WorkingDaysForm = () => {
-        const [workingDays, setWorkingDays] = useState([
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-        ]);
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        control,
+        setValue,
+        setError,
+    } = useForm();
 
-        const days = [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ];
+    // Functions
+    const fetchAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
 
-        const toggleDay = (day) => {
-            if (workingDays.includes(day)) {
-                setWorkingDays(workingDays.filter((d) => d !== day));
-            } else {
-                setWorkingDays([...workingDays, day]);
-            }
-        };
+    const { data, isLoading } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: fetchAllStaffs
+    });
 
+    const { staffs } = data || {}
 
-        const {
-            register,
-            reset,
-            handleSubmit,
-            formState: { errors, isSubmitting },
-            control,
-            setValue,
-            setError,
-        } = useForm();
-
-        // Functions
-        const fetchAllStaffs = async () => {
-            try {
-                const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
-                const responseBody = await response.json();
-                console.log("Response Body: ", responseBody);
-                return responseBody;
-            } catch (error) {
-                console.log("Error: ", error);
-            }
-        };
-
-        const { data, isLoading } = useQuery({
-            queryKey: ['staffs'],
-            queryFn: fetchAllStaffs
-        });
-
-        const { staffs } = data || {}
+    const registerNewStaff = async (data) => {
         console.log("Data: ", data);
+        const finalData = { data };
+        try {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(finalData)
+            })
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
 
-        const invoices = [
-            {
-                invoice: "INV001",
-                paymentStatus: "Paid",
-                totalAmount: "$250.00",
-                paymentMethod: "Credit Card",
-            }
-        ];
+    const invoices = [
+        {
+            invoice: "INV001",
+            paymentStatus: "Paid",
+            totalAmount: "$250.00",
+            paymentMethod: "Credit Card",
+        }
+    ];
 
-        return (
-            <div className="w-full">
-                <div className='w-full p-6 bg-gray-100'>
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                    <h1 className="text-xl font-bold mt-3">Staff Management</h1>
+    return (
+        <div className="w-full">
+            <div className='w-full p-6 bg-gray-100'>
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </DropdownMenuTrigger>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <h1 className="text-xl font-bold mt-3">Staff Management</h1>
+            </div>
+
+            <div className="w-full md:flex justify-between items-center p-2">
+                <Select>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a fruit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Fruits</SelectLabel>
+                            <SelectItem value="apple">Apple</SelectItem>
+                            <SelectItem value="banana">Banana</SelectItem>
+                            <SelectItem value="blueberry">Blueberry</SelectItem>
+                            <SelectItem value="grapes">Grapes</SelectItem>
+                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+
+                <Select>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a fruit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Fruits</SelectLabel>
+                            <SelectItem value="apple">Apple</SelectItem>
+                            <SelectItem value="banana">Banana</SelectItem>
+                            <SelectItem value="blueberry">Blueberry</SelectItem>
+                            <SelectItem value="grapes">Grapes</SelectItem>
+                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+
+                <Select>
+                    <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select a fruit" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Fruits</SelectLabel>
+                            <SelectItem value="apple">Apple</SelectItem>
+                            <SelectItem value="banana">Banana</SelectItem>
+                            <SelectItem value="blueberry">Blueberry</SelectItem>
+                            <SelectItem value="grapes">Grapes</SelectItem>
+                            <SelectItem value="pineapple">Pineapple</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+
+            </div>
+
+            <div className="p-2">
+                <div className="flex items-center border bg-white">
+                    <CiSearch
+                        className="mx-2"
+                    />
+                    <Input
+                        className='bg-none outline-none border-none'
+                        placeholder='Search staff here...'
+                    />
                 </div>
+            </div>
 
-                <div className="w-full md:flex justify-between items-center p-2">
-                    <Select>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-                    <Select>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-                    <Select>
-                        <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select a fruit" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectGroup>
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
-
-                </div>
-
-                <div className="p-2">
-                    <div className="flex items-center border bg-white">
-                        <CiSearch
-                            className="mx-2"
-                        />
-                        <Input
-                            className='bg-none outline-none border-none'
-                            placeholder='Search staff here...'
-                        />
-                    </div>
-                </div>
-
-                <div className="w-full flex justify-between items-start">
-                    <div className="w-full bg-white">
+            <div className="w-full flex justify-between items-start">
+                <div className="w-full bg-white">
+                    <div className="w-full">
                         <div className="w-full">
-                            <div className="w-full">
-                                <Table>
-                                    <TableCaption>A list of staffs.</TableCaption>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[100px]">Staff Id</TableHead>
-                                            <TableHead>Full Name</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Contact Number</TableHead>
-                                            <TableHead>Address</TableHead>
-                                            <TableHead>DOB</TableHead>
-                                            <TableHead>Check In Time</TableHead>
-                                            <TableHead>Check Out Time</TableHead>
-                                            <TableHead>Joined Date</TableHead>
-                                            <TableHead>Work Hours</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Salary</TableHead>
-                                            <TableHead>Role</TableHead>
-                                            <TableHead>Action</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {Array.isArray(staffs) && staffs.length > 0 ? (
-                                            <TableBody>
-                                                {staffs.map((staff) => (
-                                                    <TableRow key={staff._id}>
-                                                        <TableCell className="font-medium">{staff._id}</TableCell>
-                                                        <TableCell>{staff.fullName}</TableCell>
-                                                        <TableCell>{staff.email}</TableCell>
-                                                        <TableCell>{staff.contactNo}</TableCell>
-                                                        <TableCell>{staff.address}</TableCell>
-                                                        <TableCell>{staff.dob}</TableCell>
-                                                        <TableCell>{staff.checkInTime}</TableCell>
-                                                        <TableCell>{staff.checkOutTime}</TableCell>
-                                                        <TableCell>{staff.joinedDate}</TableCell>
-                                                        <TableCell>{staff.totalHoursToWork}</TableCell>
-                                                        <TableCell>{staff.employmentStatus}</TableCell>
-                                                        <TableCell>{staff.salary}</TableCell>
-                                                        <TableCell>{staff.role}</TableCell>
-                                                        <TableCell>
-                                                            <div className="flex items-center">
-                                                                <MdEmail className="cursor-pointer" />
-                                                                <FaUserEdit className="cursor-pointer" />
-                                                                <MdDelete className="text-red-600 cursor-pointer" />
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        ) : (
-                                            <div className="w-full flex justify-center">
-                                                <p className="text-sm font-semibold text-center">No staff found.</p>
-                                            </div>
-                                        )}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TableCell colSpan={3}>Total Staffs</TableCell>
-                                            <TableCell className="text-right">{staffs ? staffs.length : ''}</TableCell>
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
-                            </div>
-
-                            <div className="py-3">
-                                <Pagination>
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <PaginationPrevious href="#" />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">1</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#" isActive>
-                                                2
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationLink href="#">3</PaginationLink>
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationEllipsis />
-                                        </PaginationItem>
-                                        <PaginationItem>
-                                            <PaginationNext href="#" />
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            </div>
-                        </div>
-                        <div className="flex justify-center items-center px-5 my-6 space-x-4">
-                            <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
-                            <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
-                            <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
-                        </div>
-                        {
-                            openForm && (
-                                <>
-                                    <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center">
+                            <Table>
+                                <TableCaption>A list of staffs.</TableCaption>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">Staff Id</TableHead>
+                                        <TableHead>Full Name</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Contact Number</TableHead>
+                                        <TableHead>Address</TableHead>
+                                        <TableHead>DOB</TableHead>
+                                        <TableHead>Check In Time</TableHead>
+                                        <TableHead>Check Out Time</TableHead>
+                                        <TableHead>Joined Date</TableHead>
+                                        <TableHead>Work Hours</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Salary</TableHead>
+                                        <TableHead>Role</TableHead>
+                                        <TableHead>Action</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {Array.isArray(staffs) && staffs.length > 0 ? (
+                                        <TableBody>
+                                            {staffs.map((staff) => (
+                                                <TableRow key={staff._id}>
+                                                    <TableCell className="font-medium">{staff._id}</TableCell>
+                                                    <TableCell>{staff.fullName}</TableCell>
+                                                    <TableCell>{staff.email}</TableCell>
+                                                    <TableCell>{staff.contactNo}</TableCell>
+                                                    <TableCell>{staff.address}</TableCell>
+                                                    <TableCell>{staff.dob}</TableCell>
+                                                    <TableCell>{staff.checkInTime}</TableCell>
+                                                    <TableCell>{staff.checkOutTime}</TableCell>
+                                                    <TableCell>{staff.joinedDate}</TableCell>
+                                                    <TableCell>{staff.totalHoursToWork}</TableCell>
+                                                    <TableCell>{staff.employmentStatus}</TableCell>
+                                                    <TableCell>{staff.salary}</TableCell>
+                                                    <TableCell>{staff.role}</TableCell>
+                                                    <TableCell>
+                                                        <div className="flex items-center">
+                                                            <MdEmail className="cursor-pointer" />
+                                                            <FaUserEdit className="cursor-pointer" />
+                                                            <MdDelete className="text-red-600 cursor-pointer" />
+                                                        </div>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    ) : (
                                         <div className="w-full flex justify-center">
-                                            <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
-                                                <div className="w-full md:flex md:justify-center md:items-center">
-                                                    <form className="w-full max-h-[90vh] overflow-y-auto">
-                                                        <div className="bg-gray-300 py-2 my-2 w-full">
-                                                            <h1 className="mx-4 font-semibold">Staff Registration Information</h1>
-                                                        </div>
-                                                        <div className="p-4 bg-white">
-                                                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                                                <div>
-                                                                    <Label>Full Name</Label>
-                                                                    <Input
-                                                                        {...register("fullName")}
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Full Name"
-                                                                    />
-                                                                </div>
+                                            <p className="text-sm font-semibold text-center">No staff found.</p>
+                                        </div>
+                                    )}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan={3}>Total Staffs</TableCell>
+                                        <TableCell className="text-right">{staffs ? staffs.length : ''}</TableCell>
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+                        </div>
 
-                                                                <div>
-                                                                    <Label>Email Address</Label>
-                                                                    <Input
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Email address"
-                                                                    />
-                                                                </div>
+                        <div className="py-3">
+                            <Pagination>
+                                <PaginationContent>
+                                    <PaginationItem>
+                                        <PaginationPrevious href="#" />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationLink href="#">1</PaginationLink>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationLink href="#" isActive>
+                                            2
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationLink href="#">3</PaginationLink>
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationEllipsis />
+                                    </PaginationItem>
+                                    <PaginationItem>
+                                        <PaginationNext href="#" />
+                                    </PaginationItem>
+                                </PaginationContent>
+                            </Pagination>
+                        </div>
+                    </div>
+                    <div className="flex justify-center items-center px-5 my-6 space-x-4">
+                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
+                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
+                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
+                    </div>
+                    {
+                        openForm && (
+                            <>
+                                <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
+                                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                                    <div className="w-full flex justify-center">
+                                        <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
+                                            <div className="w-full md:flex md:justify-center md:items-center">
+                                                <form className="w-full max-h-[90vh] overflow-y-auto" onSubmit={handleSubmit(registerNewStaff)}>
+                                                    <div className="bg-gray-300 py-2 my-2 w-full">
+                                                        <h1 className="mx-4 font-semibold">Staff Registration Information</h1>
+                                                    </div>
+                                                    <div className="p-4 bg-white">
+                                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                                            <div>
+                                                                <Label>Full Name</Label>
+                                                                <Input
+                                                                    {...register("fullName")}
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Full Name"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Contact Number</Label>
-                                                                    <Input
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Contact Number"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Email Address</Label>
+                                                                <Input
+                                                                    {...register("email")}
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Email address"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Emergency Contact Number</Label>
-                                                                    <Input
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Secondary Phone Number"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Contact Number</Label>
+                                                                <Input
+                                                                    {...register("contactNo")}
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Contact Number"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Address</Label>
-                                                                    <Input
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Address"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Emergency Contact Number</Label>
+                                                                <Input
+                                                                    {...register("emergencyContactNo")}
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Emergency Contact Number"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Date Of Birth</Label>
-                                                                    <Input
-                                                                        type="date"
-                                                                        className="rounded-none focus:outline-none"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Address</Label>
+                                                                <Input
+                                                                    {...register("address")}
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Address"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Check In</Label>
-                                                                    <Input
-                                                                        type="time"
-                                                                        className="rounded-none focus:outline-none"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Date Of Birth</Label>
+                                                                <Input
+                                                                    {...register("dob")}
+                                                                    type="date"
+                                                                    className="rounded-none focus:outline-none"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Check out</Label>
-                                                                    <Input
-                                                                        type="time"
-                                                                        className="rounded-none focus:outline-none"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Check In</Label>
+                                                                <Input
+                                                                    {...register("checkInTime")}
+                                                                    type="time"
+                                                                    className="rounded-none focus:outline-none"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Gender</Label>
-                                                                    <Select>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="Select Gender" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Gender</SelectLabel>
-                                                                                <SelectItem value="Male">Male</SelectItem>
-                                                                                <SelectItem value="Female">Female</SelectItem>
-                                                                                <SelectItem value="Other">Other</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Check out</Label>
+                                                                <Input
+                                                                    {...register("checkOutTime")}
+                                                                    type="time"
+                                                                    className="rounded-none focus:outline-none"
+                                                                />
+                                                            </div>
 
-                                                                <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg">
-                                                                        <div className="grid grid-cols-2 gap-4">
-                                                                            {days.map((day) => (
-                                                                                <label
-                                                                                    key={day}
-                                                                                    className="flex items-center space-x-2 cursor-pointer"
-                                                                                >
-                                                                                    <input
-                                                                                        type="checkbox"
-                                                                                        value={day}
-                                                                                        checked={workingDays.includes(day)}
-                                                                                        onChange={() => toggleDay(day)}
-                                                                                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                                                                    />
-                                                                                    <span className="text-gray-700">{day}</span>
-                                                                                </label>
-                                                                            ))}
-                                                                        </div>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Gender</Label>
+                                                                <Select onValueChange={(value) => setValue(value, 'gender')}>
+                                                                    <SelectTrigger className="w-full rounded-none">
+                                                                        <SelectValue placeholder="Select Gender" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectGroup>
+                                                                            <SelectLabel>Gender</SelectLabel>
+                                                                            <SelectItem value="Male">Male</SelectItem>
+                                                                            <SelectItem value="Female">Female</SelectItem>
+                                                                            <SelectItem value="Other">Other</SelectItem>
+                                                                        </SelectGroup>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Select Shift</Label>
-                                                                    <Select>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="Select Shift" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Membership Type</SelectLabel>
-                                                                                <SelectItem value="Morning">Morning</SelectItem>
-                                                                                <SelectItem value="Day">Day</SelectItem>
-                                                                                <SelectItem value="Evening">Evening</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Select Shift</Label>
+                                                                <Select onValueChange={(value) => setValue(value, 'shift')}>
+                                                                    <SelectTrigger className="w-full rounded-none">
+                                                                        <SelectValue placeholder="Select Shift" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectGroup>
+                                                                            <SelectLabel>Membership Type</SelectLabel>
+                                                                            <SelectItem value="Morning">Morning</SelectItem>
+                                                                            <SelectItem value="Day">Day</SelectItem>
+                                                                            <SelectItem value="Evening">Evening</SelectItem>
+                                                                        </SelectGroup>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Joined Date</Label>
-                                                                    <Input
-                                                                        type="date"
-                                                                        className="rounded-none focus:outline-none"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Joined Date</Label>
+                                                                <Input
+                                                                    {...register("joinedDate")}
+                                                                    type="date"
+                                                                    className="rounded-none focus:outline-none"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Working Hours</Label>
-                                                                    <Select>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="Working Hours" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Duration</SelectLabel>
-                                                                                <SelectItem value="1 Month">1 Month</SelectItem>
-                                                                                <SelectItem value="3 Months">3 Months</SelectItem>
-                                                                                <SelectItem value="6 Months">6 Months</SelectItem>
-                                                                                <SelectItem value="12 Months">12 Months</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Working Hours</Label>
+                                                                <Select onValueChange={(value) => setValue(value, 'workingHours')}>
+                                                                    <SelectTrigger className="w-full rounded-none">
+                                                                        <SelectValue placeholder="Working Hours" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectGroup>
+                                                                            <SelectLabel>Duration</SelectLabel>
+                                                                            <SelectItem value="1 Month">1 Month</SelectItem>
+                                                                            <SelectItem value="3 Months">3 Months</SelectItem>
+                                                                            <SelectItem value="6 Months">6 Months</SelectItem>
+                                                                            <SelectItem value="12 Months">12 Months</SelectItem>
+                                                                        </SelectGroup>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Status</Label>
-                                                                    <Select>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="Status" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Duration</SelectLabel>
-                                                                                <SelectItem value="Active">Active</SelectItem>
-                                                                                <SelectItem value="On Leave">On Leave</SelectItem>
-                                                                                <SelectItem value="Inactive">Inactive</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Status</Label>
+                                                                <Select onValueChange={(value) => setValue(value, 'status')}>
+                                                                    <SelectTrigger className="w-full rounded-none">
+                                                                        <SelectValue placeholder="Status" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectGroup>
+                                                                            <SelectLabel>Duration</SelectLabel>
+                                                                            <SelectItem value="Active">Active</SelectItem>
+                                                                            <SelectItem value="On Leave">On Leave</SelectItem>
+                                                                            <SelectItem value="Inactive">Inactive</SelectItem>
+                                                                        </SelectGroup>
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Salary</Label>
-                                                                    <Input
-                                                                        type="text"
-                                                                        className="rounded-none focus:outline-none"
-                                                                        placeholder="Salary"
-                                                                    />
-                                                                </div>
+                                                            <div>
+                                                                <Label>Salary</Label>
+                                                                <Input
+                                                                    {...register("salary")}
+                                                                    type="text"
+                                                                    className="rounded-none focus:outline-none"
+                                                                    placeholder="Salary"
+                                                                />
+                                                            </div>
 
-                                                                <div>
-                                                                    <Label>Role</Label>
-                                                                    <Select>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="Staff Role" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Select</SelectLabel>
-                                                                                <SelectItem value="Gym Admin">Gym Admin</SelectItem>
-                                                                                <SelectItem value="Trainer">Trainer</SelectItem>
-                                                                                <SelectItem value="Personal Trainer">Personal Trainer</SelectItem>
-                                                                                <SelectItem value="Super Admin">Super Admin</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                            <div>
+                                                                <Label>Role</Label>
+                                                                <Select onValueChange={(value) => setValue(value, 'role')}>
+                                                                    <SelectTrigger className="w-full rounded-none">
+                                                                        <SelectValue placeholder="Staff Role" />
+                                                                    </SelectTrigger>
+                                                                    <SelectContent>
+                                                                        <SelectGroup>
+                                                                            <SelectLabel>Select</SelectLabel>
+                                                                            <SelectItem value="Gym Admin">Gym Admin</SelectItem>
+                                                                            <SelectItem value="Trainer">Trainer</SelectItem>
+                                                                            <SelectItem value="Personal Trainer">Personal Trainer</SelectItem>
+                                                                            <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                                                        </SelectGroup>
+                                                                    </SelectContent>
+                                                                </Select>
                                                             </div>
                                                         </div>
+                                                    </div>
 
-                                                        <div className="flex justify-center items-center mt-5 space-x-2 p-2">
-                                                            <Button variant="destructive" className="rounded-none">Reset Form</Button>
-                                                            <Button className="rounded-none" onClick={() => setOpenForm(!openForm)}>Close Form</Button>
-                                                            <Button className="rounded-none">Add Staff</Button>
-                                                        </div>
-                                                    </form>
-                                                </div>
+                                                    <div className="flex justify-center items-center mt-5 space-x-2 p-2">
+                                                        <Button variant="destructive" className="rounded-none" onClick={() => reset()}>Reset Form</Button>
+                                                        <Button className="rounded-none" onClick={() => setOpenForm(!openForm)}>Close Form</Button>
+                                                        <Button className="rounded-none" type='submit'>{isSubmitting ? 'Processing...' : 'Add Staff'}</Button>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
-                                </>
-                            )
-                        }
-                    </div>
+                                </div>
+                            </>
+                        )
+                    }
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
 export default AddStaff;
