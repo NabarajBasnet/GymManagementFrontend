@@ -210,24 +210,20 @@ const AddStaff = () => {
 
             <div className="w-full flex justify-between items-start">
                 <div className="w-full bg-white">
-                    <div className="w-full overflow-x-auto">
-                        <div className="w-full">
+                    <div className="w-full">
+                        <div className="w-full overflow-x-auto">
                             <Table className='w-full overflow-x-auto'>
-                                <TableCaption>A list of staffs.</TableCaption>
                                 <TableHeader>
-                                    <TableRow>
+                                    <TableRow className='bg-gray-200 text-black'>
                                         <TableHead>Staff Id</TableHead>
                                         <TableHead>Full Name</TableHead>
-                                        <TableHead>Email</TableHead>
                                         <TableHead>Contact Number</TableHead>
                                         <TableHead>Address</TableHead>
-                                        <TableHead>DOB</TableHead>
                                         <TableHead>Check In Time</TableHead>
                                         <TableHead>Check Out Time</TableHead>
                                         <TableHead>Joined Date</TableHead>
                                         <TableHead>Work Hours</TableHead>
                                         <TableHead>Status</TableHead>
-                                        <TableHead>Salary</TableHead>
                                         <TableHead>Role</TableHead>
                                         <TableHead>Action</TableHead>
                                     </TableRow>
@@ -238,16 +234,13 @@ const AddStaff = () => {
                                             <TableRow key={staff._id}>
                                                 <TableCell className="font-medium">{staff._id}</TableCell>
                                                 <TableCell>{staff.fullName}</TableCell>
-                                                <TableCell>{staff.email}</TableCell>
                                                 <TableCell>{staff.contactNo}</TableCell>
                                                 <TableCell>{staff.address}</TableCell>
-                                                <TableCell>{staff.dob}</TableCell>
                                                 <TableCell>{staff.checkInTime}</TableCell>
                                                 <TableCell>{staff.checkOutTime}</TableCell>
-                                                <TableCell>{staff.joinedDate}</TableCell>
+                                                <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
                                                 <TableCell>{staff.totalHoursToWork}</TableCell>
                                                 <TableCell>{staff.employmentStatus}</TableCell>
-                                                <TableCell>{staff.salary}</TableCell>
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-2">
@@ -268,7 +261,7 @@ const AddStaff = () => {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={13}>Total Staffs</TableCell>
+                                        <TableCell colSpan={3}>Total Staffs</TableCell>
                                         <TableCell className="text-right font-medium">{staffs ? staffs.length : 0}</TableCell>
                                     </TableRow>
                                 </TableFooter>
