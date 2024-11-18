@@ -21,7 +21,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "../allmembers/allmembertable.jsx";
 import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
@@ -92,7 +92,8 @@ const AddStaff = () => {
 
     const registerNewStaff = async (data) => {
         console.log("Data: ", data);
-        const finalData = { data };
+        const { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role } = data;
+        const finalData = { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role };
         try {
             const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
@@ -144,7 +145,7 @@ const AddStaff = () => {
                 <h1 className="text-xl font-bold mt-3">Staff Management</h1>
             </div>
 
-            <div className="w-full md:flex justify-between items-center p-2">
+            <div className="w-full md:flex justify-between items-center space-x-4 p-2">
                 <Select>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a fruit" />
@@ -209,13 +210,13 @@ const AddStaff = () => {
 
             <div className="w-full flex justify-between items-start">
                 <div className="w-full bg-white">
-                    <div className="w-full">
+                    <div className="w-full overflow-x-auto">
                         <div className="w-full">
-                            <Table>
+                            <Table className='w-full overflow-x-auto'>
                                 <TableCaption>A list of staffs.</TableCaption>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[100px]">Staff Id</TableHead>
+                                        <TableHead>Staff Id</TableHead>
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Email</TableHead>
                                         <TableHead>Contact Number</TableHead>
@@ -233,42 +234,42 @@ const AddStaff = () => {
                                 </TableHeader>
                                 <TableBody>
                                     {Array.isArray(staffs) && staffs.length > 0 ? (
-                                        <TableBody>
-                                            {staffs.map((staff) => (
-                                                <TableRow key={staff._id}>
-                                                    <TableCell className="font-medium">{staff._id}</TableCell>
-                                                    <TableCell>{staff.fullName}</TableCell>
-                                                    <TableCell>{staff.email}</TableCell>
-                                                    <TableCell>{staff.contactNo}</TableCell>
-                                                    <TableCell>{staff.address}</TableCell>
-                                                    <TableCell>{staff.dob}</TableCell>
-                                                    <TableCell>{staff.checkInTime}</TableCell>
-                                                    <TableCell>{staff.checkOutTime}</TableCell>
-                                                    <TableCell>{staff.joinedDate}</TableCell>
-                                                    <TableCell>{staff.totalHoursToWork}</TableCell>
-                                                    <TableCell>{staff.employmentStatus}</TableCell>
-                                                    <TableCell>{staff.salary}</TableCell>
-                                                    <TableCell>{staff.role}</TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center">
-                                                            <MdEmail className="cursor-pointer" />
-                                                            <FaUserEdit className="cursor-pointer" />
-                                                            <MdDelete className="text-red-600 cursor-pointer" />
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
+                                        staffs.map((staff) => (
+                                            <TableRow key={staff._id}>
+                                                <TableCell className="font-medium">{staff._id}</TableCell>
+                                                <TableCell>{staff.fullName}</TableCell>
+                                                <TableCell>{staff.email}</TableCell>
+                                                <TableCell>{staff.contactNo}</TableCell>
+                                                <TableCell>{staff.address}</TableCell>
+                                                <TableCell>{staff.dob}</TableCell>
+                                                <TableCell>{staff.checkInTime}</TableCell>
+                                                <TableCell>{staff.checkOutTime}</TableCell>
+                                                <TableCell>{staff.joinedDate}</TableCell>
+                                                <TableCell>{staff.totalHoursToWork}</TableCell>
+                                                <TableCell>{staff.employmentStatus}</TableCell>
+                                                <TableCell>{staff.salary}</TableCell>
+                                                <TableCell>{staff.role}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center space-x-2">
+                                                        <MdEmail className="cursor-pointer" />
+                                                        <FaUserEdit className="cursor-pointer" />
+                                                        <MdDelete className="text-red-600 cursor-pointer" />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
                                     ) : (
-                                        <div className="w-full flex justify-center">
-                                            <p className="text-sm font-semibold text-center">No staff found.</p>
-                                        </div>
+                                        <TableRow>
+                                            <TableCell colSpan={14} className="text-center text-sm font-semibold">
+                                                No staff found.
+                                            </TableCell>
+                                        </TableRow>
                                     )}
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={3}>Total Staffs</TableCell>
-                                        <TableCell className="text-right">{staffs ? staffs.length : ''}</TableCell>
+                                        <TableCell colSpan={13}>Total Staffs</TableCell>
+                                        <TableCell className="text-right font-medium">{staffs ? staffs.length : 0}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
@@ -503,7 +504,7 @@ const AddStaff = () => {
                                                     <div className="flex justify-center items-center mt-5 space-x-2 p-2">
                                                         <Button variant="destructive" className="rounded-none" onClick={() => reset()}>Reset Form</Button>
                                                         <Button className="rounded-none" onClick={() => setOpenForm(!openForm)}>Close Form</Button>
-                                                        <Button className="rounded-none" type='submit'>{isSubmitting ? 'Processing...' : 'Add Staff'}</Button>
+                                                        <Button className="rounded-none bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Add Staff'}</Button>
                                                     </div>
                                                 </form>
                                             </div>
