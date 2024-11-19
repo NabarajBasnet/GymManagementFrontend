@@ -1,6 +1,6 @@
 'use client'
 
-import { MdDelete, MdEmail } from "react-icons/md";
+import { MdDelete, MdEmail, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -55,9 +55,6 @@ import * as React from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { DataArray } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
-import { MdError } from "react-icons/md";
-import { MdDelete } from "react-icons/md";
-import { MdDone } from "react-icons/md";
 
 const AddStaff = () => {
 
@@ -212,7 +209,7 @@ const AddStaff = () => {
                 <></>
             )}
 
-            <div className="w-full md:flex justify-between items-center space-x-4 p-2">
+            <div className="w-full md:flex justify-between items-center md:space-x-4 space-y-4 p-2">
                 <Select>
                     <SelectTrigger className="w-full">
                         <SelectValue placeholder="Select a fruit" />
