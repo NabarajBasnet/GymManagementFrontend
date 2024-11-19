@@ -75,7 +75,7 @@ const AddStaff = () => {
     // Functions
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -94,8 +94,9 @@ const AddStaff = () => {
         console.log("Data: ", data);
         const { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role } = data;
         const finalData = { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role };
+
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -104,6 +105,15 @@ const AddStaff = () => {
             })
             const responseBody = await response.json();
             console.log("Response body: ", responseBody);
+            if (responseBody.errors) {
+                console.log("Errors coming...", responseBody.errors)
+                responseBody.errors.forEach((error) => {
+                    setError(error.field, {
+                        type: 'manual',
+                        message: error.message
+                    });
+                });
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
