@@ -55,12 +55,20 @@ import * as React from 'react';
 import { useQuery } from "@tanstack/react-query";
 import { DataArray } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
+import { MdError } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { MdDone } from "react-icons/md";
 
 const AddStaff = () => {
 
     // States
     const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+    const responseResultType = ['Success', 'Failure'];
 
     const {
         register,
@@ -70,6 +78,7 @@ const AddStaff = () => {
         control,
         setValue,
         setError,
+        clearErrors
     } = useForm();
 
     // Functions
@@ -104,6 +113,7 @@ const AddStaff = () => {
                 body: JSON.stringify(finalData)
             })
             const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (responseBody.errors) {
                 responseBody.errors.forEach((error) => {
                     setError(error.field, {
@@ -111,6 +121,31 @@ const AddStaff = () => {
                         message: error.message
                     });
                 });
+            }
+
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
             }
         } catch (error) {
             console.log("Error: ", error);
@@ -143,6 +178,39 @@ const AddStaff = () => {
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Staff Management</h1>
             </div>
+
+            {toast ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <div>
+                            {
+                                responseType === 'Success' ? (
+                                    <MdDone className="text-3xl mx-4 text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl mx-4 text-red-600" />
+                                )
+                            }
+                        </div>
+                        <div className="block">
+                            {
+                                responseType === 'Success' ? (
+                                    <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                ) : (
+                                    <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <MdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer text-3xl ml-4" />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
 
             <div className="w-full md:flex justify-between items-center space-x-4 p-2">
                 <Select>
@@ -218,9 +286,9 @@ const AddStaff = () => {
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Contact Number</TableHead>
                                         <TableHead>Address</TableHead>
-                                        <TableHead>Check In Time</TableHead>
-                                        <TableHead>Check Out Time</TableHead>
-                                        <TableHead>Joined Date</TableHead>
+                                        <TableHead>CheckIn</TableHead>
+                                        <TableHead>CheckOut</TableHead>
+                                        <TableHead>Joined At</TableHead>
                                         <TableHead>Work Hours</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Role</TableHead>
@@ -411,7 +479,10 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Gender</Label>
-                                                                <Select onValueChange={(value) => setValue(value, 'gender')}>
+                                                                <Select onValueChange={(value) => {
+                                                                    setValue('gender', value);
+                                                                    clearErrors('gender');
+                                                                }}>
                                                                     <SelectTrigger className="w-full rounded-none">
                                                                         <SelectValue placeholder="Select Gender" />
                                                                     </SelectTrigger>
@@ -431,7 +502,10 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Select Shift</Label>
-                                                                <Select onValueChange={(value) => setValue(value, 'shift')}>
+                                                                <Select onValueChange={(value) => {
+                                                                    setValue('shift', value);
+                                                                    clearErrors('shift')
+                                                                }}>
                                                                     <SelectTrigger className="w-full rounded-none">
                                                                         <SelectValue placeholder="Select Shift" />
                                                                     </SelectTrigger>
@@ -463,17 +537,21 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Working Hours</Label>
-                                                                <Select onValueChange={(value) => setValue(value, 'workingHours')}>
+                                                                <Select onValueChange={(value) => {
+                                                                    setValue('workingHours', value);
+                                                                    clearErrors('workingHours');
+                                                                }}>
                                                                     <SelectTrigger className="w-full rounded-none">
                                                                         <SelectValue placeholder="Working Hours" />
                                                                     </SelectTrigger>
                                                                     <SelectContent>
                                                                         <SelectGroup>
-                                                                            <SelectLabel>Duration</SelectLabel>
-                                                                            <SelectItem value="1 Month">1 Month</SelectItem>
-                                                                            <SelectItem value="3 Months">3 Months</SelectItem>
-                                                                            <SelectItem value="6 Months">6 Months</SelectItem>
-                                                                            <SelectItem value="12 Months">12 Months</SelectItem>
+                                                                            <SelectLabel>Select</SelectLabel>
+                                                                            <SelectItem value="2 Hours">2 Hours</SelectItem>
+                                                                            <SelectItem value="5 Hours">5 Hours</SelectItem>
+                                                                            <SelectItem value="6 Hours">6 Hours</SelectItem>
+                                                                            <SelectItem value="7 Hours">7 Hours</SelectItem>
+                                                                            <SelectItem value="8 Hours">8 Hours</SelectItem>
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
@@ -484,7 +562,10 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Status</Label>
-                                                                <Select onValueChange={(value) => setValue(value, 'status')}>
+                                                                <Select onValueChange={(value) => {
+                                                                    setValue('status', value);
+                                                                    clearErrors('status')
+                                                                }}>
                                                                     <SelectTrigger className="w-full rounded-none">
                                                                         <SelectValue placeholder="Status" />
                                                                     </SelectTrigger>
@@ -517,7 +598,10 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Role</Label>
-                                                                <Select onValueChange={(value) => setValue(value, 'role')}>
+                                                                <Select onValueChange={(value) => {
+                                                                    setValue('role', value);
+                                                                    clearErrors("role");
+                                                                }}>
                                                                     <SelectTrigger className="w-full rounded-none">
                                                                         <SelectValue placeholder="Staff Role" />
                                                                     </SelectTrigger>
