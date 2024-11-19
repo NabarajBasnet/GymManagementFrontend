@@ -1,6 +1,6 @@
 'use client'
 
-import { MdDelete, MdEmail, MdDone, MdError } from "react-icons/md";
+import { MdDelete, MdClose, MdEmail, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -123,6 +123,7 @@ const AddStaff = () => {
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
+                setOpenForm(false);
                 setTimeout(() => {
                     setToast(false)
                 }, 10000);
@@ -135,6 +136,7 @@ const AddStaff = () => {
                 if (response.status === 200) {
                     setResponseType(responseResultType[0]);
                     setToast(true);
+                    setOpenForm(false);
                     setTimeout(() => {
                         setToast(false)
                     }, 10000);
@@ -146,6 +148,16 @@ const AddStaff = () => {
             }
         } catch (error) {
             console.log("Error: ", error);
+            setResponseType(responseResultType[0]);
+            setToast(true);
+            setOpenForm(false);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setSuccessMessage({
+                icon: MdError,
+                message: error.message || 'Unauthorized action'
+            })
         }
     };
 
