@@ -104,9 +104,7 @@ const AddStaff = () => {
                 body: JSON.stringify(finalData)
             })
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (responseBody.errors) {
-                console.log("Errors coming...", responseBody.errors)
                 responseBody.errors.forEach((error) => {
                     setError(error.field, {
                         type: 'manual',
@@ -118,15 +116,6 @@ const AddStaff = () => {
             console.log("Error: ", error);
         }
     };
-
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        }
-    ];
 
     return (
         <div className="w-full">
@@ -331,6 +320,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Full Name"
                                                                 />
+                                                                {errors.fullName && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -340,6 +332,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Email address"
                                                                 />
+                                                                {errors.email && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -349,6 +344,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Contact Number"
                                                                 />
+                                                                {errors.contactNo && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -358,6 +356,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Emergency Contact Number"
                                                                 />
+                                                                {errors.emergencyContactNo && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -367,6 +368,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Address"
                                                                 />
+                                                                {errors.address && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.address.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -376,6 +380,9 @@ const AddStaff = () => {
                                                                     type="date"
                                                                     className="rounded-none focus:outline-none"
                                                                 />
+                                                                {errors.dob && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -385,6 +392,9 @@ const AddStaff = () => {
                                                                     type="time"
                                                                     className="rounded-none focus:outline-none"
                                                                 />
+                                                                {errors.checkInTime && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.checkInTime.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -394,6 +404,9 @@ const AddStaff = () => {
                                                                     type="time"
                                                                     className="rounded-none focus:outline-none"
                                                                 />
+                                                                {errors.checkOutTime && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.checkOutTime.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -411,6 +424,9 @@ const AddStaff = () => {
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
+                                                                {errors.gender && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -428,6 +444,9 @@ const AddStaff = () => {
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
+                                                                {errors.shift && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.shift.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -437,6 +456,9 @@ const AddStaff = () => {
                                                                     type="date"
                                                                     className="rounded-none focus:outline-none"
                                                                 />
+                                                                {errors.joinedDate && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -455,6 +477,9 @@ const AddStaff = () => {
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
+                                                                {errors.workingHours && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.workingHours.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -472,6 +497,9 @@ const AddStaff = () => {
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
+                                                                {errors.status && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -482,6 +510,9 @@ const AddStaff = () => {
                                                                     className="rounded-none focus:outline-none"
                                                                     placeholder="Salary"
                                                                 />
+                                                                {errors.salary && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
+                                                                )}
                                                             </div>
 
                                                             <div>
@@ -500,6 +531,9 @@ const AddStaff = () => {
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
+                                                                {errors.role && (
+                                                                    <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
+                                                                )}
                                                             </div>
                                                         </div>
                                                     </div>
