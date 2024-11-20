@@ -59,6 +59,8 @@ import { useForm, Controller } from "react-hook-form";
 const AddStaff = () => {
 
     // States
+    const [time, setTime] = useState('');
+    const [formattedTime, setFormattedTime] = useState("");
     const queryclient = useQueryClient()
     const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
@@ -80,6 +82,20 @@ const AddStaff = () => {
     } = useForm();
 
     // Functions
+
+    const handleTimeChange = (e) => {
+        const value = e.target.value;
+        setTime(value);
+
+        // Convert 24 hour to 12 hour format with AM/PM
+        const [hour, minute] = value.split(":").map(Number);
+        const period = hour >= 12 ? "PM" : "AM";
+        const hour12 = hour % 12 || 12;
+        const formatedTime = `${hour12}:${minute.toString().padStart(2, "0")} ${period}`;
+        setFormattedTime(formatedTime);
+        setValue('checkInTime',formatedTime);
+    }
+
     const fetchAllStaffs = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
@@ -464,7 +480,8 @@ const AddStaff = () => {
                                                             <div>
                                                                 <Label>Check In</Label>
                                                                 <Input
-                                                                    {...register("checkInTime")}
+                                                                    value={time}
+                                                                    onChange={handleTimeChange}
                                                                     type="time"
                                                                     className="rounded-none focus:outline-none"
                                                                 />
