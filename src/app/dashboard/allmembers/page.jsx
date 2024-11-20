@@ -68,7 +68,7 @@ const AllMembers = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -98,7 +98,7 @@ const AllMembers = () => {
             return;
         };
 
-        const response = await fetch(`http://localhost:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`http://88.198.112.156:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
@@ -125,7 +125,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -174,7 +174,7 @@ const AllMembers = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -541,16 +541,44 @@ const AllMembers = () => {
                                 <PaginationItem>
                                     <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                 </PaginationItem>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <PaginationItem key={i}>
-                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                            {i + 1}
+                                <PaginationItem>
+                                    <PaginationLink onClick={() => handlePageChange(1)} isActive={currentPage === 1}>
+                                        1
+                                    </PaginationLink>
+                                </PaginationItem>
+                                {currentPage > 3 && totalPages > 5 && (
+                                    <PaginationItem>
+                                        <PaginationEllipsis />
+                                    </PaginationItem>
+                                )}
+                                {[...Array(5)].map((_, i) => {
+                                    const page = currentPage - 2 + i;
+                                    if (page > 1 && page < totalPages) {
+                                        return (
+                                            <PaginationItem key={page}>
+                                                <PaginationLink
+                                                    onClick={() => handlePageChange(page)}
+                                                    isActive={currentPage === page}
+                                                >
+                                                    {page}
+                                                </PaginationLink>
+                                            </PaginationItem>
+                                        );
+                                    }
+                                    return null;
+                                })}
+                                {currentPage < totalPages - 2 && totalPages > 5 && (
+                                    <PaginationItem>
+                                        <PaginationEllipsis />
+                                    </PaginationItem>
+                                )}
+                                {totalPages > 1 && (
+                                    <PaginationItem>
+                                        <PaginationLink onClick={() => handlePageChange(totalPages)} isActive={currentPage === totalPages}>
+                                            {totalPages}
                                         </PaginationLink>
                                     </PaginationItem>
-                                ))}
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
+                                )}
                                 <PaginationItem>
                                     <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                 </PaginationItem>
