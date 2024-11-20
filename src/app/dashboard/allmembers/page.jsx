@@ -541,44 +541,16 @@ const AllMembers = () => {
                                 <PaginationItem>
                                     <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                 </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink onClick={() => handlePageChange(1)} isActive={currentPage === 1}>
-                                        1
-                                    </PaginationLink>
-                                </PaginationItem>
-                                {currentPage > 3 && totalPages > 5 && (
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                )}
-                                {[...Array(5)].map((_, i) => {
-                                    const page = currentPage - 2 + i;
-                                    if (page > 1 && page < totalPages) {
-                                        return (
-                                            <PaginationItem key={page}>
-                                                <PaginationLink
-                                                    onClick={() => handlePageChange(page)}
-                                                    isActive={currentPage === page}
-                                                >
-                                                    {page}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        );
-                                    }
-                                    return null;
-                                })}
-                                {currentPage < totalPages - 2 && totalPages > 5 && (
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                )}
-                                {totalPages > 1 && (
-                                    <PaginationItem>
-                                        <PaginationLink onClick={() => handlePageChange(totalPages)} isActive={currentPage === totalPages}>
-                                            {totalPages}
+                                {[...Array(totalPages)].map((_, i) => (
+                                    <PaginationItem key={i}>
+                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                            {i + 1}
                                         </PaginationLink>
                                     </PaginationItem>
-                                )}
+                                ))}
+                                <PaginationItem>
+                                    <PaginationEllipsis />
+                                </PaginationItem>
                                 <PaginationItem>
                                     <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                 </PaginationItem>
