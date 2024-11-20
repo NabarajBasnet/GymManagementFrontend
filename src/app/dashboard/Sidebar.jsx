@@ -61,7 +61,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -198,7 +198,7 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-50 flex bg-gray-800 flex-col`}
+        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex bg-gray-800 flex-col`}
             onMouseEnter={() => minimizeSidebar()}
         >
             {toast ? (

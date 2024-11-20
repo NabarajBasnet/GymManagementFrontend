@@ -52,13 +52,14 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import * as React from 'react';
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { DataArray } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 
 const AddStaff = () => {
 
     // States
+    const queryclient = useQueryClient()
     const [openForm, setOpenForm] = useState(false);
     const pathname = usePathname();
     const [toast, setToast] = useState(false);
@@ -81,7 +82,7 @@ const AddStaff = () => {
     // Functions
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -102,7 +103,7 @@ const AddStaff = () => {
         const finalData = { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role };
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -110,8 +111,11 @@ const AddStaff = () => {
                 body: JSON.stringify(finalData)
             })
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
-            if (responseBody.errors) {
+            if (response.status === 200) {
+                setOpenForm(false);
+                queryclient.invalidateQueries(['staffs']);
+            }
+            if (responseBody.errors && response.status === 400) {
                 responseBody.errors.forEach((error) => {
                     setError(error.field, {
                         type: 'manual',
@@ -119,42 +123,37 @@ const AddStaff = () => {
                     });
                 });
             }
-
-            if (response.status !== 200) {
+            else if (response.status === 401) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
-                setOpenForm(false);
                 setTimeout(() => {
                     setToast(false)
                 }, 10000);
                 setErrorMessage({
                     icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
+                    message: responseBody.message
+                })
             }
             else {
-                if (response.status === 200) {
-                    setResponseType(responseResultType[0]);
-                    setToast(true);
-                    setOpenForm(false);
-                    setTimeout(() => {
-                        setToast(false)
-                    }, 10000);
-                    setSuccessMessage({
-                        icon: MdError,
-                        message: responseBody.message || 'Unauthorized action'
-                    })
-                }
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                })
             }
+
         } catch (error) {
-            console.log("Error: ", error);
-            setResponseType(responseResultType[0]);
+            console.log("Error message: ", error.message);
+            setResponseType(responseResultType[1]);
             setToast(true);
-            setOpenForm(false);
             setTimeout(() => {
                 setToast(false)
             }, 10000);
-            setSuccessMessage({
+            setErrorMessage({
                 icon: MdError,
                 message: error.message || 'Unauthorized action'
             })
@@ -379,8 +378,8 @@ const AddStaff = () => {
                     {
                         openForm && (
                             <>
-                                <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
-                                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                                <div className="fixed inset-0 bg-black bg-opacity-85 z-30"></div>
+                                <div className="fixed inset-0 z-40 flex items-center justify-center">
                                     <div className="w-full flex justify-center">
                                         <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
                                             <div className="w-full md:flex md:justify-center md:items-center">
@@ -617,10 +616,14 @@ const AddStaff = () => {
                                                                     <SelectContent>
                                                                         <SelectGroup>
                                                                             <SelectLabel>Select</SelectLabel>
-                                                                            <SelectItem value="Gym Admin">Gym Admin</SelectItem>
-                                                                            <SelectItem value="Trainer">Trainer</SelectItem>
-                                                                            <SelectItem value="Personal Trainer">Personal Trainer</SelectItem>
                                                                             <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                                                            <SelectItem value="Gym Admin">Gym Admin</SelectItem>
+                                                                            <SelectItem value="Floor Trainer">Trainer</SelectItem>
+                                                                            <SelectItem value="Personal Trainer">Personal Trainer</SelectItem>
+                                                                            <SelectItem value="Operational Manager">Operational Manager</SelectItem>
+                                                                            <SelectItem value="HR Manager">HR Manager</SelectItem>
+                                                                            <SelectItem value="CEO">CEO</SelectItem>
+                                                                            <SelectItem value="Developer">Developer</SelectItem>
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
