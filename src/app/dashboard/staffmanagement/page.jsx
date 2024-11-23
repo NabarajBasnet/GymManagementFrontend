@@ -1,5 +1,6 @@
 'use client'
 
+import { CiClock1 } from "react-icons/ci";
 import { MdDelete, MdClose, MdEmail, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -81,24 +82,23 @@ const AddStaff = () => {
         clearErrors
     } = useForm();
 
+    const [CheckInTimePeriod, setCheckInTimePeriod] = useState("AM");
+    const toggleCheckInTimePeriod = () => {
+        setCheckInTimePeriod((prev) => (prev === "AM" ? "PM" : "AM"));
+        setValue('checkInPeriod', CheckInTimePeriod);
+    };
+
+    const [CheckOutTimePeriod, setCheckOutTimePeriod] = useState("PM");
+    const toggleCheckOutTimePeriod = () => {
+        setCheckOutTimePeriod((prev) => (prev === "PM" ? "AM" : "PM"));
+        setValue('checkOutPeriod', CheckOutTimePeriod);
+    };
+
     // Functions
-
-    const handleTimeChange = (e) => {
-        const value = e.target.value;
-        setTime(value);
-
-        // Convert 24 hour to 12 hour format with AM/PM
-        const [hour, minute] = value.split(":").map(Number);
-        const period = hour >= 12 ? "PM" : "AM";
-        const hour12 = hour % 12 || 12;
-        const formatedTime = `${hour12}:${minute.toString().padStart(2, "0")} ${period}`;
-        setFormattedTime(formatedTime);
-        setValue('checkInTime',formatedTime);
-    }
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -119,7 +119,7 @@ const AddStaff = () => {
         const finalData = { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role };
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -477,28 +477,105 @@ const AddStaff = () => {
                                                                 )}
                                                             </div>
 
-                                                            <div>
-                                                                <Label>Check In</Label>
-                                                                <Input
-                                                                    value={time}
-                                                                    onChange={handleTimeChange}
-                                                                    type="time"
-                                                                    className="rounded-none focus:outline-none"
-                                                                />
-                                                                {errors.checkInTime && (
-                                                                    <p className="text-red-600 font-semibold text-sm">{errors.checkInTime.message}</p>
+                                                            <div className="w-full space-y-2">
+                                                                <label className="text-sm font-medium text-gray-700">Check In</label>
+                                                                <div className="flex items-center space-x-3 rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+                                                                    <CiClock1 className="text-xl text-gray-500" />
+                                                                    <input
+                                                                        {...register("checkInHour", {
+                                                                            required: "Hour is required",
+                                                                            pattern: {
+                                                                                value: /^[0-9]{1,2}$/,
+                                                                                message: "Invalid hour format",
+                                                                            },
+                                                                            validate: (value) =>
+                                                                                value >= 1 && value <= 12 || "Hour must be between 1 and 12",
+                                                                        })}
+                                                                        type="number"
+                                                                        placeholder="HH"
+                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                    />
+                                                                    <span className="text-gray-500">:</span>
+                                                                    <input
+                                                                        {...register("checkInMinute", {
+                                                                            required: "Minute is required",
+                                                                            pattern: {
+                                                                                value: /^[0-5]?[0-9]$/,
+                                                                                message: "Invalid minute format",
+                                                                            },
+                                                                        })}
+                                                                        type="number"
+                                                                        placeholder="MM"
+                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={toggleCheckInTimePeriod}
+                                                                        className="px-2 py-1 text-sm font-semibold text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                                    >
+                                                                        {CheckInTimePeriod}
+                                                                    </button>
+                                                                </div>
+                                                                {errors.checkInHour && (
+                                                                    <p className="text-sm font-medium text-red-600">
+                                                                        {errors.checkInHour.message}
+                                                                    </p>
+                                                                )}
+                                                                {errors.checkInMinute && (
+                                                                    <p className="text-sm font-medium text-red-600">
+                                                                        {errors.checkInMinute.message}
+                                                                    </p>
                                                                 )}
                                                             </div>
 
-                                                            <div>
-                                                                <Label>Check out</Label>
-                                                                <Input
-                                                                    {...register("checkOutTime")}
-                                                                    type="time"
-                                                                    className="rounded-none focus:outline-none"
-                                                                />
-                                                                {errors.checkOutTime && (
-                                                                    <p className="text-red-600 font-semibold text-sm">{errors.checkOutTime.message}</p>
+                                                            <div className="w-full space-y-2">
+                                                                <label className="text-sm font-medium text-gray-700">Check Out</label>
+                                                                <div className="flex items-center space-x-3 rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
+                                                                    <CiClock1 className="text-xl text-gray-500" />
+                                                                    <input
+                                                                        {...register("checkOutHour", {
+                                                                            required: "Hour is required",
+                                                                            pattern: {
+                                                                                value: /^[0-9]{1,2}$/,
+                                                                                message: "Invalid hour format",
+                                                                            },
+                                                                            validate: (value) =>
+                                                                                value >= 1 && value <= 12 || "Hour must be between 1 and 12",
+                                                                        })}
+                                                                        type="number"
+                                                                        placeholder="HH"
+                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                    />
+                                                                    <span className="text-gray-500">:</span>
+                                                                    <input
+                                                                        {...register("checkOutMinute", {
+                                                                            required: "Minute is required",
+                                                                            pattern: {
+                                                                                value: /^[0-5]?[0-9]$/,
+                                                                                message: "Invalid minute format",
+                                                                            },
+                                                                        })}
+                                                                        type="number"
+                                                                        placeholder="MM"
+                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        onClick={toggleCheckOutTimePeriod}
+                                                                        className="px-2 py-1 text-sm font-semibold text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                                                    >
+                                                                        {CheckOutTimePeriod}
+                                                                    </button>
+                                                                </div>
+                                                                {errors.checkOutHour && (
+                                                                    <p className="text-sm font-medium text-red-600">
+                                                                        {errors.checkOutHour.message}
+                                                                    </p>
+                                                                )}
+                                                                {errors.checkOutMinute && (
+                                                                    <p className="text-sm font-medium text-red-600">
+                                                                        {errors.checkOutMinute.message}
+                                                                    </p>
                                                                 )}
                                                             </div>
 
