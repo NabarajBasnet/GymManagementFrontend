@@ -54,17 +54,13 @@ import {
 import { useState } from "react";
 import * as React from 'react';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { DataArray } from "@mui/icons-material";
 import { useForm, Controller } from "react-hook-form";
 
 const AddStaff = () => {
 
     // States
-    const [time, setTime] = useState('');
-    const [formattedTime, setFormattedTime] = useState("");
     const queryclient = useQueryClient()
     const [openForm, setOpenForm] = useState(false);
-    const pathname = usePathname();
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
@@ -83,16 +79,7 @@ const AddStaff = () => {
     } = useForm();
 
     const [CheckInTimePeriod, setCheckInTimePeriod] = useState("AM");
-    const toggleCheckInTimePeriod = () => {
-        setCheckInTimePeriod((prev) => (prev === "AM" ? "PM" : "AM"));
-        setValue('checkInPeriod', CheckInTimePeriod);
-    };
-
     const [CheckOutTimePeriod, setCheckOutTimePeriod] = useState("PM");
-    const toggleCheckOutTimePeriod = () => {
-        setCheckOutTimePeriod((prev) => (prev === "PM" ? "AM" : "PM"));
-        setValue('checkOutPeriod', CheckOutTimePeriod);
-    };
 
     // Functions
 
@@ -115,8 +102,60 @@ const AddStaff = () => {
 
     const registerNewStaff = async (data) => {
         console.log("Data: ", data);
-        const { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role } = data;
-        const finalData = { fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role };
+
+        const {
+            fullName,
+            email,
+            contactNo,
+            emergencyContactNo,
+            address,
+            dob,
+            checkInHour,
+            checkInMinute,
+            checkinPeriod,
+            checkOutHour,
+            checkOutMinute,
+            checkoutPeriod,
+            gender,
+            shift,
+            joinedDate,
+            workingHours,
+            status,
+            salary,
+            role
+        } = data;
+
+        // Format the time as HH:MM Period
+        const formatTime = (hour, minute, period) => {
+            const formattedHour = hour.toString().padStart(2, '0');
+            const formattedMinute = minute.toString().padStart(2, '0');
+            return `${formattedHour}:${formattedMinute} ${period}`;
+        };
+
+        // Create check-in and check-out time
+        const checkInTime = formatTime(checkInHour, checkInMinute, checkinPeriod);
+        const checkOutTime = formatTime(checkOutHour, checkOutMinute, checkoutPeriod);
+
+        // Prepare final data
+        const finalData = {
+            fullName,
+            email,
+            contactNo,
+            emergencyContactNo,
+            address,
+            dob,
+            checkInTime,
+            checkOutTime,
+            gender,
+            shift,
+            joinedDate,
+            workingHours,
+            status,
+            salary,
+            role
+        };
+
+        console.log("Final Data: ", finalData);
 
         try {
             const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
