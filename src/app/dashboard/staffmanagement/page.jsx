@@ -506,15 +506,23 @@ const AddStaff = () => {
                                                                         })}
                                                                         type="number"
                                                                         placeholder="MM"
-                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                        className="w-12 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
                                                                     />
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={toggleCheckInTimePeriod}
-                                                                        className="px-2 py-1 text-sm font-semibold text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                                    >
-                                                                        {CheckInTimePeriod}
-                                                                    </button>
+                                                                    <Select onValueChange={(value) => {
+                                                                        setValue('checkinPeriod', value);
+                                                                        clearErrors('checkinPeriod');
+                                                                    }}>
+                                                                        <SelectTrigger className="w-full rounded-none">
+                                                                            <SelectValue placeholder="AM / PM" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectGroup>
+                                                                                <SelectLabel>Time Period</SelectLabel>
+                                                                                <SelectItem value="AM">AM</SelectItem>
+                                                                                <SelectItem value="PM">PM</SelectItem>
+                                                                            </SelectGroup>
+                                                                        </SelectContent>
+                                                                    </Select>
                                                                 </div>
                                                                 {errors.checkInHour && (
                                                                     <p className="text-sm font-medium text-red-600">
@@ -557,15 +565,23 @@ const AddStaff = () => {
                                                                         })}
                                                                         type="number"
                                                                         placeholder="MM"
-                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                                        className="w-12 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
                                                                     />
-                                                                    <button
-                                                                        type="button"
-                                                                        onClick={toggleCheckOutTimePeriod}
-                                                                        className="px-2 py-1 text-sm font-semibold text-indigo-600 bg-indigo-100 rounded-md hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                                                    >
-                                                                        {CheckOutTimePeriod}
-                                                                    </button>
+                                                                    <Select onValueChange={(value) => {
+                                                                        setValue('checkoutPeriod', value);
+                                                                        clearErrors('checkoutPeriod');
+                                                                    }}>
+                                                                        <SelectTrigger className="w-full rounded-none">
+                                                                            <SelectValue placeholder="AM / PM" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectGroup>
+                                                                                <SelectLabel>Time Period</SelectLabel>
+                                                                                <SelectItem value="AM">AM</SelectItem>
+                                                                                <SelectItem value="PM">PM</SelectItem>
+                                                                            </SelectGroup>
+                                                                        </SelectContent>
+                                                                    </Select>
                                                                 </div>
                                                                 {errors.checkOutHour && (
                                                                     <p className="text-sm font-medium text-red-600">
