@@ -1,3 +1,4 @@
+'use client'
 
 import {
     Pagination,
@@ -18,8 +19,34 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useQuery } from "@tanstack/react-query"
+import { useState, useEffect } from "react"
 
 const MyProfile = () => {
+
+    const [currentTime, setCurrentTime] = useState(null);
+
+    useEffect(() => {
+        setCurrentTime(new Date());
+    }, []);
+
+    const fetchStaffQr = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffqr/10`);
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['qrcode'],
+        queryFn: fetchStaffQr
+    });
+
+    console.log("Data: ", data);
 
     const invoices = [
         {
@@ -69,10 +96,28 @@ const MyProfile = () => {
     return (
         <div className="w-full">
             <h1 className="text-center text-4xl font-bold my-4">My Profile</h1>
-            <div className="w-full flex items-center justify-center p-6">
-                <img alt="QR Code" />
+            {isLoading ? (
+                <h1 className="text-center font-semibold">Loading...</h1>
+            ) : (
+                <div className="w-full flex items-center justify-center p-1">
+                    <img src={data.qrCode} alt="QR Code" />
+                </div>
+            )}
+            <div className="w-full">
+                {currentTime ? (
+                    <h1 className="text-center my-4">
+                        Current Time: {currentTime.toISOString().split("T")[0]},{" "}
+                        {currentTime.toLocaleTimeString("en-US", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                            hour12: true,
+                        })}
+                    </h1>
+                ) : (
+                    <h1 className="text-center font-semibold my-4">Loading current time...</h1>
+                )}
             </div>
-            <h1 className="text-center my-4">Current Time: </h1>
             <div className="w-full flex justify-center bg-black p-6 text-white">
                 <div className="w-full md:w-9/12">
                     <h1 className="text-3xl text-yellow-400 font-bold">{`Nabaraj Basnet (Trainer)`}</h1>

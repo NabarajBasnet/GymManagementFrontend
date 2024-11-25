@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import RTKProvider from "@/state/ReduxProvider";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
+import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -25,11 +26,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RTKProvider>
-          <UserProvider>
-            {children}
-          </UserProvider>
-        </RTKProvider>
+        <ReactQueryClientProvider>
+          <RTKProvider>
+            <UserProvider>
+              {children}
+            </UserProvider>
+          </RTKProvider>
+        </ReactQueryClientProvider>
       </body>
     </html>
   );
