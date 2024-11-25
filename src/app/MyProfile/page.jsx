@@ -1,0 +1,132 @@
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+
+const MyProfile = () => {
+
+    const invoices = [
+        {
+            invoice: "INV001",
+            paymentStatus: "Paid",
+            totalAmount: "$250.00",
+            paymentMethod: "Credit Card",
+        },
+        {
+            invoice: "INV002",
+            paymentStatus: "Pending",
+            totalAmount: "$150.00",
+            paymentMethod: "PayPal",
+        },
+        {
+            invoice: "INV003",
+            paymentStatus: "Unpaid",
+            totalAmount: "$350.00",
+            paymentMethod: "Bank Transfer",
+        },
+        {
+            invoice: "INV004",
+            paymentStatus: "Paid",
+            totalAmount: "$450.00",
+            paymentMethod: "Credit Card",
+        },
+        {
+            invoice: "INV005",
+            paymentStatus: "Paid",
+            totalAmount: "$550.00",
+            paymentMethod: "PayPal",
+        },
+        {
+            invoice: "INV006",
+            paymentStatus: "Pending",
+            totalAmount: "$200.00",
+            paymentMethod: "Bank Transfer",
+        },
+        {
+            invoice: "INV007",
+            paymentStatus: "Unpaid",
+            totalAmount: "$300.00",
+            paymentMethod: "Credit Card",
+        },
+    ]
+
+    return (
+        <div className="w-full">
+            <h1 className="text-center text-4xl font-bold my-4">My Profile</h1>
+            <div className="w-full flex items-center justify-center p-6">
+                <img alt="QR Code" />
+            </div>
+            <h1 className="text-center my-4">Current Time: </h1>
+            <div className="w-full flex justify-center bg-black p-6 text-white">
+                <div className="w-full md:w-9/12">
+                    <h1 className="text-3xl text-yellow-400 font-bold">{`Nabaraj Basnet (Trainer)`}</h1>
+                    <p>Shift: {'Morning'}</p>
+                </div>
+            </div>
+            <div className="w-full max-w-md mx-auto bg-white shadow-xl my-4 rounded-lg p-6">
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Phone No:</span>
+                        <span className="text-gray-600">9742263831</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Email:</span>
+                        <span className="text-gray-600">nabarajbasnet2000@gmail.com</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Date of Birth:</span>
+                        <span className="text-gray-600">16, Nov, 2024</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Address:</span>
+                        <span className="text-gray-600">Kathmandu</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Role:</span>
+                        <span className="text-gray-600">Trainer</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h1>My Attendance History</h1>
+
+                <Table>
+                    <TableCaption>A list of your recent invoices.</TableCaption>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[100px]">Invoice</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Method</TableHead>
+                            <TableHead className="text-right">Amount</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {invoices.map((invoice) => (
+                            <TableRow key={invoice.invoice}>
+                                <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                                <TableCell>{invoice.paymentStatus}</TableCell>
+                                <TableCell>{invoice.paymentMethod}</TableCell>
+                                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow>
+                            <TableCell colSpan={3}>Total</TableCell>
+                            <TableCell className="text-right">$2,500.00</TableCell>
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+            </div>
+        </div>
+    )
+}
+
+export default MyProfile;
