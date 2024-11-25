@@ -2,10 +2,8 @@ import { NextResponse } from "next/server";
 
 export const middleware = async (request) => {
     const path = request.nextUrl.pathname;
-    console.log("Pathmane: ", path);
     const token = request.cookies.get('loginToken')?.value || '';
     const staffLoginToken = request.cookies.get('staffLoginToken')?.value || '';
-    console.log("Staff Login Token: ", staffLoginToken);
 
     try {
         if (!token && path.startsWith('/dashboard')) {

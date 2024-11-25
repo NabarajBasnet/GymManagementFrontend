@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
     Pagination,
@@ -25,6 +25,7 @@ import { useState, useEffect } from "react"
 const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
+    const [staffDetails, setStaffDetails] = useState(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -34,9 +35,27 @@ const MyProfile = () => {
         return () => clearInterval(interval);
     }, []);
 
+    const fetchedLoggedStaffDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                setStaffDetails(responseBody.loggedInStaff)
+            }
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data: loggedinStaff, isLoading: isLoggedinStaffLoading } = useQuery({
+        queryKey: ['loggedstaff'],
+        queryFn: fetchedLoggedStaffDetails
+    });
+
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffqr/10`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -46,7 +65,8 @@ const MyProfile = () => {
 
     const { data, isLoading } = useQuery({
         queryKey: ['qrcode'],
-        queryFn: fetchStaffQr
+        queryFn: fetchStaffQr,
+        enabled: !!staffDetails?._id
     });
 
     const invoices = [
@@ -97,7 +117,7 @@ const MyProfile = () => {
     return (
         <div className="w-full">
             <h1 className="text-center text-4xl font-bold my-4">My Profile</h1>
-            {isLoading ? (
+            {isLoading || !data ? (
                 <h1 className="text-center font-semibold">Loading...</h1>
             ) : (
                 <div className="w-full flex items-center justify-center p-1">
@@ -120,42 +140,51 @@ const MyProfile = () => {
                 )}
             </div>
             <div className="w-full flex justify-center bg-black p-6 text-white">
-                <div className="w-full md:w-9/12">
-                    <h1 className="text-3xl text-yellow-400 font-bold">{`Nabaraj Basnet (Trainer)`}</h1>
-                    <p>Shift: {'Morning'}</p>
-                </div>
+                {isLoading ? (
+                    <h1>Loading...</h1>
+                ) : (
+                    <div className="w-full md:w-9/12">
+                        <h1 className="text-3xl text-yellow-400 font-bold">{staffDetails.fullName} - {staffDetails.role}</h1>
+                        <p>Shift: {staffDetails.shift}</p>
+                    </div>
+                )}
+
             </div>
             <div className="w-full max-w-md mx-auto bg-white shadow-xl my-4 rounded-lg p-6">
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Phone No:</span>
-                        <span className="text-gray-600">9742263831</span>
+                {isLoading ? (
+                    <h1 className="text-center items-center font-semibold">Loading...</h1>
+                ) : (
+                    <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Phone No:</span>
+                            <span className="text-gray-600">{staffDetails.contactNo}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Email:</span>
+                            <span className="text-gray-600">{staffDetails.email}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Date of Birth:</span>
+                            <span className="text-gray-600">{new Date(staffDetails.dob).toISOString().split("T")[0]}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Address:</span>
+                            <span className="text-gray-600">{staffDetails.address}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Role:</span>
+                            <span className="text-gray-600">{staffDetails.role}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Joined Date:</span>
+                            <span className="text-gray-600">{new Date(staffDetails.joinedDate).toISOString().split("T")[0]}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="font-medium text-gray-700">Gender:</span>
+                            <span className="text-gray-600">{staffDetails.gender}</span>
+                        </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Email:</span>
-                        <span className="text-gray-600">nabarajbasnet2000@gmail.com</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Date of Birth:</span>
-                        <span className="text-gray-600">16, Nov, 2024</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Address:</span>
-                        <span className="text-gray-600">Kathmandu</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Role:</span>
-                        <span className="text-gray-600">Trainer</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Joined Date:</span>
-                        <span className="text-gray-600">2024/11/24</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-medium text-gray-700">Gender:</span>
-                        <span className="text-gray-600">Male</span>
-                    </div>
-                </div>
+                )}
             </div>
 
             <div>
