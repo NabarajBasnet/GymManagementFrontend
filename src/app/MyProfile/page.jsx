@@ -27,14 +27,17 @@ const MyProfile = () => {
     const [currentTime, setCurrentTime] = useState(null);
 
     useEffect(() => {
-        setCurrentTime(new Date());
+        const interval = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const fetchStaffQr = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staffqr/10`);
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -45,8 +48,6 @@ const MyProfile = () => {
         queryKey: ['qrcode'],
         queryFn: fetchStaffQr
     });
-
-    console.log("Data: ", data);
 
     const invoices = [
         {
