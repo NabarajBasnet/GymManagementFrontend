@@ -3,9 +3,12 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 export default function StaffLogin() {
+
+    const router = useRouter();
 
     const {
         register,
@@ -21,20 +24,8 @@ export default function StaffLogin() {
         console.log("Data: ", data);
         const { email, password } = data;
         const finalData = { email, password };
-        if (!email) {
-            setError('email', {
-                type: 'manual',
-                message: "Email is required"
-            })
-        }
-        if (!password) {
-            setError('password', {
-                type: 'manual',
-                message: "Password is required"
-            })
-        }
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-login`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -42,6 +33,31 @@ export default function StaffLogin() {
                 body: JSON.stringify(finalData)
             });
             const responseBody = await response.json();
+            if (response.ok) {
+                router.push(responseBody.redirect);
+            }
+
+            if (response.status === 400 & responseBody.field === 'email') {
+                setError('email', {
+                    type: 'manual',
+                    message: `${responseBody.message}`
+                })
+            }
+
+            if (response.status === 404 & responseBody.field === 'email') {
+                setError('email', {
+                    type: 'manual',
+                    message: `${responseBody.message}`
+                })
+            }
+
+            if (response.status === 403 & responseBody.field === 'password') {
+                setError('password', {
+                    type: 'manual',
+                    message: `${responseBody.message}`
+                })
+            }
+
             console.log("Response Body: ", responseBody);
         } catch (error) {
             console.log("Error: ", error);
