@@ -2,7 +2,10 @@ import { NextResponse } from "next/server";
 
 export const middleware = async (request) => {
     const path = request.nextUrl.pathname;
+    console.log("Pathmane: ", path);
     const token = request.cookies.get('loginToken')?.value || '';
+    const staffLoginToken = request.cookies.get('staffLoginToken')?.value || '';
+    console.log("Staff Login Token: ", staffLoginToken);
 
     try {
         if (!token && path.startsWith('/dashboard')) {
@@ -10,6 +13,13 @@ export const middleware = async (request) => {
         } else if (token && (path === '/login' || path === '/signup')) {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
+
+        if (!staffLoginToken && path.startsWith('/MyProfile')) {
+            return NextResponse.redirect(new URL('/StaffLogin', request.url))
+        } else if (token && (path === '/StaffLogin')) {
+            return NextResponse.redirect(new URL("/MyProfile"))
+        }
+
     } catch (error) {
         console.error('Error verifying token:', error);
     }
@@ -18,5 +28,5 @@ export const middleware = async (request) => {
 }
 
 export const config = {
-    matcher: ['/login', '/signup', '/dashboard/:path*'],
+    matcher: ['/login', '/signup', '/dashboard/:path*', '/MyProfile', '/StaffLogin'],
 };
