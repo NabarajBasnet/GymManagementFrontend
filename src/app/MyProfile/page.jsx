@@ -1,3 +1,13 @@
+
+import {
+    Pagination,
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination"
 import {
     Table,
     TableBody,
@@ -91,6 +101,14 @@ const MyProfile = () => {
                         <span className="font-medium text-gray-700">Role:</span>
                         <span className="text-gray-600">Trainer</span>
                     </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Joined Date:</span>
+                        <span className="text-gray-600">2024/11/24</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                        <span className="font-medium text-gray-700">Gender:</span>
+                        <span className="text-gray-600">Male</span>
+                    </div>
                 </div>
             </div>
 
@@ -101,10 +119,13 @@ const MyProfile = () => {
                     <TableCaption>A list of your recent invoices.</TableCaption>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className="w-[100px]">Invoice</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Method</TableHead>
-                            <TableHead className="text-right">Amount</TableHead>
+                            <TableHead className="w-[100px]">Staff Id</TableHead>
+                            <TableHead>Name</TableHead>
+                            <TableHead>Email</TableHead>
+                            <TableHead>Check In</TableHead>
+                            <TableHead>Check Out</TableHead>
+                            <TableHead>Remark</TableHead>
+                            <TableHead>Late Flag</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -124,6 +145,33 @@ const MyProfile = () => {
                         </TableRow>
                     </TableFooter>
                 </Table>
+
+                <div className="my-4">
+                    <Pagination>
+                        <PaginationContent>
+                            <PaginationItem>
+                                <PaginationPrevious href="#" />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">1</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#" isActive>
+                                    2
+                                </PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationLink href="#">3</PaginationLink>
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                            <PaginationItem>
+                                <PaginationNext href="#" />
+                            </PaginationItem>
+                        </PaginationContent>
+                    </Pagination>
+                </div>
             </div>
         </div>
     )
