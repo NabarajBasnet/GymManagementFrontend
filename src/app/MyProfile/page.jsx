@@ -238,7 +238,10 @@ const MyProfile = () => {
                     <div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <FaRegUserCircle className="text-3xl cursor-pointer text-white" />
+                                <div className="flex items-center bg-yellow-500 hover:bg-yellow-600 cursor-pointer transition-all duration-300 p-2 rounded-sm shadow-lg">
+                                    <h1 className="font-semibold text-white mx-2">My Profile</h1>
+                                    <FaRegUserCircle className="text-2xl cursor-pointer text-white" />
+                                </div>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56">
                                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -374,7 +377,6 @@ const MyProfile = () => {
                                         <p></p>
                                     )
                                 }
-
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Address:</span>
@@ -403,7 +405,7 @@ const MyProfile = () => {
                         </div>
                     </div>
                     <div>
-                        <h1>My Attendance History</h1>
+                        <h1 className="my-4 font-bold text-center">My Attendance History</h1>
                         <Table>
                             <TableCaption>A list of your recent invoices.</TableCaption>
                             <TableHeader>
