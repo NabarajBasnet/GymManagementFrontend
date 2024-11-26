@@ -55,12 +55,18 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { MdDone, MdDelete, MdClose, MdError } from "react-icons/md";
 
 const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
     const router = useRouter();
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+    const responseResultType = ['Success', 'Failure'];
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -112,9 +118,32 @@ const MyProfile = () => {
 
             const responseBody = await response.json();
             console.log("Response Body: ", responseBody);
-            if (response.ok) {
-                router.push(responseBody.redirect);
-            };
+
+            if (response.status !== 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    router.push(responseBody.redirect);
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -168,6 +197,38 @@ const MyProfile = () => {
     return (
         <div className="w-full">
             <div className="w-full flex justify-center bg-black">
+                {toast ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div>
+                                {
+                                    responseType === 'Success' ? (
+                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                                    ) : (
+                                        <MdError className="text-3xl mx-4 text-red-600" />
+                                    )
+                                }
+                            </div>
+                            <div className="block">
+                                {
+                                    responseType === 'Success' ? (
+                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                    ) : (
+                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                    )
+                                }
+                            </div>
+                            <div>
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-3xl ml-4" />
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
                 <div className="w-11/12 md:w-10/12 flex justify-between items-center">
                     <img
                         src='/images/LOGO-1.png'
