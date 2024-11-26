@@ -44,31 +44,7 @@ const StaffAttendance = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
+        }
     ];
 
     return (
@@ -101,13 +77,23 @@ const StaffAttendance = () => {
             </div>
 
             <div className="w-full flex justify-center">
-                <div className="w-full bg-white mx-4">
-                    <div>
-                        <div className='w-full flex justify-start items-center p-2'>
-                            <Button className='rounded-none'>Refresh</Button>
+                <div className="w-full mx-4">
+                    <div className="w-full">
+                        <div className="w-full flex bg-white justify-between items-center my-4">
+                            <div className='w-10/12 flex justify-start items-center p-2'>
+                                <Input
+                                    placeholder='Scan qr code here'
+                                    className='focus:border-blue-500'
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div className='w-2/12 flex justify-start items-center p-2'>
+                                <Button className='rounded-sm w-full'>Refresh</Button>
+                            </div>
                         </div>
 
-                        <div className="flex justify-center p-2">
+                        <div className="flex justify-center p-2 bg-white">
                             <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
                                 <IoSearch className="text-xl" />
                                 <Input
@@ -117,32 +103,34 @@ const StaffAttendance = () => {
                             </div>
                         </div>
 
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Invoice</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {invoices.map((invoice) => (
-                                    <TableRow key={invoice.invoice}>
-                                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                        <TableCell>{invoice.paymentStatus}</TableCell>
-                                        <TableCell>{invoice.paymentMethod}</TableCell>
-                                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                        <div className="w-full bg-white">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="w-[100px]">Invoice</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Method</TableHead>
+                                        <TableHead className="text-right">Amount</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total</TableCell>
-                                    <TableCell className="text-right">$2,500.00</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {invoices.map((invoice) => (
+                                        <TableRow key={invoice.invoice}>
+                                            <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                                            <TableCell>{invoice.paymentStatus}</TableCell>
+                                            <TableCell>{invoice.paymentMethod}</TableCell>
+                                            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan={3}>Total</TableCell>
+                                        <TableCell className="text-right">$2,500.00</TableCell>
+                                    </TableRow>
+                                </TableFooter>
+                            </Table>
+                        </div>
                     </div>
 
                     <div className="py-2 my-2">
