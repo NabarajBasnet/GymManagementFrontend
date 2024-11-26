@@ -38,20 +38,21 @@ import {
 } from "@/components/ui/pagination"
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useEffect } from "react";
 
 const StaffAttendance = () => {
 
-    const [qrDetails, setQrDetails] = useState("");
-    console.log("Qr Details: ", qrDetails);
+    const [qrDetails, setQrDetails] = useState();
+    const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
 
     const StaffAttendance = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
                 },
-                body: JSON.stringify({ id: 20 })
+                body: JSON.stringify({ iv, tv })
             })
 
             const responseBody = await response.json();
@@ -60,6 +61,19 @@ const StaffAttendance = () => {
             console.log("Error: ", error);
         }
     };
+
+
+    const handleQrDetails = (value) => {
+        setQrDetails( JSON.parse(value));
+    };
+
+    // useEffect(()=>{
+    //     if(iv.length>=24){
+    //         StaffAttendance();
+    //     }else{
+    //         //
+    //     }
+    // },[qrDetails])
 
     const invoices = [
         {
@@ -108,6 +122,29 @@ const StaffAttendance = () => {
                                     placeholder='Scan qr code here'
                                     className='focus:border-blue-500'
                                     autoFocus
+                                    onChange={(e) => {
+                                        const data = e.target.value.trim();
+                                        console.log("Field Data:", data);
+                                    
+                                        if (data.startsWith("{") && data.endsWith("}")) {
+                                            try {
+                                                const parsedData = JSON.parse(data);
+                                                const { iv, tv } = parsedData;
+                                                console.log("Id:", iv);
+                                                console.log("Timestamp:", tv);
+                                            } catch (error) {
+                                                console.error("Invalid JSON Format:", error.message);
+                                            }
+                                        } else {
+                                            console.error("Input is not valid JSON");
+                                        }
+                                    }}                                    
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter') {
+                                            e.preventDefault();
+                                            handleQrDetails(e.target.value);
+                                        }
+                                    }}
                                 />
                             </div>
 
