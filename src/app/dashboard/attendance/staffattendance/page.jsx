@@ -1,3 +1,5 @@
+'use client';
+
 import { Input } from "@/components/ui/input";
 import { IoSearch } from "react-icons/io5";
 import {
@@ -35,8 +37,29 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination"
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
 
 const StaffAttendance = () => {
+
+    const [qrDetails, setQrDetails] = useState("");
+    console.log("Qr Details: ", qrDetails);
+
+    const StaffAttendance = async () => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({ id: 20 })
+            })
+
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
 
     const invoices = [
         {
@@ -79,7 +102,7 @@ const StaffAttendance = () => {
             <div className="w-full flex justify-center">
                 <div className="w-full mx-4">
                     <div className="w-full">
-                        <div className="w-full flex bg-white justify-between items-center my-4">
+                        <form className="w-full flex bg-white justify-between items-center my-4">
                             <div className='w-10/12 flex justify-start items-center p-2'>
                                 <Input
                                     placeholder='Scan qr code here'
@@ -89,9 +112,9 @@ const StaffAttendance = () => {
                             </div>
 
                             <div className='w-2/12 flex justify-start items-center p-2'>
-                                <Button className='rounded-sm w-full'>Refresh</Button>
+                                <Button type='submit' className='rounded-sm w-full'>Refresh</Button>
                             </div>
-                        </div>
+                        </form>
 
                         <div className="flex justify-center p-2 bg-white">
                             <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
