@@ -1,6 +1,39 @@
 'use client';
 
 import {
+    Cloud,
+    CreditCard,
+    Github,
+    Keyboard,
+    LifeBuoy,
+    LogOut,
+    Mail,
+    MessageSquare,
+    Plus,
+    PlusCircle,
+    Settings,
+    User,
+    UserPlus,
+    Users,
+} from "lucide-react"
+
+import { Button } from "@/components/ui/button"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { FaRegUserCircle } from "react-icons/fa";
+import {
     Pagination,
     PaginationContent,
     PaginationEllipsis,
@@ -116,16 +149,112 @@ const MyProfile = () => {
 
     return (
         <div className="w-full">
+            <div className="w-full flex justify-center bg-black">
+                <div className="w-11/12 md:w-10/12 flex justify-between items-center">
+                    <img
+                        src='/images/LOGO-1.png'
+                        className="w-24 h-24"
+                    />
+
+                    <div>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <FaRegUserCircle className="text-3xl cursor-pointer text-white" />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem>
+                                        <User />
+                                        <span>Profile</span>
+                                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <CreditCard />
+                                        <span>Billing</span>
+                                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Settings />
+                                        <span>Settings</span>
+                                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <Keyboard />
+                                        <span>Keyboard shortcuts</span>
+                                        <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem>
+                                        <Users />
+                                        <span>Team</span>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuSub>
+                                        <DropdownMenuSubTrigger>
+                                            <UserPlus />
+                                            <span>Invite users</span>
+                                        </DropdownMenuSubTrigger>
+                                        <DropdownMenuPortal>
+                                            <DropdownMenuSubContent>
+                                                <DropdownMenuItem>
+                                                    <Mail />
+                                                    <span>Email</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem>
+                                                    <MessageSquare />
+                                                    <span>Message</span>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
+                                                <DropdownMenuItem>
+                                                    <PlusCircle />
+                                                    <span>More...</span>
+                                                </DropdownMenuItem>
+                                            </DropdownMenuSubContent>
+                                        </DropdownMenuPortal>
+                                    </DropdownMenuSub>
+                                    <DropdownMenuItem>
+                                        <Plus />
+                                        <span>New Team</span>
+                                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    <Github />
+                                    <span>GitHub</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <LifeBuoy />
+                                    <span>Support</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem disabled>
+                                    <Cloud />
+                                    <span>API</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>
+                                    <LogOut />
+                                    <span>Log out</span>
+                                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </div>
+            </div>
             <h1 className="text-center text-4xl font-bold my-4">My Profile</h1>
             {isLoading ? (
                 <h1 className="text-center font-semibold">Loading...</h1>
             ) : (
-                <>
+                <div>
                     <div className="w-full flex items-center justify-center p-1">
                         <img src={data?.qrCode} alt="QR Code" />
                     </div>
                     <div className="w-full">
-                        <h1 className="text-center my-4">
+                        <h1 className="text-center my-4 font-semibold">
                             Current Time: {currentTime?.toISOString().split("T")[0]},{" "}
                             {currentTime?.toLocaleTimeString("en-US", {
                                 hour: "2-digit",
@@ -135,29 +264,29 @@ const MyProfile = () => {
                             })}
                         </h1>
                     </div>
-                    <div className="w-full flex justify-center bg-black p-6 text-white">
-                        <div className="w-full md:w-9/12">
+                    <div className="w-full flex justify-center bg-gray-800 p-6 text-white">
+                        <div className="w-full md:w-11/12">
                             <h1 className="text-3xl text-yellow-400 font-bold">
                                 {staffDetails?.fullName} - {staffDetails?.role}
                             </h1>
                             <p>Shift: {staffDetails?.shift}</p>
                         </div>
                     </div>
-                    <div className="w-full max-w-md mx-auto bg-white shadow-xl my-4 rounded-lg p-6">
-                        <div className="space-y-4">
+                    <div className="w-full flex justify-center bg-blue-600 text-white shadow-xl my-4 rounded-lg p-6">
+                        <div className="md:w-11/12 w-full space-y-4">
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Phone No:</span>
-                                <span className="text-gray-600">{staffDetails?.contactNo}</span>
+                                <span className="font-medium">Phone No:</span>
+                                <span className="">{staffDetails?.contactNo}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Email:</span>
-                                <span className="text-gray-600">{staffDetails?.email}</span>
+                                <span className="font-medium">Email:</span>
+                                <span className="">{staffDetails?.email}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Date of Birth:</span>
+                                <span className="font-medium">Date of Birth:</span>
                                 {
                                     staffDetails ? (
-                                        <span className="text-gray-600">
+                                        <span className="">
                                             {new Date(staffDetails?.dob).toISOString().split("T")[0]}
                                         </span>
                                     ) : (
@@ -167,18 +296,18 @@ const MyProfile = () => {
 
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Address:</span>
-                                <span className="text-gray-600">{staffDetails?.address}</span>
+                                <span className="font-medium">Address:</span>
+                                <span className="">{staffDetails?.address}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Role:</span>
-                                <span className="text-gray-600">{staffDetails?.role}</span>
+                                <span className="font-medium">Role:</span>
+                                <span className="">{staffDetails?.role}</span>
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Joined Date:</span>
+                                <span className="font-medium">Joined Date:</span>
                                 {
                                     staffDetails ? (
-                                        <span className="text-gray-600">
+                                        <span className="">
                                             {new Date(staffDetails?.joinedDate).toISOString().split("T")[0]}
                                         </span>
                                     ) : (
@@ -187,8 +316,8 @@ const MyProfile = () => {
                                 }
                             </div>
                             <div className="flex items-center justify-between">
-                                <span className="font-medium text-gray-700">Gender:</span>
-                                <span className="text-gray-600">{staffDetails?.gender}</span>
+                                <span className="font-medium">Gender:</span>
+                                <span className="">{staffDetails?.gender}</span>
                             </div>
                         </div>
                     </div>
@@ -251,7 +380,7 @@ const MyProfile = () => {
                             </Pagination>
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </div>
     )
