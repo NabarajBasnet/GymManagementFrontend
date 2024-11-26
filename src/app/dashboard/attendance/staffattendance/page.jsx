@@ -43,9 +43,10 @@ import { useEffect } from "react";
 const StaffAttendance = () => {
 
     const [qrDetails, setQrDetails] = useState();
+    console.log("Qr Details: ", qrDetails);
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
 
-    const StaffAttendance = async () => {
+    const StaffAttendance = async (iv, tv) => {
         try {
             const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
@@ -64,16 +65,8 @@ const StaffAttendance = () => {
 
 
     const handleQrDetails = (value) => {
-        setQrDetails( JSON.parse(value));
+        setQrDetails(JSON.parse(value));
     };
-
-    // useEffect(()=>{
-    //     if(iv.length>=24){
-    //         StaffAttendance();
-    //     }else{
-    //         //
-    //     }
-    // },[qrDetails])
 
     const invoices = [
         {
@@ -83,7 +76,7 @@ const StaffAttendance = () => {
             paymentMethod: "Credit Card",
         }
     ];
-
+    let debounceTimeout;
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
@@ -123,22 +116,25 @@ const StaffAttendance = () => {
                                     className='focus:border-blue-500'
                                     autoFocus
                                     onChange={(e) => {
+                                        clearTimeout(debounceTimeout);
                                         const data = e.target.value.trim();
-                                        console.log("Field Data:", data);
-                                    
-                                        if (data.startsWith("{") && data.endsWith("}")) {
+
+                                        debounceTimeout = setTimeout(() => {
+
                                             try {
                                                 const parsedData = JSON.parse(data);
                                                 const { iv, tv } = parsedData;
-                                                console.log("Id:", iv);
-                                                console.log("Timestamp:", tv);
+                                                if (iv && tv && iv.length >= 24) {
+                                                    setQrDetails(parsedData);
+                                                    StaffAttendance(iv, tv)
+                                                }
                                             } catch (error) {
-                                                console.error("Invalid JSON Format:", error.message);
+                                                alert('Invalid string in field')
+                                                window.location.reload();
+                                                console.error("Invalid QR Code Data:", error.message);
                                             }
-                                        } else {
-                                            console.error("Input is not valid JSON");
-                                        }
-                                    }}                                    
+                                        }, 300);
+                                    }}
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') {
                                             e.preventDefault();
