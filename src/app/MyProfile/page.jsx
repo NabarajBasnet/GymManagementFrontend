@@ -54,11 +54,13 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
+    const router = useRouter();
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -101,6 +103,22 @@ const MyProfile = () => {
         queryFn: fetchStaffQr,
         enabled: !!staffDetails?._id
     });
+
+    const logoutStaff = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
+                method: "POST",
+            })
+
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            if (response.ok) {
+                router.push(responseBody.redirect);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
 
     const invoices = [
         {
@@ -236,9 +254,11 @@ const MyProfile = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem>
-                                    <LogOut />
-                                    <span>Log out</span>
-                                    <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                    <div onClick={logoutStaff} className="cursor-pointer flex items-center">
+                                        <LogOut />
+                                        <span>Log out</span>
+                                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+                                    </div>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
