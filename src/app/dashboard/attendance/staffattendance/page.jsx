@@ -42,6 +42,7 @@ import { useEffect } from "react";
 
 const StaffAttendance = () => {
 
+    const [checkIn, setCheckIn] = useState(false);
     const [qrDetails, setQrDetails] = useState();
     console.log("Qr Details: ", qrDetails);
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
@@ -62,7 +63,6 @@ const StaffAttendance = () => {
             console.log("Error: ", error);
         }
     };
-
 
     const handleQrDetails = (value) => {
         setQrDetails(JSON.parse(value));
@@ -120,16 +120,16 @@ const StaffAttendance = () => {
                                         const data = e.target.value.trim();
 
                                         debounceTimeout = setTimeout(() => {
-
                                             try {
                                                 const parsedData = JSON.parse(data);
-                                                const { iv, tv } = parsedData;
+                                                let { iv, tv } = parsedData;
                                                 if (iv && tv && iv.length >= 24) {
                                                     setQrDetails(parsedData);
-                                                    StaffAttendance(iv, tv)
+                                                    alert('Checkin?');
+                                                    StaffAttendance(iv, tv);
                                                 }
                                             } catch (error) {
-                                                alert('Invalid string in field')
+                                                alert(error.message);
                                                 window.location.reload();
                                                 console.error("Invalid QR Code Data:", error.message);
                                             }
