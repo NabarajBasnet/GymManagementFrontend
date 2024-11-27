@@ -49,7 +49,7 @@ const StaffAttendance = () => {
 
     const StaffAttendance = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
