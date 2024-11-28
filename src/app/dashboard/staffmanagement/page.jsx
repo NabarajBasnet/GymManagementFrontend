@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { MdDelete, MdClose, MdEmail, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
@@ -58,9 +58,7 @@ const AddStaff = () => {
 
     // States
     const [checkInTime, setCheckInTime] = useState(new Date().getTime());
-    console.log("Checkin time: ",checkInTime)
     const [checkOutTime, setCheckOutTime] = useState(new Date().getTime());
-    console.log("Checkout time: ",checkOutTime)
 
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
@@ -119,7 +117,6 @@ const AddStaff = () => {
     const { staffs } = data || {}
 
     const registerNewStaff = async (data) => {
-        console.log("Data: ", data);
 
         const {
             fullName,
@@ -155,8 +152,6 @@ const AddStaff = () => {
             salary,
             role
         };
-
-        console.log("Final Data: ", finalData);
 
         try {
             const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {

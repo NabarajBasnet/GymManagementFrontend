@@ -39,12 +39,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 
 const StaffAttendance = () => {
 
-    const [checkIn, setCheckIn] = useState(false);
     const [qrDetails, setQrDetails] = useState();
-    console.log("Qr Details: ", qrDetails);
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
 
     const StaffAttendance = async (iv, tv) => {
@@ -58,7 +57,15 @@ const StaffAttendance = () => {
             })
 
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
+            if (response.status && responseBody.type === 'CheckedIn') {
+                const userConfirmed = window.confirm(responseBody.message);
+                if (userConfirmed) {
+                    console.log('User confirm checkout. Processing...');
+                    await checkoutStaff(iv, tv);
+                } else {
+                    console.log("User cancelled checkout. Aborting...");
+                }
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -66,6 +73,24 @@ const StaffAttendance = () => {
 
     const handleQrDetails = (value) => {
         setQrDetails(JSON.parse(value));
+    };
+
+    const checkoutStaff = async (iv, tv) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify({ iv ,tv})
+            });
+
+            const responseBody = await response.json();
+            alert("Staff successfully checked out!");
+        } catch (error) {
+            console.error("Error during checkout: ", error);
+            alert("Failed to check out staff. Please try again.");
+        }
     };
 
     const invoices = [
@@ -77,6 +102,27 @@ const StaffAttendance = () => {
         }
     ];
     let debounceTimeout;
+
+    // Fetch all temporary staff attendances
+
+    const fetchAllTemporaryStaffAttendances = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history`);
+            const responseBody = await response.json();
+            console.log("Response Body: ",responseBody);
+            return responseBody;
+        } catch (error) {
+            console.error("Error:",error);
+        }
+    };
+
+    const {data:temporarystaffattendance, isLoading} = useQuery({
+        queryKey:['temporarystaffattendance'],
+        queryFn:fetchAllTemporaryStaffAttendances
+    });
+
+    console.log("Temporary staff attendance: ", temporarystaffattendance);
+
     return (
         <div className='w-full'>
             <div className='w-full p-4'>
