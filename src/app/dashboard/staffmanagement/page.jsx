@@ -58,7 +58,9 @@ const AddStaff = () => {
 
     // States
     const [checkInTime, setCheckInTime] = useState(new Date().getTime());
+    console.log("Checkin time: ",checkInTime)
     const [checkOutTime, setCheckOutTime] = useState(new Date().getTime());
+    console.log("Checkout time: ",checkOutTime)
 
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
@@ -166,7 +168,7 @@ const AddStaff = () => {
             })
             const responseBody = await response.json();
             if (response.status === 200) {
-                setOpenForm(false);
+                // setOpenForm(false);
                 queryclient.invalidateQueries(['staffs']);
             }
             if (responseBody.errors && response.status === 400) {
@@ -692,6 +694,7 @@ const AddStaff = () => {
                                                                             <SelectItem value="HR Manager">HR Manager</SelectItem>
                                                                             <SelectItem value="CEO">CEO</SelectItem>
                                                                             <SelectItem value="Developer">Developer</SelectItem>
+                                                                            <SelectItem value="Intern">Intern</SelectItem>
                                                                         </SelectGroup>
                                                                     </SelectContent>
                                                                 </Select>
