@@ -1,6 +1,5 @@
 'use client'
 
-import { CiClock1 } from "react-icons/ci";
 import { MdDelete, MdClose, MdEmail, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -23,7 +22,6 @@ import {
     TableHeader,
     TableRow,
 } from "../allmembers/allmembertable.jsx";
-import { usePathname } from "next/navigation";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -59,6 +57,27 @@ import { useForm, Controller } from "react-hook-form";
 const AddStaff = () => {
 
     // States
+    const [checkInTime, setCheckInTime] = useState(new Date().getTime());
+    const [checkOutTime, setCheckOutTime] = useState(new Date().getTime());
+
+    const handleCheckInTimeChange = (e) => {
+        const timeValue = e.target.value;
+        const [hours, minutes] = timeValue.split(':').map(Number);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedCheckInTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}:${period}`;
+        setCheckInTime(formattedCheckInTime);
+    }
+
+    const handleCheckOutTimeChange = (e) => {
+        const timeValue = e.target.value;
+        const [hours, minutes] = timeValue.split(':').map(Number);
+        const period = hours >= 12 ? 'PM' : 'AM';
+        const formattedHours = hours % 12 || 12;
+        const formattedCheckOutTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}:${period}`;
+        setCheckOutTime(formattedCheckOutTime);
+    }
+
     const queryclient = useQueryClient()
     const [openForm, setOpenForm] = useState(false);
     const [toast, setToast] = useState(false);
@@ -78,14 +97,11 @@ const AddStaff = () => {
         clearErrors
     } = useForm();
 
-    const [CheckInTimePeriod, setCheckInTimePeriod] = useState("AM");
-    const [CheckOutTimePeriod, setCheckOutTimePeriod] = useState("PM");
-
     // Functions
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -110,12 +126,6 @@ const AddStaff = () => {
             emergencyContactNo,
             address,
             dob,
-            checkInHour,
-            checkInMinute,
-            checkinPeriod,
-            checkOutHour,
-            checkOutMinute,
-            checkoutPeriod,
             gender,
             shift,
             joinedDate,
@@ -124,17 +134,6 @@ const AddStaff = () => {
             salary,
             role
         } = data;
-
-        // Format the time as HH:MM Period
-        const formatTime = (hour, minute, period) => {
-            const formattedHour = hour.toString().padStart(2, '0');
-            const formattedMinute = minute.toString().padStart(2, '0');
-            return `${formattedHour}:${formattedMinute} ${period}`;
-        };
-
-        // Create check-in and check-out time
-        const checkInTime = formatTime(checkInHour, checkInMinute, checkinPeriod);
-        const checkOutTime = formatTime(checkOutHour, checkOutMinute, checkoutPeriod);
 
         // Prepare final data
         const finalData = {
@@ -158,7 +157,7 @@ const AddStaff = () => {
         console.log("Final Data: ", finalData);
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -516,52 +515,13 @@ const AddStaff = () => {
                                                                 )}
                                                             </div>
 
-                                                            <div className="w-full space-y-2">
-                                                                <label className="text-sm font-medium text-gray-700">Check In</label>
-                                                                <div className="flex items-center space-x-3 rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
-                                                                    <CiClock1 className="text-xl text-gray-500" />
-                                                                    <input
-                                                                        {...register("checkInHour", {
-                                                                            required: "Hour is required",
-                                                                            pattern: {
-                                                                                value: /^[0-9]{1,2}$/,
-                                                                                message: "Invalid hour format",
-                                                                            },
-                                                                            validate: (value) =>
-                                                                                value >= 1 && value <= 12 || "Hour must be between 1 and 12",
-                                                                        })}
-                                                                        type="number"
-                                                                        placeholder="HH"
-                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
+                                                            <div className="w-full">
+                                                                <div className="w-full space-y-2">
+                                                                    <label className="text-sm font-medium text-gray-700">Check In</label>
+                                                                    <Input
+                                                                        type='time'
+                                                                        onChange={handleCheckInTimeChange}
                                                                     />
-                                                                    <span className="text-gray-500">:</span>
-                                                                    <input
-                                                                        {...register("checkInMinute", {
-                                                                            required: "Minute is required",
-                                                                            pattern: {
-                                                                                value: /^[0-5]?[0-9]$/,
-                                                                                message: "Invalid minute format",
-                                                                            },
-                                                                        })}
-                                                                        type="number"
-                                                                        placeholder="MM"
-                                                                        className="w-12 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
-                                                                    />
-                                                                    <Select onValueChange={(value) => {
-                                                                        setValue('checkinPeriod', value);
-                                                                        clearErrors('checkinPeriod');
-                                                                    }}>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="AM / PM" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Time Period</SelectLabel>
-                                                                                <SelectItem value="AM">AM</SelectItem>
-                                                                                <SelectItem value="PM">PM</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
                                                                 </div>
                                                                 {errors.checkInHour && (
                                                                     <p className="text-sm font-medium text-red-600">
@@ -577,51 +537,10 @@ const AddStaff = () => {
 
                                                             <div className="w-full space-y-2">
                                                                 <label className="text-sm font-medium text-gray-700">Check Out</label>
-                                                                <div className="flex items-center space-x-3 rounded-md border border-gray-300 bg-white px-4 py-2 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500">
-                                                                    <CiClock1 className="text-xl text-gray-500" />
-                                                                    <input
-                                                                        {...register("checkOutHour", {
-                                                                            required: "Hour is required",
-                                                                            pattern: {
-                                                                                value: /^[0-9]{1,2}$/,
-                                                                                message: "Invalid hour format",
-                                                                            },
-                                                                            validate: (value) =>
-                                                                                value >= 1 && value <= 12 || "Hour must be between 1 and 12",
-                                                                        })}
-                                                                        type="number"
-                                                                        placeholder="HH"
-                                                                        className="w-10 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
-                                                                    />
-                                                                    <span className="text-gray-500">:</span>
-                                                                    <input
-                                                                        {...register("checkOutMinute", {
-                                                                            required: "Minute is required",
-                                                                            pattern: {
-                                                                                value: /^[0-5]?[0-9]$/,
-                                                                                message: "Invalid minute format",
-                                                                            },
-                                                                        })}
-                                                                        type="number"
-                                                                        placeholder="MM"
-                                                                        className="w-12 text-center text-gray-900 placeholder-gray-400 outline-none focus:ring-0 border-none bg-transparent"
-                                                                    />
-                                                                    <Select onValueChange={(value) => {
-                                                                        setValue('checkoutPeriod', value);
-                                                                        clearErrors('checkoutPeriod');
-                                                                    }}>
-                                                                        <SelectTrigger className="w-full rounded-none">
-                                                                            <SelectValue placeholder="AM / PM" />
-                                                                        </SelectTrigger>
-                                                                        <SelectContent>
-                                                                            <SelectGroup>
-                                                                                <SelectLabel>Time Period</SelectLabel>
-                                                                                <SelectItem value="AM">AM</SelectItem>
-                                                                                <SelectItem value="PM">PM</SelectItem>
-                                                                            </SelectGroup>
-                                                                        </SelectContent>
-                                                                    </Select>
-                                                                </div>
+                                                                <Input
+                                                                    type='time'
+                                                                    onChange={handleCheckOutTimeChange}
+                                                                />
                                                                 {errors.checkOutHour && (
                                                                     <p className="text-sm font-medium text-red-600">
                                                                         {errors.checkOutHour.message}

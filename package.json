@@ -67,6 +67,7 @@
     "react-redux": "^9.1.2",
     "react-resizable-panels": "^2.1.4",
     "react-simple-maps": "^3.0.0",
+    "react-time-picker": "^7.0.0",
     "recharts": "^2.13.3",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
