@@ -224,8 +224,8 @@ const StaffAttendance = () => {
                                                     <TableCell className="font-medium">{attendance.staffId}</TableCell>
                                                     <TableCell>{attendance.fullName}</TableCell>
                                                     <TableCell>{attendance.role}</TableCell>
-                                                    <TableCell>{attendance.checkIn}</TableCell>
-                                                    <TableCell>{attendance.checkOut}</TableCell>
+                                                    <TableCell>{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                    <TableCell>{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
                                                     <TableCell>{attendance.remark}</TableCell>
                                                 </TableRow>
                                             ))
