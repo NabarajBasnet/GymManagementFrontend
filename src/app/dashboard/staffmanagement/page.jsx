@@ -163,7 +163,7 @@ const AddStaff = () => {
             })
             const responseBody = await response.json();
             if (response.status === 200) {
-                // setOpenForm(false);
+                setOpenForm(false);
                 queryclient.invalidateQueries(['staffs']);
             }
             if (responseBody.errors && response.status === 400) {
@@ -183,7 +183,7 @@ const AddStaff = () => {
                 setErrorMessage({
                     icon: MdError,
                     message: responseBody.message
-                })
+                });
             }
             else {
                 setResponseType(responseResultType[0]);
@@ -194,7 +194,7 @@ const AddStaff = () => {
                 setSuccessMessage({
                     icon: MdDone,
                     message: responseBody.message
-                })
+                });
             }
 
         } catch (error) {
@@ -207,9 +207,18 @@ const AddStaff = () => {
             setErrorMessage({
                 icon: MdError,
                 message: error.message || 'Unauthorized action'
-            })
+            });
         }
     };
+
+    const editStaffDetailsAndPopulate = async (id) => {
+        try {
+
+        } catch (error) {
+
+        }
+    }
+
 
     return (
         <div className="w-full">
@@ -341,14 +350,13 @@ const AddStaff = () => {
                             <Table className='w-full overflow-x-auto'>
                                 <TableHeader>
                                     <TableRow className='bg-gray-200 text-black'>
-                                        <TableHead>Staff Id</TableHead>
-                                        <TableHead>Full Name</TableHead>
-                                        <TableHead>Contact Number</TableHead>
+                                        <TableHead>Id</TableHead>
+                                        <TableHead>Name</TableHead>
+                                        <TableHead>Number</TableHead>
                                         <TableHead>Address</TableHead>
                                         <TableHead>CheckIn</TableHead>
                                         <TableHead>CheckOut</TableHead>
                                         <TableHead>Joined At</TableHead>
-                                        <TableHead>Work Hours</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Role</TableHead>
                                         <TableHead>Action</TableHead>
@@ -362,17 +370,30 @@ const AddStaff = () => {
                                                 <TableCell>{staff.fullName}</TableCell>
                                                 <TableCell>{staff.contactNo}</TableCell>
                                                 <TableCell>{staff.address}</TableCell>
-                                                <TableCell>{staff.checkInTime}</TableCell>
-                                                <TableCell>{staff.checkOutTime}</TableCell>
+                                                <TableCell>{staff.checkInTime
+                                                    ? new Date(staff.checkInTime).toLocaleTimeString('en-US', {
+                                                        hour: 'numeric',
+                                                        minute: 'numeric',
+                                                        hour12: true,
+                                                        timeZone: 'UTC',
+                                                    })
+                                                    : ''}</TableCell>
+                                                <TableCell>{staff.checkOutTime
+                                                    ? new Date(staff.checkOutTime).toLocaleTimeString('en-US', {
+                                                        hour: 'numeric',
+                                                        minute: 'numeric',
+                                                        hour12: true,
+                                                        timeZone: 'UTC',
+                                                    })
+                                                    : ''}</TableCell>
                                                 <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
-                                                <TableCell>{staff.totalHoursToWork}</TableCell>
                                                 <TableCell>{staff.employmentStatus}</TableCell>
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
-                                                    <div className="flex items-center space-x-2">
-                                                        <MdEmail className="cursor-pointer" />
-                                                        <FaUserEdit className="cursor-pointer" />
-                                                        <MdDelete className="text-red-600 cursor-pointer" />
+                                                    <div className="flex items-center space-x-1">
+                                                        <MdEmail className="cursor-pointer text-lg" />
+                                                        <FaUserEdit className="cursor-pointer text-lg" />
+                                                        <MdDelete className="text-red-600 cursor-pointer text-lg" />
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
