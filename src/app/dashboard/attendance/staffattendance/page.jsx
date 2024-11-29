@@ -60,10 +60,6 @@ const StaffAttendance = () => {
                 body: JSON.stringify({ iv, tv })
             })
 
-            if (response.ok) {
-                queryClient.invalidateQueries(['temporarystaffattendance']);
-            }
-
             const responseBody = await response.json();
             if (response.status && responseBody.type === 'CheckedIn') {
                 const userConfirmed = window.confirm(responseBody.message);
@@ -73,9 +69,16 @@ const StaffAttendance = () => {
                 } else {
                     console.log("User cancelled checkout. Aborting...");
                 }
-            }
+            };
+
+            if (response.ok && responseBody.type !== 'CheckedIn') {
+                alert('CheckIn successfull');
+                window.location.reload();
+                queryClient.invalidateQueries(['temporarystaffattendance']);
+            };
         } catch (error) {
             console.log("Error: ", error);
+            alert('Request unsuccessfull');
         }
     };
 
@@ -94,8 +97,11 @@ const StaffAttendance = () => {
             });
 
             const responseBody = await response.json();
-            queryClient.invalidateQueries(['temporarystaffattendance']);
-            alert("Successfully checked out!");
+            if (response.ok) {
+                queryClient.invalidateQueries(['temporarystaffattendance']);
+                alert("Successfully checked out!");
+                window.location.reload();
+            };
         } catch (error) {
             console.error("Error during checkout: ", error);
             alert("Failed to check out staff. Please try again.");
@@ -175,7 +181,7 @@ const StaffAttendance = () => {
                                                 let { iv, tv } = parsedData;
                                                 if (iv && tv && iv.length >= 24) {
                                                     setQrDetails(parsedData);
-                                                    alert('Checkin?');
+                                                    alert('Continue?');
                                                     StaffAttendance(iv, tv);
                                                 }
                                             } catch (error) {
@@ -204,7 +210,7 @@ const StaffAttendance = () => {
                                 <IoSearch className="text-xl" />
                                 <Input
                                     className='w-full border-none bg-none'
-                                    placeholder='Search Staff...'
+                                    placeholder='Search...'
                                 />
                             </div>
                         </div>
@@ -228,12 +234,12 @@ const StaffAttendance = () => {
                                         {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory.length > 0 ? (
                                             TemporaryAttendanceHistory.map((attendance) => (
                                                 <TableRow key={attendance._id}>
-                                                    <TableCell className="font-medium">{attendance.staffId}</TableCell>
-                                                    <TableCell>{attendance.fullName}</TableCell>
-                                                    <TableCell>{attendance.role}</TableCell>
-                                                    <TableCell>{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
-                                                    <TableCell>{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
-                                                    <TableCell>{attendance.remark}</TableCell>
+                                                    <TableCell className="font-medium text-sm">{attendance.staffId}</TableCell>
+                                                    <TableCell className="text-sm">{attendance.fullName}</TableCell>
+                                                    <TableCell className="text-sm">{attendance.role}</TableCell>
+                                                    <TableCell className="text-sm">{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                    <TableCell className="text-sm">{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                    <TableCell className="text-sm">{attendance.remark}</TableCell>
                                                 </TableRow>
                                             ))
                                         ) : (
@@ -246,7 +252,7 @@ const StaffAttendance = () => {
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
-                                            <TableCell colSpan={3}>Total Entries</TableCell>
+                                            <TableCell colSpan={1}>Total Entries</TableCell>
                                             <TableCell className="text-right">{TotalTemporaryAttendanceHistory}</TableCell>
                                         </TableRow>
                                     </TableFooter>
