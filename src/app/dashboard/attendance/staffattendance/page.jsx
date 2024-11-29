@@ -44,6 +44,8 @@ import Loader from "@/components/Loader/Loader";
 
 const StaffAttendance = () => {
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
     const queryClient = useQueryClient();
     const [qrDetails, setQrDetails] = useState();
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
@@ -103,9 +105,10 @@ const StaffAttendance = () => {
     let debounceTimeout;
 
     // Fetch all temporary staff attendances
-    const fetchAllTemporaryStaffAttendances = async () => {
+    const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
+        const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history`);
+            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -118,7 +121,11 @@ const StaffAttendance = () => {
         queryFn: fetchAllTemporaryStaffAttendances
     });
 
-    const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory } = temporarystaffattendance || {};
+    const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory, TotalTemporaryAttendancePages } = temporarystaffattendance || {};
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+    };
 
     return (
         <div className='w-full'>
@@ -152,11 +159,11 @@ const StaffAttendance = () => {
             <div className="w-full flex justify-center">
                 <div className="w-full mx-4">
                     <div className="w-full">
-                        <form className="w-full flex bg-white justify-between items-center my-4">
-                            <div className='w-10/12 flex justify-start items-center p-2'>
+                        <form className="w-full md:flex bg-white justify-between shadow-md items-center my-4">
+                            <div className='md:w-10/12 w-full flex justify-start items-center p-2'>
                                 <Input
                                     placeholder='Scan qr code here'
-                                    className='focus:border-blue-500'
+                                    className='focus:border-blue-500 rounded-none'
                                     autoFocus
                                     onChange={(e) => {
                                         clearTimeout(debounceTimeout);
@@ -187,7 +194,7 @@ const StaffAttendance = () => {
                                 />
                             </div>
 
-                            <div className='w-2/12 flex justify-start items-center p-2'>
+                            <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
                                 <Button type='submit' className='rounded-sm w-full'>Refresh</Button>
                             </div>
                         </form>
@@ -225,7 +232,7 @@ const StaffAttendance = () => {
                                                     <TableCell>{attendance.fullName}</TableCell>
                                                     <TableCell>{attendance.role}</TableCell>
                                                     <TableCell>{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
-                                                    <TableCell>{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                    <TableCell>{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
                                                     <TableCell>{attendance.remark}</TableCell>
                                                 </TableRow>
                                             ))
@@ -249,27 +256,23 @@ const StaffAttendance = () => {
                     </div>
 
                     <div className="py-2 my-2">
-                        <Pagination>
+                        <Pagination className={'cursor-pointer'}>
                             <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationPrevious href="#" />
+                                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                 </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
+                                {[...Array(TotalTemporaryAttendancePages)].map((_, i) => (
+                                    <PaginationItem key={i}>
+                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                            {i + 1}
+                                        </PaginationLink>
+                                    </PaginationItem>
+                                ))}
                                 <PaginationItem>
                                     <PaginationEllipsis />
                                 </PaginationItem>
                                 <PaginationItem>
-                                    <PaginationNext href="#" />
+                                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === TotalTemporaryAttendancePages} />
                                 </PaginationItem>
                             </PaginationContent>
                         </Pagination>
