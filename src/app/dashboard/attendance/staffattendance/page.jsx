@@ -39,10 +39,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loader from "@/components/Loader/Loader";
 
 const StaffAttendance = () => {
 
+    const queryClient = useQueryClient();
     const [qrDetails, setQrDetails] = useState();
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
 
@@ -55,6 +57,10 @@ const StaffAttendance = () => {
                 },
                 body: JSON.stringify({ iv, tv })
             })
+
+            if (response.ok) {
+                queryClient.invalidateQueries(['temporarystaffattendance']);
+            }
 
             const responseBody = await response.json();
             if (response.status && responseBody.type === 'CheckedIn') {
@@ -82,46 +88,37 @@ const StaffAttendance = () => {
                 headers: {
                     'Content-Type': "application/json"
                 },
-                body: JSON.stringify({ iv ,tv})
+                body: JSON.stringify({ iv, tv })
             });
 
             const responseBody = await response.json();
-            alert("Staff successfully checked out!");
+            queryClient.invalidateQueries(['temporarystaffattendance']);
+            alert("Successfully checked out!");
         } catch (error) {
             console.error("Error during checkout: ", error);
             alert("Failed to check out staff. Please try again.");
         }
     };
 
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        }
-    ];
     let debounceTimeout;
 
     // Fetch all temporary staff attendances
-
     const fetchAllTemporaryStaffAttendances = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history`);
             const responseBody = await response.json();
-            console.log("Response Body: ",responseBody);
             return responseBody;
         } catch (error) {
-            console.error("Error:",error);
+            console.error("Error:", error);
         }
     };
 
-    const {data:temporarystaffattendance, isLoading} = useQuery({
-        queryKey:['temporarystaffattendance'],
-        queryFn:fetchAllTemporaryStaffAttendances
+    const { data: temporarystaffattendance, isLoading: AttendanceFetching } = useQuery({
+        queryKey: ['temporarystaffattendance'],
+        queryFn: fetchAllTemporaryStaffAttendances
     });
 
-    console.log("Temporary staff attendance: ", temporarystaffattendance);
+    const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory } = temporarystaffattendance || {};
 
     return (
         <div className='w-full'>
@@ -206,32 +203,48 @@ const StaffAttendance = () => {
                         </div>
 
                         <div className="w-full bg-white">
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead className="w-[100px]">Invoice</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Method</TableHead>
-                                        <TableHead className="text-right">Amount</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {invoices.map((invoice) => (
-                                        <TableRow key={invoice.invoice}>
-                                            <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                            <TableCell>{invoice.paymentStatus}</TableCell>
-                                            <TableCell>{invoice.paymentMethod}</TableCell>
-                                            <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                            {AttendanceFetching ? (
+                                <Loader />
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-[100px]">Staff Id</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Role</TableHead>
+                                            <TableHead>CheckIn</TableHead>
+                                            <TableHead>CheckOut</TableHead>
+                                            <TableHead>Remark</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={3}>Total</TableCell>
-                                        <TableCell className="text-right">$2,500.00</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory.length > 0 ? (
+                                            TemporaryAttendanceHistory.map((attendance) => (
+                                                <TableRow key={attendance._id}>
+                                                    <TableCell className="font-medium">{attendance.staffId}</TableCell>
+                                                    <TableCell>{attendance.fullName}</TableCell>
+                                                    <TableCell>{attendance.role}</TableCell>
+                                                    <TableCell>{attendance.checkIn}</TableCell>
+                                                    <TableCell>{attendance.checkOut}</TableCell>
+                                                    <TableCell>{attendance.remark}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={7} align="center">
+                                                    Showing 0 out of 0 entries
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                    <TableFooter>
+                                        <TableRow>
+                                            <TableCell colSpan={3}>Total Entries</TableCell>
+                                            <TableCell className="text-right">{TotalTemporaryAttendanceHistory}</TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            )}
                         </div>
                     </div>
 
