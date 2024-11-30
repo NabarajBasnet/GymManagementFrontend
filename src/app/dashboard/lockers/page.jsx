@@ -77,7 +77,7 @@ const Lockers = () => {
         setError,
         clearErrors,
         formState: { isSubmitting, errors },
-        control
+        control,
     } = useForm();
 
     const [lockerId, setLockerId] = useState('');
@@ -92,7 +92,6 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/lockers`);
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -105,6 +104,9 @@ const Lockers = () => {
     });
 
     const { lockers, assignedLockers, emptyLockers, expiredLockers } = data || {}
+
+    // Pululate lockers data
+
 
     const getAllMembers = async () => {
         try {
@@ -216,9 +218,9 @@ const Lockers = () => {
                     setToast(false)
                 }, 5000);
                 queryClient.invalidateQueries(['lockers']);
+                window.location.reload();
             }
             const responseBody = await response.json();
-            console.log('Reponse body: ', responseBody);
             setResponseMessage(responseBody.message);
         } catch (error) {
             console.log("Error: ", error);
@@ -230,6 +232,19 @@ const Lockers = () => {
             const response = await fetch(`http://localhost:3000/api/lockers/${id}`);
             const responseBody = await response.json();
             setFetchedLocker(responseBody.lockerDetails);
+            if (response.ok) {
+                reset({
+                    lockerNumber: responseBody.lockerDetails.lockerNumber,
+                    memberName: responseBody.lockerDetails.memberName,
+                    renewDate: responseBody.lockerDetails.renewDate ? new Date(responseBody.lockerDetails.renewDate).toISOString().split("T")[0] : '',
+                    duration: responseBody.lockerDetails.duration,
+                    expireDate: responseBody.lockerDetails.expireDate ? new Date(responseBody.lockerDetails.expireDate).toISOString().split("T")[0] : '',
+                    fee: responseBody.lockerDetails.fee,
+                    paymentMethod: responseBody.lockerDetails.paymentMethod,
+                    referenceCode: responseBody.lockerDetails.referenceCode,
+                    receiptNo: responseBody.lockerDetails.receiptNo
+                });
+            }
             return responseBody;
         } catch (error) {
             console.log('Error: ', error);
@@ -249,6 +264,7 @@ const Lockers = () => {
                     setToast(false)
                 }, 5000);
                 queryClient.invalidateQueries(['lockers']);
+                window.location.reload();
             }
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
@@ -333,12 +349,23 @@ const Lockers = () => {
                                         <div ref={searchRef} className='w-full flex justify-center'>
                                             <div className='relative w-full'>
                                                 <div className='w-full'>
-                                                    <Input
-                                                        value={searchQuery}
-                                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                                        onFocus={handleSearchFocus}
-                                                        className='w-full rounded-lg'
-                                                        placeholder='Search members...'
+                                                    <Controller
+                                                        name='memberName'
+                                                        control={control}
+                                                        render={({ field }) => (
+                                                            <Input
+                                                                {...field}
+                                                                value={field.value}
+                                                                {...register('memberName')}
+                                                                onChange={(e) => {
+                                                                    setSearchQuery(e.target.value);
+                                                                    field.onChange(e);
+                                                                }}
+                                                                onFocus={handleSearchFocus}
+                                                                className='w-full rounded-lg'
+                                                                placeholder='Search members...'
+                                                            />
+                                                        )}
                                                     />
                                                     {errors.memberName && (
                                                         <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
@@ -376,15 +403,23 @@ const Lockers = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Renew Date</Label>
-                                        <Input
-                                            value={new Date(renewDate).toISOString().split('T')[0]}
-                                            onChange={(e) => {
-                                                setRenewDate(e.target.value);
-                                                clearErrors('renewDate');
-                                            }}
-                                            type="date"
-                                            defaultValue={fetchedLocker ? new Date(fetchedLocker.renewDate) : ''}
-                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        <Controller
+                                            name='renewDate'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    {...register('renewDate')}
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        setRenewDate(e.target.value);
+                                                        field.onChange(e);
+                                                        clearErrors('renewDate');
+                                                    }}
+                                                    type="date"
+                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                />
+                                            )}
                                         />
                                         {errors.renewDate && (
                                             <p className="text-sm font-semibold text-red-600">{errors.renewDate.message}</p>
@@ -393,25 +428,27 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Duration</Label>
-                                        <Select onValueChange={(value) => {
-                                            setDuration(value);
-                                            if (value) {
-                                                clearErrors('duration')
-                                            }
-                                        }}>
-                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.duration : ''} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Select Duration</SelectLabel>
-                                                    <SelectItem value="1 Month">1 Month</SelectItem>
-                                                    <SelectItem value="3 Months">3 Months</SelectItem>
-                                                    <SelectItem value="6 Months">6 Months</SelectItem>
-                                                    <SelectItem value="12 Months">12 Months</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                        <Controller
+                                            name='duration'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <select
+                                                    {...field}
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        setDuration(e.target.value)
+                                                        field.onChange(e)
+                                                    }}
+                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                >
+                                                    <option>Select</option>
+                                                    <option value='1 Month'>1 Month</option>
+                                                    <option value='3 Months'>3 Months</option>
+                                                    <option value='6 Months'>6 Months</option>
+                                                    <option value='12 Months'>12 Months</option>
+                                                </select>
+                                            )}
+                                        />
                                         {errors.duration && (
                                             <p className="text-sm font-semibold text-red-600">{errors.duration.message}</p>
                                         )}
@@ -421,19 +458,23 @@ const Lockers = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Expire Date</Label>
-                                        <Input
-                                            value={new Date(expireDate).toISOString().split('T')[0]}
-                                            onChange={(e) => {
-                                                setExpireDate(e.target.value);
-                                                clearErrors('expireDate');
-                                            }}
-                                            type="date"
-                                            defaultValue={
-                                                fetchedLocker && fetchedLocker.expireDate && !isNaN(new Date(fetchedLocker.expireDate))
-                                                    ? new Date(fetchedLocker.expireDate).toISOString().split('T')[0]
-                                                    : ''
-                                            }
-                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        <Controller
+                                            name='expireDate'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    {...register('expireDate')}
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        setExpireDate(e.target.value);
+                                                        field.onChange(e);
+                                                        clearErrors('expireDate');
+                                                    }}
+                                                    type="date"
+                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                />
+                                            )}
                                         />
                                         {errors.expireDate && (
                                             <p className="text-sm font-semibold text-red-600">{errors.expireDate.message}</p>
@@ -442,12 +483,20 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Fee</Label>
-                                        <Input
-                                            {...register('fee', {
-                                                required: { value: true, message: "Fee is required" },
-                                            })}
-                                            defaultValue={fetchedLocker ? fetchedLocker.fee : ''}
-                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        <Controller
+                                            name='fee'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    {...register('fee')}
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        field.onChange(e);
+                                                    }}
+                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                />
+                                            )}
                                         />
                                         {errors.fee && (
                                             <p className="text-sm font-semibold text-red-600">{errors.fee.message}</p>
@@ -458,24 +507,26 @@ const Lockers = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div>
                                         <Label>Payment Method</Label>
-                                        <Select onValueChange={(value) => {
-                                            setPaymentMethod(value);
-                                            if (value) {
-                                                clearErrors('paymentMethod')
-                                            }
-                                        }}>
-                                            <SelectTrigger className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none">
-                                                <SelectValue placeholder={fetchedLocker ? fetchedLocker.paymentMethod : ''} />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Payment Method</SelectLabel>
-                                                    <SelectItem value="Fonepay">Fonepay</SelectItem>
-                                                    <SelectItem value="Cash">Cash</SelectItem>
-                                                    <SelectItem value="Card">Card</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                        <Controller
+                                            name='paymentMethod'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <select
+                                                    {...field}
+                                                    value={field.value}
+                                                    onChange={(e) => {
+                                                        setPaymentMethod(e.target.value);
+                                                        field.onChange(e)
+                                                    }}
+                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                >
+                                                    <option>Select</option>
+                                                    <option value='Fonepay'>Fonepay</option>
+                                                    <option value='Cash'>Cash</option>
+                                                    <option value='Card'>Card</option>
+                                                </select>
+                                            )}
+                                        />
                                         {errors.paymentMethod && (
                                             <p className="text-sm font-semibold text-red-600">{errors.paymentMethod.message}</p>
                                         )}
@@ -484,13 +535,20 @@ const Lockers = () => {
                                     {paymentMethod === 'Fonepay' && (
                                         <div>
                                             <Label>Reference Code</Label>
-                                            <Input
-                                                {...register('referenceCode', {
-                                                    required: { value: true, message: "Reference code is required" },
-                                                })}
-                                                defaultValue={fetchedLocker ? fetchedLocker.referenceCode : ''}
-                                                className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                            <Controller
+                                                control={control}
+                                                name='referenceCode'
+                                                render={({ field }) => (
+                                                    <Input
+                                                        {...field}
+                                                        value={field.value}
+                                                        {...register('referenceCode')}
+                                                        onChange={(e) => field.onChange(e)}
+                                                        className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                    />
+                                                )}
                                             />
+
                                             {errors.referenceCode && (
                                                 <p className="text-sm font-semibold text-red-600">{errors.referenceCode.message}</p>
                                             )}
@@ -499,12 +557,18 @@ const Lockers = () => {
 
                                     <div>
                                         <Label>Receipt No</Label>
-                                        <Input
-                                            {...register('receiptNo', {
-                                                required: { value: true, message: "Receipt number is required" },
-                                            })}
-                                            defaultValue={fetchedLocker ? fetchedLocker.receiptNo : ''}
-                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                        <Controller
+                                            name='receiptNo'
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Input
+                                                    {...field}
+                                                    {...register('receiptNo')}
+                                                    value={field.value}
+                                                    onChange={(e) => field.onChange(e)}
+                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                />
+                                            )}
                                         />
                                         {errors.receiptNo && (
                                             <p className="text-sm font-semibold text-red-600">{errors.receiptNo.message}</p>
@@ -513,7 +577,7 @@ const Lockers = () => {
                                 </div>
 
                                 <div className="w-full flex justify-center mt-8 space-x-4">
-                                    <Button className="bg-blue-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-blue-600 transition-all">
+                                    <Button type='submit' className="bg-green-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-green-600 transition-all">
                                         {isSubmitting ? 'Submitting...' : "Submit"}
                                     </Button>
                                     <Button
@@ -526,7 +590,7 @@ const Lockers = () => {
                                         fetchedLocker ? (
                                             <Button
                                                 onClick={() => resetLocker(fetchedLocker._id)}
-                                                className="bg-gray-200 text-gray-700 font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-gray-500 hover:text-white transition-all">
+                                                className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 hover:text-white transition-all">
                                                 Reset
                                             </Button>
                                         ) : (
