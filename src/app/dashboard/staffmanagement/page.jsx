@@ -14,21 +14,21 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    Menubar,
-    MenubarCheckboxItem,
-    MenubarContent,
-    MenubarItem,
-    MenubarMenu,
-    MenubarRadioGroup,
-    MenubarRadioItem,
-    MenubarSeparator,
-    MenubarShortcut,
-    MenubarSub,
-    MenubarSubContent,
-    MenubarSubTrigger,
-    MenubarTrigger,
-} from "@/components/ui/menubar";
+// import {
+//     Menubar,
+//     MenubarCheckboxItem,
+//     MenubarContent,
+//     MenubarItem,
+//     MenubarMenu,
+//     MenubarRadioGroup,
+//     MenubarRadioItem,
+//     MenubarSeparator,
+//     MenubarShortcut,
+//     MenubarSub,
+//     MenubarSubContent,
+//     MenubarSubTrigger,
+//     MenubarTrigger,
+// } from "@/components/ui/menubar";
 import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -268,7 +268,7 @@ const AddStaff = () => {
 
                 <div className="flex justify-between items-center">
                     <h1 className="text-xl font-bold mt-3">Staff Management</h1>
-
+{/* 
                     <Menubar>
                         <MenubarMenu>
                             <MenubarTrigger>File</MenubarTrigger>
@@ -355,7 +355,7 @@ const AddStaff = () => {
                                 <MenubarItem inset>Add Profile...</MenubarItem>
                             </MenubarContent>
                         </MenubarMenu>
-                    </Menubar>
+                    </Menubar> */}
                 </div>
 
                 <DropdownMenu>
