@@ -1,6 +1,35 @@
 'use client';
 
-import { MdDelete, MdClose, MdEmail, MdDone, MdError } from "react-icons/md";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+    Menubar,
+    MenubarCheckboxItem,
+    MenubarContent,
+    MenubarItem,
+    MenubarMenu,
+    MenubarRadioGroup,
+    MenubarRadioItem,
+    MenubarSeparator,
+    MenubarShortcut,
+    MenubarSub,
+    MenubarSubContent,
+    MenubarSubTrigger,
+    MenubarTrigger,
+} from "@/components/ui/menubar";
+import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import {
@@ -22,12 +51,6 @@ import {
     TableHeader,
     TableRow,
 } from "../allmembers/allmembertable.jsx";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -53,6 +76,22 @@ import { useState } from "react";
 import * as React from 'react';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
+import {
+    Cloud,
+    CreditCard,
+    Github,
+    Keyboard,
+    LifeBuoy,
+    LogOut,
+    Mail,
+    MessageSquare,
+    Plus,
+    PlusCircle,
+    Settings,
+    User,
+    UserPlus,
+    Users,
+} from "lucide-react";
 
 const AddStaff = () => {
 
@@ -119,38 +158,12 @@ const AddStaff = () => {
     const registerNewStaff = async (data) => {
 
         const {
-            fullName,
-            email,
-            contactNo,
-            emergencyContactNo,
-            address,
-            dob,
-            gender,
-            shift,
-            joinedDate,
-            workingHours,
-            status,
-            salary,
-            role
+            fullName, email, contactNo, emergencyContactNo, address, dob, gender, shift, joinedDate, workingHours, status, salary, role
         } = data;
 
         // Prepare final data
         const finalData = {
-            fullName,
-            email,
-            contactNo,
-            emergencyContactNo,
-            address,
-            dob,
-            checkInTime,
-            checkOutTime,
-            gender,
-            shift,
-            joinedDate,
-            workingHours,
-            status,
-            salary,
-            role
+            fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role
         };
 
         try {
@@ -211,13 +224,21 @@ const AddStaff = () => {
         }
     };
 
-    const editStaffDetailsAndPopulate = async (id) => {
+    const populateStaffDetailsInForm = async (id) => {
         try {
 
         } catch (error) {
-
+            console.log("Error: ", error);
         }
-    }
+    };
+
+    const editStaffDetails = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log('Error: ', error);
+        }
+    };
 
 
     return (
@@ -244,7 +265,132 @@ const AddStaff = () => {
                         <BreadcrumbSeparator />
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Staff Management</h1>
+
+                <div className="flex justify-between items-center">
+                    <h1 className="text-xl font-bold mt-3">Staff Management</h1>
+
+                    <Menubar>
+                        <MenubarMenu>
+                            <MenubarTrigger>File</MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarItem>
+                                    New Tab <MenubarShortcut>⌘T</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarItem>
+                                    New Window <MenubarShortcut>⌘N</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarItem disabled>New Incognito Window</MenubarItem>
+                                <MenubarSeparator />
+                                <MenubarSub>
+                                    <MenubarSubTrigger>Share</MenubarSubTrigger>
+                                    <MenubarSubContent>
+                                        <MenubarItem>Email link</MenubarItem>
+                                        <MenubarItem>Messages</MenubarItem>
+                                        <MenubarItem>Notes</MenubarItem>
+                                    </MenubarSubContent>
+                                </MenubarSub>
+                                <MenubarSeparator />
+                                <MenubarItem>
+                                    Print... <MenubarShortcut>⌘P</MenubarShortcut>
+                                </MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                            <MenubarTrigger>Edit</MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarItem>
+                                    Undo <MenubarShortcut>⌘Z</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarItem>
+                                    Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarSeparator />
+                                <MenubarSub>
+                                    <MenubarSubTrigger>Find</MenubarSubTrigger>
+                                    <MenubarSubContent>
+                                        <MenubarItem>Search the web</MenubarItem>
+                                        <MenubarSeparator />
+                                        <MenubarItem>Find...</MenubarItem>
+                                        <MenubarItem>Find Next</MenubarItem>
+                                        <MenubarItem>Find Previous</MenubarItem>
+                                    </MenubarSubContent>
+                                </MenubarSub>
+                                <MenubarSeparator />
+                                <MenubarItem>Cut</MenubarItem>
+                                <MenubarItem>Copy</MenubarItem>
+                                <MenubarItem>Paste</MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                            <MenubarTrigger>View</MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
+                                <MenubarCheckboxItem checked>
+                                    Always Show Full URLs
+                                </MenubarCheckboxItem>
+                                <MenubarSeparator />
+                                <MenubarItem inset>
+                                    Reload <MenubarShortcut>⌘R</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarItem disabled inset>
+                                    Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
+                                </MenubarItem>
+                                <MenubarSeparator />
+                                <MenubarItem inset>Toggle Fullscreen</MenubarItem>
+                                <MenubarSeparator />
+                                <MenubarItem inset>Hide Sidebar</MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                        <MenubarMenu>
+                            <MenubarTrigger>Profiles</MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarRadioGroup value="benoit">
+                                    <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
+                                    <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
+                                    <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
+                                </MenubarRadioGroup>
+                                <MenubarSeparator />
+                                <MenubarItem inset>Edit...</MenubarItem>
+                                <MenubarSeparator />
+                                <MenubarItem inset>Add Profile...</MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                    </Menubar>
+                </div>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <MdMenu className="text-2xl cursor-pointer mt-4" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <User />
+                                <span>Profile</span>
+                                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <CreditCard />
+                                <span>Billing</span>
+                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Settings />
+                                <span>Settings</span>
+                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Keyboard />
+                                <span>Keyboard shortcuts</span>
+                                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+
             </div>
 
             {toast ? (
@@ -391,7 +537,6 @@ const AddStaff = () => {
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
-                                                        <MdEmail className="cursor-pointer text-lg" />
                                                         <FaUserEdit className="cursor-pointer text-lg" />
                                                         <MdDelete className="text-red-600 cursor-pointer text-lg" />
                                                     </div>
