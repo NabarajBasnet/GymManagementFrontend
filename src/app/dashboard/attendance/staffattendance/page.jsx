@@ -52,7 +52,7 @@ const StaffAttendance = () => {
 
     const StaffAttendance = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -88,7 +88,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -114,7 +114,7 @@ const StaffAttendance = () => {
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
