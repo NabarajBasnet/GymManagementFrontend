@@ -84,8 +84,8 @@ import Link from "next/link.js";
 const AddStaff = () => {
 
     // States
-    const [checkInTime, setCheckInTime] = useState(new Date().getTime());
-    const [checkOutTime, setCheckOutTime] = useState(new Date().getTime());
+    const [checkInTime, setCheckInTime] = useState(new Date());
+    const [checkOutTime, setCheckOutTime] = useState(new Date());
 
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
@@ -128,7 +128,7 @@ const AddStaff = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -155,7 +155,7 @@ const AddStaff = () => {
         };
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ const AddStaff = () => {
     const populateStaffDetailsInForm = async (id) => {
         try {
 
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             console.log("Response Body: ", responseBody);
             if (response.ok && responseBody.staff) {
@@ -401,7 +401,7 @@ const AddStaff = () => {
                                                     })
                                                     : ''}</TableCell>
                                                 <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
-                                                <TableCell>{staff.employmentStatus}</TableCell>
+                                                <TableCell>{staff.status}</TableCell>
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
@@ -620,7 +620,7 @@ const AddStaff = () => {
                                                                                 {...register('checkInTime')}
                                                                                 value={field.value}
                                                                                 onChange={(e) => {
-                                                                                    handleCheckInTimeChange;
+                                                                                    handleCheckInTimeChange(e);
                                                                                     field.onChange(e);
                                                                                 }}
                                                                                 type='time'
@@ -652,7 +652,7 @@ const AddStaff = () => {
                                                                             value={field.value}
                                                                             onChange={(e) => {
                                                                                 field.onChange(e);
-                                                                                handleCheckOutTimeChange;
+                                                                                handleCheckOutTimeChange(e);
                                                                             }}
                                                                             type='time'
                                                                         />
@@ -708,14 +708,14 @@ const AddStaff = () => {
                                                                             {...field}
                                                                             value={field.value}
                                                                             onChange={(e) => {
-                                                                                setValue('shift', e.target.value);
-                                                                                field.onChange(e);
+                                                                                const selectedValue = e.target.value
+                                                                                setValue('shift', selectedValue);
+                                                                                field.onChange(selectedValue);
                                                                                 clearErrors('shift')
-
                                                                             }}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                         >
-                                                                            <option>Membership Type</option>
+                                                                            <option>Shift</option>
                                                                             <option value="Morning">Morning</option>
                                                                             <option value="Day">Day</option>
                                                                             <option value="Evening">Evening</option>
@@ -761,9 +761,10 @@ const AddStaff = () => {
                                                                             {...field}
                                                                             value={field.value}
                                                                             onChange={(e) => {
-                                                                                setValue('workingHours', value);
+                                                                                const selectedValue = e.target.value
+                                                                                setValue('workingHours', selectedValue);
                                                                                 clearErrors('workingHours');
-                                                                                field.onChange(e);
+                                                                                field.onChange(selectedValue);
                                                                             }}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                         >
@@ -792,13 +793,14 @@ const AddStaff = () => {
                                                                             {...field}
                                                                             value={field.value}
                                                                             onChange={(e) => {
-                                                                                setValue('status', value);
+                                                                                const selectedValue = e.target.value;
+                                                                                setValue('status', selectedValue);
                                                                                 clearErrors('status')
-                                                                                field.onChange(e)
+                                                                                field.onChange(selectedValue)
                                                                             }}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                         >
-                                                                            <option>Duration</option>
+                                                                            <option>Status</option>
                                                                             <option value="Active">Active</option>
                                                                             <option value="On Leave">On Leave</option>
                                                                             <option value="Inactive">Inactive</option>
@@ -844,9 +846,10 @@ const AddStaff = () => {
                                                                             {...field}
                                                                             value={field.value}
                                                                             onChange={(e) => {
-                                                                                setValue('role', value);
+                                                                                const selectedValue = e.target.value;
+                                                                                setValue('role', selectedValue);
                                                                                 clearErrors("role");
-                                                                                field.onChange(e);
+                                                                                field.onChange(selectedValue);
                                                                             }}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                         >
