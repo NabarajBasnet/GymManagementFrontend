@@ -14,21 +14,6 @@ import {
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// import {
-//     Menubar,
-//     MenubarCheckboxItem,
-//     MenubarContent,
-//     MenubarItem,
-//     MenubarMenu,
-//     MenubarRadioGroup,
-//     MenubarRadioItem,
-//     MenubarSeparator,
-//     MenubarShortcut,
-//     MenubarSub,
-//     MenubarSubContent,
-//     MenubarSubTrigger,
-//     MenubarTrigger,
-// } from "@/components/ui/menubar";
 import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
@@ -92,6 +77,8 @@ import {
     UserPlus,
     Users,
 } from "lucide-react";
+import { TiUserAdd } from "react-icons/ti";
+
 
 const AddStaff = () => {
 
@@ -140,7 +127,7 @@ const AddStaff = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -167,7 +154,7 @@ const AddStaff = () => {
         };
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -268,129 +255,34 @@ const AddStaff = () => {
 
                 <div className="flex justify-between items-center">
                     <h1 className="text-xl font-bold mt-3">Staff Management</h1>
-{/* 
-                    <Menubar>
-                        <MenubarMenu>
-                            <MenubarTrigger>File</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarItem>
-                                    New Tab <MenubarShortcut>⌘T</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarItem>
-                                    New Window <MenubarShortcut>⌘N</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarItem disabled>New Incognito Window</MenubarItem>
-                                <MenubarSeparator />
-                                <MenubarSub>
-                                    <MenubarSubTrigger>Share</MenubarSubTrigger>
-                                    <MenubarSubContent>
-                                        <MenubarItem>Email link</MenubarItem>
-                                        <MenubarItem>Messages</MenubarItem>
-                                        <MenubarItem>Notes</MenubarItem>
-                                    </MenubarSubContent>
-                                </MenubarSub>
-                                <MenubarSeparator />
-                                <MenubarItem>
-                                    Print... <MenubarShortcut>⌘P</MenubarShortcut>
-                                </MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                        <MenubarMenu>
-                            <MenubarTrigger>Edit</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarItem>
-                                    Undo <MenubarShortcut>⌘Z</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarItem>
-                                    Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarSeparator />
-                                <MenubarSub>
-                                    <MenubarSubTrigger>Find</MenubarSubTrigger>
-                                    <MenubarSubContent>
-                                        <MenubarItem>Search the web</MenubarItem>
-                                        <MenubarSeparator />
-                                        <MenubarItem>Find...</MenubarItem>
-                                        <MenubarItem>Find Next</MenubarItem>
-                                        <MenubarItem>Find Previous</MenubarItem>
-                                    </MenubarSubContent>
-                                </MenubarSub>
-                                <MenubarSeparator />
-                                <MenubarItem>Cut</MenubarItem>
-                                <MenubarItem>Copy</MenubarItem>
-                                <MenubarItem>Paste</MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                        <MenubarMenu>
-                            <MenubarTrigger>View</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-                                <MenubarCheckboxItem checked>
-                                    Always Show Full URLs
-                                </MenubarCheckboxItem>
-                                <MenubarSeparator />
-                                <MenubarItem inset>
-                                    Reload <MenubarShortcut>⌘R</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarItem disabled inset>
-                                    Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
-                                </MenubarItem>
-                                <MenubarSeparator />
-                                <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-                                <MenubarSeparator />
-                                <MenubarItem inset>Hide Sidebar</MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                        <MenubarMenu>
-                            <MenubarTrigger>Profiles</MenubarTrigger>
-                            <MenubarContent>
-                                <MenubarRadioGroup value="benoit">
-                                    <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-                                    <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-                                    <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-                                </MenubarRadioGroup>
-                                <MenubarSeparator />
-                                <MenubarItem inset>Edit...</MenubarItem>
-                                <MenubarSeparator />
-                                <MenubarItem inset>Add Profile...</MenubarItem>
-                            </MenubarContent>
-                        </MenubarMenu>
-                    </Menubar> */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <MdMenu className="text-3xl cursor-pointer mt-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuGroup>
+                                <DropdownMenuItem className='cursor-pointer' onClick={() => setOpenForm(!openForm)}>
+                                    <TiUserAdd />
+                                    <span>Add Staff</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <CreditCard />
+                                    <span>Billing</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Settings />
+                                    <span>Settings</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <Keyboard />
+                                    <span>Keyboard shortcuts</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <MdMenu className="text-2xl cursor-pointer mt-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <User />
-                                <span>Profile</span>
-                                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                <span>Billing</span>
-                                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Settings />
-                                <span>Settings</span>
-                                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Keyboard />
-                                <span>Keyboard shortcuts</span>
-                                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-
             </div>
 
             {toast ? (
@@ -425,57 +317,6 @@ const AddStaff = () => {
             ) : (
                 <></>
             )}
-
-            <div className="w-full md:flex justify-between items-center md:space-x-4 md:space-y-0 space-y-4 p-2">
-                <Select>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-
-                <Select>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-
-                <Select>
-                    <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select a fruit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectLabel>Fruits</SelectLabel>
-                            <SelectItem value="apple">Apple</SelectItem>
-                            <SelectItem value="banana">Banana</SelectItem>
-                            <SelectItem value="blueberry">Blueberry</SelectItem>
-                            <SelectItem value="grapes">Grapes</SelectItem>
-                            <SelectItem value="pineapple">Pineapple</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-
-            </div>
 
             <div className="p-2">
                 <div className="flex items-center border bg-white">
@@ -586,11 +427,6 @@ const AddStaff = () => {
                                 </PaginationContent>
                             </Pagination>
                         </div>
-                    </div>
-                    <div className="flex justify-center items-center px-5 my-6 space-x-4">
-                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
-                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
-                        <Button className='rounded-none' onClick={() => setOpenForm(!openForm)}>Add New Staff</Button>
                     </div>
                     {
                         openForm && (
