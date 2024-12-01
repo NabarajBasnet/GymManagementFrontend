@@ -128,7 +128,7 @@ const AddStaff = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -155,7 +155,7 @@ const AddStaff = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -215,7 +215,7 @@ const AddStaff = () => {
     const populateStaffDetailsInForm = async (id) => {
         try {
 
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             console.log("Response Body: ", responseBody);
             if (response.ok && responseBody.staff) {
