@@ -215,6 +215,29 @@ const AddStaff = () => {
     const populateStaffDetailsInForm = async (id) => {
         try {
 
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const responseBody = await response.json();
+            console.log("Response Body: ", responseBody);
+            if (response.ok && responseBody.staff) {
+                setOpenForm(true);
+                reset({
+                    fullName: responseBody.staff.fullName,
+                    email: responseBody.staff.email,
+                    contactNo: responseBody.staff.contactNo,
+                    emergencyContactNo: responseBody.staff.emergencyContactNo,
+                    address: responseBody.staff.address,
+                    dob: responseBody.staff.dob ? new Date(responseBody.staff.dob).toISOString().split("T")[0] : '',
+                    checkIn: responseBody.staff.checkIn ? new Date(responseBody.staff.checkIn).toISOString().split('T')[1] : '',
+                    checkOut: responseBody.staff.checkIn ? new Date(responseBody.staff.checkOut).toISOString().split('T')[1] : '',
+                    gender: responseBody.staff.gender,
+                    shift: responseBody.staff.shift,
+                    joinedDate: responseBody.staff.joinedDate ? new Date(responseBody.staff.joinedDate).toISOString().split("T")[0] : '',
+                    workingHours: responseBody.staff.workingHours,
+                    status: responseBody.staff.status,
+                    salary: responseBody.staff.salary,
+                    role: responseBody.staff.role
+                })
+            }
         } catch (error) {
             console.log("Error: ", error);
         }
@@ -222,7 +245,6 @@ const AddStaff = () => {
 
     const editStaffDetails = async (id) => {
         try {
-
         } catch (error) {
             console.log('Error: ', error);
         }
@@ -268,7 +290,11 @@ const AddStaff = () => {
                             </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
-                                <DropdownMenuItem className='cursor-pointer' onClick={() => setOpenForm(!openForm)}>
+                                <DropdownMenuItem className='cursor-pointer' onClick={() => {
+                                    reset()
+                                    setOpenForm(!openForm)
+                                }
+                                }>
                                     <TiUserAdd />
                                     <span>Add Staff</span>
                                 </DropdownMenuItem>
@@ -379,7 +405,7 @@ const AddStaff = () => {
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
-                                                        <FaUserEdit className="cursor-pointer text-lg" />
+                                                        <FaUserEdit onClick={() => populateStaffDetailsInForm(staff._id)} className="cursor-pointer text-lg" />
                                                         <MdDelete className="text-red-600 cursor-pointer text-lg" />
                                                     </div>
                                                 </TableCell>
@@ -445,10 +471,21 @@ const AddStaff = () => {
                                                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                                             <div>
                                                                 <Label>Full Name</Label>
-                                                                <Input
-                                                                    {...register("fullName")}
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Full Name"
+                                                                <Controller
+                                                                    name="fullName"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            {...register("fullName")}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Full Name"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.fullName && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
@@ -457,10 +494,21 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Email Address</Label>
-                                                                <Input
-                                                                    {...register("email")}
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Email address"
+                                                                <Controller
+                                                                    name="email"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            {...register("email")}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Email address"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.email && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
@@ -469,10 +517,21 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Contact Number</Label>
-                                                                <Input
-                                                                    {...register("contactNo")}
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Contact Number"
+                                                                <Controller
+                                                                    name="contactNo"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            {...register("contactNo")}
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Contact Number"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.contactNo && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
@@ -481,10 +540,21 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Emergency Contact Number</Label>
-                                                                <Input
-                                                                    {...register("emergencyContactNo")}
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Emergency Contact Number"
+                                                                <Controller
+                                                                    name='emergencyContactNo'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            {...register("emergencyContactNo")}
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Emergency Contact Number"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.emergencyContactNo && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
@@ -493,10 +563,21 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Address</Label>
-                                                                <Input
-                                                                    {...register("address")}
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Address"
+                                                                <Controller
+                                                                    name='address'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            {...register("address")}
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Address"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.address && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.address.message}</p>
@@ -505,10 +586,22 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Date Of Birth</Label>
-                                                                <Input
-                                                                    {...register("dob")}
-                                                                    type="date"
-                                                                    className="rounded-none focus:outline-none"
+
+                                                                <Controller
+                                                                    name="dob"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            {...register("dob")}
+                                                                            type="date"
+                                                                            className="rounded-none focus:outline-none"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.dob && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
@@ -518,9 +611,21 @@ const AddStaff = () => {
                                                             <div className="w-full">
                                                                 <div className="w-full space-y-2">
                                                                     <label className="text-sm font-medium text-gray-700">Check In</label>
-                                                                    <Input
-                                                                        type='time'
-                                                                        onChange={handleCheckInTimeChange}
+                                                                    <Controller
+                                                                        name="checkInTime"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                {...register('checkInTime')}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    handleCheckInTimeChange;
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                type='time'
+                                                                            />
+                                                                        )}
                                                                     />
                                                                 </div>
                                                                 {errors.checkInHour && (
@@ -537,9 +642,21 @@ const AddStaff = () => {
 
                                                             <div className="w-full space-y-2">
                                                                 <label className="text-sm font-medium text-gray-700">Check Out</label>
-                                                                <Input
-                                                                    type='time'
-                                                                    onChange={handleCheckOutTimeChange}
+                                                                <Controller
+                                                                    name='checkOutTime'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            {...register('checkOutTime')}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e);
+                                                                                handleCheckOutTimeChange;
+                                                                            }}
+                                                                            type='time'
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.checkOutHour && (
                                                                     <p className="text-sm font-medium text-red-600">
@@ -555,22 +672,27 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Gender</Label>
-                                                                <Select onValueChange={(value) => {
-                                                                    setValue('gender', value);
-                                                                    clearErrors('gender');
-                                                                }}>
-                                                                    <SelectTrigger className="w-full rounded-none">
-                                                                        <SelectValue placeholder="Select Gender" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectGroup>
-                                                                            <SelectLabel>Gender</SelectLabel>
-                                                                            <SelectItem value="Male">Male</SelectItem>
-                                                                            <SelectItem value="Female">Female</SelectItem>
-                                                                            <SelectItem value="Other">Other</SelectItem>
-                                                                        </SelectGroup>
-                                                                    </SelectContent>
-                                                                </Select>
+                                                                <Controller
+                                                                    name="gender"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <select
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                setValue('gender', e.target.value);
+                                                                                field.onChange(e);
+                                                                                clearErrors('gender');
+                                                                            }}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                        >
+                                                                            <option>Select</option>
+                                                                            <option value="Male">Male</option>
+                                                                            <option value="Female">Female</option>
+                                                                            <option value="Other">Other</option>
+                                                                        </select>
+                                                                    )}
+                                                                />
                                                                 {errors.gender && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
                                                                 )}
@@ -578,22 +700,28 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Select Shift</Label>
-                                                                <Select onValueChange={(value) => {
-                                                                    setValue('shift', value);
-                                                                    clearErrors('shift')
-                                                                }}>
-                                                                    <SelectTrigger className="w-full rounded-none">
-                                                                        <SelectValue placeholder="Select Shift" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectGroup>
-                                                                            <SelectLabel>Membership Type</SelectLabel>
-                                                                            <SelectItem value="Morning">Morning</SelectItem>
-                                                                            <SelectItem value="Day">Day</SelectItem>
-                                                                            <SelectItem value="Evening">Evening</SelectItem>
-                                                                        </SelectGroup>
-                                                                    </SelectContent>
-                                                                </Select>
+                                                                <Controller
+                                                                    name='shift'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <select
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                setValue('shift', e.target.value);
+                                                                                field.onChange(e);
+                                                                                clearErrors('shift')
+
+                                                                            }}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                        >
+                                                                            <option>Membership Type</option>
+                                                                            <option value="Morning">Morning</option>
+                                                                            <option value="Day">Day</option>
+                                                                            <option value="Evening">Evening</option>
+                                                                        </select>
+                                                                    )}
+                                                                />
                                                                 {errors.shift && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.shift.message}</p>
                                                                 )}
@@ -601,10 +729,22 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Joined Date</Label>
-                                                                <Input
-                                                                    {...register("joinedDate")}
-                                                                    type="date"
-                                                                    className="rounded-none focus:outline-none"
+                                                                <Controller
+                                                                    name='joinedDate'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            {...register("joinedDate")}
+                                                                            type="date"
+                                                                            className="rounded-none focus:outline-none"
+                                                                        />
+                                                                    )}
+
                                                                 />
                                                                 {errors.joinedDate && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
@@ -613,24 +753,29 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Working Hours</Label>
-                                                                <Select onValueChange={(value) => {
-                                                                    setValue('workingHours', value);
-                                                                    clearErrors('workingHours');
-                                                                }}>
-                                                                    <SelectTrigger className="w-full rounded-none">
-                                                                        <SelectValue placeholder="Working Hours" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectGroup>
-                                                                            <SelectLabel>Select</SelectLabel>
-                                                                            <SelectItem value="2 Hours">2 Hours</SelectItem>
-                                                                            <SelectItem value="5 Hours">5 Hours</SelectItem>
-                                                                            <SelectItem value="6 Hours">6 Hours</SelectItem>
-                                                                            <SelectItem value="7 Hours">7 Hours</SelectItem>
-                                                                            <SelectItem value="8 Hours">8 Hours</SelectItem>
-                                                                        </SelectGroup>
-                                                                    </SelectContent>
-                                                                </Select>
+                                                                <Controller
+                                                                    name="workingHours"
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <select
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                setValue('workingHours', value);
+                                                                                clearErrors('workingHours');
+                                                                                field.onChange(e);
+                                                                            }}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                        >
+                                                                            <option>Select</option>
+                                                                            <option value="2 Hours">2 Hours</option>
+                                                                            <option value="5 Hours">5 Hours</option>
+                                                                            <option value="6 Hours">6 Hours</option>
+                                                                            <option value="7 Hours">7 Hours</option>
+                                                                            <option value="8 Hours">8 Hours</option>
+                                                                        </select>
+                                                                    )}
+                                                                />
                                                                 {errors.workingHours && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.workingHours.message}</p>
                                                                 )}
@@ -638,22 +783,28 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Status</Label>
-                                                                <Select onValueChange={(value) => {
-                                                                    setValue('status', value);
-                                                                    clearErrors('status')
-                                                                }}>
-                                                                    <SelectTrigger className="w-full rounded-none">
-                                                                        <SelectValue placeholder="Status" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectGroup>
-                                                                            <SelectLabel>Duration</SelectLabel>
-                                                                            <SelectItem value="Active">Active</SelectItem>
-                                                                            <SelectItem value="On Leave">On Leave</SelectItem>
-                                                                            <SelectItem value="Inactive">Inactive</SelectItem>
-                                                                        </SelectGroup>
-                                                                    </SelectContent>
-                                                                </Select>
+
+                                                                <Controller
+                                                                    name='status'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <select
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                setValue('status', value);
+                                                                                clearErrors('status')
+                                                                                field.onChange(e)
+                                                                            }}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                        >
+                                                                            <option>Duration</option>
+                                                                            <option value="Active">Active</option>
+                                                                            <option value="On Leave">On Leave</option>
+                                                                            <option value="Inactive">Inactive</option>
+                                                                        </select>
+                                                                    )}
+                                                                />
                                                                 {errors.status && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
                                                                 )}
@@ -661,11 +812,22 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Salary</Label>
-                                                                <Input
-                                                                    {...register("salary")}
-                                                                    type="text"
-                                                                    className="rounded-none focus:outline-none"
-                                                                    placeholder="Salary"
+                                                                <Controller
+                                                                    name='salary'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <Input
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                field.onChange(e);
+                                                                            }}
+                                                                            {...register("salary")}
+                                                                            type="text"
+                                                                            className="rounded-none focus:outline-none"
+                                                                            placeholder="Salary"
+                                                                        />
+                                                                    )}
                                                                 />
                                                                 {errors.salary && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
@@ -674,28 +836,33 @@ const AddStaff = () => {
 
                                                             <div>
                                                                 <Label>Role</Label>
-                                                                <Select onValueChange={(value) => {
-                                                                    setValue('role', value);
-                                                                    clearErrors("role");
-                                                                }}>
-                                                                    <SelectTrigger className="w-full rounded-none">
-                                                                        <SelectValue placeholder="Staff Role" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectGroup>
-                                                                            <SelectLabel>Select</SelectLabel>
-                                                                            <SelectItem value="Super Admin">Super Admin</SelectItem>
-                                                                            <SelectItem value="Gym Admin">Gym Admin</SelectItem>
-                                                                            <SelectItem value="Floor Trainer">Trainer</SelectItem>
-                                                                            <SelectItem value="Personal Trainer">Personal Trainer</SelectItem>
-                                                                            <SelectItem value="Operational Manager">Operational Manager</SelectItem>
-                                                                            <SelectItem value="HR Manager">HR Manager</SelectItem>
-                                                                            <SelectItem value="CEO">CEO</SelectItem>
-                                                                            <SelectItem value="Developer">Developer</SelectItem>
-                                                                            <SelectItem value="Intern">Intern</SelectItem>
-                                                                        </SelectGroup>
-                                                                    </SelectContent>
-                                                                </Select>
+                                                                <Controller
+                                                                    name='role'
+                                                                    control={control}
+                                                                    render={({ field }) => (
+                                                                        <select
+                                                                            {...field}
+                                                                            value={field.value}
+                                                                            onChange={(e) => {
+                                                                                setValue('role', value);
+                                                                                clearErrors("role");
+                                                                                field.onChange(e);
+                                                                            }}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                        >
+                                                                            <option>Select</option>
+                                                                            <option value="Super Admin">Super Admin</option>
+                                                                            <option value="Gym Admin">Gym Admin</option>
+                                                                            <option value="Floor Trainer">Trainer</option>
+                                                                            <option value="Personal Trainer">Personal Trainer</option>
+                                                                            <option value="Operational Manager">Operational Manager</option>
+                                                                            <option value="HR Manager">HR Manager</option>
+                                                                            <option value="CEO">CEO</option>
+                                                                            <option value="Developer">Developer</option>
+                                                                            <option value="Intern">Intern</option>
+                                                                        </select>
+                                                                    )}
+                                                                />
                                                                 {errors.role && (
                                                                     <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
                                                                 )}
