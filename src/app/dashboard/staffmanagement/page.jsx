@@ -78,6 +78,7 @@ import {
     Users,
 } from "lucide-react";
 import { TiUserAdd } from "react-icons/ti";
+import Link from "next/link.js";
 
 
 const AddStaff = () => {
@@ -230,8 +231,8 @@ const AddStaff = () => {
 
     return (
         <div className="w-full">
-            <div className='w-full p-6 bg-gray-100'>
-                <Breadcrumb>
+            <div className='w-full bg-gray-100'>
+                <Breadcrumb className='p-6'>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink href="/">Home</BreadcrumbLink>
@@ -253,14 +254,18 @@ const AddStaff = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                <div className="flex justify-between items-center">
-                    <h1 className="text-xl font-bold mt-3">Staff Management</h1>
+                <div className="flex justify-between items-center bg-yellow-500 text-white p-4">
+                    <h1 className="text-xl font-bold">Staff Management</h1>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <MdMenu className="text-3xl cursor-pointer mt-4" />
+                            <MdMenu className="text-3xl cursor-pointer" />
                         </DropdownMenuTrigger>
                         <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>
+                                <Link href={'/MyProfile'} className='cursor-pointer'>
+                                    My Account
+                                </Link>
+                            </DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuGroup>
                                 <DropdownMenuItem className='cursor-pointer' onClick={() => setOpenForm(!openForm)}>
@@ -274,10 +279,6 @@ const AddStaff = () => {
                                 <DropdownMenuItem>
                                     <Settings />
                                     <span>Settings</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Keyboard />
-                                    <span>Keyboard shortcuts</span>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
