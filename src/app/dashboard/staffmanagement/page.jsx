@@ -90,6 +90,9 @@ const AddStaff = () => {
     const [checkInTime, setCheckInTime] = useState(new Date());
     const [checkOutTime, setCheckOutTime] = useState(new Date());
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
+
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
@@ -131,9 +134,10 @@ const AddStaff = () => {
 
     // Functions
 
-    const fetchAllStaffs = async () => {
+    const fetchAllStaffs = async ({ queryKey }) => {
+        const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -146,7 +150,7 @@ const AddStaff = () => {
         queryFn: fetchAllStaffs
     });
 
-    const { staffs } = data || {}
+    const { staffs, totalPages, totalStaffs } = data || {}
 
     const registerNewStaff = async (data) => {
 
@@ -246,6 +250,10 @@ const AddStaff = () => {
         } catch (error) {
             console.log("Error: ", error);
         }
+    };
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
     };
 
     const editStaffDetails = async (id) => {
@@ -492,34 +500,30 @@ const AddStaff = () => {
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={3}>Total Staffs</TableCell>
-                                        <TableCell className="text-right font-medium">{staffs ? staffs.length : 0}</TableCell>
+                                        <TableCell className="text-right font-medium">{totalStaffs}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
                         </div>
 
                         <div className="py-3">
-                            <Pagination>
+                            <Pagination className={'cursor-pointer'}>
                                 <PaginationContent>
                                     <PaginationItem>
-                                        <PaginationPrevious href="#" />
+                                        <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
                                     </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#" isActive>
-                                            2
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">3</PaginationLink>
-                                    </PaginationItem>
+                                    {[...Array(totalPages)].map((_, i) => (
+                                        <PaginationItem key={i}>
+                                            <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
+                                                {i + 1}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    ))}
                                     <PaginationItem>
                                         <PaginationEllipsis />
                                     </PaginationItem>
                                     <PaginationItem>
-                                        <PaginationNext href="#" />
+                                        <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
                                     </PaginationItem>
                                 </PaginationContent>
                             </Pagination>
