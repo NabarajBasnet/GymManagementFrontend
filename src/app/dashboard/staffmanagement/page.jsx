@@ -92,7 +92,7 @@ const AddStaff = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
-
+    const [currentStaffId, setCurrentStaffId] = useState();
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
@@ -137,7 +137,7 @@ const AddStaff = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -152,7 +152,7 @@ const AddStaff = () => {
 
     const { staffs, totalPages, totalStaffs } = data || {}
 
-    const registerNewStaff = async (data) => {
+    const handleSubmitStaff = async (data) => {
 
         const {
             fullName, email, contactNo, emergencyContactNo, address, dob, gender, shift, joinedDate, workingHours, status, salary, role
@@ -164,18 +164,37 @@ const AddStaff = () => {
         };
 
         try {
-            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
-                method: "POST",
+            const url = currentStaffId
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
+
+            const method = currentStaffId ? "PATCH" : "POST";
+
+            const response = await fetch(url, {
+                method,
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(finalData)
-            })
+                body: JSON.stringify(finalData),
+            });
             const responseBody = await response.json();
+            if (response.ok) {
+                setOpenForm(false);
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                });
+            };
+
             if (response.status === 200) {
                 setOpenForm(false);
                 queryclient.invalidateQueries(['staffs']);
-            }
+            };
             if (responseBody.errors && response.status === 400) {
                 responseBody.errors.forEach((error) => {
                     setError(error.field, {
@@ -205,7 +224,7 @@ const AddStaff = () => {
                     icon: MdDone,
                     message: responseBody.message
                 });
-            }
+            };
 
         } catch (error) {
             console.log("Error message: ", error.message);
@@ -223,12 +242,11 @@ const AddStaff = () => {
 
     const populateStaffDetailsInForm = async (id) => {
         try {
-
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
             if (response.ok && responseBody.staff) {
                 setOpenForm(true);
+                setCurrentStaffId(responseBody.staff._id);
                 reset({
                     fullName: responseBody.staff.fullName,
                     email: responseBody.staff.email,
@@ -245,7 +263,7 @@ const AddStaff = () => {
                     status: responseBody.staff.status,
                     salary: responseBody.staff.salary,
                     role: responseBody.staff.role
-                })
+                });
             }
         } catch (error) {
             console.log("Error: ", error);
@@ -256,17 +274,10 @@ const AddStaff = () => {
         setCurrentPage(page);
     };
 
-    const editStaffDetails = async (id) => {
-        try {
-        } catch (error) {
-            console.log('Error: ', error);
-        }
-    };
-
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -537,7 +548,7 @@ const AddStaff = () => {
                                     <div className="w-full flex justify-center">
                                         <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
                                             <div className="w-full md:flex md:justify-center md:items-center">
-                                                <form className="w-full max-h-[90vh] overflow-y-auto" onSubmit={handleSubmit(registerNewStaff)}>
+                                                <form className="w-full max-h-[90vh] overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
                                                     <div className="bg-gray-300 py-2 my-2 w-full">
                                                         <h1 className="mx-4 font-semibold">Staff Registration Information</h1>
                                                     </div>
@@ -950,7 +961,7 @@ const AddStaff = () => {
                                                     <div className="flex justify-center items-center mt-5 space-x-2 p-2">
                                                         <Button variant="destructive" className="rounded-none" onClick={() => reset()}>Reset Form</Button>
                                                         <Button className="rounded-none" onClick={() => setOpenForm(!openForm)}>Close Form</Button>
-                                                        <Button className="rounded-none bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Add Staff'}</Button>
+                                                        <Button className="rounded-none bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}</Button>
                                                     </div>
                                                 </form>
                                             </div>
