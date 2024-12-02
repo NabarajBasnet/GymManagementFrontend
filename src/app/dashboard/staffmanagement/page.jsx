@@ -1,5 +1,17 @@
 'use client';
 
+import { LuLoader2 } from "react-icons/lu";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -48,15 +60,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { useState } from "react";
 import * as React from 'react';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -94,7 +97,7 @@ const AddStaff = () => {
         const formattedHours = hours % 12 || 12;
         const formattedCheckInTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}:${period}`;
         setCheckInTime(formattedCheckInTime);
-    }
+    };
 
     const handleCheckOutTimeChange = (e) => {
         const timeValue = e.target.value;
@@ -103,15 +106,17 @@ const AddStaff = () => {
         const formattedHours = hours % 12 || 12;
         const formattedCheckOutTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}:${period}`;
         setCheckOutTime(formattedCheckOutTime);
-    }
+    };
 
-    const queryclient = useQueryClient()
+    const queryclient = useQueryClient();
     const [openForm, setOpenForm] = useState(false);
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('')
+    const [responseType, setResponseType] = useState('');
     const responseResultType = ['Success', 'Failure'];
+
+    const [deleting, setDeleting] = useState(false);
 
     const {
         register,
@@ -128,7 +133,7 @@ const AddStaff = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -155,7 +160,7 @@ const AddStaff = () => {
         };
 
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/staffsmanagement/create', {
+            const response = await fetch('http://localhost:3000/api/staffsmanagement/create', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -215,7 +220,7 @@ const AddStaff = () => {
     const populateStaffDetailsInForm = async (id) => {
         try {
 
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             console.log("Response Body: ", responseBody);
             if (response.ok && responseBody.staff) {
@@ -250,6 +255,43 @@ const AddStaff = () => {
         }
     };
 
+    const deleteStaff = async (id) => {
+        setDeleting(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message
+                });
+                setDeleting(false);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || 'Unauthorized action'
+            });
+            setDeleting(false);
+        }
+    };
 
     return (
         <div className="w-full">
@@ -312,6 +354,17 @@ const AddStaff = () => {
                 </div>
             </div>
 
+
+            {deleting ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <LuLoader2 className="2xl animate-spin" />
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
             {toast ? (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -406,7 +459,24 @@ const AddStaff = () => {
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
                                                         <FaUserEdit onClick={() => populateStaffDetailsInForm(staff._id)} className="cursor-pointer text-lg" />
-                                                        <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete staff
+                                                                        account and remove data from servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deleteStaff(staff._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
