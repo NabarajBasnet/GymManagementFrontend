@@ -1,34 +1,10 @@
 'use client';
 
-import { LuLoader2 } from "react-icons/lu";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
-import { FaUserEdit } from "react-icons/fa";
-import { CiSearch } from "react-icons/ci";
+import { MdClose, MdDone, MdError } from "react-icons/md";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -48,14 +24,10 @@ import { useForm, Controller } from "react-hook-form";
 import Loader from "@/components/Loader/Loader";
 
 const StaffDetails = ({ staffId }) => {
-
     // States
     const [checkInTime, setCheckInTime] = useState(new Date());
     const [checkOutTime, setCheckOutTime] = useState(new Date());
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
-    const [currentStaffId, setCurrentStaffId] = useState();
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
@@ -75,14 +47,11 @@ const StaffDetails = ({ staffId }) => {
     };
 
     const queryclient = useQueryClient();
-    const [openForm, setOpenForm] = useState(false);
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('');
     const responseResultType = ['Success', 'Failure'];
-
-    const [deleting, setDeleting] = useState(false);
 
     const {
         register,
@@ -119,9 +88,25 @@ const StaffDetails = ({ staffId }) => {
                     salary: responseBody.staff.salary,
                     role: responseBody.staff.role
                 });
-            };
 
-            console.log("Check In Time From Database: ",new Date(responseBody.staff.checkInTime).getTime())
+                const staffCheckInTime = new Date(responseBody.staff.checkInTime).getTime();
+                const updatedCheckInTime = new Date().setTime(staffCheckInTime);
+                const formattedCheckInTime = new Date(updatedCheckInTime).toLocaleString('en-US', {
+                    timeZone: "UTC",
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                setCheckInTime(formattedCheckInTime);
+
+                const staffCheckOutTime = new Date(responseBody.staff.checkOutTime).getTime();
+                const updatedCheckOutTime = new Date().setTime(staffCheckOutTime);
+                const formattedCheckOutTime = new Date(updatedCheckOutTime).toLocaleString('en-US', {
+                    timeZone: "UTC",
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                setCheckOutTime(formattedCheckOutTime);
+            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -146,9 +131,8 @@ const StaffDetails = ({ staffId }) => {
         const finalData = {
             fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role
         };
-        console.log("Final data:",finalData);
         try {
-            const url = `http://localhost:3000/apip/staffsmanagement/changedetails/${currentStaffId}`
+            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
 
             const response = await fetch(url, {
@@ -290,7 +274,7 @@ const StaffDetails = ({ staffId }) => {
                                 <div className="w-full flex justify-center">
                                     <div className="w-full bg-gray-100">
                                         <div className="w-full md:flex md:justify-center md:items-center">
-                                            <form className="w-full max-h-[90vh] overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
+                                            <form className="w-full" onSubmit={handleSubmit(handleSubmitStaff)}>
                                                 <div className="bg-gray-300 py-2 my-2 w-full">
                                                     <h1 className="mx-4 font-semibold">{staff ? staff.fullName : 'Staff'}</h1>
                                                 </div>
