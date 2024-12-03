@@ -65,7 +65,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -86,7 +86,7 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -145,7 +145,7 @@ const MemberAttendance = () => {
         const membershipHoldData = { status: 'Active' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/resume-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'

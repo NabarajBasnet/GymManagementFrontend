@@ -84,7 +84,7 @@ import { TiUserAdd } from "react-icons/ti";
 import Link from "next/link.js";
 
 
-const StaffManagement = () => {
+const StaffDetails = ({ staffId }) => {
 
     // States
     const [checkInTime, setCheckInTime] = useState(new Date());
@@ -477,9 +477,7 @@ const StaffManagement = () => {
                                                 <TableCell>{staff.role}</TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
-                                                        <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                        <FaUserEdit className="cursor-pointer text-lg" />
-                                                        </Link>
+                                                        <FaUserEdit onClick={() => populateStaffDetailsInForm(staff._id)} className="cursor-pointer text-lg" />
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
                                                                 <MdDelete className="text-red-600 cursor-pointer text-lg" />
@@ -979,4 +977,4 @@ const StaffManagement = () => {
     );
 };
 
-export default StaffManagement;
+export default StaffDetails;
