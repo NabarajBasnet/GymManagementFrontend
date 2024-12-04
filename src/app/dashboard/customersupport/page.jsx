@@ -11,6 +11,7 @@ const CustomerSupport = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 12;
+    var [ellipseLocation, setEllipseLocation] = useState('left');
 
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
@@ -35,16 +36,22 @@ const CustomerSupport = () => {
     };
 
     const calculatePagination = (currentPage, totalPages) => {
-        var ellipseLocation = 'right';
         var activePages = 'left';
         const pageNumbersToRender = 5;
+        console.log("Current Page: ", currentPage);
         const centerPages = 3;
-        if(currentPage>=pageNumbersToRender){
-            ellipseLocation == 'right';
+        if (currentPage <= pageNumbersToRender) {
+            setEllipseLocation('right')
+        } else if (currentPage > pageNumbersToRender && currentPage == totalPages - 5) {
+            setEllipseLocation('both');
+        }
+        else {
+            setEllipseLocation('left');
         };
-        
+        console.log("Elipse location: ", ellipseLocation);
+
         const lastPage = totalPages;
-        const pages = [];
+        var pages = [];
         for (let i = 1; i <= totalPages; i++) {
             pages.push(i)
         }
@@ -52,8 +59,8 @@ const CustomerSupport = () => {
     }
 
     useEffect(() => {
-        calculatePagination(currentPage, totalPages ? totalPages : 8);
-    }, []);
+        calculatePagination(currentPage, totalPages ? totalPages : 16);
+    }, [currentPage]);
 
     return (
         <div className="flex flex-col items-center justify-center h-screen text-center px-6">
@@ -75,6 +82,11 @@ const CustomerSupport = () => {
                         className={`bg-transparent hover:bg-gray-100 text-black`}
                         disabled={currentPage === 1}
                         onClick={() => handlePageChange(currentPage - 1)}>Previous</Button>
+                    <p
+                        className={`px-4 py-1 cursor-pointer ${ellipseLocation === 'left' ? 'flex' : 'hidden'} ${currentPage === totalPages ? 'hidden' : 'flex'} rounded-lg ${currentPage === 1 ? 'border border-blue-600' : ''}`}
+                        onClick={() => handlePageChange(1)}
+                    >{1}</p>
+                    <BsThreeDots className={`${ellipseLocation === 'left' ? 'flex' : 'hidden'}`} />
                     {
                         [...Array(totalPages)].map((_, i) => {
                             return (
@@ -85,9 +97,9 @@ const CustomerSupport = () => {
                             )
                         })
                     }
-                    <BsThreeDots />
+                    <BsThreeDots className={`${ellipseLocation === 'right' ? 'flex' : 'hidden'}`} />
                     <p
-                        className={`px-4 py-1 cursor-pointer rounded-lg}`}
+                        className={`px-4 py-1 cursor-pointer ${ellipseLocation === 'right' ? 'flex' : 'hidden'} rounded-lg ${currentPage === totalPages ? 'border border-blue-600' : ''}`}
                         onClick={() => handlePageChange(totalPages)}
                     >{totalPages}</p>
                     <Button
@@ -99,7 +111,7 @@ const CustomerSupport = () => {
             </div>
 
             <div className="mt-10">
-                <p>Current Page: {currentPage / 2}</p>
+                <p>Current Page: {currentPage}</p>
                 <p>Total Pages: {totalPages}</p>
             </div>
         </div>
