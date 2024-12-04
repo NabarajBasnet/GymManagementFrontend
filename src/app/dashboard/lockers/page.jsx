@@ -343,46 +343,51 @@ const Lockers = () => {
                                     <div>
                                         <Label>Member Name</Label>
 
-                                        <div ref={searchRef} className='w-full flex justify-center'>
-                                            <div className='relative w-full'>
-                                                <div className='w-full'>
+                                        <div ref={searchRef} className="w-full flex justify-center">
+                                            <div className="relative w-full">
+                                                <div className="w-full">
                                                     <Controller
-                                                        name='memberName'
+                                                        name="memberName"
                                                         control={control}
                                                         render={({ field }) => (
                                                             <Input
                                                                 {...field}
-                                                                value={memberName}
-                                                                {...register('memberName')}
+                                                                autoComplete="off"
+                                                                value={searchQuery}
                                                                 onChange={(e) => {
                                                                     setSearchQuery(e.target.value);
                                                                     field.onChange(e);
                                                                 }}
                                                                 onFocus={handleSearchFocus}
-                                                                className='w-full rounded-lg'
-                                                                placeholder='Search members...'
+                                                                className="w-full rounded-lg"
+                                                                placeholder="Search members..."
                                                             />
                                                         )}
                                                     />
                                                     {errors.memberName && (
-                                                        <p className="text-sm font-semibold text-red-600">{errors.memberName.message}</p>
+                                                        <p className="text-sm font-semibold text-red-600">
+                                                            {errors.memberName.message}
+                                                        </p>
                                                     )}
                                                 </div>
                                                 {renderDropdown && (
-                                                    <div className='w-full absolute bg-white shadow-2xl max-h-screen overflow-y-auto z-10'>
-                                                        {members?.filter((member) => {
-                                                            const matchByName = member.fullName.toLowerCase().includes(searchQuery.toLowerCase());
-                                                            return matchByName;
-                                                        })
+                                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
+                                                        {members
+                                                            ?.filter((member) => {
+                                                                const matchByName = member.fullName
+                                                                    .toLowerCase()
+                                                                    .includes(searchQuery.toLowerCase());
+                                                                return matchByName;
+                                                            })
                                                             .map((member) => (
                                                                 <p
                                                                     onClick={() => {
                                                                         setMemberName(member.fullName);
                                                                         setSearchQuery(member.fullName);
-                                                                        setMemberId(member._id)
+                                                                        setMemberId(member._id);
                                                                         setRenderDropdown(false);
                                                                     }}
-                                                                    className='px-4 py-2 cursor-pointer hover:bg-gray-100'
+                                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                                                     key={member._id}
                                                                     value={member._id}
                                                                 >
@@ -652,9 +657,9 @@ const Lockers = () => {
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Filter</SelectLabel>
-                                        <SelectItem value="Available">Available</SelectItem>
-                                        <SelectItem value="Occupied">Occupied</SelectItem>
-                                        <SelectItem value="UnderMaintenance">Under Maintenance</SelectItem>
+                                        <SelectItem value="Assigned">Assigned</SelectItem>
+                                        <SelectItem value="Not Assigned">Not Assigned</SelectItem>
+                                        <SelectItem value="Under Maintenance">Under Maintenance</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
