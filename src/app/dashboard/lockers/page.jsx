@@ -103,10 +103,9 @@ const Lockers = () => {
         queryFn: getAllLockers
     });
 
-    const { lockers, assignedLockers, emptyLockers, expiredLockers } = data || {}
+    const { Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers } = data || {}
 
     // Pululate lockers data
-
 
     const getAllMembers = async () => {
         try {
@@ -218,7 +217,6 @@ const Lockers = () => {
                     setToast(false)
                 }, 5000);
                 queryClient.invalidateQueries(['lockers']);
-                window.location.reload();
             }
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
@@ -264,7 +262,6 @@ const Lockers = () => {
                     setToast(false)
                 }, 5000);
                 queryClient.invalidateQueries(['lockers']);
-                window.location.reload();
             }
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
@@ -324,7 +321,7 @@ const Lockers = () => {
             )}
 
             {
-                lockerFormState && data.lockers ? (
+                lockerFormState && data.Lockers ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 transition-opacity duration-500 ease-out opacity-100">
                         <div className="bg-white md:rounded-lg rounded-none shadow-xl p-8 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
@@ -581,6 +578,7 @@ const Lockers = () => {
                                         {isSubmitting ? 'Submitting...' : "Submit"}
                                     </Button>
                                     <Button
+                                        type='button'
                                         onClick={() => setLockerFormState(false)}
                                         className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 transition-all"
                                     >
@@ -589,6 +587,7 @@ const Lockers = () => {
                                     {
                                         fetchedLocker ? (
                                             <Button
+                                                type='button'
                                                 onClick={() => resetLocker(fetchedLocker._id)}
                                                 className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 hover:text-white transition-all">
                                                 Reset
@@ -666,7 +665,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={assignedLockers} color="primary">
+                                            <Badge badgeContent={assignedLockers ? assignedLockers.length : ''} color="primary">
                                                 <div className='bg-green-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
@@ -680,7 +679,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={emptyLockers} color="primary">
+                                            <Badge badgeContent={emptyLockers ? emptyLockers.length : ''} color="primary">
                                                 <div className='bg-yellow-400 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
@@ -694,7 +693,7 @@ const Lockers = () => {
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Badge badgeContent={expiredLockers} color="primary">
+                                            <Badge badgeContent={expiredLockers ? expiredLockers.length : ''} color="primary">
                                                 <div className='bg-red-600 w-6 h-6 rounded-full shadow-lg cursor-pointer'>
                                                 </div>
                                             </Badge>
@@ -715,8 +714,8 @@ const Lockers = () => {
                     ) : (
                         <div className="w-full mt-8">
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {Array.isArray(lockers) && lockers.length > 0 ? (
-                                    lockers.map((locker) => (
+                                {Array.isArray(Lockers) && Lockers.length > 0 ? (
+                                    Lockers.map((locker) => (
                                         <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-3">
                                             <div className="w-full">
                                                 <div className={`${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} h-2 rounded-t-lg`}></div>
