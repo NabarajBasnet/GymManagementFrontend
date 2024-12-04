@@ -1,5 +1,6 @@
 'use client';
 
+import { MdError, MdClose, MdDone } from "react-icons/md";
 import Badge from '@mui/material/Badge';
 import {
     Tooltip,
@@ -7,10 +8,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { MdDone } from "react-icons/md";
-import { IoMdClose } from "react-icons/io";
 import { FaLock } from "react-icons/fa";
-import { FaUnlock } from "react-icons/fa";
 import {
     Select,
     SelectContent,
@@ -50,6 +48,10 @@ const Lockers = () => {
     const [lockerFormState, setLockerFormState] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
     const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('')
+    const responseResultType = ['Success', 'Failure'];
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const searchRef = React.useRef(null)
@@ -90,7 +92,7 @@ const Lockers = () => {
 
     const getAllLockers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers`);
+            const response = await fetch(`http://localhost:3000/api/lockers`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -109,7 +111,7 @@ const Lockers = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -185,49 +187,61 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
+            const response = await fetch('http://localhost:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(finalData),
                 credentials: 'include',
-            })
+            });
 
-            if (response.status === 400) {
-                setToast(true)
-                setTimeout(() => {
-                    setToast(false)
-                }, 5000);
-                queryClient.invalidateQueries(['lockers']);
-            }
-
-            if (response.status === 500) {
-                setToast(true)
-                setTimeout(() => {
-                    setToast(false)
-                }, 5000);
-                queryClient.invalidateQueries(['lockers']);
-            }
-
-            if (response.ok) {
-                setLockerFormState(false);
-                setToast(true)
-                setTimeout(() => {
-                    setToast(false)
-                }, 5000);
-                queryClient.invalidateQueries(['lockers']);
-            }
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
+
+            if (!response.status === 200) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+                queryClient.invalidateQueries(['lockers']);
+            } else {
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+                setLockerFormState(false);
+                queryClient.invalidateQueries(['lockers']);
+            };
+
         } catch (error) {
             console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message || 'Unauthorized action'
+            });
+            queryClient.invalidateQueries(['lockers']);
         }
     };
 
     const getSingleLockerInfo = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers/${id}`);
+            const response = await fetch(`http://localhost:3000/api/lockers/${id}`);
             const responseBody = await response.json();
             setFetchedLocker(responseBody.lockerDetails);
             if (response.ok) {
@@ -251,7 +265,7 @@ const Lockers = () => {
 
     const resetLocker = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers/patch/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/lockers/patch/${id}`, {
                 method: "PATCH",
                 body: JSON.stringify({})
             })
@@ -300,30 +314,42 @@ const Lockers = () => {
             </div>
 
             {toast ? (
-                <div className="w-full flex justify-center">
-                    <div className="fixed top-5 bg-white border shadow-2xl flex z-50 items-center justify-between p-4">
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
                         <div>
-                            <MdDone className="text-4xl mx-4 text-green-600" />
+                            {
+                                responseType === 'Success' ? (
+                                    <MdDone className="text-3xl mx-4 text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl mx-4 text-red-600" />
+                                )
+                            }
                         </div>
                         <div className="block">
-                            <p className="text-sm font-semibold">{responseMessage}</p>
+                            {
+                                responseType === 'Success' ? (
+                                    <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                ) : (
+                                    <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                )
+                            }
                         </div>
                         <div>
-                            <IoMdClose
+                            <MdClose
                                 onClick={() => setToast(false)}
-                                className="cursor-pointer ml-4" />
+                                className="cursor-pointer text-3xl ml-4" />
                         </div>
                     </div>
                 </div>
             ) : (
-                <>
-                </>
+                <></>
             )}
 
             {
                 lockerFormState && data.Lockers ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 transition-opacity duration-500 ease-out opacity-100">
-                        <div className="bg-white md:rounded-lg rounded-none shadow-xl p-8 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
+                        <div className="bg-white md:rounded-lg rounded-none shadow-xl p-10 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
                             <form className="space-y-3 h-full" onSubmit={handleSubmit(registerLocker)}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -723,7 +749,14 @@ const Lockers = () => {
                                     Lockers.map((locker) => (
                                         <div key={locker.lockerNumber} className="bg-white border border-gray-100 shadow-lg hover:shadow-xl hover:scale-[1.02] transition-transform duration-300 rounded-xl p-3">
                                             <div className="w-full">
-                                                <div className={`${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} h-2 rounded-t-lg`}></div>
+                                                <div
+                                                    className={`
+                                                                ${locker.status === 'Expired' ? 'bg-red-600' : ''} 
+                                                                ${locker.status === 'Booked' ? 'bg-green-600' : ''} 
+                                                                ${locker.status === 'Empty' ? 'bg-yellow-400' : ''} 
+                                                                h-2 rounded-t-lg
+                                                            `}
+                                                ></div>
                                                 <h1 className="w-full text-xl space-x-4 font-bold text-gray-800 mt-2">
                                                     <span>Locker</span> <span>{locker.lockerNumber}</span>
                                                 </h1>
@@ -750,12 +783,22 @@ const Lockers = () => {
                                                 <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
                                                     <span>Status: </span> <span>{locker.isAssigned ? 'Assigned' : 'Empty'}</span>
                                                 </p>
-                                                <Button onClick={() => {
-                                                    setCurrentLockerNumber(locker.lockerNumber);
-                                                    setLockerFormState(true);
-                                                    setLockerId(locker._id);
-                                                    getSingleLockerInfo(locker._id);
-                                                }} className={`rounded-lg ${locker.isAssigned ? 'bg-green-600' : 'bg-yellow-400'} text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 hover:bg-blue-700 transition-all`}>
+                                                <Button
+                                                    onClick={() => {
+                                                        setCurrentLockerNumber(locker.lockerNumber);
+                                                        setLockerFormState(true);
+                                                        setLockerId(locker._id);
+                                                        getSingleLockerInfo(locker._id);
+                                                    }}
+                                                    className={`
+                                                            rounded-lg 
+                                                            ${locker.status === 'Expired' ? 'bg-red-600' : ''} 
+                                                            ${locker.status === 'Booked' ? 'bg-green-600' : ''} 
+                                                            ${locker.status === 'Empty' ? 'bg-yellow-400' : ''} 
+                                                            text-white px-4 py-2 mt-4 flex items-center justify-center gap-2 
+                                                            hover:bg-green-600 transition-all
+                                                        `}
+                                                >
                                                     <FaLock className="text-xl" /> Manage
                                                 </Button>
                                             </div>
