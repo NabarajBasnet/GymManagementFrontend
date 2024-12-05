@@ -1,14 +1,7 @@
 'use client';
 
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
+import { Pagination } from "@mantine/core";
+import '@mantine/core/styles.css';
 import { IoSearch } from "react-icons/io5";
 import {
     Table,
@@ -43,13 +36,13 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { useForm } from "react-hook-form";
 import { MdError, MdClose, MdDone } from "react-icons/md";
-
+import { usePagination, DOTS } from "@/hooks/Pagination.js";
 
 const MemberAttendance = () => {
     const queryClient = useQueryClient();
     const [memberId, setMemberId] = useState('');
     const [validationResult, setValidationResult] = useState(null);
-    const [currentPage, setCurentPage] = useState(1);
+    const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
 
     const [toast, setToast] = useState(false);
@@ -79,7 +72,7 @@ const MemberAttendance = () => {
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
     const handlePageChange = (page) => {
-        setCurentPage(page);
+        setCurrentPage(page);
     };
 
     const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
@@ -179,6 +172,17 @@ const MemberAttendance = () => {
             setActivating(false);
         }
     };
+
+    // Mantine pagination hook
+    const { range, setPage, active } = usePagination({
+        total: totalPages || 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     return (
         <div className='w-full'>
@@ -439,27 +443,15 @@ const MemberAttendance = () => {
                                                 </TableFooter>
                                             </Table>
 
-                                            <div className="py-4">
-                                                <Pagination className={'cursor-pointer'}>
-                                                    <PaginationContent>
-                                                        <PaginationItem>
-                                                            <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                                        </PaginationItem>
-                                                        {[...Array(totalPages)].map((_, i) => (
-                                                            <PaginationItem key={i}>
-                                                                <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                                                    {i + 1}
-                                                                </PaginationLink>
-                                                            </PaginationItem>
-                                                        ))}
-                                                        <PaginationItem>
-                                                            <PaginationEllipsis />
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                                        </PaginationItem>
-                                                    </PaginationContent>
-                                                </Pagination>
+                                            <div className="w-full flex justify-center py-4">
+                                                <Pagination
+                                                    total={totalPages}
+                                                    siblings={1}
+                                                    boundaries={1}
+                                                    page={currentPage}
+                                                    onChange={setCurrentPage}
+                                                    withEdges
+                                                />
                                             </div>
                                         </div>
                                     )

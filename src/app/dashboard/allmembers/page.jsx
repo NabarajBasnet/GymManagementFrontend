@@ -1,5 +1,7 @@
 'use client'
 
+import { Pagination } from "@mantine/core";
+import '@mantine/core/styles.css';
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
@@ -20,15 +22,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
     Table,
     TableBody,
     TableCaption,
@@ -48,6 +41,7 @@ import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { debounce } from "@mui/material";
+import { usePagination, DOTS } from "@/hooks/Pagination.js";
 
 const AllMembers = () => {
 
@@ -223,6 +217,17 @@ const AllMembers = () => {
             })
         };
     };
+
+    // Mantine pagination hook
+    const { range, setPage, active } = usePagination({
+        total: totalPages || 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     return (
         <div className="w-full">
@@ -535,27 +540,15 @@ const AllMembers = () => {
                             </div>
                         </div>
                     )}
-                    <div className="py-3">
-                        <Pagination className={'cursor-pointer'}>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                </PaginationItem>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <PaginationItem key={i}>
-                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                            {i + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                    <div className="w-full py-3 flex justify-center">
+                        <Pagination
+                            total={totalPages}
+                            siblings={1}
+                            boundaries={1}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                            withEdges
+                        />
                     </div>
                 </div>
             )}
