@@ -3,6 +3,8 @@ import "./globals.css";
 import RTKProvider from "@/state/ReduxProvider";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
+import { MantineProvider } from "@mantine/core";
+import '@mantine/core/styles.css';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,11 +29,36 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReactQueryClientProvider>
-          <RTKProvider>
-            <UserProvider>
-              {children}
-            </UserProvider>
-          </RTKProvider>
+          <MantineProvider
+            withGlobalStyles
+            withNormalizeCSS
+            theme={{
+              components: {
+                Pagination: {
+                  styles: {
+                    item: {
+                      backgroundColor: '#1c7ed6',
+                      color: 'white',
+                      '&:hover': {
+                        backgroundColor: '#1b6ec2',
+                      },
+                    },
+                    active: {
+                      backgroundColor: '#1b6ec2',
+                      color: 'white',
+                      fontWeight: 'bold',
+                    },
+                  },
+                },
+              },
+            }}
+          >
+            <RTKProvider>
+              <UserProvider>
+                {children}
+              </UserProvider>
+            </RTKProvider>
+          </MantineProvider>
         </ReactQueryClientProvider>
       </body>
     </html>

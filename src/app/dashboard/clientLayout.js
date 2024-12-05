@@ -6,6 +6,7 @@ import RTKProvider from "@/state/ReduxProvider";
 import { useSelector } from "react-redux";
 import DashboardFooter from "@/components/DashboardFooter/Footer";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
+import { MantineProvider } from "@mantine/core";
 
 export default function ClientLayout({ children }) {
 

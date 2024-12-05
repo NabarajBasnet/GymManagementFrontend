@@ -90,10 +90,18 @@ const Lockers = () => {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [fetchedLocker, setFetchedLocker] = useState({})
 
+
+    // Locker filteration states
+    const [lockerStatus, setLockerStatus] = useState('');  // Booked, Empty, Expired
+    const [lockerOrder, setLockerOrder] = useState('');  // asc, desc
+
     const getAllLockers = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/lockers`);
             const responseBody = await response.json();
+            if (response.ok) {
+                queryClient.invalidateQueries(['lockers']);
+            }
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -106,6 +114,10 @@ const Lockers = () => {
     });
 
     const { Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers } = data || {}
+
+    useEffect(() => {
+        getAllLockers();
+    }, [lockerStatus, lockerOrder]);
 
     // Pululate lockers data
 
@@ -645,22 +657,22 @@ const Lockers = () => {
                     <div className="w-full md:flex justify-start md:space-x-6 items-end bg-white p-6 rounded-xl shadow-lg">
                         <div className="w-full md:w-3/12">
                             <Label className="text-sm font-semibold text-gray-600">Locker Number</Label>
-                            <Select className="w-full">
+                            <Select className="w-full" onValueChange={(value) => setLockerOrder(value)}>
                                 <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
                                     <SelectValue placeholder="Sort by order" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
                                         <SelectLabel>Order</SelectLabel>
-                                        <SelectItem value="Ascending">Ascending</SelectItem>
-                                        <SelectItem value="Descending">Descending</SelectItem>
+                                        <SelectItem value="asc">Ascending</SelectItem>
+                                        <SelectItem value="desc">Descending</SelectItem>
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="w-full md:w-3/12">
                             <Label className="text-sm font-semibold text-gray-600">Status</Label>
-                            <Select className="w-full">
+                            <Select className="w-full" onValueChange={(value) => setLockerStatus(value)}>
                                 <SelectTrigger className="w-full rounded-lg border-gray-300 shadow-sm">
                                     <SelectValue placeholder="Select status" />
                                 </SelectTrigger>
@@ -781,7 +793,10 @@ const Lockers = () => {
                                                     <span>Fee:</span> <span>{locker.fee}</span>
                                                 </p>
                                                 <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
-                                                    <span>Status: </span> <span>{locker.isAssigned ? 'Assigned' : 'Empty'}</span>
+                                                    <span>Status: </span> <span>{locker.status}</span>
+                                                </p>
+                                                <p className="w-full text-sm space-x-4 text-gray-700 font-semibold my-1">
+                                                    <span>Assigned: </span> <span>{locker.isAssigned ? 'Assigned' : 'Not Assigned'}</span>
                                                 </p>
                                                 <Button
                                                     onClick={() => {
