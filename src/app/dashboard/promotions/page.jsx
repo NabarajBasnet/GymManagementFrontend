@@ -1,12 +1,39 @@
+'use client';
+
+import { useEffect, useState } from "react";
+
 
 const Promotions = () => {
+
+    const [searchQuery, setSearchQuery] = useState();
+
+    const debounce = (func, delay) => {
+        let timer; // A variable to store the timeout Id
+
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => func(...args), delay);
+        };
+    };
+
+    const printMessage = (message) => {
+        console.log('Search Query: ', message);
+    };
+
+    const debouncePrint = debounce(printMessage, 2000);
+
+    useEffect(() => {
+        debouncePrint(searchQuery)
+    }, [searchQuery]);
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-gray-200 text-center px-6">
-            <h1 className="text-4xl font-bold mb-4 animate-pulse">🚧 Page Under Development 🚧</h1>
-            <p className="text-lg max-w-md mb-8">
-                We’re working hard to bring this page to life. Stay tuned for updates!
-            </p>
-            <div className="w-12 h-12 border-4 border-t-transparent border-gray-300 rounded-full animate-spin"></div>
+        <div className="w-full flex flex-col items-center justify-center h-screen text-center px-6">
+            <input
+                className="p-4 w-full rounded-md"
+                type='text'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+            />
         </div>
     );
 }
