@@ -57,7 +57,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localho0st:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -441,23 +441,21 @@ const MemberAttendance = () => {
                                                     </TableRow>
                                                 </TableFooter>
                                             </Table>
-
-                                            <div className="w-full flex justify-center py-4">
-                                                <Pagination
-                                                    total={totalPages}
-                                                    siblings={1}
-                                                    boundaries={1}
-                                                    page={currentPage}
-                                                    onChange={setCurrentPage}
-                                                    withEdges
-                                                />
-                                            </div>
                                         </div>
                                     )
                                 }
+                                <div className="w-full flex justify-center py-4">
+                                    <Pagination
+                                        total={totalPages ? totalPages : 1}
+                                        siblings={1}
+                                        boundaries={1}
+                                        page={currentPage}
+                                        onChange={setCurrentPage}
+                                        withEdges
+                                    />
+                                </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>

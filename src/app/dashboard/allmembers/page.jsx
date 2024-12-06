@@ -534,18 +534,18 @@ const AllMembers = () => {
                             </div>
                         </div>
                     )}
-                    <div className="py-3">
-                        <Pagination
-                            total={totalPages || 1}
-                            page={currentPage || 1}
-                            onChange={setCurrentPage}
-                            withEdges={true}
-                            siblings={1}
-                            boundaries={1}
-                        />
-                    </div>
                 </div>
             )}
+            <div className="py-3">
+                <Pagination
+                    total={totalPages || 1}
+                    page={currentPage || 1}
+                    onChange={setCurrentPage}
+                    withEdges={true}
+                    siblings={1}
+                    boundaries={1}
+                />
+            </div>
         </div>
     )
 }
