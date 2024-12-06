@@ -1,7 +1,6 @@
 'use client'
 
 import { Pagination } from "@mantine/core";
-import '@mantine/core/styles.css';
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
@@ -41,7 +40,7 @@ import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { debounce } from "@mui/material";
-import { usePagination, DOTS } from "@/hooks/Pagination.js";
+import { usePagination, DOTS } from "@/hooks/Pagination";
 
 const AllMembers = () => {
 
@@ -56,7 +55,7 @@ const AllMembers = () => {
     const [isMemberDeleting, setIsMemberDeleting] = useState('');
 
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 15;
+    const limit = 12;
 
     const getAllMembers = async ({ queryKey }) => {
         const [, page] = queryKey
@@ -77,9 +76,15 @@ const AllMembers = () => {
 
     const { totalPages, totalMembers, members } = data || {};
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     const searchRef = useRef(null);
     const [renderSearchDropdown, setRenderSearchDropdown] = useState(false);
@@ -217,17 +222,6 @@ const AllMembers = () => {
             })
         };
     };
-
-    // Mantine pagination hook
-    const { range, setPage, active } = usePagination({
-        total: totalPages || 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
 
     return (
         <div className="w-full">
@@ -540,14 +534,14 @@ const AllMembers = () => {
                             </div>
                         </div>
                     )}
-                    <div className="w-full py-3 flex justify-center">
+                    <div className="py-3">
                         <Pagination
-                            total={totalPages}
+                            total={totalPages || 1}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
                             siblings={1}
                             boundaries={1}
-                            page={currentPage}
-                            onChange={setCurrentPage}
-                            withEdges
                         />
                     </div>
                 </div>

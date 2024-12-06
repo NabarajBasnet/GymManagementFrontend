@@ -30,9 +30,6 @@ const CustomerSupport = () => {
     });
 
     const { totalPages, totalMembers, members } = data || {};
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
 
     const { range, setPage, active } = usePagination({
         total: totalPages || 1,
