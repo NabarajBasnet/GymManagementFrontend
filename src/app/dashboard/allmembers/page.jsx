@@ -1,6 +1,6 @@
 'use client'
 
-import { Pagination } from "@mantine/core";
+import Pagination from "@/components/ui/CustomPagination.jsx";
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";

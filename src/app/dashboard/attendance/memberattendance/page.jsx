@@ -1,7 +1,6 @@
 'use client';
 
-import { Pagination } from "@mantine/core";
-import '@mantine/core/styles.css';
+import Pagination from '@/components/ui/CustomPagination';
 import { IoSearch } from "react-icons/io5";
 import {
     Table,
@@ -58,7 +57,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localho0st:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);

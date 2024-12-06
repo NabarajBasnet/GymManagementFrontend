@@ -1,7 +1,6 @@
 'use client';
 
-import '@mantine/core/styles.css';
-import { Pagination } from "@mantine/core";
+import Pagination from '@/components/ui/CustomPagination';
 import Loader from "@/components/Loader/Loader";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
