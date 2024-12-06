@@ -8,22 +8,25 @@ const Promotions = () => {
     const [searchQuery, setSearchQuery] = useState();
 
     const debounce = (func, delay) => {
-        let timer; // A variable to store the timeout Id
-
+        let timerId;
         return (...args) => {
-            clearTimeout(timer);
-            timer = setTimeout(() => func(...args), delay);
+            if (timerId) {
+                clearTimeout(timerId)
+            }
+            timerId = setTimeout(() => func(...args), delay)
         };
     };
 
-    const printMessage = (message) => {
-        console.log('Search Query: ', message);
+    const getAllMembers = async () => {
+        const response = await fetch('http://88.198.112.156:3000/api/members');
+        const resBody = await response.json();
+        console.log('Response Body: ', resBody ? resBody.members : 'Nothing');
     };
 
-    const debouncePrint = debounce(printMessage, 2000);
+    const debounceGetAllMembers = debounce(getAllMembers, 1000);
 
     useEffect(() => {
-        debouncePrint(searchQuery)
+        debounceGetAllMembers()
     }, [searchQuery]);
 
     return (
