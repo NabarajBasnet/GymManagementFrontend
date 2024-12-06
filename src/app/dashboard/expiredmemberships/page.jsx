@@ -1,5 +1,6 @@
 'use client'
 
+import Pagination from "@/components/ui/CustomPagination.jsx";
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
@@ -20,15 +21,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
     Table,
     TableBody,
     TableCaption,
@@ -48,6 +40,7 @@ import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { debounce } from "@mui/material";
+import { usePagination, DOTS } from "@/hooks/Pagination.js";
 
 const ExpiredMemberships = () => {
 
@@ -68,7 +61,7 @@ const ExpiredMemberships = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -82,6 +75,16 @@ const ExpiredMemberships = () => {
     });
 
     const { totalPages, inactiveMembers, totalInactiveMembers, members } = data || {};
+
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -98,7 +101,7 @@ const ExpiredMemberships = () => {
             return;
         };
 
-        const response = await fetch(`http://88.198.112.156:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`http://localhost:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
@@ -125,7 +128,7 @@ const ExpiredMemberships = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
+            const response = await fetch(`http://localhost:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -174,7 +177,7 @@ const ExpiredMemberships = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -535,30 +538,18 @@ const ExpiredMemberships = () => {
                             </div>
                         </div>
                     )}
-                    <div className="py-3">
-                        <Pagination className={'cursor-pointer'}>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                </PaginationItem>
-                                {[...Array(totalPages)].map((_, i) => (
-                                    <PaginationItem key={i}>
-                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                            {i + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
                 </div>
             )}
+            <div className="mt-4">
+                <Pagination
+                    total={totalPages || 1}
+                    page={currentPage || 1}
+                    onChange={setCurrentPage}
+                    withEdges={true}
+                    siblings={1}
+                    boundaries={1}
+                />
+            </div>
         </div>
     )
 }
