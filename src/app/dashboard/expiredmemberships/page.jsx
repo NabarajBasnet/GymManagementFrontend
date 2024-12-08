@@ -61,7 +61,7 @@ const ExpiredMemberships = () => {
         const [, page] = queryKey
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -101,7 +101,7 @@ const ExpiredMemberships = () => {
             return;
         };
 
-        const response = await fetch(`http://localhost:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
+        const response = await fetch(`http://88.198.112.156:3000/api/search-all-members?memberSearchQuery=${searchQuery}`)
         const data = await response.json();
         setResults(data.members);
     }
@@ -128,7 +128,7 @@ const ExpiredMemberships = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -177,7 +177,7 @@ const ExpiredMemberships = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

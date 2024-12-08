@@ -137,7 +137,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -165,8 +165,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://localhost:3000/api/staffsmanagement/create';
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -242,7 +242,7 @@ const StaffManagement = () => {
 
     const populateStaffDetailsInForm = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             if (response.ok && responseBody.staff) {
                 setOpenForm(true);
@@ -277,7 +277,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'

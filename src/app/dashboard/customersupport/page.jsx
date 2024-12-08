@@ -3,56 +3,74 @@
 import Pagination from '@/components/ui/CustomPagination';
 import Loader from "@/components/Loader/Loader";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { usePagination, DOTS } from "@/hooks/Pagination";
+import { useEffect, useState } from "react";
+import { usePagination } from "@/hooks/Pagination";
+import { Input } from '@/components/ui/input';
 
 const CustomerSupport = () => {
-
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 12;
 
-    const getAllMembers = async ({ queryKey }) => {
-        const [, page] = queryKey
+    // Debounce function to delay setting the debounced query
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 1000);
 
+        return () => clearTimeout(timer); // Cleanup on component unmount or searchQuery change
+    }, [searchQuery]);
+
+    const getAllMembers = async ({ queryKey }) => {
+        const [, page, memberSearchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${memberSearchQuery}`);
             const resBody = await response.json();
+            console.log("Response Body: ", resBody);
             return resBody;
         } catch (error) {
-            console.log('Error: ', error);
+            console.error('Error fetching members:', error);
         }
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: (['members', currentPage]),
-        queryFn: getAllMembers
+        queryKey: ['members', currentPage, debouncedSearchQuery],
+        queryFn: getAllMembers,
     });
 
-    const { totalPages, totalMembers, members } = data || {};
+    const { totalPages = 1, members = [] } = data || {};
 
+    // Handling Pagination
     const { range, setPage, active } = usePagination({
-        total: totalPages || 1,
+        total: totalPages,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
+        onChange: (page) => setCurrentPage(page),
     });
 
     return (
         <div className="flex flex-col items-center justify-center h-screen text-center px-6">
-            {
-                isLoading ? (
-                    <Loader />
-                ) : (
-                    <div>
-                        {data.members.map((member) => (
-                            <p key={member._id}>{member.fullName}</p>
-                        ))}
-                    </div>
-                )
-            }
+            <div>
+                <Input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="p-4 w-full rounded-md"
+                    placeholder="Search members..."
+                />
+            </div>
+
+            {isLoading ? (
+                <Loader />
+            ) : (
+                <div>
+                    {members.map((member) => (
+                        <p key={member._id}>{member.fullName}</p>
+                    ))}
+                </div>
+            )}
+
             <div className="mt-10">
                 <Pagination
                     total={totalPages}
@@ -70,6 +88,6 @@ const CustomerSupport = () => {
             </div>
         </div>
     );
-}
+};
 
 export default CustomerSupport;
