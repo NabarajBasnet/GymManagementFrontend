@@ -77,7 +77,6 @@ const AllMembers = () => {
                 `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
-            console.log('Response Body: ', resBody);
             return resBody;
         } catch (error) {
             console.error('Error: ', error);
@@ -101,8 +100,6 @@ const AllMembers = () => {
             setCurrentPage(page);
         },
     });
-
-    console.log('Data: ', data);
 
     const sendQrInEmail = async (id) => {
         try {
