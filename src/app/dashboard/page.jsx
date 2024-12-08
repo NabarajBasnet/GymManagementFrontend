@@ -1,5 +1,16 @@
 'use client';
 
+import { addDays, format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { DateRange } from "react-day-picker"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -35,7 +46,6 @@ import {
   Legend,
   ArcElement,
 } from 'chart.js';
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -48,11 +58,16 @@ ChartJS.register(
   Legend
 );
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const AdminDashboard = () => {
 
   const router = useRouter();
 
+  const [date, setDate] = useState({
+    from: new Date(2022, 0, 20),
+    to: addDays(new Date(2022, 0, 20), 20),
+  })
   const getTotalMembers = async () => {
     try {
       const response = await fetch(`http://88.198.112.156:3000/api/members`);
@@ -236,6 +251,48 @@ const AdminDashboard = () => {
             </BreadcrumbList>
           </Breadcrumb>
           <h1 className="text-xl font-bold">Dashboard</h1>
+        </div>
+
+        <div className="mt-3 flex items-center space-x-4">
+          <div className={cn("grid gap-2")}>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-[300px] justify-start text-left font-normal",
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "LLL dd, y")} {'   To   '} {" "}
+                        {format(date.to, "LLL dd, y")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick a date</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+          <Button>Submit</Button>
         </div>
 
         <div className="w-full py-5">
