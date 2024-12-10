@@ -81,6 +81,7 @@ const StaffManagement = () => {
     // States
     const [checkInTime, setCheckInTime] = useState(new Date());
     const [checkOutTime, setCheckOutTime] = useState(new Date());
+    console.log("Check In Time: ", checkInTime);
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
@@ -93,6 +94,7 @@ const StaffManagement = () => {
         const period = hours >= 12 ? 'PM' : 'AM';
         const formattedHours = hours % 12 || 12;
         const formattedCheckInTime = `${formattedHours}:${minutes.toString().padStart(2, "0")}:${period}`;
+        console.log("Formatted checkin time: ", formattedCheckInTime);
         setCheckInTime(formattedCheckInTime);
     };
 
