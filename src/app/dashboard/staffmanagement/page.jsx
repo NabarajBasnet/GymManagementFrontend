@@ -85,6 +85,8 @@ const StaffManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
     const [currentStaffId, setCurrentStaffId] = useState();
+    const [searchQuery, setSearchQuery] = useState();
+
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
@@ -110,7 +112,7 @@ const StaffManagement = () => {
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('');
     const responseResultType = ['Success', 'Failure'];
-
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
     const [deleting, setDeleting] = useState(false);
 
     const {
@@ -126,10 +128,18 @@ const StaffManagement = () => {
 
     // Functions
 
+    const debounce = (func, delay) => {
+        let timerId;
+        return (...args) => {
+            if (timerId) clearTimeout(timerId)
+            timerId = setTimeout(() => func(...args), delay)
+        };
+    };
+
     const fetchAllStaffs = async ({ queryKey }) => {
-        const [, page] = queryKey;
+        const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -138,8 +148,9 @@ const StaffManagement = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['staffs'],
-        queryFn: fetchAllStaffs
+        queryKey: ['staffs', currentPage, searchQuery || ''],
+        queryFn: fetchAllStaffs,
+        keepPreviousData: true,
     });
 
     const { staffs, totalPages, totalStaffs } = data || {}
@@ -154,6 +165,11 @@ const StaffManagement = () => {
         },
     });
 
+    React.useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => { clearTimeout(handler) }
+    }, [searchQuery]);
+
     const handleSubmitStaff = async (data) => {
 
         const {
@@ -167,8 +183,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://localhost:3000/api/staffsmanagement/create';
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -242,44 +258,10 @@ const StaffManagement = () => {
         }
     };
 
-    const populateStaffDetailsInForm = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
-            const responseBody = await response.json();
-            if (response.ok && responseBody.staff) {
-                setOpenForm(true);
-                setCurrentStaffId(responseBody.staff._id);
-                reset({
-                    fullName: responseBody.staff.fullName,
-                    email: responseBody.staff.email,
-                    contactNo: responseBody.staff.contactNo,
-                    emergencyContactNo: responseBody.staff.emergencyContactNo,
-                    address: responseBody.staff.address,
-                    dob: responseBody.staff.dob ? new Date(responseBody.staff.dob).toISOString().split("T")[0] : '',
-                    checkIn: responseBody.staff.checkIn ? new Date(responseBody.staff.checkIn).toISOString().split('T')[1] : '',
-                    checkOut: responseBody.staff.checkIn ? new Date(responseBody.staff.checkOut).toISOString().split('T')[1] : '',
-                    gender: responseBody.staff.gender,
-                    shift: responseBody.staff.shift,
-                    joinedDate: responseBody.staff.joinedDate ? new Date(responseBody.staff.joinedDate).toISOString().split("T")[0] : '',
-                    workingHours: responseBody.staff.workingHours,
-                    status: responseBody.staff.status,
-                    salary: responseBody.staff.salary,
-                    role: responseBody.staff.role
-                });
-            }
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
-
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
-
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -445,6 +427,8 @@ const StaffManagement = () => {
                         className="mx-2"
                     />
                     <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         className='bg-none outline-none border-none'
                         placeholder='Search staff here...'
                     />
