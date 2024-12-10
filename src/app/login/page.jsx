@@ -28,7 +28,7 @@ const Login = () => {
 
     const onLoginUser = async (data) => {
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/auth/login', {
+            const response = await fetch('http://localhost:3000/api/auth/login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -173,7 +173,7 @@ const Login = () => {
                 </form>
             </div>
 
-            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
+            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/gym.jpg')] bg-right bg-opacity-60 items-center justify-center">
                 <div className="text-white blur-none text-4xl font-bold">
                     <TypingAnimation
                         className="text-4xl font-bold text-white"

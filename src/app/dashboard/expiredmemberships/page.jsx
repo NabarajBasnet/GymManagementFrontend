@@ -56,14 +56,6 @@ const ExpiredMemberships = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 15;
 
-    const debounce = (func, delay) => {
-        let timerId;
-        return (...args) => {
-            if (timerId) clearTimeout(timerId);
-            timerId = setTimeout(() => func(...args), delay);
-        };
-    };
-
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => clearTimeout(handler);
@@ -71,10 +63,9 @@ const ExpiredMemberships = () => {
 
     const getAllMembers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
-
         try {
             const response = await fetch(
-                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -84,13 +75,12 @@ const ExpiredMemberships = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, debouncedSearchQuery],
+        queryKey: ['members', currentPage, searchQuery],
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
 
     const { totalPages, inactiveMembers, totalInactiveMembers, members } = data || {};
-
     const { range, setPage, active } = usePagination({
         total: totalPages ? totalPages : 1,
         siblings: 1,
@@ -103,7 +93,7 @@ const ExpiredMemberships = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
+            const response = await fetch(`http://localhost:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -152,7 +142,7 @@ const ExpiredMemberships = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

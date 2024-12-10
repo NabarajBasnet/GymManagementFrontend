@@ -21,7 +21,7 @@ const SignUp = () => {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('http://88.198.112.156:3000/api/auth/signup', {
+            const response = await fetch('http://localhost:3000/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ const SignUp = () => {
 
     return (
         <div className="flex min-h-screen">
-            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
+            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/gym.jpg')] bg-right bg-opacity-60 items-center justify-center">
                 <div className="text-white blur-none text-4xl font-bold">
                     <TypingAnimation
                         className="text-4xl font-bold text-white"

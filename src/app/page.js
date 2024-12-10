@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="hidden lg:flex w-full bg-cover bg-[url('/images/loginpagebg.jpg')] bg-right bg-opacity-60 items-center justify-center">
+      <div className="hidden lg:flex w-full bg-cover bg-[url('/images/gym.jpg')] bg-right bg-opacity-60 items-center justify-center">
         <div className="text-white blur-none text-4xl font-bold">
           <TypingAnimation
             className="text-4xl font-bold text-white"

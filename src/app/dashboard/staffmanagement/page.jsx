@@ -1,5 +1,6 @@
 'use client';
 
+import Pagination from "@/components/ui/CustomPagination.jsx";
 import { LuLoader2 } from "react-icons/lu";
 import {
     AlertDialog,
@@ -29,15 +30,6 @@ import {
 import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import {
     Table,
     TableBody,
@@ -82,7 +74,7 @@ import {
 } from "lucide-react";
 import { TiUserAdd } from "react-icons/ti";
 import Link from "next/link.js";
-
+import { usePagination } from "@/hooks/Pagination.js";
 
 const StaffManagement = () => {
 
@@ -137,7 +129,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -152,6 +144,16 @@ const StaffManagement = () => {
 
     const { staffs, totalPages, totalStaffs } = data || {}
 
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
+
     const handleSubmitStaff = async (data) => {
 
         const {
@@ -165,8 +167,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
+                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://localhost:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -242,7 +244,7 @@ const StaffManagement = () => {
 
     const populateStaffDetailsInForm = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             if (response.ok && responseBody.staff) {
                 setOpenForm(true);
@@ -277,7 +279,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -367,12 +369,32 @@ const StaffManagement = () => {
                                     <Settings />
                                     <span>Settings</span>
                                 </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button>Login Portals Link</Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    <Input />
+
+                                                    <Input />
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction>Continue</AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                </DropdownMenuItem>
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
             </div>
-
 
             {deleting ? (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -478,7 +500,7 @@ const StaffManagement = () => {
                                                 <TableCell>
                                                     <div className="flex items-center space-x-1">
                                                         <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                        <FaUserEdit className="cursor-pointer text-lg" />
+                                                            <FaUserEdit className="cursor-pointer text-lg" />
                                                         </Link>
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
@@ -520,26 +542,14 @@ const StaffManagement = () => {
                         </div>
 
                         <div className="py-3">
-                            <Pagination className={'cursor-pointer'}>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                    </PaginationItem>
-                                    {[...Array(totalPages)].map((_, i) => (
-                                        <PaginationItem key={i}>
-                                            <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                                {i + 1}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    ))}
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
+                            <Pagination
+                                total={totalPages || 1}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
                         </div>
                     </div>
                     {
