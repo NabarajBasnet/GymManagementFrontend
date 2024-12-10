@@ -279,20 +279,34 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/lockers/patch/${id}`, {
                 method: "PATCH",
-                body: JSON.stringify({})
             })
+            const responseBody = await response.json();
             if (response.ok) {
                 setLockerFormState(false);
                 setToast(true)
+                setResponseType(responseResultType[0]);
                 setTimeout(() => {
                     setToast(false)
-                }, 5000);
+                }, 7000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message || 'Unauthorized action'
+                });
                 queryClient.invalidateQueries(['lockers']);
             }
-            const responseBody = await response.json();
             setResponseMessage(responseBody.message);
         } catch (error) {
             console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message || 'Unauthorized action'
+            });
+            queryClient.invalidateQueries(['lockers']);
         }
     };
 

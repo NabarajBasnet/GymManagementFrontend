@@ -43,21 +43,29 @@ const MemberAttendance = () => {
     const [validationResult, setValidationResult] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('')
+    const [responseType, setResponseType] = useState('');
 
     const {
 
         formState: { errors }
     } = useForm();
 
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
-        const [, page] = queryKey;
+        const [, page, searchQuery] = queryKey;
+        console.log("Search Query: ", searchQuery);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -65,14 +73,11 @@ const MemberAttendance = () => {
     };
 
     const { data: temporaryMemberAttendanceHistory, isLoading: isAttendanceHistory } = useQuery({
-        queryKey: ['temporaryMemberAttendanceHistory', currentPage],
+        queryKey: ['temporaryMemberAttendanceHistory', currentPage, debouncedSearchQuery],
         queryFn: getTemporaryAttendanceHistory,
     });
 
     const { totalPages, totalAttendance } = temporaryMemberAttendanceHistory || {};
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
 
     const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
 
@@ -380,6 +385,8 @@ const MemberAttendance = () => {
                                     <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
                                         <IoSearch className="text-xl" />
                                         <Input
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
                                             className='w-full border-none bg-none'
                                             placeholder='Search Member...'
                                         />
