@@ -1,5 +1,6 @@
 'use client';
 
+import Pagination from "@/components/ui/CustomPagination";
 import { Input } from "@/components/ui/input";
 import { IoSearch } from "react-icons/io5";
 import {
@@ -27,22 +28,17 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { usePagination } from "@/hooks/Pagination";
 
 const StaffAttendance = () => {
+
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
@@ -108,13 +104,16 @@ const StaffAttendance = () => {
         }
     };
 
-    let debounceTimeout;
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
 
     // Fetch all temporary staff attendances
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
-        const [, page] = queryKey
+        const [, page, searchQuery] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -123,15 +122,21 @@ const StaffAttendance = () => {
     };
 
     const { data: temporarystaffattendance, isLoading: AttendanceFetching } = useQuery({
-        queryKey: ['temporarystaffattendance'],
+        queryKey: ['temporarystaffattendance', currentPage, debouncedSearchQuery],
         queryFn: fetchAllTemporaryStaffAttendances
     });
 
-    const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory, TotalTemporaryAttendancePages } = temporarystaffattendance || {};
+    const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory, totalPages } = temporarystaffattendance || {};
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+    const { range, setPage, active } = usePagination({
+        total: totalPages || 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     return (
         <div className='w-full'>
@@ -209,6 +214,8 @@ const StaffAttendance = () => {
                             <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
                                 <IoSearch className="text-xl" />
                                 <Input
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                     className='w-full border-none bg-none'
                                     placeholder='Search...'
                                 />
@@ -262,26 +269,14 @@ const StaffAttendance = () => {
                     </div>
 
                     <div className="py-2 my-2">
-                        <Pagination className={'cursor-pointer'}>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                </PaginationItem>
-                                {[...Array(TotalTemporaryAttendancePages)].map((_, i) => (
-                                    <PaginationItem key={i}>
-                                        <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                            {i + 1}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === TotalTemporaryAttendancePages} />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
+                        <Pagination
+                            total={totalPages ? totalPages : 1}
+                            siblings={1}
+                            boundaries={1}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                            withEdges
+                        />
                     </div>
                 </div>
             </div>

@@ -63,7 +63,6 @@ const MemberAttendance = () => {
 
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
-        console.log("Search Query: ", searchQuery);
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             return await response.json();
