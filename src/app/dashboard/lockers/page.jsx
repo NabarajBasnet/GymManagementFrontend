@@ -92,8 +92,8 @@ const Lockers = () => {
 
 
     // Locker filteration states
-    const [lockerStatus, setLockerStatus] = useState('');  // Booked, Empty, Expired
-    const [lockerOrder, setLockerOrder] = useState('');  // asc, desc
+    const [lockerStatus, setLockerStatus] = useState('');
+    const [lockerOrder, setLockerOrder] = useState('');
 
     const getAllLockers = async () => {
         try {
@@ -209,6 +209,7 @@ const Lockers = () => {
             });
 
             if (response.ok) {
+                window.location.reload();
                 queryClient.invalidateQueries(['lockers']);
             };
             const responseBody = await response.json();
@@ -285,6 +286,7 @@ const Lockers = () => {
             })
             const responseBody = await response.json();
             if (response.ok) {
+                window.location.reload();
                 queryClient.invalidateQueries(['lockers']);
                 setLockerFormState(false);
                 setToast(true)
