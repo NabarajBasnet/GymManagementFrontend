@@ -45,6 +45,7 @@ const MemberAttendance = () => {
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+    const [loading, setLoading] = useState();
 
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -92,6 +93,15 @@ const MemberAttendance = () => {
             const responseBody = await response.json();
             setValidationResult(responseBody);
             const responseResultType = ['Success', 'Failure'];
+
+            if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message
+                });
+            };
 
             if (response.status === 200) {
                 setResponseType(responseResultType[0]);
