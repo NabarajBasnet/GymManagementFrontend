@@ -208,6 +208,9 @@ const Lockers = () => {
                 credentials: 'include',
             });
 
+            if (response.ok) {
+                queryClient.invalidateQueries(['lockers']);
+            };
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
 
@@ -282,6 +285,7 @@ const Lockers = () => {
             })
             const responseBody = await response.json();
             if (response.ok) {
+                queryClient.invalidateQueries(['lockers']);
                 setLockerFormState(false);
                 setToast(true)
                 setResponseType(responseResultType[0]);
@@ -292,7 +296,6 @@ const Lockers = () => {
                     icon: MdDone,
                     message: responseBody.message || 'Unauthorized action'
                 });
-                queryClient.invalidateQueries(['lockers']);
             }
             setResponseMessage(responseBody.message);
         } catch (error) {
