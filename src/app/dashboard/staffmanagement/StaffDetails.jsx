@@ -128,8 +128,8 @@ const StaffDetails = ({ staffId }) => {
         // Prepare final data
         const finalData = {
             fullName, email, contactNo, emergencyContactNo, address, dob,
-            checkInTime: checkInTime ? checkInTime : staff.checkInTime,
-            checkOutTime: checkOutTime ? checkOutTime : staff.checkOutTime,
+            checkInTime: checkInTime,
+            checkOutTime: checkOutTime,
             gender, shift, joinedDate, workingHours, status, salary, role
         };
         console.log("Final Data: ", finalData);
