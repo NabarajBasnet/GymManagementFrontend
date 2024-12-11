@@ -25,25 +25,25 @@ import Loader from "@/components/Loader/Loader";
 
 const StaffDetails = ({ staffId }) => {
     // States
-    const [checkInTime, setCheckInTime] = useState(new Date());
-    const [checkOutTime, setCheckOutTime] = useState(new Date());
+    const [checkInTime, setCheckInTime] = useState(null);
+    const [checkOutTime, setCheckOutTime] = useState(null);
 
     const handleCheckInTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const formattedHours = hours % 12 || 12;
-        const formattedCheckInTime = `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-        setCheckInTime(formattedCheckInTime);
+        const checkInTime = new Date();
+        checkInTime.setHours(hours);
+        checkInTime.setMinutes(minutes);
+        setCheckInTime(checkInTime);
     };
 
     const handleCheckOutTimeChange = (e) => {
         const timeValue = e.target.value;
         const [hours, minutes] = timeValue.split(':').map(Number);
-        const period = hours >= 12 ? 'PM' : 'AM';
-        const formattedHours = hours % 12 || 12;
-        const formattedCheckOutTime = `${formattedHours}:${minutes.toString().padStart(2, "0")} ${period}`;
-        setCheckOutTime(formattedCheckOutTime);
+        const checkOutTime = new Date();
+        checkOutTime.setHours(hours);
+        checkOutTime.setMinutes(minutes);
+        setCheckOutTime(checkOutTime);
     };
 
     const queryclient = useQueryClient();
@@ -96,7 +96,6 @@ const StaffDetails = ({ staffId }) => {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-                setCheckInTime(formattedCheckInTime);
 
                 const staffCheckOutTime = new Date(responseBody.staff.checkOutTime).getTime();
                 const updatedCheckOutTime = new Date().setTime(staffCheckOutTime);
@@ -105,7 +104,6 @@ const StaffDetails = ({ staffId }) => {
                     hour: '2-digit',
                     minute: '2-digit'
                 });
-                setCheckOutTime(formattedCheckOutTime);
             };
             return responseBody;
         } catch (error) {
@@ -129,8 +127,12 @@ const StaffDetails = ({ staffId }) => {
 
         // Prepare final data
         const finalData = {
-            fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role
+            fullName, email, contactNo, emergencyContactNo, address, dob,
+            checkInTime: checkInTime ? checkInTime : staff.checkInTime,
+            checkOutTime: checkOutTime ? checkOutTime : staff.checkOutTime,
+            gender, shift, joinedDate, workingHours, status, salary, role
         };
+        console.log("Final Data: ", finalData);
         try {
             const url = `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
