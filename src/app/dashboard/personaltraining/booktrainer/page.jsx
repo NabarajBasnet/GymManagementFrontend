@@ -21,7 +21,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -44,13 +44,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { useQuery } from "@tanstack/react-query";
 import { usePagination } from "@/hooks/Pagination";
 import Loader from "@/components/Loader/Loader";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { MdError, MdDelete, MdDone, MdClose } from "react-icons/md";
 
 const BookTrainer = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const [renderDropdown, setRenderDropdown] = useState(false);
 
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -60,6 +63,42 @@ const BookTrainer = () => {
 
     const { control, register, setError, clearErrors, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
+    const trainerSearchRef = useRef(null);
+    const clientSearchRef = useRef(null);
+
+    const [renderTrainerDropdown, setRenderTrainerDropdown] = useState(false);
+    const [renderClientDropdown, setRenderClientDropdown] = useState(false);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (
+                trainerSearchRef.current &&
+                !trainerSearchRef.current.contains(event.target)
+            ) {
+                setRenderTrainerDropdown(false);
+            }
+            if (
+                clientSearchRef.current &&
+                !clientSearchRef.current.contains(event.target)
+            ) {
+                setRenderClientDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
+
+    const handleTrainerFocus = () => {
+        setRenderTrainerDropdown(true);
+        setRenderClientDropdown(false);
+    };
+
+    const handleClientFocus = () => {
+        setRenderClientDropdown(true);
+        setRenderTrainerDropdown(false);
+    };
     const fetchAllStaffs = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
@@ -77,7 +116,7 @@ const BookTrainer = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -154,7 +193,7 @@ const BookTrainer = () => {
     };
 
     return (
-        <div className='w-full'>
+        <div className='w-full bg-gray-200'>
             {toast ? (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -209,73 +248,130 @@ const BookTrainer = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Book Trainer</BreadcrumbLink>
+                            <BreadcrumbLink>Book Trainer</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage>Personal Trainer Booking</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Book Trainer</h1>
             </div>
 
-            <div className="w-full bg-gray-100">
-                <form onSubmit={handleSubmit(registerPersonalTraining)} className="w-full bg-white p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="w-full bg-white">
+                <form onSubmit={handleSubmit(registerPersonalTraining)} className="w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="w-full">
                         <Label>Select Trainer</Label>
-                        <Select>
-                            <SelectTrigger className="w-full rounded-none">
-                                <SelectValue placeholder="Select Trainer" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <div className="flex justify-center p-2">
-                                        <div className="w-full px-4 flex justify-start border border-gray-400 rounded-none items-center">
-                                            <IoSearch className="text-xl" />
+                        <div ref={trainerSearchRef} className="w-full flex justify-center">
+                            <div className="relative w-full">
+                                <div className="w-full">
+                                    <Controller
+                                        name="trainerName"
+                                        control={control}
+                                        render={({ field }) => (
                                             <Input
-                                                className='w-full border-none bg-none'
-                                                placeholder='Search Trainer...'
+                                                {...field}
+                                                autoComplete="off"
+                                                value={searchQuery}
+                                                onChange={(e) => {
+                                                    setSearchQuery(e.target.value);
+                                                    field.onChange(e);
+                                                }}
+                                                onFocus={handleTrainerFocus}
+                                                className="w-full rounded-lg"
+                                                placeholder="Select Trainers..."
                                             />
-                                        </div>
+                                        )}
+                                    />
+                                    {errors.trainerName && (
+                                        <p className="text-sm font-semibold text-red-600">
+                                            {errors.trainerName.message}
+                                        </p>
+                                    )}
+                                </div>
+                                {renderTrainerDropdown && (
+                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
+                                        {staffs
+                                            ?.filter((staff) => {
+                                                const matchByName = staff.fullName
+                                                    .toLowerCase()
+                                                    .includes(searchQuery.toLowerCase());
+                                                return matchByName;
+                                            })
+                                            .map((staff) => (
+                                                <p
+                                                    onClick={() => {
+                                                        setRenderTrainerDropdown(false);
+                                                    }}
+                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                    key={staff._id}
+                                                    value={staff._id}
+                                                >
+                                                    {staff.fullName}
+                                                </p>
+                                            ))}
                                     </div>
-                                    <SelectLabel>Select Trainer</SelectLabel>
-                                    <SelectItem value="apple">Apple</SelectItem>
-                                    <SelectItem value="banana">Banana</SelectItem>
-                                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                                    <SelectItem value="grapes">Grapes</SelectItem>
-                                    <SelectItem value="pineapple">Pineapple</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="w-full">
                         <Label>Select Client</Label>
-                        <Select>
-                            <SelectTrigger className="w-full rounded-none">
-                                <SelectValue placeholder="Select Client" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <div className="flex justify-center p-2">
-                                        <div className="w-full px-4 flex justify-start border border-gray-400 rounded-none items-center">
-                                            <IoSearch className="text-xl" />
+
+                        <div ref={clientSearchRef} className="w-full flex justify-center">
+                            <div className="relative w-full">
+                                <div className="w-full">
+                                    <Controller
+                                        name="clientName"
+                                        control={control}
+                                        render={({ field }) => (
                                             <Input
-                                                className='w-full border-none bg-none'
-                                                placeholder='Search Client...'
+                                                {...field}
+                                                autoComplete="off"
+                                                value={searchQuery}
+                                                onChange={(e) => {
+                                                    setSearchQuery(e.target.value);
+                                                    field.onChange(e);
+                                                }}
+                                                onFocus={handleClientFocus}
+                                                className="w-full rounded-lg"
+                                                placeholder="Select Clients..."
                                             />
-                                        </div>
+                                        )}
+                                    />
+                                    {errors.clientName && (
+                                        <p className="text-sm font-semibold text-red-600">
+                                            {errors.clientName.message}
+                                        </p>
+                                    )}
+                                </div>
+                                {renderClientDropdown && (
+                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
+                                        {members
+                                            ?.filter((member) => {
+                                                const matchByName = member.fullName
+                                                    .toLowerCase()
+                                                    .includes(searchQuery.toLowerCase());
+                                                return matchByName;
+                                            })
+                                            .map((member) => (
+                                                <p
+                                                    onClick={() => {
+                                                        setRenderClientDropdown(false);
+                                                    }}
+                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
+                                                    key={member._id}
+                                                    value={member._id}
+                                                >
+                                                    {member.fullName}
+                                                </p>
+                                            ))}
                                     </div>
-                                    <SelectLabel>Select Client</SelectLabel>
-                                    <SelectItem value="apple">Apple</SelectItem>
-                                    <SelectItem value="banana">Banana</SelectItem>
-                                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                                    <SelectItem value="grapes">Grapes</SelectItem>
-                                    <SelectItem value="pineapple">Pineapple</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
                     <div className="w-full">
@@ -366,9 +462,7 @@ const BookTrainer = () => {
                 </form>
             </div>
 
-
-
-            <div className="w-full bg-white p-3">
+            <div className="w-full bg-white mt-5 p-3">
                 <div>
                     <div className="flex justify-center p-2">
                         <div className="w-full px-4 flex justify-start border border-gray-400 rounded-none items-center">
