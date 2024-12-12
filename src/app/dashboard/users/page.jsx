@@ -29,20 +29,11 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { usePagination } from "@/hooks/Pagination";
 
@@ -69,7 +60,8 @@ const Users = () => {
         register,
         handleSubmit,
         formState: { isSubmitting },
-        reset
+        reset,
+        control
     } = useForm();
 
     const [role, setUserRole] = useState('');
@@ -122,8 +114,16 @@ const Users = () => {
                 setToast(true);
             };
             if (response.status === 200 && response.ok) {
+                reset({
+                    firstName: responseBody.user.firstName,
+                    lastName: responseBody.user.lastName,
+                    role: responseBody.user.role,
+                    email: responseBody.user.email,
+                    phoneNumber: responseBody.user.phoneNumber,
+                    address: responseBody.user.address,
+                    dob: responseBody.user.dob ? new Date(responseBody.user.dob).toISOString().split('T')[0] : ''
+                });
                 setEditForm(true);
-                reset();
             }
             return responseBody;
         } catch (error) {
@@ -329,93 +329,148 @@ const Users = () => {
                                             <div className="w-full flex items-center space-x-4">
                                                 <div className="w-full">
                                                     <Label>First Name</Label>
-                                                    <Input
-                                                        {
-                                                        ...register('firstName')
-                                                        }
-                                                        defaultValue={user.firstName}
-                                                        className="rounded-none"
-                                                        placeholder="First Name"
+                                                    <Controller
+                                                        name="firstName"
+                                                        control={control}
+                                                        render={({ field }) => (
+                                                            <Input
+                                                                {...field}
+                                                                value={field.value}
+                                                                onChange={(e) => field.onChange(e)}
+                                                                {
+                                                                ...register('firstName')
+                                                                }
+                                                                className="rounded-none"
+                                                                placeholder="First Name"
+                                                            />
+                                                        )}
                                                     />
                                                 </div>
 
                                                 <div className="w-full">
                                                     <Label>Last Name</Label>
-                                                    <Input
-                                                        {
-                                                        ...register('lastName')
-                                                        }
-                                                        defaultValue={user.lastName}
-                                                        className="rounded-none"
-                                                        placeholder="Last Name"
+                                                    <Controller
+                                                        name="lastName"
+                                                        control={control}
+                                                        render={({ field }) => (
+                                                            <Input
+                                                                {...field}
+                                                                value={field.value}
+                                                                onChange={(e) => field.onChange(e)}
+                                                                {
+                                                                ...register('lastName')
+                                                                }
+                                                                className="rounded-none"
+                                                                placeholder="Last Name"
+                                                            />
+                                                        )}
                                                     />
                                                 </div>
                                             </div>
 
                                             <div>
                                                 <Label>User Role</Label>
-                                                <Select onValueChange={(value) => setUserRole(value)}>
-                                                    <SelectTrigger className="rounded-none">
-                                                        <SelectValue placeholder={user.role} />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Select</SelectLabel>
-                                                            <SelectItem value="Super Admin">Super Admin</SelectItem>
-                                                            <SelectItem value="Admin">Admin</SelectItem>
-                                                            <SelectItem value="Moderator">Moderator</SelectItem>
-                                                            <SelectItem value="User">User</SelectItem>
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
+                                                <Controller
+                                                    name="role"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <select
+                                                            {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => {
+                                                                setUserRole(e.target.value)
+                                                                field.onChange(e)
+                                                            }}
+                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                        >
+                                                            <option>Select</option>
+                                                            <option value="Super Admin">Super Admin</option>
+                                                            <option value="Admin">Admin</option>
+                                                            <option value="Moderator">Moderator</option>
+                                                            <option value="User">User</option>
+                                                        </select>
+                                                    )}
+                                                />
                                             </div>
 
                                             <div className="w-full">
                                                 <Label>Email</Label>
-                                                <Input
-                                                    {
-                                                    ...register('email')
-                                                    }
-                                                    defaultValue={user.email}
-                                                    className="rounded-none"
-                                                    placeholder="Email"
+                                                <Controller
+                                                    name="email"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => field.onChange(e)}
+                                                            {
+                                                            ...register('email')
+                                                            }
+                                                            className="rounded-none"
+                                                            placeholder="Email"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
 
                                             <div className="w-full">
                                                 <Label>Phone Number</Label>
-                                                <Input
-                                                    {
-                                                    ...register('phoneNumber')
-                                                    }
-                                                    defaultValue={user.phoneNumber}
-                                                    className="rounded-none"
-                                                    placeholder="Phone Number"
+                                                <Controller
+                                                    name="phoneNumber"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => field.onChange(e)}
+                                                            {
+                                                            ...register('phoneNumber')
+                                                            }
+                                                            className="rounded-none"
+                                                            placeholder="Phone Number"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
 
                                             <div className="w-full">
                                                 <Label>Address</Label>
-                                                <Input
-                                                    {
-                                                    ...register('address')
-                                                    }
-                                                    defaultValue={user.address}
-                                                    className="rounded-none"
-                                                    placeholder="Address"
+                                                <Controller
+                                                    name="address"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => field.onChange(e)}
+                                                            {
+                                                            ...register('address')
+                                                            }
+                                                            className="rounded-none"
+                                                            placeholder="Address"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
 
                                             <div className="w-full">
                                                 <Label>DOB</Label>
-                                                <Input
-                                                    {
-                                                    ...register('dob')
-                                                    }
-                                                    defaultValue={new Date(user.dob).toISOString().split("T")[0]}
-                                                    type='date'
-                                                    className="rounded-none"
-                                                    placeholder="DOB"
+                                                <Controller
+                                                    name="dob"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            value={field.value}
+                                                            onChange={(e) => field.onChange(e)}
+                                                            {
+                                                            ...register('dob')
+                                                            }
+                                                            type='date'
+                                                            className="rounded-none"
+                                                            placeholder="DOB"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
 
@@ -443,25 +498,23 @@ const Users = () => {
                         <></>
                     )
                 }
-
+                <div className="w-full px-4">
+                    <div className="w-full px-4 py-1 flex justify-between items-center border rounded-md bg-white shadow-md">
+                        <Input
+                            placeholder='Search user'
+                            className='border-none outline-none focus:outline-none bg-none'
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                        <CiSearch
+                            className="text-xl"
+                        />
+                    </div>
+                </div>
                 {isLoading ? (
                     <Loader />
                 ) : (
                     <div className="w-full px-4">
-                        <div className="w-full">
-                            <div className="w-full px-4 py-1 flex justify-between items-center border rounded-md bg-white shadow-md">
-                                <Input
-                                    placeholder='Search user'
-                                    className='border-none outline-none focus:outline-none bg-none'
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                />
-                                <CiSearch
-                                    className="text-xl"
-                                />
-                            </div>
-                        </div>
-
                         <div className="w-full">
                             <div className="w-full rounded-md bg-white shadow-md my-4">
                                 <Table>
@@ -481,7 +534,10 @@ const Users = () => {
                                         {Array.isArray(users) && users.length > 0 ? (
                                             users.map((user) => (
                                                 <TableRow key={user._id}>
-                                                    <TableCell className="font-medium">{user.firstName + ' ' + user.lastName}</TableCell>
+                                                    <TableCell className="font-medium">
+                                                        <span>{user.firstName}</span>
+                                                        <span>{user.lastName}</span>
+                                                    </TableCell>
                                                     <TableCell>{user.role}</TableCell>
                                                     <TableCell>{user.email}</TableCell>
                                                     <TableCell>{user.phoneNumber}</TableCell>
