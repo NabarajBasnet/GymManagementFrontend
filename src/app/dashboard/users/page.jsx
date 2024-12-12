@@ -1,8 +1,9 @@
-'use client'
+'use client';
 
+import Pagination from "@/components/ui/CustomPagination";
 import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
 import { CiSearch } from "react-icons/ci";
-import { FaUserEdit } from "react-icons/fa";;
+import { FaUserEdit } from "react-icons/fa";
 import {
     Table,
     TableBody,
@@ -27,15 +28,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import { Label } from "@/components/ui/label";
 import {
     Select,
@@ -48,14 +40,17 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import { usePagination } from "@/hooks/Pagination";
 
 const Users = () => {
 
     const queryClient = useQueryClient();
+    const [searchQuery, setSearchQuery] = useState();
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
     const [toast, setToast] = useState(false);
     const [responseType, setResponseType] = useState('');
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -79,10 +74,15 @@ const Users = () => {
 
     const [role, setUserRole] = useState('');
 
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => clearTimeout(handler);
+    }, [searchQuery]);
+
     const fetchAllUsers = async ({ queryKey }) => {
-        const [, page] = queryKey;
+        const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -91,20 +91,26 @@ const Users = () => {
     };
 
     const { data: allUsers, isLoading } = useQuery({
-        queryKey: ['users', currentPage],
+        queryKey: ['users', currentPage, debouncedSearchQuery],
         queryFn: fetchAllUsers
     });
 
     const { users, totalUsers, totalPages } = allUsers || {};
 
-    const handlePageChange = (page) => {
-        setCurrentPage(page);
-    };
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://localhost:3000/api/users/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -129,7 +135,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
-            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -180,7 +186,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsUserDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -447,6 +453,8 @@ const Users = () => {
                                 <Input
                                     placeholder='Search user'
                                     className='border-none outline-none focus:outline-none bg-none'
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
                                 />
                                 <CiSearch
                                     className="text-xl"
@@ -511,31 +519,18 @@ const Users = () => {
                                 </Table>
                             </div>
                         </div>
-
-                        <div className="bg-white py-4 rounded-md shadow-md">
-                            <Pagination className={'cursor-pointer'}>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
-                                    </PaginationItem>
-                                    {[...Array(totalPages)].map((_, i) => (
-                                        <PaginationItem key={i}>
-                                            <PaginationLink isActive={currentPage === i + 1} onClick={() => handlePageChange(i + 1)}>
-                                                {i + 1}
-                                            </PaginationLink>
-                                        </PaginationItem>
-                                    ))}
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationNext onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
-                        </div>
                     </div>
                 )}
+                <div className="py-3">
+                    <Pagination
+                        total={totalPages || 1}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
             </div>
         </div>
     )
