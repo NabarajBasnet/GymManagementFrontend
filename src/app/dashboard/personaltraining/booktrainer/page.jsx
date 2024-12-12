@@ -1,15 +1,6 @@
 'use client';
 
 import Pagination from "@/components/ui/CustomPagination";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { IoSearch } from "react-icons/io5";
 import {
     Table,
@@ -53,21 +44,22 @@ const BookTrainer = () => {
     const limit = 10;
     const [searchQuery, setSearchQuery] = useState('');
 
-    const [renderDropdown, setRenderDropdown] = useState(false);
-
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('');
     const responseResultType = ['Success', 'Failure'];
 
-    const { control, register, setError, clearErrors, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+    const { control, register, setError, clearErrors, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
     const trainerSearchRef = useRef(null);
     const clientSearchRef = useRef(null);
 
     const [renderTrainerDropdown, setRenderTrainerDropdown] = useState(false);
     const [renderClientDropdown, setRenderClientDropdown] = useState(false);
+
+    const [selectedTrainer, setSelectedTrainer] = useState(null);
+    const [selectedClient, setSelectedClient] = useState(null);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -101,7 +93,7 @@ const BookTrainer = () => {
     };
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -133,7 +125,7 @@ const BookTrainer = () => {
     const fetchAllPersonalTrainings = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log("Error: ", error);
@@ -156,14 +148,17 @@ const BookTrainer = () => {
     });
 
     const registerPersonalTraining = async (data) => {
-        console.log("Data: ", data);
+        const { from, duration, to, fee, discount, finalCharge, status } = data;
+        const finalData = { trainer: selectedTrainer, client: selectedClient, from, duration, to, fee, discount, finalCharge, status };
+        console.log("Final Data: ", finalData);
+
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining`, {
                 method: "POST",
                 headers: {
-                    'Content-Type': 'applicatioin/json'
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(finalData)
             });
 
             const responseBody = await response.json()
@@ -266,23 +261,13 @@ const BookTrainer = () => {
                         <div ref={trainerSearchRef} className="w-full flex justify-center">
                             <div className="relative w-full">
                                 <div className="w-full">
-                                    <Controller
-                                        name="trainerName"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Input
-                                                {...field}
-                                                autoComplete="off"
-                                                value={searchQuery}
-                                                onChange={(e) => {
-                                                    setSearchQuery(e.target.value);
-                                                    field.onChange(e);
-                                                }}
-                                                onFocus={handleTrainerFocus}
-                                                className="w-full rounded-lg"
-                                                placeholder="Select Trainers..."
-                                            />
-                                        )}
+                                    <Input
+                                        autoComplete="off"
+                                        value={searchQuery}
+                                        onChange={(e) => { setSearchQuery(e.target.value); }}
+                                        onFocus={handleTrainerFocus}
+                                        className="w-full rounded-lg"
+                                        placeholder="Select Trainers..."
                                     />
                                     {errors.trainerName && (
                                         <p className="text-sm font-semibold text-red-600">
@@ -303,6 +288,8 @@ const BookTrainer = () => {
                                                 <p
                                                     onClick={() => {
                                                         setRenderTrainerDropdown(false);
+                                                        setSelectedTrainer(staff);
+                                                        setSearchQuery(staff.fullName)
                                                     }}
                                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                                     key={staff._id}
@@ -319,27 +306,16 @@ const BookTrainer = () => {
 
                     <div className="w-full">
                         <Label>Select Client</Label>
-
                         <div ref={clientSearchRef} className="w-full flex justify-center">
                             <div className="relative w-full">
                                 <div className="w-full">
-                                    <Controller
-                                        name="clientName"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Input
-                                                {...field}
-                                                autoComplete="off"
-                                                value={searchQuery}
-                                                onChange={(e) => {
-                                                    setSearchQuery(e.target.value);
-                                                    field.onChange(e);
-                                                }}
-                                                onFocus={handleClientFocus}
-                                                className="w-full rounded-lg"
-                                                placeholder="Select Clients..."
-                                            />
-                                        )}
+                                    <Input
+                                        autoComplete="off"
+                                        value={searchQuery}
+                                        onChange={(e) => { setSearchQuery(e.target.value); }}
+                                        onFocus={handleClientFocus}
+                                        className="w-full rounded-lg"
+                                        placeholder="Select Clients..."
                                     />
                                     {errors.clientName && (
                                         <p className="text-sm font-semibold text-red-600">
@@ -360,6 +336,8 @@ const BookTrainer = () => {
                                                 <p
                                                     onClick={() => {
                                                         setRenderClientDropdown(false);
+                                                        setSelectedClient(member);
+                                                        setSearchQuery(member.fullName)
                                                     }}
                                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                                     key={member._id}
@@ -377,6 +355,7 @@ const BookTrainer = () => {
                     <div className="w-full">
                         <Label>From</Label>
                         <Input
+                            {...register('from')}
                             type='date'
                             placeholder='Select Date From'
                             className='w-full rounded-none'
@@ -385,25 +364,22 @@ const BookTrainer = () => {
 
                     <div className="w-full">
                         <Label>Training Duration</Label>
-                        <Select>
-                            <SelectTrigger className="w-full rounded-none">
-                                <SelectValue placeholder="Training Duration" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Select</SelectLabel>
-                                    <SelectItem value="1 Month">1 Month</SelectItem>
-                                    <SelectItem value="3 Months">3 Months</SelectItem>
-                                    <SelectItem value="6 Months">6 Months</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <select
+                            {...register('duration')}
+                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                        >
+                            <option>Select</option>
+                            <option value="1 Month">1 Month</option>
+                            <option value="3 Months">3 Months</option>
+                            <option value="6 Months">6 Months</option>
+                        </select>
                     </div>
 
                     <div className="w-full">
                         <Label>To</Label>
                         <Input
                             type='date'
+                            {...register('to')}
                             placeholder='Select Date To'
                             className='w-full rounded-none'
                         />
@@ -413,6 +389,7 @@ const BookTrainer = () => {
                         <Label>Charge/Fee</Label>
                         <Input
                             type='text'
+                            {...register('fee')}
                             placeholder='Charge Fee'
                             className='w-full rounded-none'
                         />
@@ -421,6 +398,7 @@ const BookTrainer = () => {
                     <div className="w-full">
                         <Label>Discount</Label>
                         <Input
+                            {...register('discount')}
                             type='text'
                             placeholder='Discount'
                             className='w-full rounded-none'
@@ -430,6 +408,7 @@ const BookTrainer = () => {
                     <div className="w-full">
                         <Label>Final Charge/Fee</Label>
                         <Input
+                            {...register('finalCharge')}
                             type='text'
                             placeholder='Final Charge'
                             className='w-full rounded-none'
@@ -438,20 +417,16 @@ const BookTrainer = () => {
 
                     <div className="w-full">
                         <Label>Status</Label>
-                        <Select>
-                            <SelectTrigger className="w-full rounded-none">
-                                <SelectValue placeholder="Status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Select</SelectLabel>
-                                    <SelectItem value="Booked">Booked</SelectItem>
-                                    <SelectItem value="Pending">Pending</SelectItem>
-                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                    <SelectItem value="Freezed">Freezed</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
+                        <select
+                            {...register('status')}
+                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                        >
+                            <option>Select</option>
+                            <option value="Booked">Booked</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Freezed">Freezed</option>
+                        </select>
                     </div>
 
                     <div className="flex items-center px-4 mb-2 space-x-3">
