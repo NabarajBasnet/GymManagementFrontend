@@ -45,7 +45,7 @@ const TrainerAvailability = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -54,7 +54,7 @@ const TrainerAvailability = () => {
     };
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ['personalTrainers', currentPage, debouncedSearchQuery],
+        queryKey: ['staffs', currentPage, debouncedSearchQuery],
         queryFn: fetchAllStaffs
     })
 

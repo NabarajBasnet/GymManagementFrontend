@@ -25,7 +25,7 @@ export default function StaffLogin() {
         const { email, password } = data;
         const finalData = { email, password };
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-login/login`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

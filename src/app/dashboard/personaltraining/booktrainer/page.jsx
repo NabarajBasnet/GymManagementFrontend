@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Select,
     SelectContent,
@@ -47,8 +49,43 @@ import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { useQuery } from "@tanstack/react-query";
 
 const BookTrainer = () => {
+
+    const fetchAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+    const { data, isLoading, error } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: fetchAllStaffs
+    })
+    const { staffs } = data || {};
+    console.log("Staffs: ", staffs);
+
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const resBody = await response.json();
+            return resBody;
+        } catch (error) {
+            console.error('Error: ', error);
+        }
+    };
+    const { data: allMembers, isLoading: isMemberLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers,
+        keepPreviousData: true,
+    });
+    const { members } = allMembers || {};
+    console.log("Members: ", members);
+
 
     const invoices = [
         {
@@ -56,30 +93,6 @@ const BookTrainer = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
         }
     ];
 
