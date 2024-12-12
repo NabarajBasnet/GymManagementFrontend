@@ -74,7 +74,7 @@ const AllMembers = () => {
 
         try {
             const response = await fetch(
-                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -103,7 +103,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
+            const response = await fetch(`http://localhost:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -152,7 +152,7 @@ const AllMembers = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -297,11 +297,11 @@ const AllMembers = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full flex justify-start bg-white p-4">
+                <div className="w-full flex justify-start bg-white px-2">
                     <div className="w-full overflow-x-auto">
                         <Table className='w-full overflow-x-auto'>
                             <TableHeader>
-                                <TableRow className='bg-gray-200 text-black'>
+                                <TableRow className='bg-gray-200 text-black p-0'>
                                     <TableHead>Member Id</TableHead>
                                     <TableHead>Full Name</TableHead>
                                     <TableHead>Duration</TableHead>
@@ -368,8 +368,8 @@ const AllMembers = () => {
                                 {members && members.length > 0 ? (
                                     members.map((member) => {
                                         const textColor =
-                                            member.status === 'Active' ? 'text-green-500' :
-                                                member.status === 'OnHold' ? 'text-yellow-500' :
+                                            member.status === 'Active' ? 'text-black' :
+                                                member.status === 'OnHold' ? 'text-yellow-600' :
                                                     'text-red-500';
                                         return (
                                             <TableRow key={member._id} className={textColor}>
