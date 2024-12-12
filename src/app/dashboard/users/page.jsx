@@ -40,8 +40,8 @@ import { usePagination } from "@/hooks/Pagination";
 const Users = () => {
 
     const queryClient = useQueryClient();
-    const [searchQuery, setSearchQuery] = useState();
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [toast, setToast] = useState(false);
     const [responseType, setResponseType] = useState('');
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
