@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Pagination,
     PaginationContent,
@@ -33,13 +35,30 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from '@/components/ui/button'
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dropdown-menu";
+import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useQuery } from "@tanstack/react-query";
 
 const TrainerAvailability = () => {
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['personalTrainers'],
+        queryFn: async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/staffsmanagement');
+                const responseBody = await response.json();
+                return responseBody;
+            } catch (error) {
+                console.log("Error: ", error);
+            }
+        }
+    });
+
+    const { totalStaffs, staffs, totalPages } = data || {};
+    console.log("Data: ", staffs);
 
     const invoices = [
         {
@@ -47,30 +66,6 @@ const TrainerAvailability = () => {
             paymentStatus: "Paid",
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
         }
     ];
 
@@ -102,7 +97,7 @@ const TrainerAvailability = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage>Personal Trainers</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
@@ -123,21 +118,37 @@ const TrainerAvailability = () => {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[100px]">Invoice</TableHead>
+                                <TableHead>Id</TableHead>
+                                <TableHead>Full Name</TableHead>
+                                <TableHead>Contact No</TableHead>
+                                <TableHead>Joined At</TableHead>
                                 <TableHead>Status</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead className="text-right">Amount</TableHead>
+                                <TableHead>Avaibility Status</TableHead>
+                                <TableHead>Shift</TableHead>
+                                <TableHead>Role</TableHead>
+                                <TableHead>Limit</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {invoices.map((invoice) => (
-                                <TableRow key={invoice.invoice}>
-                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                    <TableCell>{invoice.paymentStatus}</TableCell>
-                                    <TableCell>{invoice.paymentMethod}</TableCell>
-                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                            {Array.isArray(staffs) && staffs.length >= 1 ? (
+                                staffs.map((staff) => (
+                                    <TableRow key={staff._id}>
+                                        <TableCell>{staff._id}</TableCell>
+                                        <TableCell>{staff.fullName}</TableCell>
+                                        <TableCell>{staff.contactNo}</TableCell>
+                                        <TableCell>{staff.joinedDate ? new Date(staff.joinedDate).toISOString().split('T')[0] : ''}</TableCell>
+                                        <TableCell>{staff.status}</TableCell>
+                                        <TableCell>{staff.status}</TableCell>
+                                        <TableCell>{staff.shift}</TableCell>
+                                        <TableCell>{staff.role}</TableCell>
+                                        <TableCell className="text-right">{5}</TableCell>
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell className="font-medium">No Staffs Found</TableCell>
                                 </TableRow>
-                            ))}
+                            )}
                         </TableBody>
                         <TableFooter>
                             <TableRow>
