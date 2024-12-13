@@ -1,5 +1,16 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import Pagination from "@/components/ui/CustomPagination";
 import { IoSearch } from "react-icons/io5";
 import {
@@ -52,8 +63,11 @@ const BookTrainer = () => {
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('');
     const responseResultType = ['Success', 'Failure'];
+    const [deleting, setDeleting] = useState(false);
+    const [updateDocument, setUpdateDocument] = useState(false);
+    const [documentUpdateId, setUpdateDocumentId] = useState('');
 
-    const { control, register, setError, clearErrors, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+    const { control, reset, register, setError, clearErrors, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
     const trainerSearchRef = useRef(null);
     const clientSearchRef = useRef(null);
@@ -96,7 +110,7 @@ const BookTrainer = () => {
     };
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -111,7 +125,7 @@ const BookTrainer = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -128,7 +142,7 @@ const BookTrainer = () => {
     const fetchAllPersonalTrainings = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log("Error: ", error);
@@ -150,13 +164,16 @@ const BookTrainer = () => {
         },
     });
 
-    const registerPersonalTraining = async (data) => {
+    const handleFormSubmit = async (data) => {
         const { from, duration, to, fee, discount, finalCharge, status } = data;
         const finalData = { trainer: selectedTrainer, client: selectedClient, from, duration, to, fee, discount, finalCharge, status };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining`, {
-                method: "POST",
+            const url = updateDocument
+                ? `http://88.198.112.156:3000/api/personaltraining/${documentUpdateId}` :
+                'http://88.198.112.156:3000/api/personaltraining'
+            const response = await fetch(url, {
+                method: updateDocument ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -165,6 +182,7 @@ const BookTrainer = () => {
 
             const responseBody = await response.json()
             if (response.ok) {
+                reset();
                 queryClient.invalidateQueries(['personaltrainings']);
                 setResponseType(responseResultType[0]);
                 setToast(true);
@@ -178,6 +196,41 @@ const BookTrainer = () => {
             }
         } catch (error) {
             console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: responseBody.message || 'Unauthorized action'
+            });
+        };
+    };
+
+    const deletePersonalTraining = async (id) => {
+        setDeleting(true);
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
+                method: "DELETE",
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                queryClient.invalidateQueries(['personaltrainings']);
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+                setDeleting(false);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            setDeleting(false);
             setResponseType(responseResultType[1]);
             setToast(true);
             setTimeout(() => {
@@ -224,6 +277,16 @@ const BookTrainer = () => {
             ) : (
                 <></>
             )}
+            {deleting ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <h1 className="w-full text-xl font-bold animate-pulse duration-500 transition-all">Loading...</h1>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
             <div className='w-full p-4'>
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -258,7 +321,7 @@ const BookTrainer = () => {
             </div>
 
             <div className="w-full bg-white">
-                <form onSubmit={handleSubmit(registerPersonalTraining)} className="w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="w-full">
                         <Label>Select Trainer</Label>
                         <div ref={trainerSearchRef} className="w-full flex justify-center">
@@ -413,7 +476,7 @@ const BookTrainer = () => {
                     </div>
 
                     <div className="w-full">
-                        <Label>Charge/Fee</Label>
+                        <Label>Fee</Label>
                         <Input
                             type='text'
                             {...register('fee', {
@@ -481,9 +544,13 @@ const BookTrainer = () => {
                     </div>
 
                     <div className="flex items-center px-4 mb-2 space-x-3">
-                        <Button type='button' className='rounded-md bg-red-600'>Reset</Button>
+                        <Button type='button' onClick={() => reset()} className='rounded-md bg-red-600'>Reset</Button>
                         <Button type='button' className='rounded-md'>Edit</Button>
-                        <Button type='submit' className='rounded-md bg-green-600'>Submit</Button>
+                        {updateDocument ? (
+                            <Button type='submit' className='rounded-md bg-green-600'>{isSubmitting ? 'Updating...' : 'Update'}</Button>
+                        ) : (
+                            <Button type='submit' className='rounded-md bg-green-600'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+                        )}
                     </div>
                 </form>
             </div>
@@ -533,8 +600,41 @@ const BookTrainer = () => {
                                                 <TableCell>{training.status ? training.status : ''}</TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex items-center">
-                                                        <FaEdit className="cursor-pointer text-xl mx-2" />
-                                                        <MdDelete className="cursor-pointer text-red-600 text-xl" />
+                                                        <FaEdit onClick={() => {
+                                                            setUpdateDocumentId(training._id);
+                                                            setUpdateDocument(!updateDocument);
+                                                            setTrainerSearchQuery(training.trainer.fullName);
+                                                            setSelectedTrainer(training.trainer);
+                                                            setSelectedClient(training.client);
+                                                            setClientSearchQuery(training.client.fullName);
+                                                            reset({
+                                                                from: training.from ? new Date(training.from).toISOString().split('T')[0] : '',
+                                                                duration: training.duration,
+                                                                to: training.to ? new Date(training.to).toISOString().split('T')[0] : '',
+                                                                fee: training.fee,
+                                                                discount: training.discount,
+                                                                finalCharge: training.finalCharge,
+                                                                status: training.status
+                                                            })
+                                                        }} className="cursor-pointer text-xl mx-2" />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdDelete className="cursor-pointer text-red-600 text-xl" />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete your
+                                                                        personal training and remove data from server.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deletePersonalTraining(training._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
