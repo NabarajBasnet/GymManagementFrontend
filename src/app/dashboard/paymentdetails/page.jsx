@@ -1,3 +1,6 @@
+'use client';
+
+import { Button } from "@/components/ui/button";
 import { IoSearch } from "react-icons/io5";
 import {
     Breadcrumb,
@@ -45,30 +48,6 @@ const PaymentDetails = () => {
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
         },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        }
     ];
 
     return (
@@ -95,7 +74,7 @@ const PaymentDetails = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">dashboard</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard">dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -107,13 +86,17 @@ const PaymentDetails = () => {
             </div>
 
             <div className="w-full bg-white p-4">
-                <div className="flex items-center border px-4 my-2">
-                    <IoSearch />
-                    <Input
-                        className='rounded-none border-none'
-                        placeholder='Search member...'
-                    />
+                <div className="w-full md:flex items-center">
+                    <div className="w-full flex items-center border px-4 my-2">
+                        <IoSearch />
+                        <Input
+                            className='rounded-none border-none'
+                            placeholder='Search member...'
+                        />
+                    </div>
+                    <Button className='md:mx-4 mx-0 my-4 md:my-0'>Submit</Button>
                 </div>
+
                 <div>
                     <Table>
                         <TableHeader>

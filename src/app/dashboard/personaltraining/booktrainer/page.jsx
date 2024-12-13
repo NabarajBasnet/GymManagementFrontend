@@ -182,6 +182,7 @@ const BookTrainer = () => {
 
             const responseBody = await response.json()
             if (response.ok) {
+                setUpdateDocument(false);
                 reset();
                 queryClient.invalidateQueries(['personaltrainings']);
                 setResponseType(responseResultType[0]);
@@ -545,7 +546,7 @@ const BookTrainer = () => {
 
                     <div className="flex items-center px-4 mb-2 space-x-3">
                         <Button type='button' onClick={() => reset()} className='rounded-md bg-red-600'>Reset</Button>
-                        <Button type='button' className='rounded-md'>Edit</Button>
+                        <Button type='button' onClick={() => window.location.reload()} className='rounded-md'>Refresh</Button>
                         {updateDocument ? (
                             <Button type='submit' className='rounded-md bg-green-600'>{isSubmitting ? 'Updating...' : 'Update'}</Button>
                         ) : (
