@@ -32,7 +32,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePagination } from "@/hooks/Pagination";
 import Loader from "@/components/Loader/Loader";
 import { useForm, Controller } from "react-hook-form";
@@ -40,9 +40,11 @@ import { MdError, MdDelete, MdDone, MdClose } from "react-icons/md";
 
 const BookTrainer = () => {
 
+    const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
-    const [searchQuery, setSearchQuery] = useState('');
+    const [trainerSearchQuery, setTrainerSearchQuery] = useState('');
+    const [clientSearchQuery, setClientSearchQuery] = useState('');
 
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -93,7 +95,7 @@ const BookTrainer = () => {
     };
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -108,7 +110,7 @@ const BookTrainer = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -125,7 +127,7 @@ const BookTrainer = () => {
     const fetchAllPersonalTrainings = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log("Error: ", error);
@@ -150,10 +152,9 @@ const BookTrainer = () => {
     const registerPersonalTraining = async (data) => {
         const { from, duration, to, fee, discount, finalCharge, status } = data;
         const finalData = { trainer: selectedTrainer, client: selectedClient, from, duration, to, fee, discount, finalCharge, status };
-        console.log("Final Data: ", finalData);
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining`, {
+            const response = await fetch(`http://localhost:3000/api/personaltraining`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -163,6 +164,7 @@ const BookTrainer = () => {
 
             const responseBody = await response.json()
             if (response.ok) {
+                queryClient.invalidateQueries(['personaltrainings']);
                 setResponseType(responseResultType[0]);
                 setToast(true);
                 setTimeout(() => {
@@ -263,8 +265,8 @@ const BookTrainer = () => {
                                 <div className="w-full">
                                     <Input
                                         autoComplete="off"
-                                        value={searchQuery}
-                                        onChange={(e) => { setSearchQuery(e.target.value); }}
+                                        value={trainerSearchQuery}
+                                        onChange={(e) => { setTrainerSearchQuery(e.target.value); }}
                                         onFocus={handleTrainerFocus}
                                         className="w-full rounded-lg"
                                         placeholder="Select Trainers..."
@@ -281,7 +283,7 @@ const BookTrainer = () => {
                                             ?.filter((staff) => {
                                                 const matchByName = staff.fullName
                                                     .toLowerCase()
-                                                    .includes(searchQuery.toLowerCase());
+                                                    .includes(trainerSearchQuery.toLowerCase());
                                                 return matchByName;
                                             })
                                             .map((staff) => (
@@ -289,7 +291,7 @@ const BookTrainer = () => {
                                                     onClick={() => {
                                                         setRenderTrainerDropdown(false);
                                                         setSelectedTrainer(staff);
-                                                        setSearchQuery(staff.fullName)
+                                                        setTrainerSearchQuery(staff.fullName)
                                                     }}
                                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                                     key={staff._id}
@@ -311,8 +313,8 @@ const BookTrainer = () => {
                                 <div className="w-full">
                                     <Input
                                         autoComplete="off"
-                                        value={searchQuery}
-                                        onChange={(e) => { setSearchQuery(e.target.value); }}
+                                        value={clientSearchQuery}
+                                        onChange={(e) => { setClientSearchQuery(e.target.value); }}
                                         onFocus={handleClientFocus}
                                         className="w-full rounded-lg"
                                         placeholder="Select Clients..."
@@ -329,7 +331,7 @@ const BookTrainer = () => {
                                             ?.filter((member) => {
                                                 const matchByName = member.fullName
                                                     .toLowerCase()
-                                                    .includes(searchQuery.toLowerCase());
+                                                    .includes(clientSearchQuery.toLowerCase());
                                                 return matchByName;
                                             })
                                             .map((member) => (
@@ -337,7 +339,7 @@ const BookTrainer = () => {
                                                     onClick={() => {
                                                         setRenderClientDropdown(false);
                                                         setSelectedClient(member);
-                                                        setSearchQuery(member.fullName)
+                                                        setClientSearchQuery(member.fullName)
                                                     }}
                                                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                                                     key={member._id}
@@ -355,17 +357,30 @@ const BookTrainer = () => {
                     <div className="w-full">
                         <Label>From</Label>
                         <Input
-                            {...register('from')}
+                            {...register('from', {
+                                required: {
+                                    value: true,
+                                    message: 'Please select date range'
+                                }
+                            })}
                             type='date'
                             placeholder='Select Date From'
                             className='w-full rounded-none'
                         />
+                        {errors.from && (
+                            <p className="text-sm font-semibold text-red-600">{errors.from.status}</p>
+                        )}
                     </div>
 
                     <div className="w-full">
                         <Label>Training Duration</Label>
                         <select
-                            {...register('duration')}
+                            {...register('duration', {
+                                required: {
+                                    value: true,
+                                    message: 'Please select training duration'
+                                }
+                            })}
                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                         >
                             <option>Select</option>
@@ -373,26 +388,45 @@ const BookTrainer = () => {
                             <option value="3 Months">3 Months</option>
                             <option value="6 Months">6 Months</option>
                         </select>
+                        {errors.duration && (
+                            <p className="text-sm font-semibold text-red-600">{errors.duration.status}</p>
+                        )}
                     </div>
 
                     <div className="w-full">
                         <Label>To</Label>
                         <Input
                             type='date'
-                            {...register('to')}
+                            {...register('to', {
+                                required: {
+                                    value: true,
+                                    message: 'Please select date range'
+                                }
+                            })}
                             placeholder='Select Date To'
                             className='w-full rounded-none'
                         />
+                        {errors.to && (
+                            <p className="text-sm font-semibold text-red-600">{errors.to.status}</p>
+                        )}
                     </div>
 
                     <div className="w-full">
                         <Label>Charge/Fee</Label>
                         <Input
                             type='text'
-                            {...register('fee')}
+                            {...register('fee', {
+                                required: {
+                                    value: true,
+                                    message: "Fee is required"
+                                }
+                            })}
                             placeholder='Charge Fee'
                             className='w-full rounded-none'
                         />
+                        {errors.fee && (
+                            <p className="text-sm font-semibold text-red-600">{errors.fee.status}</p>
+                        )}
                     </div>
 
                     <div className="w-full">
@@ -408,17 +442,30 @@ const BookTrainer = () => {
                     <div className="w-full">
                         <Label>Final Charge/Fee</Label>
                         <Input
-                            {...register('finalCharge')}
+                            {...register('finalCharge', {
+                                required: {
+                                    value: true,
+                                    message: "Final charge/fee is required"
+                                }
+                            })}
                             type='text'
                             placeholder='Final Charge'
                             className='w-full rounded-none'
                         />
+                        {errors.finalCharge && (
+                            <p className="text-sm font-semibold text-red-600">{errors.finalCharge.status}</p>
+                        )}
                     </div>
 
                     <div className="w-full">
                         <Label>Status</Label>
                         <select
-                            {...register('status')}
+                            {...register('status', {
+                                required: {
+                                    value: true,
+                                    message: "Please select one status"
+                                }
+                            })}
                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                         >
                             <option>Select</option>
@@ -427,12 +474,15 @@ const BookTrainer = () => {
                             <option value="Cancelled">Cancelled</option>
                             <option value="Freezed">Freezed</option>
                         </select>
+                        {errors.status && (
+                            <p className="text-sm font-semibold text-red-600">{errors.message.status}</p>
+                        )}
                     </div>
 
                     <div className="flex items-center px-4 mb-2 space-x-3">
-                        <Button type='button' className='rounded-none'>Reset</Button>
-                        <Button type='button' className='rounded-none'>Edit</Button>
-                        <Button type='submit' className='rounded-none'>Sumit</Button>
+                        <Button type='button' className='rounded-md bg-red-600'>Reset</Button>
+                        <Button type='button' className='rounded-md'>Edit</Button>
+                        <Button type='submit' className='rounded-md bg-green-600'>Sumit</Button>
                     </div>
                 </form>
             </div>
