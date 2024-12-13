@@ -37,6 +37,7 @@ import { usePagination } from "@/hooks/Pagination";
 import Loader from "@/components/Loader/Loader";
 import { useForm, Controller } from "react-hook-form";
 import { MdError, MdDelete, MdDone, MdClose } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 
 const BookTrainer = () => {
 
@@ -482,7 +483,7 @@ const BookTrainer = () => {
                     <div className="flex items-center px-4 mb-2 space-x-3">
                         <Button type='button' className='rounded-md bg-red-600'>Reset</Button>
                         <Button type='button' className='rounded-md'>Edit</Button>
-                        <Button type='submit' className='rounded-md bg-green-600'>Sumit</Button>
+                        <Button type='submit' className='rounded-md bg-green-600'>Submit</Button>
                     </div>
                 </form>
             </div>
@@ -504,7 +505,6 @@ const BookTrainer = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="w-[100px]">Sn.</TableHead>
                                     <TableHead>Trainer</TableHead>
                                     <TableHead>From</TableHead>
                                     <TableHead>To</TableHead>
@@ -518,26 +518,31 @@ const BookTrainer = () => {
                             </TableHeader>
                             <TableBody>
                                 {Array.isArray(personalTrainings) && personalTrainings.length >= 1 ? (
-                                    personalTrainings.map((training) => (
-                                        <TableRow key={training._id}>
-                                            <TableCell className="font-medium">{training.trainer ? training.trainer.fullName : ''}</TableCell>
-                                            <TableCell>{training.from ? new Date(training.from).toISOString().split('T')[0] : ''}</TableCell>
-                                            <TableCell>{training.to ? new Date(training.to).toISOString().split('T')[0] : ''}</TableCell>
-                                            <TableCell>{training.client ? training.client.fullName : ''}</TableCell>
-                                            <TableCell>{training.fee ? training.fee : ''}</TableCell>
-                                            <TableCell>{training.discount ? training.discount : ''}</TableCell>
-                                            <TableCell>{training.finalCharge ? training.finalCharge : ''}</TableCell>
-                                            <TableCell>{training.status ? training.status : ''}</TableCell>
-                                            <TableCell className="text-right">
-                                                <div>
-                                                    <h1>Action</h1>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))
+                                    personalTrainings.map((training) => {
+                                        const textColor = training.status === 'Expired' ? 'text-red-600' :
+                                            training.status === 'Paused' ? 'text-yellow-600' : 'text-black'
+                                        return (
+                                            <TableRow key={training._id} className={textColor}>
+                                                <TableCell className="font-medium">{training.trainer ? training.trainer.fullName : ''}</TableCell>
+                                                <TableCell>{training.from ? new Date(training.from).toISOString().split('T')[0] : ''}</TableCell>
+                                                <TableCell>{training.to ? new Date(training.to).toISOString().split('T')[0] : ''}</TableCell>
+                                                <TableCell>{training.client ? training.client.fullName : ''}</TableCell>
+                                                <TableCell>{training.fee ? training.fee : ''}</TableCell>
+                                                <TableCell>{training.discount ? training.discount : ''}</TableCell>
+                                                <TableCell>{training.finalCharge ? training.finalCharge : ''}</TableCell>
+                                                <TableCell>{training.status ? training.status : ''}</TableCell>
+                                                <TableCell className="text-right">
+                                                    <div className="flex items-center">
+                                                        <FaEdit className="cursor-pointer text-xl mx-2" />
+                                                        <MdDelete className="cursor-pointer text-red-600 text-xl" />
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        )
+                                    })
                                 ) : (
                                     <TableRow >
-                                        <TableCell className="font-medium text-center" colSpan={6}>No Personal Trainings Available</TableCell>
+                                        <TableCell className="font-medium text-center" colSpan={12}>No Personal Trainings Available</TableCell>
                                     </TableRow>
                                 )}
                             </TableBody>
