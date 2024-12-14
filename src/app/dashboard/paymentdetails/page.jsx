@@ -1,5 +1,6 @@
 'use client';
 
+import { MdDelete, MdEdit } from "react-icons/md";
 import Pagination from "@/components/ui/CustomPagination";
 import { Label } from "@/components/ui/label";
 import {
@@ -222,6 +223,7 @@ const PaymentDetails = () => {
                                     <TableHead>Method</TableHead>
                                     <TableHead>Discount</TableHead>
                                     <TableHead>Reference Code</TableHead>
+                                    <TableHead>Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -241,6 +243,14 @@ const PaymentDetails = () => {
                                                 <TableCell>{detail.paymentMethod}</TableCell>
                                                 <TableCell>{detail.discount ? detail.discount : 'Null'}</TableCell>
                                                 <TableCell>{detail.referenceCode}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center justify-center space-x-1">
+                                                        <MdEdit className='cursor-pointer text-lg' />
+                                                        <MdDelete
+                                                            className="cursor-pointer text-red-600 text-lg"
+                                                        />
+                                                    </div>
+                                                </TableCell>
                                             </TableRow>
                                         ))}
                                     </>
