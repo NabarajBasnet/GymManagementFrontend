@@ -21,11 +21,10 @@ export default function StaffLogin() {
     } = useForm();
 
     const onLogin = async (data) => {
-        console.log("Data: ", data);
         const { email, password } = data;
         const finalData = { email, password };
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/login`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -106,7 +105,7 @@ export default function StaffLogin() {
                         type="submit"
                         className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
                     >
-                        Login
+                        {isSubmitting ? 'Submitting...' : 'Submit'}
                     </Button>
                 </form>
             </div>

@@ -282,6 +282,7 @@ const MemberDetails = ({ memberId }) => {
             discountReason,
             discountCode,
             paidAmmount,
+            discountAmmount,
             dueAmmount,
             receiptNo,
             referenceCode,
@@ -290,7 +291,7 @@ const MemberDetails = ({ memberId }) => {
             actionTaker } = data;
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -342,7 +343,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -960,7 +961,7 @@ const MemberDetails = ({ memberId }) => {
                                                 </div>
 
                                                 <div className="flex items-center space-x-2 p-2">
-                                                    <Button type='submit' className='rounded-md'>Submit</Button>
+                                                    <Button type='submit' className='rounded-md'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                                                 </div>
                                             </form>
                                         ) : (
