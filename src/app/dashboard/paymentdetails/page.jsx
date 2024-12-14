@@ -20,7 +20,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
+} from "../allmembers/allmembertable";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -47,7 +47,7 @@ const PaymentDetails = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -65,7 +65,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -173,9 +173,8 @@ const PaymentDetails = () => {
                                 </p>
                             )}
 
-                            {/* Dropdown Section */}
                             {renderDropdown && (
-                                <div className="absolute w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-md max-h-80 overflow-y-auto z-20">
+                                <div className="absolute w-full bg-white border border-gray-300 rounded-lg shadow-md max-h-80 overflow-y-auto z-20 top-full left-0">
                                     {members
                                         ?.filter((member) => {
                                             const matchByName = member.fullName
@@ -211,10 +210,18 @@ const PaymentDetails = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow className='bg-gray-200 text-black'>
-                                    <TableHead>Invoice</TableHead>
-                                    <TableHead>Status</TableHead>
+                                    <TableHead>MemberId</TableHead>
+                                    <TableHead>Name</TableHead>
+                                    <TableHead>Action Taker</TableHead>
+                                    <TableHead>Receipt No</TableHead>
+                                    <TableHead>Paid Amount</TableHead>
+                                    <TableHead>Payment Date</TableHead>
+                                    <TableHead>Renew</TableHead>
+                                    <TableHead>Duration</TableHead>
+                                    <TableHead>Expire</TableHead>
                                     <TableHead>Method</TableHead>
-                                    <TableHead className="text-right">Amount</TableHead>
+                                    <TableHead>Discount</TableHead>
+                                    <TableHead>Reference Code</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -222,10 +229,18 @@ const PaymentDetails = () => {
                                     <>
                                         {paginatedPaymentDetails.map((detail) => (
                                             <TableRow key={detail._id}>
+                                                <TableCell className="font-medium">{paginatedPaymentDetails ? detail.member._id : ''}</TableCell>
                                                 <TableCell className="font-medium">{paginatedPaymentDetails ? detail.member.fullName : ''}</TableCell>
-                                                <TableCell>{detail.paidAmmount}</TableCell>
                                                 <TableCell>{detail.actionTaker}</TableCell>
-                                                <TableCell className="text-right">{detail.discountAmmount}</TableCell>
+                                                <TableCell>{detail.receiptNo}</TableCell>
+                                                <TableCell>{detail.paidAmmount}</TableCell>
+                                                <TableCell>{detail.paymentDate ? new Date(detail.paymentDate).toISOString().split('T')[0] : ''}</TableCell>
+                                                <TableCell className="font-medium">{paginatedPaymentDetails ? new Date(detail.member.membershipRenewDate).toISOString().split('T')[0] : ''}</TableCell>
+                                                <TableCell>{detail.membershipDuration}</TableCell>
+                                                <TableCell className="font-medium">{paginatedPaymentDetails ? new Date(detail.member.membershipExpireDate).toISOString().split('T')[0] : ''}</TableCell>
+                                                <TableCell>{detail.paymentMethod}</TableCell>
+                                                <TableCell>{detail.discount ? detail.discount : 'Null'}</TableCell>
+                                                <TableCell>{detail.referenceCode}</TableCell>
                                             </TableRow>
                                         ))}
                                     </>

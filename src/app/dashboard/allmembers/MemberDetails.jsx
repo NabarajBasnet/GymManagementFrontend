@@ -291,7 +291,7 @@ const MemberDetails = ({ memberId }) => {
             actionTaker } = data;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -343,7 +343,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
