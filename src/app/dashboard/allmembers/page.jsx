@@ -1,5 +1,6 @@
 'use client';
 
+import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -30,6 +31,17 @@ import {
     TableRow,
 } from "./allmembertable.jsx";
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
     DropdownMenu,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -55,6 +67,7 @@ const AllMembers = () => {
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 15;
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const debounce = (func, delay) => {
         let timerId;
@@ -150,7 +163,7 @@ const AllMembers = () => {
     };
 
     const deleteMember = async (id) => {
-        setIsMemberDeleting(true);
+        setIsDeleting(true);
         try {
             const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
@@ -174,6 +187,7 @@ const AllMembers = () => {
             }
             else {
                 if (response.status === 200) {
+                    setIsDeleting(false);
                     setResponseType(responseResultType[0]);
                     setToast(true);
                     setTimeout(() => {
@@ -184,7 +198,6 @@ const AllMembers = () => {
                         message: responseBody.message || 'Unauthorized action'
                     })
                 }
-                setIsMemberDeleting(false);
                 setConfirmDeleteMember(false);
                 queryClient.invalidateQueries(['members']);
             }
@@ -256,6 +269,21 @@ const AllMembers = () => {
                 ) : (
                     <></>
                 )}
+
+                {isDeleting ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div className="w-full flex items-center">
+                                <BiLoaderCircle className="text-xl animate-spin duration-500 transition-all mx-6" />
+                                <h1>Deleting <span className="animate-pulse duration-500 transition-all">...</span></h1>
+                            </div>
+                        </div>
+                    </div>
+                ) : (
+                    <></>
+                )}
+
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -393,13 +421,27 @@ const AllMembers = () => {
                                                             onClick={() => sendQrInEmail(member._id)}
                                                             className='cursor-pointer text-lg'
                                                         />
-                                                        <MdDelete
-                                                            onClick={() => {
-                                                                setConfirmDeleteMember(true);
-                                                                setToDeleteMemberId(member._id);
-                                                            }}
-                                                            className="cursor-pointer text-red-600 text-lg"
-                                                        />
+
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdDelete
+                                                                    className="cursor-pointer text-red-600 text-lg"
+                                                                />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete member detail
+                                                                        and remove data from servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deleteMember(member._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
