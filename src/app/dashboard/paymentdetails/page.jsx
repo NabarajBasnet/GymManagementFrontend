@@ -1,6 +1,18 @@
 'use client';
 
-import { MdDelete, MdEdit } from "react-icons/md";
+import { BiLoaderCircle } from "react-icons/bi";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { MdDelete, MdEdit, MdError, MdDone, MdClose } from "react-icons/md";
 import Pagination from "@/components/ui/CustomPagination";
 import { Label } from "@/components/ui/label";
 import {
@@ -29,7 +41,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import Loader from "@/components/Loader/Loader";
@@ -37,18 +49,26 @@ import { usePagination } from "@/hooks/Pagination";
 
 const PaymentDetails = () => {
 
+    const [isDeleting, setIsDeleting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [memberName, setMemberName] = useState('');
     const [memberId, setMemberId] = useState('');
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [currentPage, setCurrentPage] = useState(1)
     const limit = 10;
+    const queryClient = useQueryClient();
+
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('');
+    const responseResultType = ['Success', 'Failure'];
 
     const { control, formState: { errors, isSubmitting } } = useForm();
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -66,7 +86,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -109,6 +129,41 @@ const PaymentDetails = () => {
         setRenderDropdown(true);
     };
 
+    const deletePaymentDetail = async (id) => {
+        setIsDeleting(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${id}`,
+                {
+                    method: "DELETE",
+                });
+            const responseBody = await response.json();
+            if (response.ok) {
+                setIsDeleting(false);
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+                queryClient.invalidateQueries(['paymentDetails']);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            setIsDeleting(true);
+            setResponseType(responseResultType[1]);
+            setToast(false);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || 'Unauthorized action'
+            });
+        };
+    };
 
     return (
         <div className="w-full">
@@ -144,6 +199,53 @@ const PaymentDetails = () => {
                 </Breadcrumb>
                 <h1 className="text-xl font-bold mt-3">Payment Details</h1>
             </div>
+
+            {toast ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <div>
+                            {
+                                responseType === 'Success' ? (
+                                    <MdDone className="text-3xl mx-4 text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl mx-4 text-red-600" />
+                                )
+                            }
+                        </div>
+                        <div className="block">
+                            {
+                                responseType === 'Success' ? (
+                                    <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                ) : (
+                                    <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <MdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer text-3xl ml-4" />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
+
+            {isDeleting ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <div className="w-full flex items-center">
+                            <BiLoaderCircle className="text-xl animate-spin duration-500 transition-all mx-6" />
+                            <h1>Deleting <span className="animate-pulse duration-500 transition-all">...</span></h1>
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
 
             <div className="w-full bg-white p-4">
                 <form className="w-full flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
@@ -246,9 +348,26 @@ const PaymentDetails = () => {
                                                 <TableCell>
                                                     <div className="flex items-center justify-center space-x-1">
                                                         <MdEdit className='cursor-pointer text-lg' />
-                                                        <MdDelete
-                                                            className="cursor-pointer text-red-600 text-lg"
-                                                        />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdDelete
+                                                                    className="cursor-pointer text-red-600 text-lg"
+                                                                />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete this payment detail
+                                                                        and remove data from servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deletePaymentDetail(detail._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
