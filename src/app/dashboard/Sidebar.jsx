@@ -61,7 +61,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -198,7 +198,7 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex bg-gray-800 flex-col`}
+        <div className={`fixed left-0 transition-all duration-500 rounded-md top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex bg-zinc-800 flex-col`}
             onMouseEnter={() => minimizeSidebar()}
         >
             {toast ? (
@@ -225,15 +225,18 @@ const Sidebar = () => {
                     </div>
                 </div>
             ) : null}
-            <Link href={'/dashboard'} className="flex justify-start py-4">
-                <RiDashboard3Fill className='text-3xl mx-2 text-white' />
-                {
-                    sidebarMinimized ? (
-                        <></>
-                    ) : (
-                        <span className="text-white w-full text-2xl font-bold">Revive Fitness</span>
-                    )
-                }
+            <Link href={'/dashboard'} className="flex py-4 items-center">
+                <RiDashboard3Fill className='text-4xl mx-2 text-white text-start' />
+                <div className="mb-1">
+                    {
+                        sidebarMinimized ? (
+                            <></>
+                        ) : (
+                            <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                        )
+                    }
+                </div>
+
             </Link>
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
                 <ul>

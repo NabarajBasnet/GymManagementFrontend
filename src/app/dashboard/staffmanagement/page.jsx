@@ -140,7 +140,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -184,8 +184,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://localhost:3000/api/staffsmanagement/create';
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -262,7 +262,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -322,7 +322,7 @@ const StaffManagement = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                <div className="flex justify-between items-center bg-yellow-500 text-white p-4">
+                <div className="flex justify-between items-center bg-blue-600 text-white p-4">
                     <h1 className="text-xl font-bold">Staff Management</h1>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -345,33 +345,10 @@ const StaffManagement = () => {
                                     <span>Add Staff</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <CreditCard />
-                                    <span>Billing</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
                                     <Settings />
                                     <span>Settings</span>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button>Login Portals Link</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    <Input />
-
-                                                    <Input />
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction>Continue</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
                                 </DropdownMenuItem>
                             </DropdownMenuGroup>
                         </DropdownMenuContent>
