@@ -65,9 +65,8 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
-            console.log("Response body", responseBody);
             return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
@@ -100,7 +99,7 @@ const AttendanceHistory = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, id, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/members-attendance-history/${id}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members-attendance-history/${id}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             setPermanentMemberAttendance(responseBody.memberAttendance);
             setTotalPages(responseBody.totalPages);

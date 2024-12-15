@@ -13,7 +13,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
@@ -262,36 +261,9 @@ const MemberDetails = ({ memberId }) => {
     // Functions
     // Update member details
     const updateMemberDetails = async (data) => {
-        const {
-            fullName,
-            contactNo,
-            email,
-            dob,
-            secondaryContactNo,
-            gender,
-            address,
-            status,
-            membershipOption,
-            membershipType,
-            membershipShift,
-            membershipDate,
-            membershipRenewDate,
-            membershipDuration,
-            membershipExpireDate,
-            paymentMethod,
-            discountReason,
-            discountCode,
-            paidAmmount,
-            discountAmmount,
-            dueAmmount,
-            receiptNo,
-            referenceCode,
-            reasonForUpdate,
-            remark,
-            actionTaker } = data;
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -343,7 +315,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -389,6 +361,27 @@ const MemberDetails = ({ memberId }) => {
             })
         };
     };
+
+    const getAactionTakers = async () => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Developer']}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error) {
+                alert("Error: ", error)
+            }
+        };
+    };
+
+    const { data: actionTakers, isLoading: fetchingActionTakers } = useQuery({
+        queryKey: ['actiontakers'],
+        queryFn: getAactionTakers
+    });
+
+    const { actionTakersDB } = actionTakers || {};
+    console.log("Action Taker: ", actionTakersDB);
 
     return (
         <div className="w-full p-1">
@@ -941,15 +934,29 @@ const MemberDetails = ({ memberId }) => {
                                                             <Controller
                                                                 name="actionTaker"
                                                                 control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field} {...register('actionTaker')}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Admin">Admin</option>
-                                                                        <option value="Author">Author</option>
-                                                                    </select>
+                                                                render={({ field, fieldState: { error } }) => (
+                                                                    <div>
+                                                                        <select
+                                                                            {...field}
+                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
+                                                                        >
+                                                                            {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
+                                                                                actionTakersDB.map((actionTaker) => (
+                                                                                    <>
+                                                                                        <option value={''}>
+                                                                                            Select
+                                                                                        </option>
+                                                                                        <option key={actionTaker._id} value={actionTaker.fullName}>
+                                                                                            {actionTaker.fullName}
+                                                                                        </option>
+                                                                                    </>
+                                                                                ))
+                                                                            ) : (
+                                                                                <option value="">No staffs registered</option>
+                                                                            )}
+                                                                        </select>
+                                                                        {error && <p className="text-red-500 text-sm">{error.message}</p>}
+                                                                    </div>
                                                                 )}
                                                             />
                                                             {errors.actionTaker && (
