@@ -1,7 +1,19 @@
 'use client';
 
+import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination";
 import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { CiSearch } from "react-icons/ci";
 import { FaUserEdit } from "react-icons/fa";
 import {
@@ -55,6 +67,7 @@ const Users = () => {
     const [isUserDeleting, setIsUserDeleting] = useState(false);
     const [user, setUser] = useState();
     const router = useRouter();
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const {
         register,
@@ -184,7 +197,7 @@ const Users = () => {
     };
 
     const deleteUser = async (id) => {
-        setIsUserDeleting(true);
+        setIsDeleting(true);
         try {
             const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
                 method: "DELETE",
@@ -195,6 +208,7 @@ const Users = () => {
             });
             const responseBody = await response.json();
             if (response.status === 200) {
+                setIsDeleting(false);
                 setToast(true);
                 setResponseType(responseResultType[0]);
                 setConfirmDeleteUser({ value: false, userId: '' });
@@ -223,6 +237,7 @@ const Users = () => {
         } catch (error) {
             console.log("Error: ", error);
             setToast(true);
+            setIsDeleting(false);
             setResponseType(responseResultType[1]);
             setTimeout(() => {
                 setToast(false);
@@ -253,7 +268,7 @@ const Users = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -297,27 +312,19 @@ const Users = () => {
                     <></>
                 )}
 
-                {
-                    confirmDeleteUser.value ? (
-                        <div className="fixed inset-0 flex items-center justify-center z-50">
-                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                            <div className={`bg-white border shadow-2xl px-3 rounded-md py-2 relative`}>
-                                <div>
-                                    <p className="text-red-600 text-sm font-semibold px-6 text-center my-4">Are you sure want to delete? This action will remove all the data from the server and will not be recover.</p>
-                                </div>
-                                <div className="flex justify-center items-center space-x-4">
-                                    <Button onClick={() => setConfirmDeleteUser({ value: false, userId: '' })}
-                                        className='rounded-md'
-                                    >Cancel</Button>
-                                    <Button className='bg-red-600 rounded-md hover:bg-red-600' onClick={() => deleteUser(confirmDeleteUser.userId)}>{isUserDeleting ? 'Deleting...' : "Delete"}</Button>
-                                </div>
+                {isDeleting ? (
+                    <div className="fixed inset-0 flex items-center justify-center z-50">
+                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                            <div className="w-full flex items-center">
+                                <BiLoaderCircle className="text-xl animate-spin duration-500 transition-all mx-6" />
+                                <h1>Deleting <span className="animate-pulse duration-500 transition-all">...</span></h1>
                             </div>
                         </div>
-                    ) : (
-                        <>
-                        </>
-                    )
-                }
+                    </div>
+                ) : (
+                    <></>
+                )}
 
                 {
                     editForm ? (
@@ -498,36 +505,36 @@ const Users = () => {
                         <></>
                     )
                 }
-                <div className="w-full px-4">
-                    <div className="w-full px-4 py-1 flex justify-between items-center border rounded-md bg-white shadow-md">
+                <div className="w-full px-2">
+                    <div className="w-full px-4 flex justify-between items-center border bg-white">
+                        <CiSearch
+                            className="text-xl"
+                        />
                         <Input
                             placeholder='Search user'
                             className='border-none outline-none focus:outline-none bg-none'
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
-                        <CiSearch
-                            className="text-xl"
-                        />
                     </div>
                 </div>
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full px-4">
+                    <div className="w-full">
                         <div className="w-full">
-                            <div className="w-full rounded-md bg-white shadow-md my-4">
+                            <div className="w-full bg-white my-4">
                                 <Table>
                                     <TableCaption className='my-4'>A list of users.</TableCaption>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">Full Name</TableHead>
+                                            <TableHead>Full Name</TableHead>
                                             <TableHead>Role</TableHead>
                                             <TableHead>Email address</TableHead>
                                             <TableHead>Phone Number</TableHead>
                                             <TableHead>DOB</TableHead>
                                             <TableHead>Address</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                            <TableHead>Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -536,6 +543,7 @@ const Users = () => {
                                                 <TableRow key={user._id}>
                                                     <TableCell className="font-medium">
                                                         <span>{user.firstName}</span>
+                                                        <span>{' '}</span>
                                                         <span>{user.lastName}</span>
                                                     </TableCell>
                                                     <TableCell>{user.role}</TableCell>
@@ -543,18 +551,32 @@ const Users = () => {
                                                     <TableCell>{user.phoneNumber}</TableCell>
                                                     <TableCell>{new Date(user.dob).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{user.address}</TableCell>
-                                                    <TableCell className="text-right flex items-center space-x-2">
+                                                    <TableCell className="text-right flex items-center">
                                                         <FaUserEdit
                                                             onClick={() => fetchSingleUser(user._id)}
-                                                            className="text-xl cursor-pointer"
+                                                            className="text-lg cursor-pointer"
                                                         />
-
-                                                        <MdEmail className="text-xl cursor-pointer" />
-
-                                                        <MdDelete
-                                                            onClick={() => setConfirmDeleteUser({ value: true, userId: user._id })}
-                                                            className="text-xl text-red-600 cursor-pointer"
-                                                        />
+                                                        <MdEmail className="text-lg cursor-pointer mx-2" />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdDelete
+                                                                    className="cursor-pointer text-red-600 text-lg"
+                                                                />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete user detail
+                                                                        and remove data from servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deleteUser(user._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </TableCell>
                                                 </TableRow>
                                             ))

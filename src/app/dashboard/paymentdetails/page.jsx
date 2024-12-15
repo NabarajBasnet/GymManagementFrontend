@@ -379,12 +379,11 @@ const PaymentDetails = () => {
                                     </TableRow>
                                 )}
 
-
                             </TableBody>
                             <TableFooter>
                                 <TableRow>
                                     <TableCell colSpan={3}>Total Payments</TableCell>
-                                    <TableCell className="text-right">5</TableCell>
+                                    <TableCell className="text-right">{totalPaymentDetails ? totalPaymentDetails : ''}</TableCell>
                                 </TableRow>
                             </TableFooter>
                         </Table>
