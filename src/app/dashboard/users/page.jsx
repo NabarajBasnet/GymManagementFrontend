@@ -74,7 +74,7 @@ const Users = () => {
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -102,7 +102,7 @@ const Users = () => {
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const response = await fetch(`http://localhost:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -135,7 +135,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
-            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsUserDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'

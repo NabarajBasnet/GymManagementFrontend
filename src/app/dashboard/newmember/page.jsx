@@ -38,6 +38,7 @@ import {
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useQuery } from "@tanstack/react-query";
 
 const newMemberRegistrationForm = () => {
 
@@ -327,7 +328,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://88.198.112.156:3000/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -366,6 +367,26 @@ const newMemberRegistrationForm = () => {
             console.log('Error: ', error);
         }
     };
+
+    const getAactionTakers = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Developer']}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            if (error) {
+                alert("Error: ", error)
+            }
+        };
+    };
+
+    const { data: actionTakers, isLoading: fetchingActionTakers } = useQuery({
+        queryKey: ['actiontakers'],
+        queryFn: getAactionTakers
+    });
+
+    const { actionTakersDB } = actionTakers || {};
 
     return (
         <div className="w-full p-1">
@@ -566,7 +587,6 @@ const newMemberRegistrationForm = () => {
                                         <Label>Address</Label>
                                         <Input
                                             {
-
                                             ...register('address', {
                                                 required: {
                                                     value: true,
@@ -993,10 +1013,20 @@ const newMemberRegistrationForm = () => {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectLabel>Action Taker</SelectLabel>
-                                                    <SelectItem value="Admin">Admin</SelectItem>
-                                                    <SelectItem value="Author">Author</SelectItem>
-                                                    <SelectItem value="Member">Member</SelectItem>
+                                                    {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
+                                                        actionTakersDB.map((actionTaker) => (
+                                                            <div key={actionTaker._id}>
+                                                                <SelectItem value={"Not Selected"}>
+                                                                    Select
+                                                                </SelectItem>
+                                                                <SelectItem value={actionTaker.fullName || "Not Selected"}>
+                                                                    {actionTaker.fullName}
+                                                                </SelectItem>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <SelectItem value="Revive Fitness">No staffs registered</SelectItem>
+                                                    )}
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
