@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { MdDone } from "react-icons/md";
 import { IoMdClose } from "react-icons/io";
@@ -173,11 +173,11 @@ const Login = () => {
                 </form>
             </div>
 
-            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/gym.jpg')] bg-right bg-opacity-60 items-center justify-center">
-                <div className="text-white blur-none text-4xl font-bold">
+            <div className="hidden lg:flex w-1/2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 items-center justify-center">
+                <div className="text-white text-4xl font-bold">
                     <TypingAnimation
                         className="text-4xl font-bold text-white"
-                        text="Welcome Back!"
+                        text="Welcome back!"
                     />
                 </div>
             </div>

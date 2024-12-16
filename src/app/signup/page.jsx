@@ -43,11 +43,11 @@ const SignUp = () => {
 
     return (
         <div className="flex min-h-screen">
-            <div className="hidden lg:flex w-1/2 bg-cover bg-[url('/images/gym.jpg')] bg-right bg-opacity-60 items-center justify-center">
+            <div className="hidden lg:flex w-1/2 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 items-center justify-center">
                 <div className="text-white blur-none text-4xl font-bold">
                     <TypingAnimation
                         className="text-4xl font-bold text-white"
-                        text="Welcome Back!"
+                        text="Ohh! Don't have an account? Create here😇"
                     />
                 </div>
             </div>

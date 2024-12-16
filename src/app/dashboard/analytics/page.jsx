@@ -3,6 +3,7 @@ import CustomGaugeChart from "@/components/Charts/GaugeChart";
 import GradientBarLineChart from "@/components/Charts/GradientBarLineChart";
 import LineChart from "@/components/Charts/LineChart";
 import PieChart from "@/components/Charts/PieChart";
+import CustomBarChart from "@/components/Charts/CustomCharts/CustomBarChart";
 
 const Analytics = () => {
     return (
@@ -12,6 +13,7 @@ const Analytics = () => {
             <GradientBarLineChart />
             <LineChart />
             <PieChart />
+            <CustomBarChart />
         </div>
     );
 }
