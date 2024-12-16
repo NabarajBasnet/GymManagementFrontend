@@ -430,7 +430,7 @@ const BookTrainer = () => {
                             })}
                             type='date'
                             placeholder='Select Date From'
-                            className='w-full rounded-none'
+                            className='w-full rounded-md'
                         />
                         {errors.from && (
                             <p className="text-sm font-semibold text-red-600">{errors.from.status}</p>
@@ -469,7 +469,7 @@ const BookTrainer = () => {
                                 }
                             })}
                             placeholder='Select Date To'
-                            className='w-full rounded-none'
+                            className='w-full rounded-md'
                         />
                         {errors.to && (
                             <p className="text-sm font-semibold text-red-600">{errors.to.status}</p>
@@ -487,7 +487,7 @@ const BookTrainer = () => {
                                 }
                             })}
                             placeholder='Charge Fee'
-                            className='w-full rounded-none'
+                            className='w-full rounded-md'
                         />
                         {errors.fee && (
                             <p className="text-sm font-semibold text-red-600">{errors.fee.status}</p>
@@ -500,7 +500,7 @@ const BookTrainer = () => {
                             {...register('discount')}
                             type='text'
                             placeholder='Discount'
-                            className='w-full rounded-none'
+                            className='w-full rounded-md'
                         />
                     </div>
 
@@ -515,7 +515,7 @@ const BookTrainer = () => {
                             })}
                             type='text'
                             placeholder='Final Charge'
-                            className='w-full rounded-none'
+                            className='w-full rounded-md'
                         />
                         {errors.finalCharge && (
                             <p className="text-sm font-semibold text-red-600">{errors.finalCharge.status}</p>
