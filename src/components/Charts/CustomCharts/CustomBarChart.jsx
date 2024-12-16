@@ -1,20 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import data from './data.json'
 
 const CustomBarChart = () => {
 
     return (
-        <svg width="600" height="400">
+        <svg className='w-full h-72'>
             {data.datasets[0].data.map((value, index) => (
                 <rect
+                className='w-2 rounded-xl bg-white'
                     key={index}
                     x={50 + index * 50}
                     y={400 - value / 2}
-                    width="40"
                     height={value / 2}
-                    fill={data.datasets[0].backgroundColor}
+                    fill='rgba(153, 0, 219, 0.8)'
                 />
             ))}
         </svg>

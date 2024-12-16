@@ -3,16 +3,14 @@
 import React, { useEffect, useRef } from 'react';
 import * as echarts from 'echarts';
 
-const GradientBarLineChart = () => {
+const GradientBarChart = () => {
     const chartRef = useRef(null);
 
     useEffect(() => {
         const chartInstance = echarts.init(chartRef.current);
 
-        // Generate data
         let category = [];
         let dottedBase = +new Date();
-        let lineData = [];
         let barData = [];
         for (let i = 0; i < 20; i++) {
             let date = new Date((dottedBase += 3600 * 24 * 1000));
@@ -20,105 +18,94 @@ const GradientBarLineChart = () => {
                 [date.getFullYear(), date.getMonth() + 1, date.getDate()].join('-')
             );
             let b = Math.random() * 200;
-            let d = Math.random() * 200;
             barData.push(b);
-            lineData.push(d + b);
         }
 
-        // ECharts option
         const option = {
             backgroundColor: '#0f375f',
             tooltip: {
                 trigger: 'axis',
                 axisPointer: {
-                    type: 'shadow'
-                }
+                    type: 'shadow',
+                },
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                borderColor: '#333',
+                textStyle: {
+                    color: '#fff',
+                },
             },
             legend: {
-                data: ['line', 'bar'],
+                data: ['Bar Data'],
                 textStyle: {
-                    color: '#ccc'
-                }
+                    color: '#fff',
+                    fontSize: 14,
+                },
+                icon: 'circle',
+                itemGap: 20,
             },
             xAxis: {
                 data: category,
                 axisLine: {
                     lineStyle: {
-                        color: '#ccc'
-                    }
-                }
+                        color: '#aaa',
+                    },
+                },
+                axisLabel: {
+                    color: '#fff',
+                },
             },
             yAxis: {
-                splitLine: { show: false },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255, 255, 255, 0.1)',
+                    },
+                },
                 axisLine: {
                     lineStyle: {
-                        color: '#ccc'
-                    }
-                }
+                        color: '#aaa',
+                    },
+                },
+                axisLabel: {
+                    color: '#fff',
+                },
             },
             series: [
                 {
-                    name: 'line',
-                    type: 'line',
-                    smooth: true,
-                    showAllSymbol: true,
-                    symbol: 'emptyCircle',
-                    symbolSize: 15,
-                    data: lineData
-                },
-                {
-                    name: 'bar',
+                    name: 'Bar Data',
                     type: 'bar',
-                    barWidth: 10,
+                    barWidth: 12,
                     itemStyle: {
                         borderRadius: 5,
                         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: '#14c8d4' },
-                            { offset: 1, color: '#43eec6' }
-                        ])
+                            { offset: 0, color: '#42e9f5' },
+                            { offset: 1, color: '#147efb' },
+                        ]),
+                        shadowColor: 'rgba(0, 191, 255, 0.6)',
+                        shadowBlur: 10,
                     },
-                    data: barData
+                    data: barData,
                 },
-                {
-                    name: 'line',
-                    type: 'bar',
-                    barGap: '-100%',
-                    barWidth: 10,
-                    itemStyle: {
-                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                            { offset: 0, color: 'rgba(20,200,212,0.5)' },
-                            { offset: 0.2, color: 'rgba(20,200,212,0.2)' },
-                            { offset: 1, color: 'rgba(20,200,212,0)' }
-                        ])
-                    },
-                    z: -12,
-                    data: lineData
-                },
-                {
-                    name: 'dotted',
-                    type: 'pictorialBar',
-                    symbol: 'rect',
-                    itemStyle: {
-                        color: '#0f375f'
-                    },
-                    symbolRepeat: true,
-                    symbolSize: [12, 4],
-                    symbolMargin: 1,
-                    z: -10,
-                    data: lineData
-                }
-            ]
+            ],
         };
 
         chartInstance.setOption(option);
 
-        // Cleanup function to dispose of the chart instance on component unmount
         return () => {
             chartInstance.dispose();
         };
     }, []);
 
-    return <div ref={chartRef} style={{ width: '100%', height: '400px' }} />;
+    return (
+        <div
+            ref={chartRef}
+            style={{
+                width: '100%',
+                height: '400px',
+                borderRadius: '10px',
+                overflow: 'hidden',
+            }}
+        />
+    );
 };
 
-export default GradientBarLineChart;
+export default GradientBarChart;

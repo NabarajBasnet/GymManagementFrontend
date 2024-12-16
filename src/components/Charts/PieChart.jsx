@@ -10,39 +10,75 @@ const PieChart = () => {
         const chartInstance = echarts.init(chartRef.current);
 
         const option = {
-            title: {
-                text: 'Referer of a Website',
-                subtext: 'Fake Data',
-                left: 'center'
-            },
             tooltip: {
-                trigger: 'item'
+                trigger: 'item',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                borderColor: '#333',
+                textStyle: {
+                    color: '#fff',
+                },
             },
             legend: {
-                orient: 'vertical',
-                left: 'left'
+                orient: 'horizontal',
+                bottom: 10,
+                textStyle: {
+                    color: '#fff',
+                },
+                itemGap: 20,
+                icon: 'circle',
             },
             series: [
                 {
-                    name: 'Access From',
+                    name: 'Membership flow',
                     type: 'pie',
-                    radius: '50%',
-                    data: [
-                        { value: 1048, name: 'Search Engine' },
-                        { value: 735, name: 'Direct' },
-                        { value: 580, name: 'Email' },
-                        { value: 484, name: 'Union Ads' },
-                        { value: 300, name: 'Video Ads' }
-                    ],
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    itemStyle: {
+                        borderRadius: 10,
+                        borderColor: '#0f375f',
+                        borderWidth: 2,
+                    },
                     emphasis: {
                         itemStyle: {
-                            shadowBlur: 10,
+                            shadowBlur: 20,
                             shadowOffsetX: 0,
-                            shadowColor: 'rgba(0, 0, 0, 0.5)'
-                        }
-                    }
-                }
-            ]
+                            shadowColor: 'rgba(255, 255, 255, 0.7)',
+                        },
+                    },
+                    data: [
+                        {
+                            value: 1048,
+                            name: 'Active Members',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [
+                                    { offset: 0, color: '#42e9f5' },
+                                    { offset: 1, color: '#147efb' },
+                                ]),
+                            },
+                        },
+                        {
+                            value: 735,
+                            name: 'On Hold Members',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [
+                                    { offset: 0, color: '#f39c12' },
+                                    { offset: 1, color: '#e74c3c' },
+                                ]),
+                            },
+                        },
+                        {
+                            value: 580,
+                            name: 'Inactive Members',
+                            itemStyle: {
+                                color: new echarts.graphic.LinearGradient(0, 0, 1, 1, [
+                                    { offset: 0, color: '#9b59b6' },
+                                    { offset: 1, color: '#8e44ad' },
+                                ]),
+                            },
+                        },
+                    ],
+                },
+            ],
         };
 
         chartInstance.setOption(option);
@@ -52,7 +88,18 @@ const PieChart = () => {
         };
     }, []);
 
-    return <div ref={chartRef} style={{ width: '100%', height: '400px' }} />;
+    return (
+        <div
+            ref={chartRef}
+            style={{
+                width: '100%',
+                height: '400px',
+                background: 'linear-gradient(120deg, #1e3c72, #2a5298)',
+                borderRadius: '15px',
+                padding: '20px',
+            }}
+        />
+    );
 };
 
 export default PieChart;
