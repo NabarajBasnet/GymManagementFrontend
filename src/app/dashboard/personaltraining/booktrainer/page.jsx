@@ -544,13 +544,13 @@ const BookTrainer = () => {
                         )}
                     </div>
 
-                    <div className="flex items-center px-4 mb-2 space-x-3">
-                        <Button type='button' onClick={() => reset()} className='rounded-md bg-red-600'>Reset</Button>
-                        <Button type='button' onClick={() => window.location.reload()} className='rounded-md'>Refresh</Button>
+                    <div className="flex items-center mb-2 space-x-3">
+                        <Button type='button' onClick={() => reset()} className='rounded-sm bg-red-600'>Reset</Button>
+                        <Button type='button' onClick={() => window.location.reload()} className='rounded-sm mx-4'>Refresh</Button>
                         {updateDocument ? (
-                            <Button type='submit' className='rounded-md bg-green-600'>{isSubmitting ? 'Updating...' : 'Update'}</Button>
+                            <Button type='submit' className='rounded-sm bg-green-600'>{isSubmitting ? 'Updating...' : 'Update'}</Button>
                         ) : (
-                            <Button type='submit' className='rounded-md bg-green-600'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
+                            <Button type='submit' className='rounded-sm bg-green-600'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                         )}
                     </div>
                 </form>
@@ -559,7 +559,7 @@ const BookTrainer = () => {
             <div className="w-full bg-white mt-5 p-3">
                 <div>
                     <div className="flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-start border border-gray-400 rounded-none items-center">
+                        <div className="w-full px-4 flex justify-start border border-gray-400 rounded-sm items-center">
                             <IoSearch className="text-xl" />
                             <Input
                                 className='w-full border-none bg-none'
