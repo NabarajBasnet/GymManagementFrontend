@@ -70,7 +70,7 @@ const AdminDashboard = () => {
   })
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/members`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
