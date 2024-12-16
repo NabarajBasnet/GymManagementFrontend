@@ -54,7 +54,7 @@ const AttendanceHistory = () => {
 
     const [endDate, setEndDate] = useState();
     const [startDate, setStartDate] = useState();
-    const [membershipType, setMembershipType] = useState();
+    const [membershipType, setMembershipType] = useState('');
     const [id, setId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [renderDropdown, setRenderDropdown] = useState(false);
@@ -63,15 +63,40 @@ const AttendanceHistory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
 
+    const [persons, setPersons] = useState(null);
+
     const fetchAllMembers = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
+            setPersons(responseBody.members);
             return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
         }
     };
+
+    const fetchAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            setPersons(responseBody.staffs);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    }
+
+    useEffect(() => {
+        if (membershipType === 'Staffs') {
+            fetchAllStaffs();
+        } else if (membershipType === 'Members') {
+            fetchAllMembers();
+        }
+        else {
+            setPersons([]);
+        };
+    }, [membershipType]);
 
     const { data: allMembers, isLoading } = useQuery({
         queryKey: ['members'],
@@ -226,20 +251,20 @@ const AttendanceHistory = () => {
                                         </div>
                                         {renderDropdown && (
                                             <div className="w-full absolute bg-white shadow-2xl max-h-96 overflow-y-auto z-10">
-                                                {allMembers?.filter((member) =>
-                                                    member.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-                                                ).map((member) => (
+                                                {persons?.filter((person) =>
+                                                    person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                                                ).map((person) => (
                                                     <p
                                                         onClick={() => {
-                                                            setSearchQuery(member.fullName);
-                                                            setId(member._id);
+                                                            setSearchQuery(person.fullName);
+                                                            setId(person._id);
                                                             setRenderDropdown(false);
                                                         }}
                                                         className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                        key={member._id}
-                                                        value={member._id}
+                                                        key={person._id}
+                                                        value={person._id}
                                                     >
-                                                        {member.fullName}
+                                                        {person.fullName}
                                                     </p>
                                                 ))}
                                             </div>
@@ -247,9 +272,7 @@ const AttendanceHistory = () => {
                                     </div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
 
                     <div className="w-full">
