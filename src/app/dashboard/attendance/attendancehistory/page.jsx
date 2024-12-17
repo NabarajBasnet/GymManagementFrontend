@@ -42,8 +42,8 @@ import { usePagination } from "@/hooks/Pagination";
 
 const AttendanceHistory = () => {
 
-    const [endDate, setEndDate] = useState();
-    const [startDate, setStartDate] = useState();
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
     const [membershipType, setMembershipType] = useState('Staffs');
     const [id, setId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -58,7 +58,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -69,7 +69,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -91,8 +91,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}`;
-            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}`;
+            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (membershipType === 'Staffs') {
@@ -109,7 +109,7 @@ const AttendanceHistory = () => {
 
     useEffect(() => {
         fetchAttendanceHistory();
-    }, [id, membershipType]);
+    }, [id, membershipType, startDate, endDate]);
 
     const searchRef = useRef(null);
 
@@ -225,7 +225,7 @@ const AttendanceHistory = () => {
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select Type</SelectLabel>
-                                                        <SelectItem value="Staffs">Staff</SelectItem>
+                                                        <SelectItem value="Staffs">Staffs</SelectItem>
                                                         <SelectItem value="Members">Members</SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
@@ -398,7 +398,7 @@ const AttendanceHistory = () => {
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select Type</SelectLabel>
-                                                        <SelectItem value="Staffs">Staff</SelectItem>
+                                                        <SelectItem value="Staffs">Staffs</SelectItem>
                                                         <SelectItem value="Members">Members</SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
