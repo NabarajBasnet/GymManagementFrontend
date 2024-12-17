@@ -1,110 +1,101 @@
-import Loader from '@/components/Loader/Loader'
 import React from 'react'
 
 const MembershipPlans = () => {
     return (
-        <div>
-            <div className="container mx-auto p-6">
+        <div className="bg-gray-100 min-h-screen py-10">
+            <div className="container mx-auto px-6">
                 {/* Title */}
-                <h2 className="text-3xl font-bold text-center mb-6">Revive Fitness Price List</h2>
+                <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
+                    Revive Fitness Price List
+                </h2>
 
                 {/* Admission Fee */}
-                <div className="bg-black text-white text-center py-2 mb-4">
-                    <p>ADMISSION FEE: 1000</p>
+                <div className="bg-gradient-to-r from-yellow-400 to-yellow-500 text-white text-center py-4 rounded-lg shadow-md mb-8">
+                    <p className="text-2xl font-semibold tracking-wider">
+                        ADMISSION FEE: NPR 1000
+                    </p>
                 </div>
 
-                {/* Regular Membership */}
-                <div className="bg-black text-white text-center py-2 mb-2">
-                    <p>REGULAR MEMBERSHIP</p>
-                </div>
-                <div className="grid grid-cols-5 text-center bg-gray-100 py-2 mb-6">
-                    <div></div>
-                    <div>1 Month</div>
-                    <div>3 Month</div>
-                    <div>6 Month</div>
-                    <div>1 Year</div>
+                {/* Membership Plans */}
+                <div className="space-y-12">
+                    <MembershipSection
+                        title="Regular Membership"
+                        data={[
+                            { plan: 'GYM', rates: [4000, 10500, 18000, 30000] },
+                            { plan: 'GYM & CARDIO', rates: [5000, 12000, 21000, 36000] },
+                        ]}
+                    />
 
-                    <div className="bg-yellow-500">GYM</div>
-                    <div>4000</div>
-                    <div>10500</div>
-                    <div>18000</div>
-                    <div>30000</div>
+                    <MembershipSection
+                        title="Daytime Membership (10 AM - 4 PM)"
+                        data={[
+                            { plan: 'GYM', rates: [3000, 7500, 12000, 18000] },
+                            { plan: 'GYM & CARDIO', rates: [4000, 10500, 18000, 30000] },
+                        ]}
+                    />
 
-                    <div className="bg-yellow-500">GYM & CARDIO</div>
-                    <div>5000</div>
-                    <div>12000</div>
-                    <div>21000</div>
-                    <div>36000</div>
-                </div>
+                    <MembershipSection
+                        title="Personal Training"
+                        data={[
+                            { plan: 'Rates', rates: [2500, 15000, 20000, 25000] },
+                        ]}
+                        headers={['1 Session', '12 Sessions', '16 Sessions', '20 Sessions']}
+                    />
 
-                {/* Daytime Membership */}
-                <div className="bg-black text-white text-center py-2 mb-2">
-                    <p>DAYTIME MEMBERSHIP (10 AM - 4 PM)</p>
-                </div>
-                <div className="grid grid-cols-5 text-center bg-gray-100 py-2 mb-6">
-                    <div></div>
-                    <div>1 Month</div>
-                    <div>3 Month</div>
-                    <div>6 Month</div>
-                    <div>1 Year</div>
-
-                    <div className="bg-yellow-500">GYM</div>
-                    <div>3000</div>
-                    <div>7500</div>
-                    <div>12000</div>
-                    <div>18000</div>
-
-                    <div className="bg-yellow-500">GYM & CARDIO</div>
-                    <div>4000</div>
-                    <div>10500</div>
-                    <div>18000</div>
-                    <div>30000</div>
-                </div>
-
-                {/* Personal Training */}
-                <div className="bg-black text-white text-center py-2 mb-2">
-                    <p>PERSONAL TRAINING</p>
-                </div>
-                <div className="grid grid-cols-5 text-center bg-gray-100 py-2 mb-6">
-                    <div></div>
-                    <div>1 Session</div>
-                    <div>12 Sessions</div>
-                    <div>16 Sessions</div>
-                    <div>20 Sessions</div>
-
-                    <div className="bg-yellow-500">Rates</div>
-                    <div>2500</div>
-                    <div>15000</div>
-                    <div>20000</div>
-                    <div>25000</div>
-                </div>
-
-                {/* Locker Charge */}
-                <div className="bg-black text-white text-center py-2 mb-2">
-                    <p>LOCKER CHARGE</p>
-                </div>
-                <div className="grid grid-cols-5 text-center bg-gray-100 py-2 mb-6">
-                    <div></div>
-                    <div>1 Month</div>
-                    <div>3 Month</div>
-                    <div>6 Month</div>
-                    <div>1 Year</div>
-
-                    <div className="bg-yellow-500">Rates</div>
-                    <div>500</div>
-                    <div>1200</div>
-                    <div>1800</div>
-                    <div>2500</div>
+                    <MembershipSection
+                        title="Locker Charge"
+                        data={[
+                            { plan: 'Rates', rates: [500, 1200, 1800, 2500] },
+                        ]}
+                    />
                 </div>
 
                 {/* One Day Pass */}
-                <div className="bg-black text-white text-center py-2 mb-2">
-                    <p>ONE DAY PASS</p>
-                </div>
-                <div className="text-center bg-gray-100 py-2">
-                    <p>500</p>
+                <div className="mt-12">
+                    <h3 className="text-2xl font-semibold text-center mb-4 text-gray-800">
+                        One Day Pass
+                    </h3>
+                    <div className="bg-white rounded-lg shadow-md py-6 text-center">
+                        <p className="text-3xl font-bold text-blue-600">NPR 500</p>
+                    </div>
                 </div>
             </div>
+        </div>
+    )
+}
+
+const MembershipSection = ({ title, data, headers = ['1 Month', '3 Month', '6 Month', '1 Year'] }) => {
+    return (
+        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+            {/* Section Title */}
+            <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white text-center py-4">
+                <h3 className="text-2xl font-semibold">{title}</h3>
+            </div>
+
+            {/* Table Header */}
+            <div className="grid grid-cols-5 text-center font-semibold text-gray-600 py-3 bg-gray-50 border-b">
+                <div></div>
+                {headers.map((header, idx) => (
+                    <div key={idx} className="text-lg">{header}</div>
+                ))}
+            </div>
+
+            {/* Table Content */}
+            {data.map((item, idx) => (
+                <div
+                    key={idx}
+                    className="grid grid-cols-5 text-center py-3 hover:bg-gray-100 transition-all duration-200"
+                >
+                    <div className="font-medium text-white bg-gradient-to-r from-blue-500 to-blue-600 rounded-md py-2">
+                        {item.plan}
+                    </div>
+                    {item.rates.map((rate, rateIdx) => (
+                        <div key={rateIdx} className="text-gray-800 text-lg font-medium">
+                            NPR {rate}
+                        </div>
+                    ))}
+                </div>
+            ))}
         </div>
     )
 }
