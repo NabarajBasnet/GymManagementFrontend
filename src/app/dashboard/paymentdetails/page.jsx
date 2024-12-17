@@ -68,7 +68,7 @@ const PaymentDetails = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -86,7 +86,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -132,7 +132,7 @@ const PaymentDetails = () => {
     const deletePaymentDetail = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${id}`,
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${id}`,
                 {
                     method: "DELETE",
                 });
