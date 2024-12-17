@@ -1,90 +1,66 @@
-'use client';
-
-import Pagination from '@/components/ui/CustomPagination';
-import Loader from "@/components/Loader/Loader";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
-import { usePagination } from "@/hooks/Pagination";
-import { Input } from '@/components/ui/input';
+import { FaEnvelope, FaPhone, FaHeadset, FaQuestionCircle, FaComments } from "react-icons/fa";
 
 const CustomerSupport = () => {
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 12;
-
-    // Debounce function to delay setting the debounced query
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setDebouncedSearchQuery(searchQuery);
-        }, 1000);
-
-        return () => clearTimeout(timer); // Cleanup on component unmount or searchQuery change
-    }, [searchQuery]);
-
-    const getAllMembers = async ({ queryKey }) => {
-        const [, page, memberSearchQuery] = queryKey;
-        try {
-            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${memberSearchQuery}`);
-            const resBody = await response.json();
-            console.log("Response Body: ", resBody);
-            return resBody;
-        } catch (error) {
-            console.error('Error fetching members:', error);
-        }
-    };
-
-    const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, debouncedSearchQuery],
-        queryFn: getAllMembers,
-    });
-
-    const { totalPages = 1, members = [] } = data || {};
-
-    // Handling Pagination
-    const { range, setPage, active } = usePagination({
-        total: totalPages,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => setCurrentPage(page),
-    });
+    const supportOptions = [
+        {
+            title: "FAQs",
+            description: "Find quick answers to the most common questions.",
+            icon: <FaQuestionCircle size={28} className="text-blue-500" />,
+        },
+        {
+            title: "Live Chat",
+            description: "Chat with our support team for immediate assistance.",
+            icon: <FaComments size={28} className="text-green-500" />,
+        },
+        {
+            title: "Email Support",
+            description: "Send us an email and we’ll get back to you within 24 hours.",
+            icon: <FaEnvelope size={28} className="text-yellow-500" />,
+        },
+        {
+            title: "Call Us",
+            description: "Reach out to us directly via phone during business hours.",
+            icon: <FaPhone size={28} className="text-red-500" />,
+        },
+        {
+            title: "Submit a Ticket",
+            description: "Open a support ticket and track its progress.",
+            icon: <FaHeadset size={28} className="text-purple-500" />,
+        },
+    ];
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen text-center px-6">
-            <div>
-                <Input
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="p-4 w-full rounded-md"
-                    placeholder="Search members..."
-                />
+        <div className="min-h-screen p-6">
+            <h1 className="text-4xl font-bold mb-6 text-center">🛠️ Customer Support</h1>
+            <p className="text-gray-900 text-center mb-8">
+                How can we help you? Choose from the options below to get support.
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                {supportOptions.map((option, index) => (
+                    <div
+                        key={index}
+                        className="flex items-center p-4 rounded-lg shadow-md hover:bg-gray-100 hover:scale-105 transition-all duration-300"
+                    >
+                        <div className="mr-4">{option.icon}</div>
+                        <div>
+                            <h2 className="text-lg font-semibold">{option.title}</h2>
+                            <p className="text-sm text-gray-400">{option.description}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
 
-            {isLoading ? (
-                <Loader />
-            ) : (
-                <div>
-                    {members.map((member) => (
-                        <p key={member._id}>{member.fullName}</p>
-                    ))}
+            {/* Contact Information */}
+            <div className="mt-12 text-center">
+                <h2 className="text-2xl font-bold mb-4">📞 Contact Us</h2>
+                <p className="text-gray-400 mb-2">
+                    Need more help? Get in touch with us directly.
+                </p>
+                <div className="text-lg">
+                    <p>Email: <a href="mailto:support@gymmanager.com" className="text-blue-400 hover:underline">revivefitnessnp@gmail.com</a></p>
+                    <p>Phone: <a href="tel:+1234567890" className="text-blue-400 hover:underline">+977 9843567690 / +977 9869345511</a></p>
                 </div>
-            )}
-
-            <div className="mt-10">
-                <Pagination
-                    total={totalPages}
-                    siblings={1}
-                    boundaries={1}
-                    page={currentPage}
-                    onChange={setCurrentPage}
-                    withEdges
-                />
-            </div>
-
-            <div className="mt-10">
-                <p>Current Page: {currentPage}</p>
-                <p>Total Pages: {totalPages}</p>
             </div>
         </div>
     );
