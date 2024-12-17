@@ -25,7 +25,7 @@ const CustomerSupport = () => {
     const getAllMembers = async ({ queryKey }) => {
         const [, page, memberSearchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${memberSearchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${memberSearchQuery}`);
             const resBody = await response.json();
             console.log("Response Body: ", resBody);
             return resBody;
