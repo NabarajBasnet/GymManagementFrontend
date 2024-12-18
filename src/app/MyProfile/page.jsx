@@ -55,6 +55,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MdDone, MdDelete, MdClose, MdError } from "react-icons/md";
+import Loader from "@/components/Loader/Loader";
 
 const MyProfile = () => {
 
@@ -77,7 +78,7 @@ const MyProfile = () => {
 
     const fetchedLoggedStaffDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/loggedin-staff`);
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 setStaffDetails(responseBody.loggedInStaff)
@@ -95,7 +96,7 @@ const MyProfile = () => {
 
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffqr/${staffDetails._id}`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -111,7 +112,7 @@ const MyProfile = () => {
 
     const logoutStaff = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
                 method: "POST",
             })
 
@@ -155,42 +156,6 @@ const MyProfile = () => {
             totalAmount: "$250.00",
             paymentMethod: "Credit Card",
         },
-        {
-            invoice: "INV002",
-            paymentStatus: "Pending",
-            totalAmount: "$150.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV003",
-            paymentStatus: "Unpaid",
-            totalAmount: "$350.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV004",
-            paymentStatus: "Paid",
-            totalAmount: "$450.00",
-            paymentMethod: "Credit Card",
-        },
-        {
-            invoice: "INV005",
-            paymentStatus: "Paid",
-            totalAmount: "$550.00",
-            paymentMethod: "PayPal",
-        },
-        {
-            invoice: "INV006",
-            paymentStatus: "Pending",
-            totalAmount: "$200.00",
-            paymentMethod: "Bank Transfer",
-        },
-        {
-            invoice: "INV007",
-            paymentStatus: "Unpaid",
-            totalAmount: "$300.00",
-            paymentMethod: "Credit Card",
-        },
     ]
 
     return (
@@ -198,7 +163,7 @@ const MyProfile = () => {
             <div className="w-full flex justify-center bg-black">
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
+                        <div className="absolute inset-0 bg-stone-900 opacity-50"></div>
                         <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
                             <div>
                                 {
@@ -231,13 +196,13 @@ const MyProfile = () => {
                 <div className="w-11/12 md:w-10/12 flex justify-between items-center">
                     <img
                         src='/images/LOGO-1.png'
-                        className="w-24 h-24"
+                        className="w-16 h-16"
                     />
 
                     <div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <div className="flex items-center bg-yellow-500 hover:bg-yellow-600 cursor-pointer transition-all duration-300 p-2 rounded-sm shadow-lg">
+                                <div className="flex items-center bg-blue-600 hover:bg-blue-500 cursor-pointer transition-all duration-300 p-2 rounded-sm shadow-lg">
                                     <h1 className="font-semibold text-white mx-2">My Profile</h1>
                                     <FaRegUserCircle className="text-2xl cursor-pointer text-white" />
                                 </div>
@@ -328,11 +293,10 @@ const MyProfile = () => {
                     </div>
                 </div>
             </div>
-            <h1 className="text-center text-4xl font-bold my-4">My Profile</h1>
             {isLoading ? (
-                <h1 className="text-center font-semibold">Loading...</h1>
+                <Loader />
             ) : (
-                <div>
+                <div className='my-10'>
                     <div className="w-full flex items-center justify-center p-1">
                         <img src={data?.qrCode} alt="QR Code" />
                     </div>
@@ -349,27 +313,27 @@ const MyProfile = () => {
                     </div>
                     <div className="w-full flex justify-center bg-gray-800 p-6 text-white">
                         <div className="w-full md:w-11/12">
-                            <h1 className="text-3xl text-yellow-400 font-bold">
+                            <h1 className="text-2xl md:text-3xl text-white font-bold">
                                 {staffDetails?.fullName} - {staffDetails?.role}
                             </h1>
-                            <p>Shift: {staffDetails?.shift}</p>
+                            <p className='font-semibold text-sm'>Shift: {staffDetails?.shift}</p>
                         </div>
                     </div>
                     <div className="w-full flex justify-center bg-blue-600 text-white shadow-xl my-4 rounded-lg p-6">
                         <div className="md:w-11/12 w-full space-y-4">
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Phone No:</span>
-                                <span className="">{staffDetails?.contactNo}</span>
+                                <span className="font-semibold text-sm">{staffDetails?.contactNo}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Email:</span>
-                                <span className="">{staffDetails?.email}</span>
+                                <span className="font-semibold text-sm">{staffDetails?.email}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Date of Birth:</span>
                                 {
                                     staffDetails ? (
-                                        <span className="">
+                                        <span className="font-semibold text-sm">
                                             {new Date(staffDetails?.dob).toISOString().split("T")[0]}
                                         </span>
                                     ) : (
@@ -379,17 +343,17 @@ const MyProfile = () => {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Address:</span>
-                                <span className="">{staffDetails?.address}</span>
+                                <span className="font-semibold text-sm">{staffDetails?.address}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Role:</span>
-                                <span className="">{staffDetails?.role}</span>
+                                <span className="font-semibold text-sm">{staffDetails?.role}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Joined Date:</span>
                                 {
                                     staffDetails ? (
-                                        <span className="">
+                                        <span className="font-semibold text-sm">
                                             {new Date(staffDetails?.joinedDate).toISOString().split("T")[0]}
                                         </span>
                                     ) : (
@@ -399,7 +363,7 @@ const MyProfile = () => {
                             </div>
                             <div className="flex items-center justify-between">
                                 <span className="font-medium">Gender:</span>
-                                <span className="">{staffDetails?.gender}</span>
+                                <span className="font-semibold text-sm">{staffDetails?.gender}</span>
                             </div>
                         </div>
                     </div>
