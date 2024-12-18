@@ -16,7 +16,6 @@ import {
     UserPlus,
     Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -41,21 +40,19 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MdDone, MdDelete, MdClose, MdError } from "react-icons/md";
 import Loader from "@/components/Loader/Loader";
+import * as React from 'react';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 const MyProfile = () => {
 
@@ -110,6 +107,14 @@ const MyProfile = () => {
         enabled: !!staffDetails?._id
     });
 
+    const fetchAttendanceHistory = async () => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
     const logoutStaff = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
@@ -117,7 +122,6 @@ const MyProfile = () => {
             })
 
             const responseBody = await response.json();
-            console.log("Response Body: ", responseBody);
 
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
@@ -149,21 +153,12 @@ const MyProfile = () => {
         }
     };
 
-    const invoices = [
-        {
-            invoice: "INV001",
-            paymentStatus: "Paid",
-            totalAmount: "$250.00",
-            paymentMethod: "Credit Card",
-        },
-    ]
-
     return (
         <div className="w-full">
-            <div className="w-full flex justify-center bg-black">
+            <div className="w-full flex justify-center">
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-stone-900 opacity-50"></div>
+                        <div className="absolute inset-0 bg-stone-800 opacity-50"></div>
                         <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
                             <div>
                                 {
@@ -195,14 +190,14 @@ const MyProfile = () => {
                 )}
                 <div className="w-11/12 md:w-10/12 flex justify-between items-center">
                     <img
-                        src='/images/LOGO-1.png'
-                        className="w-16 h-16"
+                        src='/LOGO-BLACK.png'
+                        className="w-20 h-20"
                     />
 
                     <div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <div className="flex items-center bg-blue-600 hover:bg-blue-500 cursor-pointer transition-all duration-300 p-2 rounded-sm shadow-lg">
+                                <div className="flex items-center bg-gradient-to-r from-blue-400 via-blue-600 to-blue-700 hover:bg-gradient-to-l duration-500 transition-colors cursor-pointer p-2 rounded-sm shadow-lg">
                                     <h1 className="font-semibold text-white mx-2">My Profile</h1>
                                     <FaRegUserCircle className="text-2xl cursor-pointer text-white" />
                                 </div>
@@ -296,7 +291,7 @@ const MyProfile = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className='my-10'>
+                <div>
                     <div className="w-full flex items-center justify-center p-1">
                         <img src={data?.qrCode} alt="QR Code" />
                     </div>
@@ -369,36 +364,32 @@ const MyProfile = () => {
                     </div>
                     <div>
                         <h1 className="my-4 font-bold text-center">My Attendance History</h1>
-                        <Table>
-                            <TableCaption>A list of your recent invoices.</TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[100px]">Staff Id</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Email</TableHead>
-                                    <TableHead>Check In</TableHead>
-                                    <TableHead>Check Out</TableHead>
-                                    <TableHead>Remark</TableHead>
-                                    <TableHead>Late Flag</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {invoices.map((invoice) => (
-                                    <TableRow key={invoice.invoice}>
-                                        <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                        <TableCell>{invoice.paymentStatus}</TableCell>
-                                        <TableCell>{invoice.paymentMethod}</TableCell>
-                                        <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                        <TableContainer component={Paper}>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell className="w-[100px]">Staff Id</TableCell>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Email</TableCell>
+                                        <TableCell>Check In</TableCell>
+                                        <TableCell>Check Out</TableCell>
+                                        <TableCell>Remark</TableCell>
+                                        <TableCell>Late Flag</TableCell>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total</TableCell>
-                                    <TableCell className="text-right">$2,500.00</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
+                                </TableHead>
+                                <TableBody>
+                                    <TableRow
+                                        key={'row.name'}
+                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {'row.name'}
+                                        </TableCell>
+                                        <TableCell align="right">{'row.calories'}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
                         <div className="my-4">
                             <Pagination>
                                 <PaginationContent>
