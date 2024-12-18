@@ -1,5 +1,6 @@
 'use client';
 
+import Pagination from "@/components/ui/CustomPagination";
 import {
     Cloud,
     CreditCard,
@@ -31,15 +32,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { FaRegUserCircle } from "react-icons/fa";
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -53,6 +45,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import { usePagination } from "@/hooks/Pagination";
 
 const MyProfile = () => {
 
@@ -64,6 +57,8 @@ const MyProfile = () => {
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('')
     const responseResultType = ['Success', 'Failure'];
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -75,7 +70,7 @@ const MyProfile = () => {
 
     const fetchedLoggedStaffDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
+            const response = await fetch(`http://88.198.112.156:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 setStaffDetails(responseBody.loggedInStaff)
@@ -93,7 +88,7 @@ const MyProfile = () => {
 
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -107,22 +102,41 @@ const MyProfile = () => {
         enabled: !!staffDetails?._id
     });
 
-    const fetchAttendanceHistory = async () => {
+    const fetchAttendanceHistory = async ({ queryKey }) => {
+        const [, page, id] = queryKey;
         try {
-
+            const url = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const response = await fetch(url);
+            const responseBody = await response.json();
+            return responseBody;
         } catch (error) {
             console.log("Error: ", error);
         }
     };
 
+    const { data: AttendanceHistory, isLoading: isHistoryLoading } = useQuery({
+        queryKey: ['attendancehistory', currentPage, staffDetails?._id || ''],
+        queryFn: fetchAttendanceHistory,
+        enabled: !!staffDetails?._id
+    })
+
+    const { data: history, totalPages } = AttendanceHistory || {};
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
+
     const logoutStaff = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
                 method: "POST",
             })
-
             const responseBody = await response.json();
-
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
@@ -363,7 +377,7 @@ const MyProfile = () => {
                         </div>
                     </div>
                     <div>
-                        <h1 className="my-4 font-bold text-center">My Attendance History</h1>
+                        <h1 className="my-4 font-bold text-center">Attendance History</h1>
                         <TableContainer component={Paper}>
                             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                                 <TableHead>
@@ -378,43 +392,66 @@ const MyProfile = () => {
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    <TableRow
-                                        key={'row.name'}
-                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                    >
-                                        <TableCell component="th" scope="row">
-                                            {'row.name'}
-                                        </TableCell>
-                                        <TableCell align="right">{'row.calories'}</TableCell>
-                                    </TableRow>
+                                    {Array.isArray(history) && history.length >= 1 ? (
+                                        history.map((attendance) => (
+                                            <TableRow
+                                                key={attendance._id}
+                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                            >
+                                                <TableCell component="th" scope="row">{attendance.staffId}</TableCell>
+                                                <TableCell component="th" scope="row">{attendance.fullName}</TableCell>
+                                                <TableCell component="th" scope="row">{attendance.email}</TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {attendance.checkIn
+                                                        ? new Date(attendance.checkIn).toLocaleString('en-US', {
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                        })
+                                                        : ''}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {attendance.checkOut
+                                                        ? new Date(attendance.checkOut).toLocaleString('en-US', {
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            hour: '2-digit',
+                                                            minute: '2-digit',
+                                                            second: '2-digit',
+                                                            hour12: true,
+                                                        })
+                                                        : ''}
+                                                </TableCell>
+                                                <TableCell component="th" scope="row">{attendance.remark}</TableCell>
+                                                <TableCell component="th" scope="row">{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow
+                                            key={'row.name'}
+                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                        >
+                                            <TableCell component="th" scope="row"></TableCell>
+                                            <TableCell align="right">{'Attendance not found.'}</TableCell>
+                                        </TableRow>
+                                    )}
                                 </TableBody>
                             </Table>
                         </TableContainer>
                         <div className="my-4">
-                            <Pagination>
-                                <PaginationContent>
-                                    <PaginationItem>
-                                        <PaginationPrevious href="#" />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">1</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#" isActive>
-                                            2
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationLink href="#">3</PaginationLink>
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationEllipsis />
-                                    </PaginationItem>
-                                    <PaginationItem>
-                                        <PaginationNext href="#" />
-                                    </PaginationItem>
-                                </PaginationContent>
-                            </Pagination>
+                            <Pagination
+                                total={totalPages || 1}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
                         </div>
                     </div>
                 </div>
