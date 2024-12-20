@@ -64,15 +64,15 @@ const ScheduleManagement = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Lockers</BreadcrumbPage>
+                            <BreadcrumbPage>Schedule Management</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Lockers</h1>
+                <h1 className="text-xl font-bold mt-3">Schedules</h1>
             </div>
 
             <div className="p-6 bg-gray-100">

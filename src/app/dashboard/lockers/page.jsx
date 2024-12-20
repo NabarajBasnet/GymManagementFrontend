@@ -332,7 +332,7 @@ const Lockers = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
