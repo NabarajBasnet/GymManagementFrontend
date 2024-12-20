@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaTags, FaClock, FaCalendarAlt } from "react-icons/fa";
 import {
@@ -17,6 +19,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { Textarea } from "@/components/ui/textarea";
 
 const Promotions = () => {
     const [showModal, setShowModal] = useState(false);
@@ -149,68 +152,70 @@ const Promotions = () => {
 
                 {/* Add/Edit Promotion Modal */}
                 {showModal && (
-                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <div className="bg-gray-800 rounded-lg p-6 w-full max-w-lg">
-                            <h2 className="text-2xl font-bold mb-4">
-                                {currentPromotion ? "Edit Promotion" : "Add Promotion"}
-                            </h2>
-                            <form>
-                                <div className="mb-4">
-                                    <label className="block text-gray-400 mb-2">Title</label>
-                                    <input
-                                        type="text"
-                                        defaultValue={currentPromotion?.title || ""}
-                                        className="w-full p-2 rounded-lg bg-gray-700 text-gray-200"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-400 mb-2">Description</label>
-                                    <textarea
-                                        defaultValue={currentPromotion?.description || ""}
-                                        className="w-full p-2 rounded-lg bg-gray-700 text-gray-200"
-                                    ></textarea>
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-400 mb-2">Discount</label>
-                                    <input
-                                        type="text"
-                                        defaultValue={currentPromotion?.discount || ""}
-                                        className="w-full p-2 rounded-lg bg-gray-700 text-gray-200"
-                                        placeholder="e.g., 20%"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-400 mb-2">Start Date</label>
-                                    <input
-                                        type="date"
-                                        defaultValue={currentPromotion?.startDate || ""}
-                                        className="w-full p-2 rounded-lg bg-gray-700 text-gray-200"
-                                    />
-                                </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-400 mb-2">End Date</label>
-                                    <input
-                                        type="date"
-                                        defaultValue={currentPromotion?.endDate || ""}
-                                        className="w-full p-2 rounded-lg bg-gray-700 text-gray-200"
-                                    />
-                                </div>
-                                <div className="flex justify-end space-x-4">
-                                    <button
-                                        type="button"
-                                        onClick={closeModal}
-                                        className="px-4 py-2 bg-gray-600 rounded-lg hover:bg-gray-500"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        className="px-4 py-2 bg-blue-500 rounded-lg hover:bg-blue-600"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </form>
+                    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60">
+                        <div className="bg-white h-[80vh] w-full max-w-lg">
+                            <div className="w-full h-full overflow-y-auto p-4 rounded-lg">
+                                <h2 className="text-2xl font-bold mb-4">
+                                    {currentPromotion ? "Edit Promotion" : "Add Promotion"}
+                                </h2>
+                                <form>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Title</label>
+                                        <Input
+                                            type="text"
+                                            defaultValue={currentPromotion?.title || ""}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Description</label>
+                                        <Textarea
+                                            defaultValue={currentPromotion?.description || ""}
+                                            className="w-full"
+                                        ></Textarea>
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Discount</label>
+                                        <Input
+                                            type="text"
+                                            defaultValue={currentPromotion?.discount || ""}
+                                            className="w-full"
+                                            placeholder="e.g., 20%"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">Start Date</label>
+                                        <Input
+                                            type="date"
+                                            defaultValue={currentPromotion?.startDate || ""}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className="mb-4">
+                                        <label className="block text-gray-700 mb-2">End Date</label>
+                                        <Input
+                                            type="date"
+                                            defaultValue={currentPromotion?.endDate || ""}
+                                            className="w-full"
+                                        />
+                                    </div>
+                                    <div className="flex justify-end space-x-4">
+                                        <Button
+                                            type="button"
+                                            onClick={closeModal}
+                                            className="px-4 py-2 bg-red-600 rounded-lg hover:bg-red-500"
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button
+                                            type="submit"
+                                            className="px-4 py-2 bg-green-500 rounded-lg hover:bg-green-600"
+                                        >
+                                            Save
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 )}
