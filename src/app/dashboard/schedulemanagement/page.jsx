@@ -20,11 +20,63 @@ import { useState } from "react";
 import { FaPlus, FaEdit, FaTrash, FaCalendar, FaFilter, FaUser, FaClock } from "react-icons/fa";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 
 
 const ScheduleManagement = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentSchedule, setCurrentSchedule] = useState(null);
+
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { isSubmitting, errors },
+        setValue,
+        clearErrors } = useForm();
+
+    const getAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data: allStaffs, isLoading: staffsLoading } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: getAllStaffs
+    });
+    const { staffs } = allStaffs || {};
+
+    const getAllSchedules = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffschedules`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log('Error: ', error);
+        };
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['schedules'],
+        queryFn: getAllSchedules
+    });
+
+    const { allschedules } = data || {};
+    console.log(allschedules);
+
+    const handleSave = async (data) => {
+        try {
+            console.log('Data: ', data)
+        } catch (error) {
+            console.log('Error: ', error);
+        };
+    };
 
     const schedules = [
         { id: 1, title: "Yoga Class", day: "Monday", time: "8:00 AM - 9:00 AM", trainer: "Alice Smith" },
@@ -96,12 +148,19 @@ const ScheduleManagement = () => {
                         <span>Filters:</span>
                     </div>
                     <div className="space-x-4">
-                        <select className="p-2 rounded-lg text-gray-800 px-2 shadow-sm">
-                            <option>All Trainers</option>
-                            <option>Alice Smith</option>
-                            <option>John Doe</option>
-                            <option>Jane Doe</option>
-                        </select>
+                        {Array.isArray(staffs) && staffs.length >= 1 ? (
+                            staffs.map((staff) => (
+                                <select key={staff._id} className="p-2 rounded-lg text-gray-800 px-2 shadow-sm">
+                                    <option>Select</option>
+                                    <option>{staff.fullName}</option>
+                                </select>
+                            ))
+                        ) : (
+                            <select className="p-2 rounded-lg text-gray-800 px-2 shadow-sm">
+                                <option>Staffs not registered</option>
+                            </select>
+                        )}
+
                         <select className="p-2 rounded-lg shadow-sm px-2 text-gray-800">
                             <option>All Days</option>
                             {days.map((day) => (
@@ -113,42 +172,52 @@ const ScheduleManagement = () => {
 
                 {/* Weekly Schedule Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {days.map((day) => (
-                        <div key={day} className="rounded-lg shadow-xl border-gray-400 bg-white p-4">
-                            <h2 className="text-lg font-semibold mb-4">{day}</h2>
-                            <div className="space-y-4">
-                                {schedules
-                                    .filter((schedule) => schedule.day === day)
-                                    .map((schedule) => (
-                                        <div
-                                            key={schedule.id}
-                                            className="p-3 rounded-lg flex justify-between items-center"
-                                        >
-                                            <div>
-                                                <h3 className="font-semibold">{schedule.title}</h3>
-                                                <p className="text-sm text-gray-800 flex items-center">
-                                                    <FaClock className="mr-1" /> {schedule.time}
-                                                </p>
-                                                <p className="text-sm text-gray-800 flex items-center">
-                                                    <FaUser className="mr-1" /> {schedule.trainer}
-                                                </p>
-                                            </div>
-                                            <div className="space-x-3">
-                                                <button
-                                                    onClick={() => openModal(schedule)}
-                                                    className="bg-transparent text-black hover:text-gray-700 transition-all duration-500"
-                                                >
-                                                    <FaEdit />
-                                                </button >
-                                                <button className="text-red-500 hover:text-red-600 bg-transparent">
-                                                    <FaTrash />
-                                                </button >
-                                            </div>
+                    {Array.isArray(allschedules) && allschedules.length >= 1 ? (
+                        <>
+                            {
+                                allschedules.map((schedule) => (
+                                    <div key={schedule._id} className="rounded-lg shadow-xl border-gray-400 bg-white p-4">
+                                        <h2 className="text-lg font-semibold mb-4">{schedule.day}</h2>
+                                        <div className="space-y-4">
+                                            {schedule
+                                                .filter((schedule) => schedule.day === schedule.day)
+                                                .map((schedule) => (
+                                                    <div
+                                                        key={schedule.id}
+                                                        className="p-3 rounded-lg flex justify-between items-center"
+                                                    >
+                                                        <div>
+                                                            <h3 className="font-semibold">{schedule.title}</h3>
+                                                            <p className="text-sm text-gray-800 flex items-center">
+                                                                <FaClock className="mr-1" /> {schedule.time}
+                                                            </p>
+                                                            <p className="text-sm text-gray-800 flex items-center">
+                                                                <FaUser className="mr-1" /> {schedule.staff}
+                                                            </p>
+                                                        </div>
+                                                        <div className="space-x-3">
+                                                            <button
+                                                                onClick={() => openModal(schedule)}
+                                                                className="bg-transparent text-black hover:text-gray-700 transition-all duration-500"
+                                                            >
+                                                                <FaEdit />
+                                                            </button >
+                                                            <button className="text-red-500 hover:text-red-600 bg-transparent">
+                                                                <FaTrash />
+                                                            </button >
+                                                        </div>
+                                                    </div>
+                                                ))}
                                         </div>
-                                    ))}
-                            </div>
+                                    </div>
+                                ))}
+                        </>
+                    ) : (
+                        <div className="w-full flex justify-center items-center">
+                            <p className="text-sm font-semibold text-center">No schedules found.</p>
                         </div>
-                    ))}
+                    )}
+
                 </div>
 
                 {/* Add/Edit Schedule Modal */}
@@ -158,42 +227,75 @@ const ScheduleManagement = () => {
                             <h2 className="text-2xl font-bold mb-4">
                                 {currentSchedule ? "Edit Schedule" : "Add Schedule"}
                             </h2>
-                            <form>
+                            <form onSubmit={handleSubmit(handleSave)}>
                                 <div className="mb-4">
                                     <label className="block text-gray-700 font-semibold mb-2">Title</label>
                                     <Input
                                         type="text"
+                                        {...register('title')}
                                         defaultValue={currentSchedule?.title || ""}
                                         className="w-full rounded-md"
                                     />
+                                    {errors.title && (
+                                        <p className="text-sm font-semibold text-red-600">{errors.staff.message}</p>
+                                    )}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block text-gray-700 font-semibold mb-2">Trainer</label>
-                                    <Input
-                                        type="text"
-                                        defaultValue={currentSchedule?.trainer || ""}
-                                        className="w-full rounded-md"
-                                    />
+                                    <label className="block text-gray-700 font-semibold mb-2">Staff</label>
+                                    {Array.isArray(staffs) && staffs.length >= 1 ? (
+                                        staffs.map((staff) => (
+                                            <select onChange={(e) => {
+                                                setValue('staff', e.target.value)
+                                                clearErrors('staff');
+                                            }
+                                            } key={staff._id} className="w-full p-2 border outline-none rounded-lg text-gray-800 px-2 shadow-sm">
+                                                <option value={undefined}>Select</option>
+                                                <option value={staff.fullName}>{staff.fullName}</option>
+                                            </select>
+                                        ))
+                                    ) : (
+                                        <select onChange={() => clearErrors('staff')} className="w-full p-2 border outline-none rounded-lg text-gray-800 px-2 shadow-sm">
+                                            <option>Staffs not registered</option>
+                                        </select>
+                                    )}
+                                    {errors.staff && (
+                                        <p className="text-sm font-semibold text-red-600">{errors.staff.message}</p>
+                                    )}
                                 </div>
                                 <div className="mb-4">
                                     <label className="block text-gray-700 font-semibold mb-2">Day</label>
                                     <select
+                                        onChange={(e) => {
+                                            setValue('day', e.target.value);
+                                            clearErrors('day');
+                                        }}
                                         defaultValue={currentSchedule?.day || ""}
                                         className="w-full p-2 cursor-pointer rounded-lg border"
                                     >
-                                        {days.map((day) => (
-                                            <option key={day}>{day}</option>
-                                        ))}
+                                        <option>Sunday</option>
+                                        <option>Monday</option>
+                                        <option>Tuesday</option>
+                                        <option>Wednesday</option>
+                                        <option>Thursday</option>
+                                        <option>Friday</option>
+                                        <option>Saturday</option>
                                     </select>
+                                    {errors.day && (
+                                        <p className="text-sm font-semibold text-red-600">{errors.day.message}</p>
+                                    )}
                                 </div>
                                 <div className="mb-4">
                                     <label className="block text-gray-700 font-semibold mb-2">Time</label>
                                     <Input
                                         type="text"
+                                        {...register('time')}
                                         defaultValue={currentSchedule?.time || ""}
                                         className="w-full rounded-md"
                                         placeholder="e.g., 8:00 AM - 9:00 AM"
                                     />
+                                    {errors.time && (
+                                        <p className="text-sm font-semibold text-red-600">{errors.time.message}</p>
+                                    )}
                                 </div>
                                 <div className="flex justify-end space-x-3">
                                     <Button
