@@ -24,16 +24,13 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "../allmembers/allmembertable";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -68,7 +65,7 @@ const PaymentDetails = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -86,7 +83,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -132,7 +129,7 @@ const PaymentDetails = () => {
     const deletePaymentDetail = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/paymentdetails/${id}`,
+            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${id}`,
                 {
                     method: "DELETE",
                 });
@@ -310,83 +307,96 @@ const PaymentDetails = () => {
                     {isLoading ? (
                         <Loader />
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow className='bg-gray-200 text-black'>
-                                    <TableHead>MemberId</TableHead>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Action Taker</TableHead>
-                                    <TableHead>Receipt No</TableHead>
-                                    <TableHead>Paid Amount</TableHead>
-                                    <TableHead>Payment Date</TableHead>
-                                    <TableHead>Renew</TableHead>
-                                    <TableHead>Duration</TableHead>
-                                    <TableHead>Expire</TableHead>
-                                    <TableHead>Method</TableHead>
-                                    <TableHead>Discount</TableHead>
-                                    <TableHead>Reference Code</TableHead>
-                                    <TableHead>Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {Array.isArray(paginatedPaymentDetails) && paginatedPaymentDetails.length >= 1 ? (
-                                    <>
-                                        {paginatedPaymentDetails.map((detail) => (
-                                            <TableRow key={detail._id}>
-                                                <TableCell className="font-medium">{paginatedPaymentDetails ? detail.member._id : ''}</TableCell>
-                                                <TableCell className="font-medium">{paginatedPaymentDetails ? detail.member.fullName : ''}</TableCell>
-                                                <TableCell>{detail.actionTaker}</TableCell>
-                                                <TableCell>{detail.receiptNo}</TableCell>
-                                                <TableCell>{detail.paidAmmount}</TableCell>
-                                                <TableCell>{detail.paymentDate ? new Date(detail.paymentDate).toISOString().split('T')[0] : ''}</TableCell>
-                                                <TableCell className="font-medium">{paginatedPaymentDetails ? new Date(detail.member.membershipRenewDate).toISOString().split('T')[0] : ''}</TableCell>
-                                                <TableCell>{detail.membershipDuration}</TableCell>
-                                                <TableCell className="font-medium">{paginatedPaymentDetails ? new Date(detail.member.membershipExpireDate).toISOString().split('T')[0] : ''}</TableCell>
-                                                <TableCell>{detail.paymentMethod}</TableCell>
-                                                <TableCell>{detail.discount ? detail.discount : 'Null'}</TableCell>
-                                                <TableCell>{detail.referenceCode}</TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center justify-center space-x-1">
-                                                        <MdEdit className='cursor-pointer text-lg' />
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <MdDelete
-                                                                    className="cursor-pointer text-red-600 text-lg"
-                                                                />
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete this payment detail
-                                                                        and remove data from servers.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => deletePaymentDetail(detail._id)}>Continue</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                    </div>
-                                                </TableCell>
+                        <div className="min-w-max">
+                            <div className="min-w-max overflow-auto">
+                                <TableContainer component={Paper}>
+                                    <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell>MemberId</TableCell>
+                                                <TableCell>Name</TableCell>
+                                                <TableCell>Action Taker</TableCell>
+                                                <TableCell>Receipt No</TableCell>
+                                                <TableCell>Paid Amount</TableCell>
+                                                <TableCell>Payment Date</TableCell>
+                                                <TableCell>Duration</TableCell>
+                                                <TableCell>Expire</TableCell>
+                                                <TableCell>Method</TableCell>
+                                                <TableCell>Discount</TableCell>
+                                                <TableCell>Reference Code</TableCell>
+                                                <TableCell>Action</TableCell>
                                             </TableRow>
-                                        ))}
-                                    </>
-                                ) : (
-                                    <TableRow>
-                                        <TableCell className="text-center">No payment details recorded.</TableCell>
-                                    </TableRow>
-                                )}
+                                        </TableHead>
+                                        <TableBody>
+                                            {Array.isArray(paginatedPaymentDetails) && paginatedPaymentDetails.length >= 1 ? (
+                                                paginatedPaymentDetails.map((detail) => (
+                                                    <TableRow
+                                                        key={detail._id}
+                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                    >
+                                                        <TableCell component="th" scope="row" className="font-semibold text-sm">{detail.member._id}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.member.fullName}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.actionTaker}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.receiptNo}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.paidAmmount}</TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            {detail.paymentDate ? new Date(detail.paymentDate).toLocaleString('en-US', {
+                                                                year: 'numeric',
+                                                                month: '2-digit',
+                                                                day: '2-digit',
+                                                            }) : ''}
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row">{detail.membershipDuration}</TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            {new Date(detail.member.membershipExpireDate).toLocaleString('en-US', {
+                                                                year: 'numeric',
+                                                                month: '2-digit',
+                                                                day: '2-digit',
+                                                            })}
+                                                        </TableCell>
+                                                        <TableCell component="th" scope="row">{detail.paymentMethod}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.discount || 'Null'}</TableCell>
+                                                        <TableCell component="th" scope="row">{detail.referenceCode}</TableCell>
+                                                        <TableCell component="th" scope="row">
+                                                            <div className="flex items-center justify-center space-x-1">
+                                                                <MdEdit className="cursor-pointer text-lg" />
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        <MdDelete
+                                                                            className="cursor-pointer text-red-600 text-lg"
+                                                                        />
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This action cannot be undone. This will permanently delete this payment detail
+                                                                                and remove data from servers.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction onClick={() => deletePaymentDetail(detail._id)}>Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            ) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={12} className="text-center">
+                                                        No payment details recorded.
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            </div>
+                        </div>
 
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total Payments</TableCell>
-                                    <TableCell className="text-right">{totalPaymentDetails ? totalPaymentDetails : ''}</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
                     )}
                 </div>
 
