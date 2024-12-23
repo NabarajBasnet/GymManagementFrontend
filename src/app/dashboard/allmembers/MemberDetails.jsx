@@ -433,7 +433,7 @@ const MemberDetails = ({ memberId }) => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/docs/components">Member</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard">Member</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
