@@ -939,16 +939,14 @@ const MemberDetails = ({ memberId }) => {
                                                                             {...field}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                                                         >
+                                                                            <option value={''}>
+                                                                                Select
+                                                                            </option>
                                                                             {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
                                                                                 actionTakersDB.map((actionTaker) => (
-                                                                                    <>
-                                                                                        <option value={''}>
-                                                                                            Select
-                                                                                        </option>
-                                                                                        <option key={actionTaker._id} value={actionTaker.fullName}>
-                                                                                            {actionTaker.fullName}
-                                                                                        </option>
-                                                                                    </>
+                                                                                    <option key={actionTaker._id} value={actionTaker.fullName}>
+                                                                                        {actionTaker.fullName}
+                                                                                    </option>
                                                                                 ))
                                                                             ) : (
                                                                                 <option value="">No staffs registered</option>
