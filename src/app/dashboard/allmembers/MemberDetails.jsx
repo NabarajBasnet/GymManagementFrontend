@@ -364,7 +364,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO']}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -939,16 +939,14 @@ const MemberDetails = ({ memberId }) => {
                                                                             {...field}
                                                                             className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                                                         >
+                                                                            <option value={''}>
+                                                                                Select
+                                                                            </option>
                                                                             {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
                                                                                 actionTakersDB.map((actionTaker) => (
-                                                                                    <>
-                                                                                        <option value={''}>
-                                                                                            Select
-                                                                                        </option>
-                                                                                        <option key={actionTaker._id} value={actionTaker.fullName}>
-                                                                                            {actionTaker.fullName}
-                                                                                        </option>
-                                                                                    </>
+                                                                                    <option key={actionTaker._id} value={actionTaker.fullName}>
+                                                                                        {actionTaker.fullName}
+                                                                                    </option>
                                                                                 ))
                                                                             ) : (
                                                                                 <option value="">No staffs registered</option>
