@@ -1,6 +1,9 @@
 'use client';
 
+import { HiChevronUpDown } from "react-icons/hi2";
+import { BiSolidDashboard } from "react-icons/bi";
 import {
+    ChevronsUpDown,
     LogOut,
     Settings,
     User,
@@ -47,6 +50,7 @@ import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
 import { useRouter } from "next/navigation";
 import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
 import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 
 const Sidebar = () => {
 
@@ -61,7 +65,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -198,7 +202,7 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex bg-zinc-800 flex-col`}
+        <div className={`fixed left-0 transition-all duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex border-r flex-col`}
             onMouseEnter={() => minimizeSidebar()}
         >
             {toast ? (
@@ -225,60 +229,64 @@ const Sidebar = () => {
                     </div>
                 </div>
             ) : null}
-            <Link href={'/dashboard'} className="flex py-4 items-center">
-                <RiDashboard3Fill className='text-4xl mx-2 text-white text-start' />
-                <div className="mb-1">
+            <Link href={'/dashboard'} className="flex py-3 hover:bg-gray-50 items-center">
+                <BiSolidDashboard className='text-3xl mx-2 text-start bg-gray-800 text-white p-1 rounded-md' />
+                <div className="">
                     {
                         sidebarMinimized ? (
                             <></>
                         ) : (
-                            <span className="text-white w-full text-2xl font-bold">Dashboard</span>
+                            <span>
+                                <p className="w-full text-md font-bold text-gray-600">Revive Fitness</p>
+                                <p className="w-full text-[10px] font-semibold text-gray-600">Enterprise</p>
+                            </span>
                         )
                     }
                 </div>
-
+                <HiChevronUpDown className='text-xl ml-2 text-gray-600' />
             </Link>
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
+                <p className='text-[11px] font-semibold text-gray-600 ml-3'>Platforms</p>
                 <ul>
                     {sidebarContent.map((sidebar, index) => (
                         <li key={index} className="p-1">
                             {sidebar.subObj ? (
                                 <Accordion type="single" collapsible className="w-full">
                                     <AccordionItem value={`item-${index}`}>
-                                        <AccordionTrigger className="w-full flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                            <sidebar.icon className='text-xl text-yellow-400' />
+                                        <AccordionTrigger className="w-full flex items-center px-2 text-gray-700 hover:text-gray-800 cursor-pointer transition-colors font-normal">
+                                            <sidebar.icon className='text-xl text-gray-600 hover:text-gray-800' />
                                             {
                                                 sidebarMinimized ? (
                                                     <></>
                                                 ) : (
-                                                    <h1 className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                                    <h1 className='text-start mx-2 text-sm'>{sidebar.title}</h1>
                                                 )
                                             }
                                         </AccordionTrigger>
-                                        {sidebar.subObj.map((subItem, subIndex) => (
-                                            <AccordionContent key={subIndex}>
-                                                <Link href={subItem.link} className="flex items-center ml-6 p-1 text-gray-300 hover:text-white">
-                                                    <subItem.icon className='text-lg text-yellow-300' />
-                                                    {
-                                                        sidebarMinimized ? (
-                                                            <></>
-                                                        ) : (
-                                                            <h1 className='mx-2 text-sm font-semibold'>{subItem.title}</h1>
-                                                        )
-                                                    }
-                                                </Link>
-                                            </AccordionContent>
-                                        ))}
+                                        <div className="border-l ml-6 flex flex-col">
+                                            {sidebar.subObj.map((subItem, subIndex) => (
+                                                <AccordionContent key={subIndex} className="flex items-center">
+                                                    <Link
+                                                        href={subItem.link}
+                                                        className="flex items-center text-gray-600 hover:text-gray-800 w-full"
+                                                    >
+                                                        {!sidebarMinimized && (
+                                                            <h1 className="mx-2 text-sm">{subItem.title}</h1>
+                                                        )}
+                                                    </Link>
+                                                </AccordionContent>
+                                            ))}
+                                        </div>
                                     </AccordionItem>
                                 </Accordion>
                             ) : (
-                                <Link href={sidebar.link} className="flex items-center p-2 text-white cursor-pointer hover:bg-gray-700 transition-colors">
-                                    <sidebar.icon className='text-xl text-yellow-400' />
+                                <Link href={sidebar.link} className="flex items-center p-2 text-gray-600 cursor-pointer hover:text-gray-800 transition-colors">
+                                    <sidebar.icon className='text-xl text-gray-600' />
                                     {
                                         sidebarMinimized ? (
                                             <></>
                                         ) : (
-                                            <h1 className='mx-2 text-sm font-semibold'>{sidebar.title}</h1>
+                                            <h1 className='mx-2 text-sm'>{sidebar.title}</h1>
                                         )
                                     }
                                 </Link>
@@ -290,22 +298,20 @@ const Sidebar = () => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <div className='flex items-center cursor-pointer p-2 hover:bg-gray-700'>
-                        <FaUserCircle className="text-3xl mr-2 text-white" />
-                        {
-                            sidebarMinimized ? (
-                                <>
-                                </>
-                            ) : (
-                                <div>
-                                    <h1 className='font-bold text-sm text-white'>Revive Fitness</h1>
-                                    <p className='font-semibold text-[11px] text-white'>revivefitness.np@gmail.com</p>
-                                </div>
-                            )
-                        }
+                    <div className="flex items-center hover:bg-gray-50 cursor-pointer p-2">
+                        <FaUserCircle className="text-3xl mr-2" />
+                        {sidebarMinimized ? null : (
+                            <div>
+                                <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">Revive Fitness</h1>
+                                <p className="font-semibold text-[11px] text-gray-700 hover:text-gray-800">
+                                    revivefitness.np@gmail.com
+                                </p>
+                            </div>
+                        )}
+                        <HiChevronUpDown className='text-xl text-gray-600 ml-2' />
                     </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
+                <DropdownMenuContent className="w-56" side="right" align="start">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
@@ -315,7 +321,7 @@ const Sidebar = () => {
                         </DropdownMenuItem>
                         <DropdownMenuItem>
                             <Settings />
-                            <span>Settings</span>
+                            <a href='/settings'>Settings</a>
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
@@ -337,10 +343,9 @@ const Sidebar = () => {
                         </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator />
-                    <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={() => logoutUser()}>
                         <LogOut />
-                        <span className="cursor-pointer">{loading ? 'Processing...' : "Log out"}</span>
+                        <span className="cursor-pointer">{loading ? 'Processing...' : 'Log out'}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

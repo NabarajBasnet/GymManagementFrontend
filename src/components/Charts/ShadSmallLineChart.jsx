@@ -1,7 +1,7 @@
 "use client"
 
 import { TrendingUp } from "lucide-react"
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import {
     Card,
@@ -23,12 +23,7 @@ const chartData = [
     { month: "March", desktop: 237, mobile: 120 },
     { month: "April", desktop: 73, mobile: 190 },
     { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 200, mobile: 140 },
-    { month: "July", desktop: 214, mobile: 180 },
-    { month: "September", desktop: 214, mobile: 140 },
-    { month: "October", desktop: 200, mobile: 100 },
-    { month: "November", desktop: 245, mobile: 150 },
-    { month: "December", desktop: 190, mobile: 170 },
+    { month: "June", desktop: 214, mobile: 140 },
 ]
 
 const chartConfig = {
@@ -42,31 +37,48 @@ const chartConfig = {
     },
 }
 
-export function BarChartMultiple() {
+export function ShadSmallLineChart() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Bar Chart - Multiple</CardTitle>
+                <CardTitle>Line Chart - Dots</CardTitle>
                 <CardDescription>January - June 2024</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
-                    <BarChart accessibilityLayer data={chartData}>
+                    <LineChart
+                        accessibilityLayer
+                        data={chartData}
+                        margin={{
+                            left: 12,
+                            right: 12,
+                        }}
+                    >
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey="month"
                             tickLine={false}
-                            tickMargin={10}
                             axisLine={false}
+                            tickMargin={8}
                             tickFormatter={(value) => value.slice(0, 3)}
                         />
                         <ChartTooltip
                             cursor={false}
-                            content={<ChartTooltipContent indicator="dashed" />}
+                            content={<ChartTooltipContent hideLabel />}
                         />
-                        <Bar dataKey="desktop" fill="#2563eb" radius={20} />
-                        <Bar dataKey="mobile" fill="#7c3aed" radius={20} />
-                    </BarChart>
+                        <Line
+                            dataKey="desktop"
+                            type="natural"
+                            stroke="#14b8a6"
+                            strokeWidth={2}
+                            dot={{
+                                fill: "#14b8a6",
+                            }}
+                            activeDot={{
+                                r: 6,
+                            }}
+                        />
+                    </LineChart>
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">

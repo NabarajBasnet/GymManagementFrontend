@@ -27,7 +27,7 @@ export default function ClientLayout({ children }) {
                             <Header />
                         </div>
                         <main className="w-full min-h-screen bg-gray-100 dark:bg-neutral-900 transition-all duration-500">
-                            <div className="w-full children-wrapper transition-transform duration-500 ease-in-out">
+                            <div className="w-full children-wrapper transition-transform duration-500 overflow-auto ease-in-out">
                                 {children}
                             </div>
                             <div className="w-full mt-3">

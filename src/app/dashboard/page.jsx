@@ -1,16 +1,44 @@
 'use client';
 
-import { addDays, format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { DateRange } from "react-day-picker"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
+const invoices = [
+  {
+    invoice: "INV001",
+    paymentStatus: "Paid",
+    totalAmount: "$250.00",
+    paymentMethod: "Credit Card",
+  },
+  {
+    invoice: "INV002",
+    paymentStatus: "Pending",
+    totalAmount: "$150.00",
+    paymentMethod: "PayPal",
+  },
+  {
+    invoice: "INV003",
+    paymentStatus: "Unpaid",
+    totalAmount: "$350.00",
+    paymentMethod: "Bank Transfer",
+  },
+  {
+    invoice: "INV004",
+    paymentStatus: "Paid",
+    totalAmount: "$450.00",
+    paymentMethod: "Credit Card",
+  },
+]
+
+import { addDays } from "date-fns"
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -33,32 +61,14 @@ import { FaUsers } from "react-icons/fa6";
 import { PiUsersFourFill } from "react-icons/pi";
 import { RiUserShared2Fill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
-import { Bar, Line, Pie, Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-} from 'chart.js';
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend
-);
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { BarChartMultiple } from "@/components/Charts/barChart";
+import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
+import { RadialChart } from "@/components/Charts/radialChart";
+import { LineChartShad } from "@/components/Charts/lineChart";
+import { AreaChartShad } from "@/components/Charts/areaChart";
+import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 
 const AdminDashboard = () => {
 
@@ -70,7 +80,7 @@ const AdminDashboard = () => {
   })
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/members`);
+      const response = await fetch(`http://localhost:5000/api/members`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -99,7 +109,7 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renew",
-      value: 'N',
+      value: '0',
       color: 'text-green-600',
       bg: 'bg-green-200'
     },
@@ -133,101 +143,8 @@ const AdminDashboard = () => {
     },
   ];
 
-  const barChartData = {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-    datasets: [{
-      label: 'Monthly New Admissions',
-      data: [50, 60, 70, 80, 90, 100],
-      backgroundColor: [
-        'rgba(255, 99, 132, 0.8)',
-        'rgba(54, 162, 235, 0.8)',
-        'rgba(255, 206, 86, 0.8)',
-        'rgba(75, 192, 192, 0.8)',
-        'rgba(153, 102, 255, 0.8)',
-        'rgba(255, 159, 64, 0.8)',
-      ],
-      borderRadius: 10,
-      barThickness: 20
-    }]
-  };
-
-  const lineChartData = {
-    labels: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-    datasets: [{
-      label: 'Daily Active Members',
-      data: [10, 20, 30, 40, 50, 60, 70],
-      borderColor: 'rgba(75, 192, 192, 1)',
-      backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      borderWidth: 3,
-      tension: 0.4,
-      pointRadius: 5,
-      pointBackgroundColor: 'rgba(75, 192, 192, 1)'
-    }]
-  };
-
-  const pieChartData = {
-    labels: ['Active Members', 'Inactive Members'],
-    datasets: [{
-      data: [totalActiveMembers || 0, totalInactiveMembers || 0],
-      backgroundColor: [
-        'rgba(255, 206, 86, 0.8)',
-        'rgba(255, 99, 132, 0.8)',
-      ],
-      borderWidth: 2,
-      hoverOffset: 8,
-    }]
-  };
-
-  const doughnutChartData = {
-    labels: ['Renewed Members', 'New Admissions'],
-    datasets: [{
-      data: [membersRenewedThisWeek || 0, totalNewAdmissions || 0],
-      backgroundColor: [
-        'rgba(153, 102, 255, 0.8)',
-        'rgba(255, 159, 64, 0.8)',
-      ],
-      borderWidth: 2,
-      hoverOffset: 8,
-    }]
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: 'top',
-        labels: {
-          font: {
-            size: 14,
-          },
-          color: '#555',
-        }
-      },
-      tooltip: {
-        titleFont: { size: 16 },
-        bodyFont: { size: 14 },
-        padding: 10,
-        backgroundColor: 'rgba(0,0,0,0.7)',
-        borderColor: '#ddd',
-        borderWidth: 1,
-      }
-    },
-    scales: {
-      x: {
-        grid: { display: false },
-        ticks: { color: '#777', font: { size: 12 } }
-      },
-      y: {
-        grid: { color: '#eee' },
-        ticks: { color: '#777', font: { size: 12 } }
-      }
-    }
-  };
-
-
   return (
-    <div className="w-full">
+    <div className="w-full bg-gray-100">
       <div className="w-full p-6">
         <div className="w-full">
           <Breadcrumb>
@@ -253,48 +170,6 @@ const AdminDashboard = () => {
           <h1 className="text-xl font-bold">Dashboard</h1>
         </div>
 
-        <div className="mt-3 flex items-center space-x-4">
-          <div className={cn("grid gap-2")}>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  id="date"
-                  variant={"outline"}
-                  className={cn(
-                    "w-[300px] justify-start text-left font-normal",
-                    !date && "text-muted-foreground"
-                  )}
-                >
-                  <CalendarIcon />
-                  {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "LLL dd, y")} {'   To   '} {" "}
-                        {format(date.to, "LLL dd, y")}
-                      </>
-                    ) : (
-                      format(date.from, "LLL dd, y")
-                    )
-                  ) : (
-                    <span>Pick a date</span>
-                  )}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
-          <Button>Submit</Button>
-        </div>
-
         <div className="w-full py-5">
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
             {gridContents.map((grid) => (
@@ -313,18 +188,51 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
-          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
-            <Bar data={barChartData} options={chartOptions} />
+        <div className="w-full space-y-6">
+          <div className="w-full items-center space-y-6">
+            <BarChartMultiple className='w-full' />
+            <ShadSmallLineChart className='w-full' />
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
-            <Line data={lineChartData} options={chartOptions} />
+          <BarChartInterActive />
+
+          <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
+            <div className="w-full bg-white py-5 rounded-lg">
+              <Table>
+                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Invoice</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {invoices.map((invoice) => (
+                    <TableRow key={invoice.invoice}>
+                      <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                      <TableCell>{invoice.paymentStatus}</TableCell>
+                      <TableCell>{invoice.paymentMethod}</TableCell>
+                      <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3}>Total</TableCell>
+                    <TableCell className="text-right">$2,500.00</TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </div>
+
+            <div className="w-full rounded-lg bg-white">
+              <RadialChart />
+            </div>
           </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
-            <Pie data={pieChartData} options={chartOptions} />
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg" style={{ height: 350 }}>
-            <Doughnut data={doughnutChartData} options={chartOptions} />
+          <div className="w-full space-y-6">
+            <AreaChartShad />
+            <LineChartShad />
           </div>
         </div>
       </div>

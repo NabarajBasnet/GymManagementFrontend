@@ -1,5 +1,6 @@
 "use client";
 
+import { FiSidebar } from "react-icons/fi";
 import { MdError, MdClose, MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import {
@@ -113,7 +114,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -241,9 +242,9 @@ const Header = () => {
     return (
         <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center backdrop-blur-sm bg-gray-100 bg-opacity-60 z-50`}>
             <div className='mx-4'>
-                <div className="flex items-center" ref={searchRef}>
-                    <IoMenuSharp
-                        className='text-3xl text-gray-800 hidden md:flex cursor-pointer'
+                <div className="flex items-center gap-2" ref={searchRef}>
+                    <FiSidebar
+                        className='text-2xl text-gray-800 hidden md:flex cursor-pointer'
                         onClick={minimizeSidebar}
                     />
                 </div>
@@ -275,8 +276,8 @@ const Header = () => {
                     <Sheet>
                         <SheetTrigger asChild>
                             <div className="flex items-center">
-                                <IoMenuSharp
-                                    className='text-3xl md:hidden flex text-blue-600 cursor-pointer'
+                                <FiSidebar
+                                    className='text-xl md:hidden flex cursor-pointer'
                                 />
                             </div>
                         </SheetTrigger>
@@ -327,7 +328,7 @@ const Header = () => {
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <div className='flex items-center cursor-pointer p-2 bg-blue-700'>
-                                        <FaUserCircle className="text-3xl mr-2 text-white" />
+                                        <FaUserCircle className="text-2xl mr-2 text-white" />
                                         <div>
                                             <h1 className='font-bold text-sm text-white'>Revive Fitness</h1>
                                             <p className='font-semibold text-[11px] text-white'>revivefitness.np@gmail.com</p>
@@ -379,15 +380,15 @@ const Header = () => {
             </div>
 
             <div className="flex items-center md:hidden space-x-8">
-                <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
-                <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
+                <h1 className="text-sm font-bold">{currentDateTime.date}</h1>
+                <h1 className="text-sm font-bold">{currentDateTime.time}</h1>
             </div>
 
             <div className='flex items-center space-x-4'>
 
                 <div className="hidden items-center md:flex space-x-4">
-                    <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.date}</h1>
-                    <h1 className="text-sm md:text-lg font-bold font-serif">{currentDateTime.time}</h1>
+                    <h1 className="text-sm font-bold">{currentDateTime.date}</h1>
+                    <h1 className="text-sm font-bold">{currentDateTime.time}</h1>
                 </div>
 
                 <Badge badgeContent={4} color="primary">
