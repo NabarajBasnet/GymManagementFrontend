@@ -63,10 +63,10 @@ import { RiUserShared2Fill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { BarChartMultiple } from "@/components/Charts/barChart";
+import { BarChartMultiple } from "@/components/Charts/BarChart";
 import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
 import { RadialChart } from "@/components/Charts/radialChart";
-import { LineChartShad } from "@/components/Charts/lineChart";
+import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 
