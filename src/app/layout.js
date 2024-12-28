@@ -55,7 +55,9 @@ export default function RootLayout({ children }) {
           >
             <RTKProvider>
               <UserProvider>
-                {children}
+                <div className='w-full overflow-auto'>
+                  {children}
+                </div>
               </UserProvider>
             </RTKProvider>
           </MantineProvider>

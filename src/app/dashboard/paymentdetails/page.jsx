@@ -244,7 +244,7 @@ const PaymentDetails = () => {
                 <></>
             )}
 
-            <div className="w-full bg-white p-4">
+            <div className="w-full overflow-x-auto h-full bg-white p-4">
                 <form className="w-full flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
                     <div className="w-full">
                         <Label className="block text-sm font-medium text-gray-700">Member Name</Label>
@@ -307,8 +307,8 @@ const PaymentDetails = () => {
                     {isLoading ? (
                         <Loader />
                     ) : (
-                        <div className="min-w-max">
-                            <div className="min-w-max overflow-auto">
+                        <div className="w-full">
+                            <div className="w-full overflow-x-auto">
                                 <TableContainer component={Paper}>
                                     <Table sx={{ minWidth: 400 }} aria-label="simple table">
                                         <TableHead>
