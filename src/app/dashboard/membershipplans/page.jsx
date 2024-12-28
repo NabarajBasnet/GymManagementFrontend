@@ -6,7 +6,7 @@ const MembershipPlans = () => {
             <div className="container mx-auto px-6">
                 {/* Title */}
                 <h2 className="text-4xl font-extrabold text-center text-gray-800 mb-12">
-                    Revive Fitness Price List
+                    Price List
                 </h2>
 
                 {/* Admission Fee */}

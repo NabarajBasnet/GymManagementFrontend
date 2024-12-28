@@ -1,5 +1,6 @@
 "use client";
 
+import { BiSolidDashboard } from "react-icons/bi";
 import { FiSidebar } from "react-icons/fi";
 import { MdError, MdClose, MdDone } from "react-icons/md";
 import { useRouter } from "next/navigation";
@@ -240,7 +241,7 @@ const Header = () => {
     ];
 
     return (
-        <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center backdrop-blur-sm bg-gray-100 bg-opacity-60 z-50`}>
+        <div className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center backdrop-blur-sm bg-opacity-60 z-50`}>
             <div className='mx-4'>
                 <div className="flex items-center gap-2" ref={searchRef}>
                     <FiSidebar
@@ -284,9 +285,9 @@ const Header = () => {
                         <SheetContent className="h-full flex flex-col">
                             <SheetHeader className="bg-white">
                                 <SheetTitle>
-                                    <Link href={'/dashboard'} className="flex justify-start py-3 bg-blue-600">
-                                        <RiDashboard3Fill className='text-4xl mx-2 text-white' />
-                                        <span className="text-white w-full text-2xl font-bold">Revive Fitness</span>
+                                    <Link href={'/dashboard'} className="flex justify-start py-3 hover:bg-gray-50">
+                                        <BiSolidDashboard className='text-3xl mx-2 text-start bg-gray-800 text-white p-1 rounded-md' />
+                                        <span className="w-full text-lg font-bold">Revive Fitness</span>
                                     </Link>
                                 </SheetTitle>
                             </SheetHeader>
@@ -303,14 +304,20 @@ const Header = () => {
                                                                 <sidebar.icon className='text-xl' />
                                                                 <span className='text-start mx-2 text-sm font-semibold'>{sidebar.title}</span>
                                                             </AccordionTrigger>
-                                                            {sidebar.subObj.map((subItem, subIndex) => (
-                                                                <AccordionContent key={subIndex}>
-                                                                    <Link href={subItem.link} className="flex items-center ml-6 p-1">
-                                                                        <subItem.icon className='text-lg' />
-                                                                        <span className='mx-2 text-sm font-semibold'>{subItem.title}</span>
-                                                                    </Link>
-                                                                </AccordionContent>
-                                                            ))}
+                                                            <div className="border-l ml-6 flex flex-col">
+                                                                {sidebar.subObj.map((subItem, subIndex) => (
+                                                                    <AccordionContent key={subIndex} className="flex items-center">
+                                                                        <Link
+                                                                            href={subItem.link}
+                                                                            className="flex items-center text-gray-600 hover:text-gray-800 w-full"
+                                                                        >
+                                                                            {!sidebarMinimized && (
+                                                                                <h1 className="mx-2 text-sm">{subItem.title}</h1>
+                                                                            )}
+                                                                        </Link>
+                                                                    </AccordionContent>
+                                                                ))}
+                                                            </div>
                                                         </AccordionItem>
                                                     </Accordion>
                                                 ) : (
@@ -327,15 +334,19 @@ const Header = () => {
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <div className='flex items-center cursor-pointer p-2 bg-blue-700'>
-                                        <FaUserCircle className="text-2xl mr-2 text-white" />
-                                        <div>
-                                            <h1 className='font-bold text-sm text-white'>Revive Fitness</h1>
-                                            <p className='font-semibold text-[11px] text-white'>revivefitness.np@gmail.com</p>
-                                        </div>
+                                    <div className="flex items-center hover:bg-gray-50 cursor-pointer p-2">
+                                        <FaUserCircle className="text-3xl mr-2" />
+                                        {sidebarMinimized ? null : (
+                                            <div>
+                                                <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">Revive Fitness</h1>
+                                                <p className="font-semibold text-[11px] text-gray-700 hover:text-gray-800">
+                                                    revivefitness.np@gmail.com
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent className="w-56">
+                                <DropdownMenuContent className="w-56" side="right" align="start">
                                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuGroup>
@@ -345,7 +356,7 @@ const Header = () => {
                                         </DropdownMenuItem>
                                         <DropdownMenuItem>
                                             <Settings />
-                                            <span>Settings</span>
+                                            <a href='/settings'>Settings</a>
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
@@ -367,10 +378,9 @@ const Header = () => {
                                         </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={() => logoutUser()}>
                                         <LogOut />
-                                        <span className="cursor-pointer">{loading ? 'Processing...' : "Log out"}</span>
+                                        <span className="cursor-pointer">{loading ? 'Processing...' : 'Log out'}</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
                             </DropdownMenu>

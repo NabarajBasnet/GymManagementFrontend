@@ -18,17 +18,23 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 214, mobile: 140 },
-]
+    { month: "January", newadmission: 186, mobile: 80 },
+    { month: "February", newadmission: 305, mobile: 200 },
+    { month: "March", newadmission: 237, mobile: 120 },
+    { month: "April", newadmission: 73, mobile: 190 },
+    { month: "May", newadmission: 209, mobile: 130 },
+    { month: "June", newadmission: 214, mobile: 140 },
+    { month: "July", newadmission: 230, mobile: 132 },
+    { month: "August", newadmission: 210, mobile: 142 },
+    { month: "September", newadmission: 190, mobile: 170 },
+    { month: "October", newadmission: 195, mobile: 162 },
+    { month: "November", newadmission: 150, mobile: 156 },
+    { month: "December", newadmission: 200, mobile: 174 },
+];
 
 const chartConfig = {
-    desktop: {
-        label: "Desktop",
+    newadmission: {
+        label: "New Admission",
         color: "hsl(var(--chart-1))",
     },
     mobile: {
@@ -41,8 +47,7 @@ export function ShadSmallLineChart() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Line Chart - Dots</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
+                <CardDescription>January - December 2024</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
@@ -59,7 +64,7 @@ export function ShadSmallLineChart() {
                             dataKey="month"
                             tickLine={false}
                             axisLine={false}
-                            tickMargin={8}
+                            tickMargin={4}
                             tickFormatter={(value) => value.slice(0, 3)}
                         />
                         <ChartTooltip
@@ -67,15 +72,15 @@ export function ShadSmallLineChart() {
                             content={<ChartTooltipContent hideLabel />}
                         />
                         <Line
-                            dataKey="desktop"
+                            dataKey="newadmission"
                             type="natural"
                             stroke="#14b8a6"
-                            strokeWidth={2}
+                            strokeWidth={1}
                             dot={{
                                 fill: "#14b8a6",
                             }}
                             activeDot={{
-                                r: 6,
+                                r: 3,
                             }}
                         />
                     </LineChart>
@@ -83,12 +88,12 @@ export function ShadSmallLineChart() {
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
                 <div className="flex gap-2 font-medium leading-none">
-                    Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                    Increasing new admission by 5.2% this month <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Showing total visitors for the last 6 months
+                    Showing total new admission for the last 12 months
                 </div>
             </CardFooter>
         </Card>
-    )
-}
+    );
+};

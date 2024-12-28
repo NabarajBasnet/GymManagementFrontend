@@ -203,7 +203,6 @@ const Sidebar = () => {
 
     return (
         <div className={`fixed left-0 transition-all duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex border-r flex-col`}
-            onMouseEnter={() => minimizeSidebar()}
         >
             {toast ? (
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-[1000] flex items-center justify-between bg-white border shadow-2xl p-4 rounded">
@@ -243,10 +242,18 @@ const Sidebar = () => {
                         )
                     }
                 </div>
-                <HiChevronUpDown className='text-xl ml-2 text-gray-600' />
+                {
+                    !sidebarMinimized && (
+                        <HiChevronUpDown className='text-xl ml-2 text-gray-600' />
+                    )
+                }
             </Link>
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
-                <p className='text-[11px] font-semibold text-gray-600 ml-3'>Platforms</p>
+                {
+                    !sidebarMinimized && (
+                        <p className='text-[11px] font-semibold text-gray-600 ml-3'>Platforms</p>
+                    )
+                }
                 <ul>
                     {sidebarContent.map((sidebar, index) => (
                         <li key={index} className="p-1">
@@ -308,7 +315,9 @@ const Sidebar = () => {
                                 </p>
                             </div>
                         )}
-                        <HiChevronUpDown className='text-xl text-gray-600 ml-2' />
+                        {!sidebarMinimized && (
+                            <HiChevronUpDown className='text-xl text-gray-600 ml-2' />
+                        )}
                     </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" side="right" align="start">

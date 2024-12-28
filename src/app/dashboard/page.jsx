@@ -9,7 +9,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 
 const invoices = [
   {
@@ -36,7 +36,7 @@ const invoices = [
     totalAmount: "$450.00",
     paymentMethod: "Credit Card",
   },
-]
+];
 
 import { addDays } from "date-fns"
 import {
