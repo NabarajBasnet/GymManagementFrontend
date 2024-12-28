@@ -63,10 +63,10 @@ import { RiUserShared2Fill } from "react-icons/ri";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { BarChartMultiple } from '../../components/Charts/barChart';
+import { BarChartMultiple } from "@/components/Charts/barChart";
 import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
 import { RadialChart } from "@/components/Charts/radialChart";
-import { LineChartShad } from '../../components/Charts/lineChart';
+import { LineChartShad } from "@/components/Charts/lineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 
@@ -190,8 +190,8 @@ const AdminDashboard = () => {
 
         <div className="w-full space-y-6">
           <div className="w-full items-center space-y-6">
-            <BarChartMultiple className='w-full' />
-            <ShadSmallLineChart className='w-full' />
+            <BarChartMultiple />
+            <ShadSmallLineChart />
           </div>
           <BarChartInterActive />
 
