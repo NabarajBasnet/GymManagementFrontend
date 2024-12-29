@@ -65,7 +65,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -258,7 +258,7 @@ const Sidebar = () => {
                     {sidebarContent.map((sidebar, index) => (
                         <li key={index} className="p-1">
                             {sidebar.subObj ? (
-                                <Accordion type="single" collapsible className="w-full">
+                                <Accordion type="single" collapsible className="w-full py-1">
                                     <AccordionItem value={`item-${index}`}>
                                         <AccordionTrigger className="w-full flex items-center px-2 text-gray-700 hover:text-gray-800 cursor-pointer transition-colors font-normal">
                                             <sidebar.icon className='text-xl text-gray-600 hover:text-gray-800' />

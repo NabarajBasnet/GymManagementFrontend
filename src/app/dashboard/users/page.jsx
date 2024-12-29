@@ -87,7 +87,7 @@ const Users = () => {
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -115,7 +115,7 @@ const Users = () => {
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const response = await fetch(`http://localhost:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -148,7 +148,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
-            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +199,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -331,7 +331,7 @@ const Users = () => {
                         <div>
                             <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
                                 <div className="flex justify-center bg-transparent p-4 rounded-sm shadow-lg w-full">
-                                    <div className="bg-white p-4 rounded-sm shadow-lg md:w-8/12 w-full transform transition-transform duration-500 ease-out scale-100">
+                                    <div className="bg-white p-8 rounded-lg shadow-lg md:w-6/12 w-full transform transition-transform duration-500 ease-out scale-100">
                                         <form className="w-full" onSubmit={handleSubmit(editUser)}>
                                             <div className="w-full flex items-center space-x-4">
                                                 <div className="w-full">
@@ -347,7 +347,7 @@ const Users = () => {
                                                                 {
                                                                 ...register('firstName')
                                                                 }
-                                                                className="rounded-none"
+                                                                className="rounded-md"
                                                                 placeholder="First Name"
                                                             />
                                                         )}
@@ -367,7 +367,7 @@ const Users = () => {
                                                                 {
                                                                 ...register('lastName')
                                                                 }
-                                                                className="rounded-none"
+                                                                className="rounded-md"
                                                                 placeholder="Last Name"
                                                             />
                                                         )}
@@ -392,9 +392,11 @@ const Users = () => {
                                                         >
                                                             <option>Select</option>
                                                             <option value="Super Admin">Super Admin</option>
-                                                            <option value="Admin">Admin</option>
-                                                            <option value="Moderator">Moderator</option>
-                                                            <option value="User">User</option>
+                                                            <option value="Gym Admin">Gym Admin</option>
+                                                            <option value="Operation Manager">Operation Manager</option>
+                                                            <option value="Developer">Developer</option>
+                                                            <option value="CEO">CEO</option>
+                                                            <option value="HR Manager">HR Manager</option>
                                                         </select>
                                                     )}
                                                 />
@@ -413,7 +415,7 @@ const Users = () => {
                                                             {
                                                             ...register('email')
                                                             }
-                                                            className="rounded-none"
+                                                            className="rounded-md"
                                                             placeholder="Email"
                                                         />
                                                     )}
@@ -433,7 +435,7 @@ const Users = () => {
                                                             {
                                                             ...register('phoneNumber')
                                                             }
-                                                            className="rounded-none"
+                                                            className="rounded-md"
                                                             placeholder="Phone Number"
                                                         />
                                                     )}
@@ -453,7 +455,7 @@ const Users = () => {
                                                             {
                                                             ...register('address')
                                                             }
-                                                            className="rounded-none"
+                                                            className="rounded-md"
                                                             placeholder="Address"
                                                         />
                                                     )}
@@ -474,7 +476,7 @@ const Users = () => {
                                                             ...register('dob')
                                                             }
                                                             type='date'
-                                                            className="rounded-none"
+                                                            className="rounded-md"
                                                             placeholder="DOB"
                                                         />
                                                     )}
@@ -484,14 +486,14 @@ const Users = () => {
                                             <div className="w-full flex mt-4 space-x-4 justify-center">
                                                 <Button
                                                     type='submit'
-                                                    className="rounded-none text-white font-bold py-2 px-4"
+                                                    className="rounded-md text-white font-bold py-2 px-4"
                                                 >
                                                     {isSubmitting ? 'Processing...' : "Submit"}
                                                 </Button>
                                                 <Button
                                                     variant="destructive"
                                                     onClick={() => setEditForm(false)}
-                                                    className="rounded-none text-white font-bold py-2 px-4"
+                                                    className="rounded-md text-white font-bold py-2 px-4"
                                                 >
                                                     Cancel
                                                 </Button>
