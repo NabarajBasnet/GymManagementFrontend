@@ -336,56 +336,56 @@ const AllMembers = () => {
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Option</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Renew</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Type</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Expire</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>Contact No</TableHead>
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Shift</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>
                                         <div className="flex items-center">
                                             <h1>Status</h1>
-                                            <div className="flex flex-col justify-center -space-y-3">
+                                            {/* <div className="flex flex-col justify-center -space-y-3">
                                                 <MdArrowDropUp className="text-xl" />
                                                 <MdArrowDropDown className="text-xl" />
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </TableHead>
                                     <TableHead>Fee</TableHead>
