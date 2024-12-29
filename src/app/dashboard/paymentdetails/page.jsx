@@ -244,10 +244,10 @@ const PaymentDetails = () => {
                 <></>
             )}
 
-            <div className="w-full overflow-x-auto h-full bg-white p-4">
+            <div className="w-full overflow-x-auto h-full bg-white">
                 <form className="w-full flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-4">
                     <div className="w-full">
-                        <Label className="block text-sm font-medium text-gray-700">Member Name</Label>
+                        <Label className="block text-sm font-medium px-4 pt-1 text-gray-700">Member Name</Label>
                         <div ref={searchRef} className="relative md:flex items-center m-2">
                             <Controller
                                 name="memberName"
