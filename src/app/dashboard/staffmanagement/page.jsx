@@ -88,7 +88,7 @@ const StaffManagement = () => {
         if (loading) {
             return <div>Loading...</div>
         } else {
-            if (user && user.role === 'Gym Admin') {
+            if (user && user.user.role === 'Gym Admin') {
                 router.push('/unauthorized');
             }
         }
@@ -499,12 +499,20 @@ const StaffManagement = () => {
                                                     <TableCell>{staff.role}</TableCell>
                                                     <TableCell>
                                                         <div className="flex items-center space-x-1">
-                                                            <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                                <FaUserEdit className="cursor-pointer text-lg" />
-                                                            </Link>
+                                                            {user && user.user.role === 'Gym Admin' ? (
+                                                                <></>
+                                                            ) : (
+                                                                <Link href={`/dashboard/staffmanagement/${staff._id}`}>
+                                                                    <FaUserEdit className="cursor-pointer text-lg" />
+                                                                </Link>
+                                                            )}
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
-                                                                    <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                                    {user && user.user.role === 'Gym Admin' ? (
+                                                                        <></>
+                                                                    ) : (
+                                                                        <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                                    )}
                                                                 </AlertDialogTrigger>
                                                                 <AlertDialogContent>
                                                                     <AlertDialogHeader>
