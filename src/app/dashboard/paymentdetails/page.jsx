@@ -320,7 +320,6 @@ const PaymentDetails = () => {
                                                 <TableCell>Paid Amount</TableCell>
                                                 <TableCell>Payment Date</TableCell>
                                                 <TableCell>Duration</TableCell>
-                                                <TableCell>Expire</TableCell>
                                                 <TableCell>Method</TableCell>
                                                 <TableCell>Discount</TableCell>
                                                 <TableCell>Reference Code</TableCell>
@@ -347,13 +346,6 @@ const PaymentDetails = () => {
                                                             }) : ''}
                                                         </TableCell>
                                                         <TableCell component="th" scope="row">{detail.membershipDuration}</TableCell>
-                                                        <TableCell component="th" scope="row">
-                                                            {new Date(detail.member.membershipExpireDate).toLocaleString('en-US', {
-                                                                year: 'numeric',
-                                                                month: '2-digit',
-                                                                day: '2-digit',
-                                                            })}
-                                                        </TableCell>
                                                         <TableCell component="th" scope="row">{detail.paymentMethod}</TableCell>
                                                         <TableCell component="th" scope="row">{detail.discount || 'Null'}</TableCell>
                                                         <TableCell component="th" scope="row">{detail.referenceCode}</TableCell>
