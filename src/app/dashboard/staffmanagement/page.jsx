@@ -1,7 +1,9 @@
 'use client';
 
+import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import Pagination from "@/components/ui/CustomPagination.jsx";
-import { LuLoader2 } from "react-icons/lu";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -76,8 +78,25 @@ import { TiUserAdd } from "react-icons/ti";
 import Link from "next/link.js";
 import { usePagination } from "@/hooks/Pagination.js";
 import Loader from "@/components/Loader/Loader.jsx";
+import { useRouter } from 'next/navigation.js';
 
 const StaffManagement = () => {
+
+    const { user, loading } = useUser();
+    const router = useRouter()
+    const checkUserPermission = () => {
+        if (loading) {
+            return <div>Loading...</div>
+        } else {
+            if (user && user.role === 'Gym Admin') {
+                router.push('/unauthorized');
+            }
+        }
+    }
+
+    React.useEffect(() => {
+        checkUserPermission();
+    }, []);
 
     // States
     const [checkInTime, setCheckInTime] = useState(null);
@@ -140,7 +159,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -184,8 +203,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
+                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://localhost:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -262,36 +281,50 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
                 }
-            })
+            });
 
             const responseBody = await response.json();
+
             if (response.ok) {
                 setResponseType(responseResultType[0]);
                 setToast(true);
                 setTimeout(() => {
-                    setToast(false)
+                    setToast(false);
                 }, 10000);
                 setSuccessMessage({
                     icon: MdDone,
-                    message: responseBody.message
+                    message: responseBody.message,
                 });
                 setDeleting(false);
-            }
+            };
+
+            if (!response.ok && response.status === 403) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false);
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message,
+                });
+                setDeleting(false);
+            };
         } catch (error) {
             console.log("Error: ", error);
             setResponseType(responseResultType[1]);
             setToast(true);
             setTimeout(() => {
-                setToast(false)
+                setToast(false);
             }, 10000);
             setErrorMessage({
                 icon: MdError,
-                message: error.message || 'Unauthorized action'
+                message: error.message || 'Unauthorized action',
             });
             setDeleting(false);
         }
@@ -360,7 +393,9 @@ const StaffManagement = () => {
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="absolute inset-0 bg-black opacity-50"></div>
                     <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                        <LuLoader2 className="2xl animate-spin" />
+                        <Box sx={{ display: 'flex' }}>
+                            <CircularProgress />
+                        </Box>
                     </div>
                 </div>
             ) : (

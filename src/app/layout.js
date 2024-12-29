@@ -5,6 +5,7 @@ import { UserProvider } from '@auth0/nextjs-auth0/client';
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
 import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
+import LoggedInUserProvider from "@/components/Providers/LoggedInUserProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -28,40 +29,42 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ReactQueryClientProvider>
-          <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{
-              components: {
-                Pagination: {
-                  styles: {
-                    item: {
-                      backgroundColor: '#1c7ed6',
-                      color: 'white',
-                      '&:hover': {
-                        backgroundColor: '#1b6ec2',
+        <LoggedInUserProvider>
+          <ReactQueryClientProvider>
+            <MantineProvider
+              withGlobalStyles
+              withNormalizeCSS
+              theme={{
+                components: {
+                  Pagination: {
+                    styles: {
+                      item: {
+                        backgroundColor: '#1c7ed6',
+                        color: 'white',
+                        '&:hover': {
+                          backgroundColor: '#1b6ec2',
+                        },
                       },
-                    },
-                    active: {
-                      backgroundColor: '#1b6ec2',
-                      color: 'white',
-                      fontWeight: 'bold',
+                      active: {
+                        backgroundColor: '#1b6ec2',
+                        color: 'white',
+                        fontWeight: 'bold',
+                      },
                     },
                   },
                 },
-              },
-            }}
-          >
-            <RTKProvider>
-              <UserProvider>
-                <div className='w-full overflow-auto'>
-                  {children}
-                </div>
-              </UserProvider>
-            </RTKProvider>
-          </MantineProvider>
-        </ReactQueryClientProvider>
+              }}
+            >
+              <RTKProvider>
+                <UserProvider>
+                  <div className='w-full overflow-auto'>
+                    {children}
+                  </div>
+                </UserProvider>
+              </RTKProvider>
+            </MantineProvider>
+          </ReactQueryClientProvider>
+        </LoggedInUserProvider>
       </body>
     </html>
   );
