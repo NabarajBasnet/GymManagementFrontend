@@ -1,5 +1,6 @@
 'use client'
 
+import { useUser } from "@/components/Providers/LoggedInUserProvider.jsx";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
@@ -10,6 +11,17 @@ import * as React from "react"
 import { MdEmail, MdClose } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -42,6 +54,7 @@ import { usePagination } from "@/hooks/Pagination.js";
 
 const ExpiredMemberships = () => {
 
+    const { user, loading } = useUser();
     const queryClient = useQueryClient();
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -65,7 +78,7 @@ const ExpiredMemberships = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -93,7 +106,7 @@ const ExpiredMemberships = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -142,7 +155,7 @@ const ExpiredMemberships = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -299,56 +312,56 @@ const ExpiredMemberships = () => {
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Option</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Renew</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Type</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Expire</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>Contact No</TableHead>
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Shift</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>
                                             <div className="flex items-center">
                                                 <h1>Status</h1>
-                                                <div className="flex flex-col justify-center -space-y-3">
+                                                {/* <div className="flex flex-col justify-center -space-y-3">
                                                     <MdArrowDropUp className="text-xl" />
                                                     <MdArrowDropDown className="text-xl" />
-                                                </div>
+                                                </div> */}
                                             </div>
                                         </TableHead>
                                         <TableHead>Fee</TableHead>
@@ -384,13 +397,32 @@ const ExpiredMemberships = () => {
                                                                 onClick={() => sendQrInEmail(member._id)}
                                                                 className='cursor-pointer text-lg'
                                                             />
-                                                            <MdDelete
-                                                                onClick={() => {
-                                                                    setConfirmDeleteMember(true);
-                                                                    setToDeleteMemberId(member._id);
-                                                                }}
-                                                                className="cursor-pointer text-red-600 text-lg"
-                                                            />
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    {user && user.user.role === 'Gym Admin' ? (
+                                                                        <></>
+                                                                    ) : (
+                                                                        <MdDelete
+                                                                            className="cursor-pointer text-red-600 text-lg"
+                                                                        />
+                                                                    )}
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently delete member
+                                                                            account and remove data from servers.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() => deleteStaff(staff._id)}
+                                                                        >Continue</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
                                                         </div>
                                                     </TableCell>
                                                 </TableRow>

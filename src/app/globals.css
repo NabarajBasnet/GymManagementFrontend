@@ -59,6 +59,19 @@
   }
 }
 
+.children-wrapper {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  height: 100%;
+}
+
+.table-container {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+
 @layer base {
   * {
     @apply border-border;
@@ -96,4 +109,4 @@ html {
   background: #78716c;
   width: 8px;
   height: 8px;
-}
+} 

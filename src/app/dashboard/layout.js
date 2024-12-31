@@ -8,7 +8,7 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
     return (
         <ClientLayout>
-            <div className='w-full overflow-auto'>
+            <div className='w-full'>
                 {children}
             </div>
         </ClientLayout>

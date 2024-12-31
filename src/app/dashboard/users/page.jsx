@@ -1,5 +1,6 @@
 'use client';
 
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination";
 import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
@@ -51,6 +52,7 @@ import { usePagination } from "@/hooks/Pagination";
 
 const Users = () => {
 
+    const { user: loggedInUser, loading } = useUser();
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -68,6 +70,16 @@ const Users = () => {
     const [user, setUser] = useState();
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState(false);
+
+    const checkAuth = () => {
+        if (loggedInUser.user.role === 'Gym Admin') {
+            router.push('/unauthorized');
+        };
+    };
+
+    useEffect(() => {
+        checkAuth();
+    }, []);
 
     const {
         register,
@@ -87,7 +99,7 @@ const Users = () => {
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -115,7 +127,7 @@ const Users = () => {
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://localhost:3000/api/users/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -148,7 +160,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
-            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +211,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -554,16 +566,28 @@ const Users = () => {
                                                     <TableCell>{new Date(user.dob).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{user.address}</TableCell>
                                                     <TableCell className="text-right flex items-center">
-                                                        <FaUserEdit
-                                                            onClick={() => fetchSingleUser(user._id)}
-                                                            className="text-lg cursor-pointer"
-                                                        />
+                                                        {
+                                                            loggedInUser.user.role === 'Gym Admin' ? (
+                                                                <></>
+                                                            ) : (
+                                                                <FaUserEdit
+                                                                    onClick={() => fetchSingleUser(user._id)}
+                                                                    className="text-lg cursor-pointer"
+                                                                />
+                                                            )
+                                                        }
                                                         <MdEmail className="text-lg cursor-pointer mx-2" />
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
-                                                                <MdDelete
-                                                                    className="cursor-pointer text-red-600 text-lg"
-                                                                />
+                                                                {
+                                                                    loggedInUser.user.role === 'Gym Admin' ? (
+                                                                        <></>
+                                                                    ) : (
+                                                                        <MdDelete
+                                                                            className="cursor-pointer text-red-600 text-lg"
+                                                                        />
+                                                                    )
+                                                                }
                                                             </AlertDialogTrigger>
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>

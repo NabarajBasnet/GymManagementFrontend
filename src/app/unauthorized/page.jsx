@@ -14,11 +14,11 @@ const Unauthorized = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #ff6f61, #5a69e0)',
+                background: 'linear-gradient(135deg, #1e293b, #0f172a)', // Dark gradient
                 overflow: 'hidden',
                 color: 'white',
                 textAlign: 'center',
-                fontFamily: 'Arial, sans-serif',
+                fontFamily: 'Poppins, Arial, sans-serif',
                 position: 'relative',
             }}
         >
@@ -34,27 +34,29 @@ const Unauthorized = () => {
                 <div
                     style={{
                         position: 'absolute',
-                        width: '100px',
-                        height: '100px',
+                        width: '120px',
+                        height: '120px',
                         borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.2)',
-                        animation: 'circleAnimation 3s infinite',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        animation: 'circleAnimation 4s infinite',
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
+                        backdropFilter: 'blur(8px)',
                     }}
                 ></div>
                 <div
                     style={{
                         position: 'absolute',
-                        width: '80px',
-                        height: '80px',
+                        width: '100px',
+                        height: '100px',
                         borderRadius: '50%',
-                        background: 'rgba(255, 255, 255, 0.15)',
-                        animation: 'circleAnimation 3s infinite reverse',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        animation: 'circleAnimation 4s infinite reverse',
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
+                        backdropFilter: 'blur(12px)',
                     }}
                 ></div>
             </div>
@@ -62,49 +64,54 @@ const Unauthorized = () => {
             {/* Title */}
             <h1
                 style={{
-                    fontSize: '2.5rem',
-                    marginBottom: '15px',
+                    fontSize: '3rem',
+                    marginBottom: '20px',
+                    fontWeight: 'bold',
+                    textShadow: '0 4px 10px rgba(0, 0, 0, 0.5)',
                 }}
             >
-                Unauthorized Access
+                Access Denied
             </h1>
 
             {/* Message */}
             <p
                 style={{
                     fontSize: '1.2rem',
-                    marginBottom: '30px',
+                    marginBottom: '40px',
                     maxWidth: '400px',
+                    lineHeight: '1.6',
+                    color: 'rgba(255, 255, 255, 0.8)',
                 }}
             >
-                Oops! You don't have permission to view this page.
+                You do not have the necessary permissions to access this page. Please return to the dashboard or contact your administrator.
             </p>
 
             {/* Button */}
             <button
                 onClick={() => router.push('/dashboard')}
                 style={{
-                    padding: '10px 20px',
+                    padding: '12px 30px',
                     fontSize: '1rem',
                     fontWeight: 'bold',
-                    color: '#5a69e0',
-                    backgroundColor: 'white',
-                    border: 'none',
-                    borderRadius: '5px',
+                    color: 'rgba(255, 255, 255, 0.85)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '8px',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    backdropFilter: 'blur(5px)',
+                    boxShadow: '0 4px 10px rgba(0, 0, 0, 0.3)',
+                    transition: 'all 0.3s ease',
                 }}
                 onMouseOver={(e) => {
                     e.target.style.transform = 'scale(1.05)';
-                    e.target.style.boxShadow = '0 6px 15px rgba(0, 0, 0, 0.3)';
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
                 }}
                 onMouseOut={(e) => {
                     e.target.style.transform = 'scale(1)';
-                    e.target.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.2)';
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
                 }}
             >
-                Go Back to Dashboard
+                Back to Dashboard
             </button>
 
             {/* Animation Keyframes */}
@@ -115,7 +122,7 @@ const Unauthorized = () => {
                         transform: translate(-50%, -50%) scale(1);
                     }
                     50% {
-                        transform: translate(-50%, -50%) scale(1.2);
+                        transform: translate(-50%, -50%) scale(1.3);
                     }
                 }
             `}</style>

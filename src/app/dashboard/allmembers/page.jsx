@@ -1,5 +1,7 @@
 'use client';
 
+import '../../globals.css';
+import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import { MdError } from "react-icons/md";
@@ -54,6 +56,7 @@ import { usePagination, DOTS } from "@/hooks/Pagination";
 
 const AllMembers = () => {
 
+    const { user, loading } = useUser();
     const queryClient = useQueryClient();
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -87,7 +90,7 @@ const AllMembers = () => {
 
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -116,7 +119,7 @@ const AllMembers = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -165,7 +168,7 @@ const AllMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -325,9 +328,9 @@ const AllMembers = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full flex justify-start bg-white px-2">
-                    <div className="w-full overflow-x-auto">
-                        <Table className='w-full overflow-x-auto'>
+                <div className="w-full flex children-wrapper h-full justify-start bg-white px-2">
+                    <div className="overflow-x-auto">
+                        <Table className='min-w-full'>
                             <TableHeader>
                                 <TableRow className='bg-gray-200 text-black p-0'>
                                     <TableHead>Member Id</TableHead>
@@ -417,23 +420,45 @@ const AllMembers = () => {
                                                         <Link href={`/dashboard/allmembers/${member._id}`}>
                                                             <FaUserEdit className='cursor-pointer text-lg' />
                                                         </Link>
-                                                        <MdEmail
-                                                            onClick={() => sendQrInEmail(member._id)}
-                                                            className='cursor-pointer text-lg'
-                                                        />
 
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
-                                                                <MdDelete
-                                                                    className="cursor-pointer text-red-600 text-lg"
+                                                                <MdEmail
+                                                                    className='cursor-pointer text-lg'
                                                                 />
                                                             </AlertDialogTrigger>
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>
                                                                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                                                     <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete member detail
-                                                                        and remove data from servers.
+                                                                        {`This email will send membership details and QR Code to the ${member.fullName || 'member'}. If you are sure click continue`}
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+
+
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                {user && user.user.role === 'Gym Admin' ? (
+                                                                    <></>
+
+                                                                ) : (
+                                                                    <MdDelete
+                                                                        className="cursor-pointer text-red-600 text-lg"
+                                                                    />
+                                                                )}
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        {`This action cannot be undone. This will permanently delete ${member.fullName || 'member'}'s  detail
+                                                                           and remove data from servers.`}
                                                                     </AlertDialogDescription>
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>
@@ -465,6 +490,7 @@ const AllMembers = () => {
                     </div>
                 </div>
             )}
+
             <div className="py-3">
                 <Pagination
                     total={totalPages || 1}
