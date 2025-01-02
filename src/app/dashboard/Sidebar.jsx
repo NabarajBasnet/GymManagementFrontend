@@ -312,14 +312,15 @@ const Sidebar = () => {
                         <FaUserCircle className="text-3xl mr-2" />
                         {sidebarMinimized ? null : (
                             <div>
-                                <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                                <div className="flex items-center">
+                                    <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                                    <span className="mx-2 font-thin">|</span>
+                                    <h1 className="text-[12px] font-semibold text-gray-700 hover:text-gray-800">{user && user.user.role || 'Admin'}</h1>
+                                </div>
                                 <p className="font-semibold text-[11px] text-gray-700 hover:text-gray-800">
                                     {user && user.user.email || ''}
                                 </p>
                             </div>
-                        )}
-                        {!sidebarMinimized && (
-                            <HiChevronUpDown className='text-xl text-gray-600 ml-2' />
                         )}
                     </div>
                 </DropdownMenuTrigger>

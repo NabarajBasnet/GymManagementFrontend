@@ -1,6 +1,5 @@
 'use client';
 
-import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination";
 import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
@@ -52,7 +51,6 @@ import { usePagination } from "@/hooks/Pagination";
 
 const Users = () => {
 
-    const { user: loggedInUser, loading } = useUser();
     const queryClient = useQueryClient();
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -70,16 +68,6 @@ const Users = () => {
     const [user, setUser] = useState();
     const router = useRouter();
     const [isDeleting, setIsDeleting] = useState(false);
-
-    const checkAuth = () => {
-        if (loggedInUser.user.role === 'Gym Admin') {
-            router.push('/unauthorized');
-        };
-    };
-
-    useEffect(() => {
-        checkAuth();
-    }, []);
 
     const {
         register,
@@ -566,28 +554,16 @@ const Users = () => {
                                                     <TableCell>{new Date(user.dob).toISOString().split("T")[0]}</TableCell>
                                                     <TableCell>{user.address}</TableCell>
                                                     <TableCell className="text-right flex items-center">
-                                                        {
-                                                            loggedInUser.user.role === 'Gym Admin' ? (
-                                                                <></>
-                                                            ) : (
-                                                                <FaUserEdit
-                                                                    onClick={() => fetchSingleUser(user._id)}
-                                                                    className="text-lg cursor-pointer"
-                                                                />
-                                                            )
-                                                        }
+                                                        <FaUserEdit
+                                                            onClick={() => fetchSingleUser(user._id)}
+                                                            className="text-lg cursor-pointer"
+                                                        />
                                                         <MdEmail className="text-lg cursor-pointer mx-2" />
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
-                                                                {
-                                                                    loggedInUser.user.role === 'Gym Admin' ? (
-                                                                        <></>
-                                                                    ) : (
-                                                                        <MdDelete
-                                                                            className="cursor-pointer text-red-600 text-lg"
-                                                                        />
-                                                                    )
-                                                                }
+                                                                <MdDelete
+                                                                    className="cursor-pointer text-red-600 text-lg"
+                                                                />
                                                             </AlertDialogTrigger>
                                                             <AlertDialogContent>
                                                                 <AlertDialogHeader>
@@ -617,7 +593,7 @@ const Users = () => {
                                     <TableFooter>
                                         <TableRow>
                                             <TableCell colSpan={3}>Total</TableCell>
-                                            <TableCell className="text-right">{totalUsers}</TableCell>
+                                            <TableCell className="text-right">{totalUsers || 'Total Users'}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
