@@ -69,6 +69,7 @@ import { RadialChart } from "@/components/Charts/radialChart";
 import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
+import { Button } from "@/components/ui/button";
 
 const AdminDashboard = () => {
 
@@ -80,7 +81,7 @@ const AdminDashboard = () => {
   })
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:5000/api/members`);
+      const response = await fetch(`http://localhost:5000/api/members`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -179,6 +180,26 @@ const AdminDashboard = () => {
           </Breadcrumb>
           <h1 className="text-xl font-bold">Dashboard</h1>
         </div>
+
+        <form className="flex items-center space-x-4">
+          <div className="flex flex-col">
+            <label className="font-bold">From</label>
+            <input
+              type='date'
+              placeholder='From'
+              className="bg-gray-50 py-1 px-2 rounded-md focus:outline-none cursor-pointer"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <label className="font-bold">To</label>
+            <input
+              type='date'
+              placeholder='To'
+              className="bg-gray-50 py-1 px-2 rounded-md focus:outline-none cursor-pointer"
+            />
+          </div>
+        </form>
 
         <div className="w-full py-5">
           <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">

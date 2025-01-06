@@ -78,7 +78,7 @@ const ExpiredMemberships = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -106,7 +106,7 @@ const ExpiredMemberships = () => {
 
     const sendQrInEmail = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
+            const response = await fetch(`http://localhost:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -155,7 +155,7 @@ const ExpiredMemberships = () => {
     const deleteMember = async (id) => {
         setIsMemberDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
