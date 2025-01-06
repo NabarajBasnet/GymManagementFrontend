@@ -38,7 +38,6 @@ const invoices = [
   },
 ];
 
-import { addDays } from "date-fns"
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -69,16 +68,23 @@ import { RadialChart } from "@/components/Charts/radialChart";
 import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
-import { Button } from "@/components/ui/button";
 
 const AdminDashboard = () => {
 
   const router = useRouter();
 
-  const [date, setDate] = useState({
-    from: new Date(2022, 0, 20),
-    to: addDays(new Date(2022, 0, 20), 20),
-  })
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState(null);
+
+  React.useEffect(() => {
+    const startDate = new Date();
+    const calculatedStartYear = startDate.getFullYear() - 1;
+    startDate.setFullYear(calculatedStartYear);
+    startDate.setMonth(0);
+    startDate.setDate(0+1);
+    console.log('Calculated Date: ', startDate);
+  }, []);
+
   const getTotalMembers = async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/members`);
@@ -186,8 +192,10 @@ const AdminDashboard = () => {
             <label className="font-bold">From</label>
             <input
               type='date'
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
               placeholder='From'
-              className="bg-gray-50 py-1 px-2 rounded-md focus:outline-none cursor-pointer"
+              className="bg-gray-50 border py-1 px-3 rounded-md focus:outline-none cursor-pointer"
             />
           </div>
 
@@ -195,8 +203,10 @@ const AdminDashboard = () => {
             <label className="font-bold">To</label>
             <input
               type='date'
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
               placeholder='To'
-              className="bg-gray-50 py-1 px-2 rounded-md focus:outline-none cursor-pointer"
+              className="bg-gray-50 border py-1 px-3 rounded-md focus:outline-none cursor-pointer"
             />
           </div>
         </form>
