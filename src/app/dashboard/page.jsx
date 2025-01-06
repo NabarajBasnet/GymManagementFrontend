@@ -80,7 +80,7 @@ const AdminDashboard = () => {
   })
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/members`);
+      const response = await fetch(`http://88.198.112.156:5000/api/members`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -96,7 +96,17 @@ const AdminDashboard = () => {
     queryFn: getTotalMembers
   });
 
-  const { totalMembers, totalActiveMembers, totalInactiveMembers, dailyAverageActiveMembers, totalNewAdmissions, membersRenewedThisWeek, newAdmissionsPastWeek } = data || {};
+  const { members,
+    totalMembers,
+    totalPages,
+    inactiveMembers,
+    totalActiveMembers,
+    totalInactiveMembers,
+    dailyAverageActiveMembers,
+    renewdMembers,
+    renewdMembersLength,
+    newAdmissions,
+    newAdmissionsLength } = data || {};
 
   const gridContents = [
     {
@@ -109,14 +119,14 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renew",
-      value: '0',
+      value: renewdMembersLength,
       color: 'text-green-600',
       bg: 'bg-green-200'
     },
     {
       icon: RiUserShared2Fill,
       text: "New Admission",
-      value: totalNewAdmissions,
+      value: newAdmissionsLength,
       color: 'text-yellow-600',
       bg: 'bg-yellow-200'
     },

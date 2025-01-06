@@ -68,7 +68,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -313,9 +313,7 @@ const Sidebar = () => {
                         {sidebarMinimized ? null : (
                             <div>
                                 <div className="flex items-center">
-                                    <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
-                                    <span className="mx-2 font-thin">|</span>
-                                    <h1 className="text-[12px] font-semibold text-gray-700 hover:text-gray-800">{user && user.user.role || 'Admin'}</h1>
+                                    <h1 className="text-sm text-gray-700 hover:text-gray-800">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
                                 </div>
                                 <p className="font-semibold text-[11px] text-gray-700 hover:text-gray-800">
                                     {user && user.user.email || ''}
@@ -326,6 +324,7 @@ const Sidebar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" side="right" align="start">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuLabel>{user && user.user.role || 'Refresh'}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
