@@ -73,21 +73,18 @@ const AdminDashboard = () => {
 
   const router = useRouter();
 
-  const [startDate, setStartDate] = useState();
-  const [endDate, setEndDate] = useState(null);
-
-  React.useEffect(() => {
+  const [startDate, setStartDate] = useState(() => {
     const startDate = new Date();
-    const calculatedStartYear = startDate.getFullYear() - 1;
-    startDate.setFullYear(calculatedStartYear);
-    startDate.setMonth(0);
-    startDate.setDate(0+1);
-    console.log('Calculated Date: ', startDate);
-  }, []);
+    const calculatedStartYear = startDate.getFullYear();
+    startDate.setFullYear(calculatedStartYear, 0, 1);
+    return startDate;
+  });
+
+  const [endDate, setEndDate] = useState(new Date());
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/members`);
+      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -114,6 +111,10 @@ const AdminDashboard = () => {
     renewdMembersLength,
     newAdmissions,
     newAdmissionsLength } = data || {};
+
+  React.useEffect(() => {
+    getTotalMembers()
+  }, [startDate, endDate]);
 
   const gridContents = [
     {
@@ -185,6 +186,11 @@ const AdminDashboard = () => {
             </BreadcrumbList>
           </Breadcrumb>
           <h1 className="text-xl font-bold">Dashboard</h1>
+        </div>
+
+        <div className="mt-4 mb-2 flex items-center space-x-4">
+          <p className="font-semibold text-green-600">Note:</p>
+          <p className="font-semibold text-red-600 text-sm mt-1">Default Date will be Jan 1, Change in field to override</p>
         </div>
 
         <form className="flex items-center space-x-4">
