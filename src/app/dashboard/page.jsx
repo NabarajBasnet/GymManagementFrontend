@@ -10,34 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-];
-
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -69,11 +41,15 @@ import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
+import Pagination from "@/components/ui/CustomPagination";
+import { usePagination } from "@/hooks/Pagination";
 
 const AdminDashboard = () => {
 
   const router = useRouter();
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 3;
   const [startDate, setStartDate] = useState(() => {
     const startDate = new Date();
     const calculatedStartYear = startDate.getFullYear();
@@ -85,7 +61,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}`);
+      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -112,6 +88,16 @@ const AdminDashboard = () => {
     renewdMembersLength,
     newAdmissions,
     newAdmissionsLength } = data || {};
+
+  const { range, setPage, active } = usePagination({
+    total: totalPages ? totalPages : 1,
+    siblings: 1,
+    boundaries: 1,
+    page: currentPage,
+    onChange: (page) => {
+      setCurrentPage(page);
+    },
+  });
 
   React.useEffect(() => {
     getTotalMembers()
@@ -238,7 +224,7 @@ const AdminDashboard = () => {
 
         <div className="w-full space-y-6">
           <div className="w-full items-center space-y-6">
-            <BarChartMultiple />
+            <BarChartMultiple data={data} />
             <ShadSmallLineChart />
           </div>
           <BarChartInterActive />
@@ -246,33 +232,57 @@ const AdminDashboard = () => {
           {/* New Members */}
           <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
             <div className="w-full bg-white py-5 rounded-lg">
-              <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Invoice</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.invoice}>
-                      <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                      <TableCell>{invoice.paymentStatus}</TableCell>
-                      <TableCell>{invoice.paymentMethod}</TableCell>
-                      <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+              {Array.isArray(newAdmissions) && newAdmissions.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Contact No</TableHead>
+                      <TableHead>Option</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Duration</TableHead>
+                      <TableHead className="text-right">Fee</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={3}>Total</TableCell>
-                    <TableCell className="text-right">$2,500.00</TableCell>
-                  </TableRow>
-                </TableFooter>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {newAdmissions.map((member) => (
+                      <TableRow key={member._id}>
+                        <TableCell>{member.fullName}</TableCell>
+                        <TableCell>{member.contactNo}</TableCell>
+                        <TableCell>{member.membershipOption}</TableCell>
+                        <TableCell>{member.membershipType}</TableCell>
+                        <TableCell>{member.membershipDuration}</TableCell>
+                        <TableCell className="text-right">{member.finalAmmount}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={5}>Total</TableCell>
+                      <TableCell className="text-right">{newAdmissions.length}</TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow key={1}>
+                      <TableCell className="font-medium">{'No admissions found'}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={3}>Total</TableCell>
+                      <TableCell className="text-right">0</TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              )}
+              <Pagination />
             </div>
 
             <div className="w-full rounded-lg bg-white">
@@ -287,33 +297,57 @@ const AdminDashboard = () => {
             </div>
 
             <div className="w-full bg-white py-5 rounded-lg">
-              <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[100px]">Invoice</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Method</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {invoices.map((invoice) => (
-                    <TableRow key={invoice.invoice}>
-                      <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                      <TableCell>{invoice.paymentStatus}</TableCell>
-                      <TableCell>{invoice.paymentMethod}</TableCell>
-                      <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+              {Array.isArray(renewdMembers) && renewdMembers.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Full Name</TableHead>
+                      <TableHead>Contact No</TableHead>
+                      <TableHead>Option</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Duration</TableHead>
+                      <TableHead className="text-right">Fee</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-                <TableFooter>
-                  <TableRow>
-                    <TableCell colSpan={3}>Total</TableCell>
-                    <TableCell className="text-right">$2,500.00</TableCell>
-                  </TableRow>
-                </TableFooter>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {renewdMembers.map((member) => (
+                      <TableRow key={member._id}>
+                        <TableCell>{member.fullName}</TableCell>
+                        <TableCell>{member.contactNo}</TableCell>
+                        <TableCell>{member.membershipOption}</TableCell>
+                        <TableCell>{member.membershipType}</TableCell>
+                        <TableCell>{member.membershipDuration}</TableCell>
+                        <TableCell className="text-right">{member.finalAmmount}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={5}>Total</TableCell>
+                      <TableCell className="text-right">{renewdMembers.length}</TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    <TableRow key={1}>
+                      <TableCell className="font-medium">Members not found</TableCell>
+                    </TableRow>
+                  </TableBody>
+                  <TableFooter>
+                    <TableRow>
+                      <TableCell colSpan={3}>Total</TableCell>
+                      <TableCell className="text-right">0</TableCell>
+                    </TableRow>
+                  </TableFooter>
+                </Table>
+              )}
+              <Pagination />
             </div>
           </div>
 

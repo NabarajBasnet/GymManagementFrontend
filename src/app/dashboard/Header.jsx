@@ -1,5 +1,6 @@
 "use client";
 
+import { FaBoxOpen } from "react-icons/fa";
 import { BiSolidDashboard } from "react-icons/bi";
 import { FiSidebar } from "react-icons/fi";
 import { MdError, MdClose, MdDone } from "react-icons/md";
@@ -237,6 +238,11 @@ const Header = () => {
             icon: FaCog,
             title: 'Settings',
             link: '/dashboard/settings',
+        },
+        {
+            icon: FaBoxOpen,
+            title: 'Logs',
+            link: '/dashboard/logs',
         },
     ];
 

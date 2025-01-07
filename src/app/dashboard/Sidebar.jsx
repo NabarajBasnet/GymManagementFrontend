@@ -1,5 +1,6 @@
 'use client';
 
+import { FaBoxOpen } from "react-icons/fa";
 import { HiChevronUpDown } from "react-icons/hi2";
 import { BiSolidDashboard } from "react-icons/bi";
 import {
@@ -201,8 +202,12 @@ const Sidebar = () => {
             title: 'Settings',
             link: '/dashboard/settings',
         },
+        {
+            icon: FaBoxOpen,
+            title: 'Logs',
+            link: '/dashboard/logs',
+        },
     ];
-
 
     return (
         <div

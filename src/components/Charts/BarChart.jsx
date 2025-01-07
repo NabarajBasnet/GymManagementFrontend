@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
@@ -17,36 +17,56 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-    { month: "January", desktop: 186, mobile: 80 },
-    { month: "February", desktop: 305, mobile: 200 },
-    { month: "March", desktop: 237, mobile: 120 },
-    { month: "April", desktop: 73, mobile: 190 },
-    { month: "May", desktop: 209, mobile: 130 },
-    { month: "June", desktop: 200, mobile: 140 },
-    { month: "July", desktop: 214, mobile: 180 },
-    { month: "September", desktop: 214, mobile: 140 },
-    { month: "October", desktop: 200, mobile: 100 },
-    { month: "November", desktop: 245, mobile: 150 },
-    { month: "December", desktop: 190, mobile: 170 },
-]
 
-const chartConfig = {
-    renew: {
-        label: "Renew",
-        color: "hsl(var(--chart-1))",
-    },
-    newadmission: {
-        label: "New Admission",
-        color: "hsl(var(--chart-2))",
-    },
-}
 
-export function BarChartMultiple() {
+export function BarChartMultiple(data) {
+
+    const chartData = [
+        { month: "January", Renew: 186, NewAdmission: 80 },
+        { month: "February", Renew: 305, NewAdmission: 200 },
+        { month: "March", Renew: 237, NewAdmission: 120 },
+        { month: "April", Renew: 73, NewAdmission: 190 },
+        { month: "May", Renew: 209, NewAdmission: 130 },
+        { month: "June", Renew: 200, NewAdmission: 140 },
+        { month: "July", Renew: 214, NewAdmission: 180 },
+        { month: "September", Renew: 214, NewAdmission: 140 },
+        { month: "October", Renew: 200, NewAdmission: 100 },
+        { month: "November", Renew: 245, NewAdmission: 150 },
+        { month: "December", Renew: 190, NewAdmission: 170 },
+    ]
+
+    const chartConfig = {
+        Renew: {
+            label: "Renew",
+            color: "hsl(var(--chart-1))",
+        },
+        NewAdmission: {
+            label: "NewAdmission",
+            color: "hsl(var(--chart-2))",
+        },
+    }
+
+    const { members,
+        totalMembers,
+        totalPages,
+        inactiveMembers,
+        totalActiveMembers,
+        totalInactiveMembers,
+        dailyAverageActiveMembers,
+        renewdMembers,
+        renewdMembersLength,
+        newAdmissions,
+        newAdmissionsLength } = data || {};
+
+    console.log("Data in Chart: ", data);
     return (
         <Card>
             <CardHeader>
-                <CardDescription>January - December 2024</CardDescription>
+                <CardDescription>January 01 - {new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: '2-digit'
+                })}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ChartContainer config={chartConfig}>
@@ -63,17 +83,17 @@ export function BarChartMultiple() {
                             cursor={false}
                             content={<ChartTooltipContent indicator="dashed" />}
                         />
-                        <Bar dataKey="desktop" fill="#2563eb" radius={20} />
-                        <Bar dataKey="mobile" fill="#7c3aed" radius={20} />
+                        <Bar dataKey="Renew" fill="#2563eb" radius={20} />
+                        <Bar dataKey="NewAdmission" fill="#7c3aed" radius={20} />
                     </BarChart>
                 </ChartContainer>
             </CardContent>
             <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none">
-                    Increased renewal by 5.2% this month <TrendingUp className="h-4 w-4" />
+                <div className="flex gap-2 font-medium leading-none text-green-600">
+                    Increased renewal by 5.2% this month <TrendingUp className="text-green-600 h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
-                    Showing total new admission and renew for the last 12 months
+                    Showing total new admission and renew from Jan 1 this year
                 </div>
             </CardFooter>
         </Card>
