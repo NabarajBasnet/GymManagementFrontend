@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { TrendingUp } from "lucide-react"
+import { TrendingUp } from "lucide-react";
 import {
     Label,
     PolarGrid,
     PolarRadiusAxis,
     RadialBar,
     RadialBarChart,
-} from "recharts"
+} from "recharts";
 
 import {
     Card,
@@ -16,11 +16,11 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { ChartConfig, ChartContainer } from "@/components/ui/chart"
+} from "@/components/ui/card";
+import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 const chartData = [
     { browser: "safari", visitors: 200, fill: "#10b981" },
-]
+];
 
 const chartConfig = {
     visitors: {
@@ -30,7 +30,7 @@ const chartConfig = {
         label: "Safari",
         color: "#10b981",
     },
-}
+};
 
 export function RenewRadialChart() {
     return (
@@ -103,4 +103,4 @@ export function RenewRadialChart() {
             </CardFooter>
         </Card>
     )
-}
+};

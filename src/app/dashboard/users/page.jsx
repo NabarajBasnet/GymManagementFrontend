@@ -251,7 +251,8 @@ const Users = () => {
 
     return (
         <div className="w-full">
-            <div className="w-full">
+            <div className="w-full"
+                onClick={() => setToast(false)}>
                 <div className="w-full p-4">
                     <Breadcrumb>
                         <BreadcrumbList>

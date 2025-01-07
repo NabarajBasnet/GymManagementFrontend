@@ -169,7 +169,9 @@ const MyProfile = () => {
 
     return (
         <div className="w-full">
-            <div className="w-full flex justify-center">
+            <div
+                onClick={() => setToast(false)}
+                className="w-full flex justify-center">
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="absolute inset-0 bg-stone-800 opacity-50"></div>

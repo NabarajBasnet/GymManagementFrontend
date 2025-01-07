@@ -205,7 +205,9 @@ const Sidebar = () => {
 
 
     return (
-        <div className={`fixed left-0 transition-all duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex border-r flex-col`}
+        <div
+            onClick={() => setToast(false)}
+            className={`fixed left-0 transition-all duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex border-r flex-col`}
         >
             {toast ? (
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-[1000] flex items-center justify-between bg-white border shadow-2xl p-4 rounded">

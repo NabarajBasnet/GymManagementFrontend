@@ -316,7 +316,7 @@ const Lockers = () => {
 
     return (
         <div className="w-full">
-            <div className='w-full p-6'>
+            <div className='w-full p-6' onClick={() => setToast(false)}>
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>

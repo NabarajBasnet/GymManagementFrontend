@@ -33,11 +33,14 @@ const chartConfig = {
 }
 
 export function RadialChart() {
+
+    const startDate = new Date()
+
     return (
         <Card className="flex flex-col">
             <CardHeader className="items-center pb-0">
                 <CardTitle className='text-pink-600'>Target New Admmission</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
+                <CardDescription>{startDate.getMonth() === 0 ? 'Jaruary' : ''} - {startDate.getMonth()}</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
                 <ChartContainer
@@ -77,7 +80,7 @@ export function RadialChart() {
                                                 >
                                                     {chartData[0].visitors.toLocaleString()} Of {chartData[0].visitors.toLocaleString()}
                                                 </tspan>
-                                                
+
                                                 <tspan
                                                     x={viewBox.cx}
                                                     y={(viewBox.cy || 0) + 24}
@@ -96,7 +99,7 @@ export function RadialChart() {
             </CardContent>
             <CardFooter className="flex-col gap-2 text-sm">
                 <div className="flex items-center gap-2 font-medium text-pink-600 leading-none">
-                    New admission target reacged 5.2% this month <TrendingUp className="h-4 w-4" />
+                    New admission target reached 5.2% this month <TrendingUp className="h-4 w-4" />
                 </div>
                 <div className="leading-none text-muted-foreground">
                     Showing target progress for the last 1 month

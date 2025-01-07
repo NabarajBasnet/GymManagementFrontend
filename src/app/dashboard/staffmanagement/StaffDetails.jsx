@@ -207,7 +207,8 @@ const StaffDetails = ({ staffId }) => {
 
     return (
         <div className="w-full">
-            <div className='w-full bg-gray-100'>
+            <div className='w-full bg-gray-100'
+                onClick={() => setToast(false)}>
                 <Breadcrumb className='p-6'>
                     <BreadcrumbList>
                         <BreadcrumbItem>

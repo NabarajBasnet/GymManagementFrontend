@@ -88,7 +88,9 @@ export function LoginForm({ className, ...props }) {
 
 
   return (
-    (<div className={cn("flex flex-col gap-6", className)} {...props}>
+    (<div
+      onClick={() => setToast(false)}
+      className={cn("flex flex-col gap-6", className)} {...props}>
       {toast ? (
         <div className="w-full flex justify-center">
           <div className="fixed top-5 bg-white z-50 border shadow-2xl flex items-center justify-between p-4">
