@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 import {
@@ -16,10 +17,51 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useQuery } from "@tanstack/react-query";
 
 
+export function BarChartMultiple() {
 
-export function BarChartMultiple(data) {
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 3;
+    const [startDate, setStartDate] = useState(() => {
+        const startDate = new Date();
+        const calculatedStartYear = startDate.getFullYear();
+        startDate.setFullYear(calculatedStartYear, 0, 1);
+        return startDate;
+    });
+
+    const [endDate, setEndDate] = useState(new Date());
+
+    const getTotalMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const responseBody = await response.json();
+            if (responseBody.redirect) {
+                router.push(responseBody.redirect);
+            };
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        }
+    };
+
+    const { data } = useQuery({
+        queryKey: ['membersLength'],
+        queryFn: getTotalMembers
+    });
+
+    const { members,
+        totalMembers,
+        totalPages,
+        inactiveMembers,
+        totalActiveMembers,
+        totalInactiveMembers,
+        dailyAverageActiveMembers,
+        renewdMembers,
+        renewdMembersLength,
+        newAdmissions,
+        newAdmissionsLength } = data || {};
 
     const chartData = [
         { month: "January", Renew: 186, NewAdmission: 80 },
@@ -46,19 +88,6 @@ export function BarChartMultiple(data) {
         },
     }
 
-    const { members,
-        totalMembers,
-        totalPages,
-        inactiveMembers,
-        totalActiveMembers,
-        totalInactiveMembers,
-        dailyAverageActiveMembers,
-        renewdMembers,
-        renewdMembersLength,
-        newAdmissions,
-        newAdmissionsLength } = data || {};
-
-    console.log("Data in Chart: ", data);
     return (
         <Card>
             <CardHeader>

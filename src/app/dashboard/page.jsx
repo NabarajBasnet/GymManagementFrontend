@@ -224,7 +224,7 @@ const AdminDashboard = () => {
 
         <div className="w-full space-y-6">
           <div className="w-full items-center space-y-6">
-            <BarChartMultiple data={data} />
+            <BarChartMultiple />
             <ShadSmallLineChart />
           </div>
           <BarChartInterActive />
