@@ -68,6 +68,7 @@ import { RadialChart } from "@/components/Charts/radialChart";
 import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
+import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 
 const AdminDashboard = () => {
 
@@ -84,7 +85,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}`);
+      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -242,6 +243,7 @@ const AdminDashboard = () => {
           </div>
           <BarChartInterActive />
 
+          {/* New Members */}
           <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
             <div className="w-full bg-white py-5 rounded-lg">
               <Table>
@@ -277,6 +279,44 @@ const AdminDashboard = () => {
               <RadialChart />
             </div>
           </div>
+
+          {/* Renew Members */}
+          <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
+            <div className="w-full rounded-lg bg-white">
+              <RenewRadialChart />
+            </div>
+
+            <div className="w-full bg-white py-5 rounded-lg">
+              <Table>
+                <TableCaption>A list of your recent invoices.</TableCaption>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[100px]">Invoice</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Method</TableHead>
+                    <TableHead className="text-right">Amount</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {invoices.map((invoice) => (
+                    <TableRow key={invoice.invoice}>
+                      <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                      <TableCell>{invoice.paymentStatus}</TableCell>
+                      <TableCell>{invoice.paymentMethod}</TableCell>
+                      <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell colSpan={3}>Total</TableCell>
+                    <TableCell className="text-right">$2,500.00</TableCell>
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </div>
+          </div>
+
           <div className="w-full space-y-6">
             <AreaChartShad />
             <LineChartShad />
