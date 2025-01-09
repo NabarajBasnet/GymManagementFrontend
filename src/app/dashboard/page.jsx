@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -90,52 +90,54 @@ const AdminDashboard = () => {
     },
   });
 
-  // React.useEffect(() => {
-  //   getTotalMembers()
-  // }, [startDate, endDate]);
-
   const gridContents = [
     {
       icon: FaUsers,
       text: "Total Membership",
       value: totalMembers,
+      percentage: 0.0,
       color: 'text-blue-600',
-      bg: 'bg-blue-200'
+      bg: 'bg-blue-200',
     },
     {
       icon: MdAutorenew,
       text: "Renew",
       value: renewdMembersLength,
+      percentage: 0.0,
       color: 'text-green-600',
-      bg: 'bg-green-200'
+      bg: 'bg-green-200',
     },
     {
       icon: RiUserShared2Fill,
       text: "New Admission",
       value: newAdmissionsLength,
+      percentage: -0.0,
       color: 'text-yellow-600',
-      bg: 'bg-yellow-200'
+      bg: 'bg-yellow-200',
     },
     {
       icon: GiBiceps,
       text: "Active",
       value: totalActiveMembers,
+      percentage: 0.0,
       color: 'text-green-600',
-      bg: 'bg-green-200'
+      bg: 'bg-green-200',
     },
     {
       icon: FaUsers,
       text: "Average Active",
       value: dailyAverageActiveMembers,
+      percentage: 0.0,
       color: 'text-blue-600',
-      bg: 'bg-blue-200'
+      bg: 'bg-blue-200',
     },
     {
       icon: PiUsersFourFill,
       text: "Inactive",
       value: totalInactiveMembers,
+      percentage: -0.0,
       color: 'text-red-600',
-      bg: 'bg-red-200'
+      bg: 'bg-red-200',
     },
   ];
 
@@ -196,22 +198,34 @@ const AdminDashboard = () => {
         </form>
 
         <div className="w-full py-5">
-          <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {gridContents.map((grid) => (
-              <div key={grid.text} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl">
-                <div className="flex items-center">
-                  <div className={`${grid.bg} p-2 rounded-full`}>
-                    <grid.icon className={`text-4xl ${grid.color}`} />
+              <div
+                key={grid.text}
+                className="bg-white py-3 px-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="flex justify-between items-center">
+                  {/* Content Section */}
+                  <div>
+                    <p className="text-md font-bold text-gray-800">{grid.text}</p>
+                    <h1 className={`text-4xl my-1 font-bold ${grid.color}`}>
+                      {grid.value}
+                    </h1>
+                    <p
+                      className={`text-xs font-medium mt-1 px-1 py-0.5 rounded-full inline-block ${grid.percentage > 0
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-700"
+                        }`}
+                      style={{ lineHeight: '1.2rem', width: 'fit-content' }}
+                    >
+                      {grid.percentage > 0 ? `+${grid.percentage}%` : `${grid.percentage}%`}
+                    </p>
                   </div>
-                  <div className="px-4">
-                    <div className="flex items-center justify-between">
-                      <p className="text-sm font-semibold text-gray-500">{grid.text}</p>
-                      {/* <p className="text-sm font-semibold text-gray-500">{'Last Month'}</p> */}
-                    </div>
-                    <div className='flex items-center justify-between'>
-                      <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1>
-                      {/* <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1> */}
-                    </div>
+                  {/* Icon Section */}
+                  <div
+                    className={`p-3 rounded-full flex items-center justify-center ${grid.bg}`}
+                  >
+                    <grid.icon className={`text-4xl ${grid.color}`} />
                   </div>
                 </div>
               </div>
