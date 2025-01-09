@@ -1,16 +1,6 @@
 'use client';
 
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -41,7 +31,6 @@ import { LineChartShad } from "@/components/Charts/LineChart";
 import { AreaChartShad } from "@/components/Charts/areaChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
-import Pagination from "@/components/ui/CustomPagination";
 import { usePagination } from "@/hooks/Pagination";
 
 const AdminDashboard = () => {
@@ -61,7 +50,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -77,7 +66,8 @@ const AdminDashboard = () => {
     queryFn: getTotalMembers
   });
 
-  const { members,
+  const {
+    members,
     totalMembers,
     totalPages,
     inactiveMembers,
@@ -87,7 +77,8 @@ const AdminDashboard = () => {
     renewdMembers,
     renewdMembersLength,
     newAdmissions,
-    newAdmissionsLength } = data || {};
+    newAdmissionsLength
+  } = data || {};
 
   const { range, setPage, active } = usePagination({
     total: totalPages ? totalPages : 1,
@@ -99,9 +90,9 @@ const AdminDashboard = () => {
     },
   });
 
-  React.useEffect(() => {
-    getTotalMembers()
-  }, [startDate, endDate]);
+  // React.useEffect(() => {
+  //   getTotalMembers()
+  // }, [startDate, endDate]);
 
   const gridContents = [
     {
@@ -210,11 +201,17 @@ const AdminDashboard = () => {
               <div key={grid.text} className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl">
                 <div className="flex items-center">
                   <div className={`${grid.bg} p-2 rounded-full`}>
-                    <grid.icon className={`text-5xl ${grid.color}`} />
+                    <grid.icon className={`text-4xl ${grid.color}`} />
                   </div>
                   <div className="px-4">
-                    <p className="text-sm font-semibold text-gray-500">{grid.text}</p>
-                    <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1>
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm font-semibold text-gray-500">{grid.text}</p>
+                      {/* <p className="text-sm font-semibold text-gray-500">{'Last Month'}</p> */}
+                    </div>
+                    <div className='flex items-center justify-between'>
+                      <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1>
+                      {/* <h1 className={`text-3xl font-bold ${grid.color}`}>{grid.value}</h1> */}
+                    </div>
                   </div>
                 </div>
               </div>
