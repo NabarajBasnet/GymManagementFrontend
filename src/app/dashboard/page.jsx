@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://localhost:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -229,125 +229,12 @@ const AdminDashboard = () => {
           </div>
           <BarChartInterActive />
 
-          {/* New Members */}
-          <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
-            <div className="w-full bg-white py-5 rounded-lg">
-              {Array.isArray(newAdmissions) && newAdmissions.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Contact No</TableHead>
-                      <TableHead>Option</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead className="text-right">Fee</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {newAdmissions.map((member) => (
-                      <TableRow key={member._id}>
-                        <TableCell>{member.fullName}</TableCell>
-                        <TableCell>{member.contactNo}</TableCell>
-                        <TableCell>{member.membershipOption}</TableCell>
-                        <TableCell>{member.membershipType}</TableCell>
-                        <TableCell>{member.membershipDuration}</TableCell>
-                        <TableCell className="text-right">{member.finalAmmount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell colSpan={5}>Total</TableCell>
-                      <TableCell className="text-right">{newAdmissions.length}</TableCell>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow key={1}>
-                      <TableCell className="font-medium">{'No admissions found'}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell colSpan={3}>Total</TableCell>
-                      <TableCell className="text-right">0</TableCell>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              )}
-              <Pagination />
-            </div>
-
-            <div className="w-full rounded-lg bg-white">
-              <RadialChart />
-            </div>
-          </div>
-
-          {/* Renew Members */}
           <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
             <div className="w-full rounded-lg bg-white">
               <RenewRadialChart />
             </div>
-
-            <div className="w-full bg-white py-5 rounded-lg">
-              {Array.isArray(renewdMembers) && renewdMembers.length > 0 ? (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Contact No</TableHead>
-                      <TableHead>Option</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Duration</TableHead>
-                      <TableHead className="text-right">Fee</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {renewdMembers.map((member) => (
-                      <TableRow key={member._id}>
-                        <TableCell>{member.fullName}</TableCell>
-                        <TableCell>{member.contactNo}</TableCell>
-                        <TableCell>{member.membershipOption}</TableCell>
-                        <TableCell>{member.membershipType}</TableCell>
-                        <TableCell>{member.membershipDuration}</TableCell>
-                        <TableCell className="text-right">{member.finalAmmount}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell colSpan={5}>Total</TableCell>
-                      <TableCell className="text-right">{renewdMembers.length}</TableCell>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    <TableRow key={1}>
-                      <TableCell className="font-medium">Members not found</TableCell>
-                    </TableRow>
-                  </TableBody>
-                  <TableFooter>
-                    <TableRow>
-                      <TableCell colSpan={3}>Total</TableCell>
-                      <TableCell className="text-right">0</TableCell>
-                    </TableRow>
-                  </TableFooter>
-                </Table>
-              )}
-              <Pagination />
+            <div className="w-full rounded-lg bg-white">
+              <RadialChart />
             </div>
           </div>
 
