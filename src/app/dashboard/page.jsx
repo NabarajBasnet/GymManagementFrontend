@@ -219,7 +219,7 @@ const AdminDashboard = () => {
                       style={{ lineHeight: '1.2rem', width: 'fit-content' }}
                     >
                       {grid.percentage > 0 ? `+${grid.percentage}%` : `${grid.percentage}%`}
-                    </p>
+                    </p> 
                   </div>
                   {/* Icon Section */}
                   <div

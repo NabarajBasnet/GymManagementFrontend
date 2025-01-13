@@ -1,5 +1,18 @@
 "use client";
 
+import { IoClose } from "react-icons/io5";
+import { Separator } from "@/components/ui/separator";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/Setting/Setting";
 import { FaBoxOpen } from "react-icons/fa";
 import { BiSolidDashboard } from "react-icons/bi";
 import { FiSidebar } from "react-icons/fi";
@@ -29,11 +42,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HiUsers } from "react-icons/hi2";
 import Badge from '@mui/material/Badge';
-import { IoIosNotifications } from "react-icons/io";
-import '../globals.css'
+import { IoIosNotifications, IoMdSettings } from "react-icons/io";
+import '../globals.css';
 import { RiAccountCircleFill } from "react-icons/ri";
 import React, { useEffect, useRef, useState } from 'react';
-import { IoMenuSharp } from "react-icons/io5";
 import { MinimizeSidebar } from '@/state/slicer';
 import { useDispatch } from 'react-redux';
 import {
@@ -46,7 +58,6 @@ import {
 } from "@/components/DashboardUI/MobileSidebar";
 import Link from "next/link";
 import { useSelector } from 'react-redux';
-import '../globals.css'
 import {
     Accordion,
     AccordionContent,
@@ -57,11 +68,10 @@ import { RiUserUnfollowFill, RiCustomerService2Fill, RiRunLine } from 'react-ico
 import { BiSolidUserCheck } from 'react-icons/bi';
 import { GiLockers, GiBiceps } from 'react-icons/gi';
 import { TiUserAdd } from 'react-icons/ti';
-import { FaUsers, FaMoneyCheckAlt, FaChartLine, FaTags, FaCog, FaDumbbell } from 'react-icons/fa';
+import { FaUsers, FaMoneyCheckAlt, FaChartLine, FaTags, FaCog } from 'react-icons/fa';
 import { MdPayments } from 'react-icons/md';
 import { AiOutlineSchedule } from 'react-icons/ai';
 import { FaUsersGear } from "react-icons/fa6";
-import { RiDashboard3Fill } from "react-icons/ri";
 
 const Header = () => {
 
@@ -411,10 +421,39 @@ const Header = () => {
 
                 <Badge badgeContent={4} color="primary">
                     <IoIosNotifications
-                        className='text-3xl text-gray-800 cursor-pointer'
+                        className='text-2xl text-gray-800 cursor-pointer'
                         onClick={minimizeSidebar}
                     />
                 </Badge>
+
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <IoMdSettings
+                            className='text-2xl text-gray-800 cursor-pointer'
+                        />
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <div className='w-full flex justify-between items-center'>
+                                <AlertDialogTitle>Settings</AlertDialogTitle>
+                                <AlertDialogCancel className='border-none hover:bg-none hover:bg-transparent'>
+                                    <IoClose className='text-xl' />
+                                </AlertDialogCancel>
+                            </div>
+                            <Separator orientation="horizontal" />
+                            <AlertDialogDescription>
+                                <div className="w-full flex">
+                                    <div className="h-96 w-72">Sidebar</div>
+                                    <div className="h-96 w-full">Components</div>
+                                </div>
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction>Continue</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
 
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
