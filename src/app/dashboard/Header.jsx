@@ -1,5 +1,6 @@
 "use client";
 
+import Settings from "./settings/page";
 import { IoClose } from "react-icons/io5";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -21,7 +22,6 @@ import { useRouter } from "next/navigation";
 import {
     LogOut,
     Plus,
-    Settings,
     User,
     Users,
 } from "lucide-react";
@@ -419,10 +419,9 @@ const Header = () => {
                     <h1 className="text-sm font-bold">{currentDateTime.time}</h1>
                 </div>
 
-                <Badge badgeContent={4} color="primary">
+                <Badge badgeContent={2} color="primary">
                     <IoIosNotifications
                         className='text-2xl text-gray-800 cursor-pointer'
-                        onClick={minimizeSidebar}
                     />
                 </Badge>
 
@@ -442,9 +441,8 @@ const Header = () => {
                             </div>
                             <Separator orientation="horizontal" />
                             <AlertDialogDescription>
-                                <div className="w-full flex">
-                                    <div className="h-96 w-72">Sidebar</div>
-                                    <div className="h-96 w-full">Components</div>
+                                <div>
+                                    <Settings />
                                 </div>
                             </AlertDialogDescription>
                         </AlertDialogHeader>
@@ -470,10 +468,6 @@ const Header = () => {
                             <DropdownMenuItem>
                                 <User />
                                 <span>Profile</span>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Settings />
-                                <span>Settings</span>
                             </DropdownMenuItem>
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />

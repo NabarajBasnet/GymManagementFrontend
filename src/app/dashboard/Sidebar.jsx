@@ -238,26 +238,21 @@ const Sidebar = () => {
                     </div>
                 </div>
             ) : null}
+
             <Link href={'/dashboard'} className="flex py-3 hover:bg-gray-50 items-center">
                 <BiSolidDashboard className='text-3xl mx-2 text-start bg-gray-800 text-white p-1 rounded-md' />
                 <div className="">
-                    {
-                        sidebarMinimized ? (
-                            <></>
-                        ) : (
-                            <span>
-                                <p className="w-full text-md font-bold text-gray-600">Revive Fitness</p>
-                                <p className="w-full text-[10px] font-semibold text-gray-600">Enterprise</p>
-                            </span>
-                        )
-                    }
+                    {sidebarMinimized ? (
+                        <></>
+                    ) : (
+                        <span>
+                            <p className="w-full text-md font-bold text-gray-600">Revive Fitness</p>
+                            <p className="w-full text-[10px] font-semibold text-gray-600">Enterprise</p>
+                        </span>
+                    )}
                 </div>
-                {
-                    !sidebarMinimized && (
-                        <HiChevronUpDown className='text-xl ml-2 text-gray-600' />
-                    )
-                }
             </Link>
+
             <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
                 {
                     !sidebarMinimized && (

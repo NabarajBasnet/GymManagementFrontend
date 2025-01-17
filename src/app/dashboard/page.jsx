@@ -95,7 +95,7 @@ const AdminDashboard = () => {
       icon: FaUsers,
       text: "Total Membership",
       value: totalMembers,
-      percentage: 0.0,
+      percentage: 1.1,
       color: 'text-blue-600',
       bg: 'bg-blue-200',
     },
@@ -103,7 +103,7 @@ const AdminDashboard = () => {
       icon: MdAutorenew,
       text: "Renew",
       value: renewdMembersLength,
-      percentage: 0.0,
+      percentage: -1.5,
       color: 'text-green-600',
       bg: 'bg-green-200',
     },
@@ -111,7 +111,7 @@ const AdminDashboard = () => {
       icon: RiUserShared2Fill,
       text: "New Admission",
       value: newAdmissionsLength,
-      percentage: -0.0,
+      percentage: +0.5,
       color: 'text-yellow-600',
       bg: 'bg-yellow-200',
     },
@@ -119,7 +119,7 @@ const AdminDashboard = () => {
       icon: GiBiceps,
       text: "Active",
       value: totalActiveMembers,
-      percentage: 0.0,
+      percentage: -0.2,
       color: 'text-green-600',
       bg: 'bg-green-200',
     },
@@ -127,7 +127,7 @@ const AdminDashboard = () => {
       icon: FaUsers,
       text: "Average Active",
       value: dailyAverageActiveMembers,
-      percentage: 0.0,
+      percentage: +3.9,
       color: 'text-blue-600',
       bg: 'bg-blue-200',
     },
@@ -135,7 +135,7 @@ const AdminDashboard = () => {
       icon: PiUsersFourFill,
       text: "Inactive",
       value: totalInactiveMembers,
-      percentage: -0.0,
+      percentage: -4.5,
       color: 'text-red-600',
       bg: 'bg-red-200',
     },
@@ -165,7 +165,6 @@ const AdminDashboard = () => {
               <BreadcrumbSeparator />
             </BreadcrumbList>
           </Breadcrumb>
-          <h1 className="text-xl font-bold">Dashboard</h1>
         </div>
 
         <div className="mt-4 mb-2 flex items-center space-x-4">
@@ -213,13 +212,13 @@ const AdminDashboard = () => {
                     </h1>
                     <p
                       className={`text-xs font-medium mt-1 px-1 py-0.5 rounded-full inline-block ${grid.percentage > 0
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
+                        ? "bg-green-200 text-green-800"
+                        : "bg-red-200 text-red-800"
                         }`}
                       style={{ lineHeight: '1.2rem', width: 'fit-content' }}
                     >
                       {grid.percentage > 0 ? `+${grid.percentage}%` : `${grid.percentage}%`}
-                    </p> 
+                    </p>
                   </div>
                   {/* Icon Section */}
                   <div
