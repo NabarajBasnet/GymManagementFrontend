@@ -39,14 +39,14 @@ export default function RootLayout({ children }) {
                   Pagination: {
                     styles: {
                       item: {
-                        backgroundColor: '#1c7ed6',
+                        backgroundColor: '#ffff',
                         color: 'white',
                         '&:hover': {
-                          backgroundColor: '#1b6ec2',
+                          backgroundColor: '#ffff',
                         },
                       },
                       active: {
-                        backgroundColor: '#1b6ec2',
+                        backgroundColor: '#ffff',
                         color: 'white',
                         fontWeight: 'bold',
                       },
