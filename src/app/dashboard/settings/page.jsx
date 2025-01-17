@@ -3,14 +3,14 @@
 import React from 'react';
 import SettingSidebar from './SettingSidebar';
 
-const Settings = () => {
+const Settings = ({ children }) => {
     return (
-        <div className='w-full'>
-            <div>
+        <div className='w-full block md:flex'>
+            <div className='w-full md:w-2/12'>
                 <SettingSidebar />
             </div>
-            <div>
-
+            <div className='w-full md:w-10/12 min-h-screen'>
+                {children}
             </div>
         </div >
     )
