@@ -9,7 +9,7 @@ const Settings = ({ children }) => {
             <div className='w-full md:w-2/12'>
                 <SettingSidebar />
             </div>
-            <div className='w-full md:w-10/12 min-h-screen'>
+            <div className={`w-full md:w-10/12 h-[80vh]`}>
                 {children}
             </div>
         </div >
