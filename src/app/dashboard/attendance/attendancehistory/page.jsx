@@ -58,7 +58,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -69,7 +69,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -91,8 +91,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (membershipType === 'Staffs') {
