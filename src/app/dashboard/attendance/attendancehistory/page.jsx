@@ -42,7 +42,11 @@ import { usePagination } from "@/hooks/Pagination";
 
 const AttendanceHistory = () => {
 
-    const [startDate, setStartDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(() => {
+        const today = new Date();
+        today.setDate(1);
+        return today;
+    });
     const [endDate, setEndDate] = useState(new Date());
     const [membershipType, setMembershipType] = useState('Staffs');
     const [id, setId] = useState('');
@@ -172,7 +176,7 @@ const AttendanceHistory = () => {
                 {membershipType === 'Staffs' ? (
                     <div>
                         <div className='w-full flex justify-center'>
-                            <div className='w-full bg-white mx-4'>
+                            <div className='w-full bg-white rounded-md mx-4'>
                                 <div className="w-full p-4 space-y-4">
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
@@ -292,20 +296,8 @@ const AttendanceHistory = () => {
                                                             <TableCell className="font-medium">{attendance.staffId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.role}</TableCell>
-                                                            <TableCell className='text-right'>
-                                                                {new Date(attendance.checkIn).toLocaleDateString()} -  {new Date(attendance.checkIn).toLocaleTimeString('en-US', {
-                                                                    hour: 'numeric',
-                                                                    minute: 'numeric',
-                                                                    hour12: true
-                                                                })}
-                                                            </TableCell>
-                                                            <TableCell className='text-right'>
-                                                                {new Date(attendance.checkOut).toLocaleDateString()} -  {new Date(attendance.checkOut).toLocaleTimeString('en-US', {
-                                                                    hour: 'numeric',
-                                                                    minute: 'numeric',
-                                                                    hour12: true
-                                                                })}
-                                                            </TableCell>
+                                                            <TableCell className="text-sm">{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                            <TableCell className="text-sm">{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
                                                             <TableCell>{attendance.remark}</TableCell>
                                                             <TableCell>{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
                                                         </TableRow>

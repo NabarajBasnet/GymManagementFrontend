@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -210,7 +210,7 @@ const AdminDashboard = () => {
                     <h1 className={`text-4xl my-1 font-bold ${grid.color}`}>
                       {grid.value}
                     </h1>
-                    <p
+                    {/* <p
                       className={`text-xs font-medium mt-1 px-1 py-0.5 rounded-full inline-block ${grid.percentage > 0
                         ? "bg-green-200 text-green-800"
                         : "bg-red-200 text-red-800"
@@ -218,7 +218,7 @@ const AdminDashboard = () => {
                       style={{ lineHeight: '1.2rem', width: 'fit-content' }}
                     >
                       {grid.percentage > 0 ? `+${grid.percentage}%` : `${grid.percentage}%`}
-                    </p>
+                    </p> */}
                   </div>
                   {/* Icon Section */}
                   <div
