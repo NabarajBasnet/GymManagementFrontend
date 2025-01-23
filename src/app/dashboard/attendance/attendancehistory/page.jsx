@@ -42,13 +42,15 @@ import { usePagination } from "@/hooks/Pagination";
 
 const AttendanceHistory = () => {
 
+    const [body, setBody] = useState(null);
+    console.log('Body: ', body);
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
         today.setDate(1);
         return today;
     });
     const [endDate, setEndDate] = useState(new Date());
-    const [membershipType, setMembershipType] = useState('Staffs');
+    const [membershipType, setMembershipType] = useState('Members');
     const [id, setId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
     const [renderDropdown, setRenderDropdown] = useState(false);
@@ -62,7 +64,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -73,7 +75,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -95,13 +97,16 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
+            if (response.ok) {
+                setBody(responseBody);
+            };
             if (membershipType === 'Staffs') {
                 setStaffHistory(responseBody.data);
-                setTotalPages(responseBody.totalPages)
+                setTotalPages(responseBody.totalPages);
             } else {
                 setMemberHistory(responseBody.data);
                 setTotalPages(responseBody.totalPages)
@@ -178,9 +183,10 @@ const AttendanceHistory = () => {
                         <div className='w-full flex justify-center'>
                             <div className='w-full bg-white rounded-md mx-4'>
                                 <div className="w-full p-4 space-y-4">
+                                    <h1 className="text-sm font-semibold">Attendance history from first day of this month. If you want more previous data please manipulate date in given fields.</h1>
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
-                                            <Label>From</Label>
+                                            <Label>Start Date</Label>
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -200,7 +206,7 @@ const AttendanceHistory = () => {
                                             </Popover>
                                         </div>
                                         <div className="w-full">
-                                            <Label>To</Label>
+                                            <Label>End Date</Label>
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -275,17 +281,32 @@ const AttendanceHistory = () => {
                                     </div>
                                 </div>
 
-                                <div className="w-full p-4 flex items-center justify-around bg-slate-200">
-                                    <div>
-                                        <h1>Late Count: </h1>
-                                        <span>10</span>
-                                    </div>
+                                {membershipType === 'Staffs' ? (
+                                    <>
+                                        {body ? (
+                                            <div className="w-full p-4 flex items-center justify-around bg-slate-200">
+                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
+                                                    <h1 className="text-sm font-semibold">Late Count: </h1>
+                                                    <span className="text-sm">{body ? body.totalLatePunchIns : 'Null'}</span>
+                                                </div>
 
-                                    <div>
-                                        <h1>Salary Deduction: </h1>
-                                        <span>3</span>
-                                    </div>
-                                </div>
+                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
+                                                    <h1 className="text-sm font-semibold">Deduction Days: </h1>
+                                                    <span className="text-sm">{body ? body.deductionDays : 'Null'}</span>
+                                                </div>
+
+                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
+                                                    <h1 className="text-sm font-semibold">Deduced Salary Rs: </h1>
+                                                    <span className="text-sm">{body ? Math.floor(body.salaryDeduction) : 'Null'}</span>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <h1 className="text-center">Loading...</h1>
+                                        )}
+                                    </>
+                                ) : (
+                                    <></>
+                                )}
 
                                 <div className="w-full">
                                     {staffHistory ? (
@@ -351,6 +372,7 @@ const AttendanceHistory = () => {
                         <div className='w-full flex justify-center'>
                             <div className='w-full bg-white mx-4'>
                                 <div className="w-full p-4 space-y-4">
+                                    <h1 className="text-sm font-semibold">Attendance history from first day of this month. If you want more previous data please manipulate date in given fields.</h1>
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
                                             <Label>From</Label>
