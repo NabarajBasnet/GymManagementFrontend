@@ -43,7 +43,6 @@ import { usePagination } from "@/hooks/Pagination";
 const AttendanceHistory = () => {
 
     const [body, setBody] = useState(null);
-    console.log('Body: ', body);
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
         today.setDate(1);
@@ -58,7 +57,7 @@ const AttendanceHistory = () => {
     const [memberHistory, setMemberHistory] = useState();
     const [totalPages, setTotalPages] = useState();
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
+    const limit = 1;
 
     const [persons, setPersons] = useState(null);
 
@@ -118,7 +117,7 @@ const AttendanceHistory = () => {
 
     useEffect(() => {
         fetchAttendanceHistory();
-    }, [id, membershipType, startDate, endDate]);
+    }, [id, membershipType, startDate, endDate, currentPage]);
 
     const searchRef = useRef(null);
 
@@ -301,7 +300,7 @@ const AttendanceHistory = () => {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <h1 className="text-center">Loading...</h1>
+                                            <h1 className="text-center font-semibold animate-pulse text-sm">Loading...</h1>
                                         )}
                                     </>
                                 ) : (
