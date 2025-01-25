@@ -57,7 +57,7 @@ const AttendanceHistory = () => {
     const [memberHistory, setMemberHistory] = useState();
     const [totalPages, setTotalPages] = useState();
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 1;
+    const limit = 10;
 
     const [persons, setPersons] = useState(null);
 
