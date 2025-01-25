@@ -57,7 +57,7 @@ const AttendanceHistory = () => {
     const [memberHistory, setMemberHistory] = useState();
     const [totalPages, setTotalPages] = useState();
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
+    const limit = null;
 
     const [persons, setPersons] = useState(null);
 
@@ -69,7 +69,7 @@ const AttendanceHistory = () => {
             return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const fetchAllStaffs = async () => {
@@ -80,8 +80,8 @@ const AttendanceHistory = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
-    }
+        };
+    };
 
     useEffect(() => {
         if (membershipType === 'Staffs') {
@@ -328,8 +328,16 @@ const AttendanceHistory = () => {
                                                             <TableCell className="font-medium">{attendance.staffId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.role}</TableCell>
-                                                            <TableCell className="text-sm">{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
-                                                            <TableCell className="text-sm">{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                            <TableCell className="text-sm">
+                                                                {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''}
+                                                                {' - '}
+                                                                {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''}
+                                                            </TableCell>
+                                                            <TableCell className="text-sm">
+                                                                {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''}
+                                                                {' - '}
+                                                                {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''}
+                                                            </TableCell>
                                                             <TableCell>{attendance.remark}</TableCell>
                                                             <TableCell>{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
                                                         </TableRow>
@@ -343,7 +351,7 @@ const AttendanceHistory = () => {
                                             <TableFooter>
                                                 <TableRow>
                                                     <TableCell >Total checked in time</TableCell>
-                                                    <TableCell className="text-left">{staffHistory ? staffHistory.length : ''}</TableCell>
+                                                    <TableCell className="text-left">{body ? body.totalStaffAttendance : ''}</TableCell>
                                                 </TableRow>
                                             </TableFooter>
                                         </Table>
