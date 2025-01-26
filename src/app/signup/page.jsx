@@ -1,16 +1,23 @@
-'use client'
+'use client';
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useForm } from 'react-hook-form'
-import { useToast } from "@/hooks/use-toast";
+import { MdError } from "react-icons/md";
+import { MdDelete, MdClose } from "react-icons/md";
+import { MdDone } from "react-icons/md";
+import { Button } from "@/components/ui/button.jsx";
+import { useState } from "react";
 
 const SignUp = () => {
 
-    const { toast } = useToast();
+    const [toast, setToast] = useState(false);
+    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
+    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
+    const [responseType, setResponseType] = useState('');
+    const responseResultType = ['Success', 'Failure'];
 
     const {
         register,
@@ -26,28 +33,76 @@ const SignUp = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                credentials: 'include',
                 body: JSON.stringify(data),
             });
             const responseBody = await response.json();
+            console.log('Response Body: ', responseBody)
             if (response.ok) {
-                toast({
-                    title: "User signup successfull",
-                    description: "Friday, February 10, 2023 at 5:57 PM",
+                setResponseType(responseResultType[0]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setSuccessMessage({
+                    icon: MdDone,
+                    message: responseBody.message || 'Unauthorized action'
                 })
                 reset();
-            }
+            };
         } catch (error) {
             console.log("Error: ", error);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || 'Unauthorized action'
+            })
         }
     };
 
     return (
-        <div className="flex min-h-screen">
+        <div className="flex min-h-screen" onClick={() => setToast(false)}>
+            {toast ? (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black opacity-50"></div>
+                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
+                        <div>
+                            {
+                                responseType === 'Success' ? (
+                                    <MdDone className="text-3xl mx-4 text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl mx-4 text-red-600" />
+                                )
+                            }
+                        </div>
+                        <div className="block">
+                            {
+                                responseType === 'Success' ? (
+                                    <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
+                                ) : (
+                                    <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
+                                )
+                            }
+                        </div>
+                        <div>
+                            <MdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer text-3xl ml-4" />
+                        </div>
+                    </div>
+                </div>
+            ) : (
+                <></>
+            )}
             <div className="hidden lg:flex w-1/2 bg-gradient-to-r from-pink-600 via-purple-600 to-blue-600 items-center justify-center">
                 <div className="text-white blur-none text-4xl font-bold">
                     <TypingAnimation
                         className="text-4xl font-bold text-white"
-                        text="Ohh! Don't have an account? Create here😇"
+                        text="Sign Up"
                     />
                 </div>
             </div>

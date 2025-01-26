@@ -14,7 +14,7 @@ const Unauthorized = () => {
                 alignItems: 'center',
                 justifyContent: 'center',
                 height: '100vh',
-                background: 'linear-gradient(135deg, #1e293b, #0f172a)', // Dark gradient
+                background: 'linear-gradient(135deg, #1e293b, #0f172a)',
                 overflow: 'hidden',
                 color: 'white',
                 textAlign: 'center',
