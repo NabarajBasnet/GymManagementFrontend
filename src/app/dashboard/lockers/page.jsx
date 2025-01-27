@@ -7,7 +7,7 @@ import {
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
-} from "@/components/ui/tooltip"
+} from "@/components/ui/tooltip";
 import { FaLock } from "react-icons/fa";
 import {
     Select,
@@ -17,7 +17,7 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -88,8 +88,7 @@ const Lockers = () => {
     const [memberName, setMemberName] = useState('');
     const [duration, setDuration] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [fetchedLocker, setFetchedLocker] = useState({})
-
+    const [fetchedLocker, setFetchedLocker] = useState({});
 
     // Locker filteration states
     const [lockerStatus, setLockerStatus] = useState('');
@@ -105,7 +104,7 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data, isLoading } = useQuery({
@@ -127,7 +126,7 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data: allmembers, isLoading: isMemberLoading } = useQuery({
@@ -211,8 +210,22 @@ const Lockers = () => {
                 window.location.reload();
                 queryClient.invalidateQueries(['lockers']);
             };
+
             const responseBody = await response.json();
             setResponseMessage(responseBody.message);
+
+            if (response.status === 500) {
+                setResponseType(responseResultType[1]);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action',
+                });
+                queryClient.invalidateQueries(['lockers']);
+            };
 
             if (!response.status === 200) {
                 setResponseType(responseResultType[1]);
@@ -315,7 +328,7 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full" onClick={() => setToast(false)}>
             <div className='w-full p-6' onClick={() => setToast(false)}>
                 <Breadcrumb>
                     <BreadcrumbList>
