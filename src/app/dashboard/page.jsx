@@ -50,7 +50,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -238,7 +238,9 @@ const AdminDashboard = () => {
             <ShadSmallLineChart />
           </div>
           <BarChartInterActive />
-
+          <RenewRadialChart />
+          <RadialChart />
+          {/* 
           <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
             <div className="w-full rounded-lg bg-white">
               <RenewRadialChart />
@@ -246,11 +248,11 @@ const AdminDashboard = () => {
             <div className="w-full rounded-lg bg-white">
               <RadialChart />
             </div>
-          </div>
+          </div> */}
 
           <div className="w-full space-y-6">
-            <AreaChartShad />
-            <LineChartShad />
+            {/* <AreaChartShad />
+            <LineChartShad /> */}
           </div>
         </div>
       </div>

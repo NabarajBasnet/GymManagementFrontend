@@ -159,7 +159,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -203,8 +203,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
+                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://localhost:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -281,7 +281,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'

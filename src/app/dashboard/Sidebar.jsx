@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
 import { FaBoxOpen } from "react-icons/fa";
 import { HiChevronUpDown } from "react-icons/hi2";
 import { BiSolidDashboard } from "react-icons/bi";
@@ -69,7 +70,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -321,7 +322,9 @@ const Sidebar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" side="right" align="start">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuLabel>{user && user.user.role || 'Refresh'}</DropdownMenuLabel>
+                    <DropdownMenuLabel>{user && user.user.role || (<>
+                        <Button onClick={() => window.location.reload()}>Refresh</Button>
+                    </>)}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                         <DropdownMenuItem>
