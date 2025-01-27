@@ -1,5 +1,21 @@
 "use client";
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
+import { MdEmail, MdClose } from "react-icons/md";
+import { FaUserEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import Pagination from "../ui/CustomPagination";
@@ -96,6 +112,7 @@ const chartConfig = {
 export function RenewRadialChart() {
 
     const router = useRouter();
+    const { user, loading } = useUser();
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 3;
@@ -110,7 +127,7 @@ export function RenewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -139,6 +156,8 @@ export function RenewRadialChart() {
         newAdmissions,
         newAdmissionsLength
     } = data || {};
+
+    console.log('Renew Admission: ', renewdMembers);
 
     const { range, setPage, active } = usePagination({
         total: totalPages ? totalPages : 1,
@@ -221,30 +240,112 @@ export function RenewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div className='bg-white rounded-md shadow-md mt-6'>
-                <Table className='bg-white rounded-md shadow-md'>
+            <div className='bg-white rounded-md overflow-x-scroll shadow-md mt-6'>
+                <Table className='min-w-full'>
                     <TableHeader>
-                        <TableRow className='text-emerald-600'>
-                            <TableHead className='text-emerald-600'>Invoice</TableHead>
+                        <TableRow>
+                            <TableHead className='text-emerald-600'>Member Id</TableHead>
+                            <TableHead className='text-emerald-600'>Full Name</TableHead>
+                            <TableHead className='text-emerald-600'>Duration</TableHead>
+                            <TableHead className='text-emerald-600'>Option</TableHead>
+                            <TableHead className='text-emerald-600'>Renew</TableHead>
+                            <TableHead className='text-emerald-600'>Type</TableHead>
+                            <TableHead className='text-emerald-600'>Expire</TableHead>
+                            <TableHead className='text-emerald-600'>Contact No</TableHead>
+                            <TableHead className='text-emerald-600'>Shift</TableHead>
                             <TableHead className='text-emerald-600'>Status</TableHead>
-                            <TableHead className='text-emerald-600'>Method</TableHead>
-                            <TableHead className='text-emerald-600 text-right'>Amount</TableHead>
+                            <TableHead className='text-emerald-600'>Fee</TableHead>
+                            <TableHead className='text-emerald-600'>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {invoices.map((invoice) => (
-                            <TableRow key={invoice.invoice}>
-                                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                <TableCell>{invoice.paymentStatus}</TableCell>
-                                <TableCell>{invoice.paymentMethod}</TableCell>
-                                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                        {renewdMembers && renewdMembers.length > 0 ? (
+                            renewdMembers.map((member) => {
+                                const textColor =
+                                    member.status === 'Active' ? 'text-black' :
+                                        member.status === 'OnHold' ? 'text-yellow-600' :
+                                            'text-red-500';
+                                return (
+                                    <TableRow key={member._id} className={textColor}>
+                                        <TableCell><p>{member._id}</p></TableCell>
+                                        <TableCell>{member.fullName}</TableCell>
+                                        <TableCell>{member.membershipDuration}</TableCell>
+                                        <TableCell>{member.membershipOption}</TableCell>
+                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.membershipType}</TableCell>
+                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.contactNo}</TableCell>
+                                        <TableCell>{member.membershipShift}</TableCell>
+                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell>{member.paidAmmount}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center justify-center space-x-1">
+                                                <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                    <FaUserEdit className='cursor-pointer text-lg' />
+                                                </Link>
+
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <MdEmail
+                                                            className='cursor-pointer text-lg'
+                                                        />
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                {`This email will send membership details and QR Code to the ${member.fullName || 'member'}. If you are sure click continue`}
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                            <></>
+
+                                                        ) : (
+                                                            <MdDelete
+                                                                className="cursor-pointer text-red-600 text-lg"
+                                                            />
+                                                        )}
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                {`This action cannot be undone. This will permanently delete ${member.fullName || 'member'}'s  detail
+                                                                           and remove data from servers.`}
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => deleteMember(member._id)}>Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow className='bg-emerald-600 text-white'>
+                                <TableCell colSpan={13} className="text-center">
+                                    No members found.
+                                </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
-                    <TableFooter className='bg-emerald-600'>
-                        <TableRow className='text-white'>
-                            <TableCell colSpan={3}>Total</TableCell>
-                            <TableCell className="text-right">$2,500.00</TableCell>
+                    <TableFooter>
+                        <TableRow className='bg-emerald-600 text-white'>
+                            <TableCell colSpan={3}>Total Members</TableCell>
+                            <TableCell className="text-right">{totalMembers}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>

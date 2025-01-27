@@ -1,6 +1,26 @@
 "use client";
 
 import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
+import { MdEmail, MdClose } from "react-icons/md";
+import { FaUserEdit } from "react-icons/fa";
+import { MdDelete } from "react-icons/md";
+import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
+import { useQuery } from "@tanstack/react-query";
+import Pagination from "../ui/CustomPagination";
+import { useRouter } from "next/navigation";
+import { usePagination } from "@/hooks/Pagination";
+import {
     Table,
     TableBody,
     TableCaption,
@@ -9,57 +29,8 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV002",
-        paymentStatus: "Pending",
-        totalAmount: "$150.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV003",
-        paymentStatus: "Unpaid",
-        totalAmount: "$350.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV004",
-        paymentStatus: "Paid",
-        totalAmount: "$450.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV005",
-        paymentStatus: "Paid",
-        totalAmount: "$550.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV006",
-        paymentStatus: "Pending",
-        totalAmount: "$200.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV007",
-        paymentStatus: "Unpaid",
-        totalAmount: "$300.00",
-        paymentMethod: "Credit Card",
-    },
-];
-
-import Pagination from "../ui/CustomPagination";
-import { useRouter } from "next/navigation";
-import { usePagination } from "@/hooks/Pagination";
-import { TrendingUp } from "lucide-react"
+} from "@/components/ui/table";
+import { TrendingUp } from "lucide-react";
 import {
     Label,
     PolarGrid,
@@ -76,11 +47,11 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useQuery } from "@tanstack/react-query";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+
 const chartData = [
     { browser: "safari", visitors: 200, fill: "#db2777" },
-]
+];
 
 const chartConfig = {
     visitors: {
@@ -95,6 +66,7 @@ const chartConfig = {
 export function RadialChart() {
 
     const router = useRouter();
+    const { user, loading } = useUser();
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 3;
@@ -109,7 +81,7 @@ export function RadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -222,29 +194,111 @@ export function RadialChart() {
             </Card>
 
             <div className='bg-white rounded-md shadow-md mt-6'>
-                <Table className='bg-white rounded-md shadow-md'>
+                <Table className='min-w-full'>
                     <TableHeader>
-                        <TableRow className='text-pink-600'>
-                            <TableHead className='text-pink-600'>Invoice</TableHead>
+                        <TableRow className='text-white p-0'>
+                            <TableHead className='text-pink-600'>Member Id</TableHead>
+                            <TableHead className='text-pink-600'>Full Name</TableHead>
+                            <TableHead className='text-pink-600'>Duration</TableHead>
+                            <TableHead className='text-pink-600'>Option</TableHead>
+                            <TableHead className='text-pink-600'>Renew</TableHead>
+                            <TableHead className='text-pink-600'>Type</TableHead>
+                            <TableHead className='text-pink-600'>Expire</TableHead>
+                            <TableHead className='text-pink-600'>Contact No</TableHead>
+                            <TableHead className='text-pink-600'>Shift</TableHead>
                             <TableHead className='text-pink-600'>Status</TableHead>
-                            <TableHead className='text-pink-600'>Method</TableHead>
-                            <TableHead className='text-pink-600 text-right'>Amount</TableHead>
+                            <TableHead className='text-pink-600'>Fee</TableHead>
+                            <TableHead className='text-pink-600'>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {invoices.map((invoice) => (
-                            <TableRow key={invoice.invoice}>
-                                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                <TableCell>{invoice.paymentStatus}</TableCell>
-                                <TableCell>{invoice.paymentMethod}</TableCell>
-                                <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                        {newAdmissions && newAdmissions.length > 0 ? (
+                            newAdmissions.map((member) => {
+                                const textColor =
+                                    member.status === 'Active' ? 'text-black' :
+                                        member.status === 'OnHold' ? 'text-yellow-600' :
+                                            'text-red-500';
+                                return (
+                                    <TableRow key={member._id} className={textColor}>
+                                        <TableCell><p>{member._id}</p></TableCell>
+                                        <TableCell>{member.fullName}</TableCell>
+                                        <TableCell>{member.membershipDuration}</TableCell>
+                                        <TableCell>{member.membershipOption}</TableCell>
+                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.membershipType}</TableCell>
+                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.contactNo}</TableCell>
+                                        <TableCell>{member.membershipShift}</TableCell>
+                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell>{member.paidAmmount}</TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center justify-center space-x-1">
+                                                <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                    <FaUserEdit className='cursor-pointer text-lg' />
+                                                </Link>
+
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <MdEmail
+                                                            className='cursor-pointer text-lg'
+                                                        />
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                {`This email will send membership details and QR Code to the ${member.fullName || 'member'}. If you are sure click continue`}
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                            <></>
+
+                                                        ) : (
+                                                            <MdDelete
+                                                                className="cursor-pointer text-red-600 text-lg"
+                                                            />
+                                                        )}
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                {`This action cannot be undone. This will permanently delete ${member.fullName || 'member'}'s  detail
+                                                                           and remove data from servers.`}
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => deleteMember(member._id)}>Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </div>
+                                        </TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow className='bg-pink-600 text-white'>
+                                <TableCell colSpan={13} className="text-center">
+                                    No new members found.
+                                </TableCell>
                             </TableRow>
-                        ))}
+                        )}
                     </TableBody>
-                    <TableFooter className='bg-pink-600'>
-                        <TableRow className='text-white'>
-                            <TableCell colSpan={3}>Total</TableCell>
-                            <TableCell className="text-right">$2,500.00</TableCell>
+                    <TableFooter>
+                        <TableRow className='bg-pink-600 text-white'>
+                            <TableCell colSpan={3}>Total New Members</TableCell>
+                            <TableCell className="text-right">{newAdmissionsLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
