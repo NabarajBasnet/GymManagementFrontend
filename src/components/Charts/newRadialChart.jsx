@@ -1,20 +1,5 @@
 "use client";
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import Link from "next/link";
-import { MdEmail, MdClose } from "react-icons/md";
-import { FaUserEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../ui/CustomPagination";
@@ -63,7 +48,7 @@ const chartConfig = {
     },
 };
 
-export function RadialChart() {
+export function NewRadialChart() {
 
     const router = useRouter();
     const { user, loading } = useUser();
@@ -81,7 +66,7 @@ export function RadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -112,7 +97,7 @@ export function RadialChart() {
     } = data || {};
 
     const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
+        total: Math.ceil(newAdmissionsLength / 3),
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -208,7 +193,6 @@ export function RadialChart() {
                             <TableHead className='text-pink-600'>Shift</TableHead>
                             <TableHead className='text-pink-600'>Status</TableHead>
                             <TableHead className='text-pink-600'>Fee</TableHead>
-                            <TableHead className='text-pink-600'>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -231,59 +215,6 @@ export function RadialChart() {
                                         <TableCell>{member.membershipShift}</TableCell>
                                         <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
                                         <TableCell>{member.paidAmmount}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center justify-center space-x-1">
-                                                <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                    <FaUserEdit className='cursor-pointer text-lg' />
-                                                </Link>
-
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <MdEmail
-                                                            className='cursor-pointer text-lg'
-                                                        />
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                {`This email will send membership details and QR Code to the ${member.fullName || 'member'}. If you are sure click continue`}
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        {user && user.user.role === 'Gym Admin' ? (
-                                                            <></>
-
-                                                        ) : (
-                                                            <MdDelete
-                                                                className="cursor-pointer text-red-600 text-lg"
-                                                            />
-                                                        )}
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                {`This action cannot be undone. This will permanently delete ${member.fullName || 'member'}'s  detail
-                                                                           and remove data from servers.`}
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => deleteMember(member._id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </div>
-                                        </TableCell>
                                     </TableRow>
                                 );
                             })
@@ -305,7 +236,7 @@ export function RadialChart() {
 
                 <div className="py-3">
                     <Pagination
-                        total={totalPages || 1}
+                        total={Math.ceil(newAdmissionsLength / 3)}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}

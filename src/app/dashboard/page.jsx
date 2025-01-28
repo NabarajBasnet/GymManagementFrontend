@@ -26,9 +26,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { BarChartMultiple } from "@/components/Charts/BarChart";
 import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
-import { RadialChart } from "@/components/Charts/radialChart";
-import { LineChartShad } from "@/components/Charts/LineChart";
-import { AreaChartShad } from "@/components/Charts/areaChart";
+import { NewRadialChart } from "@/components/Charts/newRadialChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 import { usePagination } from "@/hooks/Pagination";
@@ -58,7 +56,7 @@ const AdminDashboard = () => {
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
-    }
+    };
   };
 
   const { data } = useQuery({
@@ -142,7 +140,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="w-full bg-gray-100">
+    <div className="w-full">
       <div className="w-full p-6">
         <div className="w-full">
           <Breadcrumb>
@@ -201,26 +199,15 @@ const AdminDashboard = () => {
             {gridContents.map((grid) => (
               <div
                 key={grid.text}
-                className="bg-white py-3 px-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="bg-gray-50 py-3 px-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="flex justify-between items-center">
-                  {/* Content Section */}
                   <div>
                     <p className="text-md font-bold text-gray-800">{grid.text}</p>
                     <h1 className={`text-4xl my-1 font-bold ${grid.color}`}>
                       {grid.value}
                     </h1>
-                    {/* <p
-                      className={`text-xs font-medium mt-1 px-1 py-0.5 rounded-full inline-block ${grid.percentage > 0
-                        ? "bg-green-200 text-green-800"
-                        : "bg-red-200 text-red-800"
-                        }`}
-                      style={{ lineHeight: '1.2rem', width: 'fit-content' }}
-                    >
-                      {grid.percentage > 0 ? `+${grid.percentage}%` : `${grid.percentage}%`}
-                    </p> */}
                   </div>
-                  {/* Icon Section */}
                   <div
                     className={`p-3 rounded-full flex items-center justify-center ${grid.bg}`}
                   >
@@ -233,26 +220,14 @@ const AdminDashboard = () => {
         </div>
 
         <div className="w-full space-y-6">
-          <div className="w-full items-center space-y-6">
+          <div className="w-full bg-gray-50 items-center space-y-6">
             <BarChartMultiple />
             <ShadSmallLineChart />
           </div>
-          <BarChartInterActive />
-          <RenewRadialChart />
-          <RadialChart />
-          {/* 
-          <div className="w-full md:flex items-center space-y-6 md:space-y-0 md:space-x-6">
-            <div className="w-full rounded-lg bg-white">
-              <RenewRadialChart />
-            </div>
-            <div className="w-full rounded-lg bg-white">
-              <RadialChart />
-            </div>
-          </div> */}
-
-          <div className="w-full space-y-6">
-            {/* <AreaChartShad />
-            <LineChartShad /> */}
+          <div className='bg-gray-50'>
+            <BarChartInterActive />
+            <RenewRadialChart />
+            <NewRadialChart />
           </div>
         </div>
       </div>

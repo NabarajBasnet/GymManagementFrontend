@@ -1,20 +1,5 @@
 "use client";
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import Link from "next/link";
-import { MdEmail, MdClose } from "react-icons/md";
-import { FaUserEdit } from "react-icons/fa";
-import { MdDelete } from "react-icons/md";
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -30,52 +15,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-
-const invoices = [
-    {
-        invoice: "INV001",
-        paymentStatus: "Paid",
-        totalAmount: "$250.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV002",
-        paymentStatus: "Pending",
-        totalAmount: "$150.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV003",
-        paymentStatus: "Unpaid",
-        totalAmount: "$350.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV004",
-        paymentStatus: "Paid",
-        totalAmount: "$450.00",
-        paymentMethod: "Credit Card",
-    },
-    {
-        invoice: "INV005",
-        paymentStatus: "Paid",
-        totalAmount: "$550.00",
-        paymentMethod: "PayPal",
-    },
-    {
-        invoice: "INV006",
-        paymentStatus: "Pending",
-        totalAmount: "$200.00",
-        paymentMethod: "Bank Transfer",
-    },
-    {
-        invoice: "INV007",
-        paymentStatus: "Unpaid",
-        totalAmount: "$300.00",
-        paymentMethod: "Credit Card",
-    },
-];
+} from "@/components/ui/table";
 
 import { TrendingUp } from "lucide-react";
 import {
@@ -127,7 +67,7 @@ export function RenewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -157,10 +97,8 @@ export function RenewRadialChart() {
         newAdmissionsLength
     } = data || {};
 
-    console.log('Renew Admission: ', renewdMembers);
-
     const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
+        total: Math.ceil(renewdMembersLength / 3),
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -255,7 +193,6 @@ export function RenewRadialChart() {
                             <TableHead className='text-emerald-600'>Shift</TableHead>
                             <TableHead className='text-emerald-600'>Status</TableHead>
                             <TableHead className='text-emerald-600'>Fee</TableHead>
-                            <TableHead className='text-emerald-600'>Action</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -278,59 +215,6 @@ export function RenewRadialChart() {
                                         <TableCell>{member.membershipShift}</TableCell>
                                         <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
                                         <TableCell>{member.paidAmmount}</TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center justify-center space-x-1">
-                                                <Link href={`/dashboard/allmembers/${member._id}`}>
-                                                    <FaUserEdit className='cursor-pointer text-lg' />
-                                                </Link>
-
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <MdEmail
-                                                            className='cursor-pointer text-lg'
-                                                        />
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                {`This email will send membership details and QR Code to the ${member.fullName || 'member'}. If you are sure click continue`}
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        {user && user.user.role === 'Gym Admin' ? (
-                                                            <></>
-
-                                                        ) : (
-                                                            <MdDelete
-                                                                className="cursor-pointer text-red-600 text-lg"
-                                                            />
-                                                        )}
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                {`This action cannot be undone. This will permanently delete ${member.fullName || 'member'}'s  detail
-                                                                           and remove data from servers.`}
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => deleteMember(member._id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </div>
-                                        </TableCell>
                                     </TableRow>
                                 );
                             })
@@ -344,14 +228,14 @@ export function RenewRadialChart() {
                     </TableBody>
                     <TableFooter>
                         <TableRow className='bg-emerald-600 text-white'>
-                            <TableCell colSpan={3}>Total Members</TableCell>
-                            <TableCell className="text-right">{totalMembers}</TableCell>
+                            <TableCell colSpan={3}>Total Renewd Members</TableCell>
+                            <TableCell className="text-right">{renewdMembersLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
                 <div className="py-3">
                     <Pagination
-                        total={totalPages || 1}
+                        total={Math.ceil(renewdMembersLength / 3)}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}

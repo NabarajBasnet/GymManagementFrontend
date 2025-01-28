@@ -92,10 +92,10 @@ const ExpiredMemberships = () => {
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
-
     const { totalPages, inactiveMembers, totalInactiveMembers, members } = data || {};
+
     const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
+        total: Math.ceil(totalInactiveMembers / limit),
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -309,61 +309,13 @@ const ExpiredMemberships = () => {
                                         <TableHead>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Duration</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Option</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Renew</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Type</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Expire</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
+                                        <TableHead>Option</TableHead>
+                                        <TableHead>Renew</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Expire</TableHead>
                                         <TableHead>Contact No</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Shift</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Status</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                    <MdArrowDropUp className="text-xl" />
-                                                    <MdArrowDropDown className="text-xl" />
-                                                </div> */}
-                                            </div>
-                                        </TableHead>
+                                        <TableHead>Shift</TableHead>
+                                        <TableHead>Status</TableHead>
                                         <TableHead>Fee</TableHead>
                                         <TableHead>Action</TableHead>
                                     </TableRow>
@@ -449,7 +401,7 @@ const ExpiredMemberships = () => {
             )}
             <div className="mt-4">
                 <Pagination
-                    total={totalPages || 1}
+                    total={Math.ceil(totalInactiveMembers / limit)}
                     page={currentPage || 1}
                     onChange={setCurrentPage}
                     withEdges={true}

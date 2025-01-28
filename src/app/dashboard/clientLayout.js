@@ -26,7 +26,7 @@ export default function ClientLayout({ children }) {
                         <div className="w-full mt-14">
                             <Header />
                         </div>
-                        <main className="w-full min-h-screen bg-gray-100 dark:bg-neutral-900 transition-all duration-500">
+                        <main className="w-full min-h-screen bg-white dark:bg-neutral-900 transition-all duration-500">
                             <div className="w-full mb-1 transition-transform duration-500 ease-in-out">
                                 {children}
                             </div>

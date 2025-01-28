@@ -37,7 +37,6 @@ const SignUp = () => {
                 body: JSON.stringify(data),
             });
             const responseBody = await response.json();
-            console.log('Response Body: ', responseBody)
             if (response.ok) {
                 setResponseType(responseResultType[0]);
                 setToast(true);
@@ -60,8 +59,8 @@ const SignUp = () => {
             setErrorMessage({
                 icon: MdError,
                 message: error.message || 'Unauthorized action'
-            })
-        }
+            });
+        };
     };
 
     return (

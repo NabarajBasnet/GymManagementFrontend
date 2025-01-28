@@ -51,8 +51,6 @@ export function BarChartMultiple() {
         queryFn: getTotalMembers
     });
 
-    // console.log("Data: ", data);
-
     const { members,
         totalMembers,
         totalPages,
