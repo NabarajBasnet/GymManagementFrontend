@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
   BreadcrumbEllipsis,
@@ -48,7 +49,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -178,7 +179,7 @@ const AdminDashboard = () => {
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
               placeholder='From'
-              className="bg-gray-50 border py-1 px-3 rounded-md focus:outline-none cursor-pointer"
+              className="border px-3 py-1 rounded-none focus:outline-none cursor-pointer"
             />
           </div>
 
@@ -189,8 +190,13 @@ const AdminDashboard = () => {
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
               placeholder='To'
-              className="bg-gray-50 border py-1 px-3 rounded-md focus:outline-none cursor-pointer"
+              className="border px-3 py-1 rounded-none focus:outline-none cursor-pointer"
             />
+          </div>
+
+          <div className="flex mt-6 flex-col">
+            <label className="font-bold"></label>
+            <Button className="rounded-sm">Submit</Button>
           </div>
         </form>
 
@@ -199,7 +205,7 @@ const AdminDashboard = () => {
             {gridContents.map((grid) => (
               <div
                 key={grid.text}
-                className="bg-gray-50 py-3 px-5 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className="bg-white py-3 px-5 cursor-pointer border-gray-50 border rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
               >
                 <div className="flex justify-between items-center">
                   <div>
