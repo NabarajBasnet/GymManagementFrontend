@@ -57,8 +57,7 @@ export function NewRadialChart() {
     const limit = 3;
     const [startDate, setStartDate] = useState(() => {
         const startDate = new Date();
-        const calculatedStartYear = startDate.getFullYear();
-        startDate.setFullYear(calculatedStartYear, 0, 1);
+        startDate.setDate(1);
         return startDate;
     });
 
@@ -66,7 +65,7 @@ export function NewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);

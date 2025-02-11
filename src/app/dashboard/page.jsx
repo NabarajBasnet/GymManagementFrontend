@@ -36,34 +36,38 @@ const AdminDashboard = () => {
 
   const router = useRouter();
 
+  const [data, setData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 3;
+  const limit = 30;
   const [startDate, setStartDate] = useState(() => {
-    const startDate = new Date();
-    const calculatedStartYear = startDate.getFullYear();
-    startDate.setFullYear(calculatedStartYear, 0, 1);
-    return startDate;
+    let start = new Date();
+    start.setDate(1);
+    return start.toISOString().split("T")[0];
   });
 
-  const [endDate, setEndDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(() => new Date().toISOString().split("T")[0]);
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
       };
+      setData(responseBody);
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
     };
   };
 
-  const { data } = useQuery({
-    queryKey: ['membersLength'],
-    queryFn: getTotalMembers
-  });
+  React.useEffect(() => {
+    getTotalMembers()
+  }, []);
+
+  React.useEffect(() => {
+    getTotalMembers()
+  }, [startDate, endDate]);
 
   const {
     members,
@@ -168,7 +172,7 @@ const AdminDashboard = () => {
 
         <div className="mt-4 mb-2 flex items-center space-x-4">
           <p className="font-semibold text-green-600">Note:</p>
-          <p className="font-semibold text-red-600 text-sm mt-1">Default Date will be Jan 1, Change in field to override</p>
+          <p className="font-semibold text-red-600 text-sm mt-1">Default date will be starting of the currnet month, Change in field to override</p>
         </div>
 
         <form className="flex items-center space-x-4">
@@ -192,11 +196,6 @@ const AdminDashboard = () => {
               placeholder='To'
               className="border px-3 py-1 rounded-none focus:outline-none cursor-pointer"
             />
-          </div>
-
-          <div className="flex mt-6 flex-col">
-            <label className="font-bold"></label>
-            <Button className="rounded-sm">Submit</Button>
           </div>
         </form>
 
