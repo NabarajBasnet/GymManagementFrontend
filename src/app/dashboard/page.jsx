@@ -1,14 +1,14 @@
 'use client';
 
 import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -47,6 +47,7 @@ const AdminDashboard = () => {
 
   const router = useRouter();
 
+  const [averageActiveMembers, setAverageActiveMembers] = useState(null);
   const [data, setData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 3;
@@ -72,12 +73,33 @@ const AdminDashboard = () => {
     };
   };
 
+  const getAverageActiveMembers = async () => {
+    try {
+      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
+      const responseBody = await response.json();
+      const {
+        activeMembersFourDaysAgo,
+        activeMembersOneDayAgo,
+        activeMembersThreeDaysAgo,
+        activeMembersTwoDaysAgo,
+        averageActiveMembers,
+      } = responseBody;
+      if (response.ok) {
+        setAverageActiveMembers(averageActiveMembers);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
   React.useEffect(() => {
-    getTotalMembers()
+    getTotalMembers();
+    getAverageActiveMembers();
   }, []);
 
   React.useEffect(() => {
-    getTotalMembers()
+    getTotalMembers();
+    getAverageActiveMembers();
   }, [startDate, endDate]);
 
   const {
@@ -142,7 +164,7 @@ const AdminDashboard = () => {
     {
       icon: FaUsers,
       text: "Average Active",
-      value: dailyAverageActiveMembers,
+      value: averageActiveMembers ? averageActiveMembers : '',
       percentage: +3.9,
       color: 'text-blue-600',
       bg: 'bg-blue-200',
