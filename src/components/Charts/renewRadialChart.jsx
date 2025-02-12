@@ -16,7 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
+import React from 'react';
 import { TrendingUp } from "lucide-react";
 import {
     Label,
@@ -55,32 +55,38 @@ export function RenewRadialChart() {
     const { user, loading } = useUser();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 3;
+    const limit = 5;
+    const [data, setData] = useState(null);
+
     const [startDate, setStartDate] = useState(() => {
-        const startDate = new Date();
-        startDate.setDate(1);
-        return startDate;
+        let start = new Date();
+        start.setDate(1);
+        return start;
     });
 
-    const [endDate, setEndDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(() => new Date());
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
             };
+            setData(responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
-    const { data } = useQuery({
-        queryKey: ['membersLength'],
-        queryFn: getTotalMembers
-    });
+    React.useEffect(() => {
+        getTotalMembers()
+    }, []);
+
+    React.useEffect(() => {
+        getTotalMembers()
+    }, [startDate, endDate]);
 
     const {
         members,
@@ -93,11 +99,12 @@ export function RenewRadialChart() {
         renewdMembers,
         renewdMembersLength,
         newAdmissions,
-        newAdmissionsLength
+        newAdmissionsLength,
+        totalRenewdMembersPages
     } = data || {};
 
     const { range, setPage, active } = usePagination({
-        total: Math.ceil(renewdMembersLength / 3),
+        total: totalRenewdMembersPages ? totalRenewdMembersPages : 0,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -234,7 +241,7 @@ export function RenewRadialChart() {
                 </Table>
                 <div className="py-3">
                     <Pagination
-                        total={Math.ceil(renewdMembersLength / 3)}
+                        total={totalRenewdMembersPages}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}

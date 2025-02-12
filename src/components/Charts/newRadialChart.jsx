@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "../ui/CustomPagination";
@@ -54,32 +55,38 @@ export function NewRadialChart() {
     const { user, loading } = useUser();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 3;
+    const limit = 5;
+    const [data,setData] = useState(null);
+
     const [startDate, setStartDate] = useState(() => {
-        const startDate = new Date();
-        startDate.setDate(1);
-        return startDate;
-    });
-
-    const [endDate, setEndDate] = useState(new Date());
-
-    const getTotalMembers = async () => {
+        let start = new Date();
+        start.setDate(1);
+        return start;
+      });
+    
+      const [endDate, setEndDate] = useState(() => new Date());
+    
+      const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${3}&page=${currentPage}`);
-            const responseBody = await response.json();
-            if (responseBody.redirect) {
-                router.push(responseBody.redirect);
-            };
-            return responseBody;
+          const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+          const responseBody = await response.json();
+          if (responseBody.redirect) {
+            router.push(responseBody.redirect);
+          };
+          setData(responseBody);
+          return responseBody;
         } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
-
-    const { data } = useQuery({
-        queryKey: ['membersLength'],
-        queryFn: getTotalMembers
-    });
+          console.log("Error: ", error);
+        };
+      };
+    
+      React.useEffect(() => {
+        getTotalMembers()
+      }, []);
+    
+      React.useEffect(() => {
+        getTotalMembers()
+      }, [startDate, endDate]);
 
     const {
         members,
@@ -92,11 +99,13 @@ export function NewRadialChart() {
         renewdMembers,
         renewdMembersLength,
         newAdmissions,
-        newAdmissionsLength
+        newAdmissionsLength,
+        totalRenewdMembersPages,
+        totalNewMembersPages
     } = data || {};
 
     const { range, setPage, active } = usePagination({
-        total: Math.ceil(newAdmissionsLength / 3),
+        total: totalNewMembersPages?totalNewMembersPages:0,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -235,7 +244,7 @@ export function NewRadialChart() {
 
                 <div className="py-3">
                     <Pagination
-                        total={Math.ceil(newAdmissionsLength / 3)}
+                        total={totalNewMembersPages}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}

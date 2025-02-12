@@ -1,5 +1,15 @@
 'use client';
 
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableFooter,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
   Breadcrumb,
@@ -31,6 +41,7 @@ import { NewRadialChart } from "@/components/Charts/newRadialChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 import { usePagination } from "@/hooks/Pagination";
+import Pagination from "@/components/ui/CustomPagination";
 
 const AdminDashboard = () => {
 
@@ -38,7 +49,7 @@ const AdminDashboard = () => {
 
   const [data, setData] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 30;
+  const limit = 3;
   const [startDate, setStartDate] = useState(() => {
     let start = new Date();
     start.setDate(1);
@@ -80,8 +91,13 @@ const AdminDashboard = () => {
     renewdMembers,
     renewdMembersLength,
     newAdmissions,
-    newAdmissionsLength
+    newAdmissionsLength,
+    totalRenewdMembersPages,
+    totalNewMembersPages
   } = data || {};
+
+  // console.log("Renewd Membership: ",renewdMembers);
+  // console.log("New Membership: ",newAdmissions);
 
   const { range, setPage, active } = usePagination({
     total: totalPages ? totalPages : 1,
@@ -232,7 +248,144 @@ const AdminDashboard = () => {
           <div className='bg-gray-50'>
             <BarChartInterActive />
             <RenewRadialChart />
+
+            {/* <div className='bg-white rounded-md shadow-md mt-6'>
+                <Table className='min-w-full'>
+                    <TableHeader>
+                        <TableRow className='text-white p-0'>
+                            <TableHead className='text-pink-600'>Member Id</TableHead>
+                            <TableHead className='text-pink-600'>Full Name</TableHead>
+                            <TableHead className='text-pink-600'>Duration</TableHead>
+                            <TableHead className='text-pink-600'>Option</TableHead>
+                            <TableHead className='text-pink-600'>Renew</TableHead>
+                            <TableHead className='text-pink-600'>Type</TableHead>
+                            <TableHead className='text-pink-600'>Expire</TableHead>
+                            <TableHead className='text-pink-600'>Contact No</TableHead>
+                            <TableHead className='text-pink-600'>Shift</TableHead>
+                            <TableHead className='text-pink-600'>Status</TableHead>
+                            <TableHead className='text-pink-600'>Fee</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {newAdmissions && newAdmissions.length > 0 ? (
+                            newAdmissions.map((member) => {
+                                const textColor =
+                                    member.status === 'Active' ? 'text-black' :
+                                        member.status === 'OnHold' ? 'text-yellow-600' :
+                                            'text-red-500';
+                                return (
+                                    <TableRow key={member._id} className={textColor}>
+                                        <TableCell><p>{member._id}</p></TableCell>
+                                        <TableCell>{member.fullName}</TableCell>
+                                        <TableCell>{member.membershipDuration}</TableCell>
+                                        <TableCell>{member.membershipOption}</TableCell>
+                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.membershipType}</TableCell>
+                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.contactNo}</TableCell>
+                                        <TableCell>{member.membershipShift}</TableCell>
+                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell>{member.paidAmmount}</TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow className='bg-pink-600 text-white'>
+                                <TableCell colSpan={13} className="text-center">
+                                    No new members found.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow className='bg-pink-600 text-white'>
+                            <TableCell colSpan={3}>Total New Members</TableCell>
+                            <TableCell className="text-right">{newAdmissionsLength}</TableCell>
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+
+                <div className="py-3">
+                    <Pagination
+                        total={Math.ceil(newAdmissionsLength / 3)}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
+            </div> */}
+
             <NewRadialChart />
+{/* 
+            <div className='bg-white rounded-md overflow-x-scroll shadow-md mt-6'>
+                <Table className='min-w-full'>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className='text-emerald-600'>Member Id</TableHead>
+                            <TableHead className='text-emerald-600'>Full Name</TableHead>
+                            <TableHead className='text-emerald-600'>Duration</TableHead>
+                            <TableHead className='text-emerald-600'>Option</TableHead>
+                            <TableHead className='text-emerald-600'>Renew</TableHead>
+                            <TableHead className='text-emerald-600'>Type</TableHead>
+                            <TableHead className='text-emerald-600'>Expire</TableHead>
+                            <TableHead className='text-emerald-600'>Contact No</TableHead>
+                            <TableHead className='text-emerald-600'>Shift</TableHead>
+                            <TableHead className='text-emerald-600'>Status</TableHead>
+                            <TableHead className='text-emerald-600'>Fee</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {renewdMembers && renewdMembers.length > 0 ? (
+                            renewdMembers.map((member) => {
+                                const textColor =
+                                    member.status === 'Active' ? 'text-black' :
+                                        member.status === 'OnHold' ? 'text-yellow-600' :
+                                            'text-red-500';
+                                return (
+                                    <TableRow key={member._id} className={textColor}>
+                                        <TableCell><p>{member._id}</p></TableCell>
+                                        <TableCell>{member.fullName}</TableCell>
+                                        <TableCell>{member.membershipDuration}</TableCell>
+                                        <TableCell>{member.membershipOption}</TableCell>
+                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.membershipType}</TableCell>
+                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell>{member.contactNo}</TableCell>
+                                        <TableCell>{member.membershipShift}</TableCell>
+                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell>{member.paidAmmount}</TableCell>
+                                    </TableRow>
+                                );
+                            })
+                        ) : (
+                            <TableRow className='bg-emerald-600 text-white'>
+                                <TableCell colSpan={13} className="text-center">
+                                    No members found.
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                    <TableFooter>
+                        <TableRow className='bg-emerald-600 text-white'>
+                            <TableCell colSpan={3}>Total Renewd Members</TableCell>
+                            <TableCell className="text-right">{renewdMembersLength}</TableCell>
+                        </TableRow>
+                    </TableFooter>
+                </Table>
+                <div className="py-3">
+                    <Pagination
+                        total={Math.ceil(renewdMembersLength / 3)}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
+            </div> */}
+
           </div>
         </div>
       </div>
