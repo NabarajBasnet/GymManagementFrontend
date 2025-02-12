@@ -56,7 +56,6 @@ export function NewRadialChart() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
-    const newLimit = 5;
     const [data, setData] = useState(null);
 
     const [startDate, setStartDate] = useState(() => {
@@ -69,7 +68,7 @@ export function NewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}&newLimit=${newLimit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -87,7 +86,7 @@ export function NewRadialChart() {
 
     React.useEffect(() => {
         getTotalMembers()
-    }, [startDate, endDate]);
+    }, [startDate, endDate, currentPage]);
 
     const {
         members,
