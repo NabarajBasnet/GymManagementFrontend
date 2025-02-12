@@ -35,7 +35,7 @@ export function BarChartMultiple() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:5000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -75,7 +75,7 @@ export function BarChartMultiple() {
         { month: "October", Renew: 200, NewAdmission: 100 },
         { month: "November", Renew: 245, NewAdmission: 150 },
         { month: "December", Renew: 190, NewAdmission: 170 },
-    ]
+    ];
 
     const chartConfig = {
         Renew: {
@@ -88,10 +88,16 @@ export function BarChartMultiple() {
         },
     }
 
+    const date = new Date();
+
+    const fromStartingMonth = new Date();
+    fromStartingMonth.setMonth(0);
+    fromStartingMonth.setDate(1);
+    
     return (
         <Card>
             <CardHeader>
-                <CardDescription>January 01 - {new Date().toLocaleDateString('en-US', {
+                <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: '2-digit'
