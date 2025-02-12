@@ -56,37 +56,38 @@ export function NewRadialChart() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
-    const [data,setData] = useState(null);
+    const newLimit = 5;
+    const [data, setData] = useState(null);
 
     const [startDate, setStartDate] = useState(() => {
         let start = new Date();
         start.setDate(1);
         return start;
-      });
-    
-      const [endDate, setEndDate] = useState(() => new Date());
-    
-      const getTotalMembers = async () => {
+    });
+
+    const [endDate, setEndDate] = useState(() => new Date());
+
+    const getTotalMembers = async () => {
         try {
-          const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
-          const responseBody = await response.json();
-          if (responseBody.redirect) {
-            router.push(responseBody.redirect);
-          };
-          setData(responseBody);
-          return responseBody;
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}&newLimit=${newLimit}`);
+            const responseBody = await response.json();
+            if (responseBody.redirect) {
+                router.push(responseBody.redirect);
+            };
+            setData(responseBody);
+            return responseBody;
         } catch (error) {
-          console.log("Error: ", error);
+            console.log("Error: ", error);
         };
-      };
-    
-      React.useEffect(() => {
+    };
+
+    React.useEffect(() => {
         getTotalMembers()
-      }, []);
-    
-      React.useEffect(() => {
+    }, []);
+
+    React.useEffect(() => {
         getTotalMembers()
-      }, [startDate, endDate]);
+    }, [startDate, endDate]);
 
     const {
         members,
@@ -105,7 +106,7 @@ export function NewRadialChart() {
     } = data || {};
 
     const { range, setPage, active } = usePagination({
-        total: totalNewMembersPages?totalNewMembersPages:0,
+        total: totalNewMembersPages ? totalNewMembersPages : 0,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
