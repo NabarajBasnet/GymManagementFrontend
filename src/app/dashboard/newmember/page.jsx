@@ -389,7 +389,7 @@ const newMemberRegistrationForm = () => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full p-1">
+        <div className="w-full p-1" onClick={() => setToast(false)}>
             <div className='w-full p-6' onClick={() => setToast(false)}>
                 <Breadcrumb>
                     <BreadcrumbList>
