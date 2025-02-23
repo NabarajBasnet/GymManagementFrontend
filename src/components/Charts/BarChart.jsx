@@ -35,7 +35,7 @@ export function BarChartMultiple() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -93,44 +93,46 @@ export function BarChartMultiple() {
     const fromStartingMonth = new Date();
     fromStartingMonth.setMonth(0);
     fromStartingMonth.setDate(1);
-    
+
     return (
-        <Card>
-            <CardHeader>
-                <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: '2-digit'
-                })}</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart accessibilityLayer data={chartData}>
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
-                            tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="dashed" />}
-                        />
-                        <Bar dataKey="Renew" fill="#2563eb" radius={20} />
-                        <Bar dataKey="NewAdmission" fill="#7c3aed" radius={20} />
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none text-green-600">
-                    Increased renewal by 5.2% this month <TrendingUp className="text-green-600 h-4 w-4" />
-                </div>
-                <div className="leading-none text-muted-foreground">
-                    Showing total new admission and renew from Jan 1 this year
-                </div>
-            </CardFooter>
-        </Card>
+        <div className="shadow-lg w-full rounded-md border">
+            <Card>
+                <CardHeader>
+                    <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: '2-digit'
+                    })}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={chartConfig}>
+                        <BarChart accessibilityLayer data={chartData}>
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                tickMargin={10}
+                                axisLine={false}
+                                tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent indicator="dashed" />}
+                            />
+                            <Bar dataKey="Renew" fill="#2563eb" radius={20} />
+                            <Bar dataKey="NewAdmission" fill="#7c3aed" radius={20} />
+                        </BarChart>
+                    </ChartContainer>
+                </CardContent>
+                <CardFooter className="flex-col items-start gap-2 text-sm">
+                    <div className="flex gap-2 font-medium leading-none text-green-600">
+                        Increased renewal by 5.2% this month <TrendingUp className="text-green-600 h-4 w-4" />
+                    </div>
+                    <div className="leading-none text-muted-foreground">
+                        Showing total new admission and renew from Jan 1 this year
+                    </div>
+                </CardFooter>
+            </Card>
+        </div>
     )
 }

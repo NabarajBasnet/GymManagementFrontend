@@ -61,7 +61,7 @@ const AdminDashboard = () => {
 
   const getTotalMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+      const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
       const responseBody = await response.json();
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
@@ -75,7 +75,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
+      const response = await fetch('http://localhost:3000/api/averageactivemembers');
       const responseBody = await response.json();
       const {
         activeMembersFourDaysAgo,
@@ -136,6 +136,7 @@ const AdminDashboard = () => {
       percentage: 1.1,
       color: 'text-blue-600',
       bg: 'bg-blue-200',
+      shadow: 'shadow-blue-200',
     },
     {
       icon: MdAutorenew,
@@ -144,6 +145,7 @@ const AdminDashboard = () => {
       percentage: -1.5,
       color: 'text-green-600',
       bg: 'bg-green-200',
+      shadow: 'shadow-green-200',
     },
     {
       icon: RiUserShared2Fill,
@@ -152,6 +154,7 @@ const AdminDashboard = () => {
       percentage: +0.5,
       color: 'text-yellow-600',
       bg: 'bg-yellow-200',
+      shadow: 'shadow-yellow-200',
     },
     {
       icon: GiBiceps,
@@ -160,6 +163,7 @@ const AdminDashboard = () => {
       percentage: -0.2,
       color: 'text-green-600',
       bg: 'bg-green-200',
+      shadow: 'shadow-green-200',
     },
     {
       icon: FaUsers,
@@ -168,6 +172,7 @@ const AdminDashboard = () => {
       percentage: +3.9,
       color: 'text-blue-600',
       bg: 'bg-blue-200',
+      shadow: 'shadow-blue-200',
     },
     {
       icon: PiUsersFourFill,
@@ -176,6 +181,7 @@ const AdminDashboard = () => {
       percentage: -4.5,
       color: 'text-red-600',
       bg: 'bg-red-200',
+      shadow: 'shadow-red-200',
     },
   ];
 
@@ -239,7 +245,7 @@ const AdminDashboard = () => {
             {gridContents.map((grid) => (
               <div
                 key={grid.text}
-                className="bg-white py-3 px-5 cursor-pointer border-gray-50 border rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300"
+                className={`bg-white py-3 px-5 cursor-pointer shadow-md border-gray-200 hover:scale-105 transition-all border rounded-lg duration-300 ${grid.shadow}`}
               >
                 <div className="flex justify-between items-center">
                   <div>
@@ -260,16 +266,14 @@ const AdminDashboard = () => {
         </div>
 
         <div className="w-full space-y-6">
-          <div className="w-full bg-gray-50 items-center space-y-6">
+          <div className="w-full items-center space-y-6">
             <BarChartMultiple />
             <ShadSmallLineChart />
           </div>
-          <div className='bg-gray-50'>
+          <div className="w-full items-center space-y-6">
             <BarChartInterActive />
             <RenewRadialChart />
-
             <NewRadialChart />
-
           </div>
         </div>
       </div>

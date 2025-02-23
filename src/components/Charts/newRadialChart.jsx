@@ -68,7 +68,7 @@ export function NewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -115,7 +115,7 @@ export function NewRadialChart() {
     });
 
     return (
-        <div>
+        <div className="shadow-lg w-full rounded-md border">
             <Card className="flex flex-col">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admmission</CardTitle>
@@ -227,7 +227,7 @@ export function NewRadialChart() {
                                 );
                             })
                         ) : (
-                            <TableRow className='bg-pink-600 text-white'>
+                            <TableRow className='bg-pink-600 hover:bg-pink-700 text-white'>
                                 <TableCell colSpan={13} className="text-center">
                                     No new members found.
                                 </TableCell>
@@ -235,7 +235,7 @@ export function NewRadialChart() {
                         )}
                     </TableBody>
                     <TableFooter>
-                        <TableRow className='bg-pink-600 text-white'>
+                        <TableRow className='bg-pink-600 hover:bg-pink-700 text-white'>
                             <TableCell colSpan={3}>Total New Members</TableCell>
                             <TableCell className="text-right">{newAdmissionsLength}</TableCell>
                         </TableRow>

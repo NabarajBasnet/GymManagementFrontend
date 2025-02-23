@@ -45,55 +45,57 @@ const chartConfig = {
 
 export function ShadSmallLineChart() {
     return (
-        <Card>
-            <CardHeader>
-                <CardDescription>January - December 2024</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <LineChart
-                        accessibilityLayer
-                        data={chartData}
-                        margin={{
-                            left: 12,
-                            right: 12,
-                        }}
-                    >
-                        <CartesianGrid vertical={false} />
-                        <XAxis
-                            dataKey="month"
-                            tickLine={false}
-                            axisLine={false}
-                            tickMargin={4}
-                            tickFormatter={(value) => value.slice(0, 3)}
-                        />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
-                        />
-                        <Line
-                            dataKey="newadmission"
-                            type="natural"
-                            stroke="#14b8a6"
-                            strokeWidth={1}
-                            dot={{
-                                fill: "#14b8a6",
+        <div className="shadow-lg w-full rounded-md border">
+            <Card>
+                <CardHeader>
+                    <CardDescription>January - December 2024</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <ChartContainer config={chartConfig}>
+                        <LineChart
+                            accessibilityLayer
+                            data={chartData}
+                            margin={{
+                                left: 12,
+                                right: 12,
                             }}
-                            activeDot={{
-                                r: 3,
-                            }}
-                        />
-                    </LineChart>
-                </ChartContainer>
-            </CardContent>
-            <CardFooter className="flex-col items-start gap-2 text-sm">
-                <div className="flex gap-2 font-medium leading-none">
-                    Increasing new admission by 5.2% this month <TrendingUp className="h-4 w-4" />
-                </div>
-                <div className="leading-none text-muted-foreground">
-                    Showing total new admission for the last 12 months
-                </div>
-            </CardFooter>
-        </Card>
+                        >
+                            <CartesianGrid vertical={false} />
+                            <XAxis
+                                dataKey="month"
+                                tickLine={false}
+                                axisLine={false}
+                                tickMargin={4}
+                                tickFormatter={(value) => value.slice(0, 3)}
+                            />
+                            <ChartTooltip
+                                cursor={false}
+                                content={<ChartTooltipContent hideLabel />}
+                            />
+                            <Line
+                                dataKey="newadmission"
+                                type="natural"
+                                stroke="#14b8a6"
+                                strokeWidth={1}
+                                dot={{
+                                    fill: "#14b8a6",
+                                }}
+                                activeDot={{
+                                    r: 3,
+                                }}
+                            />
+                        </LineChart>
+                    </ChartContainer>
+                </CardContent>
+                <CardFooter className="flex-col items-start gap-2 text-sm">
+                    <div className="flex gap-2 font-medium leading-none">
+                        Increasing new admission by 5.2% this month <TrendingUp className="h-4 w-4" />
+                    </div>
+                    <div className="leading-none text-muted-foreground">
+                        Showing total new admission for the last 12 months
+                    </div>
+                </CardFooter>
+            </Card>
+        </div>
     );
 };
