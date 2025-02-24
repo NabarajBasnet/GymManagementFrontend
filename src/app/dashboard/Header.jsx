@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+import { PiStarFour } from "react-icons/pi";
 import Settings from "./settings/page";
 import { IoClose } from "react-icons/io5";
 import { Separator } from "@/components/ui/separator";
@@ -139,7 +141,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -468,6 +470,12 @@ const Header = () => {
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <Button className='space-x-2 flex justify-between items-center bg-gradient-to-r from-pink-700 to-purple-700'>
+                                    <PiStarFour />
+                                    Upgrade Plan
+                                </Button>
+                            </DropdownMenuItem>
                             <DropdownMenuItem>
                                 <User />
                                 <span>Profile</span>

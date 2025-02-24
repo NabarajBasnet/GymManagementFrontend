@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
       if (responseBody.redirect) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/averageactivemembers');
+      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
@@ -189,7 +189,7 @@ const AdminDashboard = () => {
           </Breadcrumb>
         </div>
 
-        <Alert className="mb-6 bg-blue-50 border-blue-100">
+        <Alert className="bg-blue-50 border-blue-100">
           <InfoIcon className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-700">
             Showing data from the beginning of the current month. Adjust dates below to view different periods.

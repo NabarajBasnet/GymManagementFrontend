@@ -1,5 +1,6 @@
 'use client';
 
+import { PiStarFour } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { FaBoxOpen } from "react-icons/fa";
 import { HiChevronUpDown } from "react-icons/hi2";
@@ -70,7 +71,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -243,7 +244,7 @@ const Sidebar = () => {
                     ) : (
                         <span>
                             <p className="w-full text-md font-bold text-gray-600">Revive Fitness</p>
-                            <p className="w-full text-[10px] font-semibold text-gray-600">Enterprise</p>
+                            <p className="w-full text-[10px] font-semibold text-gray-600">Starter</p>
                         </span>
                     )}
                 </div>
@@ -322,15 +323,23 @@ const Sidebar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" side="right" align="start">
                     <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                    <DropdownMenuLabel>{user && user.user.role || (<>
+                    {/* <DropdownMenuLabel>{user && user.user.role || (<>
                         <Button onClick={() => window.location.reload()}>Refresh</Button>
-                    </>)}</DropdownMenuLabel>
+                    </>)}</DropdownMenuLabel> */}
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>
+                        <DropdownMenuItem>
+                            <Button className='space-x-2 flex justify-between items-center bg-gradient-to-r from-pink-700 to-purple-700'>
+                                <PiStarFour />
+                                Upgrade Plan
+                            </Button>
+                        </DropdownMenuItem>
                         <DropdownMenuItem>
                             <User />
                             <span>Profile</span>
                         </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuGroup>
                         <DropdownMenuItem>
                             <Settings />
                             <a href='/settings'>Settings</a>
