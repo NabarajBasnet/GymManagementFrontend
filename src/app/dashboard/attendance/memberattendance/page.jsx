@@ -1,5 +1,15 @@
 'use client';
 
+import {
+    FaCheckCircle,
+    FaInfoCircle,
+    FaTimes,
+    FaExclamationTriangle,
+    FaPlayCircle,
+    FaSpinner
+} from 'react-icons/fa';
+import '../../../globals.css';
+import { IoMdInformationCircleOutline } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
 import { IoSearch } from "react-icons/io5";
 import {
@@ -201,44 +211,123 @@ const MemberAttendance = () => {
         <div className='w-full'>
             <div className='w-full p-4' onClick={() => setToast(false)}>
                 {toast && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white border flex justify-between items-center shadow-2xl p-4 relative">
-                            {responseType === 'Success' ? (
-                                <MdDone className="text-3xl mx-4 text-green-600" />
-                            ) : (
-                                <MdError className="text-3xl mx-4 text-red-600" />
+                    <div className="fixed inset-0 flex items-start justify-end z-50 pt-6 pr-6 backdrop-blur-sm">
+                        <div className="absolute inset-0 bg-black/30 transition-opacity" />
+                        <div className={`bg-white border-l-8 ${responseType === 'Success' ? 'border-green-600' : 'border-red-600'} rounded-xl shadow-3xl max-w-md w-full relative transform transition-all duration-700 animate-slide-in`}>
+                            <div className="flex items-start p-6 space-x-4">
+                                {/* Icon Container */}
+                                <div className="flex-shrink-0">
+                                    {responseType === 'Success' ? (
+                                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                                            <MdDone className='text-green-600' />
+                                        </div>
+                                    ) : (
+                                        <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+                                            <IoMdInformationCircleOutline className='text-red-600' />
+                                        </div>
+                                    )}
+                                </div>
+
+                                {/* Text Content */}
+                                <div className="flex-1">
+                                    <h3 className={`text-xl font-bold ${responseType === 'Success' ? 'text-green-600' : 'text-red-600'} mb-1`}>
+                                        {responseType === 'Success' ? 'Success!' : 'Oops!'}
+                                    </h3>
+                                    <p className={`${responseType === 'Success' ? 'text-green-600' : 'text-red-600'} text-sm font-medium leading-5`}>
+                                        {responseType === 'Success'
+                                            ? successMessage.message
+                                            : errorMessage.message}
+                                    </p>
+                                </div>
+
+                                {/* Close Button */}
+                                <button
+                                    onClick={() => setToast(false)}
+                                    className="text-gray-400 hover:text-gray-500 transition-colors duration-200"
+                                >
+                                    <MdClose className='hover:scale-105 transition-all duration-700' />
+                                </button>
+                            </div>
+
+                            {/* Progress Bar */}
+                            {responseType === 'Success' && (
+                                <div className="h-1 bg-green-100 rounded-b-lg">
+                                    <div className="h-full bg-green-500 rounded-b-lg animate-progress"></div>
+                                </div>
                             )}
-                            <p className={`text-sm font-semibold ${responseType === 'Success' ? 'text-green-600' : 'text-red-600'}`}>
-                                {responseType === 'Success' ? successMessage.message : errorMessage.message}
-                            </p>
-                            <MdClose onClick={() => setToast(false)} className="cursor-pointer text-3xl ml-4" />
                         </div>
                     </div>
                 )}
 
                 {membershipHoldToggle && (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white border shadow-2xl p-4 relative">
-                            <div className="flex items-center justify-between">
-                                {responseType === 'Success' ? (
-                                    <MdDone className="text-3xl mx-4 text-green-600" />
-                                ) : (
-                                    <MdError className="text-3xl mx-4 text-red-600" />
-                                )}
-                                <p className={`text-sm font-semibold text-red-600`}>
-                                    Membership on hold
-                                </p>
-                                <MdClose onClick={() => setMembershipHoldToggle(false)} className="cursor-pointer text-3xl ml-4" />
+                    <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-blur-sm">
+                        <div className="absolute inset-0 bg-black/30 transition-opacity" />
+                        <div className="bg-white rounded-xl shadow-2xl p-8 relative w-full max-w-2xl transform transition-all">
+                            {/* Header */}
+                            <div className="flex items-start justify-between mb-6">
+                                <div className="flex items-center gap-4">
+                                    <div className={`p-3 rounded-full ${responseType === 'Success' ? 'bg-green-100' : 'bg-red-100'}`}>
+                                        {responseType === 'Success' ? (
+                                            <FaCheckCircle className="w-8 h-8 text-green-600" />
+                                        ) : (
+                                            <IoMdInformationCircleOutline className="w-8 h-8 text-red-600" />
+                                        )}
+                                    </div>
+                                    <h2 className="text-2xl font-bold text-gray-900">
+                                        Membership Status
+                                    </h2>
+                                </div>
+                                <button
+                                    onClick={() => setMembershipHoldToggle(false)}
+                                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                                >
+                                    <MdClose className="w-6 h-6" />
+                                </button>
                             </div>
-                            <h1 className="my-4 text-sm font-semibold">
-                                {`Membership paused for ${validationResult?.member?.pausedDays} Days. Are you sure you want to activate?`}
-                            </h1>
-                            <div className="w-full flex justify-end space-x-2">
-                                <Button onClick={() => setMembershipHoldToggle(false)} className="bg-red-600 hover:bg-red-700 transition-all duration-500">Cancel</Button>
-                                <Button onClick={activateMembership} className="bg-green-600 hover:bg-green-700 transition-all duration-500">
-                                    {activating ? 'Processing...' : 'Activate'}
+
+                            {/* Body */}
+                            <div className="pl-4 border-l-4 border-red-600 ml-14 mb-8">
+                                <p className="text-lg font-bold text-gray-800 mb-2">
+                                    Membership Paused
+                                </p>
+                                <p className="text-gray-600 text-sm font-medium">
+                                    {`This membership has been paused for ${validationResult?.member?.pausedDays} days. Reactivating will restore full access immediately.`}
+                                </p>
+                                <div className="mt-4 p-3 bg-yellow-50 rounded-lg flex items-center gap-3">
+                                    <FaExclamationTriangle className="text-yellow-600 flex-shrink-0" />
+                                    <span className="text-sm text-yellow-700">
+                                        Any pending transactions will be processed upon reactivation
+                                    </span>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="flex justify-end gap-4 border-t border-red-600 pt-6">
+                                <Button
+                                    onClick={() => setMembershipHoldToggle(false)}
+                                    variant="outline"
+                                    className="px-6 py-3 border-gray-300 hover:bg-red-600 hover:text-white transition-all duration-700 text-gray-700"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    onClick={activateMembership}
+                                    className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white shadow-sm transition-all"
+                                    disabled={activating}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        {activating ? (
+                                            <>
+                                                <FaSpinner className="animate-spin" />
+                                                Processing...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <FaPlayCircle />
+                                                Activate Membership
+                                            </>
+                                        )}
+                                    </div>
                                 </Button>
                             </div>
                         </div>
