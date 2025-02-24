@@ -266,7 +266,7 @@ const Header = () => {
 
     return (
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-50 
-    ${isScrolled ? 'border-b bg-white/80' : 'bg-transparent'} 
+    ${isScrolled ? 'border-b bg-white' : 'bg-white'} 
     ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
     w-full flex justify-between py-4 px-4 items-center`}>
             <div className='mx-4'>

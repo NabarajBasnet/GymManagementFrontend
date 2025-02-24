@@ -197,7 +197,7 @@ const AdminDashboard = () => {
         </Alert>
 
         <Card className="py-6 mb-8">
-          <form className="flex flex-wrap gap-6">
+          <form className="flex flex-wrap px-2 gap-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="startDate" className="font-medium text-gray-700">
                 From
@@ -207,7 +207,7 @@ const AdminDashboard = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className=""
+                className="cursor-pointer"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className=""
+                className="cursor-pointer"
               />
             </div>
           </form>
@@ -262,31 +262,31 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Monthly Membership Activity</h3>
+          <Card className="border shadow-lg">
+            <h3 className="text-lg font-semibold p-2 text-gray-800">Monthly Membership Activity</h3>
             <BarChartMultiple />
           </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Monthly New Members</h3>
+          <Card className="border shadow-lg">
+            <h3 className="text-lg font-semibold p-2 text-gray-800">Monthly New Members</h3>
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Membership Renewls</h3>
+          <Card className="border shadow-lg">
+            <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Renewls</h3>
             <RenewRadialChart />
           </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">New Members</h3>
+          <Card className="border shadow-lg">
+            <h3 className="text-lg font-semibold p-2 text-gray-800">New Members</h3>
             <NewRadialChart />
           </Card>
         </div>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-6 text-gray-800">Membership Traffic</h3>
+        <Card className="border shadow-lg">
+          <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Traffic</h3>
           <BarChartInterActive />
         </Card>
       </div>

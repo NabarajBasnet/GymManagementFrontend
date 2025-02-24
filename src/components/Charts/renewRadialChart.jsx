@@ -113,7 +113,7 @@ export function RenewRadialChart() {
     });
 
     return (
-        <div className="shadow-lg w-full rounded-md border">
+        <div className="w-full">
             <Card className="flex flex-col">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
@@ -183,7 +183,7 @@ export function RenewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div className=''>
+            <div>
                 <Table className='min-w-full'>
                     <TableHeader>
                         <TableRow>

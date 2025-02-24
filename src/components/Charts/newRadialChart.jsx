@@ -115,7 +115,7 @@ export function NewRadialChart() {
     });
 
     return (
-        <div className="shadow-lg w-full rounded-md border">
+        <div className="w-full">
             <Card className="flex flex-col">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admmission</CardTitle>
@@ -186,7 +186,7 @@ export function NewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div className='bg-white rounded-md shadow-md mt-6'>
+            <div className='bg-white rounded-md mt-6'>
                 <Table className='min-w-full'>
                     <TableHeader>
                         <TableRow className='text-white p-0'>

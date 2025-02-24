@@ -95,7 +95,7 @@ export function BarChartMultiple() {
     fromStartingMonth.setDate(1);
 
     return (
-        <div className="shadow-lg w-full rounded-md border">
+        <div className="w-full ">
             <Card>
                 <CardHeader>
                     <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
