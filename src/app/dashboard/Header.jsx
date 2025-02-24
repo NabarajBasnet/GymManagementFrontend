@@ -75,6 +75,7 @@ import { FaUsersGear } from "react-icons/fa6";
 
 const Header = () => {
 
+    const [isScrolled, setIsScrolled] = useState(false);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
     const searchRef = useRef(null);
@@ -117,6 +118,18 @@ const Header = () => {
         updateDateTime();
 
         return () => clearInterval(intervalId);
+    }, []);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
 
     const minimizeSidebar = () => {
@@ -252,9 +265,10 @@ const Header = () => {
     ];
 
     return (
-        <div
-            onClick={() => setToast(false)}
-            className={`fixed top-0 right-0 transition-all duration-500 ${sidebarMinimized ? 'md:w-[calc(100%-48px)] w-full' : 'md:w-[calc(100%-240px)]'} w-full flex justify-between py-4 px-4 items-center bg-white z-50`}>
+        <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-50 
+    ${isScrolled ? 'border-b bg-white/80' : 'bg-transparent'} 
+    ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
+    w-full flex justify-between py-4 px-4 items-center`}>
             <div className='mx-4'>
                 <div className="flex items-center gap-2" ref={searchRef}>
                     <FiSidebar
