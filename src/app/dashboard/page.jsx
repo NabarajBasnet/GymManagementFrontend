@@ -289,10 +289,6 @@ const AdminDashboard = () => {
           <h3 className="text-lg font-semibold mb-6 text-gray-800">Revenue by Service</h3>
           <BarChartInterActive />
         </Card>
-
-        <div className="mt-6 flex justify-center">
-          <Pagination range={range} active={active} setPage={setPage} />
-        </div>
       </div>
     </div>
   );
