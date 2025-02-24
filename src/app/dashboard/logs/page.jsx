@@ -6,7 +6,7 @@ import React from 'react';
 const Logs = () => {
     const fetchData = async () => {
         try {
-            const response = await fetch('http://localhost:3000/api/averageactivemembers');
+            const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Network response was not ok. Status: ${response.status}, Message: ${errorText}`);
