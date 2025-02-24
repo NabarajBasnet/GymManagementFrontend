@@ -65,7 +65,7 @@ const PaymentDetails = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -83,7 +83,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -129,7 +129,7 @@ const PaymentDetails = () => {
     const deletePaymentDetail = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/paymentdetails/${id}`,
+            const response = await fetch(`http://localhost:3000/api/paymentdetails/${id}`,
                 {
                     method: "DELETE",
                 });
@@ -307,88 +307,89 @@ const PaymentDetails = () => {
                     {isLoading ? (
                         <Loader />
                     ) : (
-                        <div className="w-full">
-                            <div className="w-full overflow-x-auto">
-                                <TableContainer component={Paper}>
-                                    <Table sx={{ minWidth: 400 }} aria-label="simple table">
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>MemberId</TableCell>
-                                                <TableCell>Name</TableCell>
-                                                <TableCell>Action Taker</TableCell>
-                                                <TableCell>Receipt No</TableCell>
-                                                <TableCell>Paid Amount</TableCell>
-                                                <TableCell>Payment Date</TableCell>
-                                                <TableCell>Duration</TableCell>
-                                                <TableCell>Method</TableCell>
-                                                <TableCell>Discount</TableCell>
-                                                <TableCell>Reference Code</TableCell>
-                                                <TableCell>Action</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {Array.isArray(paginatedPaymentDetails) && paginatedPaymentDetails.length >= 1 ? (
-                                                paginatedPaymentDetails.map((detail) => (
-                                                    <TableRow
-                                                        key={detail._id}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row" className="font-semibold text-sm">{detail.member._id}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.member.fullName}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.actionTaker}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.receiptNo}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.paidAmmount}</TableCell>
-                                                        <TableCell component="th" scope="row">
-                                                            {detail.paymentDate ? new Date(detail.paymentDate).toLocaleString('en-US', {
-                                                                year: 'numeric',
-                                                                month: '2-digit',
-                                                                day: '2-digit',
-                                                            }) : ''}
-                                                        </TableCell>
-                                                        <TableCell component="th" scope="row">{detail.membershipDuration}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.paymentMethod}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.discount || 'Null'}</TableCell>
-                                                        <TableCell component="th" scope="row">{detail.referenceCode}</TableCell>
-                                                        <TableCell component="th" scope="row">
-                                                            <div className="flex items-center justify-center space-x-1">
-                                                                <MdEdit className="cursor-pointer text-lg" />
-                                                                <AlertDialog>
-                                                                    <AlertDialogTrigger asChild>
-                                                                        <MdDelete
-                                                                            className="cursor-pointer text-red-600 text-lg"
-                                                                        />
-                                                                    </AlertDialogTrigger>
-                                                                    <AlertDialogContent>
-                                                                        <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                This action cannot be undone. This will permanently delete this payment detail
-                                                                                and remove data from servers.
-                                                                            </AlertDialogDescription>
-                                                                        </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction onClick={() => deletePaymentDetail(detail._id)}>Continue</AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </AlertDialogContent>
-                                                                </AlertDialog>
-                                                            </div>
+                        <div className="w-full flex justify-center">
+                            <div className="w-[95.83%]">
+                                <div className="w-full overflow-x-auto">
+                                    <TableContainer component={Paper}>
+                                        <Table sx={{ minWidth: 400 }} aria-label="simple table">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>MemberId</TableCell>
+                                                    <TableCell>Name</TableCell>
+                                                    <TableCell>Action Taker</TableCell>
+                                                    <TableCell>Receipt No</TableCell>
+                                                    <TableCell>Paid Amount</TableCell>
+                                                    <TableCell>Payment Date</TableCell>
+                                                    <TableCell>Duration</TableCell>
+                                                    <TableCell>Method</TableCell>
+                                                    <TableCell>Discount</TableCell>
+                                                    <TableCell>Reference Code</TableCell>
+                                                    <TableCell>Action</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {Array.isArray(paginatedPaymentDetails) && paginatedPaymentDetails.length >= 1 ? (
+                                                    paginatedPaymentDetails.map((detail) => (
+                                                        <TableRow
+                                                            key={detail._id}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell component="th" scope="row" className="font-semibold text-sm">{detail.member._id}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.member.fullName}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.actionTaker}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.receiptNo}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.paidAmmount}</TableCell>
+                                                            <TableCell component="th" scope="row">
+                                                                {detail.paymentDate ? new Date(detail.paymentDate).toLocaleString('en-US', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                }) : ''}
+                                                            </TableCell>
+                                                            <TableCell component="th" scope="row">{detail.membershipDuration}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.paymentMethod}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.discount || 'Null'}</TableCell>
+                                                            <TableCell component="th" scope="row">{detail.referenceCode}</TableCell>
+                                                            <TableCell component="th" scope="row">
+                                                                <div className="flex items-center justify-center space-x-1">
+                                                                    <MdEdit className="cursor-pointer text-lg" />
+                                                                    <AlertDialog>
+                                                                        <AlertDialogTrigger asChild>
+                                                                            <MdDelete
+                                                                                className="cursor-pointer text-red-600 text-lg"
+                                                                            />
+                                                                        </AlertDialogTrigger>
+                                                                        <AlertDialogContent>
+                                                                            <AlertDialogHeader>
+                                                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                                <AlertDialogDescription>
+                                                                                    This action cannot be undone. This will permanently delete this payment detail
+                                                                                    and remove data from servers.
+                                                                                </AlertDialogDescription>
+                                                                            </AlertDialogHeader>
+                                                                            <AlertDialogFooter>
+                                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                                <AlertDialogAction onClick={() => deletePaymentDetail(detail._id)}>Continue</AlertDialogAction>
+                                                                            </AlertDialogFooter>
+                                                                        </AlertDialogContent>
+                                                                    </AlertDialog>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                ) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={12} className="text-center">
+                                                            No payment details recorded.
                                                         </TableCell>
                                                     </TableRow>
-                                                ))
-                                            ) : (
-                                                <TableRow>
-                                                    <TableCell colSpan={12} className="text-center">
-                                                        No payment details recorded.
-                                                    </TableCell>
-                                                </TableRow>
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </div>
                             </div>
                         </div>
-
                     )}
                 </div>
 
