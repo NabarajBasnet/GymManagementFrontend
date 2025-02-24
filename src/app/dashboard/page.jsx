@@ -247,7 +247,7 @@ const AdminDashboard = () => {
                           ) : (
                             <TrendingDown className="h-4 w-4 mr-1" />
                           )}
-                          {Math.abs(item.percentage)}%
+                          {Math.abs(item.percentage)}%  This Month
                         </span>
                       </span>
                     </div>
