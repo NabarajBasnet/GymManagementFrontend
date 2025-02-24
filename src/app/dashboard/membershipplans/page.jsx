@@ -12,9 +12,6 @@ const MembershipPlans = () => {
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
             Membership <span className="text-blue-600">Plans</span>
           </h1>
-          <p className="mt-4 text-xl text-gray-500">
-            Choose the perfect plan for your fitness journey
-          </p>
         </div>
 
         {/* Admission Fee Card */}
@@ -99,10 +96,10 @@ const MembershipPlans = () => {
   );
 };
 
-const MembershipSection = ({ 
-  title, 
+const MembershipSection = ({
+  title,
   subtitle,
-  data, 
+  data,
   headers = ['1 Month', '3 Month', '6 Month', '1 Year'],
   gradient,
   icon

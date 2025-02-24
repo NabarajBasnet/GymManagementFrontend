@@ -107,8 +107,8 @@ const AdminDashboard = () => {
       percentage: 1.1,
       trend: "up",
       color: 'text-blue-600',
-      bg: 'bg-blue-50',
-      border: 'border-blue-200',
+      bg: 'bg-blue-100',
+      border: 'border-blue-300',
     },
     {
       icon: MdAutorenew,
@@ -117,8 +117,8 @@ const AdminDashboard = () => {
       percentage: -1.5,
       trend: "down",
       color: 'text-green-600',
-      bg: 'bg-green-50',
-      border: 'border-green-200',
+      bg: 'bg-green-100',
+      border: 'border-green-300',
     },
     {
       icon: RiUserShared2Fill,
@@ -127,8 +127,8 @@ const AdminDashboard = () => {
       percentage: 0.5,
       trend: "up",
       color: 'text-yellow-600',
-      bg: 'bg-yellow-50',
-      border: 'border-yellow-200',
+      bg: 'bg-yellow-100',
+      border: 'border-yellow-300',
     },
     {
       icon: GiBiceps,
@@ -137,8 +137,8 @@ const AdminDashboard = () => {
       percentage: -0.2,
       trend: "down",
       color: 'text-green-600',
-      bg: 'bg-green-50',
-      border: 'border-green-200',
+      bg: 'bg-green-100',
+      border: 'border-green-300',
     },
     {
       icon: FaUsers,
@@ -147,8 +147,8 @@ const AdminDashboard = () => {
       percentage: 3.9,
       trend: "up",
       color: 'text-blue-600',
-      bg: 'bg-blue-50',
-      border: 'border-blue-200',
+      bg: 'bg-blue-100',
+      border: 'border-blue-300',
     },
     {
       icon: PiUsersFourFill,
@@ -157,8 +157,8 @@ const AdminDashboard = () => {
       percentage: -4.5,
       trend: "down",
       color: 'text-red-600',
-      bg: 'bg-red-50',
-      border: 'border-red-200',
+      bg: 'bg-red-100',
+      border: 'border-red-300',
     },
   ];
 
@@ -207,7 +207,7 @@ const AdminDashboard = () => {
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-[200px]"
+                className=""
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -219,7 +219,7 @@ const AdminDashboard = () => {
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-[200px]"
+                className=""
               />
             </div>
           </form>
@@ -236,7 +236,7 @@ const AdminDashboard = () => {
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-500">{item.text}</p>
                     <div className="flex items-baseline">
-                      <h3 className={`text-2xl font-bold ${item.color}`}>
+                      <h3 className={`text-3xl font-bold ${item.color}`}>
                         {item.value.toLocaleString()}
                       </h3>
                       <span className={`ml-2 text-sm font-medium ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'
@@ -252,8 +252,8 @@ const AdminDashboard = () => {
                       </span>
                     </div>
                   </div>
-                  <div className={`p-3 rounded-lg ${item.bg}`}>
-                    <item.icon className={`text-2xl ${item.color}`} />
+                  <div className={`p-3 rounded-xl ${item.bg}`}>
+                    <item.icon className={`text-3xl ${item.color}`} />
                   </div>
                 </div>
               </div>
@@ -263,30 +263,30 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Monthly Revenue Trend</h3>
+            <h3 className="text-lg font-semibold mb-6 text-gray-800">Monthly Membership Activity</h3>
             <BarChartMultiple />
           </Card>
 
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Member Activity</h3>
+            <h3 className="text-lg font-semibold mb-6 text-gray-800">Monthly New Members</h3>
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">Membership Distribution</h3>
+            <h3 className="text-lg font-semibold mb-6 text-gray-800">Membership Renewls</h3>
             <RenewRadialChart />
           </Card>
 
           <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-6 text-gray-800">New vs Renewed Members</h3>
+            <h3 className="text-lg font-semibold mb-6 text-gray-800">New Members</h3>
             <NewRadialChart />
           </Card>
         </div>
 
         <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-6 text-gray-800">Revenue by Service</h3>
+          <h3 className="text-lg font-semibold mb-6 text-gray-800">Membership Traffic</h3>
           <BarChartInterActive />
         </Card>
       </div>
