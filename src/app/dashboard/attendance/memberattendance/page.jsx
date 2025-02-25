@@ -1,7 +1,5 @@
 'use client';
 
-import { Loader2, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
-import { Card } from "@/components/ui/card";
 import {
     FaCheckCircle,
     FaInfoCircle,
@@ -362,232 +360,198 @@ const MemberAttendance = () => {
                 <h1 className="text-xl font-bold mt-3">Member Attendance</h1>
             </div>
 
-            <div className="min-h-screen bg-gray-50 p-6">
-                <div className="max-w-[1400px] mx-auto">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Member Check-in Section */}
-                        <Card className="p-6 shadow-sm">
-                            <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-xl font-semibold text-gray-800">Member Check-in</h2>
-                                <Button
-                                    variant="outline"
-                                    onClick={() => window.location.reload()}
-                                    className="flex items-center gap-2"
-                                >
-                                    <RefreshCw className="h-4 w-4" />
-                                    Refresh
-                                </Button>
+            <div>
+                <div className='w-full md:flex md:space-x-4 space-y-4 md:space-y-0 justify-between py-4 md:py-0 px-4'>
+                    <div className='w-full md:w-6/12 bg-white rounded-lg'>
+                        <div className='w-full flex justify-start p-2'>
+                            <Button
+                                className="rounded-md"
+                                onClick={() => {
+                                    window.location.reload();
+                                }}
+                            >
+                                Refresh
+                            </Button>
+                        </div>
+                        <form className="grid grid-cols-1 space-y-2 px-2">
+                            <Input
+                                type="text"
+                                placeholder="Scan QR code here"
+                                value={memberId}
+                                onChange={(e) => setMemberId(e.target.value)}
+                                autoFocus
+                                className="w-full focus:border-blue-600 rounded-none text-black"
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        window.location.reload();
+                                    }
+                                }}
+                            />
+                            {errors.memberId && (
+                                <p className="text-sm font-semibold text-red-600">
+                                    {errors.memberId.message}
+                                </p>
+                            )}
+                            <div className="flex justify-between items-center">
+                                <Label className="w-3/12">Full Name</Label>
+                                <Input
+                                    value={validationResult?.member?.fullName || ""}
+                                    disabled
+                                    className="w-9/12 disabled:text-black bg-gray-100 rounded-none text-black"
+                                />
                             </div>
 
-                            <form className="space-y-4">
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                        <QrCode className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <Input
-                                        type="text"
-                                        placeholder="Scan QR code or enter member ID"
-                                        value={memberId}
-                                        onChange={(e) => setMemberId(e.target.value)}
-                                        autoFocus
-                                        className="pl-10 border-gray-200"
-                                        onKeyPress={(e) => {
-                                            if (e.key === 'Enter') {
-                                                e.preventDefault();
-                                                window.location.reload();
-                                            }
-                                        }}
-                                    />
-                                </div>
+                            <div className="flex justify-between items-center">
+                                <Label className="w-3/12">Membership Option</Label>
+                                <Input
+                                    value={validationResult?.member?.membershipOption || ""}
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black text-black"
+                                />
+                            </div>
 
-                                {errors.memberId && (
-                                    <p className="text-sm font-medium text-red-600">
-                                        {errors.memberId.message}
-                                    </p>
-                                )}
+                            <div className="flex justify-between items-center">
+                                <Label className="w-3/12">Membership Category</Label>
+                                <Input
+                                    value={validationResult?.member?.membershipType || ""}
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none disabled:text-black text-black"
+                                />
+                            </div>
 
-                                <div className="bg-gray-50 rounded-lg p-4 space-y-4">
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Full Name</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={validationResult?.member?.fullName || ""}
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
+                            <div className="flex justify-between items-center">
+                                <Label className="w-3/12">Membership Date</Label>
+                                <Input
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
+                                />
+                            </div>
 
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Membership Option</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={validationResult?.member?.membershipOption || ""}
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
+                            <div className="flex justify-between items-center">
+                                <Label className="w-3/12">Renew Date</Label>
+                                <Input
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
+                                />
+                            </div>
 
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Category</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={validationResult?.member?.membershipType || ""}
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
+                            <div className="flex justify-between items-center">
+                                <Label className="3/12">Expire Date</Label>
+                                <Input
+                                    value={
+                                        validationResult?.member?.membershipDate
+                                            ? new Date(validationResult.member.membershipExpireDate)
+                                                .toISOString()
+                                                .split("T")[0]
+                                            : ""
+                                    }
+                                    disabled
+                                    className="w-9/12 bg-gray-100 rounded-none text-black disabled:text-black"
+                                />
+                            </div>
 
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Start Date</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={
-                                                    validationResult?.member?.membershipDate
-                                                        ? new Date(validationResult.member.membershipDate)
-                                                            .toISOString()
-                                                            .split("T")[0]
-                                                        : ""
-                                                }
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Renew Date</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={
-                                                    validationResult?.member?.membershipDate
-                                                        ? new Date(validationResult.member.membershipDate)
-                                                            .toISOString()
-                                                            .split("T")[0]
-                                                        : ""
-                                                }
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-4 items-center">
-                                        <Label className="font-medium text-gray-700">Expire Date</Label>
-                                        <div className="col-span-2">
-                                            <Input
-                                                value={
-                                                    validationResult?.member?.membershipDate
-                                                        ? new Date(validationResult.member.membershipExpireDate)
-                                                            .toISOString()
-                                                            .split("T")[0]
-                                                        : ""
-                                                }
-                                                disabled
-                                                className="bg-white border-gray-200"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-3 gap-4 items-start">
-                                        <Label className="font-medium text-gray-700 pt-2">Message</Label>
-                                        <div className="col-span-2">
-                                            <Textarea
-                                                value={validationResult?.message || ""}
-                                                disabled
-                                                className="h-32 bg-white border-gray-200 text-green-600 font-medium resize-none"
-                                            />
-                                        </div>
+                            <div className="w-full flex justify-between items-start">
+                                <Label className="w-3/12">Message</Label>
+                                <Textarea
+                                    value={validationResult?.message || ""}
+                                    disabled
+                                    className="w-9/12 bg-gray-100 text-green-600 font-semibold rounded-none disabled:text-green-600 cursor-not-allowed h-40"
+                                />
+                            </div>
+                        </form>
+                    </div>
+                    <div className='w-full md:w-6/12 bg-white rounded-lg'>
+                        <div className="w-full flex justify-center">
+                            <div className="w-full">
+                                <h1 className="p-2">Member Attendance Record</h1>
+                                <div className="flex justify-center p-2">
+                                    <div className="w-11/12 px-4 flex justify-between border border-gray-400 rounded-none items-center">
+                                        <IoSearch className="text-xl" />
+                                        <Input
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            className='w-full border-none bg-none'
+                                            placeholder='Search Member...'
+                                        />
                                     </div>
                                 </div>
-                            </form>
-                        </Card>
-
-                        {/* Attendance History Section */}
-                        <Card className="p-6 shadow-sm">
-                            <div className="space-y-4">
-                                <h2 className="text-xl font-semibold text-gray-800">Member Attendance Record</h2>
-
-                                <div className="relative">
-                                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                        <Search className="h-5 w-5 text-gray-400" />
-                                    </div>
-                                    <Input
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10 border-gray-200"
-                                        placeholder="Search member by name or ID..."
-                                    />
-                                </div>
-
-                                {isAttendanceHistory ? (
-                                    <div className="flex justify-center items-center h-64">
-                                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                                    </div>
-                                ) : (
-                                    <div className="rounded-lg border border-gray-200 overflow-hidden">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow className="bg-gray-50">
-                                                    <TableHead className="font-semibold">Member ID</TableHead>
-                                                    <TableHead className="font-semibold">Name</TableHead>
-                                                    <TableHead className="font-semibold">Option</TableHead>
-                                                    <TableHead className="font-semibold text-right">Check In</TableHead>
-                                                    <TableHead className="font-semibold text-right">Expires</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {temporaryMemberAttendanceHistory?.temporarymemberattendancehistory.map((attendance) => (
-                                                    <TableRow key={attendance._id} className="hover:bg-gray-50">
-                                                        <TableCell className="font-medium">{attendance.memberId}</TableCell>
-                                                        <TableCell>{attendance.fullName}</TableCell>
-                                                        <TableCell>
-                                                            <Badge variant="secondary" className="font-normal">
-                                                                {attendance.membershipOption}
-                                                            </Badge>
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            <div className="flex items-center justify-end gap-1 text-gray-600">
-                                                                <Calendar className="h-4 w-4" />
-                                                                {new Date(attendance.checkInTime).toLocaleDateString('en-GB')}
-                                                                <Timer className="h-4 w-4 ml-2" />
+                                {
+                                    isAttendanceHistory ? (
+                                        <Loader />
+                                    ) : (
+                                        <div>
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="w-[100px]">Member Id</TableHead>
+                                                        <TableHead>Full Name</TableHead>
+                                                        <TableHead>Option</TableHead>
+                                                        <TableHead className="text-right">Check In</TableHead>
+                                                        <TableHead className="text-right">Expires In</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {temporaryMemberAttendanceHistory?.temporarymemberattendancehistory.map((attendance) => (
+                                                        <TableRow key={attendance._id}>
+                                                            <TableCell className="font-medium">{attendance.memberId}</TableCell>
+                                                            <TableCell>{attendance.fullName}</TableCell>
+                                                            <TableCell>{attendance.membershipOption}</TableCell>
+                                                            <TableCell>
+                                                                {new Date(attendance.checkInTime).toLocaleDateString('en-GB', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                })}{" "}
                                                                 {new Date(attendance.checkInTime).toLocaleTimeString('en-GB', {
                                                                     hour: '2-digit',
-                                                                    minute: '2-digit'
+                                                                    minute: '2-digit',
+                                                                    second: '2-digit',
                                                                 })}
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            <div className="flex items-center justify-end gap-1 text-gray-600">
-                                                                <Calendar className="h-4 w-4" />
-                                                                {new Date(attendance.expiration).toLocaleDateString('en-GB')}
-                                                                <Timer className="h-4 w-4 ml-2" />
+                                                            </TableCell>
+
+                                                            <TableCell>
+                                                                {new Date(attendance.expiration).toLocaleDateString('en-GB', {
+                                                                    year: 'numeric',
+                                                                    month: '2-digit',
+                                                                    day: '2-digit',
+                                                                })}{" "}
                                                                 {new Date(attendance.expiration).toLocaleTimeString('en-GB', {
                                                                     hour: '2-digit',
-                                                                    minute: '2-digit'
+                                                                    minute: '2-digit',
+                                                                    second: '2-digit',
                                                                 })}
-                                                            </div>
-                                                        </TableCell>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                                <TableFooter>
+                                                    <TableRow>
+                                                        <TableCell colSpan={3}>Total Member Attendance</TableCell>
+                                                        <TableCell className="text-right">{totalAttendance}</TableCell>
                                                     </TableRow>
-                                                ))}
-                                            </TableBody>
-                                            <TableFooter>
-                                                <TableRow>
-                                                    <TableCell colSpan={3} className="font-medium">Total Attendance</TableCell>
-                                                    <TableCell className="text-right font-medium" colSpan={2}>
-                                                        {totalAttendance} members
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableFooter>
-                                        </Table>
-                                    </div>
-                                )}
-
-                                <div className="flex justify-center pt-4">
+                                                </TableFooter>
+                                            </Table>
+                                        </div>
+                                    )
+                                }
+                                <div className="w-full flex justify-center py-4">
                                     <Pagination
-                                        total={totalPages || 1}
+                                        total={totalPages ? totalPages : 1}
                                         siblings={1}
                                         boundaries={1}
                                         page={currentPage}
@@ -596,7 +560,7 @@ const MemberAttendance = () => {
                                     />
                                 </div>
                             </div>
-                        </Card>
+                        </div>
                     </div>
                 </div>
             </div>
