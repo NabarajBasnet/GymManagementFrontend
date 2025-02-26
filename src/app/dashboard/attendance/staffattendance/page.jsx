@@ -1,6 +1,7 @@
 'use client';
 
-import { Loader2, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
 import Badge from '@mui/material/Badge';
 import {
     Card,
@@ -55,6 +56,11 @@ import Loader from "@/components/Loader/Loader";
 import { usePagination } from "@/hooks/Pagination";
 
 const StaffAttendance = () => {
+
+    // Toast and dialogs UI states
+    const [openContinueCheckin, setOpenContinueCheckIn] = useState(false);
+    const [openContinueCheckOut, setOpenContinueCheckOut] = useState(false);
+    const [errorToast, setErrorToast] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
@@ -158,7 +164,25 @@ const StaffAttendance = () => {
     });
 
     let debounceTimeout;
+    const handleInputChange = (e) => {
+        clearTimeout(debounceTimeout);
+        const data = e.target.value.trim();
 
+        debounceTimeout = setTimeout(() => {
+            try {
+                const parsedData = JSON.parse(data);
+                let { iv, tv } = parsedData;
+
+                if (iv && tv && iv.length >= 24) {
+                    setQrDetails(parsedData);
+                    setOpenContinueCheckIn(true);
+                }
+            } catch (error) {
+                alert(error.message);
+                console.error("Invalid QR Code Data:", error.message);
+            }
+        }, 300);
+    };
     return (
         <div className='w-full bg-gray-100'>
             <div className='w-full p-4'>
@@ -212,26 +236,7 @@ const StaffAttendance = () => {
                                         placeholder='Scan qr code here'
                                         className='rounded-md border-none outline-none focus:outline-none focus:border-none'
                                         autoFocus
-                                        onChange={(e) => {
-                                            clearTimeout(debounceTimeout);
-                                            const data = e.target.value.trim();
-
-                                            debounceTimeout = setTimeout(() => {
-                                                try {
-                                                    const parsedData = JSON.parse(data);
-                                                    let { iv, tv } = parsedData;
-                                                    if (iv && tv && iv.length >= 24) {
-                                                        setQrDetails(parsedData);
-                                                        alert('Continue?');
-                                                        StaffAttendance(iv, tv);
-                                                    };
-                                                } catch (error) {
-                                                    alert(error.message);
-                                                    window.location.reload();
-                                                    console.error("Invalid QR Code Data:", error.message);
-                                                };
-                                            }, 300);
-                                        }}
+                                        onChange={handleInputChange}
                                         onKeyDown={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -241,6 +246,60 @@ const StaffAttendance = () => {
                                     />
                                 </div>
                             </div>
+                            {openContinueCheckin && (
+
+                                <div className="fixed inset-0 flex items-center justify-center z-50">
+                                    {/* Overlay */}
+                                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                                    {/* Modal Content */}
+                                    <motion.div
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        exit={{ opacity: 0, scale: 0.9 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                                    >
+                                        {/* Header */}
+                                        <div className="flex items-center justify-between border-b pb-3">
+                                            <h1 className="flex items-center font-semibold text-gray-800">
+                                                <QrCode className="text-blue-600 text-lg mr-2" />
+                                                Confirm Check-In
+                                            </h1>
+                                            <Button
+                                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                                onClick={() => setOpenContinueCheckIn(false)}
+                                            >
+                                                <X className="text-gray-600 text-lg" />
+                                            </Button>
+                                        </div>
+
+                                        {/* Message */}
+                                        <p className="text-gray-600 text-sm mt-3">
+                                            Are you sure you want to continue check-in?
+                                        </p>
+
+                                        {/* Actions */}
+                                        <div className="flex justify-end space-x-3 mt-4">
+                                            <Button
+                                                onClick={() => setOpenContinueCheckIn(false)}
+                                                className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button
+                                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
+                                                onClick={() => {
+                                                    StaffAttendance(qrDetails.iv, qrDetails.tv);
+                                                    setOpenContinueCheckIn(false);
+                                                }}
+                                            >
+                                                Continue
+                                            </Button>
+                                        </div>
+                                    </motion.div>
+                                </div>
+                            )}
 
                             <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
                                 <Button type='submit' className='rounded-md bg-transparent border hover:bg-transparent text-black hover:text-gray-900 w-full flex items-center'>
