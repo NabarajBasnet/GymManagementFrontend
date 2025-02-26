@@ -10,12 +10,12 @@ const Pagination = ({
     withEdges = false,
     withControls = true,
     getControlProps = () => ({}),
-    nextIcon = 'Next',
-    previousIcon = 'Previous',
+    nextIcon = 'Nxt',
+    previousIcon = 'Pre',
     firstIcon = <MdKeyboardDoubleArrowLeft />,
     lastIcon = <MdKeyboardDoubleArrowRight />,
     dotsIcon = <BsThreeDots />,
-    gap = 8,
+    gap = 4,
     hideWithOnePage = false,
     onChange = () => { },
 }) => {
@@ -83,7 +83,7 @@ const Pagination = ({
                     onClick={() => changePage(currentPage - 1)}
                     disabled={currentPage === 1}
                 >
-                    <p className='font-bold'>Previous</p>
+                    <p className='font-bold'>Pre</p>
                 </button>
             )}
 
@@ -96,7 +96,7 @@ const Pagination = ({
                     onClick={() => changePage(currentPage + 1)}
                     disabled={currentPage === total}
                 >
-                    <p className='font-bold'>Next</p>
+                    <p className='font-bold'>Nxt</p>
                 </button>
             )}
 

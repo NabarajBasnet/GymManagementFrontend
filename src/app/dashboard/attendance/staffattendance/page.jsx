@@ -1,5 +1,24 @@
 'use client';
 
+import { Loader2, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
+import Badge from '@mui/material/Badge';
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
+import {
+    FaCheckCircle,
+    FaInfoCircle,
+    FaTimes,
+    FaExclamationTriangle,
+    FaPlayCircle,
+    FaSpinner,
+} from 'react-icons/fa';
+import '../../../globals.css';
 import Pagination from "@/components/ui/CustomPagination";
 import { Input } from "@/components/ui/input";
 import { IoSearch } from "react-icons/io5";
@@ -12,7 +31,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -48,7 +67,7 @@ const StaffAttendance = () => {
 
     const StaffAttendance = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -84,7 +103,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -113,7 +132,7 @@ const StaffAttendance = () => {
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -141,7 +160,7 @@ const StaffAttendance = () => {
     let debounceTimeout;
 
     return (
-        <div className='w-full'>
+        <div className='w-full bg-gray-100'>
             <div className='w-full p-4'>
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -166,63 +185,69 @@ const StaffAttendance = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Staff Attendance</h1>
+                <div className='w-full md:flex items-center justify-between'>
+                    <h1 className="md:w-6/12 w-full text-xl font-bold mt-3">Staff Attendance</h1>
+                    <div className="md:w-6/12 w-full flex justify-center p-2">
+                        <div className="w-full px-4 flex justify-between border bg-white border-gray-200 rounded-md items-center">
+                            <Search className="text-sm" />
+                            <Input
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className='w-full border-none bg-none'
+                                placeholder='Search...'
+                            />
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div className="w-full flex justify-center">
+            <div className="w-full flex bg-white justify-center">
                 <div className="w-full mx-4">
                     <div className="w-full">
-                        <form className="w-full md:flex bg-white justify-between shadow-md items-center my-4">
-                            <div className='md:w-10/12 w-full flex justify-start items-center p-2'>
-                                <Input
-                                    placeholder='Scan qr code here'
-                                    className='focus:border-blue-500 rounded-none'
-                                    autoFocus
-                                    onChange={(e) => {
-                                        clearTimeout(debounceTimeout);
-                                        const data = e.target.value.trim();
+                        <form className="w-full md:flex justify-between items-center my-4">
+                            <div className='w-full flex justify-start items-center p-2'>
+                                <div className='w-full flex border px-2 rounded-md items-center'>
+                                    <QrCode className='' />
+                                    <Input
+                                        placeholder='Scan qr code here'
+                                        className='rounded-md border-none outline-none focus:outline-none focus:border-none'
+                                        autoFocus
+                                        onChange={(e) => {
+                                            clearTimeout(debounceTimeout);
+                                            const data = e.target.value.trim();
 
-                                        debounceTimeout = setTimeout(() => {
-                                            try {
-                                                const parsedData = JSON.parse(data);
-                                                let { iv, tv } = parsedData;
-                                                if (iv && tv && iv.length >= 24) {
-                                                    setQrDetails(parsedData);
-                                                    alert('Continue?');
-                                                    StaffAttendance(iv, tv);
-                                                }
-                                            } catch (error) {
-                                                alert(error.message);
-                                                window.location.reload();
-                                                console.error("Invalid QR Code Data:", error.message);
+                                            debounceTimeout = setTimeout(() => {
+                                                try {
+                                                    const parsedData = JSON.parse(data);
+                                                    let { iv, tv } = parsedData;
+                                                    if (iv && tv && iv.length >= 24) {
+                                                        setQrDetails(parsedData);
+                                                        alert('Continue?');
+                                                        StaffAttendance(iv, tv);
+                                                    };
+                                                } catch (error) {
+                                                    alert(error.message);
+                                                    window.location.reload();
+                                                    console.error("Invalid QR Code Data:", error.message);
+                                                };
+                                            }, 300);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                handleQrDetails(e.target.value);
                                             }
-                                        }, 300);
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            e.preventDefault();
-                                            handleQrDetails(e.target.value);
-                                        }
-                                    }}
-                                />
+                                        }}
+                                    />
+                                </div>
                             </div>
 
                             <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
-                                <Button type='submit' className='rounded-sm w-full'>Refresh</Button>
+                                <Button type='submit' className='rounded-md bg-transparent border hover:bg-transparent text-black hover:text-gray-900 w-full flex items-center'>
+                                    <RefreshCw className='h-4 w-4 text-gray-900 mr-2' />
+                                    Refresh</Button>
                             </div>
                         </form>
-
-                        <div className="flex justify-center p-2 bg-white">
-                            <div className="w-full px-4 flex justify-between border border-gray-400 rounded-none items-center">
-                                <IoSearch className="text-xl" />
-                                <Input
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className='w-full border-none bg-none'
-                                    placeholder='Search...'
-                                />
-                            </div>
-                        </div>
 
                         <div className="w-full bg-white">
                             {AttendanceFetching ? (
@@ -231,12 +256,12 @@ const StaffAttendance = () => {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">Staff Id</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Role</TableHead>
-                                            <TableHead>CheckIn</TableHead>
-                                            <TableHead>CheckOut</TableHead>
-                                            <TableHead>Remark</TableHead>
+                                            <TableHead className="w-[100px]">STAFF ID</TableHead>
+                                            <TableHead>NAME</TableHead>
+                                            <TableHead>ROLE</TableHead>
+                                            <TableHead>CHECK IN</TableHead>
+                                            <TableHead>CHECK OUT</TableHead>
+                                            <TableHead>REMARK</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
