@@ -2,27 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
-import Badge from '@mui/material/Badge';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
 import {
     FaCheckCircle,
-    FaInfoCircle,
-    FaTimes,
-    FaExclamationTriangle,
-    FaPlayCircle,
-    FaSpinner,
 } from 'react-icons/fa';
 import '../../../globals.css';
 import Pagination from "@/components/ui/CustomPagination";
 import { Input } from "@/components/ui/input";
-import { IoSearch } from "react-icons/io5";
 import {
     Table,
     TableBody,
@@ -51,21 +36,15 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import { usePagination } from "@/hooks/Pagination";
 
 const StaffAttendance = () => {
 
     // Toast and dialogs UI states
-    const [checkedIn, setCheckedIn] = useState(false);
     const [confirmCheckInState, setConfirmCheckInState] = useState(false);
-    const [confirmCheckIn, setConfirmCheckIn] = useState(false);
     const [confirmCheckOutState, setConfirmCheckOutState] = useState(false);
-    const [confirmCheckOut, setConfirmCheckOut] = useState(false);
-    const [openContinueCheckin, setOpenContinueCheckIn] = useState(false);
-    const [openContinueCheckOut, setOpenContinueCheckOut] = useState(false);
-    const [errorToast, setErrorToast] = useState(false);
     const [successfulAlert, setSuccessfulAlert] = useState(false);
     const [successfulMessage, setSuccessfulMessage] = useState('');
 
@@ -74,13 +53,12 @@ const StaffAttendance = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
-    const queryClient = useQueryClient();
     const [qrDetails, setQrDetails] = useState();
     const { iv, tv } = qrDetails ? qrDetails : { "iv": '', "tv": "" };
 
     const checkIfStaffCheckedIn = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/checkedin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -90,7 +68,6 @@ const StaffAttendance = () => {
 
             const responseBody = await response.json();
             if (response.status === 200 && responseBody.checkedIn) {
-                setCheckedIn(true);
                 return responseBody.checkedIn
             };
         } catch (error) {
@@ -100,29 +77,19 @@ const StaffAttendance = () => {
 
     const checkInStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
                 },
                 body: JSON.stringify({ iv, tv })
-            })
+            });
 
             const responseBody = await response.json();
-            if (response.status && responseBody.type === 'CheckedIn') {
-                setCheckedIn(true);
-                setConfirmCheckOutState(true);
-                if (confirmCheckOut) {
-                    await checkoutStaff(iv, tv);
-                } else {
-                    setConfirmCheckInState(true);
-                };
-            };
-
             if (response.ok && responseBody.type !== 'CheckedIn') {
-                setSuccessfulMessage('Staff member has been successfully checked-in.')
+                setConfirmCheckInState(false);
+                setSuccessfulMessage(responseBody.message);
                 setSuccessfulAlert(true);
-                queryClient.invalidateQueries(['temporarystaffattendance']);
             };
         } catch (error) {
             console.log("Error: ", error);
@@ -135,7 +102,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -145,14 +112,15 @@ const StaffAttendance = () => {
 
             const responseBody = await response.json();
             if (response.ok) {
+                setConfirmCheckInState(false);
+                setConfirmCheckOutState(false);
                 setSuccessfulMessage(responseBody.message);
                 setSuccessfulAlert(true);
-                queryClient.invalidateQueries(['temporarystaffattendance']);
             };
         } catch (error) {
             console.error("Error during checkout: ", error);
             alert("Failed to check out staff. Please try again.");
-        }
+        };
     };
 
     useEffect(() => {
@@ -162,14 +130,14 @@ const StaffAttendance = () => {
 
     // Fetch all temporary staff attendances
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
-        const [, page, searchQuery] = queryKey
+        const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
             console.error("Error:", error);
-        }
+        };
     };
 
     const { data: temporarystaffattendance, isLoading: AttendanceFetching } = useQuery({
@@ -203,46 +171,165 @@ const StaffAttendance = () => {
 
                     if (iv && tv && iv.length >= 24) {
                         setQrDetails(parsedData);
-
                         const isCheckedIn = await checkIfStaffCheckedIn(iv, tv);
-
+                        if (!isCheckedIn) {
+                            setConfirmCheckInState(true);
+                        };
                         if (isCheckedIn) {
                             setConfirmCheckOutState(true);
-                            if (confirmCheckOut) {
-                                checkoutStaff(iv, tv);
-                            }
-                        } else {
-                            setConfirmCheckInState(true);
-                            if (confirmCheckIn) {
-                                checkInStaff(iv, tv);
-                            }
-                        }
-                    }
+                        };
+                    };
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
                     alert(error.message);
-                }
+                };
             }, 300);
         } catch (err) {
             console.error('Error in handleInputChange:', err);
             alert(err.message);
-        }
+        };
     };
-
-
-    useEffect(() => {
-        if (qrDetails) {
-            const { iv, tv } = qrDetails;
-            if (checkedIn) {
-                setConfirmCheckOutState(true);
-            } else {
-                setConfirmCheckInState(true);
-            }
-        }
-    }, [checkedIn, qrDetails]);
 
     return (
         <div className='w-full bg-gray-100'>
+
+            {successfulAlert && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                    >
+                        <div className="flex items-center justify-between border-b pb-3">
+                            <h1 className="flex items-center font-semibold text-gray-800">
+                                <FaCheckCircle className="text-green-600 text-lg mr-2" />
+                                Request Successful
+                            </h1>
+                            <Button
+                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                onClick={() => setSuccessfulAlert(false)}
+                            >
+                                <X className="text-gray-600 text-lg" />
+                            </Button>
+                        </div>
+
+                        <p className="text-gray-600 text-sm mt-3">
+                            {successfulMessage}
+                        </p>
+
+                        <div className="flex justify-end space-x-3 mt-4">
+                            <Button
+                                onClick={() => {
+                                    setSuccessfulAlert(false);
+                                    window.location.reload();
+                                }}
+                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
+                            >
+                                Done
+                            </Button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+
+            {confirmCheckInState && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                    >
+                        <div className="flex items-center justify-between border-b pb-3">
+                            <h1 className="flex items-center font-semibold text-gray-800">
+                                <QrCode className="text-blue-600 text-lg mr-2" />
+                                Confirm Check-In
+                            </h1>
+                            <Button
+                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                onClick={() => setConfirmCheckInState(false)}
+                            >
+                                <X className="text-gray-600 text-lg" />
+                            </Button>
+                        </div>
+
+                        <p className="text-gray-600 text-sm mt-3">
+                            Are you sure you want to continue check-in?
+                        </p>
+
+                        <div className="flex justify-end space-x-3 mt-4">
+                            <Button
+                                onClick={() => setConfirmCheckInState(false)}
+                                className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
+                                onClick={() => {
+                                    checkInStaff(qrDetails.iv, qrDetails.tv);
+                                }}
+                            >
+                                Continue
+                            </Button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+
+            {confirmCheckOutState && (
+                <div className="fixed inset-0 flex items-center justify-center z-50">
+                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
+
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.2 }}
+                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
+                    >
+                        <div className="flex items-center justify-between border-b pb-3">
+                            <h1 className="flex items-center font-semibold text-gray-800">
+                                <QrCode className="text-blue-600 text-lg mr-2" />
+                                Confirm Check-Out
+                            </h1>
+                            <Button
+                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
+                                onClick={() => setConfirmCheckOutState(false)}
+                            >
+                                <X className="text-gray-600 text-lg" />
+                            </Button>
+                        </div>
+
+                        <p className="text-gray-600 text-sm mt-3">
+                            You have already checkedin, Do you want to checkout?
+                        </p>
+
+                        <div className="flex justify-end space-x-3 mt-4">
+                            <Button
+                                onClick={() => setConfirmCheckOutState(false)}
+                                className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg"
+                                onClick={() => checkoutStaff(iv, tv)}
+                            >
+                                Continue
+                            </Button>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+
             <div className='w-full p-4'>
                 <Breadcrumb>
                     <BreadcrumbList>
@@ -304,153 +391,6 @@ const StaffAttendance = () => {
                                     />
                                 </div>
                             </div>
-
-                            {successfulAlert && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
-                                    >
-                                        <div className="flex items-center justify-between border-b pb-3">
-                                            <h1 className="flex items-center font-semibold text-gray-800">
-                                                <FaCheckCircle className="text-green-600 text-lg mr-2" />
-                                                Request Successful
-                                            </h1>
-                                            <Button
-                                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
-                                                onClick={() => setSuccessfulAlert(false)}
-                                            >
-                                                <X className="text-gray-600 text-lg" />
-                                            </Button>
-                                        </div>
-
-                                        <p className="text-gray-600 text-sm mt-3">
-                                            {successfulMessage}
-                                        </p>
-
-                                        <div className="flex justify-end space-x-3 mt-4">
-                                            <Button
-                                                onClick={() => {
-                                                    setSuccessfulAlert(false)
-                                                    window.location.reload();
-                                                    setConfirmCheckInState(false);
-                                                    setConfirmCheckOutState(false);
-                                                }}
-                                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
-                                            >
-                                                Done
-                                            </Button>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            )}
-
-                            {confirmCheckInState && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
-                                    >
-                                        <div className="flex items-center justify-between border-b pb-3">
-                                            <h1 className="flex items-center font-semibold text-gray-800">
-                                                <QrCode className="text-blue-600 text-lg mr-2" />
-                                                Confirm Check-In
-                                            </h1>
-                                            <Button
-                                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
-                                                onClick={() => setConfirmCheckInState(false)}
-                                            >
-                                                <X className="text-gray-600 text-lg" />
-                                            </Button>
-                                        </div>
-
-                                        <p className="text-gray-600 text-sm mt-3">
-                                            Are you sure you want to continue check-in?
-                                        </p>
-
-                                        <div className="flex justify-end space-x-3 mt-4">
-                                            <Button
-                                                onClick={() => setOpenContinueCheckIn(false)}
-                                                className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button
-                                                className="bg-green-600 text-white hover:bg-green-700 px-4 py-2 rounded-lg"
-                                                onClick={() => {
-                                                    checkInStaff(qrDetails.iv, qrDetails.tv);
-                                                    setConfirmCheckInState(false);
-                                                    setConfirmCheckIn(true);
-                                                }}
-                                            >
-                                                Continue
-                                            </Button>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            )}
-
-                            {confirmCheckOutState && (
-                                <div className="fixed inset-0 flex items-center justify-center z-50">
-                                    <div className="absolute inset-0 bg-black bg-opacity-60 backdrop-blur-sm"></div>
-
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.2 }}
-                                        className="bg-white border shadow-2xl px-6 py-4 rounded-xl relative w-full max-w-sm"
-                                    >
-                                        <div className="flex items-center justify-between border-b pb-3">
-                                            <h1 className="flex items-center font-semibold text-gray-800">
-                                                <QrCode className="text-blue-600 text-lg mr-2" />
-                                                Confirm Check-Out
-                                            </h1>
-                                            <Button
-                                                className="bg-transparent hover:bg-gray-100 p-2 rounded-full"
-                                                onClick={() => setConfirmCheckOutState(false)}
-                                            >
-                                                <X className="text-gray-600 text-lg" />
-                                            </Button>
-                                        </div>
-
-                                        <p className="text-gray-600 text-sm mt-3">
-                                            You have already checkedin, Do you want to checkout?
-                                        </p>
-
-                                        <div className="flex justify-end space-x-3 mt-4">
-                                            <Button
-                                                onClick={() => setConfirmCheckOutState(false)}
-                                                className="bg-gray-100 text-gray-800 hover:bg-gray-200 px-4 py-2 rounded-lg"
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button
-                                                className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg"
-                                                onClick={() => {
-                                                    setConfirmCheckOut(true);
-                                                    setConfirmCheckOutState(false);
-                                                    if (confirmCheckOut) {
-                                                        checkoutStaff(iv, tv);
-                                                    };
-                                                }}
-                                            >
-                                                Continue
-                                            </Button>
-                                        </div>
-                                    </motion.div>
-                                </div>
-                            )}
 
                             <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
                                 <Button type='submit' className='rounded-md bg-transparent border hover:bg-transparent text-black hover:text-gray-900 w-full flex items-center'>

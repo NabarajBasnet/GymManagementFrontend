@@ -45,8 +45,8 @@ const chartConfig = {
 
 export function ShadSmallLineChart() {
     return (
-        <div className="w-full">
-            <Card>
+        <div className="w-full border-none">
+            <Card className="w-full border-none">
                 <CardHeader>
                     <CardDescription>January - December 2024</CardDescription>
                 </CardHeader>

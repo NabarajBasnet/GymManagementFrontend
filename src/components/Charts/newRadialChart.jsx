@@ -68,7 +68,7 @@ export function NewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -115,8 +115,8 @@ export function NewRadialChart() {
     });
 
     return (
-        <div className="w-full">
-            <Card className="flex flex-col">
+        <div className="w-full border-none">
+            <Card className="flex flex-col border-none">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admmission</CardTitle>
                     <CardDescription>{startDate.getMonth() === 0 ? 'Jaruary' : ''} - {startDate.getMonth()}</CardDescription>
@@ -227,17 +227,17 @@ export function NewRadialChart() {
                                 );
                             })
                         ) : (
-                            <TableRow className='bg-pink-600 hover:bg-pink-700 text-white'>
-                                <TableCell colSpan={13} className="text-center">
+                            <TableRow className='bg-white hover:bg-pink-100 text-gray-800 hover:text-gray-900'>
+                                <TableCell colSpan={3} className="text-center">
                                     No new members found.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                     <TableFooter>
-                        <TableRow className='bg-pink-600 hover:bg-pink-700 text-white'>
-                            <TableCell colSpan={3}>Total New Members</TableCell>
-                            <TableCell className="text-right">{newAdmissionsLength}</TableCell>
+                        <TableRow className='bg-white hover:bg-pink-100 text-gray-800 hover:text-gray-900'>
+                            <TableCell className="text-left">Total New Members</TableCell>
+                            <TableCell className="text-left">{newAdmissionsLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>

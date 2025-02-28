@@ -67,7 +67,7 @@ export function RenewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -113,8 +113,8 @@ export function RenewRadialChart() {
     });
 
     return (
-        <div className="w-full">
-            <Card className="flex flex-col">
+        <div className="w-full border-none">
+            <Card className="flex flex-col border-none">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
                     <CardDescription>January - June 2024</CardDescription>
@@ -224,17 +224,17 @@ export function RenewRadialChart() {
                                 );
                             })
                         ) : (
-                            <TableRow className='bg-emerald-600 hover:bg-emerald-700 text-white'>
-                                <TableCell colSpan={13} className="text-center">
+                            <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
+                                <TableCell colSpan={3} className="text-center">
                                     No members found.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                     <TableFooter>
-                        <TableRow className='bg-emerald-600 hover:bg-emerald-700 text-white'>
-                            <TableCell colSpan={3}>Total Renewd Members</TableCell>
-                            <TableCell className="text-right">{renewdMembersLength}</TableCell>
+                        <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
+                            <TableCell className="text-left">Total Renewd Members</TableCell>
+                            <TableCell className="text-left">{renewdMembersLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
