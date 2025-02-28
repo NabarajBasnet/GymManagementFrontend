@@ -220,7 +220,7 @@ const AllMembers = () => {
 
     return (
         <div className="w-full flex justify-center">
-            <div className="w-[100%]">
+            <div className="w-full" onClick={() => setToast(false)}>
                 <div className='w-full p-6' onClick={() => setToast(false)}>
                     {toast ? (
                         <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -337,61 +337,13 @@ const AllMembers = () => {
                                         <TableHead>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
                                         <TableHead>Duration</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Option</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Renew</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Type</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Expire</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
+                                        <TableHead>Option</TableHead>
+                                        <TableHead>Renew</TableHead>
+                                        <TableHead>Type</TableHead>
+                                        <TableHead>Expire</TableHead>
                                         <TableHead>Contact No</TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Shift</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
-                                        <TableHead>
-                                            <div className="flex items-center">
-                                                <h1>Status</h1>
-                                                {/* <div className="flex flex-col justify-center -space-y-3">
-                                                <MdArrowDropUp className="text-xl" />
-                                                <MdArrowDropDown className="text-xl" />
-                                            </div> */}
-                                            </div>
-                                        </TableHead>
+                                        <TableHead>Shift</TableHead>
+                                        <TableHead>Status</TableHead>
                                         <TableHead>Fee</TableHead>
                                         <TableHead>Action</TableHead>
                                     </TableRow>
@@ -488,19 +440,19 @@ const AllMembers = () => {
                                     </TableRow>
                                 </TableFooter>
                             </Table>
-                            <div className="py-3">
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                />
-                            </div>
                         </div>
                     </div>
                 )}
+                <div className="py-3">
+                    <Pagination
+                        total={totalPages || 1}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
             </div>
         </div>
     )
