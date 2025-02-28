@@ -378,7 +378,7 @@ const MemberAttendance = () => {
                 <div className="w-full mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Member Check-in Section */}
-                        <Card className="p-6 shadow-sm">
+                        <Card className="p-4 shadow-sm">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-xl font-semibold text-gray-800">Member Check-in</h2>
                                 <Button
@@ -391,7 +391,7 @@ const MemberAttendance = () => {
                                 </Button>
                             </div>
 
-                            <form className="space-y-4 max-w-2xl mx-auto p-6">
+                            <form className="space-y-4 max-w-2xl mx-auto">
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                         <QrCode className="h-5 w-5 text-gray-400" />
@@ -518,7 +518,7 @@ const MemberAttendance = () => {
                         </Card>
 
                         {/* Attendance History Section */}
-                        <Card className="p-6 shadow-sm">
+                        <Card className="p-4 shadow-sm">
                             <div className="space-y-4">
                                 <h2 className="text-xl font-semibold text-gray-800">Member Attendance Record</h2>
 
@@ -587,8 +587,8 @@ const MemberAttendance = () => {
                                             </TableBody>
                                             <TableFooter>
                                                 <TableRow>
-                                                    <TableCell colSpan={3} className="font-medium">Total Attendance</TableCell>
-                                                    <TableCell className="text-right font-medium" colSpan={2}>
+                                                    <TableCell colSpan={3} className="text-left font-medium">Total Attendance</TableCell>
+                                                    <TableCell className="text-left font-medium" colSpan={2}>
                                                         {totalAttendance} members
                                                     </TableCell>
                                                 </TableRow>
