@@ -79,7 +79,7 @@ const InactiveMembers = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://88.198.112.156:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://88.198.112.156:3000/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
