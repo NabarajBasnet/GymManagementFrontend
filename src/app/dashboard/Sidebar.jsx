@@ -1,5 +1,7 @@
 'use client';
 
+import { FaUsersRays } from "react-icons/fa6";
+import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import { PiStarFour } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
 import { FaBoxOpen } from "react-icons/fa";
@@ -71,7 +73,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -147,8 +149,13 @@ const Sidebar = () => {
         },
         {
             icon: FaUsers,
-            title: 'All Members',
-            link: '/dashboard/allmembers',
+            title: 'Members',
+            link: '/dashboard/members',
+            subObj: [
+                { icon: PiUsersFourFill, title: 'All Members', link: '/dashboard/members' },
+                { icon: PiUsersThreeBold, title: 'Inactive Members', link: '/dashboard/members/inactivemembers' },
+                { icon: FaUsersRays, title: 'Paused Members', link: '/dashboard/members/pausedmembers' }
+            ]
         },
         {
             icon: HiUsers,
