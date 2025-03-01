@@ -40,7 +40,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../allmembers/allmembertable.jsx";
+} from "../members/allmembertable.jsx";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -342,7 +342,7 @@ const ExpiredMemberships = () => {
                                                     <TableCell>{member.paidAmmount}</TableCell>
                                                     <TableCell>
                                                         <div className="flex items-center justify-center space-x-1">
-                                                            <Link href={`/dashboard/allmembers/${member._id}`}>
+                                                            <Link href={`/dashboard/members/${member._id}`}>
                                                                 <FaUserEdit className='cursor-pointer text-lg' />
                                                             </Link>
                                                             <MdEmail

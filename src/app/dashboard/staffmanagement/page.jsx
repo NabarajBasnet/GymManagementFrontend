@@ -41,7 +41,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../allmembers/allmembertable.jsx";
+} from "../members/allmembertable.jsx";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
