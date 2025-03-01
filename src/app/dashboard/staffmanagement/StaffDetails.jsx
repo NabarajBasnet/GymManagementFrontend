@@ -68,7 +68,7 @@ const StaffDetails = ({ staffId }) => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${staffId}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${staffId}`);
             const responseBody = await response.json();
             if (response.status === 200 && responseBody.staff) {
                 reset({
@@ -134,7 +134,7 @@ const StaffDetails = ({ staffId }) => {
         };
         console.log("Final Data: ", finalData);
         try {
-            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staffId}`
+            const url = `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
 
             const response = await fetch(url, {
