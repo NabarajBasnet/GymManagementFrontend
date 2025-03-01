@@ -93,10 +93,13 @@ const PausedMembers = () => {
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
-    const { totalPages, inactiveMembers, totalInactiveMembers, members } = data || {};
+    const { members,
+        totalMembers,
+        totalPages,
+        totalOnHoldCount, } = data || {};
 
     const { range, setPage, active } = usePagination({
-        total: Math.ceil(totalInactiveMembers / limit),
+        total: totalPages,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -326,8 +329,8 @@ const PausedMembers = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {inactiveMembers && inactiveMembers.length > 0 ? (
-                                        inactiveMembers.map((member) => {
+                                    {members && members.length > 0 ? (
+                                        members.map((member) => {
                                             const textColor =
                                                 member.status === 'Active' ? 'text-green-500' :
                                                     member.status === 'OnHold' ? 'text-yellow-500' :
@@ -396,7 +399,7 @@ const PausedMembers = () => {
                                 <TableFooter>
                                     <TableRow>
                                         <TableCell colSpan={3}>Total Paused Memberships</TableCell>
-                                        <TableCell className="text-right">{totalInactiveMembers}</TableCell>
+                                        <TableCell className="text-right">{totalOnHoldCount}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>
@@ -406,7 +409,7 @@ const PausedMembers = () => {
             )}
             <div className="mt-4">
                 <Pagination
-                    total={Math.ceil(totalInactiveMembers / limit)}
+                    total={totalPages}
                     page={currentPage || 1}
                     onChange={setCurrentPage}
                     withEdges={true}
