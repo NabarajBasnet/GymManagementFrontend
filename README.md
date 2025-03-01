@@ -1,4 +1,4 @@
-# Gym Company Management Admin Dashboard
+# Gym Management Software
 
 Welcome to the **Gym Company Management Admin Dashboard**. This project is built with **Next.js**, **MongoDB**, and various libraries to handle authentication, authorization, CRUD operations, and other features needed for efficient gym management.
 
