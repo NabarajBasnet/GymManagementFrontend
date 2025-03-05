@@ -211,7 +211,7 @@ const AttendanceHistory = () => {
                                                             !startDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2 h-5 w-6 text-gray-400" />
+                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
                                                         {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -231,7 +231,7 @@ const AttendanceHistory = () => {
                                                             !endDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2 h-5 w-6 text-gray-400" />
+                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
                                                         {endDate ? format(endDate, "PPP") : <span>End Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -261,8 +261,8 @@ const AttendanceHistory = () => {
                                             <Label>Member Name</Label>
                                             <div ref={searchRef} className="w-full flex justify-center">
                                                 <div className="relative w-full">
-                                                    <div className="w-full flex items-center border rounded-md">
-                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
+                                                    <div className="w-full flex items-center rounded-md border">
+                                                        <RiSearchLine className='h-5 w-5 text-gray-400' />
                                                         <Input
                                                             value={searchQuery}
                                                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -414,7 +414,7 @@ const AttendanceHistory = () => {
                                                             !startDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2" />
+                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
                                                         {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -434,7 +434,7 @@ const AttendanceHistory = () => {
                                                             !endDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2" />
+                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
                                                         {endDate ? format(endDate, "PPP") : <span>End Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -464,12 +464,13 @@ const AttendanceHistory = () => {
                                             <Label>Member Name</Label>
                                             <div ref={searchRef} className="w-full flex justify-center">
                                                 <div className="relative w-full">
-                                                    <div className="w-full">
+                                                    <div className="w-full flex items-center border rounded-md" >
+                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
                                                         <Input
                                                             value={searchQuery}
                                                             onChange={(e) => setSearchQuery(e.target.value)}
                                                             onFocus={handleSearchFocus}
-                                                            className="w-full rounded-lg"
+                                                            className="w-full rounded-lg border-none outline-none"
                                                             placeholder="Search members..."
                                                         />
                                                     </div>
