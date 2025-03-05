@@ -15,7 +15,7 @@ const Pagination = ({
     firstIcon = <MdKeyboardDoubleArrowLeft />,
     lastIcon = <MdKeyboardDoubleArrowRight />,
     dotsIcon = <BsThreeDots />,
-    gap = 4,
+    gap = 2,
     hideWithOnePage = false,
     onChange = () => { },
 }) => {

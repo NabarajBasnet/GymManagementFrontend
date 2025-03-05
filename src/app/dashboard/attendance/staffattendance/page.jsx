@@ -26,7 +26,7 @@ import {
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -58,7 +58,7 @@ const StaffAttendance = () => {
 
     const checkIfStaffCheckedIn = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/checkedin`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -77,7 +77,7 @@ const StaffAttendance = () => {
 
     const checkInStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -102,7 +102,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -132,7 +132,7 @@ const StaffAttendance = () => {
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -358,7 +358,7 @@ const StaffAttendance = () => {
                     <h1 className="md:w-6/12 w-full text-xl font-bold mt-3">Staff Attendance</h1>
                     <div className="md:w-6/12 w-full flex justify-center p-2">
                         <div className="w-full px-4 flex justify-between border bg-white border-gray-200 rounded-md items-center">
-                            <Search className="text-sm" />
+                            <Search className="h-5 w-5 text-gray-400" />
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -376,7 +376,7 @@ const StaffAttendance = () => {
                         <form className="w-full md:flex justify-between items-center my-4">
                             <div className='w-full flex justify-start items-center p-2'>
                                 <div className='w-full flex border px-2 rounded-md items-center'>
-                                    <QrCode className='' />
+                                    <QrCode className='h-5 w-5 text-gray-400' />
                                     <Input
                                         placeholder='Scan qr code here'
                                         className='rounded-md border-none outline-none focus:outline-none focus:border-none'

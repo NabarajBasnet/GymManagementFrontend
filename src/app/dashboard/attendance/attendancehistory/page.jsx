@@ -1,5 +1,8 @@
 'use client';
 
+import { RiSearchLine } from "react-icons/ri";
+import { InfoIcon } from 'lucide-react';
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import Pagination from "@/components/ui/CustomPagination";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
@@ -33,7 +36,15 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import React, { useEffect } from 'react';
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import {
+    Breadcrumb,
+    BreadcrumbEllipsis,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -63,7 +74,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -74,7 +85,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -96,8 +107,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (response.ok) {
@@ -150,7 +161,7 @@ const AttendanceHistory = () => {
     return (
         <div className='w-full'>
             <div className='w-full'>
-                <div className='w-full p-6'>
+                <div className='w-full p-6 pb-0'>
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -160,7 +171,7 @@ const AttendanceHistory = () => {
                             <BreadcrumbItem>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbSeparator />
+                                        <BreadcrumbEllipsis className="h-4 w-4" />
                                     </DropdownMenuTrigger>
                                 </DropdownMenu>
                             </BreadcrumbItem>
@@ -170,7 +181,7 @@ const AttendanceHistory = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                Attendance History
+                                <BreadcrumbPage>Attendance History</BreadcrumbPage>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
@@ -182,7 +193,12 @@ const AttendanceHistory = () => {
                         <div className='w-full flex justify-center'>
                             <div className='w-full bg-white rounded-md mx-4'>
                                 <div className="w-full p-4 space-y-4">
-                                    <h1 className="text-sm font-semibold">Attendance history from first day of this month. If you want more previous data please manipulate date in given fields.</h1>
+                                    <Alert className="bg-blue-50 border-blue-100">
+                                        <InfoIcon className="h-4 w-4 text-blue-600" />
+                                        <AlertDescription className="text-blue-700">
+                                            Showing data from the beginning of the current month. Adjust dates below to view different periods.
+                                        </AlertDescription>
+                                    </Alert>
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
                                             <Label>Start Date</Label>
@@ -195,7 +211,7 @@ const AttendanceHistory = () => {
                                                             !startDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2" />
+                                                        <CalendarIcon className="mr-2 h-5 w-6 text-gray-400" />
                                                         {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -215,7 +231,7 @@ const AttendanceHistory = () => {
                                                             !endDate && "text-muted-foreground"
                                                         )}
                                                     >
-                                                        <CalendarIcon className="mr-2" />
+                                                        <CalendarIcon className="mr-2 h-5 w-6 text-gray-400" />
                                                         {endDate ? format(endDate, "PPP") : <span>End Date</span>}
                                                     </Button>
                                                 </PopoverTrigger>
@@ -245,12 +261,13 @@ const AttendanceHistory = () => {
                                             <Label>Member Name</Label>
                                             <div ref={searchRef} className="w-full flex justify-center">
                                                 <div className="relative w-full">
-                                                    <div className="w-full">
+                                                    <div className="w-full flex items-center border rounded-md">
+                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
                                                         <Input
                                                             value={searchQuery}
                                                             onChange={(e) => setSearchQuery(e.target.value)}
                                                             onFocus={handleSearchFocus}
-                                                            className="w-full rounded-lg"
+                                                            className="w-full rounded-lg border-none outline-none"
                                                             placeholder="Search members..."
                                                         />
                                                     </div>
@@ -379,7 +396,12 @@ const AttendanceHistory = () => {
                         <div className='w-full flex justify-center'>
                             <div className='w-full bg-white mx-4'>
                                 <div className="w-full p-4 space-y-4">
-                                    <h1 className="text-sm font-semibold">Attendance history from first day of this month. If you want more previous data please manipulate date in given fields.</h1>
+                                    <Alert className="bg-blue-50 border-blue-100">
+                                        <InfoIcon className="h-4 w-4 text-blue-600" />
+                                        <AlertDescription className="text-blue-700">
+                                            Showing data from the beginning of the current month. Adjust dates below to view different periods.
+                                        </AlertDescription>
+                                    </Alert>
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
                                             <Label>From</Label>
