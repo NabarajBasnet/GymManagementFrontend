@@ -274,8 +274,8 @@ const Header = () => {
     ];
 
     return (
-        <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-50 
-    ${isScrolled ? 'bg-transparent' : 'bg-transparent'} 
+        <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
+    ${isScrolled ? 'bg-transparent border-b border-gray-400' : 'bg-transparent'} 
     ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
     w-full flex justify-between py-4 px-4 items-center`}>
             <div className='mx-4'>

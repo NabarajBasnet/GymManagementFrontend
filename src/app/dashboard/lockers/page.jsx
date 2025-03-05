@@ -391,7 +391,7 @@ const Lockers = () => {
 
             {
                 lockerFormState && data.Lockers ? (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-40 transition-opacity duration-500 ease-out opacity-100">
+                    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
                         <div className="bg-white md:rounded-lg rounded-none shadow-xl p-10 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
                             <form className="space-y-3 h-full" onSubmit={handleSubmit(registerLocker)}>
