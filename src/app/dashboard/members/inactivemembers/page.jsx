@@ -1,5 +1,16 @@
 'use client'
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import '../../../globals.css';
 import { useUser } from "@/components/Providers/LoggedInUserProvider.jsx";
 import Pagination from "@/components/ui/CustomPagination.jsx";
@@ -212,37 +223,27 @@ const InactiveMembers = () => {
     return (
         <div className="w-full">
             <div className='w-full p-6' onClick={() => setToast(false)}>
-                {toast ? (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                            <div>
-                                {
-                                    responseType === 'Success' ? (
-                                        <MdDone className="text-3xl mx-4 text-green-600" />
-                                    ) : (
-                                        <MdError className="text-3xl mx-4 text-red-600" />
-                                    )
-                                }
-                            </div>
-                            <div className="block">
-                                {
-                                    responseType === 'Success' ? (
-                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                                    ) : (
-                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                                    )
-                                }
-                            </div>
-                            <div>
-                                <MdClose
-                                    onClick={() => setToast(false)}
-                                    className="cursor-pointer text-3xl ml-4" />
-                            </div>
+                {toast && (
+                    <div className="fixed top-5 right-5 z-50 animate-slide-in">
+                        <div className={`flex items-center gap-3 px-5 py-3 bg-white shadow-lg border-l-4 rounded-lg 
+                         transition-all duration-300 ease-in-out 
+                         ${responseType === 'Success' ? 'border-green-500' : 'border-red-500'}`}>
+                            {responseType === 'Success' ? (
+                                <MdDone className="text-2xl text-green-600" />
+                            ) : (
+                                <MdError className="text-2xl text-red-600" />
+                            )}
+
+                            <p className={`text-sm font-medium ${responseType === 'Success' ? 'text-green-700' : 'text-red-700'}`}>
+                                {responseType === 'Success' ? successMessage.message : errorMessage.message}
+                            </p>
+
+                            <MdClose
+                                onClick={() => setToast(false)}
+                                className="cursor-pointer text-xl text-gray-500 hover:text-gray-700 transition"
+                            />
                         </div>
                     </div>
-                ) : (
-                    <></>
                 )}
 
                 {confirmDeleteMember ? (
@@ -353,10 +354,25 @@ const InactiveMembers = () => {
                                                             <Link href={`/dashboard/members/${member._id}`}>
                                                                 <FaUserEdit className='cursor-pointer text-lg' />
                                                             </Link>
-                                                            <MdEmail
-                                                                onClick={() => sendQrInEmail(member._id)}
-                                                                className='cursor-pointer text-lg'
-                                                            />
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <MdEmail
+                                                                        className='cursor-pointer text-lg'
+                                                                    />
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action will send QR attached to ${member.fullName}, Are you sure about that?
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
                                                                     {user && user.user.role === 'Gym Admin' ? (

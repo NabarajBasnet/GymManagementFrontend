@@ -139,6 +139,22 @@ html {
   animation: progress 3s linear forwards;
 }
 
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-in-out;
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
