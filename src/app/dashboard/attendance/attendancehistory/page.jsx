@@ -74,7 +74,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -85,7 +85,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -107,8 +107,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (response.ok) {
@@ -201,7 +201,7 @@ const AttendanceHistory = () => {
                                     </Alert>
                                     <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                                         <div className="w-full">
-                                            <Label>Start Date</Label>
+                                            <Label>From</Label>
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -221,7 +221,7 @@ const AttendanceHistory = () => {
                                             </Popover>
                                         </div>
                                         <div className="w-full">
-                                            <Label>End Date</Label>
+                                            <Label>To</Label>
                                             <Popover>
                                                 <PopoverTrigger asChild>
                                                     <Button
@@ -262,7 +262,7 @@ const AttendanceHistory = () => {
                                             <div ref={searchRef} className="w-full flex justify-center">
                                                 <div className="relative w-full">
                                                     <div className="w-full flex items-center rounded-md border">
-                                                        <RiSearchLine className='h-5 w-5 text-gray-400' />
+                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
                                                         <Input
                                                             value={searchQuery}
                                                             onChange={(e) => setSearchQuery(e.target.value)}
