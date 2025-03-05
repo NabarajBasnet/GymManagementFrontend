@@ -213,26 +213,50 @@ const InactiveMembers = () => {
         <div className="w-full">
             <div className='w-full p-6' onClick={() => setToast(false)}>
                 {toast && (
-                    <div className="fixed top-5 right-5 z-50 animate-slide-in">
-                        <div className={`flex items-center gap-3 px-5 py-3 bg-white shadow-lg border-l-4 rounded-lg 
-                         transition-all duration-300 ease-in-out 
-                         ${responseType === 'Success' ? 'border-green-500' : 'border-red-500'}`}>
-                            {responseType === 'Success' ? (
-                                <MdDone className="text-2xl text-green-600" />
-                            ) : (
-                                <MdError className="text-2xl text-red-600" />
-                            )}
+                    <>
+                        <div
+                            className="fixed inset-0 bg-black bg-opacity-50 z-40 animate-fade-in"
+                            onClick={() => setToast(false)}
+                        ></div>
 
-                            <p className={`text-sm font-medium ${responseType === 'Success' ? 'text-green-700' : 'text-red-700'}`}>
-                                {responseType === 'Success' ? successMessage.message : errorMessage.message}
-                            </p>
+                        <div className="fixed top-5 right-5 z-50 animate-slide-in">
+                            <div className={`flex items-center gap-4 px-6 py-4 bg-white shadow-2xl border-l-4 rounded-lg 
+                            transition-all duration-300 ease-in-out max-w-xs
+                            ${responseType === 'Success' ? 'border-green-500' : 'border-red-500'}`}>
 
-                            <MdClose
-                                onClick={() => setToast(false)}
-                                className="cursor-pointer text-xl text-gray-500 hover:text-gray-700 transition"
-                            />
+                                {responseType === 'Success' ? (
+                                    <MdDone className="text-3xl text-green-600" />
+                                ) : (
+                                    <MdError className="text-3xl text-red-600" />
+                                )}
+
+                                <div className="flex-1">
+                                    <p className={`text-sm font-semibold ${responseType === 'Success' ? 'text-green-700' : 'text-red-700'}`}>
+                                        {responseType === 'Success'
+                                            ? "Action completed successfully!"
+                                            : "Oops! Something went wrong. Please try again."}
+                                    </p>
+
+                                    <div className="mt-2 flex gap-2">
+                                        {responseType === 'Success' ? (
+                                            <button className="text-xs font-medium text-green-700 bg-green-100 px-3 py-1 rounded-md hover:bg-green-200 transition">
+                                                View Details
+                                            </button>
+                                        ) : (
+                                            <button className="text-xs font-medium text-red-700 bg-red-100 px-3 py-1 rounded-md hover:bg-red-200 transition">
+                                                Undo
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <MdClose
+                                    onClick={() => setToast(false)}
+                                    className="cursor-pointer text-2xl text-gray-500 hover:text-gray-700 transition"
+                                />
+                            </div>
                         </div>
-                    </div>
+                    </>
                 )}
 
                 {confirmDeleteMember ? (

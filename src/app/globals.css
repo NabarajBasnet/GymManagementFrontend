@@ -139,6 +139,15 @@ html {
   animation: progress 3s linear forwards;
 }
 
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes slide-in {
   from {
     opacity: 0;
@@ -150,10 +159,13 @@ html {
   }
 }
 
+.animate-fade-in {
+  animation: fade-in 0.3s ease-in-out;
+}
+
 .animate-slide-in {
   animation: slide-in 0.3s ease-in-out;
 }
-
 
 @layer base {
   * {
