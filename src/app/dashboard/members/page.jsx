@@ -71,7 +71,7 @@ const AllMembers = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 15;
+    const [limit, setLimit] = useState(15);
     const [isDeleting, setIsDeleting] = useState(false);
 
     const debounce = (func, delay) => {
@@ -85,7 +85,7 @@ const AllMembers = () => {
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => clearTimeout(handler);
-    }, [searchQuery]);
+    }, [searchQuery, limit]);
 
     const getAllMembers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
@@ -102,7 +102,7 @@ const AllMembers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, debouncedSearchQuery],
+        queryKey: ['members', currentPage, debouncedSearchQuery, limit],
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
@@ -118,6 +118,10 @@ const AllMembers = () => {
             setCurrentPage(page);
         },
     });
+
+    useEffect(() => {
+        getAllMembers();
+    }, [limit]);
 
     const [emailSending, setEmailSending] = useState(false);
 
@@ -223,6 +227,9 @@ const AllMembers = () => {
             })
         };
     };
+
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, totalMembers);
 
     return (
         <div className="w-full">
@@ -338,14 +345,32 @@ const AllMembers = () => {
                 <h1 className="text-xl font-bold mt-3">All Members</h1>
             </div>
 
-            <div className="w-full">
-                <div className="w-full bg-white flex items-center border px-4 my-2">
+            <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
+                <div className="w-full md:w-6/12 flex items-center gap-3 px-4 rounded-lg">
+                    <h1 className="text-sm font-semibold text-gray-700">Show</h1>
+                    <select
+                        onChange={(e) => setLimit(Number(e.target.value))}
+                        className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="15">15</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value={totalMembers}>All</option>
+                    </select>
+                    <h1 className="text-sm font-semibold text-gray-700">members</h1>
+                    <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
+                </div>
+                <div className="w-full md:w-6/12 flex bg-white items-center border-b px-4 my-2">
                     <IoSearch />
                     <Input
-                        className='rounded-none border-none'
+                        className='rounded-none border-none bg-transparent'
                         placeholder='Search members...'
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setCurrentPage(1);
+                            setSearchQuery(e.target.value);
+                        }
+                        }
                     />
                 </div>
             </div>
@@ -394,8 +419,6 @@ const AllMembers = () => {
                                                     <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
                                                     <TableCell>{member.paidAmmount}</TableCell>
                                                     <TableCell>
-
-
                                                         <div className="flex items-center justify-center space-x-1">
                                                             <Link href={`/dashboard/members/${member._id}`}>
                                                                 <FaUserEdit className='cursor-pointer text-lg' />
@@ -469,15 +492,20 @@ const AllMembers = () => {
                     </div>
                 </div>
             )}
-            <div className="mt-4">
-                <Pagination
-                    total={totalPages}
-                    page={currentPage || 1}
-                    onChange={setCurrentPage}
-                    withEdges={true}
-                    siblings={1}
-                    boundaries={1}
-                />
+            <div className='border-t border-gray-600'>
+                <div className="mt-4 px-4 md:flex justify-between items-center">
+                    <p className="font-medium text-center text-sm font-gray-700">
+                        Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalMembers}</span> entries
+                    </p>
+                    <Pagination
+                        total={totalPages}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
             </div>
         </div>
     )

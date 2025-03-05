@@ -182,11 +182,6 @@ const Sidebar = () => {
             link: '/dashboard/paymentdetails',
         },
         {
-            icon: RiUserUnfollowFill,
-            title: 'Expired Memberships',
-            link: '/dashboard/expiredmemberships',
-        },
-        {
             icon: RiCustomerService2Fill,
             title: 'Customer Support',
             link: '/dashboard/customersupport',
