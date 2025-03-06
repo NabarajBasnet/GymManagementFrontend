@@ -160,7 +160,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -212,8 +212,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://localhost:3000/api/staffsmanagement/create';
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -290,7 +290,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -513,102 +513,104 @@ const StaffManagement = () => {
                             {isLoading ? (
                                 <Loader />
                             ) : (
-                                <Table className='w-full overflow-x-auto'>
-                                    <TableHeader>
-                                        <TableRow className='bg-gray-200 text-black'>
-                                            <TableHead>Id</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Number</TableHead>
-                                            <TableHead>Address</TableHead>
-                                            <TableHead>CheckIn</TableHead>
-                                            <TableHead>CheckOut</TableHead>
-                                            <TableHead>Joined At</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Role</TableHead>
-                                            {user && user.user.role === 'Gym Admin' ? (
-                                                <></>
+                                <div className="w-full flex justify-center">
+                                    <Table className='w-full overflow-x-auto px-4'>
+                                        <TableHeader>
+                                            <TableRow className='bg-gray-200 text-black'>
+                                                <TableHead>Id</TableHead>
+                                                <TableHead>Name</TableHead>
+                                                <TableHead>Number</TableHead>
+                                                <TableHead>Address</TableHead>
+                                                <TableHead>CheckIn</TableHead>
+                                                <TableHead>CheckOut</TableHead>
+                                                <TableHead>Joined At</TableHead>
+                                                <TableHead>Status</TableHead>
+                                                <TableHead>Role</TableHead>
+                                                {user && user.user.role === 'Gym Admin' ? (
+                                                    <></>
+                                                ) : (
+                                                    <TableHead>Action</TableHead>
+                                                )}
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody className='pl-4 ml-4'>
+                                            {Array.isArray(staffs) && staffs.length > 0 ? (
+                                                staffs.map((staff) => (
+                                                    <TableRow key={staff._id}>
+                                                        <TableCell className="font-medium">{staff._id}</TableCell>
+                                                        <TableCell>{staff.fullName}</TableCell>
+                                                        <TableCell>{staff.contactNo}</TableCell>
+                                                        <TableCell>{staff.address}</TableCell>
+                                                        <TableCell>{staff.checkInTime
+                                                            ? new Date(staff.checkInTime).toLocaleTimeString('en-US', {
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                                hour12: true,
+                                                                timeZone: 'UTC',
+                                                            })
+                                                            : ''}</TableCell>
+                                                        <TableCell>{staff.checkOutTime
+                                                            ? new Date(staff.checkOutTime).toLocaleTimeString('en-US', {
+                                                                hour: 'numeric',
+                                                                minute: 'numeric',
+                                                                hour12: true,
+                                                                timeZone: 'UTC',
+                                                            })
+                                                            : ''}</TableCell>
+                                                        <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell>{staff.status}</TableCell>
+                                                        <TableCell>{staff.role}</TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center space-x-1">
+                                                                {user && user.user.role === 'Gym Admin' ? (
+                                                                    <></>
+                                                                ) : (
+                                                                    <Link href={`/dashboard/staffmanagement/${staff._id}`}>
+                                                                        <FaUserEdit className="cursor-pointer text-lg" />
+                                                                    </Link>
+                                                                )}
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                                            <></>
+                                                                        ) : (
+                                                                            <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                                        )}
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This action cannot be undone. This will permanently delete staff
+                                                                                account and remove data from servers.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction onClick={() => deleteStaff(staff._id)}>Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
                                             ) : (
-                                                <TableHead>Action</TableHead>
-                                            )}
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {Array.isArray(staffs) && staffs.length > 0 ? (
-                                            staffs.map((staff) => (
-                                                <TableRow key={staff._id}>
-                                                    <TableCell className="font-medium">{staff._id}</TableCell>
-                                                    <TableCell>{staff.fullName}</TableCell>
-                                                    <TableCell>{staff.contactNo}</TableCell>
-                                                    <TableCell>{staff.address}</TableCell>
-                                                    <TableCell>{staff.checkInTime
-                                                        ? new Date(staff.checkInTime).toLocaleTimeString('en-US', {
-                                                            hour: 'numeric',
-                                                            minute: 'numeric',
-                                                            hour12: true,
-                                                            timeZone: 'UTC',
-                                                        })
-                                                        : ''}</TableCell>
-                                                    <TableCell>{staff.checkOutTime
-                                                        ? new Date(staff.checkOutTime).toLocaleTimeString('en-US', {
-                                                            hour: 'numeric',
-                                                            minute: 'numeric',
-                                                            hour12: true,
-                                                            timeZone: 'UTC',
-                                                        })
-                                                        : ''}</TableCell>
-                                                    <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell>{staff.status}</TableCell>
-                                                    <TableCell>{staff.role}</TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center space-x-1">
-                                                            {user && user.user.role === 'Gym Admin' ? (
-                                                                <></>
-                                                            ) : (
-                                                                <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                                    <FaUserEdit className="cursor-pointer text-lg" />
-                                                                </Link>
-                                                            )}
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    {user && user.user.role === 'Gym Admin' ? (
-                                                                        <></>
-                                                                    ) : (
-                                                                        <MdDelete className="text-red-600 cursor-pointer text-lg" />
-                                                                    )}
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            This action cannot be undone. This will permanently delete staff
-                                                                            account and remove data from servers.
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => deleteStaff(staff._id)}>Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                        </div>
+                                                <TableRow>
+                                                    <TableCell colSpan={14} className="text-center text-sm font-semibold">
+                                                        No staff found.
                                                     </TableCell>
                                                 </TableRow>
-                                            ))
-                                        ) : (
+                                            )}
+                                        </TableBody>
+                                        <TableFooter>
                                             <TableRow>
-                                                <TableCell colSpan={14} className="text-center text-sm font-semibold">
-                                                    No staff found.
-                                                </TableCell>
+                                                <TableCell className="text-left" colSpan={1}>Total Staffs</TableCell>
+                                                <TableCell className="text-left font-medium">{totalStaffs}</TableCell>
                                             </TableRow>
-                                        )}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow>
-                                            <TableCell colSpan={3}>Total Staffs</TableCell>
-                                            <TableCell className="text-right font-medium">{totalStaffs}</TableCell>
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
+                                        </TableFooter>
+                                    </Table>
+                                </div>
                             )}
                         </div>
 
