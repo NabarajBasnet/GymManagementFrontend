@@ -71,6 +71,7 @@ const PausedMembers = () => {
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [limit, setLimit] = useState(15);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
@@ -115,6 +116,7 @@ const PausedMembers = () => {
     }, [limit]);
 
     const [emailSending, setEmailSending] = useState(false);
+    const [emailToast, setEmailToast] = useState(false);
 
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
@@ -129,9 +131,9 @@ const PausedMembers = () => {
             const responseBody = await response.json();
             if (response.status !== 200) {
                 setResponseType(responseResultType[1]);
-                setToast(true);
+                setEmailToast(true);
                 setTimeout(() => {
-                    setToast(false)
+                    setEmailToast(false);
                 }, 10000);
                 setErrorMessage({
                     icon: MdError,
@@ -142,9 +144,9 @@ const PausedMembers = () => {
                 if (response.status === 200) {
                     setEmailSending(false);
                     setResponseType(responseResultType[0]);
-                    setToast(true);
+                    setEmailToast(true);
                     setTimeout(() => {
-                        setToast(false)
+                        setEmailToast(false);
                     }, 10000);
                     setSuccessMessage({
                         icon: MdError,
@@ -155,9 +157,9 @@ const PausedMembers = () => {
         } catch (error) {
             console.log('Error: ', error);
             setResponseType(responseResultType[1]);
-            setToast(true);
+            setEmailToast(true);
             setTimeout(() => {
-                setToast(false)
+                setEmailToast(false);
             }, 10000);
             setErrorMessage({
                 icon: MdError,
@@ -167,7 +169,7 @@ const PausedMembers = () => {
     };
 
     const deleteMember = async (id) => {
-        setIsMemberDeleting(true);
+        setIsDeleting(true);
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
@@ -179,6 +181,7 @@ const PausedMembers = () => {
             const responseBody = await response.json();
 
             if (response.status !== 200) {
+                setIsDeleting(false);
                 setResponseType(responseResultType[1]);
                 setToast(true);
                 setTimeout(() => {
@@ -191,6 +194,7 @@ const PausedMembers = () => {
             }
             else {
                 if (response.status === 200) {
+                    setIsDeleting(false);
                     setResponseType(responseResultType[0]);
                     setToast(true);
                     setTimeout(() => {
@@ -207,6 +211,7 @@ const PausedMembers = () => {
             }
 
         } catch (error) {
+            setIsDeleting(false);
             console.log("Error: ", error);
             setToast(true);
             setTimeout(() => {
@@ -229,6 +234,73 @@ const PausedMembers = () => {
                     <Box sx={{ width: '100%' }}>
                         <LinearProgress />
                     </Box>
+                )}
+
+                {isDeleting && (
+                    <Box sx={{ width: '100%' }}>
+                        <LinearProgress />
+                    </Box>
+                )}
+
+                {emailToast && (
+                    <>
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            onClick={() => setEmailToast(false)}
+                        ></div>
+
+                        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+                            <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
+                            transition-all duration-300 ease-in-out w-80
+                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+
+                                <div className={`flex items-center justify-center p-2 rounded-full 
+                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                    {responseType === 'Success' ? (
+                                        <MdDone className="text-xl text-emerald-600" />
+                                    ) : (
+                                        <MdError className="text-xl text-rose-600" />
+                                    )}
+                                </div>
+
+                                <div className="flex-1">
+                                    <h3 className={`text-base font-semibold mb-1
+                                        ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                        {responseType === 'Success' ? "Successfully sent!" : "Action required"}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        {responseType === 'Success'
+                                            ? "Your request has been successful. Please check the email inbox."
+                                            : "Couldn't process your request. Check your network or try different credentials."}
+                                    </p>
+
+                                    <div className="mt-3 flex items-center gap-2">
+                                        {responseType === 'Success' ? (
+                                            <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
+                                                Resend Email
+                                            </button>
+                                        ) : (
+                                            <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
+                                                Retry Now
+                                            </button>
+                                        )}
+                                        <span className="text-gray-400">|</span>
+                                        <button
+                                            className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
+                                            onClick={() => setEmailToast(false)}>
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <MdClose
+                                    onClick={() => setEmailToast(false)}
+                                    className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
+                                />
+                            </div>
+                        </div>
+                    </>
                 )}
 
                 {toast && (
@@ -458,7 +530,7 @@ const PausedMembers = () => {
                                                                     <AlertDialogFooter>
                                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                                         <AlertDialogAction
-                                                                            onClick={() => deleteStaff(staff._id)}
+                                                                            onClick={() => deleteMember(member._id)}
                                                                         >Continue</AlertDialogAction>
                                                                     </AlertDialogFooter>
                                                                 </AlertDialogContent>
