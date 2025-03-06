@@ -158,6 +158,9 @@ const AttendanceHistory = () => {
         },
     });
 
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, membershipType === 'Members' ? memberHistory ? memberHistory.length : 0 : staffHistory ? staffHistory.length : 0);
+
     return (
         <div className='w-full'>
             <div className='w-full'>
@@ -380,15 +383,21 @@ const AttendanceHistory = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="py-3">
-                            <Pagination
-                                total={totalPages || 1}
-                                page={currentPage || 1}
-                                onChange={setCurrentPage}
-                                withEdges={true}
-                                siblings={1}
-                                boundaries={1}
-                            />
+
+                        <div className='border-t border-gray-600'>
+                            <div className="mt-4 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm font-gray-700">
+                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
+                                </p>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
                         </div>
                     </div>
                 ) : (
@@ -508,7 +517,7 @@ const AttendanceHistory = () => {
                                                     <TableHead>Member Id</TableHead>
                                                     <TableHead>Full Name</TableHead>
                                                     <TableHead>Membership Option</TableHead>
-                                                    <TableHead className="text-right">Check In Time</TableHead>
+                                                    <TableHead>Check In Time</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
@@ -518,7 +527,7 @@ const AttendanceHistory = () => {
                                                             <TableCell className="font-medium">{attendance.memberId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.membershipOption}</TableCell>
-                                                            <TableCell className='text-right'>
+                                                            <TableCell>
                                                                 {new Date(attendance.checkInTime).toLocaleDateString()} -  {new Date(attendance.checkInTime).toLocaleTimeString('en-US', {
                                                                     hour: 'numeric',
                                                                     minute: 'numeric',
@@ -535,7 +544,7 @@ const AttendanceHistory = () => {
                                             </TableBody>
                                             <TableFooter>
                                                 <TableRow>
-                                                    <TableCell >Total checked in time</TableCell>
+                                                    <TableCell className="text-left">Total checked in time</TableCell>
                                                     <TableCell className="text-left">{memberHistory ? memberHistory.length : ''}</TableCell>
                                                 </TableRow>
                                             </TableFooter>
@@ -548,15 +557,20 @@ const AttendanceHistory = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="py-3">
-                            <Pagination
-                                total={totalPages || 1}
-                                page={currentPage || 1}
-                                onChange={setCurrentPage}
-                                withEdges={true}
-                                siblings={1}
-                                boundaries={1}
-                            />
+                        <div className='border-t border-gray-600'>
+                            <div className="mt-4 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm font-gray-700">
+                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
+                                </p>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
                         </div>
                     </div>
                 )}
