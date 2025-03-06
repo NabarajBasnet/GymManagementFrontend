@@ -1,5 +1,9 @@
 'use client';
 
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { GiConfirmed } from "react-icons/gi";
+import { MdCloseFullscreen } from "react-icons/md";
+import { RiResetRightFill } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -634,16 +638,16 @@ const StaffManagement = () => {
                 {
                     openForm && (
                         <>
-                            <div className="fixed inset-0 bg-black bg-opacity-85 z-30"></div>
+                            <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
                             <div className="fixed inset-0 z-40 flex items-center justify-center">
                                 <div className="w-full flex justify-center">
                                     <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
                                         <div className="w-full md:flex md:justify-center md:items-center">
-                                            <form className="w-full max-h-[90vh] overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
-                                                <div className="bg-gray-300 py-2 my-2 w-full">
-                                                    <h1 className="mx-4 font-semibold">Staff Registration Information</h1>
+                                            <form className="w-full max-h-[90vh] transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
+                                                <div className="bg-blue-600 py-2 my-2 w-full">
+                                                    <h1 className="mx-4 font-semibold text-white">Staff Registration Form</h1>
                                                 </div>
-                                                <div className="p-4 bg-white">
+                                                <div className="p-4 bg-white rounded-md">
                                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                                                         <div>
                                                             <Label>Full Name</Label>
@@ -658,7 +662,7 @@ const StaffManagement = () => {
                                                                         onChange={(e) => {
                                                                             field.onChange(e)
                                                                         }}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Full Name"
                                                                     />
                                                                 )}
@@ -681,7 +685,7 @@ const StaffManagement = () => {
                                                                         onChange={(e) => {
                                                                             field.onChange(e)
                                                                         }}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Email address"
                                                                     />
                                                                 )}
@@ -704,7 +708,7 @@ const StaffManagement = () => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("contactNo")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Contact Number"
                                                                     />
                                                                 )}
@@ -727,7 +731,7 @@ const StaffManagement = () => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("emergencyContactNo")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Emergency Contact Number"
                                                                     />
                                                                 )}
@@ -750,7 +754,7 @@ const StaffManagement = () => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("address")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Address"
                                                                     />
                                                                 )}
@@ -762,7 +766,6 @@ const StaffManagement = () => {
 
                                                         <div>
                                                             <Label>Date Of Birth</Label>
-
                                                             <Controller
                                                                 name="dob"
                                                                 control={control}
@@ -775,7 +778,7 @@ const StaffManagement = () => {
                                                                         }}
                                                                         {...register("dob")}
                                                                         type="date"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                     />
                                                                 )}
                                                             />
@@ -785,8 +788,8 @@ const StaffManagement = () => {
                                                         </div>
 
                                                         <div className="w-full">
-                                                            <div className="w-full space-y-2">
-                                                                <label className="text-sm font-medium text-gray-700">Check In</label>
+                                                            <div className="w-full">
+                                                                <Label>Check In</Label>
                                                                 <Controller
                                                                     name="checkInTime"
                                                                     control={control}
@@ -800,6 +803,7 @@ const StaffManagement = () => {
                                                                                 field.onChange(e);
                                                                             }}
                                                                             type='time'
+                                                                            className="rounded-md focus:outline-none"
                                                                         />
                                                                     )}
                                                                 />
@@ -816,8 +820,8 @@ const StaffManagement = () => {
                                                             )}
                                                         </div>
 
-                                                        <div className="w-full space-y-2">
-                                                            <label className="text-sm font-medium text-gray-700">Check Out</label>
+                                                        <div className="w-full">
+                                                            <Label>Check Out</Label>
                                                             <Controller
                                                                 name='checkOutTime'
                                                                 control={control}
@@ -830,6 +834,7 @@ const StaffManagement = () => {
                                                                             field.onChange(e);
                                                                             handleCheckOutTimeChange(e);
                                                                         }}
+                                                                        className='rounded-md focus:outline-none'
                                                                         type='time'
                                                                     />
                                                                 )}
@@ -917,7 +922,7 @@ const StaffManagement = () => {
                                                                         }}
                                                                         {...register("joinedDate")}
                                                                         type="date"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                     />
                                                                 )}
 
@@ -945,11 +950,16 @@ const StaffManagement = () => {
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option>Select</option>
+                                                                        <option value="1 Hour">1 Hour</option>
                                                                         <option value="2 Hours">2 Hours</option>
+                                                                        <option value="3 Hours">3 Hours</option>
+                                                                        <option value="4 Hours">4 Hours</option>
                                                                         <option value="5 Hours">5 Hours</option>
                                                                         <option value="6 Hours">6 Hours</option>
                                                                         <option value="7 Hours">7 Hours</option>
                                                                         <option value="8 Hours">8 Hours</option>
+                                                                        <option value="9 Hours">9 Hours</option>
+                                                                        <option value="10 Hours">10 Hours</option>
                                                                     </select>
                                                                 )}
                                                             />
@@ -1002,7 +1012,7 @@ const StaffManagement = () => {
                                                                         }}
                                                                         {...register("salary")}
                                                                         type="text"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Salary"
                                                                     />
                                                                 )}
@@ -1049,10 +1059,10 @@ const StaffManagement = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex justify-center items-center mt-5 space-x-2 p-2">
-                                                    <Button variant="destructive" className="rounded-none" onClick={() => reset()}>Reset Form</Button>
-                                                    <Button className="rounded-none" onClick={() => setOpenForm(!openForm)}>Close Form</Button>
-                                                    <Button className="rounded-none bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}</Button>
+                                                <div className="flex justify-center items-center mt-3 space-x-2">
+                                                    <Button variant="destructive" className="rounded-md space-x-2" onClick={() => reset()}>Reset <RiResetRightFill className="mx-2" /></Button>
+                                                    <Button className="rounded-md space-x-2" onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="mx-2" /></Button>
+                                                    <Button className="rounded-md space-x-2 bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}{isSubmitting ? <AiOutlineLoading3Quarters className='animate-spin duration-500 mx-2' /> : <GiConfirmed className="mx-2" />}</Button>
                                                 </div>
                                             </form>
                                         </div>
