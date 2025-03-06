@@ -1,5 +1,6 @@
 'use client';
 
+import { IoSearch } from "react-icons/io5";
 import { BiLoaderCircle } from "react-icons/bi";
 import Pagination from "@/components/ui/CustomPagination";
 import { MdDelete, MdClose, MdError, MdDone, MdEmail } from "react-icons/md";
@@ -62,7 +63,7 @@ const Users = () => {
     const [editForm, setEditForm] = useState(false);
     const [userId, setUserId] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 8;
+    const [limit, setLimit] = useState(15);
     const [confirmDeleteUser, setConfirmDeleteUser] = useState({ value: false, userId: '' });
     const [isUserDeleting, setIsUserDeleting] = useState(false);
     const [user, setUser] = useState();
@@ -82,12 +83,12 @@ const Users = () => {
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => clearTimeout(handler);
-    }, [searchQuery]);
+    }, [searchQuery, limit]);
 
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -96,7 +97,7 @@ const Users = () => {
     };
 
     const { data: allUsers, isLoading } = useQuery({
-        queryKey: ['users', currentPage, debouncedSearchQuery],
+        queryKey: ['users', currentPage, debouncedSearchQuery, limit],
         queryFn: fetchAllUsers
     });
 
@@ -112,10 +113,17 @@ const Users = () => {
         },
     });
 
+    useEffect(() => {
+        fetchAllUsers();
+    }, [limit]);
+
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, totalUsers);
+
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const response = await fetch(`http://localhost:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -148,7 +156,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role };
-            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -199,7 +207,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -280,37 +288,65 @@ const Users = () => {
                     <h1 className="text-2xl font-bold py-4">Users</h1>
                 </div>
 
-                {toast ? (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                            <div>
-                                {
-                                    responseType === 'Success' ? (
-                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                {toast && (
+                    <>
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            onClick={() => setToast(false)}
+                        ></div>
+
+                        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+                            <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
+                transition-all duration-300 ease-in-out w-80
+                ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+
+                                <div className={`flex items-center justify-center p-2 rounded-full 
+                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                    {responseType === 'Success' ? (
+                                        <MdDone className="text-xl text-emerald-600" />
                                     ) : (
-                                        <MdError className="text-3xl mx-4 text-red-600" />
-                                    )
-                                }
-                            </div>
-                            <div className="block">
-                                {
-                                    responseType === 'Success' ? (
-                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                                    ) : (
-                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                                    )
-                                }
-                            </div>
-                            <div>
+                                        <MdError className="text-xl text-rose-600" />
+                                    )}
+                                </div>
+
+                                <div className="flex-1">
+                                    <h3 className={`text-base font-semibold mb-1
+                        ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                        {responseType === 'Success' ? "Successfully sent!" : "Action required"}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        {responseType === 'Success'
+                                            ? "Your request has been successful. Please check the email inbox."
+                                            : "Couldn't process your request. Check your network or try different credentials."}
+                                    </p>
+
+                                    <div className="mt-3 flex items-center gap-2">
+                                        {responseType === 'Success' ? (
+                                            <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
+                                                Resend Email
+                                            </button>
+                                        ) : (
+                                            <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
+                                                Retry Now
+                                            </button>
+                                        )}
+                                        <span className="text-gray-400">|</span>
+                                        <button
+                                            className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
+                                            onClick={() => setToast(false)}>
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <MdClose
                                     onClick={() => setToast(false)}
-                                    className="cursor-pointer text-3xl ml-4" />
+                                    className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
+                                />
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <></>
+                    </>
                 )}
 
                 {isDeleting ? (
@@ -508,19 +544,36 @@ const Users = () => {
                         <></>
                     )
                 }
-                <div className="w-full px-2">
-                    <div className="w-full px-4 flex justify-between items-center border bg-white">
-                        <CiSearch
-                            className="text-xl"
-                        />
+                <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
+                    <div className="w-full md:w-6/12 flex items-center gap-3 px-4 rounded-lg">
+                        <h1 className="text-sm font-semibold text-gray-700">Show</h1>
+                        <select
+                            onChange={(e) => setLimit(Number(e.target.value))}
+                            className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="15">15</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value={totalUsers}>All</option>
+                        </select>
+                        <h1 className="text-sm font-semibold text-gray-700">members</h1>
+                        <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
+                    </div>
+                    <div className="w-full md:w-6/12 flex bg-white items-center border-b px-4 my-2">
+                        <IoSearch />
                         <Input
-                            placeholder='Search user'
-                            className='border-none outline-none focus:outline-none bg-none'
+                            className='rounded-none border-none bg-transparent'
+                            placeholder='Search members...'
                             value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onChange={(e) => {
+                                setCurrentPage(1);
+                                setSearchQuery(e.target.value);
+                            }
+                            }
                         />
                     </div>
                 </div>
+
                 {isLoading ? (
                     <Loader />
                 ) : (
@@ -559,7 +612,25 @@ const Users = () => {
                                                             onClick={() => fetchSingleUser(user._id)}
                                                             className="text-lg cursor-pointer"
                                                         />
-                                                        <MdEmail className="text-lg cursor-pointer mx-2" />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <MdEmail
+                                                                    className='cursor-pointer text-lg'
+                                                                />
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action will send QR attached to {user.firstName}, Are you sure about that?
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                         <AlertDialog>
                                                             <AlertDialogTrigger asChild>
                                                                 <MdDelete
@@ -585,7 +656,7 @@ const Users = () => {
                                             ))
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={7} className="text-center font-bold text-sm">
+                                                <TableCell colSpan={0} className="text-center font-bold text-sm">
                                                     No users found.
                                                 </TableCell>
                                             </TableRow>
@@ -593,8 +664,8 @@ const Users = () => {
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
-                                            <TableCell colSpan={3}>Total</TableCell>
-                                            <TableCell className="text-right">{totalUsers || 'Total Users'}</TableCell>
+                                            <TableCell className="text-left" colSpan={0}>Total Users</TableCell>
+                                            <TableCell className="text-left">{totalUsers || 'Total Users'}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
@@ -602,15 +673,20 @@ const Users = () => {
                         </div>
                     </div>
                 )}
-                <div className="py-3">
-                    <Pagination
-                        total={totalPages || 1}
-                        page={currentPage || 1}
-                        onChange={setCurrentPage}
-                        withEdges={true}
-                        siblings={1}
-                        boundaries={1}
-                    />
+                <div className='border-t border-gray-600'>
+                    <div className="mt-4 px-4 md:flex justify-between items-center">
+                        <p className="font-medium text-center text-sm font-gray-700">
+                            Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalUsers}</span> entries
+                        </p>
+                        <Pagination
+                            total={totalPages || 1}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
                 </div>
             </div>
         </div>
