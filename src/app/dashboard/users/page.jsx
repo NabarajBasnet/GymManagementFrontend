@@ -556,14 +556,14 @@ const Users = () => {
                             <option value="50">50</option>
                             <option value={totalUsers}>All</option>
                         </select>
-                        <h1 className="text-sm font-semibold text-gray-700">members</h1>
+                        <h1 className="text-sm font-semibold text-gray-700">users</h1>
                         <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
                     </div>
                     <div className="w-full md:w-6/12 flex bg-white items-center border-b px-4 my-2">
                         <IoSearch />
                         <Input
                             className='rounded-none border-none bg-transparent'
-                            placeholder='Search members...'
+                            placeholder='Search users...'
                             value={searchQuery}
                             onChange={(e) => {
                                 setCurrentPage(1);
