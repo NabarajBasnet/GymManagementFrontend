@@ -1290,7 +1290,7 @@ const newMemberRegistrationForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="transition-all duration-700 ease-in-out opacity-0 max-h-0 overflow-hidden scale-100" />
+                                    <div className="transition-all duration-700 ease-in-out opacity-80" />
                                 )
                             }
 
