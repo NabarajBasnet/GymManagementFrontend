@@ -68,7 +68,7 @@ const StaffDetails = ({ staffId }) => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${staffId}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${staffId}`);
             const responseBody = await response.json();
             if (response.status === 200 && responseBody.staff) {
                 reset({
@@ -132,9 +132,8 @@ const StaffDetails = ({ staffId }) => {
             checkOutTime: checkOutTime,
             gender, shift, joinedDate, workingHours, status, salary, role
         };
-        console.log("Final Data: ", finalData);
         try {
-            const url = `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${staffId}`
+            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
 
             const response = await fetch(url, {
@@ -212,7 +211,7 @@ const StaffDetails = ({ staffId }) => {
                 <Breadcrumb className='p-6'>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard">Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard" className='font-medium text-gray-600'>Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -225,47 +224,75 @@ const StaffDetails = ({ staffId }) => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink>{'Staff Management'}</BreadcrumbLink>
+                            <BreadcrumbLink className='text-gray-600 font-medium'>{'Staff Management'}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink>{staff ? staff.fullName : ''}</BreadcrumbLink>
+                            <BreadcrumbLink className='text-blue-600 font-medium'>{staff ? staff.fullName : ''}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                {toast ? (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                            <div>
-                                {
-                                    responseType === 'Success' ? (
-                                        <MdDone className="text-3xl mx-4 text-green-600" />
+                {toast && (
+                    <>
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            onClick={() => setToast(false)}
+                        ></div>
+
+                        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+                            <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
+                            transition-all duration-300 ease-in-out w-80
+                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+
+                                <div className={`flex items-center justify-center p-2 rounded-full 
+                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                    {responseType === 'Success' ? (
+                                        <MdDone className="text-xl text-emerald-600" />
                                     ) : (
-                                        <MdError className="text-3xl mx-4 text-red-600" />
-                                    )
-                                }
-                            </div>
-                            <div className="block">
-                                {
-                                    responseType === 'Success' ? (
-                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                                    ) : (
-                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                                    )
-                                }
-                            </div>
-                            <div>
+                                        <MdError className="text-xl text-rose-600" />
+                                    )}
+                                </div>
+
+                                <div className="flex-1">
+                                    <h3 className={`text-base font-semibold mb-1
+                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                        {responseType === 'Success' ? "Successfully sent!" : "Action required"}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        {responseType === 'Success'
+                                            ? "Your request has been successful."
+                                            : "Couldn't process your request. Check your network or try different credentials."}
+                                    </p>
+
+                                    <div className="mt-3 flex items-center gap-2">
+                                        {responseType === 'Success' ? (
+                                            <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
+                                                Done
+                                            </button>
+                                        ) : (
+                                            <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
+                                                Retry Now
+                                            </button>
+                                        )}
+                                        <span className="text-gray-400">|</span>
+                                        <button
+                                            className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
+                                            onClick={() => setToast(false)}>
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <MdClose
                                     onClick={() => setToast(false)}
-                                    className="cursor-pointer text-3xl ml-4" />
+                                    className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
+                                />
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <></>
+                    </>
                 )}
 
                 <div className="w-full flex justify-between items-start">
@@ -278,7 +305,7 @@ const StaffDetails = ({ staffId }) => {
                                     <div className="w-full bg-gray-100">
                                         <div className="w-full md:flex md:justify-center md:items-center">
                                             <form className="w-full" onSubmit={handleSubmit(handleSubmitStaff)}>
-                                                <div className="bg-gray-300 py-2 my-2 w-full">
+                                                <div className="bg-blue-500 py-2 text-white my-2 w-full">
                                                     <h1 className="mx-4 font-semibold">{staff ? staff.fullName : 'Staff'}</h1>
                                                 </div>
                                                 <div className="p-4 bg-white">
@@ -296,7 +323,7 @@ const StaffDetails = ({ staffId }) => {
                                                                         onChange={(e) => {
                                                                             field.onChange(e)
                                                                         }}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Full Name"
                                                                     />
                                                                 )}
@@ -319,7 +346,7 @@ const StaffDetails = ({ staffId }) => {
                                                                         onChange={(e) => {
                                                                             field.onChange(e)
                                                                         }}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Email address"
                                                                     />
                                                                 )}
@@ -342,7 +369,7 @@ const StaffDetails = ({ staffId }) => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("contactNo")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Contact Number"
                                                                     />
                                                                 )}
@@ -365,7 +392,7 @@ const StaffDetails = ({ staffId }) => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("emergencyContactNo")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Emergency Contact Number"
                                                                     />
                                                                 )}
@@ -388,7 +415,7 @@ const StaffDetails = ({ staffId }) => {
                                                                             field.onChange(e)
                                                                         }}
                                                                         {...register("address")}
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Address"
                                                                     />
                                                                 )}
@@ -413,7 +440,7 @@ const StaffDetails = ({ staffId }) => {
                                                                         }}
                                                                         {...register("dob")}
                                                                         type="date"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                     />
                                                                 )}
                                                             />
@@ -438,6 +465,7 @@ const StaffDetails = ({ staffId }) => {
                                                                                 field.onChange(e);
                                                                             }}
                                                                             type='time'
+                                                                            className='rounded-md focus:outline-none'
                                                                         />
                                                                     )}
                                                                 />
@@ -469,6 +497,7 @@ const StaffDetails = ({ staffId }) => {
                                                                             handleCheckOutTimeChange(e);
                                                                         }}
                                                                         type='time'
+                                                                        className='rounded-md focus:outline-none'
                                                                     />
                                                                 )}
                                                             />
@@ -555,7 +584,7 @@ const StaffDetails = ({ staffId }) => {
                                                                         }}
                                                                         {...register("joinedDate")}
                                                                         type="date"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                     />
                                                                 )}
 
@@ -583,11 +612,16 @@ const StaffDetails = ({ staffId }) => {
                                                                         className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                                     >
                                                                         <option>Select</option>
+                                                                        <option value="1 Hour">1 Hour</option>
                                                                         <option value="2 Hours">2 Hours</option>
+                                                                        <option value="3 Hours">3 Hours</option>
+                                                                        <option value="4 Hours">4 Hours</option>
                                                                         <option value="5 Hours">5 Hours</option>
                                                                         <option value="6 Hours">6 Hours</option>
                                                                         <option value="7 Hours">7 Hours</option>
                                                                         <option value="8 Hours">8 Hours</option>
+                                                                        <option value="9 Hours">9 Hours</option>
+                                                                        <option value="10 Hours">10 Hours</option>
                                                                     </select>
                                                                 )}
                                                             />
@@ -640,7 +674,7 @@ const StaffDetails = ({ staffId }) => {
                                                                         }}
                                                                         {...register("salary")}
                                                                         type="text"
-                                                                        className="rounded-none focus:outline-none"
+                                                                        className="rounded-md focus:outline-none"
                                                                         placeholder="Salary"
                                                                     />
                                                                 )}
@@ -688,8 +722,8 @@ const StaffDetails = ({ staffId }) => {
                                                 </div>
 
                                                 <div className="flex justify-center items-center mt-5 space-x-2 p-2">
-                                                    <Button variant="destructive" type="button" className="rounded-none" onClick={() => window.location.reload()}>Reload</Button>
-                                                    <Button className="rounded-none bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}</Button>
+                                                    <Button variant="destructive" type="button" className="rounded-md" onClick={() => window.location.reload()}>Reload</Button>
+                                                    <Button className="rounded-md bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}</Button>
                                                 </div>
                                             </form>
                                         </div>
