@@ -1,8 +1,8 @@
 'use client'
 
+import { motion } from "framer-motion";
 import '../../globals.css';
 import { MdDone, MdError, MdClose } from "react-icons/md";
-import { IoMdClose } from "react-icons/io";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -105,7 +105,6 @@ const newMemberRegistrationForm = () => {
 
     const [toast, setToast] = useState(false);
     const [responseMessage, setResponseMessage] = useState('');
-    console.log("Response Message: ", responseMessage);
     const [signUpAlert, setSignUpAlert] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
@@ -340,7 +339,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://localhost:3000/api/members', {
+            const response = await fetch('http://88.198.112.156:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -406,7 +405,7 @@ const newMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -538,8 +537,7 @@ const newMemberRegistrationForm = () => {
                             </div>
                             {
                                 renderPersonalInformationForm ? (
-
-                                    <div className="p-2 bg-white">
+                                    <div className="p-2 bg-white ease-in-out duration-700">
                                         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                                             <div>
                                                 <Label>Member Full Name</Label>
@@ -710,7 +708,7 @@ const newMemberRegistrationForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <></>
+                                    <div className='ease-in-out duration-700'></div>
                                 )
                             }
 
@@ -719,8 +717,7 @@ const newMemberRegistrationForm = () => {
                             </div>
                             {
                                 renderBodyMeasurementsForm ? (
-
-                                    <div className="p-2 bg-white">
+                                    <div className="p-2 bg-white ease-in-out duration-700">
                                         <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
                                             <div>
                                                 <Label>Date</Label>
@@ -869,7 +866,7 @@ const newMemberRegistrationForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <></>
+                                    <div className='ease-in-out duration-700'></div>
                                 )
                             }
 
@@ -878,8 +875,7 @@ const newMemberRegistrationForm = () => {
                             </div>
                             {
                                 renderMembershipInformationForm ? (
-
-                                    <div className="p-2 bg-white">
+                                    <div className="p-2 bg-white ease-in-out duration-700">
                                         <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
 
                                             <div>
@@ -1072,7 +1068,7 @@ const newMemberRegistrationForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <></>
+                                    <div className='ease-in-out duration-700'></div>
                                 )
                             }
 
@@ -1081,8 +1077,9 @@ const newMemberRegistrationForm = () => {
                             </div>
                             {
                                 renderPaymentDetailForm ? (
-                                    <div className="p-2 bg-white transition-all ease-in-out opacity-100 duration-700">
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                    <div className="p-2 bg-white  ease-in-out duration-700">
+                                        <div
+                                            className="grid grid-cols-1 md:grid-cols-4 gap-3 ease-in-out duration-700">
                                             <div>
                                                 <Label>Payment Method</Label>
                                                 <Select onValueChange={(value) => {
@@ -1290,7 +1287,7 @@ const newMemberRegistrationForm = () => {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="transition-all duration-700 ease-in-out opacity-80" />
+                                    <div className=' ease-in-out duration-700'></div>
                                 )
                             }
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { FaUsersRays } from "react-icons/fa6";
 import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import { Button } from "@/components/ui/button";
@@ -79,6 +80,8 @@ import { FaUsersGear } from "react-icons/fa6";
 
 const Header = () => {
 
+    const { user } = useUser();
+
     const [isScrolled, setIsScrolled] = useState(false);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
@@ -143,7 +146,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -270,7 +273,7 @@ const Header = () => {
 
     return (
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
-    ${isScrolled ? 'bg-white border-b border-gray-400' : 'bg-white'} 
+    ${isScrolled ? 'bg-transparent border-b border-gray-400' : 'bg-transparent'} 
     ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
     w-full flex justify-between py-4 px-4 items-center`}>
             <div className='mx-4'>
@@ -363,15 +366,18 @@ const Header = () => {
                         <SheetContent className="h-full flex flex-col">
                             <SheetHeader className="bg-white">
                                 <SheetTitle>
-                                    <Link href={'/dashboard'} className="flex justify-start py-3 hover:bg-gray-50">
+                                    <Link href={'/dashboard'} className="flex justify-start py-2 items-center hover:bg-gray-50">
                                         <BiSolidDashboard className='text-3xl mx-2 text-start bg-gray-800 text-white p-1 rounded-md' />
-                                        <span className="w-full text-lg font-bold">Revive Fitness</span>
+                                        <div>
+                                            <p className="w-full text-lg font-bold text-gray-600">Revive Fitness</p>
+                                            <p className="w-full text-[11px] font-bold text-blue-600">Starter</p>
+                                        </div>
                                     </Link>
                                 </SheetTitle>
                             </SheetHeader>
 
                             <div className="flex-grow overflow-y-auto">
-                                <div className='min-h-screen'>
+                                <div className='h-full'>
                                     <ul>
                                         {sidebarContent.map((sidebar, index) => (
                                             <li key={index} className="p-1">
@@ -416,9 +422,11 @@ const Header = () => {
                                         <FaUserCircle className="text-3xl mr-2" />
                                         {sidebarMinimized ? null : (
                                             <div>
-                                                <h1 className="font-bold text-sm text-gray-700 hover:text-gray-800">Revive Fitness</h1>
+                                                <div className="flex items-center">
+                                                    <h1 className="text-sm text-gray-700 hover:text-gray-800">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                                                </div>
                                                 <p className="font-semibold text-[11px] text-gray-700 hover:text-gray-800">
-                                                    revivefitness.np@gmail.com
+                                                    {user && user.user.email || ''}
                                                 </p>
                                             </div>
                                         )}
