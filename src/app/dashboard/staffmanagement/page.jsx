@@ -1060,8 +1060,8 @@ const StaffManagement = () => {
                                                 </div>
 
                                                 <div className="flex justify-center items-center mt-3 space-x-2">
-                                                    <Button variant="destructive" className="rounded-md space-x-2" onClick={() => reset()}>Reset <RiResetRightFill className="mx-2" /></Button>
-                                                    <Button className="rounded-md space-x-2" onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="mx-2" /></Button>
+                                                    <Button variant="destructive" type='button' className="rounded-md space-x-2" onClick={() => reset()}>Reset <RiResetRightFill className="mx-2" /></Button>
+                                                    <Button className="rounded-md space-x-2" type='button' onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="mx-2" /></Button>
                                                     <Button className="rounded-md space-x-2 bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}{isSubmitting ? <AiOutlineLoading3Quarters className='animate-spin duration-500 mx-2' /> : <GiConfirmed className="mx-2" />}</Button>
                                                 </div>
                                             </form>
