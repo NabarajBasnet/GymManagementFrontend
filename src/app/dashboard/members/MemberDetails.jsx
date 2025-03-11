@@ -44,6 +44,12 @@ import Loader from "@/components/Loader/Loader";
 
 const MemberDetails = ({ memberId }) => {
 
+    // For rendering states
+    const [renderPersonalInformationForm, setRenderPersonalInformationForm] = useState(true);
+    const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
+    const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
+    const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
+
     // States
     const queryClient = useQueryClient();
     const [toast, setToast] = useState(false);
@@ -263,7 +269,7 @@ const MemberDetails = ({ memberId }) => {
     const updateMemberDetails = async (data) => {
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -315,7 +321,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -364,7 +370,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -383,7 +389,7 @@ const MemberDetails = ({ memberId }) => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full p-1">
+        <div className="w-full p-1 bg-gray-100">
             <div className='w-full p-6' onClick={() => setToast(false)}>
                 {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -449,12 +455,16 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="w-full bg-white p-4 rounded-lg shadow-lg">
-                <div className="flex items-center justify-start space-x-4 mb-4">
-                    <Button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Start</Button>
+            <div className="w-full bg-white p-4 my-2 rounded-lg shadow-lg">
+                    
+            </div>
+
+            <div className="w-full bg-white p-4 my-2 rounded-lg shadow-lg">
+                <div className="flex items-center justify-center space-x-4">
+                    <Button disabled className="bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-colors">Start</Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="destructive" className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors">Hold</Button>
+                            <Button variant="destructive" className="bg-red-600 text-white px-4 py-3 rounded-md hover:bg-red-700 transition-colors">Hold</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="max-w-lg p-6 rounded-lg shadow-lg">
                             <AlertDialogHeader>
@@ -491,20 +501,20 @@ const MemberDetails = ({ memberId }) => {
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
-                </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Hold Date: {data && data.member && data.member.membershipHoldDate ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0] : 'N/A'}
-                    </div>
-                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Paused Days: {data ? member.pausedDays : ''}
-                    </div>
-                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Remaining Days: {data ? member.remainingDaysOfMembership : ''}
-                    </div>
-                    <div className="bg-gray-100 text-sm font-semibold p-4 border rounded-lg">
-                        Resumed Date: {data && data.member && data.member.resumedDate ? new Date(data.member.resumedDate).toISOString().split("T")[0] : 'N/A'}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="bg-gray-100 text-sm font-semibold p-3 border rounded-lg">
+                            Hold Date: {data && data.member && data.member.membershipHoldDate ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0] : 'N/A'}
+                        </div>
+                        <div className="bg-gray-100 text-sm font-semibold p-3 border rounded-lg">
+                            Paused Days: {data ? member.pausedDays : ''}
+                        </div>
+                        <div className="bg-gray-100 text-sm font-semibold p-3 border rounded-lg">
+                            Remaining Days: {data ? member.remainingDaysOfMembership : ''}
+                        </div>
+                        <div className="bg-gray-100 text-sm font-semibold p-3 border rounded-lg">
+                            Resumed Date: {data && data.member && data.member.resumedDate ? new Date(data.member.resumedDate).toISOString().split("T")[0] : 'N/A'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -518,451 +528,627 @@ const MemberDetails = ({ memberId }) => {
                                     {
                                         data ? (
                                             <form className="w-full" onSubmit={handleSubmit(updateMemberDetails)}>
-                                                <div className="bg-gray-300 py-2 my-2 w-full">
-                                                    <h1 className="mx-4 font-semibold">Personal Information</h1>
+                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
+                                                    <h1 className="mx-4 text-white font-semibold">Personal Information</h1>
                                                 </div>
-                                                <div className="p-2 bg-white">
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                                        <div>
-                                                            <Label>Member Full Name</Label>
-                                                            <Input
-                                                                {...register("fullName")}
-                                                                className='rounded-md focus:outline-none'
-                                                                type='text'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Contact No</Label>
-                                                            <Input
-                                                                {...register("contactNo")}
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Email Address</Label>
-                                                            <Input
-                                                                {...register("email")}
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Date Of Birth</Label>
-                                                            <Input
-                                                                type='date'
-                                                                {...register("dob")}
-                                                                className='rounded-md focus:outline-none cursor-pointer'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Secondary Contact No</Label>
-                                                            <Input
-                                                                {...register("secondaryContactNo")}
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Gender</Label>
-                                                            <Controller
-                                                                name="gender"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field} {...register('gender')}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Male">Male</option>
-                                                                        <option value="Female">Female</option>
-                                                                        <option value="Other">Other</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Address</Label>
-                                                            <Input
-                                                                {...register('address')}
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Status</Label>
-                                                            <Controller
-                                                                name="status"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Active" className="text-white bg-green-600">Active</option>
-                                                                        <option value="Inactive" className="text-white bg-red-600">Inactive</option>
-                                                                        <option value="OnHold" className="text-white bg-yellow-500">OnHold</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-
-                                                <div className="bg-gray-300 py-2 my-2 w-full">
-                                                    <h1 className="mx-4 font-semibold">Membership Information</h1>
-                                                </div>
-                                                <div className="p-2 bg-white">
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-
-                                                        <div>
-                                                            <Label>Membership Option</Label>
-                                                            <Controller
-                                                                name="membershipOption"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setMembershipOption(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Regular">Regular</option>
-                                                                        <option value="Daytime">Daytime</option>
-                                                                        <option value="Temporary">Temporary</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Membership Type</Label>
-                                                            <Controller
-                                                                name="membershipType"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setMembershipType(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Gym">Gym</option>
-                                                                        <option value="Gym & Cardio">Gym & Cardio</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Membership Shift</Label>
-                                                            <Controller
-                                                                name="membershipShift"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field} {...register('membershipShift')}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Morning">Morning</option>
-                                                                        <option value="Day">Day</option>
-                                                                        <option value="Evening">Evening</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Membership Start Date</Label>
-                                                            <Input
-                                                                {...register("membershipDate")}
-                                                                type='date'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Membership Renew Date</Label>
-                                                            <Controller
-                                                                name="membershipRenewDate"
-                                                                control={control}
-                                                                render={({ field }) => (
+                                                {
+                                                    renderPersonalInformationForm ? (
+                                                        <div className="p-2 bg-white">
+                                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                                                <div>
+                                                                    <Label>Full Name</Label>
                                                                     <Input
-                                                                        {...field}
-                                                                        {...register('membershipRenewDate')}
-                                                                        type='date'
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setMembershipRenewDate(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
+                                                                        {...register("fullName")}
+                                                                        className='rounded-md focus:outline-none'
+                                                                        type='text'
                                                                     />
-                                                                )}
-                                                            />
-                                                        </div>
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Membership Duration</Label>
-                                                            <Controller
-                                                                name="membershipDuration"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setMembershipDuration(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="1 Month">1 Month</option>
-                                                                        <option value="3 Months">3 Months</option>
-                                                                        <option value="6 Months">6 Months</option>
-                                                                        <option value="12 Months">12 Months</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Membership Expire Date</Label>
-                                                            <Controller
-                                                                name="membershipExpireDate"
-                                                                control={control}
-                                                                render={({ field }) => (
+                                                                <div>
+                                                                    <Label>Contact No</Label>
                                                                     <Input
-                                                                        {...field}
-                                                                        {...register('membershipExpireDate')}
-                                                                        type='date'
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setMembershipExpireDate(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
+                                                                        {...register("contactNo")}
+                                                                        className='rounded-md focus:outline-none'
                                                                     />
-                                                                )}
-                                                            />
-                                                        </div>
+                                                                </div>
 
-
-                                                    </div>
-                                                </div>
-
-                                                <div className="bg-gray-300 py-2 my-2 w-full">
-                                                    <h1 className="mx-4 font-semibold">Payment Details</h1>
-                                                </div>
-                                                <div className="p-2 bg-white">
-                                                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                                        <div>
-                                                            <Label>Payment Method</Label>
-                                                            <Controller
-                                                                name="paymentMethod"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field} {...register('paymentMethod')}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Fonepay">Fonepay</option>
-                                                                        <option value="Cash">Cash</option>
-                                                                        <option value="Card">Card</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Discount Amount</Label>
-                                                            <Controller
-                                                                name="discountAmmount"
-                                                                control={control}
-                                                                render={({ field }) => (
+                                                                <div>
+                                                                    <Label>Email Address</Label>
                                                                     <Input
-                                                                        {...field}
-                                                                        {...register("discountAmmount")}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setDiscountAmmount(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
+                                                                        {...register("email")}
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Date Of Birth</Label>
+                                                                    <Input
+                                                                        type='date'
+                                                                        {...register("dob")}
+                                                                        className='rounded-md focus:outline-none cursor-pointer'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Secondary Contact No</Label>
+                                                                    <Input
+                                                                        {...register("secondaryContactNo")}
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Gender</Label>
+                                                                    <Controller
+                                                                        name="gender"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field} {...register('gender')}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Male">Male</option>
+                                                                                <option value="Female">Female</option>
+                                                                                <option value="Other">Other</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Address</Label>
+                                                                    <Input
+                                                                        {...register('address')}
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Status</Label>
+                                                                    <Controller
+                                                                        name="status"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Active" className="text-white bg-green-600">Active</option>
+                                                                                <option value="Inactive" className="text-white bg-red-600">Inactive</option>
+                                                                                <option value="OnHold" className="text-white bg-yellow-500">OnHold</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className='ease-in-out duration-700'></div>
+                                                    )
+                                                }
+
+                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
+                                                    <h1 className="mx-4 text-white font-semibold">Body Measurements</h1>
+                                                </div>
+                                                {
+                                                    renderBodyMeasurementsForm ? (
+                                                        <div className="p-2 bg-white ease-in-out duration-700">
+                                                            <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+                                                                <div>
+                                                                    <Label>Date</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('bodyMeasuredate', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Date'
+                                                                        type='date'
+                                                                    />
+                                                                    {errors.bodyMeasuredate && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.bodyMeasuredate.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Weight</Label>
+                                                                    <Input
+                                                                        {
+
+                                                                        ...register('weight', {
+                                                                            required: {
+                                                                                value: true,
+                                                                                message: "Enter client weight!"
+                                                                            }
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Weight'
+                                                                    />
+                                                                    {errors.weight && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.weight.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Height</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('height', {
+                                                                        })
+                                                                        }
+                                                                        onChange={() => clearErrors('userRegistered')}
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Enter height'
+                                                                    />
+                                                                    {errors.height && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.height.message}`}</p>
+                                                                    )}
+                                                                    {errors.userRegistered && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.userRegistered.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Upper Arm</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('upperArm')
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Upper Arm Size'
+                                                                    />
+                                                                    {errors.upperArm && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.upperArm.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Fore Arm</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('foreArm', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Fore Arm Size'
+                                                                    />
+                                                                    {errors.foreArm && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.foreArm.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Chest</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('chest', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Chest Size'
+                                                                    />
+                                                                    {errors.chest && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.chest.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Waist</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('waist', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Waist Size'
+                                                                    />
+                                                                    {errors.waist && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.waist.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Thigh</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('thigh', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Thigh Size'
+                                                                    />
+                                                                    {errors.thigh && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.thigh.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Calf</Label>
+                                                                    <Input
+                                                                        {
+                                                                        ...register('calf', {
+                                                                        })
+                                                                        }
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Calf Size'
+                                                                    />
+                                                                    {errors.calf && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.calf.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className='ease-in-out duration-700'></div>
+                                                    )
+                                                }
+
+                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
+                                                    <h1 className="mx-4 text-white font-semibold">Membership Information</h1>
+                                                </div>
+                                                {
+                                                    renderMembershipInformationForm ? (
+                                                        <div className="p-2 bg-white">
+                                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+
+                                                                <div>
+                                                                    <Label>Membership Option</Label>
+                                                                    <Controller
+                                                                        name="membershipOption"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setMembershipOption(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Regular">Regular</option>
+                                                                                <option value="Daytime">Daytime</option>
+                                                                                <option value="Temporary">Temporary</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Type</Label>
+                                                                    <Controller
+                                                                        name="membershipType"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setMembershipType(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Gym">Gym</option>
+                                                                                <option value="Gym & Cardio">Gym & Cardio</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Shift</Label>
+                                                                    <Controller
+                                                                        name="membershipShift"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field} {...register('membershipShift')}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Morning">Morning</option>
+                                                                                <option value="Day">Day</option>
+                                                                                <option value="Evening">Evening</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Start Date</Label>
+                                                                    <Input
+                                                                        {...register("membershipDate")}
+                                                                        type='date'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Renew Date</Label>
+                                                                    <Controller
+                                                                        name="membershipRenewDate"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                {...register('membershipRenewDate')}
+                                                                                type='date'
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setMembershipRenewDate(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Duration</Label>
+                                                                    <Controller
+                                                                        name="membershipDuration"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setMembershipDuration(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="1 Month">1 Month</option>
+                                                                                <option value="3 Months">3 Months</option>
+                                                                                <option value="6 Months">6 Months</option>
+                                                                                <option value="12 Months">12 Months</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Membership Expire Date</Label>
+                                                                    <Controller
+                                                                        name="membershipExpireDate"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                {...register('membershipExpireDate')}
+                                                                                type='date'
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setMembershipExpireDate(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className='ease-in-out duration-700'></div>
+                                                    )
+                                                }
+
+                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
+                                                    <h1 className="mx-4 text-white font-semibold">Payment Details</h1>
+                                                </div>
+                                                {
+                                                    renderPaymentDetailForm ? (
+                                                        <div className="p-2 bg-white">
+                                                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                                                                <div>
+                                                                    <Label>Payment Method</Label>
+                                                                    <Controller
+                                                                        name="paymentMethod"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field} {...register('paymentMethod')}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Fonepay">Fonepay</option>
+                                                                                <option value="Cash">Cash</option>
+                                                                                <option value="Card">Card</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Discount Amount</Label>
+                                                                    <Controller
+                                                                        name="discountAmmount"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                {...register("discountAmmount")}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setDiscountAmmount(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                type='text'
+                                                                                className='rounded-md focus:outline-none'
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Discount Reason</Label>
+                                                                    <Input
+                                                                        {...register('discountReason')}
                                                                         type='text'
                                                                         className='rounded-md focus:outline-none'
                                                                     />
-                                                                )}
-                                                            />
-                                                        </div>
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Discount Reason</Label>
-                                                            <Input
-                                                                {...register('discountReason')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Discount Code</Label>
-                                                            <Input
-                                                                {...register('discountCode')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Admission Fee</Label>
-                                                            <Input
-                                                                type='text'
-                                                                defaultValue={'1000'}
-                                                                disabled
-                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                                placeholder='Admission Fee'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Final Amount</Label>
-                                                            <Input
-                                                                {...register('finalAmmount')}
-                                                                type='text'
-                                                                disabled
-                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Paid Amount</Label>
-                                                            <Controller
-                                                                name="paidAmmount"
-                                                                control={control}
-                                                                render={({ field }) => (
+                                                                <div>
+                                                                    <Label>Discount Code</Label>
                                                                     <Input
-                                                                        {...field}
-                                                                        {...register("paidAmmount")}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setPaidAmmount(e.target.value);
-                                                                            field.onChange(e);
-                                                                        }}
+                                                                        {...register('discountCode')}
                                                                         type='text'
                                                                         className='rounded-md focus:outline-none'
                                                                     />
-                                                                )}
-                                                            />
-                                                        </div>
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Due Amount</Label>
-                                                            <Input
-                                                                {...register('dueAmmount')}
-                                                                type='text'
-                                                                disabled
-                                                                className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                            />
-                                                        </div>
+                                                                <div>
+                                                                    <Label>Admission Fee</Label>
+                                                                    <Input
+                                                                        type='text'
+                                                                        defaultValue={'1000'}
+                                                                        disabled
+                                                                        className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
+                                                                        placeholder='Admission Fee'
+                                                                    />
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Receipt No</Label>
-                                                            <Input
-                                                                {...register('receiptNo')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
+                                                                <div>
+                                                                    <Label>Final Amount</Label>
+                                                                    <Input
+                                                                        {...register('finalAmmount')}
+                                                                        type='text'
+                                                                        disabled
+                                                                        className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
+                                                                    />
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Reference Code</Label>
-                                                            <Input
-                                                                {...register('referenceCode')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
-                                                            />
-                                                        </div>
+                                                                <div>
+                                                                    <Label>Paid Amount</Label>
+                                                                    <Controller
+                                                                        name="paidAmmount"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                {...register("paidAmmount")}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    setPaidAmmount(e.target.value);
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                type='text'
+                                                                                className='rounded-md focus:outline-none'
+                                                                            />
+                                                                        )}
+                                                                    />
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Reason for Update</Label>
-                                                            <Controller
-                                                                name="reasonForUpdate"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field} {...register('reasonForUpdate')}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option value="">Select</option>
-                                                                        <option value="Normal Change">Normal Change</option>
-                                                                        <option value="Renew">Renew</option>
-                                                                        <option value="Extend">Extend</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.reasonForUpdate && (
-                                                                <p className="text-sm font-semibold text-red-600">{`${errors.reasonForUpdate.message}`}</p>
-                                                            )}
-                                                        </div>
+                                                                <div>
+                                                                    <Label>Due Amount</Label>
+                                                                    <Input
+                                                                        {...register('dueAmmount')}
+                                                                        type='text'
+                                                                        disabled
+                                                                        className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
+                                                                    />
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Remark</Label>
-                                                            <Input
-                                                                {...register('remark')}
-                                                                type='text'
-                                                                className='rounded-md focus:outline-none'
-                                                                placeholder='Remark'
-                                                            />
-                                                        </div>
+                                                                <div>
+                                                                    <Label>Receipt No</Label>
+                                                                    <Input
+                                                                        {...register('receiptNo')}
+                                                                        type='text'
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Action Taker</Label>
-                                                            <Controller
-                                                                name="actionTaker"
-                                                                control={control}
-                                                                render={({ field, fieldState: { error } }) => (
-                                                                    <div>
-                                                                        <select
-                                                                            {...field}
-                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
-                                                                        >
-                                                                            <option value={''}>
-                                                                                Select
-                                                                            </option>
-                                                                            {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
-                                                                                actionTakersDB.map((actionTaker) => (
-                                                                                    <option key={actionTaker._id} value={actionTaker.fullName}>
-                                                                                        {actionTaker.fullName}
+                                                                <div>
+                                                                    <Label>Reference Code</Label>
+                                                                    <Input
+                                                                        {...register('referenceCode')}
+                                                                        type='text'
+                                                                        className='rounded-md focus:outline-none'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Reason for Update</Label>
+                                                                    <Controller
+                                                                        name="reasonForUpdate"
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <select
+                                                                                {...field} {...register('reasonForUpdate')}
+                                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                            >
+                                                                                <option value="">Select</option>
+                                                                                <option value="Normal Change">Normal Change</option>
+                                                                                <option value="Renew">Renew</option>
+                                                                                <option value="Extend">Extend</option>
+                                                                            </select>
+                                                                        )}
+                                                                    />
+                                                                    {errors.reasonForUpdate && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.reasonForUpdate.message}`}</p>
+                                                                    )}
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Remark</Label>
+                                                                    <Input
+                                                                        {...register('remark')}
+                                                                        type='text'
+                                                                        className='rounded-md focus:outline-none'
+                                                                        placeholder='Remark'
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <Label>Action Taker</Label>
+                                                                    <Controller
+                                                                        name="actionTaker"
+                                                                        control={control}
+                                                                        render={({ field, fieldState: { error } }) => (
+                                                                            <div>
+                                                                                <select
+                                                                                    {...field}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
+                                                                                >
+                                                                                    <option value={''}>
+                                                                                        Select
                                                                                     </option>
-                                                                                ))
-                                                                            ) : (
-                                                                                <option value="">No staffs registered</option>
-                                                                            )}
-                                                                        </select>
-                                                                        {error && <p className="text-red-500 text-sm">{error.message}</p>}
-                                                                    </div>
-                                                                )}
-                                                            />
-                                                            {errors.actionTaker && (
-                                                                <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
-                                                            )}
-                                                        </div>
+                                                                                    {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
+                                                                                        actionTakersDB.map((actionTaker) => (
+                                                                                            <option key={actionTaker._id} value={actionTaker.fullName}>
+                                                                                                {actionTaker.fullName}
+                                                                                            </option>
+                                                                                        ))
+                                                                                    ) : (
+                                                                                        <option value="">No staffs registered</option>
+                                                                                    )}
+                                                                                </select>
+                                                                                {error && <p className="text-red-500 text-sm">{error.message}</p>}
+                                                                            </div>
+                                                                        )}
+                                                                    />
+                                                                    {errors.actionTaker && (
+                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
+                                                                    )}
+                                                                </div>
 
-                                                    </div>
-                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ) : (
+                                                        <div className=' ease-in-out duration-700'></div>
+                                                    )
+                                                }
 
                                                 <div className="flex items-center space-x-2 p-2">
                                                     <Button type='submit' className='rounded-md'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>

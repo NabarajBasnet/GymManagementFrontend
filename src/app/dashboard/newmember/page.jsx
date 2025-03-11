@@ -339,7 +339,7 @@ const newMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://88.198.112.156:3000/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -405,7 +405,7 @@ const newMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
