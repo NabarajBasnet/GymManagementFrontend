@@ -1,5 +1,7 @@
 'use client';
 
+import React, { ChangeEvent } from 'react';
+import { ImagePlus, X } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -43,6 +45,22 @@ import { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
 
 const MemberDetails = ({ memberId }) => {
+    const [imagePreview, setImagePreview] = useState(null);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const removeImage = () => {
+        setImagePreview(null);
+    };
 
     // For rendering states
     const [renderPersonalInformationForm, setRenderPersonalInformationForm] = useState(true);
@@ -59,6 +77,8 @@ const MemberDetails = ({ memberId }) => {
     const responseResultType = ['Success', 'Failure'];
 
     const [membershipHoldDate, setMembershipHoldDate] = useState('');
+    console.log("Membership hold date: ", membershipHoldDate);
+    console.log("Type: ", typeof (membershipHoldDate));
     const [membershipOption, setMembershipOption] = useState('');
     const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
@@ -391,38 +411,69 @@ const MemberDetails = ({ memberId }) => {
     return (
         <div className="w-full p-1 bg-gray-100">
             <div className='w-full p-6' onClick={() => setToast(false)}>
-                {toast ? (
-                    <div className="fixed inset-0 flex items-center justify-center z-50">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                            <div>
-                                {
-                                    responseType === 'Success' ? (
-                                        <MdDone className="text-3xl mx-4 text-green-600" />
+
+                {toast && (
+                    <>
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            onClick={() => setToast(false)}
+                        ></div>
+
+                        <div className="fixed top-4 right-4 z-50 animate-slide-in">
+                            <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
+                            transition-all duration-300 ease-in-out w-80
+                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+
+                                <div className={`flex items-center justify-center p-2 rounded-full 
+                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                    {responseType === 'Success' ? (
+                                        <MdDone className="text-xl text-emerald-600" />
                                     ) : (
-                                        <MdError className="text-3xl mx-4 text-red-600" />
-                                    )
-                                }
-                            </div>
-                            <div className="block">
-                                {
-                                    responseType === 'Success' ? (
-                                        <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                                    ) : (
-                                        <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                                    )
-                                }
-                            </div>
-                            <div>
+                                        <MdError className="text-xl text-rose-600" />
+                                    )}
+                                </div>
+
+                                <div className="flex-1">
+                                    <h3 className={`text-base font-semibold mb-1
+                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                        {responseType === 'Success' ? "Request successful!" : "Action required"}
+                                    </h3>
+
+                                    <p className="text-sm text-gray-600 leading-relaxed">
+                                        {responseType === 'Success'
+                                            ? (<>{`${successMessage.message}`}</>)
+                                            : (<>{`${errorMessage.message}`}</>)
+                                        }
+                                    </p>
+
+                                    <div className="mt-3 flex items-center gap-2">
+                                        {responseType === 'Success' ? (
+                                            <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
+                                                Done
+                                            </button>
+                                        ) : (
+                                            <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
+                                                Retry Now
+                                            </button>
+                                        )}
+                                        <span className="text-gray-400">|</span>
+                                        <button
+                                            className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
+                                            onClick={() => setToast(false)}>
+                                            Dismiss
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <MdClose
                                     onClick={() => setToast(false)}
-                                    className="cursor-pointer text-3xl ml-4" />
+                                    className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
+                                />
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <></>
+                    </>
                 )}
+
                 <div className='w-full'>
                     <Breadcrumb>
                         <BreadcrumbList>
@@ -455,16 +506,60 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="w-full bg-white p-4 my-2 rounded-lg shadow-lg">
-                    
-            </div>
+            <div className="w-full bg-white flex items-center justify-between p-4 my-2 rounded-lg shadow-lg">
+                <div className="flex items-center justify-center p-2">
+                    <div className="w-full max-w-md border bg-white p-4 rounded-lg shadow-lg">
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-semibold text-gray-800">Member Image</h2>
 
-            <div className="w-full bg-white p-4 my-2 rounded-lg shadow-lg">
-                <div className="flex items-center justify-center space-x-4">
+                            {imagePreview ? (
+                                <div className="relative">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="w-full h-64 object-cover rounded-lg"
+                                    />
+                                    <button
+                                        onClick={removeImage}
+                                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                        aria-label="Remove image"
+                                    >
+                                        <X size={20} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="border-2 border-dashed border-gray-300 rounded-lg p-4">
+                                    <div className="flex flex-col items-center justify-center space-y-2">
+                                        <ImagePlus className="w-8 h-8 text-gray-400" />
+                                        <p className="text-sm text-gray-500">Click to upload or drag and drop</p>
+                                        <p className="text-xs text-gray-400">PNG, JPG up to 10MB</p>
+                                    </div>
+                                </div>
+                            )}
+
+                            <input
+                                type="file"
+                                id="imageInput"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="hidden"
+                            />
+
+                            <label
+                                htmlFor="imageInput"
+                                className="block w-full text-center py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 cursor-pointer transition-colors"
+                            >
+                                {imagePreview ? 'Change Image' : 'Upload Image'}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
                     <Button disabled className="bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition-colors">Start</Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="destructive" className="bg-red-600 text-white px-4 py-3 rounded-md hover:bg-red-700 transition-colors">Hold</Button>
+                            <Button variant="destructive" className="bg-red-600 text-white mx-4 px-4 py-3 rounded-md hover:bg-red-700 transition-colors">Hold</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent className="max-w-lg p-6 rounded-lg shadow-lg">
                             <AlertDialogHeader>
@@ -502,7 +597,7 @@ const MemberDetails = ({ memberId }) => {
                         </AlertDialogContent>
                     </AlertDialog>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="my-4 grid grid-cols-1 gap-4">
                         <div className="bg-gray-100 text-sm font-semibold p-3 border rounded-lg">
                             Hold Date: {data && data.member && data.member.membershipHoldDate ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0] : 'N/A'}
                         </div>
