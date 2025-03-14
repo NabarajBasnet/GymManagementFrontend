@@ -1,5 +1,12 @@
 'use client';
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import React, { ChangeEvent } from 'react';
 import { ImagePlus, X } from 'lucide-react';
 import {
@@ -67,6 +74,7 @@ const MemberDetails = ({ memberId }) => {
     const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
     const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
     const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
+    const [renderProfileDetails, setRenderProfileDetails] = useState(false);
 
     // States
     const queryClient = useQueryClient();
@@ -77,8 +85,6 @@ const MemberDetails = ({ memberId }) => {
     const responseResultType = ['Success', 'Failure'];
 
     const [membershipHoldDate, setMembershipHoldDate] = useState('');
-    console.log("Membership hold date: ", membershipHoldDate);
-    console.log("Type: ", typeof (membershipHoldDate));
     const [membershipOption, setMembershipOption] = useState('');
     const [membershipType, setMembershipType] = useState('');
     const [membershipDuration, setMembershipDuration] = useState('');
@@ -503,178 +509,196 @@ const MemberDetails = ({ memberId }) => {
                         </BreadcrumbList>
                     </Breadcrumb>
                     <div className="flex justify-between items-center">
-                        <h1 className="text-xl font-bold my-3">Update Member Details</h1>
+                        <h1 className="text-xl font-bold my-1">Membership Details</h1>
                     </div>
                 </div>
             </div>
 
-            <div className=" bg-gray-50">
-                <div className="max-w-7xl mx-auto">
-                    <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-                        <div className="grid md:grid-cols-3 gap-6 p-6">
-                            {/* Image Upload Section */}
-                            <div className="space-y-4">
-                                <div className="bg-white rounded-lg overflow-hidden">
-                                    <div className="space-y-4">
-                                        <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
+            <div className="flex justify-between items-center bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
+                <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <IoIosInformationCircleOutline className="text-white mx-4 cursor-pointer h-5 w-5" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Click here to view members profile details.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
 
-                                        {imagePreview ? (
-                                            <div className="relative group">
-                                                <img
-                                                    src={imagePreview}
-                                                    alt="Preview"
-                                                    className="w-full h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                                                />
-                                                <button
-                                                    onClick={removeImage}
-                                                    className="absolute top-3 right-3 p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-110"
-                                                    aria-label="Remove image"
-                                                >
-                                                    <X size={20} />
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
-                                                <div className="flex flex-col items-center justify-center space-y-3">
-                                                    <div className="p-3 bg-blue-50 rounded-full">
-                                                        <ImagePlus className="w-8 h-8 text-blue-500" />
-                                                    </div>
-                                                    <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                                                    <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+            {renderProfileDetails && (
+                <div className=" bg-gray-50">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+                            <div className="grid md:grid-cols-3 gap-6 p-6">
+                                {/* Image Upload Section */}
+                                <div className="space-y-4">
+                                    <div className="bg-white rounded-lg overflow-hidden">
+                                        <div className="space-y-4">
+                                            <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
+
+                                            {imagePreview ? (
+                                                <div className="relative group">
+                                                    <img
+                                                        src={imagePreview}
+                                                        alt="Preview"
+                                                        className="w-full h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                                    />
+                                                    <button
+                                                        onClick={removeImage}
+                                                        className="absolute top-3 right-3 p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-110"
+                                                        aria-label="Remove image"
+                                                    >
+                                                        <X size={20} />
+                                                    </button>
                                                 </div>
-                                            </div>
-                                        )}
-
-                                        <input
-                                            type="file"
-                                            id="imageInput"
-                                            accept="image/*"
-                                            onChange={handleImageChange}
-                                            className="hidden"
-                                        />
-
-                                        <label
-                                            htmlFor="imageInput"
-                                            className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                        >
-                                            {imagePreview ? 'Change Image' : 'Upload Image'}
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* QR Code Section */}
-                            <div className="flex flex-col items-center justify-center space-y-4">
-                                <h2 className="text-2xl font-bold text-gray-800">Membership QR</h2>
-                                <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
-                                    <img
-                                        src={qrCode}
-                                        alt="Membership QR Code"
-                                        className="w-64 h-64 rounded-lg"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Membership Controls & Info */}
-                            <div className="space-y-6">
-                                <h2 className="text-2xl font-bold text-gray-800">Membership Status</h2>
-
-                                <div className="flex gap-4">
-                                    <Button
-                                        disabled
-                                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg disabled:opacity-50"
-                                    >
-                                        Start
-                                    </Button>
-
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button
-                                                variant="destructive"
-                                                className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                            >
-                                                Hold
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent className="max-w-lg p-6 rounded-xl shadow-xl">
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle className="text-2xl font-bold">Confirm Membership Hold</AlertDialogTitle>
-                                                <AlertDialogDescription className="space-y-4">
-                                                    <div className="bg-red-50 border border-red-100 rounded-lg p-4 mt-4">
-                                                        <p className="text-red-600 font-semibold">Note: Stop/Start Date will be set to today by default</p>
+                                            ) : (
+                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
+                                                    <div className="flex flex-col items-center justify-center space-y-3">
+                                                        <div className="p-3 bg-blue-50 rounded-full">
+                                                            <ImagePlus className="w-8 h-8 text-blue-500" />
+                                                        </div>
+                                                        <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
+                                                        <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
                                                     </div>
-                                                    <p className="text-gray-600">To override the default Stop Date, please select a date below:</p>
-                                                    <Popover>
-                                                        <PopoverTrigger asChild>
-                                                            <Button
-                                                                variant="outline"
-                                                                className="w-full flex items-center justify-between text-left p-4 border rounded-lg hover:border-blue-400 transition-colors duration-300"
-                                                            >
-                                                                <CalendarIcon className="text-blue-500" />
-                                                                <span>{membershipHoldDate ? format(membershipHoldDate, "PPP") : "Select Hold Date"}</span>
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-0">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={membershipHoldDate}
-                                                                onSelect={setMembershipHoldDate}
-                                                                initialFocus
-                                                            />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter className="flex justify-end gap-3 mt-6">
-                                                <AlertDialogCancel className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300">
-                                                    Cancel
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
-                                                    onClick={() => holdMembership()}
-                                                    className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-md hover:shadow-lg"
-                                                >
-                                                    Confirm Hold
-                                                </AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
+                                                </div>
+                                            )}
+
+                                            <input
+                                                type="file"
+                                                id="imageInput"
+                                                accept="image/*"
+                                                onChange={handleImageChange}
+                                                className="hidden"
+                                            />
+
+                                            <label
+                                                htmlFor="imageInput"
+                                                className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                                            >
+                                                {imagePreview ? 'Change Image' : 'Upload Image'}
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-                                        <p className="text-sm text-blue-600 font-medium mb-1">Hold Date</p>
-                                        <p className="text-lg font-semibold text-gray-800">
-                                            {data && data.member && data.member.membershipHoldDate
-                                                ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0]
-                                                : 'N/A'}
-                                        </p>
+                                {/* QR Code Section */}
+                                <div className="flex flex-col items-center justify-center space-y-4">
+                                    <h2 className="text-2xl font-bold text-gray-800">Membership QR</h2>
+                                    <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+                                        <img
+                                            src={qrCode}
+                                            alt="Membership QR Code"
+                                            className="w-64 h-64 rounded-lg"
+                                        />
                                     </div>
-                                    <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
-                                        <p className="text-sm text-purple-600 font-medium mb-1">Paused Days</p>
-                                        <p className="text-lg font-semibold text-gray-800">
-                                            {data ? member.pausedDays : ''}
-                                        </p>
+                                </div>
+
+                                {/* Membership Controls & Info */}
+                                <div className="space-y-6">
+                                    <h2 className="text-2xl font-bold text-gray-800">Membership Status</h2>
+
+                                    <div className="flex gap-4">
+                                        <Button
+                                            disabled
+                                            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg disabled:opacity-50"
+                                        >
+                                            Start
+                                        </Button>
+
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button
+                                                    variant="destructive"
+                                                    className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                                                >
+                                                    Hold
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent className="max-w-lg p-6 rounded-xl shadow-xl">
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle className="text-2xl font-bold">Confirm Membership Hold</AlertDialogTitle>
+                                                    <AlertDialogDescription className="space-y-4">
+                                                        <div className="bg-red-50 border border-red-100 rounded-lg p-4 mt-4">
+                                                            <p className="text-red-600 font-semibold">Note: Stop/Start Date will be set to today by default</p>
+                                                        </div>
+                                                        <p className="text-gray-600">To override the default Stop Date, please select a date below:</p>
+                                                        <Popover>
+                                                            <PopoverTrigger asChild>
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="w-full flex items-center justify-between text-left p-4 border rounded-lg hover:border-blue-400 transition-colors duration-300"
+                                                                >
+                                                                    <CalendarIcon className="text-blue-500" />
+                                                                    <span>{membershipHoldDate ? format(membershipHoldDate, "PPP") : "Select Hold Date"}</span>
+                                                                </Button>
+                                                            </PopoverTrigger>
+                                                            <PopoverContent className="w-auto p-0">
+                                                                <Calendar
+                                                                    mode="single"
+                                                                    selected={membershipHoldDate}
+                                                                    onSelect={setMembershipHoldDate}
+                                                                    initialFocus
+                                                                />
+                                                            </PopoverContent>
+                                                        </Popover>
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter className="flex justify-end gap-3 mt-6">
+                                                    <AlertDialogCancel className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300">
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={() => holdMembership()}
+                                                        className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-md hover:shadow-lg"
+                                                    >
+                                                        Confirm Hold
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
                                     </div>
-                                    <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-                                        <p className="text-sm text-green-600 font-medium mb-1">Remaining Days</p>
-                                        <p className="text-lg font-semibold text-gray-800">
-                                            {data ? member.remainingDaysOfMembership : ''}
-                                        </p>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-xl border border-amber-200">
-                                        <p className="text-sm text-amber-600 font-medium mb-1">Resumed Date</p>
-                                        <p className="text-lg font-semibold text-gray-800">
-                                            {data && data.member && data.member.resumedDate
-                                                ? new Date(data.member.resumedDate).toISOString().split("T")[0]
-                                                : 'N/A'}
-                                        </p>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
+                                            <p className="text-sm text-blue-600 font-medium mb-1">Hold Date</p>
+                                            <p className="text-lg font-semibold text-gray-800">
+                                                {data && data.member && data.member.membershipHoldDate
+                                                    ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0]
+                                                    : 'N/A'}
+                                            </p>
+                                        </div>
+                                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
+                                            <p className="text-sm text-purple-600 font-medium mb-1">Paused Days</p>
+                                            <p className="text-lg font-semibold text-gray-800">
+                                                {data ? member.pausedDays : ''}
+                                            </p>
+                                        </div>
+                                        <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
+                                            <p className="text-sm text-green-600 font-medium mb-1">Remaining Days</p>
+                                            <p className="text-lg font-semibold text-gray-800">
+                                                {data ? member.remainingDaysOfMembership : ''}
+                                            </p>
+                                        </div>
+                                        <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-xl border border-amber-200">
+                                            <p className="text-sm text-amber-600 font-medium mb-1">Resumed Date</p>
+                                            <p className="text-lg font-semibold text-gray-800">
+                                                {data && data.member && data.member.resumedDate
+                                                    ? new Date(data.member.resumedDate).toISOString().split("T")[0]
+                                                    : 'N/A'}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            )}
+
+
 
             <div className="w-full flex justify-center">
                 <div className="w-full">
