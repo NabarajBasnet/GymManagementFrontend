@@ -74,7 +74,7 @@ const MemberDetails = ({ memberId }) => {
     const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
     const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
     const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
-    const [renderProfileDetails, setRenderProfileDetails] = useState(false);
+    const [renderProfileDetails, setRenderProfileDetails] = useState(true);
 
     // States
     const queryClient = useQueryClient();
