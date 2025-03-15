@@ -99,9 +99,6 @@ const Lockers = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/lockers?order=${lockerOrder}&status=${lockerStatus}`);
             const responseBody = await response.json();
-            if (response.ok) {
-                queryClient.invalidateQueries(['lockers']);
-            }
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -110,7 +107,7 @@ const Lockers = () => {
 
     const { data, isLoading } = useQuery({
         queryKey: ['lockers', lockerOrder, lockerStatus],
-        queryFn: getAllLockers
+        queryFn: getAllLockers,
     });
 
     const { Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
@@ -205,7 +202,12 @@ const Lockers = () => {
 
             if (response.ok) {
                 window.location.reload();
-                queryClient.invalidateQueries(['lockers']);
+                queryClient.invalidateQueries(
+                    {
+                        queryKey: ['lockers'],
+                        exact: true
+                    }
+                );
             };
 
             const responseBody = await response.json();
@@ -221,7 +223,10 @@ const Lockers = () => {
                     icon: MdError,
                     message: responseBody.message || 'Unauthorized action',
                 });
-                queryClient.invalidateQueries(['lockers']);
+                queryClient.invalidateQueries({
+                    queryKey: ['lockers'],
+                    exact: true
+                });
             };
 
             if (!response.status === 200) {
@@ -234,7 +239,10 @@ const Lockers = () => {
                     icon: MdError,
                     message: responseBody.message || 'Unauthorized action'
                 });
-                queryClient.invalidateQueries(['lockers']);
+                queryClient.invalidateQueries({
+                    queryKey: ['lockers'],
+                    exact: true
+                });
             } else {
                 setResponseType(responseResultType[0]);
                 setToast(true);
@@ -246,7 +254,10 @@ const Lockers = () => {
                     message: responseBody.message || 'Unauthorized action'
                 });
                 setLockerFormState(false);
-                queryClient.invalidateQueries(['lockers']);
+                queryClient.invalidateQueries({
+                    queryKey: ['lockers'],
+                    exact: true
+                });
             };
 
         } catch (error) {
@@ -260,7 +271,10 @@ const Lockers = () => {
                 icon: MdError,
                 message: responseBody.message || 'Unauthorized action'
             });
-            queryClient.invalidateQueries(['lockers']);
+            queryClient.invalidateQueries({
+                queryKey: ['lockers'],
+                exact: true
+            });
         }
     };
 
@@ -296,7 +310,12 @@ const Lockers = () => {
             const responseBody = await response.json();
             if (response.ok) {
                 window.location.reload();
-                queryClient.invalidateQueries(['lockers']);
+                queryClient.invalidateQueries(
+                    {
+                        queryKey: ['lockers'],
+                        exact: true
+                    }
+                );
                 setLockerFormState(false);
                 setToast(true)
                 setResponseType(responseResultType[0]);
@@ -320,7 +339,10 @@ const Lockers = () => {
                 icon: MdError,
                 message: responseBody.message || 'Unauthorized action'
             });
-            queryClient.invalidateQueries(['lockers']);
+            queryClient.invalidateQueries({
+                queryKey: ['lockers'],
+                exact: true
+            });
         }
     };
 
