@@ -375,7 +375,7 @@ const MemberAttendance = () => {
             </div>
 
             <div className="min-h-screen bg-gray-50 p-6">
-                <div className="w-full mx-auto">
+                <div className="w-full mx-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Member Check-in Section */}
                         <Card className="p-4 shadow-sm">
@@ -391,7 +391,7 @@ const MemberAttendance = () => {
                                 </Button>
                             </div>
 
-                            <form className="space-y-4 max-w-2xl mx-auto">
+                            <form className="space-y-4 max-w-2xl mx-4">
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                         <QrCode className="h-5 w-5 text-gray-400" />
