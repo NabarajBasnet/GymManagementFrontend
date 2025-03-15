@@ -853,12 +853,12 @@ const Lockers = () => {
                             </div>
                         </div>
 
-                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8 my-4">
+                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8">
                             {Array.isArray(Lockers) && Lockers.length > 0 ? (
                                 Lockers.map((locker) => (
                                     <div
                                         key={locker.lockerNumber}
-                                        className="bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
+                                        className="bg-white rounded-xl my-4 overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
                                     >
                                         <div
                                             className={`h-2 ${locker.status === 'Expired'
