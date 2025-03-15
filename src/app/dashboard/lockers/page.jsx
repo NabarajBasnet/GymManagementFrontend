@@ -853,7 +853,7 @@ const Lockers = () => {
                             </div>
                         </div>
 
-                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8">
+                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8 my-4">
                             {Array.isArray(Lockers) && Lockers.length > 0 ? (
                                 Lockers.map((locker) => (
                                     <div
