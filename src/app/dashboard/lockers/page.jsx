@@ -1,5 +1,6 @@
 'use client';
 
+import { RiResetRightFill } from "react-icons/ri";
 import { MdError, MdClose, MdDone } from "react-icons/md";
 import Badge from '@mui/material/Badge';
 import {
@@ -96,7 +97,7 @@ const Lockers = () => {
 
     const getAllLockers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/lockers`);
+            const response = await fetch(`http://88.198.112.156:3000/api/lockers?order=${lockerOrder}&status=${lockerStatus}`);
             const responseBody = await response.json();
             if (response.ok) {
                 queryClient.invalidateQueries(['lockers']);
@@ -108,20 +109,16 @@ const Lockers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['lockers'],
+        queryKey: ['lockers', lockerOrder, lockerStatus],
         queryFn: getAllLockers
     });
 
     const { Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
 
-    useEffect(() => {
-        getAllLockers();
-    }, [lockerStatus, lockerOrder]);
-
     // Pululate lockers data
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -197,7 +194,7 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('http://localhost:3000/api/lockers/put', {
+            const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -269,7 +266,7 @@ const Lockers = () => {
 
     const getSingleLockerInfo = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/lockers/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/lockers/${id}`);
             const responseBody = await response.json();
             setFetchedLocker(responseBody.lockerDetails);
             if (response.ok) {
@@ -293,7 +290,7 @@ const Lockers = () => {
 
     const resetLocker = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/lockers/patch/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/lockers/patch/${id}`, {
                 method: "PATCH",
             })
             const responseBody = await response.json();
@@ -326,26 +323,6 @@ const Lockers = () => {
             queryClient.invalidateQueries(['lockers']);
         }
     };
-
-    const StatusBadge = ({ count, color, label }) => (
-        <TooltipProvider>
-            <Tooltip>
-                <TooltipTrigger asChild>
-                    <div className="relative inline-block">
-                        <div className={`w-6 h-6 rounded-full shadow-lg cursor-pointer ${color}`} />
-                        {count > 0 && (
-                            <span className="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                {count}
-                            </span>
-                        )}
-                    </div>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>{label}</p>
-                </TooltipContent>
-            </Tooltip>
-        </TooltipProvider>
-    );
 
     return (
         <div className="w-full" onClick={() => setToast(false)}>
@@ -747,8 +724,8 @@ const Lockers = () => {
                                 <Label className="text-sm font-semibold text-gray-600 mb-2 block">
                                     Locker Number
                                 </Label>
-                                <Select onValueChange={setLockerOrder}>
-                                    <SelectTrigger className="w-full">
+                                <Select value={lockerOrder} onValueChange={setLockerOrder}>
+                                    <SelectTrigger className="w-full rounded-sm">
                                         <SelectValue placeholder="Sort by order" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -765,8 +742,8 @@ const Lockers = () => {
                                 <Label className="text-sm font-semibold text-gray-600 mb-2 block">
                                     Status
                                 </Label>
-                                <Select onValueChange={setLockerStatus}>
-                                    <SelectTrigger className="w-full">
+                                <Select value={lockerStatus} onValueChange={setLockerStatus}>
+                                    <SelectTrigger className="w-full rounded-sm">
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -781,36 +758,78 @@ const Lockers = () => {
                                 </Select>
                             </div>
 
+                            <Button
+                                className="bg-red-600 hover:bg-red-600 cursor-pointer flex items-center justify-around"
+                                onClick={() => {
+                                    setLockerOrder('');
+                                    setLockerStatus('');
+                                }}>
+                                <RiResetRightFill className="h-5 w-5 space-x-2 mx-2" />
+                                Reset Filter
+                            </Button>
+
                             <div className="flex-shrink-0">
                                 <Label className="text-sm font-semibold text-gray-600 mb-2 block">
                                     Lockers Status
                                 </Label>
                                 <div className="flex gap-3">
-                                    <StatusBadge
-                                        count={assignedLockers.length}
-                                        color="bg-green-600"
-                                        label="Assigned lockers"
-                                    />
-                                    <StatusBadge
-                                        count={emptyLockers.length}
-                                        color="bg-yellow-400"
-                                        label="Empty lockers"
-                                    />
-                                    <StatusBadge
-                                        count={expiredLockers.length}
-                                        color="bg-red-600"
-                                        label="Expired lockers"
-                                    />
-                                    <StatusBadge
-                                        count={0}
-                                        color="bg-blue-600"
-                                        label="Under Maintenance"
-                                    />
+
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Badge badgeContent={String(bookedLockers ? bookedLockers : "0")} color="primary">
+                                                    <FaLock className="h-5 w-5 text-green-600 cursor-pointer" />
+                                                </Badge>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Booked Lockers</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Badge badgeContent={emptyLockers ? emptyLockers : 0} color="primary">
+                                                    <FaLock className="h-5 w-5 text-yellow-500 cursor-pointer" />
+                                                </Badge>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Empty Lockers</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Badge badgeContent={expiredLockers ? expiredLockers : 0} color="primary">
+                                                    <FaLock className="h-5 w-5 text-red-600 cursor-pointer" />
+                                                </Badge>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Expired Lockers</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <Badge badgeContent={underMaintenanceLockers ? underMaintenanceLockers : 0} color="primary">
+                                                    <FaLock className="h-5 w-5 text-blue-600 cursor-pointer" />
+                                                </Badge>
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                <p>Under Maintenance Lockers</p>
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8">
                             {Array.isArray(Lockers) && Lockers.length > 0 ? (
                                 Lockers.map((locker) => (
                                     <div
