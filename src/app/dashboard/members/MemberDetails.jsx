@@ -53,7 +53,6 @@ import Loader from "@/components/Loader/Loader";
 
 const MemberDetails = ({ memberId }) => {
     const [imagePreview, setImagePreview] = useState(null);
-
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -163,7 +162,7 @@ const MemberDetails = ({ memberId }) => {
         enabled: !!memberId,
     });
     const { member, message, qrCode } = data || {};
-    
+
     // Populate Data
     useEffect(() => {
         if (data) {
@@ -292,11 +291,69 @@ const MemberDetails = ({ memberId }) => {
     }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
 
     // Functions
+
+    // Upload member image
+    const [imageUloading, setImageUploading] = useState(false);
+    const uploadMemberImage = async () => {
+        setImageUploading(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                body: JSON.stringify(imagePreview)
+            })
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+            if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
+                setResponseType(responseResultType[1]);
+                setImageUploading(false);
+                setToast(true);
+                setTimeout(() => {
+                    setToast(false)
+                }, 10000);
+                setErrorMessage({
+                    icon: MdError,
+                    message: responseBody.message || 'Unauthorized action'
+                });
+            }
+            else {
+                if (response.status === 200) {
+                    setImageUploading(false);
+                    setImagePreview(null);
+                    setResponseType(responseResultType[0]);
+                    setToast(true);
+                    setTimeout(() => {
+                        setToast(false)
+                    }, 10000);
+                    setSuccessMessage({
+                        icon: MdError,
+                        message: responseBody.message || 'Unauthorized action'
+                    })
+                }
+            }
+        } catch (error) {
+            console.log('Error: ', error);
+            setImageUploading(false);
+            setResponseType(responseResultType[1]);
+            setToast(true);
+            setTimeout(() => {
+                setToast(false)
+            }, 10000);
+            setErrorMessage({
+                icon: MdError,
+                message: error.message || error
+            });
+        };
+    };
+
+
     // Update member details
     const updateMemberDetails = async (data) => {
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -348,7 +405,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -397,7 +454,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -543,7 +600,7 @@ const MemberDetails = ({ memberId }) => {
                                                     <img
                                                         src={imagePreview}
                                                         alt="Preview"
-                                                        className="w-full h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                                        className="w-full h-64 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
                                                     />
                                                     <button
                                                         onClick={removeImage}
@@ -560,7 +617,7 @@ const MemberDetails = ({ memberId }) => {
                                                             <ImagePlus className="w-8 h-8 text-blue-500" />
                                                         </div>
                                                         <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                                                        <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+                                                        <p className="text-xs text-gray-500">PNG, JPG up to 2MB</p>
                                                     </div>
                                                 </div>
                                             )}
@@ -573,12 +630,23 @@ const MemberDetails = ({ memberId }) => {
                                                 className="hidden"
                                             />
 
-                                            <label
-                                                htmlFor="imageInput"
-                                                className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                            >
-                                                {imagePreview ? 'Change Image' : 'Upload Image'}
-                                            </label>
+                                            {imagePreview ? (
+                                                <Button
+                                                    onClick={uploadMemberImage}
+                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                                                >
+                                                    {imageUloading ? "Uploading..." : "Upload Image"}
+                                                </Button>
+                                            ) : (
+                                                <label
+                                                    htmlFor="imageInput"
+                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
+                                                >
+                                                    Select Image
+                                                </label>
+                                            )}
+
+
                                         </div>
                                     </div>
                                 </div>

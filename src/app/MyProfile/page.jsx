@@ -70,7 +70,7 @@ const MyProfile = () => {
 
     const fetchedLoggedStaffDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/loggedin-staff`);
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 setStaffDetails(responseBody.loggedInStaff)
@@ -88,7 +88,7 @@ const MyProfile = () => {
 
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffqr/${staffDetails._id}`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -105,7 +105,7 @@ const MyProfile = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `http://localhost:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             const responseBody = await response.json();
             return responseBody;
@@ -133,7 +133,7 @@ const MyProfile = () => {
 
     const logoutStaff = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();

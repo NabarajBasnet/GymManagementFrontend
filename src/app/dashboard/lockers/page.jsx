@@ -96,7 +96,7 @@ const Lockers = () => {
 
     const getAllLockers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers`);
+            const response = await fetch(`http://localhost:3000/api/lockers`);
             const responseBody = await response.json();
             if (response.ok) {
                 queryClient.invalidateQueries(['lockers']);
@@ -121,7 +121,7 @@ const Lockers = () => {
     // Pululate lockers data
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -197,7 +197,7 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('http://88.198.112.156:3000/api/lockers/put', {
+            const response = await fetch('http://localhost:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ const Lockers = () => {
 
     const getSingleLockerInfo = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers/${id}`);
+            const response = await fetch(`http://localhost:3000/api/lockers/${id}`);
             const responseBody = await response.json();
             setFetchedLocker(responseBody.lockerDetails);
             if (response.ok) {
@@ -293,7 +293,7 @@ const Lockers = () => {
 
     const resetLocker = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/lockers/patch/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/lockers/patch/${id}`, {
                 method: "PATCH",
             })
             const responseBody = await response.json();
@@ -356,37 +356,75 @@ const Lockers = () => {
                 <h1 className="text-xl font-bold mt-3">Lockers</h1>
             </div>
 
-            {toast ? (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="absolute inset-0 bg-black opacity-50"></div>
-                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                        <div>
-                            {
-                                responseType === 'Success' ? (
-                                    <MdDone className="text-3xl mx-4 text-green-600" />
+            {toast && (
+                <>
+                    <div
+                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                        onClick={() => setToast(false)}
+                    ></div>
+
+                    <div className="fixed top-4 right-4 z-50 animate-slide-in">
+                        <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
+                            transition-all duration-300 ease-in-out w-80
+                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+
+                            <div className={`flex items-center justify-center p-2 rounded-full 
+                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                {responseType === 'Success' ? (
+                                    <MdDone className="text-xl text-emerald-600" />
                                 ) : (
-                                    <MdError className="text-3xl mx-4 text-red-600" />
-                                )
-                            }
-                        </div>
-                        <div className="block">
-                            {
-                                responseType === 'Success' ? (
-                                    <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                                ) : (
-                                    <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                                )
-                            }
-                        </div>
-                        <div>
+                                    <MdError className="text-xl text-rose-600" />
+                                )}
+                            </div>
+
+                            <div className="flex-1">
+                                <h3 className={`text-base font-semibold mb-1
+                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                    {responseType === 'Success' ? "Successfully sent!" : "Action required"}
+                                </h3>
+
+                                <p className="text-sm text-gray-600 leading-relaxed">
+                                    {responseType === 'Success'
+                                        ? (
+                                            <>
+                                                <p>{successMessage.message}</p>
+                                            </>
+                                        )
+                                        :
+                                        (
+                                            <>
+                                                <p>{errorMessage.message}</p>
+                                            </>
+                                        )
+                                    }
+                                </p>
+
+                                <div className="mt-3 flex items-center gap-2">
+                                    {responseType === 'Success' ? (
+                                        <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
+                                            Done
+                                        </button>
+                                    ) : (
+                                        <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
+                                            Retry Now
+                                        </button>
+                                    )}
+                                    <span className="text-gray-400">|</span>
+                                    <button
+                                        className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
+                                        onClick={() => setToast(false)}>
+                                        Dismiss
+                                    </button>
+                                </div>
+                            </div>
+
                             <MdClose
                                 onClick={() => setToast(false)}
-                                className="cursor-pointer text-3xl ml-4" />
+                                className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
+                            />
                         </div>
                     </div>
-                </div>
-            ) : (
-                <></>
+                </>
             )}
 
             {
