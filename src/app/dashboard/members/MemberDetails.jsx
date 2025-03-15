@@ -586,7 +586,7 @@ const MemberDetails = ({ memberId }) => {
 
             {renderProfileDetails && (
                 <div className=" bg-gray-50">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-full mx-4">
                         <div className="bg-white rounded-xl shadow-xl overflow-hidden">
                             <div className="grid md:grid-cols-3 gap-6 p-6">
                                 {/* Image Upload Section */}

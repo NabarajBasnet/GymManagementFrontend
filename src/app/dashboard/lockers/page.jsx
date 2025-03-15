@@ -102,6 +102,7 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
+            throw error;
         };
     };
 
@@ -120,6 +121,7 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
+            throw error;
         };
     };
 
@@ -740,7 +742,7 @@ const Lockers = () => {
 
             <div className="min-h-screen bg-gray-50 p-4 md:p-8">
                 {!isLoading && (
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-full mx-4">
                         <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
                             <div className="flex-1">
                                 <Label className="text-sm font-semibold text-gray-600 mb-2 block">
