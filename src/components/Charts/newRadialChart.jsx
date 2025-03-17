@@ -121,7 +121,7 @@ export function NewRadialChart() {
                     <CardTitle className='text-pink-600'>Target New Admmission</CardTitle>
                     <CardDescription>{startDate.getMonth() === 0 ? 'Jaruary' : ''} - {startDate.getMonth()}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-1 flex justify-center items-center pb-0">
+                <CardContent className="flex-1 pb-0">
                     <ChartContainer
                         config={chartConfig}
                         className="mx-4 aspect-square max-h-[250px]"

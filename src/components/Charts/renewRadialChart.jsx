@@ -121,7 +121,7 @@ export function RenewRadialChart() {
                 </CardHeader>
 
                 <div>
-                    <CardContent className="flex-1 pb-0 flex justify-center items-center">
+                    <CardContent className="flex-1 pb-0">
                         <ChartContainer
                             config={chartConfig}
                             className="mx-4 aspect-square max-h-[250px]"
