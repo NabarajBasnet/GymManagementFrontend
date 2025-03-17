@@ -3,8 +3,11 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { UserCircle, Lock, Loader2 } from 'lucide-react';
+import { useRouter } from 'next/router';
+import toast, { Toaster } from 'react-hot-toast';
 
 function App() {
+    const router = useRouter();
     const {
         register,
         handleSubmit,
@@ -26,37 +29,39 @@ function App() {
             const responseBody = await response.json();
 
             if (response.ok) {
-                router.push('/MyProfile');
-                window.location.reload();
-            }
-
-            if (response.status === 400 && responseBody.field === 'email') {
-                setError('email', {
-                    type: 'manual',
-                    message: responseBody.message
-                });
-            }
-
-            if (response.status === 404 && responseBody.field === 'email') {
-                setError('email', {
-                    type: 'manual',
-                    message: responseBody.message
-                });
-            }
-
-            if (response.status === 403 && responseBody.field === 'password') {
-                setError('password', {
-                    type: 'manual',
-                    message: responseBody.message
-                });
+                toast.success('Login successful! Redirecting...');
+                setTimeout(() => {
+                    router.push('/MyProfile');
+                }, 1000);
+            } else {
+                if (response.status === 400 && responseBody.field === 'email') {
+                    setError('email', {
+                        type: 'manual',
+                        message: responseBody.message
+                    });
+                } else if (response.status === 404 && responseBody.field === 'email') {
+                    setError('email', {
+                        type: 'manual',
+                        message: responseBody.message
+                    });
+                } else if (response.status === 403 && responseBody.field === 'password') {
+                    setError('password', {
+                        type: 'manual',
+                        message: responseBody.message
+                    });
+                } else {
+                    toast.error('An unexpected error occurred. Please try again.');
+                }
             }
         } catch (error) {
             console.log("Error: ", error);
+            toast.error('An error occurred. Please try again.');
         }
     };
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50 flex items-center justify-center p-4">
+            <Toaster position="top-center" reverseOrder={false} />
             <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md transform transition-all duration-300 hover:shadow-3xl">
                 {/* Logo and Title */}
                 <div className="text-center mb-8">
@@ -77,15 +82,15 @@ function App() {
                         </label>
                         <div className="relative">
                             <input
-                                {...register('email')}
+                                {...register('email', { required: 'Email is required' })}
                                 type="email"
                                 id="email"
                                 className={`
-                                            w-full pl-12 pr-4 py-3 rounded-lg border 
-                                            ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
-                                            focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                                            bg-gray-50
-                                            `}
+                                    w-full pl-12 pr-4 py-3 rounded-lg border 
+                                    ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                    focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
+                                    bg-gray-50
+                                `}
                                 placeholder="Enter your email"
                             />
                             <UserCircle className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -104,15 +109,15 @@ function App() {
                         </label>
                         <div className="relative">
                             <input
-                                {...register('password')}
+                                {...register('password', { required: 'Password is required' })}
                                 type="password"
                                 id="password"
                                 className={`
-                                            w-full pl-12 pr-4 py-3 rounded-lg border 
-                                            ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
-                                            focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                                            bg-gray-50
-                                            `}
+                                    w-full pl-12 pr-4 py-3 rounded-lg border 
+                                    ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                    focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
+                                    bg-gray-50
+                                `}
                                 placeholder="Enter your password"
                             />
                             <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -129,16 +134,16 @@ function App() {
                         type="submit"
                         disabled={isSubmitting}
                         className={`
-              w-full py-3 px-4 rounded-lg text-white font-medium
-              flex items-center justify-center space-x-2
-              transition-all duration-200
-              ${isSubmitting
+                            w-full py-3 px-4 rounded-lg text-white font-medium
+                            flex items-center justify-center space-x-2
+                            transition-all duration-200
+                            ${isSubmitting
                                 ? 'bg-emerald-400 cursor-not-allowed'
                                 : 'bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800'
                             }
-              focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
-              transform active:scale-98
-            `}
+                            focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2
+                            transform active:scale-98
+                        `}
                     >
                         {isSubmitting ? (
                             <>
