@@ -40,30 +40,11 @@ const SignUp = () => {
             const responseBody = await response.json();
             if (response.ok) {
                 toast.success('User signup successful.');
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
-                })
                 reset();
             };
         } catch (error) {
             toast.error('An unexpected error occurred. Please try again.');
-            toast.error(error);
             console.log("Error: ", error);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: error.message || 'Unauthorized action'
-            });
         };
     };
 
