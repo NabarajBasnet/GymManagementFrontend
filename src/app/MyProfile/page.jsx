@@ -1,5 +1,6 @@
 'use client';
 
+import toast, { Toaster } from 'react-hot-toast';
 import Pagination from "@/components/ui/CustomPagination";
 import {
     Cloud,
@@ -138,6 +139,7 @@ const MyProfile = () => {
             })
             const responseBody = await response.json();
             if (response.status !== 200) {
+                toast.error('An unexpected error occurred. Please try again.');
                 setResponseType(responseResultType[1]);
                 setToast(true);
                 setTimeout(() => {
@@ -150,6 +152,7 @@ const MyProfile = () => {
             }
             else {
                 if (response.status === 200) {
+                    toast.success('Logout successful! Redirecting...');
                     router.push(responseBody.redirect);
                     setResponseType(responseResultType[0]);
                     setToast(true);
@@ -163,6 +166,7 @@ const MyProfile = () => {
                 }
             }
         } catch (error) {
+            toast.error(error);
             console.log("Error: ", error);
         }
     };
@@ -172,7 +176,7 @@ const MyProfile = () => {
             <div
                 onClick={() => setToast(false)}
                 className="w-full flex justify-center">
-                {toast ? (
+                {/* {toast ? (
                     <div className="fixed inset-0 flex items-center justify-center z-50">
                         <div className="absolute inset-0 bg-stone-800 opacity-50"></div>
                         <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
@@ -203,7 +207,7 @@ const MyProfile = () => {
                     </div>
                 ) : (
                     <></>
-                )}
+                )} */}
                 <div className="w-11/12 md:w-10/12 flex justify-between items-center">
                     <img
                         src='/LOGO-BLACK.png'
