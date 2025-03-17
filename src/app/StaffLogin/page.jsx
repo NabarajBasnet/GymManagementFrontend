@@ -27,6 +27,7 @@ function App() {
 
             if (response.ok) {
                 router.push(responseBody.redirect);
+                window.location.reload();
             }
 
             if (response.status === 400 && responseBody.field === 'email') {
@@ -80,11 +81,11 @@ function App() {
                                 type="email"
                                 id="email"
                                 className={`
-                  w-full pl-12 pr-4 py-3 rounded-lg border 
-                  ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
-                  focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                  bg-gray-50
-                `}
+                                            w-full pl-12 pr-4 py-3 rounded-lg border 
+                                            ${errors.email ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                            focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
+                                            bg-gray-50
+                                            `}
                                 placeholder="Enter your email"
                             />
                             <UserCircle className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
@@ -107,11 +108,11 @@ function App() {
                                 type="password"
                                 id="password"
                                 className={`
-                  w-full pl-12 pr-4 py-3 rounded-lg border 
-                  ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
-                  focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
-                  bg-gray-50
-                `}
+                                            w-full pl-12 pr-4 py-3 rounded-lg border 
+                                            ${errors.password ? 'border-red-300 focus:ring-red-500' : 'border-gray-300 focus:ring-emerald-500'} 
+                                            focus:border-transparent focus:outline-none focus:ring-2 transition-all duration-200
+                                            bg-gray-50
+                                            `}
                                 placeholder="Enter your password"
                             />
                             <Lock className="absolute left-4 top-3.5 h-5 w-5 text-gray-400" />
