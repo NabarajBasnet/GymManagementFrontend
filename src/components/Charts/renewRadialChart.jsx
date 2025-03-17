@@ -67,7 +67,7 @@ export function RenewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);
@@ -119,60 +119,63 @@ export function RenewRadialChart() {
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
                     <CardDescription>January - June 2024</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-1 pb-0">
-                    <ChartContainer
-                        config={chartConfig}
-                        className="mx-4 aspect-square max-h-[250px]"
-                    >
-                        <RadialBarChart
-                            data={chartData}
-                            startAngle={0}
-                            endAngle={250}
-                            innerRadius={80}
-                            outerRadius={110}
+
+                <div>
+                    <CardContent className="flex-1 pb-0 flex justify-center items-center">
+                        <ChartContainer
+                            config={chartConfig}
+                            className="mx-4 aspect-square max-h-[250px]"
                         >
-                            <PolarGrid
-                                gridType="circle"
-                                radialLines={false}
-                                stroke="none"
-                                className="first:fill-muted last:fill-background"
-                                polarRadius={[86, 74]}
-                            />
-                            <RadialBar dataKey="visitors" background cornerRadius={10} />
-                            <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-                                <Label
-                                    content={({ viewBox }) => {
-                                        if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                                            return (
-                                                <text
-                                                    x={viewBox.cx}
-                                                    y={viewBox.cy}
-                                                    textAnchor="middle"
-                                                    dominantBaseline="middle"
-                                                >
-                                                    <tspan
+                            <RadialBarChart
+                                data={chartData}
+                                startAngle={0}
+                                endAngle={250}
+                                innerRadius={80}
+                                outerRadius={110}
+                            >
+                                <PolarGrid
+                                    gridType="circle"
+                                    radialLines={false}
+                                    stroke="none"
+                                    className="first:fill-muted last:fill-background"
+                                    polarRadius={[86, 74]}
+                                />
+                                <RadialBar dataKey="visitors" background cornerRadius={10} />
+                                <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
+                                    <Label
+                                        content={({ viewBox }) => {
+                                            if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                                                return (
+                                                    <text
                                                         x={viewBox.cx}
                                                         y={viewBox.cy}
-                                                        className="fill-emerald-600 text-2xl font-bold"
+                                                        textAnchor="middle"
+                                                        dominantBaseline="middle"
                                                     >
-                                                        {chartData[0].visitors.toLocaleString()} Of {chartData[0].visitors.toLocaleString()}
-                                                    </tspan>
-                                                    <tspan
-                                                        x={viewBox.cx}
-                                                        y={(viewBox.cy || 0) + 24}
-                                                        className="fill-muted-foreground"
-                                                    >
-                                                        Renews
-                                                    </tspan>
-                                                </text>
-                                            )
-                                        }
-                                    }}
-                                />
-                            </PolarRadiusAxis>
-                        </RadialBarChart>
-                    </ChartContainer>
-                </CardContent>
+                                                        <tspan
+                                                            x={viewBox.cx}
+                                                            y={viewBox.cy}
+                                                            className="fill-emerald-600 text-2xl font-bold"
+                                                        >
+                                                            {chartData[0].visitors.toLocaleString()} Of {chartData[0].visitors.toLocaleString()}
+                                                        </tspan>
+                                                        <tspan
+                                                            x={viewBox.cx}
+                                                            y={(viewBox.cy || 0) + 24}
+                                                            className="fill-muted-foreground"
+                                                        >
+                                                            Renews
+                                                        </tspan>
+                                                    </text>
+                                                )
+                                            }
+                                        }}
+                                    />
+                                </PolarRadiusAxis>
+                            </RadialBarChart>
+                        </ChartContainer>
+                    </CardContent>
+                </div>
                 <CardFooter className="flex-col gap-2 text-sm">
                     <div className="flex items-center gap-2 font-medium text-emerald-600 leading-none">
                         New admission target reached 5.2% this month <TrendingUp className="h-4 w-4" />
