@@ -26,7 +26,7 @@ function App() {
             const responseBody = await response.json();
 
             if (response.ok) {
-                router.push(responseBody.redirect);
+                router.push('/MyProfile');
                 window.location.reload();
             }
 
