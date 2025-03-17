@@ -39,7 +39,7 @@ const SignUp = () => {
             });
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success(responseBody.message || 'Successfully registered.');
+                toast.success('User signup successful.');
                 setResponseType(responseResultType[0]);
                 setToast(true);
                 setTimeout(() => {
