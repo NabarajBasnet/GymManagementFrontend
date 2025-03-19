@@ -164,7 +164,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -216,8 +216,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
+                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://localhost:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -294,7 +294,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -1060,9 +1060,9 @@ const StaffManagement = () => {
                                                 </div>
 
                                                 <div className="flex justify-center items-center mt-3 space-x-2">
-                                                    <Button variant="destructive" type='button' className="rounded-md space-x-2" onClick={() => reset()}>Reset <RiResetRightFill className="mx-2" /></Button>
-                                                    <Button className="rounded-md space-x-2" type='button' onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="mx-2" /></Button>
-                                                    <Button className="rounded-md space-x-2 bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}{isSubmitting ? <AiOutlineLoading3Quarters className='animate-spin duration-500 mx-2' /> : <GiConfirmed className="mx-2" />}</Button>
+                                                    <Button variant="destructive" type='button' className="rounded-md" onClick={() => reset()}>Reset <RiResetRightFill className="ml-2 w-4 h-4" /></Button>
+                                                    <Button className="rounded-md space-x-2" type='button' onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="ml-2 w-4 h-4" /></Button>
+                                                    <Button className="rounded-md space-x-2 bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}{isSubmitting ? <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' /> : <GiConfirmed className="ml-2 w-4 h-4" />}</Button>
                                                 </div>
                                             </form>
                                         </div>

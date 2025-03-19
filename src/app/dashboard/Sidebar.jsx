@@ -73,7 +73,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -173,7 +173,7 @@ const Sidebar = () => {
             link: '/dashboard/personaltraining',
             subObj: [
                 { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
-                { icon: GiBiceps, title: 'Book Personal Trainer', link: '/dashboard/personaltraining/booktrainer' }
+                { icon: GiBiceps, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' }
             ]
         },
         {
