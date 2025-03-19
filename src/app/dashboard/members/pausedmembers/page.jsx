@@ -20,7 +20,6 @@ import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
 import { Button } from "@/components/ui/button.jsx";
-import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import * as React from "react"
 import { MdEmail, MdClose } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
@@ -312,11 +311,11 @@ const PausedMembers = () => {
 
                         <div className="fixed top-4 right-4 z-50 animate-slide-in">
                             <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                transition-all duration-300 ease-in-out w-80
-                ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+                                                             transition-all duration-300 ease-in-out w-80
+                                                             ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
 
                                 <div className={`flex items-center justify-center p-2 rounded-full 
-                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                                                     ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
                                     {responseType === 'Success' ? (
                                         <MdDone className="text-xl text-emerald-600" />
                                     ) : (
@@ -326,20 +325,30 @@ const PausedMembers = () => {
 
                                 <div className="flex-1">
                                     <h3 className={`text-base font-semibold mb-1
-                        ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                                                     ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
                                         {responseType === 'Success' ? "Successfully sent!" : "Action required"}
                                     </h3>
 
                                     <p className="text-sm text-gray-600 leading-relaxed">
                                         {responseType === 'Success'
-                                            ? "Your request has been successful. Please check the email inbox."
-                                            : "Couldn't process your request. Check your network or try different credentials."}
+                                            ? (
+                                                <>
+                                                    <p>{successMessage.message}</p>
+                                                </>
+                                            )
+                                            :
+                                            (
+                                                <>
+                                                    <p>{errorMessage.message}</p>
+                                                </>
+                                            )
+                                        }
                                     </p>
 
                                     <div className="mt-3 flex items-center gap-2">
                                         {responseType === 'Success' ? (
                                             <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
-                                                Resend Email
+                                                Done
                                             </button>
                                         ) : (
                                             <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">

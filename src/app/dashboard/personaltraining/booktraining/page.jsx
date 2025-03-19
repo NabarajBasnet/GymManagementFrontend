@@ -1,6 +1,6 @@
 'use client';
 
-
+import { RiEditBoxLine } from "react-icons/ri";
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import {
@@ -45,13 +45,11 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { usePagination } from "@/hooks/Pagination";
 import Loader from "@/components/Loader/Loader";
 import { useForm, Controller } from "react-hook-form";
 import { MdError, MdDelete, MdDone, MdClose } from "react-icons/md";
-import { FaEdit } from "react-icons/fa";
 
 const BookTrainer = () => {
 
@@ -667,7 +665,7 @@ const BookTrainer = () => {
                                                 <TableCell>{training.status ? training.status : ''}</TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex items-center">
-                                                        <FaEdit onClick={() => {
+                                                        <RiEditBoxLine onClick={() => {
                                                             setUpdateDocumentId(training._id);
                                                             setUpdateDocument(!updateDocument);
                                                             setTrainerSearchQuery(training.trainer.fullName);
