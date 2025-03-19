@@ -1,5 +1,12 @@
 'use client'
 
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { IoIosInformationCircleOutline } from "react-icons/io";
 import { motion } from "framer-motion";
 import '../../globals.css';
 import { MdDone, MdError, MdClose } from "react-icons/md";
@@ -544,6 +551,20 @@ const newMemberRegistrationForm = () => {
                     </div>
                 </>
             )}
+
+            <div className="flex justify-between items-center bg-blue-600 py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
+                <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
+                <TooltipProvider>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <IoIosInformationCircleOutline className="text-white mx-4 cursor-pointer h-5 w-5" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Click here to view members profile details.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </TooltipProvider>
+            </div>
 
             {renderProfileDetails && (
                 <div className=" bg-gray-50">

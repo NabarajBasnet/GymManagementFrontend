@@ -570,7 +570,7 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
+            <div className="flex justify-between items-center bg-blue-600 py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
                 <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
                 <TooltipProvider>
                     <Tooltip>
