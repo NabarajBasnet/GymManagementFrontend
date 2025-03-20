@@ -38,7 +38,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
-import { CiSearch } from "react-icons/ci";
 import {
     Table,
     TableBody,
@@ -48,7 +47,7 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../members/allmembertable.jsx";
+} from "@/components/ui/table";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -86,7 +85,6 @@ import Link from "next/link.js";
 import { usePagination } from "@/hooks/Pagination.js";
 import Loader from "@/components/Loader/Loader.jsx";
 import { useRouter } from 'next/navigation.js';
-import StaffTaskManagement from "@/components/UIComponents/StaffTaskManagement/StaffTaskManagement.jsx";
 
 const StaffManagement = () => {
 
@@ -134,7 +132,6 @@ const StaffManagement = () => {
     };
 
     const queryclient = useQueryClient();
-    const [renderTaskManagementComponent, setRenderTaskManagementComponent] = useState(false);
     const [openForm, setOpenForm] = useState(false);
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -373,6 +370,9 @@ const StaffManagement = () => {
                             <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Staffs</BreadcrumbLink>
+                        </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
 
@@ -397,13 +397,6 @@ const StaffManagement = () => {
                                 }>
                                     <TiUserAdd />
                                     <span>Add Staff</span>
-                                </DropdownMenuItem>
-
-                                <DropdownMenuItem className='cursor-pointer' onClick={() => {
-                                    setRenderTaskManagementComponent(!renderTaskManagementComponent)
-                                }}>
-                                    <FcParallelTasks />
-                                    <span>Staff Task Management</span>
                                 </DropdownMenuItem>
 
                                 <DropdownMenuItem>
@@ -1092,17 +1085,6 @@ const StaffManagement = () => {
                                 </div>
                             </div>
                         </>
-                    )
-                }
-
-                {
-                    renderTaskManagementComponent && (
-                        <div onClick={() => setRenderTaskManagementComponent(!renderTaskManagementComponent)}>
-                            <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
-                            <div className="fixed inset-0 z-40 flex items-center justify-center">
-                                <StaffTaskManagement />
-                            </div>
-                        </div>
                     )
                 }
             </div>

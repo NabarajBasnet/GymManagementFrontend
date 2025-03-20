@@ -1,5 +1,7 @@
 'use client';
 
+import { IoPeopleSharp } from "react-icons/io5";
+import { FcParallelTasks } from "react-icons/fc";
 import { FaUsersRays } from "react-icons/fa6";
 import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import { PiStarFour } from "react-icons/pi";
@@ -166,6 +168,15 @@ const Sidebar = () => {
             icon: FaUsersGear,
             title: 'Staff Management',
             link: '/dashboard/staffmanagement',
+            subObj: [
+                { icon: IoPeopleSharp, title: 'Staffs', link: '/dashboard/staffmanagement/staffs' },
+                { icon: FcParallelTasks, title: 'Task Management', link: '/dashboard/staffmanagement/taskmanagement' },
+            ]
+        },
+        {
+            icon: MdPayments,
+            title: 'Payment Details',
+            link: '/dashboard/paymentdetails',
         },
         {
             icon: GiBiceps,
@@ -175,11 +186,6 @@ const Sidebar = () => {
                 { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
                 { icon: GiBiceps, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' }
             ]
-        },
-        {
-            icon: MdPayments,
-            title: 'Payment Details',
-            link: '/dashboard/paymentdetails',
         },
         {
             icon: RiCustomerService2Fill,
