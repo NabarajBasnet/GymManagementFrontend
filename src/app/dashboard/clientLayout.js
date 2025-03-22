@@ -8,32 +8,37 @@ import DashboardFooter from "@/components/DashboardFooter/Footer";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
 
 export default function ClientLayout({ children }) {
-
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
 
     return (
         <RTKProvider>
             <ReactQueryClientProvider>
-                <div className={`w-full flex`}>
+                <div className="w-full flex">
                     {adminSidebar && (
-                        <div className={`hidden md:flex`}>
+                        <div className="hidden md:flex">
                             <Sidebar />
                         </div>
                     )}
 
-                    <div className={`w-full transition-all duration-500 ${sidebarMinimized ? 'md:ml-12' : 'md:ml-60'}`}>
-                        <div className="w-full mt-14">
+                    {/* Right-side container with constrained height */}
+                    <div className={`w-full transition-all duration-500 ${sidebarMinimized ? 'md:ml-12' : 'md:ml-60'} flex flex-col min-h-screen`}>
+                        {/* Header with fixed height */}
+                        <div className="mt-14">
                             <Header />
                         </div>
-                        <main className="w-full bg-white transition-all duration-500">
-                            <div className="w-full mb-1 transition-transform duration-500 ease-in-out">
+
+                        {/* Scrollable content area */}
+                        <main className="flex-1 overflow-auto bg-white">
+                            <div className="w-full mb-1 p-4"> {/* Added padding for spacing */}
                                 {children}
                             </div>
-                            <div className="w-full mt-3">
-                                <DashboardFooter />
-                            </div>
                         </main>
+
+                        {/* Fixed footer at the bottom */}
+                        <div className="mt-3">
+                            <DashboardFooter />
+                        </div>
                     </div>
                 </div>
             </ReactQueryClientProvider>
