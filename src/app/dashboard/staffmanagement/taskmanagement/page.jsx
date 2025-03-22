@@ -1,5 +1,7 @@
 'use client';
-
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { TiEdit } from "react-icons/ti";
 import {
     DropdownMenu,
@@ -223,21 +225,13 @@ const StaffTaskManagement = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className="container mx-auto p-6">
-                <div className="flex justify-between items-center mb-8">
-                    <Breadcrumb className='p-6'>
-                        <BreadcrumbList>
+            <div className="container mx-auto px-4 sm:px-6 py-6">
+                {/* Header Section */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <Breadcrumb className="w-full sm:w-auto overflow-x-auto">
+                        <BreadcrumbList className="flex-nowrap">
                             <BreadcrumbItem>
                                 <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -245,36 +239,36 @@ const StaffTaskManagement = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Staffs</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Tasks</BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                    <button
+                    <Button
                         onClick={() => setIsAddingTask(true)}
-                        className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                        className="w-full rounded-sm sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition-colors"
                     >
                         <Plus size={20} />
                         Add New Task
-                    </button>
+                    </Button>
                 </div>
 
                 {/* Filters and Search */}
-                <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-                    <div className="flex flex-wrap gap-4 items-center">
-                        <div className="flex-1 min-w-[200px]">
+                <div className="bg-white p-4 rounded-md shadow-sm mb-6">
+                    <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
+                        <div className="flex-1">
                             <div className="relative">
                                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-                                <input
+                                <Input
                                     type="text"
                                     placeholder="Search tasks..."
-                                    className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full pl-10 pr-4 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     onChange={(e) => setFilters({ ...filters, search: e.target.value })}
                                 />
                             </div>
                         </div>
-                        <div className="flex gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <select
-                                className="border rounded-lg px-3 py-2"
+                                className="w-full border rounded-sm px-3 py-2 bg-white"
                                 onChange={(e) => setFilters({ ...filters, status: e.target.value })}
                             >
                                 <option value="all">All Status</option>
@@ -283,7 +277,7 @@ const StaffTaskManagement = () => {
                                 <option value="completed">Completed</option>
                             </select>
                             <select
-                                className="border rounded-lg px-3 py-2"
+                                className="w-full border rounded-sm px-3 py-2 bg-white"
                                 onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
                             >
                                 <option value="all">All Priority</option>
@@ -292,7 +286,7 @@ const StaffTaskManagement = () => {
                                 <option value="low">Low</option>
                             </select>
                             <select
-                                className="border rounded-lg px-3 py-2"
+                                className="w-full border rounded-sm px-3 py-2 bg-white"
                                 onChange={(e) => setFilters({ ...filters, category: e.target.value })}
                             >
                                 <option value="all">All Categories</option>
@@ -305,75 +299,97 @@ const StaffTaskManagement = () => {
                 </div>
 
                 {/* Task List */}
-                <div className="bg-white rounded-lg shadow-sm">
+                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Task</TableHead>
-                                    <TableHead>Assigned To</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Priority</TableHead>
-                                    <TableHead>Due Date</TableHead>
-                                    <TableHead>Category</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
+                                    <TableHead>
+                                        <input
+                                            type='checkbox'
+                                        />
+                                    </TableHead>
+                                    <TableHead className="min-w-[250px]">Task</TableHead>
+                                    <TableHead className="min-w-[150px]">Assigned To</TableHead>
+                                    <TableHead className="min-w-[100px]">Status</TableHead>
+                                    <TableHead className="min-w-[100px]">Priority</TableHead>
+                                    <TableHead className="min-w-[120px]">Due Date</TableHead>
+                                    <TableHead className="min-w-[120px]">Category</TableHead>
+                                    <TableHead className="min-w-[100px] text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {filteredTasks.map((task) => (
-                                    <TableRow key={task.id}>
+                                    <TableRow key={task.id} className="group hover:bg-gray-50">
                                         <TableCell>
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">{task.title}</span>
-                                                <span className="text-sm text-gray-500">{task.description}</span>
+                                            <input
+                                                type='checkbox'
+                                            />
+                                        </TableCell>
+
+                                        <TableCell>
+                                            <div className="flex flex-col space-y-2">
+                                                <span className="font-medium text-gray-900">{task.title}</span>
+                                                <span className="text-sm text-gray-500 line-clamp-2">{task.description}</span>
                                                 {task.comments.length > 0 && (
-                                                    <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-2 rounded">
-                                                        <p className="font-medium">{task.comments[0].user}</p>
-                                                        <p>{task.comments[0].text}</p>
-                                                        <span className="text-xs text-gray-500">{task.comments[0].time}</span>
+                                                    <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                                                        <p className="font-medium text-gray-900">{task.comments[0].user}</p>
+                                                        <p className="mt-1">{task.comments[0].text}</p>
+                                                        <span className="text-xs text-gray-500 mt-2 block">{task.comments[0].time}</span>
                                                     </div>
                                                 )}
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center">
-                                                <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                                    <span className="text-sm font-medium text-gray-600">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                    <span className="text-sm font-medium text-blue-800">
                                                         {task.assignedTo.split(" ").map((n) => n[0]).join("")}
                                                     </span>
                                                 </div>
-                                                <span className="ml-2">{task.assignedTo}</span>
+                                                <span className="text-sm font-medium text-gray-900">{task.assignedTo}</span>
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
+                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
                                                 {task.status}
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
+                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
                                                 {task.priority}
                                             </span>
                                         </TableCell>
                                         <TableCell>
-                                            <div className="flex items-center text-gray-500">
-                                                <Calendar size={16} className="mr-2" />
+                                            <div className="flex items-center text-gray-500 text-sm">
+                                                <Calendar size={16} className="mr-2 text-gray-400" />
                                                 {task.dueDate}
                                             </div>
                                         </TableCell>
                                         <TableCell>
-                                            <span className="px-2 py-1 bg-gray-100 text-gray-800 rounded-full text-xs">
+                                            <span className="inline-flex items-center px-2.5 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
                                                 {task.category}
                                             </span>
                                         </TableCell>
-                                        <TableCell className="flex items-center space-x-1 justify-end">
-                                            <TiEdit 
-                                            className="h-5 w-5 cursor-pointer"
-                                                onClick={() => deleteTask(task.id)}
-                                            />
-                                            <Trash2
-                                                onClick={() => deleteTask(task.id)}
-                                                className="h-4 w-4 cursor-pointer text-red-600" />
+                                        <TableCell>
+                                            <div className="flex items-center justify-end space-x-2">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="transition-opacity"
+                                                    onClick={() => {/* Add edit functionality */ }}
+                                                >
+                                                    <TiEdit className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    className="transition-opacity text-red-600 hover:text-red-700"
+                                                    onClick={() => deleteTask(task.id)}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -385,39 +401,42 @@ const StaffTaskManagement = () => {
 
             {/* Add Task Modal */}
             {isAddingTask && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-2xl">
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                         <h2 className="text-2xl font-bold mb-6">Add New Task</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-                                <input
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="col-span-1 md:col-span-2">
+                                <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
+                                <Input
+                                    id="title"
                                     type="text"
                                     name="title"
                                     value={newTask.title}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
+                                    className="mt-1"
                                     placeholder="Enter task title"
                                 />
                             </div>
-                            <div className="col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea
+                            <div className="col-span-1 md:col-span-2">
+                                <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                                <Textarea
+                                    id="description"
                                     name="description"
                                     value={newTask.description}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
-                                    rows={3}
+                                    className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
+
                                     placeholder="Enter task description"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Assigned To</label>
+                                <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
                                 <select
+                                    id="assignedTo"
                                     name="assignedTo"
                                     value={newTask.assignedTo}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
+                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Staff Member</option>
                                     {STAFF_MEMBERS.map(staff => (
@@ -426,12 +445,13 @@ const StaffTaskManagement = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+                                <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
                                 <select
+                                    id="category"
                                     name="category"
                                     value={newTask.category}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
+                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Category</option>
                                     {CATEGORIES.map(category => (
@@ -440,12 +460,13 @@ const StaffTaskManagement = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                                <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
                                 <select
+                                    id="priority"
                                     name="priority"
                                     value={newTask.priority}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
+                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="Low">Low</option>
                                     <option value="Medium">Medium</option>
@@ -453,29 +474,31 @@ const StaffTaskManagement = () => {
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                                <input
+                                <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date</Label>
+                                <Input
+                                    id="dueDate"
                                     type="date"
                                     name="dueDate"
                                     value={newTask.dueDate}
                                     onChange={handleInputChange}
-                                    className="w-full p-2 border rounded-lg"
+                                    className="mt-1 rounded-sm"
                                 />
                             </div>
                         </div>
-                        <div className="flex justify-end gap-4 mt-6">
-                            <button
+                        <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
+                            <Button
+                                variant="outline"
                                 onClick={() => setIsAddingTask(false)}
-                                className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                className="w-full rounded-sm sm:w-auto"
                             >
                                 Cancel
-                            </button>
-                            <button
+                            </Button>
+                            <Button
                                 onClick={addTask}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                                className="w-full sm:w-auto rounded-sm bg-blue-600 text-white hover:bg-blue-700"
                             >
                                 Create Task
-                            </button>
+                            </Button>
                         </div>
                     </div>
                 </div>
