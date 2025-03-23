@@ -46,6 +46,7 @@ import {
 } from 'lucide-react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import status from 'daisyui/components/status';
 
 const INITIAL_TASKS = [
     {
@@ -132,13 +133,6 @@ const INITIAL_TASKS = [
     }
 ];
 
-const STAFF_MEMBERS = [
-    'John Doe',
-    'Jane Smith',
-    'Mike Johnson',
-    'Sarah Wilson',
-    'Robert Brown'
-];
 
 const CATEGORIES = [
     'Maintenance',
@@ -154,7 +148,6 @@ const StaffTaskManagement = () => {
     // States
     const [isAddingTask, setIsAddingTask] = useState(false);
 
-
     // Form states
     const {
         register,
@@ -166,6 +159,24 @@ const StaffTaskManagement = () => {
     } = useForm();
 
     // Functions
+    const getAllStaffMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            console.log(responseBody);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data: STAFF_MEMBERS, isLoading: isStaffsLoading } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: getAllStaffMembers
+    });
+
+    console.log(STAFF_MEMBERS);
+
     const getAllTasks = async ({ queryKey }) => {
         try {
             const response = await fetch(`http://localhost:3000/api/tasks`);
@@ -191,7 +202,7 @@ const StaffTaskManagement = () => {
     const addNewTask = async (data) => {
         try {
             const { title, description, assignedTo, category, priority, dueDate } = data;
-            const finalData = { title, description, assignedTo, category, priority, dueDate };
+            const finalData = { title, description, assignedTo, status: 'Not Started', category, priority, dueDate };
 
             const response = await fetch(`http://localhost:3000/api/tasks`, {
                 method: "POST",
@@ -545,10 +556,12 @@ const StaffTaskManagement = () => {
                                     {...register("assignedTo", { required: "Please select a staff member" })}
                                     className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
-                                    <option value="">Select Staff Member</option>
-                                    {STAFF_MEMBERS.map(staff => (
-                                        <option key={staff} value={staff}>{staff}</option>
-                                    ))}
+                                    <option value="">Select Staff</option>
+                                    {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
+                                        <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
+                                    )) :
+                                        <option>Not registered</option>
+                                    }
                                 </select>
                             </div>
                             <div>
