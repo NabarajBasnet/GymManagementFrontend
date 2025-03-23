@@ -1,5 +1,14 @@
 'use client';
 
+import { FaUsers } from "react-icons/fa";
+import { HiIdentification } from "react-icons/hi2";
+import { PiBuildingOfficeFill } from "react-icons/pi";
+import { FaBriefcase, FaUser } from "react-icons/fa";
+import { HiLocationMarker } from "react-icons/hi";
+import { MdEmail } from "react-icons/md";
+import { FaPhone } from "react-icons/fa";
+import { FaUserAlt } from "react-icons/fa";
+import { FaRegClock } from "react-icons/fa";
 import { FiRotateCw } from "react-icons/fi";
 import { BiSolidCalendarCheck } from "react-icons/bi";
 import { BiSolidCheckCircle } from "react-icons/bi";
@@ -11,14 +20,6 @@ import { Progress } from "@/components/ui/progress"
 import { FaCalendarAlt } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { FaClipboard } from "react-icons/fa";
-import {
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination";
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from '@/components/ui/label';
 import Badge from '@mui/material/Badge';
@@ -210,6 +211,33 @@ const MyProfile = () => {
             console.log("Error: ", error);
         }
     };
+    // Helper components
+    const InfoItem = ({ label, value, icon }) => (
+        <div className="flex items-center justify-between py-2 border-b border-gray-100">
+            <div className="flex items-center space-x-2 text-gray-500">
+                {icon}
+                <span className="text-sm">{label}</span>
+            </div>
+            <span className="text-sm font-medium text-gray-700">{value}</span>
+        </div>
+    );
+
+    const ContactPerson = ({ name, relationship, phone }) => (
+        <div className="bg-gray-50 p-4 rounded-lg">
+            <div className="flex items-center space-x-3">
+                <div className="flex-shrink-0">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                        <FaUsers className="w-5 h-5" />
+                    </div>
+                </div>
+                <div>
+                    <h4 className="font-medium text-gray-800">{name}</h4>
+                    <p className="text-sm text-gray-500">{relationship}</p>
+                    <p className="text-sm text-blue-600 font-medium">{phone}</p>
+                </div>
+            </div>
+        </div>
+    )
 
     return (
         <div className="w-full">
@@ -240,19 +268,9 @@ const MyProfile = () => {
                                         <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
-                                        <CreditCard />
-                                        <span>Billing</span>
-                                        <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
                                         <Settings />
                                         <span>Settings</span>
                                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Keyboard />
-                                        <span>Keyboard shortcuts</span>
-                                        <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
@@ -290,27 +308,6 @@ const MyProfile = () => {
                                         <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <Github />
-                                    <span>GitHub</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <LifeBuoy />
-                                    <span>Support</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem disabled>
-                                    <Cloud />
-                                    <span>API</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <div onClick={logoutStaff} className="cursor-pointer flex items-center">
-                                        <LogOut />
-                                        <span>Log out</span>
-                                        <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
-                                    </div>
-                                </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -325,81 +322,130 @@ const MyProfile = () => {
                         <div className="w-11/12 md:w-10/12">
                             <Tabs defaultValue="profile" className="w-full">
                                 <TabsList className="w-full grid grid-cols-3 mb-4">
-                                    <TabsTrigger value="profile">Profile</TabsTrigger>
-                                    <TabsTrigger value="tasks">Tasks</TabsTrigger>
-                                    <TabsTrigger value="attendance">Attendance</TabsTrigger>
+                                    <TabsTrigger value="profile">My Profile</TabsTrigger>
+                                    <TabsTrigger value="tasks">My Tasks</TabsTrigger>
+                                    <TabsTrigger value="attendance">My Attendance</TabsTrigger>
                                 </TabsList>
 
                                 {/* Profile Tab */}
-                                <TabsContent value="profile">
-                                    <div className="w-full flex items-center justify-center p-1">
-                                        <img src={data?.qrCode} alt="QR Code" />
-                                    </div>
-                                    <div className="w-full">
-                                        <h1 className="text-center my-4 font-semibold">
-                                            Current Time: {currentTime?.toISOString().split("T")[0]},{" "}
-                                            {currentTime?.toLocaleTimeString("en-US", {
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                                second: "2-digit",
-                                                hour12: true,
-                                            })}
-                                        </h1>
-                                    </div>
-                                    <div className="w-full flex justify-center bg-gray-800 p-6 text-white">
-                                        <div className="w-full md:w-11/12">
-                                            <h1 className="text-2xl md:text-3xl text-white font-bold">
-                                                {staffDetails?.fullName} - {staffDetails?.role}
-                                            </h1>
-                                            <p className='font-semibold text-sm'>Shift: {staffDetails?.shift}</p>
+                                <TabsContent value="profile" className="space-y-6">
+                                    {/* QR Code Section */}
+                                    <div className="w-full bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                                        <h2 className="text-xl font-bold text-gray-800 mb-4">My QR Code</h2>
+                                        <div className="flex flex-col items-center space-y-4">
+                                            <div className="p-3 bg-white rounded-lg border-2 border-dashed border-blue-100">
+                                                <img
+                                                    src={data?.qrCode}
+                                                    alt="QR Code"
+                                                    className="w-48 h-48 object-contain"
+                                                />
+                                            </div>
+                                            <p className="text-sm text-gray-500 text-center">
+                                                Scan this code for your daily checkin and checkout
+                                            </p>
                                         </div>
                                     </div>
-                                    <div className="w-full flex justify-center bg-blue-600 text-white shadow-xl my-4 rounded-lg p-6">
-                                        <div className="md:w-11/12 w-full space-y-4">
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Phone No:</span>
-                                                <span className="font-semibold text-sm">{staffDetails?.contactNo}</span>
+
+                                    {/* Time Display */}
+                                    <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-6 shadow-lg">
+                                        <div className="flex flex-col items-center space-y-2">
+                                            <span className="text-white font-medium text-sm opacity-90">
+                                                {currentTime?.toLocaleDateString('en-US', {
+                                                    weekday: 'long',
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                            <div className="flex items-center space-x-3">
+                                                <span className="text-white font-bold text-3xl tracking-wide">
+                                                    {currentTime?.toLocaleTimeString('en-US', {
+                                                        hour: '2-digit',
+                                                        minute: '2-digit',
+                                                        second: '2-digit',
+                                                        hour12: true
+                                                    })}
+                                                </span>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Email:</span>
-                                                <span className="font-semibold text-sm">{staffDetails?.email}</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Profile Header */}
+                                    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                                        <div className="flex items-center space-x-4">
+                                            <div className="flex-shrink-0">
+                                                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-pink-600  flex items-center justify-center text-white text-2xl font-bold">
+                                                    {staffDetails?.fullName[0]}
+                                                </div>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Date of Birth:</span>
-                                                {
-                                                    staffDetails ? (
-                                                        <span className="font-semibold text-sm">
-                                                            {new Date(staffDetails?.dob).toISOString().split("T")[0]}
-                                                        </span>
-                                                    ) : (
-                                                        <p></p>
-                                                    )
-                                                }
+                                            <div>
+                                                <h1 className="text-md md:text-2xl font-bold text-gray-800">
+                                                    {staffDetails?.fullName}
+                                                    <span className="ml-2 bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+                                                        {staffDetails?.role}
+                                                    </span>
+                                                </h1>
+                                                <div className="flex items-center space-x-2 mt-1">
+                                                    <span className="flex items-center bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-600">
+                                                        <FaRegClock className="w-4 h-4 mr-1" />
+                                                        {staffDetails?.shift} Shift
+                                                    </span>
+                                                    <span className="flex items-center bg-gray-100 px-3 py-1 rounded-full text-sm font-medium text-gray-600">
+                                                        <FaUserAlt className="w-4 h-4 mr-1" />
+                                                        {staffDetails?.gender}
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Address:</span>
-                                                <span className="font-semibold text-sm">{staffDetails?.address}</span>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Role:</span>
-                                                <span className="font-semibold text-sm">{staffDetails?.role}</span>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Joined Date:</span>
-                                                {
-                                                    staffDetails ? (
-                                                        <span className="font-semibold text-sm">
-                                                            {new Date(staffDetails?.joinedDate).toISOString().split("T")[0]}
-                                                        </span>
-                                                    ) : (
-                                                        <p></p>
-                                                    )
-                                                }
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <span className="font-medium">Gender:</span>
-                                                <span className="font-semibold text-sm">{staffDetails?.gender}</span>
-                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Detailed Information */}
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {/* Personal Information Card */}
+                                        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Personal Information</h3>
+                                            <dl className="space-y-4">
+                                                <InfoItem label="Contact Number" value={staffDetails?.contactNo} icon={<FaPhone />} />
+                                                <InfoItem label="Email Address" value={staffDetails?.email} icon={<MdEmail />} />
+                                                <InfoItem
+                                                    label="Date of Birth"
+                                                    value={new Date(staffDetails?.dob).toLocaleDateString()}
+                                                    icon={<FaCalendarAlt />}
+                                                />
+                                                <InfoItem label="Address" value={staffDetails?.address} icon={<HiLocationMarker />} />
+                                            </dl>
+                                        </div>
+
+                                        {/* Employment Information Card */}
+                                        <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                                            <h3 className="text-lg font-semibold text-gray-800 mb-4">Employment Details</h3>
+                                            <dl className="space-y-4">
+                                                <InfoItem
+                                                    label="Join Date"
+                                                    value={new Date(staffDetails?.joinedDate).toLocaleDateString()}
+                                                    icon={<FaBriefcase />}
+                                                />
+                                                <InfoItem label="Department" value="Human Resources" icon={<PiBuildingOfficeFill />} />
+                                                <InfoItem label="Employee ID" value={staffDetails ? staffDetails._id : 'Loading...'} icon={<HiIdentification />} />
+                                                <InfoItem label="Reports To" value="Sarah Johnson (HR Manager)" icon={<FaUser />} />
+                                            </dl>
+                                        </div>
+                                    </div>
+
+                                    {/* Emergency Contact Section */}
+                                    <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+                                        <h3 className="text-lg font-semibold text-gray-800 mb-4">Emergency Contact</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <ContactPerson
+                                                name="Emily Johnson"
+                                                relationship="Spouse"
+                                                phone="+1 (555) 234-5678"
+                                            />
+                                            <ContactPerson
+                                                name="Michael Chen"
+                                                relationship="Father"
+                                                phone="+1 (555) 345-6789"
+                                            />
                                         </div>
                                     </div>
                                 </TabsContent>

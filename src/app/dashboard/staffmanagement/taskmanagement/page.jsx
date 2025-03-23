@@ -1,4 +1,8 @@
 'use client';
+
+import toast, { Toaster } from 'react-hot-toast';
+import { useForm } from "react-hook-form";
+import { useQuery, QueryClient } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -145,8 +149,114 @@ const CATEGORIES = [
 ];
 
 const StaffTaskManagement = () => {
-    const [tasks, setTasks] = useState(INITIAL_TASKS);
+
+
+    // States
     const [isAddingTask, setIsAddingTask] = useState(false);
+
+
+    // Form states
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting, isSubmitSuccessful },
+        setValue,
+        setError,
+        clearErrors,
+    } = useForm();
+
+    // Functions
+    const getAllTasks = async ({ queryKey }) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tasks`);
+            const responseBody = await response.json();
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['tasks'],
+        queryFn: getAllTasks
+    });
+
+    const getSingleTask = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const addNewTask = async (data) => {
+        try {
+            const { title, description, assignedTo, category, priority, dueDate } = data;
+            const finalData = { title, description, assignedTo, category, priority, dueDate };
+
+            const response = await fetch(`http://localhost:3000/api/tasks`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(finalData),
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message || 'New task created successfully');
+                setIsAddingTask(false);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+
+    const updateTask = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const deleteSingleTask = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    const [tasks, setTasks] = useState(INITIAL_TASKS);
     const [newTask, setNewTask] = useState({
         title: '',
         description: '',
@@ -224,8 +334,8 @@ const StaffTaskManagement = () => {
     });
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <div className="container mx-auto px-4 sm:px-6 py-6">
+        <div className="min-h-screen w-full bg-gray-50">
+            <div className="w-full px-4 sm:px-6 py-6">
                 {/* Header Section */}
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <Breadcrumb className="w-full sm:w-auto overflow-x-auto">
@@ -402,7 +512,7 @@ const StaffTaskManagement = () => {
             {/* Add Task Modal */}
             {isAddingTask && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                    <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                         <h2 className="text-2xl font-bold mb-6">Add New Task</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="col-span-1 md:col-span-2">
@@ -411,8 +521,7 @@ const StaffTaskManagement = () => {
                                     id="title"
                                     type="text"
                                     name="title"
-                                    value={newTask.title}
-                                    onChange={handleInputChange}
+                                    {...register('title')}
                                     className="mt-1"
                                     placeholder="Enter task title"
                                 />
@@ -422,8 +531,7 @@ const StaffTaskManagement = () => {
                                 <Textarea
                                     id="description"
                                     name="description"
-                                    value={newTask.description}
-                                    onChange={handleInputChange}
+                                    {...register('description')}
                                     className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
 
                                     placeholder="Enter task description"
@@ -434,8 +542,7 @@ const StaffTaskManagement = () => {
                                 <select
                                     id="assignedTo"
                                     name="assignedTo"
-                                    value={newTask.assignedTo}
-                                    onChange={handleInputChange}
+                                    {...register("assignedTo", { required: "Please select a staff member" })}
                                     className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Staff Member</option>
@@ -449,8 +556,7 @@ const StaffTaskManagement = () => {
                                 <select
                                     id="category"
                                     name="category"
-                                    value={newTask.category}
-                                    onChange={handleInputChange}
+                                    {...register("category", { required: "Please select a staff member" })}
                                     className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Category</option>
@@ -464,8 +570,7 @@ const StaffTaskManagement = () => {
                                 <select
                                     id="priority"
                                     name="priority"
-                                    value={newTask.priority}
-                                    onChange={handleInputChange}
+                                    {...register("priority", { required: "Please select a staff member" })}
                                     className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="Low">Low</option>
@@ -479,8 +584,7 @@ const StaffTaskManagement = () => {
                                     id="dueDate"
                                     type="date"
                                     name="dueDate"
-                                    value={newTask.dueDate}
-                                    onChange={handleInputChange}
+                                    {...register('dueDate')}
                                     className="mt-1 rounded-sm"
                                 />
                             </div>
@@ -494,13 +598,13 @@ const StaffTaskManagement = () => {
                                 Cancel
                             </Button>
                             <Button
-                                onClick={addTask}
+                                type='submit'
                                 className="w-full sm:w-auto rounded-sm bg-blue-600 text-white hover:bg-blue-700"
                             >
                                 Create Task
                             </Button>
                         </div>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>
