@@ -1,5 +1,24 @@
 'use client';
 
+import { FiRotateCw } from "react-icons/fi";
+import { BiSolidCalendarCheck } from "react-icons/bi";
+import { BiSolidCheckCircle } from "react-icons/bi";
+import { RiArrowRightCircleFill } from "react-icons/ri";
+import { IoMdTrash } from "react-icons/io";
+import { MdEdit } from "react-icons/md";
+import { LuMessageSquareText } from "react-icons/lu";
+import { Progress } from "@/components/ui/progress"
+import { FaCalendarAlt } from "react-icons/fa";
+import { GoAlertFill } from "react-icons/go";
+import { FaClipboard } from "react-icons/fa";
+import {
+    PaginationContent,
+    PaginationEllipsis,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious,
+} from "@/components/ui/pagination";
 import toast, { Toaster } from 'react-hot-toast';
 import { Label } from '@/components/ui/label';
 import Badge from '@mui/material/Badge';
@@ -7,6 +26,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox"
 import Pagination from "@/components/ui/CustomPagination";
+import { FiMoreHorizontal } from "react-icons/fi";
 import {
     Cloud,
     CreditCard,
@@ -386,233 +406,150 @@ const MyProfile = () => {
 
                                 {/* Tasks Tab */}
                                 <TabsContent value="tasks">
-                                    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                                        <div className="p-4 sm:p-6 bg-gradient-to-r from-blue-500 to-blue-700 flex justify-between items-center">
-                                            <h2 className="text-xl font-bold text-white">My Tasks</h2>
-                                            <div className="flex space-x-2">
+                                    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+                                        {/* Header Section */}
+                                        <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                            <h2 className="text-2xl font-bold text-white">Task Management</h2>
+                                            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                                                 <Select defaultValue="all">
-                                                    <SelectTrigger className="w-[120px] bg-white">
-                                                        <SelectValue placeholder="Filter" />
+                                                    <SelectTrigger className="bg-white/90 hover:bg-white/100 transition-colors w-full sm:w-[180px]">
+                                                        <SelectValue placeholder="Filter tasks" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="all">All Tasks</SelectItem>
-                                                        <SelectItem value="pending">Pending</SelectItem>
-                                                        <SelectItem value="inProgress">In Progress</SelectItem>
-                                                        <SelectItem value="completed">Completed</SelectItem>
+                                                        <SelectItem value="all" className="flex items-center gap-2">
+                                                            <span className="w-2 h-2 rounded-full bg-blue-500" /> All Tasks
+                                                        </SelectItem>
+                                                        <SelectItem value="pending">
+                                                            <span className="w-2 h-2 rounded-full bg-yellow-500" /> Pending
+                                                        </SelectItem>
+                                                        <SelectItem value="inProgress">
+                                                            <span className="w-2 h-2 rounded-full bg-purple-500" /> In Progress
+                                                        </SelectItem>
+                                                        <SelectItem value="completed">
+                                                            <span className="w-2 h-2 rounded-full bg-green-500" /> Completed
+                                                        </SelectItem>
                                                     </SelectContent>
                                                 </Select>
-                                                <Button variant="secondary" size="sm" className="flex items-center">
-                                                    <Plus className="h-4 w-4 mr-1" />
+                                                <Button className="shrink-0 bg-white/90 hover:bg-white text-blue-600 hover:text-blue-700 shadow-sm">
+                                                    <Plus className="h-4 w-4 mr-2" />
                                                     New Task
                                                 </Button>
                                             </div>
                                         </div>
 
-                                        {/* Task statistics */}
-                                        <div className="grid grid-cols-4 gap-4 p-4 bg-gray-50">
-                                            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-blue-500">
-                                                <p className="text-sm text-gray-500">Total Tasks</p>
-                                                <p className="text-2xl font-bold">24</p>
+                                        {/* Stats Cards */}
+                                        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-6 bg-gray-50 border-b">
+                                            <div className="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-shadow">
+                                                <div className="flex justify-between items-center">
+                                                    <div>
+                                                        <p className="text-sm text-gray-500 mb-1">Total Tasks</p>
+                                                        <p className="text-2xl font-bold">24</p>
+                                                    </div>
+                                                    <div className="bg-blue-100 p-2 rounded-lg">
+                                                        <FaClipboard className="h-6 w-6 text-blue-600" />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500">
-                                                <p className="text-sm text-gray-500">In Progress</p>
-                                                <p className="text-2xl font-bold">8</p>
-                                            </div>
-                                            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500">
-                                                <p className="text-sm text-gray-500">Completed</p>
-                                                <p className="text-2xl font-bold">14</p>
-                                            </div>
-                                            <div className="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500">
-                                                <p className="text-sm text-gray-500">Overdue</p>
-                                                <p className="text-2xl font-bold">2</p>
-                                            </div>
+                                            {/* Repeat similar structure for other stats cards with different colors */}
                                         </div>
 
                                         {/* Task List */}
-                                        <div className="p-4">
-                                            <div className="space-y-4">
-                                                {/* High Priority Task */}
-                                                <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox id="task1" />
-                                                            <div>
-                                                                <Label htmlFor="task1" className="text-base font-medium">Complete monthly report</Label>
-                                                                <p className="text-sm text-gray-500 mt-1">Prepare and submit the monthly performance report for department review</p>
+                                        <div className="p-6 space-y-4">
+                                            {/* High Priority Task */}
+                                            <div className="group bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all">
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <Checkbox id="task1" className="mt-1.5 h-5 w-5 border-2" />
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <Label htmlFor="task1" className="text-base font-semibold">
+                                                                Complete monthly report
+                                                            </Label>
+                                                            <Badge variant="destructive" className="rounded-md px-2 py-1">
+                                                                <GoAlertFill className="h-4 w-4 mr-1" /> High Priority
+                                                            </Badge>
+                                                        </div>
+                                                        <p className="text-sm text-gray-600 mb-4">
+                                                            Prepare and submit the monthly performance report for department review
+                                                        </p>
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                                <FaCalendarAlt className="h-4 w-4" />
+                                                                <span>Due: Mar 24, 2025</span>
+                                                                <Progress value={30} className="h-2 w-32" />
                                                             </div>
-                                                        </div>
-                                                        <Badge variant="destructive">High Priority</Badge>
-                                                    </div>
-                                                    <div className="mt-4 flex items-center justify-between">
-                                                        <div className="flex items-center text-sm text-gray-500">
-                                                            <Calendar className="h-4 w-4 mr-1" />
-                                                            <span>Due: Mar 24, 2025</span>
-                                                        </div>
-                                                        <div className="flex space-x-2">
-                                                            <Button variant="outline" size="sm" className="flex items-center">
-                                                                {/* <ArrowRight className="h-4 w-4 mr-1" /> */}
-                                                                Mark In Progress
-                                                            </Button>
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger asChild>
-                                                                    <Button variant="ghost" size="sm">
-                                                                        {/* <MoreHorizontal className="h-4 w-4" /> */}
-                                                                    </Button>
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent align="end">
-                                                                    <DropdownMenuItem>Edit Task</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Add Comment</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Share Task</DropdownMenuItem>
-                                                                    <DropdownMenuSeparator />
-                                                                    <DropdownMenuItem className="text-red-500">Delete Task</DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* In Progress Task */}
-                                                <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox id="task2" />
-                                                            <div>
-                                                                <Label htmlFor="task2" className="text-base font-medium">Update client database</Label>
-                                                                <p className="text-sm text-gray-500 mt-1">Review and update client information in the CRM system</p>
-                                                            </div>
-                                                        </div>
-                                                        <Badge variant="secondary">In Progress</Badge>
-                                                    </div>
-                                                    <div className="mt-3">
-                                                        {/* <Progress value={60} className="h-2" /> */}
-                                                        <p className="text-xs text-gray-500 mt-1 text-right">60% Complete</p>
-                                                    </div>
-                                                    <div className="mt-4 flex items-center justify-between">
-                                                        <div className="flex items-center text-sm text-gray-500">
-                                                            <Calendar className="h-4 w-4 mr-1" />
-                                                            <span>Due: Mar 25, 2025</span>
-                                                        </div>
-                                                        <div className="flex space-x-2">
-                                                            <Button variant="outline" size="sm" className="flex items-center">
-                                                                <Check className="h-4 w-4 mr-1" />
-                                                                Mark Complete
-                                                            </Button>
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger asChild>
-                                                                    <Button variant="ghost" size="sm">
-                                                                        <MoreHorizontal className="h-4 w-4" />
-                                                                    </Button>
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent align="end">
-                                                                    <DropdownMenuItem>Edit Task</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Add Comment</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Update Progress</DropdownMenuItem>
-                                                                    <DropdownMenuSeparator />
-                                                                    <DropdownMenuItem className="text-red-500">Delete Task</DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                {/* Completed Task */}
-                                                <div className="bg-gray-50 border border-gray-200 rounded-lg shadow-sm p-4">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox id="task3" checked={true} />
-                                                            <div>
-                                                                <Label htmlFor="task3" className="text-base font-medium line-through text-gray-500">Schedule team meeting</Label>
-                                                                <p className="text-sm text-gray-400 mt-1">Coordinate with team members and schedule weekly progress meeting</p>
-                                                            </div>
-                                                        </div>
-                                                        <Badge variant="outline" className="text-green-600 bg-green-50">Completed</Badge>
-                                                    </div>
-                                                    <div className="mt-4 flex items-center justify-between">
-                                                        <div className="flex items-center text-sm text-gray-500">
-                                                            <Check className="h-4 w-4 mr-1 text-green-500" />
-                                                            <span>Completed on Mar 21, 2025</span>
-                                                        </div>
-                                                        <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <Button variant="ghost" size="sm">
-                                                                    <MoreHorizontal className="h-4 w-4" />
+                                                            <div className="flex gap-2">
+                                                                <DropdownMenu>
+                                                                    <DropdownMenuTrigger asChild>
+                                                                        <Button variant="ghost" size="sm" className="rounded-lg">
+                                                                            <FiMoreHorizontal className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </DropdownMenuTrigger>
+                                                                    <DropdownMenuContent align="end" className="min-w-[200px]">
+                                                                        <DropdownMenuItem className="gap-2">
+                                                                            <MdEdit className="h-4 w-4" /> Edit Task
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuItem className="gap-2">
+                                                                            <LuMessageSquareText className="h-4 w-4" /> Add Comment
+                                                                        </DropdownMenuItem>
+                                                                        <DropdownMenuSeparator />
+                                                                        <DropdownMenuItem className="text-red-600 gap-2">
+                                                                            <IoMdTrash className="h-4 w-4" /> Delete Task
+                                                                        </DropdownMenuItem>
+                                                                    </DropdownMenuContent>
+                                                                </DropdownMenu>
+                                                                <Button variant="outline" size="sm" className="rounded-lg gap-2">
+                                                                    <RiArrowRightCircleFill className="h-4 w-4" /> Start Task
                                                                 </Button>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                <DropdownMenuItem>Reopen Task</DropdownMenuItem>
-                                                                <DropdownMenuItem>View Details</DropdownMenuItem>
-                                                                <DropdownMenuItem>Archive</DropdownMenuItem>
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu>
-                                                    </div>
-                                                </div>
-
-                                                {/* Normal Priority Task */}
-                                                <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-4 hover:shadow-md transition-shadow">
-                                                    <div className="flex items-start justify-between">
-                                                        <div className="flex items-center space-x-2">
-                                                            <Checkbox id="task4" />
-                                                            <div>
-                                                                <Label htmlFor="task4" className="text-base font-medium">Review training materials</Label>
-                                                                <p className="text-sm text-gray-500 mt-1">Review and update the new employee onboarding materials</p>
                                                             </div>
                                                         </div>
-                                                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 hover:bg-blue-100">Normal Priority</Badge>
-                                                    </div>
-                                                    <div className="mt-4 flex items-center justify-between">
-                                                        <div className="flex items-center text-sm text-gray-500">
-                                                            <Calendar className="h-4 w-4 mr-1" />
-                                                            <span>Due: Mar 29, 2025</span>
-                                                        </div>
-                                                        <div className="flex space-x-2">
-                                                            <Button variant="outline" size="sm" className="flex items-center">
-                                                                <ArrowRight className="h-4 w-4 mr-1" />
-                                                                Mark In Progress
-                                                            </Button>
-                                                            <DropdownMenu>
-                                                                <DropdownMenuTrigger asChild>
-                                                                    <Button variant="ghost" size="sm">
-                                                                        <MoreHorizontal className="h-4 w-4" />
-                                                                    </Button>
-                                                                </DropdownMenuTrigger>
-                                                                <DropdownMenuContent align="end">
-                                                                    <DropdownMenuItem>Edit Task</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Add Comment</DropdownMenuItem>
-                                                                    <DropdownMenuItem>Share Task</DropdownMenuItem>
-                                                                    <DropdownMenuSeparator />
-                                                                    <DropdownMenuItem className="text-red-500">Delete Task</DropdownMenuItem>
-                                                                </DropdownMenuContent>
-                                                            </DropdownMenu>
-                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            {/* Pagination for tasks */}
-                                            <div className="mt-6 flex justify-center">
-                                                <Pagination>
-                                                    <PaginationContent>
-                                                        <PaginationItem>
-                                                            <PaginationPrevious href="#" />
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#" isActive>1</PaginationLink>
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#">2</PaginationLink>
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationLink href="#">3</PaginationLink>
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationEllipsis />
-                                                        </PaginationItem>
-                                                        <PaginationItem>
-                                                            <PaginationNext href="#" />
-                                                        </PaginationItem>
-                                                    </PaginationContent>
-                                                </Pagination>
+                                            {/* Completed Task */}
+                                            <div className="group bg-green-50 p-4 rounded-lg border border-green-200 opacity-75 hover:opacity-100 transition-opacity">
+                                                <div className="flex items-start justify-between gap-4">
+                                                    <Checkbox
+                                                        id="task3"
+                                                        checked={true}
+                                                        className="mt-1.5 h-5 w-5 border-2 data-[state=checked]:border-green-600"
+                                                    />
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-3 mb-2">
+                                                            <Label
+                                                                htmlFor="task3"
+                                                                className="text-base font-medium line-through text-green-800"
+                                                            >
+                                                                Schedule team meeting
+                                                            </Label>
+                                                            <Badge variant="outline" className="border-green-300 text-green-800">
+                                                                <BiSolidCheckCircle className="h-4 w-4 mr-1" /> Completed
+                                                            </Badge>
+                                                        </div>
+                                                        <div className="flex items-center justify-between text-sm text-green-700">
+                                                            <div className="flex items-center gap-3">
+                                                                <BiSolidCalendarCheck className="h-4 w-4" />
+                                                                <span>Completed on Mar 21, 2025</span>
+                                                            </div>
+                                                            <Button variant="ghost" size="sm" className="text-green-700 hover:bg-green-100">
+                                                                <FiRotateCw className="h-4 w-4 mr-2" /> Reopen
+                                                            </Button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+                                        </div>
+
+                                        {/* Enhanced Pagination */}
+                                        <div className="p-6 border-t">
+                                            <Pagination
+                                                total={totalPages || 1}
+                                                page={currentPage || 1}
+                                                onChange={setCurrentPage}
+                                                withEdges={true}
+                                                siblings={1}
+                                                boundaries={1}
+                                            />
                                         </div>
                                     </div>
                                 </TabsContent>
