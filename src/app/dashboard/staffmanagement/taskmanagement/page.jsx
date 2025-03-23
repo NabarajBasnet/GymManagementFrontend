@@ -203,7 +203,7 @@ const StaffTaskManagement = () => {
         try {
             const { title, description, assignedTo, category, priority, dueDate } = data;
             const finalData = { title, description, assignedTo, status: 'Not Started', category, priority, dueDate };
-
+            console.log("Final Data: ", finalData);
             const response = await fetch(`http://localhost:3000/api/tasks`, {
                 method: "POST",
                 headers: {
@@ -238,34 +238,6 @@ const StaffTaskManagement = () => {
             console.log("Error: ", error);
         };
     };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     const [tasks, setTasks] = useState(INITIAL_TASKS);
     const [newTask, setNewTask] = useState({
@@ -558,7 +530,7 @@ const StaffTaskManagement = () => {
                                 >
                                     <option value="">Select Staff</option>
                                     {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                        <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
+                                        <option key={staff._id} value={staff._id}>{staff.fullName}</option>
                                     )) :
                                         <option>Not registered</option>
                                     }
@@ -614,7 +586,7 @@ const StaffTaskManagement = () => {
                                 type='submit'
                                 className="w-full sm:w-auto rounded-sm bg-blue-600 text-white hover:bg-blue-700"
                             >
-                                Create Task
+                                {isSubmitting ? 'Submitting...' : 'Submit'}
                             </Button>
                         </div>
                     </form>
