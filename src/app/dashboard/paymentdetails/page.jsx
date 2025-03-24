@@ -161,8 +161,7 @@ const PaymentDetails = () => {
             });
         };
     };
-    console.log(window.screen);
-    console.log(window.document);
+
     return (
         <div className="w-full bg-gray-50 min-h-screen">
             {/* Header Section */}

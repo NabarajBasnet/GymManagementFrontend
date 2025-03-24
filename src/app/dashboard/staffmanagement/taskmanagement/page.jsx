@@ -1,5 +1,17 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { useForm } from "react-hook-form";
 import { useQuery, QueryClient } from "@tanstack/react-query";
@@ -46,7 +58,8 @@ import {
 } from 'lucide-react';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import status from 'daisyui/components/status';
+import Loader from '@/components/Loader/Loader';
+import Deleteing from "@/components/Deleting/Deleting";
 
 const INITIAL_TASKS = [
     {
@@ -147,6 +160,8 @@ const StaffTaskManagement = () => {
 
     // States
     const [isAddingTask, setIsAddingTask] = useState(false);
+    const queryClient = useQueryClient();
+    const [deleteing, setDeleting] = useState(false);
 
     // Form states
     const {
@@ -163,7 +178,6 @@ const StaffTaskManagement = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
-            console.log(responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -175,12 +189,11 @@ const StaffTaskManagement = () => {
         queryFn: getAllStaffMembers
     });
 
-    console.log(STAFF_MEMBERS);
-
     const getAllTasks = async ({ queryKey }) => {
         try {
             const response = await fetch(`http://localhost:3000/api/tasks`);
             const responseBody = await response.json();
+            return responseBody;
         } catch (error) {
             console.log("Error: ", error);
         };
@@ -203,7 +216,6 @@ const StaffTaskManagement = () => {
         try {
             const { title, description, assignedTo, category, priority, dueDate } = data;
             const finalData = { title, description, assignedTo, status: 'Not Started', category, priority, dueDate };
-            console.log("Final Data: ", finalData);
             const response = await fetch(`http://localhost:3000/api/tasks`, {
                 method: "POST",
                 headers: {
@@ -214,9 +226,10 @@ const StaffTaskManagement = () => {
 
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success(responseBody.message || 'New task created successfully');
+                toast.success('New task created successfully');
                 setIsAddingTask(false);
-            }
+                queryClient.invalidateQueries(['tasks']);
+            };
         } catch (error) {
             console.log("Error: ", error);
         };
@@ -232,9 +245,20 @@ const StaffTaskManagement = () => {
     };
 
     const deleteSingleTask = async (id) => {
+        setDeleting(true);
         try {
+            const response = await fetch(`http://localhost:3000/api/task/${id}`, {
+                method: "DELETE",
+            });
 
+            const responseBody = await response.json();
+            if (response.ok) {
+                setDeleting(false);
+                toast.success('Task deleted successfully!');
+                queryClient.invalidateQueries(['tasks']);
+            };
         } catch (error) {
+            setDeleting(false);
             console.log("Error: ", error);
         };
     };
@@ -255,37 +279,6 @@ const StaffTaskManagement = () => {
         category: 'all',
         search: '',
     });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setNewTask({ ...newTask, [name]: value });
-    };
-
-    const addTask = () => {
-        if (newTask.title && newTask.assignedTo) {
-            const task = {
-                ...newTask,
-                id: tasks.length + 1,
-                created: new Date().toISOString().split('T')[0],
-                comments: []
-            };
-            setTasks([...tasks, task]);
-            setNewTask({
-                title: '',
-                description: '',
-                assignedTo: '',
-                status: 'Pending',
-                priority: 'Medium',
-                category: '',
-                dueDate: '',
-            });
-            setIsAddingTask(false);
-        }
-    };
-
-    const deleteTask = (id) => {
-        setTasks(tasks.filter(task => task.id !== id));
-    };
 
     const getPriorityColor = (priority) => {
         switch (priority.toLowerCase()) {
@@ -345,6 +338,12 @@ const StaffTaskManagement = () => {
                     </Button>
                 </div>
 
+                {/* Alerts */}
+                {deleteing && (
+                    <Deleteing />
+                )}
+                    <Deleteing />
+
                 {/* Filters and Search */}
                 <div className="bg-white p-4 rounded-md shadow-sm mb-6">
                     <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
@@ -392,102 +391,140 @@ const StaffTaskManagement = () => {
                 </div>
 
                 {/* Task List */}
+
                 <div className="bg-white rounded-lg shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>
-                                        <input
-                                            type='checkbox'
-                                        />
-                                    </TableHead>
-                                    <TableHead className="min-w-[250px]">Task</TableHead>
-                                    <TableHead className="min-w-[150px]">Assigned To</TableHead>
-                                    <TableHead className="min-w-[100px]">Status</TableHead>
-                                    <TableHead className="min-w-[100px]">Priority</TableHead>
-                                    <TableHead className="min-w-[120px]">Due Date</TableHead>
-                                    <TableHead className="min-w-[120px]">Category</TableHead>
-                                    <TableHead className="min-w-[100px] text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {filteredTasks.map((task) => (
-                                    <TableRow key={task.id} className="group hover:bg-gray-50">
-                                        <TableCell>
+                        {isLoading ? (
+                            <Loader />
+                        ) : (
+
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>
                                             <input
                                                 type='checkbox'
                                             />
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <div className="flex flex-col space-y-2">
-                                                <span className="font-medium text-gray-900">{task.title}</span>
-                                                <span className="text-sm text-gray-500 line-clamp-2">{task.description}</span>
-                                                {task.comments.length > 0 && (
-                                                    <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
-                                                        <p className="font-medium text-gray-900">{task.comments[0].user}</p>
-                                                        <p className="mt-1">{task.comments[0].text}</p>
-                                                        <span className="text-xs text-gray-500 mt-2 block">{task.comments[0].time}</span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center space-x-3">
-                                                <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                    <span className="text-sm font-medium text-blue-800">
-                                                        {task.assignedTo.split(" ").map((n) => n[0]).join("")}
-                                                    </span>
-                                                </div>
-                                                <span className="text-sm font-medium text-gray-900">{task.assignedTo}</span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
-                                                {task.status}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
-                                                {task.priority}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center text-gray-500 text-sm">
-                                                <Calendar size={16} className="mr-2 text-gray-400" />
-                                                {task.dueDate}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <span className="inline-flex items-center px-2.5 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
-                                                {task.category}
-                                            </span>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center justify-end space-x-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="transition-opacity"
-                                                    onClick={() => {/* Add edit functionality */ }}
-                                                >
-                                                    <TiEdit className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="transition-opacity text-red-600 hover:text-red-700"
-                                                    onClick={() => deleteTask(task.id)}
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
+                                        </TableHead>
+                                        <TableHead className="min-w-[250px]">Task</TableHead>
+                                        <TableHead className="min-w-[150px]">Assigned To</TableHead>
+                                        <TableHead className="min-w-[100px]">Status</TableHead>
+                                        <TableHead className="min-w-[100px]">Priority</TableHead>
+                                        <TableHead className="min-w-[120px]">Due Date</TableHead>
+                                        <TableHead className="min-w-[120px]">Category</TableHead>
+                                        <TableHead className="min-w-[100px] text-right">Actions</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {Array.isArray(data.tasks) && data.tasks.length > 0 ? (
+
+                                        data.tasks.map((task) => (
+                                            <TableRow key={task.id} className="group hover:bg-gray-50">
+                                                <TableCell>
+                                                    <input
+                                                        type='checkbox'
+                                                    />
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    <div className="flex flex-col space-y-2">
+                                                        <span className="font-medium text-gray-900">{task.title}</span>
+                                                        <span className="text-sm text-gray-500 line-clamp-2">{task.description}</span>
+                                                        {task.comments.length > 0 && (
+                                                            <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                                                                <p className="font-medium text-gray-900">{task.comments[0].user}</p>
+                                                                <p className="mt-1">{task.comments[0].text}</p>
+                                                                <span className="text-xs text-gray-500 mt-2 block">{task.comments[0].time}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center space-x-3">
+                                                        <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                            <span className="text-sm font-medium text-blue-800">
+                                                                {task.assignedTo.split(" ").map((n) => n[0]).join("")}
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-sm font-medium text-gray-900">{task.assignedTo}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
+                                                        {task.status}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getPriorityColor(task.priority)}`}>
+                                                        {task.priority}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center text-gray-500 text-sm">
+                                                        <Calendar size={16} className="mr-2 text-gray-400" />
+                                                        {new Date(task.dueDate).toISOString().split('T')[0]}
+                                                    </div>
+                                                    <div className="flex items-center text-gray-500 text-sm">
+                                                        <Calendar size={16} className="mr-2 text-gray-400" />
+                                                        {new Date(task.dueDate).toLocaleTimeString()}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <span className="inline-flex items-center px-2.5 py-1 bg-gray-100 text-gray-800 rounded-full text-xs font-medium">
+                                                        {task.category}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center justify-end space-x-2">
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            className="transition-opacity"
+                                                            onClick={() => {/* Add edit functionality */ }}
+                                                        >
+                                                            <TiEdit className="h-4 w-4" />
+                                                        </Button>
+
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    className="transition-opacity text-red-600 hover:text-red-700"
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete assigned task
+                                                                        remove data from servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deleteSingleTask(task._id)}>Delete</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))
+                                    ) : (
+                                        <TableRow key={1} className="group hover:bg-gray-50">
+                                            <TableCell className="w-full flex justify-center items-center text-center">
+                                                <p className="text-center text-sm font-semibold">No tasks found</p>
+                                            </TableCell>
+                                        </TableRow>
+                                    )
+                                    }
+                                </TableBody>
+                            </Table>
+                        )}
                     </div>
                 </div>
             </div>
@@ -530,7 +567,7 @@ const StaffTaskManagement = () => {
                                 >
                                     <option value="">Select Staff</option>
                                     {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                        <option key={staff._id} value={staff._id}>{staff.fullName}</option>
+                                        <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
                                     )) :
                                         <option>Not registered</option>
                                     }
