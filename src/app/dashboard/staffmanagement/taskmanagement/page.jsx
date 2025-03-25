@@ -153,7 +153,6 @@ const INITIAL_TASKS = [
     }
 ];
 
-
 const CATEGORIES = [
     'Maintenance',
     'Inventory',
@@ -163,7 +162,6 @@ const CATEGORIES = [
 ];
 
 const StaffTaskManagement = () => {
-
 
     // States
     const [isAddingTask, setIsAddingTask] = useState(false);
@@ -179,6 +177,7 @@ const StaffTaskManagement = () => {
         setValue,
         setError,
         clearErrors,
+        reset
     } = useForm();
 
     // Functions
@@ -251,11 +250,23 @@ const StaffTaskManagement = () => {
         };
     };
 
-    const updateTask = async (id) => {
+    const editTask = async (id) => {
+        setIsAddingTask(true);
         try {
-
+            const response = await fetch(`http://localhost:3000/api/tasks/update/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify('update')
+            });
+            const responseBody = await response.json();
+            console.log('Response body: ', responseBody);
+            if (response.ok) {
+                toast.success(responseBody.message);
+                setIsAddingTask(false);
+                reset();
+            };
         } catch (error) {
             console.log("Error: ", error);
+            toast.success(error.message);
         };
     };
 
@@ -503,7 +514,7 @@ const StaffTaskManagement = () => {
                                                             variant="ghost"
                                                             size="sm"
                                                             className="transition-opacity hover:bg-gray-100"
-                                                            onClick={() => {/* Add edit functionality */ }}
+                                                            onClick={() => setIsAddingTask(true)}
                                                         >
                                                             <TiEdit className="h-4 w-4 text-gray-600 hover:text-gray-800" />
                                                         </Button>
@@ -602,7 +613,7 @@ const StaffTaskManagement = () => {
                                     >
                                         <option value="">Select Staff</option>
                                         {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                            <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
+                                            <option key={staff._id} value={staff._id}>{staff.fullName}</option>
                                         )) :
                                             <option>Not registered</option>
                                         }

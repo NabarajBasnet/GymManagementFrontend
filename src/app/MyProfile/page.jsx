@@ -1,5 +1,10 @@
 'use client';
 
+import { FaUserCircle } from "react-icons/fa";
+import { FaTasks } from "react-icons/fa";
+import { FaUserCheck } from "react-icons/fa";
+import { BsChatFill } from "react-icons/bs";
+import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import { HiIdentification } from "react-icons/hi2";
 import { PiBuildingOfficeFill } from "react-icons/pi";
@@ -29,12 +34,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Pagination from "@/components/ui/CustomPagination";
 import { FiMoreHorizontal } from "react-icons/fi";
 import {
-    Cloud,
-    CreditCard,
-    Github,
-    Keyboard,
-    LifeBuoy,
-    LogOut,
     Mail,
     MessageSquare,
     Plus,
@@ -272,6 +271,11 @@ const MyProfile = () => {
                                         <span>Settings</span>
                                         <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                                     </DropdownMenuItem>
+                                    <DropdownMenuItem>
+                                        <IoMdNotificationsOutline />
+                                        <span>Notifications</span>
+                                        <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuGroup>
@@ -317,14 +321,22 @@ const MyProfile = () => {
                 <Loader />
             ) : (
                 <div>
-                    {/* Top navigation tabs */}
                     <div className="w-full flex justify-center mt-2">
                         <div className="w-11/12 md:w-10/12">
                             <Tabs defaultValue="profile" className="w-full">
-                                <TabsList className="w-full grid grid-cols-3 mb-4">
-                                    <TabsTrigger value="profile">My Profile</TabsTrigger>
-                                    <TabsTrigger value="tasks">My Tasks</TabsTrigger>
-                                    <TabsTrigger value="attendance">My Attendance</TabsTrigger>
+                                <TabsList className="w-full grid grid-cols-4 mb-4">
+                                    <TabsTrigger value="profile" className="flex items-center justify-center gap-2">
+                                        <FaUserCircle /> <span>My Profile</span>
+                                    </TabsTrigger>
+                                    <TabsTrigger value="tasks" className="flex items-center justify-center gap-2">
+                                        <FaTasks /> <span>My Tasks</span>
+                                    </TabsTrigger>
+                                    <TabsTrigger value="attendance" className="flex items-center justify-center gap-2">
+                                        <FaUserCheck /> <span>My Attendance</span>
+                                    </TabsTrigger>
+                                    <TabsTrigger value="chats" className="flex items-center justify-center gap-2">
+                                        <BsChatFill /> <span>Chats</span>
+                                    </TabsTrigger>
                                 </TabsList>
 
                                 {/* Profile Tab */}
@@ -427,7 +439,7 @@ const MyProfile = () => {
                                                 />
                                                 <InfoItem label="Department" value="Human Resources" icon={<PiBuildingOfficeFill />} />
                                                 <InfoItem label="Employee ID" value={staffDetails ? staffDetails._id : 'Loading...'} icon={<HiIdentification />} />
-                                                <InfoItem label="Reports To" value="Sarah Johnson (HR Manager)" icon={<FaUser />} />
+                                                {/* <InfoItem label="Reports To" value="Sarah Johnson (HR Manager)" icon={<FaUser />} /> */}
                                             </dl>
                                         </div>
                                     </div>
@@ -681,6 +693,89 @@ const MyProfile = () => {
                                         </div>
                                     </div>
                                 </TabsContent>
+
+                                {/* Chat Tab */}
+                                <TabsContent value="chats">
+                                    <div>
+                                        <h1 className="my-4 font-bold text-center">Attendance History</h1>
+                                        <TableContainer component={Paper}>
+                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell className="w-[100px]">Staff Id</TableCell>
+                                                        <TableCell>Name</TableCell>
+                                                        <TableCell>Email</TableCell>
+                                                        <TableCell>Check In</TableCell>
+                                                        <TableCell>Check Out</TableCell>
+                                                        <TableCell>Remark</TableCell>
+                                                        <TableCell>Late Flag</TableCell>
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    {Array.isArray(history) && history.length >= 1 ? (
+                                                        history.map((attendance) => (
+                                                            <TableRow
+                                                                key={attendance._id}
+                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                            >
+                                                                <TableCell component="th" scope="row">{attendance.staffId}</TableCell>
+                                                                <TableCell component="th" scope="row">{attendance.fullName}</TableCell>
+                                                                <TableCell component="th" scope="row">{attendance.email}</TableCell>
+                                                                <TableCell component="th" scope="row">
+                                                                    {attendance.checkIn
+                                                                        ? new Date(attendance.checkIn).toLocaleString('en-US', {
+                                                                            year: 'numeric',
+                                                                            month: '2-digit',
+                                                                            day: '2-digit',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit',
+                                                                            second: '2-digit',
+                                                                            hour12: true,
+                                                                        })
+                                                                        : ''}
+                                                                </TableCell>
+                                                                <TableCell component="th" scope="row">
+                                                                    {attendance.checkOut
+                                                                        ? new Date(attendance.checkOut).toLocaleString('en-US', {
+                                                                            year: 'numeric',
+                                                                            month: '2-digit',
+                                                                            day: '2-digit',
+                                                                            hour: '2-digit',
+                                                                            minute: '2-digit',
+                                                                            second: '2-digit',
+                                                                            hour12: true,
+                                                                        })
+                                                                        : ''}
+                                                                </TableCell>
+                                                                <TableCell component="th" scope="row">{attendance.remark}</TableCell>
+                                                                <TableCell component="th" scope="row">{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow
+                                                            key={'row.name'}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell component="th" scope="row"></TableCell>
+                                                            <TableCell align="right">{'Attendance not found.'}</TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                        <div className="my-4">
+                                            <Pagination
+                                                total={totalPages || 1}
+                                                page={currentPage || 1}
+                                                onChange={setCurrentPage}
+                                                withEdges={true}
+                                                siblings={1}
+                                                boundaries={1}
+                                            />
+                                        </div>
+                                    </div>
+                                </TabsContent>
+
                             </Tabs>
                         </div>
                     </div>

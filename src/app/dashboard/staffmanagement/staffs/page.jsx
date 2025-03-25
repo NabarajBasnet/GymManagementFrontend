@@ -1,5 +1,6 @@
 'use client';
 
+import { toast as toastMessage } from "react-hot-toast";
 import { FcSettings } from "react-icons/fc";
 import { FcParallelTasks } from "react-icons/fc";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -133,6 +134,8 @@ const StaffManagement = () => {
 
     const queryclient = useQueryClient();
     const [openForm, setOpenForm] = useState(false);
+    const [formStep, setFormStep] = useState(1);
+    let totalSteps = 5;
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
@@ -140,6 +143,22 @@ const StaffManagement = () => {
     const responseResultType = ['Success', 'Failure'];
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
     const [deleting, setDeleting] = useState(false);
+
+    const handlePrevious = () => {
+        if (formStep > 1) {
+            setFormStep(prevStep => prevStep - 1);
+        };
+        if (formStep < 1) {
+            setFormStep(1);
+            toastMessage.error('Negative form step not allowed, Assigned default value to step 1');
+        };
+    };
+
+    const handleNext = () => {
+        if (formStep < totalSteps) {
+            setFormStep(prevStep => prevStep + 1);
+        }
+    };
 
     const {
         register,
@@ -656,428 +675,719 @@ const StaffManagement = () => {
                             <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
                             <div className="fixed inset-0 z-40 flex items-center justify-center">
                                 <div className="w-full flex justify-center">
-                                    <div className="w-full md:w-10/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3 py-7">
+                                    <div className="w-full md:w-11/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3">
                                         <div className="w-full md:flex md:justify-center md:items-center">
+
                                             <form className="w-full max-h-[90vh] transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
-                                                <div className="bg-blue-600 py-2 my-2 w-full">
-                                                    <h1 className="mx-4 font-semibold text-white">Staff Registration Form</h1>
+                                                <div className="w-full flex justify-between items-center">
+                                                    <h1 className="font-semibold m-4">Register staff</h1>
+                                                    <MdClose className="m-4 h-5 w-5 cursor-pointer" onClick={() => setOpenForm(!openForm)} />
                                                 </div>
                                                 <div className="p-4 bg-white rounded-md">
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                                        <div>
-                                                            <Label>Full Name</Label>
-                                                            <Controller
-                                                                name="fullName"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        {...register("fullName")}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Full Name"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.fullName && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Email Address</Label>
-                                                            <Controller
-                                                                name="email"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        {...register("email")}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Email address"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.email && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Contact Number</Label>
-                                                            <Controller
-                                                                name="contactNo"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        {...register("contactNo")}
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Contact Number"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.contactNo && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Emergency Contact Number</Label>
-                                                            <Controller
-                                                                name='emergencyContactNo'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        {...register("emergencyContactNo")}
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Emergency Contact Number"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.emergencyContactNo && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Address</Label>
-                                                            <Controller
-                                                                name='address'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        {...register("address")}
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Address"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.address && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.address.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Date Of Birth</Label>
-                                                            <Controller
-                                                                name="dob"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        {...register("dob")}
-                                                                        type="date"
-                                                                        className="rounded-md focus:outline-none"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.dob && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="w-full">
-                                                            <div className="w-full">
-                                                                <Label>Check In</Label>
-                                                                <Controller
-                                                                    name="checkInTime"
-                                                                    control={control}
-                                                                    render={({ field }) => (
-                                                                        <Input
-                                                                            {...field}
-                                                                            {...register('checkInTime')}
-                                                                            value={field.value}
-                                                                            onChange={(e) => {
-                                                                                handleCheckInTimeChange(e);
-                                                                                field.onChange(e);
-                                                                            }}
-                                                                            type='time'
-                                                                            className="rounded-md focus:outline-none"
+                                                    <div className="grid grid-cols-1 gap-4">
+                                                        {formStep === 1 && (
+                                                            <div>
+                                                                <h1 className="text-lg mb-4 font-semibold">Personal Information</h1>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                                                    <div>
+                                                                        <Label>Full Name</Label>
+                                                                        <Controller
+                                                                            name="fullName"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    {...register("fullName")}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Full Name"
+                                                                                />
+                                                                            )}
                                                                         />
-                                                                    )}
-                                                                />
+                                                                        {errors.fullName && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Date Of Birth</Label>
+                                                                        <Controller
+                                                                            name="dob"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    {...register("dob")}
+                                                                                    type="date"
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.dob && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Gender</Label>
+                                                                        <Controller
+                                                                            name="gender"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <select
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        setValue('gender', e.target.value);
+                                                                                        field.onChange(e);
+                                                                                        clearErrors('gender');
+                                                                                    }}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                >
+                                                                                    <option>Select</option>
+                                                                                    <option value="Male">Male</option>
+                                                                                    <option value="Female">Female</option>
+                                                                                    <option value="Other">Other</option>
+                                                                                </select>
+                                                                            )}
+                                                                        />
+                                                                        {errors.gender && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Contact Number</Label>
+                                                                        <Controller
+                                                                            name="contactNo"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    {...register("contactNo")}
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Contact Number"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.contactNo && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Email Address</Label>
+                                                                        <Controller
+                                                                            name="email"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    {...register("email")}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Email address"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.email && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Profile Picture</Label>
+                                                                        <Controller
+                                                                            name="profilePicture"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    type='file'
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    {...register("profilePicture")}
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Profile picture"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.profilePicture && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.profilePicture.message}</p>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            {errors.checkInHour && (
-                                                                <p className="text-sm font-medium text-red-600">
-                                                                    {errors.checkInHour.message}
-                                                                </p>
-                                                            )}
-                                                            {errors.checkInMinute && (
-                                                                <p className="text-sm font-medium text-red-600">
-                                                                    {errors.checkInMinute.message}
-                                                                </p>
-                                                            )}
-                                                        </div>
+                                                        )}
 
-                                                        <div className="w-full">
-                                                            <Label>Check Out</Label>
-                                                            <Controller
-                                                                name='checkOutTime'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        {...register('checkOutTime')}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e);
-                                                                            handleCheckOutTimeChange(e);
-                                                                        }}
-                                                                        className='rounded-md focus:outline-none'
-                                                                        type='time'
+                                                        {formStep === 2 && (
+                                                            <div>
+                                                                <h1 className="text-lg font-semibold mb-4">Address Details</h1>
+
+                                                                <form className="w-full space-x-6 flex justify-between">
+                                                                    {/* Current Address Section */}
+                                                                    <div className="w-full border-b pb-4">
+                                                                        <h3 className="text-lg font-semibold mb-4">Current Address</h3>
+                                                                        <div className="grid md:grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <Label>Street Address</Label>
+                                                                                <Controller
+                                                                                    name='address'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            {...register("address")}
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Address"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.address && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.address.message}</p>
+                                                                                )}
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label htmlFor="currentCity">City</Label>
+                                                                                <Input
+                                                                                    id="currentCity"
+                                                                                    placeholder="Enter city"
+                                                                                    required
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label htmlFor="currentState">State</Label>
+                                                                                <Input
+                                                                                    id="currentState"
+                                                                                    placeholder="Enter state"
+                                                                                    required
+                                                                                />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label htmlFor="currentPostalCode">Postal Code</Label>
+                                                                                <Input
+                                                                                    id="currentPostalCode"
+                                                                                    placeholder="Enter postal code"
+                                                                                    required
+                                                                                />
+                                                                            </div>
+                                                                            <div className="md:col-span-2">
+                                                                                <Label htmlFor="currentCountry">Country</Label>
+                                                                                <Input
+                                                                                    id="currentCountry"
+                                                                                    placeholder="Enter country"
+                                                                                    required
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* Permanent Address Section */}
+                                                                    <div className="w-full">
+                                                                        <div className="flex items-center mb-4">
+                                                                            <input
+                                                                                type="checkbox"
+                                                                                id="sameAsCurrent"
+                                                                                className="mr-2"
+                                                                            />
+                                                                            <Label htmlFor="sameAsCurrent">Same as Current Address</Label>
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
+                                                                            <div className="grid md:grid-cols-2 gap-4">
+                                                                                <div>
+                                                                                    <Label htmlFor="permanentStreetAddress">Street Address</Label>
+                                                                                    <Input
+                                                                                        id="permanentStreetAddress"
+                                                                                        placeholder="Enter street address"
+                                                                                        required
+                                                                                    />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <Label htmlFor="permanentCity">City</Label>
+                                                                                    <Input
+                                                                                        id="permanentCity"
+                                                                                        placeholder="Enter city"
+                                                                                        required
+                                                                                    />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <Label htmlFor="permanentState">State</Label>
+                                                                                    <Input
+                                                                                        id="permanentState"
+                                                                                        placeholder="Enter state"
+                                                                                        required
+                                                                                    />
+                                                                                </div>
+                                                                                <div>
+                                                                                    <Label htmlFor="permanentPostalCode">Postal Code</Label>
+                                                                                    <Input
+                                                                                        id="permanentPostalCode"
+                                                                                        placeholder="Enter postal code"
+                                                                                        required
+                                                                                    />
+                                                                                </div>
+                                                                                <div className="md:col-span-2">
+                                                                                    <Label htmlFor="permanentCountry">Country</Label>
+                                                                                    <Input
+                                                                                        id="permanentCountry"
+                                                                                        placeholder="Enter country"
+                                                                                        required
+                                                                                    />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {/* <div className="flex justify-end">
+                                                                        <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
+                                                                            Save Address Details
+                                                                        </Button>
+                                                                    </div> */}
+                                                                </form>
+                                                            </div>
+                                                        )}
+
+                                                        {formStep === 3 && (
+                                                            <div>
+                                                                <h1 className="text-lg font-semibold mb-4">Job Details</h1>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                    <div>
+                                                                        <Label>Role</Label>
+                                                                        <Controller
+                                                                            name='role'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <select
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        const selectedValue = e.target.value;
+                                                                                        setValue('role', selectedValue);
+                                                                                        clearErrors("role");
+                                                                                        field.onChange(selectedValue);
+                                                                                    }}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                >
+                                                                                    <option>Select</option>
+                                                                                    <option value="Super Admin">Super Admin</option>
+                                                                                    <option value="Gym Admin">Gym Admin</option>
+                                                                                    <option value="Floor Trainer">Trainer</option>
+                                                                                    <option value="Personal Trainer">Personal Trainer</option>
+                                                                                    <option value="Operational Manager">Operational Manager</option>
+                                                                                    <option value="HR Manager">HR Manager</option>
+                                                                                    <option value="CEO">CEO</option>
+                                                                                    <option value="Developer">Developer</option>
+                                                                                    <option value="Intern">Intern</option>
+                                                                                </select>
+                                                                            )}
+                                                                        />
+                                                                        {errors.role && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Joined Date</Label>
+                                                                        <Controller
+                                                                            name='joinedDate'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    {...register("joinedDate")}
+                                                                                    type="date"
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                />
+                                                                            )}
+
+                                                                        />
+                                                                        {errors.joinedDate && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
+                                                                        )}
+                                                                    </div>
+
+
+                                                                    <div className="w-full">
+                                                                        <div className="w-full">
+                                                                            <Label>Check In</Label>
+                                                                            <Controller
+                                                                                name="checkInTime"
+                                                                                control={control}
+                                                                                render={({ field }) => (
+                                                                                    <Input
+                                                                                        {...field}
+                                                                                        {...register('checkInTime')}
+                                                                                        value={field.value}
+                                                                                        onChange={(e) => {
+                                                                                            handleCheckInTimeChange(e);
+                                                                                            field.onChange(e);
+                                                                                        }}
+                                                                                        type='time'
+                                                                                        className="rounded-md focus:outline-none"
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                        </div>
+                                                                        {errors.checkInHour && (
+                                                                            <p className="text-sm font-medium text-red-600">
+                                                                                {errors.checkInHour.message}
+                                                                            </p>
+                                                                        )}
+                                                                        {errors.checkInMinute && (
+                                                                            <p className="text-sm font-medium text-red-600">
+                                                                                {errors.checkInMinute.message}
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div className="w-full">
+                                                                        <Label>Check Out</Label>
+                                                                        <Controller
+                                                                            name='checkOutTime'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    {...register('checkOutTime')}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e);
+                                                                                        handleCheckOutTimeChange(e);
+                                                                                    }}
+                                                                                    className='rounded-md focus:outline-none'
+                                                                                    type='time'
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.checkOutHour && (
+                                                                            <p className="text-sm font-medium text-red-600">
+                                                                                {errors.checkOutHour.message}
+                                                                            </p>
+                                                                        )}
+                                                                        {errors.checkOutMinute && (
+                                                                            <p className="text-sm font-medium text-red-600">
+                                                                                {errors.checkOutMinute.message}
+                                                                            </p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Select Shift</Label>
+                                                                        <Controller
+                                                                            name='shift'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <select
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        const selectedValue = e.target.value
+                                                                                        setValue('shift', selectedValue);
+                                                                                        field.onChange(selectedValue);
+                                                                                        clearErrors('shift')
+                                                                                    }}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                >
+                                                                                    <option>Shift</option>
+                                                                                    <option value="Morning">Morning</option>
+                                                                                    <option value="Day">Day</option>
+                                                                                    <option value="Evening">Evening</option>
+                                                                                </select>
+                                                                            )}
+                                                                        />
+                                                                        {errors.shift && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.shift.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Working Hours</Label>
+                                                                        <Controller
+                                                                            name="workingHours"
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <select
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        const selectedValue = e.target.value
+                                                                                        setValue('workingHours', selectedValue);
+                                                                                        clearErrors('workingHours');
+                                                                                        field.onChange(selectedValue);
+                                                                                    }}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                >
+                                                                                    <option>Select</option>
+                                                                                    <option value="1 Hour">1 Hour</option>
+                                                                                    <option value="2 Hours">2 Hours</option>
+                                                                                    <option value="3 Hours">3 Hours</option>
+                                                                                    <option value="4 Hours">4 Hours</option>
+                                                                                    <option value="5 Hours">5 Hours</option>
+                                                                                    <option value="6 Hours">6 Hours</option>
+                                                                                    <option value="7 Hours">7 Hours</option>
+                                                                                    <option value="8 Hours">8 Hours</option>
+                                                                                    <option value="9 Hours">9 Hours</option>
+                                                                                    <option value="10 Hours">10 Hours</option>
+                                                                                </select>
+                                                                            )}
+                                                                        />
+                                                                        {errors.workingHours && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.workingHours.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Salary</Label>
+                                                                        <Controller
+                                                                            name='salary'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e);
+                                                                                    }}
+                                                                                    {...register("salary")}
+                                                                                    type="text"
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Salary"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.salary && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
+                                                                        )}
+                                                                    </div>
+
+                                                                    <div>
+                                                                        <Label>Status</Label>
+
+                                                                        <Controller
+                                                                            name='status'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <select
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        const selectedValue = e.target.value;
+                                                                                        setValue('status', selectedValue);
+                                                                                        clearErrors('status')
+                                                                                        field.onChange(selectedValue)
+                                                                                    }}
+                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                >
+                                                                                    <option>Status</option>
+                                                                                    <option value="Active">Active</option>
+                                                                                    <option value="On Leave">On Leave</option>
+                                                                                    <option value="Inactive">Inactive</option>
+                                                                                </select>
+                                                                            )}
+                                                                        />
+                                                                        {errors.status && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+
+                                                        {formStep === 4 && (
+                                                            <div>
+                                                                <h1 className="text-lg font-semibold mb-4">Credentials</h1>
+
+                                                                <div>
+                                                                    <Label>Salary</Label>
+                                                                    <Controller
+                                                                        name='username'
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                {...register("username")}
+                                                                                type="text"
+                                                                                className="rounded-md focus:outline-none"
+                                                                                placeholder="Username"
+                                                                            />
+                                                                        )}
                                                                     />
-                                                                )}
-                                                            />
-                                                            {errors.checkOutHour && (
-                                                                <p className="text-sm font-medium text-red-600">
-                                                                    {errors.checkOutHour.message}
-                                                                </p>
-                                                            )}
-                                                            {errors.checkOutMinute && (
-                                                                <p className="text-sm font-medium text-red-600">
-                                                                    {errors.checkOutMinute.message}
-                                                                </p>
-                                                            )}
-                                                        </div>
+                                                                    {errors.username && (
+                                                                        <p className="text-red-600 font-semibold text-sm">{errors.username.message}</p>
+                                                                    )}
+                                                                </div>
 
-                                                        <div>
-                                                            <Label>Gender</Label>
-                                                            <Controller
-                                                                name="gender"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            setValue('gender', e.target.value);
-                                                                            field.onChange(e);
-                                                                            clearErrors('gender');
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option>Select</option>
-                                                                        <option value="Male">Male</option>
-                                                                        <option value="Female">Female</option>
-                                                                        <option value="Other">Other</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.gender && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Select Shift</Label>
-                                                            <Controller
-                                                                name='shift'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            const selectedValue = e.target.value
-                                                                            setValue('shift', selectedValue);
-                                                                            field.onChange(selectedValue);
-                                                                            clearErrors('shift')
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option>Shift</option>
-                                                                        <option value="Morning">Morning</option>
-                                                                        <option value="Day">Day</option>
-                                                                        <option value="Evening">Evening</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.shift && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.shift.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Joined Date</Label>
-                                                            <Controller
-                                                                name='joinedDate'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e)
-                                                                        }}
-                                                                        {...register("joinedDate")}
-                                                                        type="date"
-                                                                        className="rounded-md focus:outline-none"
+                                                                <div>
+                                                                    <Label>Password</Label>
+                                                                    <Controller
+                                                                        name='password'
+                                                                        control={control}
+                                                                        render={({ field }) => (
+                                                                            <Input
+                                                                                {...field}
+                                                                                value={field.value}
+                                                                                onChange={(e) => {
+                                                                                    field.onChange(e);
+                                                                                }}
+                                                                                {...register("password")}
+                                                                                type="password"
+                                                                                className="rounded-md focus:outline-none"
+                                                                                placeholder="Password"
+                                                                            />
+                                                                        )}
                                                                     />
-                                                                )}
+                                                                    {errors.password && (
+                                                                        <p className="text-red-600 font-semibold text-sm">{errors.password.message}</p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        )}
 
-                                                            />
-                                                            {errors.joinedDate && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
-                                                            )}
-                                                        </div>
+                                                        {formStep === 5 && (
+                                                            <div>
+                                                                <h1 className="text-lg font-semibold mb-4">Emergency Contact</h1>
 
-                                                        <div>
-                                                            <Label>Working Hours</Label>
-                                                            <Controller
-                                                                name="workingHours"
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            const selectedValue = e.target.value
-                                                                            setValue('workingHours', selectedValue);
-                                                                            clearErrors('workingHours');
-                                                                            field.onChange(selectedValue);
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option>Select</option>
-                                                                        <option value="1 Hour">1 Hour</option>
-                                                                        <option value="2 Hours">2 Hours</option>
-                                                                        <option value="3 Hours">3 Hours</option>
-                                                                        <option value="4 Hours">4 Hours</option>
-                                                                        <option value="5 Hours">5 Hours</option>
-                                                                        <option value="6 Hours">6 Hours</option>
-                                                                        <option value="7 Hours">7 Hours</option>
-                                                                        <option value="8 Hours">8 Hours</option>
-                                                                        <option value="9 Hours">9 Hours</option>
-                                                                        <option value="10 Hours">10 Hours</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.workingHours && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.workingHours.message}</p>
-                                                            )}
-                                                        </div>
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    <div>
+                                                                        <Label>Emergency Contact Name</Label>
+                                                                        <Controller
+                                                                            name='emergencyName'
+                                                                            control={control}
+                                                                            render={({ field }) => (
+                                                                                <Input
+                                                                                    {...field}
+                                                                                    value={field.value}
+                                                                                    onChange={(e) => {
+                                                                                        field.onChange(e)
+                                                                                    }}
+                                                                                    {...register("emergencyName")}
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Emergency Contact Name"
+                                                                                />
+                                                                            )}
+                                                                        />
+                                                                        {errors.emergencyName && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.emergencyName.message}</p>
+                                                                        )}
 
-                                                        <div>
-                                                            <Label>Status</Label>
+                                                                        <div>
+                                                                            <Label>Emergency Contact Number</Label>
+                                                                            <Controller
+                                                                                name='emergencyContactNo'
+                                                                                control={control}
+                                                                                render={({ field }) => (
+                                                                                    <Input
+                                                                                        {...field}
+                                                                                        value={field.value}
+                                                                                        onChange={(e) => {
+                                                                                            field.onChange(e)
+                                                                                        }}
+                                                                                        {...register("emergencyContactNo")}
+                                                                                        className="rounded-md focus:outline-none"
+                                                                                        placeholder="Emergency Contact No"
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.emergencyContactNo && (
+                                                                                <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
+                                                                            )}
+                                                                        </div>
 
-                                                            <Controller
-                                                                name='status'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            const selectedValue = e.target.value;
-                                                                            setValue('status', selectedValue);
-                                                                            clearErrors('status')
-                                                                            field.onChange(selectedValue)
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option>Status</option>
-                                                                        <option value="Active">Active</option>
-                                                                        <option value="On Leave">On Leave</option>
-                                                                        <option value="Inactive">Inactive</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.status && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
-                                                            )}
-                                                        </div>
+                                                                        <div>
+                                                                            <Label>Relationship</Label>
+                                                                            <Controller
+                                                                                name='relationship'
+                                                                                control={control}
+                                                                                render={({ field }) => (
+                                                                                    <Input
+                                                                                        {...field}
+                                                                                        value={field.value}
+                                                                                        onChange={(e) => {
+                                                                                            field.onChange(e)
+                                                                                        }}
+                                                                                        {...register("relationship")}
+                                                                                        className="rounded-md focus:outline-none"
+                                                                                        placeholder="Relationship"
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.relationship && (
+                                                                                <p className="text-red-600 font-semibold text-sm">{errors.relationship.message}</p>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
 
-                                                        <div>
-                                                            <Label>Salary</Label>
-                                                            <Controller
-                                                                name='salary'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <Input
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            field.onChange(e);
-                                                                        }}
-                                                                        {...register("salary")}
-                                                                        type="text"
-                                                                        className="rounded-md focus:outline-none"
-                                                                        placeholder="Salary"
-                                                                    />
-                                                                )}
-                                                            />
-                                                            {errors.salary && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
-                                                            )}
-                                                        </div>
-
-                                                        <div>
-                                                            <Label>Role</Label>
-                                                            <Controller
-                                                                name='role'
-                                                                control={control}
-                                                                render={({ field }) => (
-                                                                    <select
-                                                                        {...field}
-                                                                        value={field.value}
-                                                                        onChange={(e) => {
-                                                                            const selectedValue = e.target.value;
-                                                                            setValue('role', selectedValue);
-                                                                            clearErrors("role");
-                                                                            field.onChange(selectedValue);
-                                                                        }}
-                                                                        className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                    >
-                                                                        <option>Select</option>
-                                                                        <option value="Super Admin">Super Admin</option>
-                                                                        <option value="Gym Admin">Gym Admin</option>
-                                                                        <option value="Floor Trainer">Trainer</option>
-                                                                        <option value="Personal Trainer">Personal Trainer</option>
-                                                                        <option value="Operational Manager">Operational Manager</option>
-                                                                        <option value="HR Manager">HR Manager</option>
-                                                                        <option value="CEO">CEO</option>
-                                                                        <option value="Developer">Developer</option>
-                                                                        <option value="Intern">Intern</option>
-                                                                    </select>
-                                                                )}
-                                                            />
-                                                            {errors.role && (
-                                                                <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
-                                                            )}
-                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <div className="flex justify-center items-center mt-3 space-x-2">
-                                                    <Button variant="destructive" type='button' className="rounded-md" onClick={() => reset()}>Reset <RiResetRightFill className="ml-2 w-4 h-4" /></Button>
-                                                    <Button className="rounded-md space-x-2" type='button' onClick={() => setOpenForm(!openForm)}>Close <MdCloseFullscreen className="ml-2 w-4 h-4" /></Button>
-                                                    <Button className="rounded-md space-x-2 bg-green-500 hover:bg-green-600 transition-all duration-500" type='submit'>{isSubmitting ? 'Processing...' : 'Submit'}{isSubmitting ? <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' /> : <GiConfirmed className="ml-2 w-4 h-4" />}</Button>
+                                                <div className="flex justify-end items-center mt-3 my-2 space-x-2">
+                                                    {/* Previous Button - Shown from step 2 onwards */}
+                                                    {formStep > 1 && formStep <= totalSteps && (
+                                                        <Button
+                                                            type="button"
+                                                            variant="outline"
+                                                            className="rounded-md"
+                                                            onClick={handlePrevious}
+                                                        >
+                                                            Previous
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Next Button - Shown for steps less than total steps */}
+                                                    {formStep < totalSteps && (
+                                                        <Button
+                                                            type="button"
+                                                            className="rounded-md bg-blue-500 hover:bg-blue-600"
+                                                            onClick={handleNext}
+                                                        >
+                                                            Next
+                                                        </Button>
+                                                    )}
+
+                                                    {/* Final Step Buttons - Shown only on the last step */}
+                                                    {formStep === totalSteps && (
+                                                        <Button
+                                                            className="rounded-md space-x-3 bg-green-500 hover:bg-green-600 transition-all duration-500"
+                                                            type='submit'
+                                                        >
+                                                            {isSubmitting ? 'Processing...' : 'Submit'}
+                                                            {isSubmitting &&
+                                                                <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' />
+                                                            }
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </form>
                                         </div>
