@@ -1342,7 +1342,8 @@ const StaffManagement = () => {
                                                     <p className="text-sm font-semibold">Showing step {formStep} of {totalSteps}</p>
 
                                                     <div className="flex justify-end items-center mt-3 my-4 space-x-2">
-                                                        {formStep > 1 && formStep < totalSteps && (
+                                                        {/* Previous Button - Shown from step 2 onwards */}
+                                                        {formStep > 1 && formStep <= totalSteps && (
                                                             <Button
                                                                 type="button"
                                                                 variant="outline"
@@ -1353,6 +1354,7 @@ const StaffManagement = () => {
                                                             </Button>
                                                         )}
 
+                                                        {/* Next Button - Shown for steps less than total steps */}
                                                         {formStep < totalSteps && (
                                                             <Button
                                                                 type="button"
@@ -1363,6 +1365,7 @@ const StaffManagement = () => {
                                                             </Button>
                                                         )}
 
+                                                        {/* Final Step Buttons - Shown only on the last step */}
                                                         {formStep === totalSteps && (
                                                             <Button
                                                                 className="rounded-md space-x-3 bg-green-500 hover:bg-green-600 transition-all duration-500"
