@@ -1,5 +1,4 @@
-const Deleteing = (state) => {
-    console.log(state);
+const Deleteing = () => {
 
     return (
         <div className="fixed inset-0 flex items-center z-50 justify-center bg-black/50 backdrop-blur-sm">

@@ -1,5 +1,12 @@
 'use client';
 
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -162,6 +169,7 @@ const StaffTaskManagement = () => {
     const [isAddingTask, setIsAddingTask] = useState(false);
     const queryClient = useQueryClient();
     const [deleteing, setDeleting] = useState(false);
+    const { user, loading } = useUser();
 
     // Form states
     const {
@@ -215,7 +223,13 @@ const StaffTaskManagement = () => {
     const addNewTask = async (data) => {
         try {
             const { title, description, assignedTo, category, priority, dueDate } = data;
-            const finalData = { title, description, assignedTo, status: 'Not Started', category, priority, dueDate };
+            const finalData = { title: title, description: description, assignedTo: assignedTo, status: 'Not Started', category: category, priority: priority, dueDate: dueDate };
+            for (let key in finalData) {
+                if (!finalData[key]) {
+                    toast.error(`${key.charAt(0).toUpperCase() + key.slice(1)} field is missing, Please fill this field`);
+                    return;
+                };
+            };
             const response = await fetch(`http://localhost:3000/api/tasks`, {
                 method: "POST",
                 headers: {
@@ -226,15 +240,16 @@ const StaffTaskManagement = () => {
 
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success('New task created successfully');
+                toast.success(responseBody.message);
                 setIsAddingTask(false);
                 queryClient.invalidateQueries(['tasks']);
             };
         } catch (error) {
+            toast.error(error.message);
             console.log("Error: ", error);
+            console.log("Error Message: ", error.message);
         };
     };
-
 
     const updateTask = async (id) => {
         try {
@@ -254,7 +269,7 @@ const StaffTaskManagement = () => {
             const responseBody = await response.json();
             if (response.ok) {
                 setDeleting(false);
-                toast.success('Task deleted successfully!');
+                toast.success(responseBody.message);
                 queryClient.invalidateQueries(['tasks']);
             };
         } catch (error) {
@@ -398,12 +413,10 @@ const StaffTaskManagement = () => {
                             <Loader />
                         ) : (
                             <Table>
-                                <TableHeader>
+                                <TableHeader className="bg-gray-50">
                                     <TableRow>
-                                        <TableHead>
-                                            <input
-                                                type='checkbox'
-                                            />
+                                        <TableHead className="w-[50px]">
+                                            <input type='checkbox' className="rounded text-blue-600 focus:ring-blue-500" />
                                         </TableHead>
                                         <TableHead className="min-w-[250px]">Task</TableHead>
                                         <TableHead className="min-w-[150px]">Assigned To</TableHead>
@@ -417,19 +430,20 @@ const StaffTaskManagement = () => {
                                 <TableBody>
                                     {Array.isArray(data.tasks) && data.tasks.length > 0 ? (
                                         data.tasks.map((task) => (
-                                            <TableRow key={task._id} className="group hover:bg-gray-50">
+                                            <TableRow key={task._id} className="hover:bg-gray-50">
                                                 <TableCell>
                                                     <input
                                                         type='checkbox'
+                                                        className="rounded text-blue-600 focus:ring-blue-500"
                                                     />
                                                 </TableCell>
 
                                                 <TableCell>
                                                     <div className="flex flex-col space-y-2">
-                                                        <span className="font-medium text-gray-900">{task.title}</span>
+                                                        <span className="font-semibold text-gray-900">{task.title}</span>
                                                         <span className="text-sm text-gray-500 line-clamp-2">{task.description}</span>
                                                         {task.comments.length > 0 && (
-                                                            <div className="mt-2 text-sm text-gray-600 bg-gray-50 p-3 rounded-md">
+                                                            <div className="mt-2 text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
                                                                 <p className="font-medium text-gray-900">{task.comments[0].user}</p>
                                                                 <p className="mt-1">{task.comments[0].text}</p>
                                                                 <span className="text-xs text-gray-500 mt-2 block">{task.comments[0].time}</span>
@@ -440,9 +454,18 @@ const StaffTaskManagement = () => {
                                                 <TableCell>
                                                     <div className="flex items-center space-x-3">
                                                         <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                            <span className="text-sm font-medium text-blue-800">
-                                                                {task.assignedTo.split(" ").map((n) => n[0]).join("")}
-                                                            </span>
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <span className="text-sm hover:cursor-pointer font-medium text-blue-800">
+                                                                            {task.assignedTo.split(" ").map((n) => n[0]).join("")}
+                                                                        </span>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>View staff profile</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
                                                         </div>
                                                         <span className="text-sm font-medium text-gray-900">{task.assignedTo}</span>
                                                     </div>
@@ -458,13 +481,15 @@ const StaffTaskManagement = () => {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex items-center text-gray-500 text-sm">
-                                                        <Calendar size={16} className="mr-2 text-gray-400" />
-                                                        {new Date(task.dueDate).toISOString().split('T')[0]}
-                                                    </div>
-                                                    <div className="flex items-center text-gray-500 text-sm">
-                                                        <Calendar size={16} className="mr-2 text-gray-400" />
-                                                        {new Date(task.dueDate).toLocaleTimeString()}
+                                                    <div className="flex flex-col text-gray-500 text-sm">
+                                                        <div className="flex items-center">
+                                                            <Calendar size={16} className="mr-2 text-gray-400" />
+                                                            {new Date(task.dueDate).toLocaleDateString()}
+                                                        </div>
+                                                        <div className="flex items-center">
+                                                            <Calendar size={16} className="mr-2 text-gray-400" />
+                                                            {new Date(task.dueDate).toLocaleTimeString()}
+                                                        </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
@@ -477,49 +502,60 @@ const StaffTaskManagement = () => {
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
-                                                            className="transition-opacity"
+                                                            className="transition-opacity hover:bg-gray-100"
                                                             onClick={() => {/* Add edit functionality */ }}
                                                         >
-                                                            <TiEdit className="h-4 w-4" />
+                                                            <TiEdit className="h-4 w-4 text-gray-600 hover:text-gray-800" />
                                                         </Button>
 
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="sm"
-                                                                    className="transition-opacity text-red-600 hover:text-red-700"
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete assigned task
-                                                                        remove data from servers.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction className='bg-red-600 hover:bg-red-700' onClick={() => deleteSingleTask(task._id)}>Delete</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                            <></>
+                                                        ) : (
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="sm"
+                                                                        className="transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently delete the assigned task
+                                                                            and remove data from servers.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            className='bg-red-600 hover:bg-red-700'
+                                                                            onClick={() => deleteSingleTask(task._id)}
+                                                                        >
+                                                                            Delete
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        )}
 
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
                                         ))
                                     ) : (
-                                        <TableRow key={1} className="group hover:bg-gray-50">
-                                            <TableCell className="w-full flex justify-center items-center text-center">
-                                                <p className="text-center text-sm font-semibold">No tasks found</p>
+                                        <TableRow>
+                                            <TableCell colSpan="8" className="text-center py-8">
+                                                <div className="flex flex-col items-center justify-center space-y-2">
+                                                    <p className="text-lg font-semibold text-gray-600">No tasks found</p>
+                                                    <p className="text-sm text-gray-500">Create a new task to get started</p>
+                                                </div>
                                             </TableCell>
                                         </TableRow>
-                                    )
-                                    }
+                                    )}
                                 </TableBody>
                             </Table>
                         )}
@@ -528,106 +564,108 @@ const StaffTaskManagement = () => {
             </div>
 
             {/* Add Task Modal */}
-            {isAddingTask && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
-                    <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                        <h2 className="text-2xl font-bold mb-6">Add New Task</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="col-span-1 md:col-span-2">
-                                <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
-                                <Input
-                                    id="title"
-                                    type="text"
-                                    name="title"
-                                    {...register('title')}
-                                    className="mt-1"
-                                    placeholder="Enter task title"
-                                />
-                            </div>
-                            <div className="col-span-1 md:col-span-2">
-                                <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
-                                <Textarea
-                                    id="description"
-                                    name="description"
-                                    {...register('description')}
-                                    className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
+            {
+                isAddingTask && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
+                        <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                            <h2 className="text-2xl font-bold mb-6">Add New Task</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="col-span-1 md:col-span-2">
+                                    <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
+                                    <Input
+                                        id="title"
+                                        type="text"
+                                        name="title"
+                                        {...register('title')}
+                                        className="mt-1"
+                                        placeholder="Enter task title"
+                                    />
+                                </div>
+                                <div className="col-span-1 md:col-span-2">
+                                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                                    <Textarea
+                                        id="description"
+                                        name="description"
+                                        {...register('description')}
+                                        className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
 
-                                    placeholder="Enter task description"
-                                />
+                                        placeholder="Enter task description"
+                                    />
+                                </div>
+                                <div>
+                                    <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
+                                    <select
+                                        id="assignedTo"
+                                        name="assignedTo"
+                                        {...register("assignedTo", { required: "Please select a staff member" })}
+                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    >
+                                        <option value="">Select Staff</option>
+                                        {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
+                                            <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
+                                        )) :
+                                            <option>Not registered</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
+                                    <select
+                                        id="category"
+                                        name="category"
+                                        {...register("category", { required: "Please select a staff member" })}
+                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    >
+                                        <option value="">Select Category</option>
+                                        {CATEGORIES.map(category => (
+                                            <option key={category} value={category}>{category}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
+                                    <select
+                                        id="priority"
+                                        name="priority"
+                                        {...register("priority", { required: "Please select a staff member" })}
+                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    >
+                                        <option value="Low">Low</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="High">High</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date</Label>
+                                    <Input
+                                        id="dueDate"
+                                        type="date"
+                                        name="dueDate"
+                                        {...register('dueDate')}
+                                        className="mt-1 rounded-sm"
+                                    />
+                                </div>
                             </div>
-                            <div>
-                                <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
-                                <select
-                                    id="assignedTo"
-                                    name="assignedTo"
-                                    {...register("assignedTo", { required: "Please select a staff member" })}
-                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                            <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
+                                <Button
+                                    variant="outline"
+                                    onClick={() => setIsAddingTask(false)}
+                                    className="w-full rounded-sm sm:w-auto"
                                 >
-                                    <option value="">Select Staff</option>
-                                    {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                        <option key={staff._id} value={staff.fullName}>{staff.fullName}</option>
-                                    )) :
-                                        <option>Not registered</option>
-                                    }
-                                </select>
-                            </div>
-                            <div>
-                                <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
-                                <select
-                                    id="category"
-                                    name="category"
-                                    {...register("category", { required: "Please select a staff member" })}
-                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type='submit'
+                                    className="w-full sm:w-auto rounded-sm bg-blue-600 text-white hover:bg-blue-700"
                                 >
-                                    <option value="">Select Category</option>
-                                    {CATEGORIES.map(category => (
-                                        <option key={category} value={category}>{category}</option>
-                                    ))}
-                                </select>
+                                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                                </Button>
                             </div>
-                            <div>
-                                <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
-                                <select
-                                    id="priority"
-                                    name="priority"
-                                    {...register("priority", { required: "Please select a staff member" })}
-                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                >
-                                    <option value="Low">Low</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="High">High</option>
-                                </select>
-                            </div>
-                            <div>
-                                <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date</Label>
-                                <Input
-                                    id="dueDate"
-                                    type="date"
-                                    name="dueDate"
-                                    {...register('dueDate')}
-                                    className="mt-1 rounded-sm"
-                                />
-                            </div>
-                        </div>
-                        <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-                            <Button
-                                variant="outline"
-                                onClick={() => setIsAddingTask(false)}
-                                className="w-full rounded-sm sm:w-auto"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type='submit'
-                                className="w-full sm:w-auto rounded-sm bg-blue-600 text-white hover:bg-blue-700"
-                            >
-                                {isSubmitting ? 'Submitting...' : 'Submit'}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
-            )}
-        </div>
+                        </form>
+                    </div>
+                )
+            }
+        </div >
     );
 };
 

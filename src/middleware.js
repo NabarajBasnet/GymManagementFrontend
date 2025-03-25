@@ -24,7 +24,7 @@ export const middleware = async (request) => {
         }
 
         // Protect role-based routes for Gym Admin
-        if (loggedInUser?.role === 'Gym Admin' && (path.includes('/users') || path.includes('/staffmanagement'))) {
+        if (loggedInUser?.role === 'Gym Admin' && (path.includes('/users') || path.includes('/staffmanagement/staffs'))) {
             return NextResponse.redirect(new URL('/unauthorized', request.url));
         }
 
