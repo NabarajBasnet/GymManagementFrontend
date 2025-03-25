@@ -147,6 +147,8 @@ const StaffManagement = () => {
     const handlePrevious = () => {
         if (formStep > 1) {
             setFormStep(prevStep => prevStep - 1);
+        } else {
+            setFormStep(1);
         };
         if (formStep < 1) {
             setFormStep(1);
@@ -675,9 +677,8 @@ const StaffManagement = () => {
                             <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
                             <div className="fixed inset-0 z-40 flex items-center justify-center">
                                 <div className="w-full flex justify-center">
-                                    <div className="w-full md:w-11/12 h-full overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3">
+                                    <div className="w-11/12 md:w-9/12 h-full py-6 overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3">
                                         <div className="w-full md:flex md:justify-center md:items-center">
-
                                             <form className="w-full max-h-[90vh] transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
                                                 <div className="w-full flex justify-between items-center">
                                                     <h1 className="font-semibold m-4">Register staff</h1>
@@ -901,15 +902,6 @@ const StaffManagement = () => {
 
                                                                     {/* Permanent Address Section */}
                                                                     <div className="w-full">
-                                                                        <div className="flex items-center mb-4">
-                                                                            <input
-                                                                                type="checkbox"
-                                                                                id="sameAsCurrent"
-                                                                                className="mr-2"
-                                                                            />
-                                                                            <Label htmlFor="sameAsCurrent">Same as Current Address</Label>
-                                                                        </div>
-
                                                                         <div>
                                                                             <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
                                                                             <div className="grid md:grid-cols-2 gap-4">
@@ -957,11 +949,6 @@ const StaffManagement = () => {
                                                                         </div>
                                                                     </div>
 
-                                                                    {/* <div className="flex justify-end">
-                                                                        <Button type="submit" className="bg-blue-500 text-white hover:bg-blue-600">
-                                                                            Save Address Details
-                                                                        </Button>
-                                                                    </div> */}
                                                                 </form>
                                                             </div>
                                                         )}
@@ -1217,7 +1204,6 @@ const StaffManagement = () => {
                                                             </div>
                                                         )}
 
-
                                                         {formStep === 4 && (
                                                             <div>
                                                                 <h1 className="text-lg font-semibold mb-4">Credentials</h1>
@@ -1352,43 +1338,45 @@ const StaffManagement = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="flex justify-end items-center mt-3 my-2 space-x-2">
-                                                    {/* Previous Button - Shown from step 2 onwards */}
-                                                    {formStep > 1 && formStep <= totalSteps && (
-                                                        <Button
-                                                            type="button"
-                                                            variant="outline"
-                                                            className="rounded-md"
-                                                            onClick={handlePrevious}
-                                                        >
-                                                            Previous
-                                                        </Button>
-                                                    )}
+                                                <div className="w-full flex justify-between items-center">
+                                                    <p className="text-sm font-semibold">Showing step {formStep} of {totalSteps}</p>
 
-                                                    {/* Next Button - Shown for steps less than total steps */}
-                                                    {formStep < totalSteps && (
-                                                        <Button
-                                                            type="button"
-                                                            className="rounded-md bg-blue-500 hover:bg-blue-600"
-                                                            onClick={handleNext}
-                                                        >
-                                                            Next
-                                                        </Button>
-                                                    )}
+                                                    <div className="flex justify-end items-center mt-3 my-4 space-x-2">
+                                                        {formStep > 1 && formStep < totalSteps && (
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                className="rounded-md"
+                                                                onClick={handlePrevious}
+                                                            >
+                                                                Previous
+                                                            </Button>
+                                                        )}
 
-                                                    {/* Final Step Buttons - Shown only on the last step */}
-                                                    {formStep === totalSteps && (
-                                                        <Button
-                                                            className="rounded-md space-x-3 bg-green-500 hover:bg-green-600 transition-all duration-500"
-                                                            type='submit'
-                                                        >
-                                                            {isSubmitting ? 'Processing...' : 'Submit'}
-                                                            {isSubmitting &&
-                                                                <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' />
-                                                            }
-                                                        </Button>
-                                                    )}
+                                                        {formStep < totalSteps && (
+                                                            <Button
+                                                                type="button"
+                                                                className="rounded-md bg-blue-500 hover:bg-blue-600"
+                                                                onClick={handleNext}
+                                                            >
+                                                                Next
+                                                            </Button>
+                                                        )}
+
+                                                        {formStep === totalSteps && (
+                                                            <Button
+                                                                className="rounded-md space-x-3 bg-green-500 hover:bg-green-600 transition-all duration-500"
+                                                                type='submit'
+                                                            >
+                                                                {isSubmitting ? 'Processing...' : 'Submit'}
+                                                                {isSubmitting &&
+                                                                    <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' />
+                                                                }
+                                                            </Button>
+                                                        )}
+                                                    </div>
                                                 </div>
+
                                             </form>
                                         </div>
                                     </div>
