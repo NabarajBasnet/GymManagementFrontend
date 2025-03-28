@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useQuery, QueryClient } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -49,7 +49,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Calendar,
     CheckCircle2,
@@ -164,6 +164,8 @@ const CATEGORIES = [
 const StaffTaskManagement = () => {
 
     // States
+    const [taskMode, setTaskMode] = useState(null);
+    const [taskAssignedTo, setTaskAssignedTo] = useState(null);
     const [isAddingTask, setIsAddingTask] = useState(false);
     const queryClient = useQueryClient();
     const [deleteing, setDeleting] = useState(false);
@@ -177,7 +179,8 @@ const StaffTaskManagement = () => {
         setValue,
         setError,
         clearErrors,
-        reset
+        reset,
+        control
     } = useForm();
 
     // Functions
@@ -211,11 +214,36 @@ const StaffTaskManagement = () => {
         queryFn: getAllTasks
     });
 
-    const getSingleTask = async (id) => {
-        try {
+    console.log("Task assigned to: ", taskAssignedTo);
 
+    const getSingleTask = async (id) => {
+        setTaskMode('Edit');
+        try {
+            const response = await fetch(`http://localhost:3000/api/tasks/${id}`);
+            const responseBody = await response.json();
+            if (response.ok && response.status === 200) {
+                toast.success(responseBody.message);
+                setTaskAssignedTo(responseBody.task.assignedTo);
+
+                // Populate data in form for edit
+                reset({
+                    title: responseBody.task.title,
+                    description: responseBody.task.description,
+                    assignedTo: responseBody.task.assignedTo?._id || responseBody.task.assignedTo || "",
+                    category: responseBody.task.category,
+                    priority: responseBody.task.priority,
+                    dueDate: responseBody.task.dueDate ? new Date(responseBody.task.dueDate).toISOString().split('T')[0] : '',
+                });
+
+                setIsAddingTask(true);
+            } else {
+                toast.error(responseBody.message);
+                toast.error(responseBody.error);
+            };
         } catch (error) {
             console.log("Error: ", error);
+            toast.error(error.message);
+            toast.error(error.error);
         };
     };
 
@@ -514,7 +542,7 @@ const StaffTaskManagement = () => {
                                                             variant="ghost"
                                                             size="sm"
                                                             className="transition-opacity hover:bg-gray-100"
-                                                            onClick={() => setIsAddingTask(true)}
+                                                            onClick={() => getSingleTask(task._id)}
                                                         >
                                                             <TiEdit className="h-4 w-4 text-gray-600 hover:text-gray-800" />
                                                         </Button>
@@ -605,19 +633,36 @@ const StaffTaskManagement = () => {
                                 </div>
                                 <div>
                                     <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
-                                    <select
-                                        id="assignedTo"
-                                        name="assignedTo"
-                                        {...register("assignedTo", { required: "Please select a staff member" })}
-                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                                    >
-                                        <option value="">Select Staff</option>
-                                        {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                            <option key={staff._id} value={staff._id}>{staff.fullName}</option>
-                                        )) :
-                                            <option>Not registered</option>
-                                        }
-                                    </select>
+                                    {taskMode === 'Edit' ? (
+                                        <select
+                                            id="assignedTo"
+                                            name="assignedTo"
+                                            {...register("assignedTo", { required: "Please select a staff member" })}
+                                            className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="">Select Staff</option>
+                                            {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
+                                                <option key={staff._id} value={taskAssignedTo}>{taskAssignedTo}</option>
+                                            )) :
+                                                <option>Not registered</option>
+                                            }
+                                        </select>
+                                    ) : (
+                                        <select
+                                            id="assignedTo"
+                                            name="assignedTo"
+                                            {...register("assignedTo", { required: "Please select a staff member" })}
+                                            className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        >
+                                            <option value="">Select Staff</option>
+                                            {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
+                                                <option key={staff._id} value={staff._id}>{staff.fullName}</option>
+                                            )) :
+                                                <option>Not registered</option>
+                                            }
+                                        </select>
+                                    )}
+
                                 </div>
                                 <div>
                                     <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>

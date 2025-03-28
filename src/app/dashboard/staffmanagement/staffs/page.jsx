@@ -1,5 +1,10 @@
 'use client';
 
+import { ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
+import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
+import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
+import { FiUser } from "react-icons/fi";
 import { toast as toastMessage } from "react-hot-toast";
 import { FcSettings } from "react-icons/fc";
 import { FcParallelTasks } from "react-icons/fc";
@@ -134,8 +139,10 @@ const StaffManagement = () => {
 
     const queryclient = useQueryClient();
     const [openForm, setOpenForm] = useState(false);
-    const [formStep, setFormStep] = useState(1);
-    let totalSteps = 5;
+    const [currentStep, setCurrentStep] = useState(1);
+
+    console.log('Form step: ', currentStep);
+    const totalSteps = 5;
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
@@ -144,21 +151,15 @@ const StaffManagement = () => {
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
     const [deleting, setDeleting] = useState(false);
 
-    const handlePrevious = () => {
-        if (formStep > 1) {
-            setFormStep(prevStep => prevStep - 1);
-        } else {
-            setFormStep(1);
-        };
-        if (formStep < 1) {
-            setFormStep(1);
-            toastMessage.error('Negative form step not allowed, Assigned default value to step 1');
-        };
+    const handleNext = () => {
+        if (currentStep < totalSteps) {
+            setCurrentStep(prev => prev + 1);
+        }
     };
 
-    const handleNext = () => {
-        if (formStep < totalSteps) {
-            setFormStep(prevStep => prevStep + 1);
+    const handlePrev = () => {
+        if (currentStep > 1) {
+            setCurrentStep(prev => prev - 1);
         }
     };
 
@@ -454,11 +455,10 @@ const StaffManagement = () => {
 
                     <div className="fixed top-4 right-4 z-50 animate-slide-in">
                         <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                                                         transition-all duration-300 ease-in-out w-80
-                                                         ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
-
+                                transition-all duration-300 ease-in-out w-80
+                                ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
                             <div className={`flex items-center justify-center p-2 rounded-full 
-                                                                 ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
+                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
                                 {responseType === 'Success' ? (
                                     <MdDone className="text-xl text-emerald-600" />
                                 ) : (
@@ -468,7 +468,7 @@ const StaffManagement = () => {
 
                             <div className="flex-1">
                                 <h3 className={`text-base font-semibold mb-1
-                                                                 ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
+                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
                                     {responseType === 'Success' ? "Successfully sent!" : "Action required"}
                                 </h3>
 
@@ -521,7 +521,7 @@ const StaffManagement = () => {
                     <h1 className="text-sm font-semibold text-gray-700">Show</h1>
                     <select
                         onChange={(e) => setLimit(Number(e.target.value))}
-                        className="px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="15">15</option>
                         <option value="25">25</option>
@@ -677,19 +677,49 @@ const StaffManagement = () => {
                             <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
                             <div className="fixed inset-0 z-40 flex items-center justify-center">
                                 <div className="w-full flex justify-center">
-                                    <div className="w-11/12 md:w-9/12 h-full py-6 overflow-y-auto bg-gray-100 rounded-md shadow-2xl px-3">
+                                    <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
+                                        <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
+                                            <h1 className="font-bold m-3 text-white text-md md:text-xl">Staff Registration</h1>
+                                            <MdClose className="m-4 h-6 w-6 cursor-pointer text-white" onClick={() => setOpenForm(!openForm)} />
+                                        </div>
                                         <div className="w-full md:flex md:justify-center md:items-center">
-                                            <form className="w-full max-h-[90vh] transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
-                                                <div className="w-full flex justify-between items-center">
-                                                    <h1 className="font-semibold m-4">Register staff</h1>
-                                                    <MdClose className="m-4 h-5 w-5 cursor-pointer" onClick={() => setOpenForm(!openForm)} />
+                                            <form className="w-full max-h-[90vh] p-4 transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
+                                                <div>
+
+                                                    {/* Progress bar */}
+                                                    <div className="px-6 pt-4">
+                                                        <div className="h-2 bg-gray-200 rounded-full">
+                                                            <div
+                                                                className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                                                                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                                                            />
+                                                        </div>
+                                                        <div className="flex justify-between mt-2 text-sm text-gray-500">
+                                                            {Array.from({ length: totalSteps }).map((_, idx) => (
+                                                                <div
+                                                                    key={idx}
+                                                                    className={`flex items-center ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
+                                                                        }`}
+                                                                >
+                                                                    <CheckCircle2 size={16} className="mr-1" />
+                                                                    Step {idx + 1}
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+
                                                 </div>
-                                                <div className="p-4 bg-white rounded-md">
+                                                <div className="rounded-md">
                                                     <div className="grid grid-cols-1 gap-4">
-                                                        {formStep === 1 && (
+                                                        {currentStep === 1 && (
                                                             <div>
-                                                                <h1 className="text-lg mb-4 font-semibold">Personal Information</h1>
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4">
+                                                                <div className="flex items-center space-x-2 mb-4">
+                                                                    <FiUser className="w-6 h-6 text-indigo-500" />
+                                                                    <h1 className="text-lg font-semibold text-indigo-500">Personal Information</h1>
+                                                                </div>
+
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-6">
                                                                     <div>
                                                                         <Label>Full Name</Label>
                                                                         <Controller
@@ -812,36 +842,25 @@ const StaffManagement = () => {
 
                                                                     <div>
                                                                         <Label>Profile Picture</Label>
-                                                                        <Controller
-                                                                            name="profilePicture"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    type='file'
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    {...register("profilePicture")}
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Profile picture"
-                                                                                />
-                                                                            )}
+                                                                        <Input
+                                                                            type='file'
+                                                                            {...register("profilePicture")}
+                                                                            className="rounded-md focus:outline-none"
+                                                                            placeholder="Profile picture"
                                                                         />
-                                                                        {errors.profilePicture && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.profilePicture.message}</p>
-                                                                        )}
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         )}
 
-                                                        {formStep === 2 && (
+                                                        {currentStep === 2 && (
                                                             <div>
-                                                                <h1 className="text-lg font-semibold mb-4">Address Details</h1>
+                                                                <h1 className="text-lg font-bold mb-4">Address Details</h1>
 
                                                                 <form className="w-full space-x-6 flex justify-between">
                                                                     {/* Current Address Section */}
                                                                     <div className="w-full border-b pb-4">
-                                                                        <h3 className="text-lg font-semibold mb-4">Current Address</h3>
+                                                                        <h3 className="text-md font-semibold mb-4">Current Address</h3>
                                                                         <div className="grid md:grid-cols-2 gap-4">
                                                                             <div>
                                                                                 <Label>Street Address</Label>
@@ -953,7 +972,7 @@ const StaffManagement = () => {
                                                             </div>
                                                         )}
 
-                                                        {formStep === 3 && (
+                                                        {currentStep === 3 && (
                                                             <div>
                                                                 <h1 className="text-lg font-semibold mb-4">Job Details</h1>
 
@@ -1204,7 +1223,7 @@ const StaffManagement = () => {
                                                             </div>
                                                         )}
 
-                                                        {formStep === 4 && (
+                                                        {currentStep === 4 && (
                                                             <div>
                                                                 <h1 className="text-lg font-semibold mb-4">Credentials</h1>
 
@@ -1258,7 +1277,7 @@ const StaffManagement = () => {
                                                             </div>
                                                         )}
 
-                                                        {formStep === 5 && (
+                                                        {currentStep === 5 && (
                                                             <div>
                                                                 <h1 className="text-lg font-semibold mb-4">Emergency Contact</h1>
 
@@ -1338,49 +1357,25 @@ const StaffManagement = () => {
                                                     </div>
                                                 </div>
 
-                                                <div className="w-full flex justify-between items-center">
-                                                    <p className="text-sm font-semibold">Showing step {formStep} of {totalSteps}</p>
+                                                <div className='flex justify-between items-center my-4'>
+                                                    <button
+                                                        onClick={handlePrev}
+                                                        disabled={currentStep < 2}
+                                                        type='button'
+                                                        className='flex cursor-pointer hover:bg-gray-100 transition-colors duration-100 items-center bg-transparent px-4 py-2 rounded-sm'
+                                                    ><ChevronLeft />Previous</button>
 
-                                                    <div className="flex justify-end items-center mt-3 my-4 space-x-2">
-                                                        {/* Previous Button - Shown from step 2 onwards */}
-                                                        {formStep > 1 && formStep <= totalSteps && (
-                                                            <Button
-                                                                type="button"
-                                                                variant="outline"
-                                                                className="rounded-md"
-                                                                onClick={handlePrevious}
-                                                            >
-                                                                Previous
-                                                            </Button>
-                                                        )}
+                                                    {currentStep < totalSteps && (
+                                                        <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
+                                                    )}
 
-                                                        {/* Next Button - Shown for steps less than total steps */}
-                                                        {formStep < totalSteps && (
-                                                            <Button
-                                                                type="button"
-                                                                className="rounded-md bg-blue-500 hover:bg-blue-600"
-                                                                onClick={handleNext}
-                                                            >
-                                                                Next
-                                                            </Button>
-                                                        )}
-
-                                                        {/* Final Step Buttons - Shown only on the last step */}
-                                                        {formStep === totalSteps && (
-                                                            <Button
-                                                                className="rounded-md space-x-3 bg-green-500 hover:bg-green-600 transition-all duration-500"
-                                                                type='submit'
-                                                            >
-                                                                {isSubmitting ? 'Processing...' : 'Submit'}
-                                                                {isSubmitting &&
-                                                                    <AiOutlineLoading3Quarters className='animate-spin duration-500 ml-2 w-4 h-4' />
-                                                                }
-                                                            </Button>
-                                                        )}
-                                                    </div>
+                                                    {currentStep === totalSteps && (
+                                                        <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>Submit</button>
+                                                    )}
                                                 </div>
 
                                             </form>
+
                                         </div>
                                     </div>
                                 </div>
