@@ -5,17 +5,9 @@ import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import { FaLocationDot } from "react-icons/fa6";
 import { ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
-import { FaChevronLeft } from "react-icons/fa";
-import { FaChevronRight } from "react-icons/fa";
-import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
 import { FiUser } from "react-icons/fi";
 import { toast as toastMessage } from "react-hot-toast";
 import { FcSettings } from "react-icons/fc";
-import { FcParallelTasks } from "react-icons/fc";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import { GiConfirmed } from "react-icons/gi";
-import { MdCloseFullscreen } from "react-icons/md";
-import { RiResetRightFill } from "react-icons/ri";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -188,6 +180,9 @@ const StaffManagement = () => {
     }, []);
 
     // States
+    const [staffImage, setStaffImage] = useState(null)
+    const [preview, setPreview] = useState(null);
+
     const [checkInTime, setCheckInTime] = useState(null);
     const [checkOutTime, setCheckOutTime] = useState(null);
 
@@ -241,6 +236,35 @@ const StaffManagement = () => {
 
     // Functions
 
+    const handleUpload = async () => {
+        if (!staffImage) {
+            toastMessage.error("Please select an image of staff first");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("staffImage", staffImage);
+
+        try {
+            const response = await fetch("http://localhost:3000/api/staffsmanagement/upload-image", {
+                method: "POST",
+                body: formData,
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                const { imageUrl, message } = responseBody;
+                setValue('imageUrl', imageUrl);
+                toastMessage.success(responseBody.message);
+            } else {
+                toastMessage.success(responseBody.message);
+            };
+            return responseBody;
+        } catch (error) {
+            toastMessage.error("Upload failed!")
+        }
+    };
+
     const debounce = (func, delay) => {
         let timerId;
         return (...args) => {
@@ -292,15 +316,62 @@ const StaffManagement = () => {
     const endEntry = Math.min(currentPage * limit, totalStaffs);
 
     const handleSubmitStaff = async (data) => {
-        console.log("Data: ", data);
+
+        // destructure numberOfShifts for destructuring shifts checkin, checkout and type
+        const shifts = {};
+        const { numberOfShifts } = data;
+
+        for (let i = 1; i <= numberOfShifts; i++) {  // FIX: Use <=
+            shifts[`shift_${i}_checkIn`] = data[`shift_${i}_checkIn`] || "";
+            shifts[`shift_${i}_checkOut`] = data[`shift_${i}_checkOut`] || "";
+            shifts[`shift_${i}_type`] = data[`shift_${i}_type`] || "";
+        };
+
+        const { imageUrl, message } = await handleUpload()
+
+        // destructure fields from data
         const {
-            fullName, email, contactNo, emergencyContactNo, address, dob, gender, shift, joinedDate, workingHours, status, salary, role
+            fullName,
+            dob,
+            gender,
+            contactNo,
+            email,
+            currentAddress,
+            permanentAddress,
+            role,
+            joinedDate,
+            salary,
+            status,
+            username,
+            password,
+            emergencyContactName,
+            emergencyContactNo,
+            relationship
         } = data;
 
         // Prepare final data
         const finalData = {
-            fullName, email, contactNo, emergencyContactNo, address, dob, checkInTime, checkOutTime, gender, shift, joinedDate, workingHours, status, salary, role
+            fullName,
+            dob,
+            gender,
+            contactNo,
+            email,
+            imageUrl,
+            currentAddress,
+            permanentAddress,
+            role,
+            joinedDate,
+            numberOfShifts,
+            salary,
+            status,
+            shifts,
+            username,
+            password,
+            emergencyContactName,
+            emergencyContactNo,
+            relationship
         };
+        console.log("Final Data: ", finalData);
 
         try {
             const url = currentStaffId
@@ -582,7 +653,7 @@ const StaffManagement = () => {
             )}
 
             <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
-                <div className="w-full md:w-6/12 flex items-center gap-3 px-4 rounded-lg">
+                <div className="w-full md:w-6/12 flex py-2 md:py-0 items-center gap-3 px-4 rounded-lg">
                     <h1 className="text-sm font-semibold text-gray-700">Show</h1>
                     <select
                         onChange={(e) => setLimit(Number(e.target.value))}
@@ -909,7 +980,19 @@ const StaffManagement = () => {
                                                                         <Label>Profile Picture</Label>
                                                                         <Input
                                                                             type='file'
-                                                                            {...register("profilePicture")}
+                                                                            onChange={(e) => {
+                                                                                const file = e.target.files[0];
+                                                                                if (file) {
+                                                                                    if (file.size > 10 * 1024 * 1024) {
+                                                                                        toastMessage.error("File size must be less than 10MB")
+                                                                                        return;
+                                                                                    }
+
+                                                                                    setStaffImage(file);
+                                                                                    setPreview(URL.createObjectURL(file));
+                                                                                }
+                                                                            }}
+                                                                            accept="image/*"
                                                                             className="rounded-md focus:outline-none"
                                                                             placeholder="Profile picture"
                                                                         />
@@ -925,7 +1008,7 @@ const StaffManagement = () => {
                                                                     <h1 className="text-lg font-semibold text-indigo-500">Address Details</h1>
                                                                 </div>
 
-                                                                <form className="w-full space-x-6 flex justify-between">
+                                                                <div className="w-full space-x-6 flex justify-between">
                                                                     {/* Current Address Section */}
                                                                     <div className="w-full border-b pb-4 border-indigo-500">
                                                                         <h3 className="text-md font-semibold mb-4">Current Address</h3>
@@ -933,110 +1016,63 @@ const StaffManagement = () => {
                                                                             <div>
                                                                                 <Label>Street Address</Label>
                                                                                 <Controller
-                                                                                    name='address'
+                                                                                    name="currentAddress.street"
                                                                                     control={control}
+                                                                                    defaultValue=""
                                                                                     render={({ field }) => (
-                                                                                        <Input
-                                                                                            {...field}
-                                                                                            value={field.value}
-                                                                                            onChange={(e) => {
-                                                                                                field.onChange(e)
-                                                                                            }}
-                                                                                            {...register("address")}
-                                                                                            className="rounded-md focus:outline-none"
-                                                                                            placeholder="Enter street address"
-                                                                                        />
+                                                                                        <Input {...field} placeholder="Enter street address" className="rounded-md focus:outline-none" />
                                                                                     )}
                                                                                 />
-                                                                                {errors.address && (
-                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.address.message}</p>
-                                                                                )}
+                                                                                {errors.currentAddress?.street && <p className="text-red-600 font-semibold text-sm">{errors.currentAddress.street.message}</p>}
                                                                             </div>
                                                                             <div>
-                                                                                <Label htmlFor="currentCity">City</Label>
-                                                                                <Input
-                                                                                    id="currentCity"
-                                                                                    placeholder="Enter city"
-                                                                                    required
-                                                                                />
+                                                                                <Label>City</Label>
+                                                                                <Input {...register("currentAddress.city")} placeholder="Enter city" required />
                                                                             </div>
                                                                             <div>
-                                                                                <Label htmlFor="currentState">State</Label>
-                                                                                <Input
-                                                                                    id="currentState"
-                                                                                    placeholder="Enter state"
-                                                                                    required
-                                                                                />
+                                                                                <Label>State</Label>
+                                                                                <Input {...register("currentAddress.state")} placeholder="Enter state" required />
                                                                             </div>
                                                                             <div>
-                                                                                <Label htmlFor="currentPostalCode">Postal Code</Label>
-                                                                                <Input
-                                                                                    id="currentPostalCode"
-                                                                                    placeholder="Enter postal code"
-                                                                                    required
-                                                                                />
+                                                                                <Label>Postal Code</Label>
+                                                                                <Input {...register("currentAddress.postalCode")} placeholder="Enter postal code" required />
                                                                             </div>
                                                                             <div className="md:col-span-2">
-                                                                                <Label htmlFor="currentCountry">Country</Label>
-                                                                                <Input
-                                                                                    id="currentCountry"
-                                                                                    placeholder="Enter country"
-                                                                                    required
-                                                                                />
+                                                                                <Label>Country</Label>
+                                                                                <Input {...register("currentAddress.country")} placeholder="Enter country" required />
                                                                             </div>
                                                                         </div>
                                                                     </div>
 
                                                                     {/* Permanent Address Section */}
-                                                                    <div className="w-full border-indigo-500 border-b pb-4">
-                                                                        <div>
-                                                                            <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
-                                                                            <div className="grid md:grid-cols-2 gap-4">
-                                                                                <div>
-                                                                                    <Label htmlFor="permanentStreetAddress">Street Address</Label>
-                                                                                    <Input
-                                                                                        id="permanentStreetAddress"
-                                                                                        placeholder="Enter street address"
-                                                                                        required
-                                                                                    />
-                                                                                </div>
-                                                                                <div>
-                                                                                    <Label htmlFor="permanentCity">City</Label>
-                                                                                    <Input
-                                                                                        id="permanentCity"
-                                                                                        placeholder="Enter city"
-                                                                                        required
-                                                                                    />
-                                                                                </div>
-                                                                                <div>
-                                                                                    <Label htmlFor="permanentState">State</Label>
-                                                                                    <Input
-                                                                                        id="permanentState"
-                                                                                        placeholder="Enter state"
-                                                                                        required
-                                                                                    />
-                                                                                </div>
-                                                                                <div>
-                                                                                    <Label htmlFor="permanentPostalCode">Postal Code</Label>
-                                                                                    <Input
-                                                                                        id="permanentPostalCode"
-                                                                                        placeholder="Enter postal code"
-                                                                                        required
-                                                                                    />
-                                                                                </div>
-                                                                                <div className="md:col-span-2">
-                                                                                    <Label htmlFor="permanentCountry">Country</Label>
-                                                                                    <Input
-                                                                                        id="permanentCountry"
-                                                                                        placeholder="Enter country"
-                                                                                        required
-                                                                                    />
-                                                                                </div>
+                                                                    <div className="w-full border-b pb-4 border-indigo-500">
+                                                                        <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
+                                                                        <div className="grid md:grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <Label>Street Address</Label>
+                                                                                <Input {...register("permanentAddress.street")} placeholder="Enter street address" required />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label>City</Label>
+                                                                                <Input {...register("permanentAddress.city")} placeholder="Enter city" required />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label>State</Label>
+                                                                                <Input {...register("permanentAddress.state")} placeholder="Enter state" required />
+                                                                            </div>
+                                                                            <div>
+                                                                                <Label>Postal Code</Label>
+                                                                                <Input {...register("permanentAddress.postalCode")} placeholder="Enter postal code" required />
+                                                                            </div>
+                                                                            <div className="md:col-span-2">
+                                                                                <Label>Country</Label>
+                                                                                <Input {...register("permanentAddress.country")} placeholder="Enter country" required />
                                                                             </div>
                                                                         </div>
                                                                     </div>
+                                                                </div>
 
-                                                                </form>
+                                                                <button type="submit" className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded">Submit</button>
                                                             </div>
                                                         )}
 
