@@ -739,7 +739,7 @@ const StaffManagement = () => {
                 {
                     openForm && (
                         <>
-                            <div className="fixed inset-0 bg-black bg-opacity-85 z-40"></div>
+                            <div className="fixed inset-0 bg-black bg-opacity-65 z-40"></div>
                             <div className="fixed inset-0 z-40 flex items-center justify-center">
                                 <div className="w-full flex justify-center">
                                     <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
@@ -1199,7 +1199,7 @@ const StaffManagement = () => {
                                                                                 <div className="flex justify-between items-center mb-3">
                                                                                     <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
                                                                                 </div>
-                                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                                <div className="grid grid-cols-3 overflow-x-auto gap-4">
                                                                                     <div>
                                                                                         <Label>Shift Type</Label>
                                                                                         <Controller
@@ -1292,7 +1292,7 @@ const StaffManagement = () => {
                                                                 </div>
 
                                                                 <div>
-                                                                    <Label>Salary</Label>
+                                                                    <Label>Username</Label>
                                                                     <Controller
                                                                         name='username'
                                                                         control={control}
@@ -1371,7 +1371,7 @@ const StaffManagement = () => {
                                                                             <p className="text-red-600 font-semibold text-sm">{errors.emergencyName.message}</p>
                                                                         )}
 
-                                                                        <div>
+                                                                        <div className="my-2">
                                                                             <Label>Emergency Contact Number</Label>
                                                                             <Controller
                                                                                 name='emergencyContactNo'
