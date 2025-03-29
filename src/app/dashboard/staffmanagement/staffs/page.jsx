@@ -1,5 +1,9 @@
 'use client';
 
+import { MdContactEmergency } from "react-icons/md";
+import { MdSecurity } from "react-icons/md";
+import { TbListDetails } from "react-icons/tb";
+import { FaLocationDot } from "react-icons/fa6";
 import { ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import { FaChevronLeft } from "react-icons/fa";
 import { FaChevronRight } from "react-icons/fa";
@@ -91,8 +95,81 @@ import Link from "next/link.js";
 import { usePagination } from "@/hooks/Pagination.js";
 import Loader from "@/components/Loader/Loader.jsx";
 import { useRouter } from 'next/navigation.js';
+import { Trash2 } from 'lucide-react';
+import { useEffect } from "react";
 
 const StaffManagement = () => {
+
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        control,
+        setValue,
+        setError,
+        clearErrors,
+        watch
+    } = useForm();
+
+    const [shifts, setShifts] = useState([{ id: 1, type: '', checkIn: '', checkOut: '' }]);
+    const numberOfShifts = watch('numberOfShifts') || 1;
+
+    // Update shifts array when number of shifts changes
+    useEffect(() => {
+        const shiftCount = parseInt(numberOfShifts, 10);
+        if (!isNaN(shiftCount) && shiftCount > 0) {
+            // Preserve existing shift data when possible
+            if (shiftCount > shifts.length) {
+                // Add new shifts
+                const newShifts = [...shifts];
+                for (let i = shifts.length + 1; i <= shiftCount; i++) {
+                    newShifts.push({ id: i, type: '', checkIn: '', checkOut: '' });
+                }
+                setShifts(newShifts);
+            } else if (shiftCount < shifts.length) {
+                // Remove excess shifts
+                setShifts(shifts.slice(0, shiftCount));
+            }
+        }
+    }, [numberOfShifts]);
+
+    // Update form values when shifts change
+    useEffect(() => {
+        shifts.forEach((shift, index) => {
+            setValue(`shift_${index + 1}_type`, shift.type);
+            setValue(`shift_${index + 1}_checkIn`, shift.checkIn);
+            setValue(`shift_${index + 1}_checkOut`, shift.checkOut);
+        });
+    }, [shifts, setValue]);
+
+    // Handle shift type change
+    const handleShiftTypeChange = (index, value) => {
+        const updatedShifts = [...shifts];
+        updatedShifts[index].type = value;
+        setShifts(updatedShifts);
+        setValue(`shift_${index + 1}_type`, value);
+        clearErrors(`shift_${index + 1}_type`);
+    };
+
+    // Handle check-in time change
+    const handleCheckInChange = (index, value) => {
+        const updatedShifts = [...shifts];
+        updatedShifts[index].checkIn = value;
+        setShifts(updatedShifts);
+        setValue(`shift_${index + 1}_checkIn`, value);
+        clearErrors(`shift_${index + 1}_checkIn`);
+    };
+
+    // Handle check-out time change
+    const handleCheckOutChange = (index, value) => {
+        const updatedShifts = [...shifts];
+        updatedShifts[index].checkOut = value;
+        setShifts(updatedShifts);
+        setValue(`shift_${index + 1}_checkOut`, value);
+        clearErrors(`shift_${index + 1}_checkOut`);
+    };
+
 
     const { user, loading } = useUser();
     const router = useRouter()
@@ -161,17 +238,6 @@ const StaffManagement = () => {
             setCurrentStep(prev => prev - 1);
         }
     };
-
-    const {
-        register,
-        reset,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        control,
-        setValue,
-        setError,
-        clearErrors
-    } = useForm();
 
     // Functions
 
@@ -686,7 +752,7 @@ const StaffManagement = () => {
                                                 <div>
 
                                                     {/* Progress bar */}
-                                                    <div className="px-6 mb-6 pt-4">
+                                                    <div className="mb-6 pt-4">
                                                         <div className="h-2 bg-gray-200 rounded-full">
                                                             <div
                                                                 className="h-full bg-indigo-600 rounded-full transition-all duration-300"
@@ -854,7 +920,10 @@ const StaffManagement = () => {
 
                                                         {currentStep === 2 && (
                                                             <div>
-                                                                <h1 className="text-lg font-bold mb-4">Address Details</h1>
+                                                                <div className="flex items-center space-x-2 mb-4">
+                                                                    <FaLocationDot className="w-6 h-6 text-indigo-500" />
+                                                                    <h1 className="text-lg font-semibold text-indigo-500">Address Details</h1>
+                                                                </div>
 
                                                                 <form className="w-full space-x-6 flex justify-between">
                                                                     {/* Current Address Section */}
@@ -875,7 +944,7 @@ const StaffManagement = () => {
                                                                                             }}
                                                                                             {...register("address")}
                                                                                             className="rounded-md focus:outline-none"
-                                                                                            placeholder="Address"
+                                                                                            placeholder="Enter street address"
                                                                                         />
                                                                                     )}
                                                                                 />
@@ -973,7 +1042,10 @@ const StaffManagement = () => {
 
                                                         {currentStep === 3 && (
                                                             <div>
-                                                                <h1 className="text-lg font-semibold mb-4">Job Details</h1>
+                                                                <div className="flex items-center space-x-2 mb-4">
+                                                                    <TbListDetails className="w-6 h-6 text-indigo-500" />
+                                                                    <h1 className="text-lg font-semibold text-indigo-500">Job Details</h1>
+                                                                </div>
 
                                                                 <div className="grid border-b border-indigo-500 pb-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                                                     <div>
@@ -1028,140 +1100,35 @@ const StaffManagement = () => {
                                                                                     className="rounded-md focus:outline-none"
                                                                                 />
                                                                             )}
-
                                                                         />
                                                                         {errors.joinedDate && (
                                                                             <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
                                                                         )}
                                                                     </div>
 
-
-                                                                    <div className="w-full">
-                                                                        <div className="w-full">
-                                                                            <Label>Check In</Label>
-                                                                            <Controller
-                                                                                name="checkInTime"
-                                                                                control={control}
-                                                                                render={({ field }) => (
-                                                                                    <Input
-                                                                                        {...field}
-                                                                                        {...register('checkInTime')}
-                                                                                        value={field.value}
-                                                                                        onChange={(e) => {
-                                                                                            handleCheckInTimeChange(e);
-                                                                                            field.onChange(e);
-                                                                                        }}
-                                                                                        type='time'
-                                                                                        className="rounded-md focus:outline-none"
-                                                                                    />
-                                                                                )}
-                                                                            />
-                                                                        </div>
-                                                                        {errors.checkInHour && (
-                                                                            <p className="text-sm font-medium text-red-600">
-                                                                                {errors.checkInHour.message}
-                                                                            </p>
-                                                                        )}
-                                                                        {errors.checkInMinute && (
-                                                                            <p className="text-sm font-medium text-red-600">
-                                                                                {errors.checkInMinute.message}
-                                                                            </p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div className="w-full">
-                                                                        <Label>Check Out</Label>
+                                                                    <div>
+                                                                        <Label>No. Of Shifts</Label>
                                                                         <Controller
-                                                                            name='checkOutTime'
+                                                                            name='numberOfShifts'
                                                                             control={control}
                                                                             render={({ field }) => (
                                                                                 <Input
                                                                                     {...field}
-                                                                                    {...register('checkOutTime')}
-                                                                                    value={field.value}
+                                                                                    type='number'
+                                                                                    min="1"
+                                                                                    max="5"
+                                                                                    placeholder='Enter Number Of Shifts'
+                                                                                    className="rounded-md focus:outline-none"
                                                                                     onChange={(e) => {
-                                                                                        field.onChange(e);
-                                                                                        handleCheckOutTimeChange(e);
+                                                                                        const value = Math.min(Math.max(parseInt(e.target.value) || 1, 1), 5);
+                                                                                        field.onChange(value);
+                                                                                        setValue('numberOfShifts', value);
                                                                                     }}
-                                                                                    className='rounded-md focus:outline-none'
-                                                                                    type='time'
                                                                                 />
                                                                             )}
                                                                         />
-                                                                        {errors.checkOutHour && (
-                                                                            <p className="text-sm font-medium text-red-600">
-                                                                                {errors.checkOutHour.message}
-                                                                            </p>
-                                                                        )}
-                                                                        {errors.checkOutMinute && (
-                                                                            <p className="text-sm font-medium text-red-600">
-                                                                                {errors.checkOutMinute.message}
-                                                                            </p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Select Shift</Label>
-                                                                        <Controller
-                                                                            name='shift'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <select
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        const selectedValue = e.target.value
-                                                                                        setValue('shift', selectedValue);
-                                                                                        field.onChange(selectedValue);
-                                                                                        clearErrors('shift')
-                                                                                    }}
-                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                >
-                                                                                    <option>Shift</option>
-                                                                                    <option value="Morning">Morning</option>
-                                                                                    <option value="Day">Day</option>
-                                                                                    <option value="Evening">Evening</option>
-                                                                                </select>
-                                                                            )}
-                                                                        />
-                                                                        {errors.shift && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.shift.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Working Hours</Label>
-                                                                        <Controller
-                                                                            name="workingHours"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <select
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        const selectedValue = e.target.value
-                                                                                        setValue('workingHours', selectedValue);
-                                                                                        clearErrors('workingHours');
-                                                                                        field.onChange(selectedValue);
-                                                                                    }}
-                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                >
-                                                                                    <option>Select</option>
-                                                                                    <option value="1 Hour">1 Hour</option>
-                                                                                    <option value="2 Hours">2 Hours</option>
-                                                                                    <option value="3 Hours">3 Hours</option>
-                                                                                    <option value="4 Hours">4 Hours</option>
-                                                                                    <option value="5 Hours">5 Hours</option>
-                                                                                    <option value="6 Hours">6 Hours</option>
-                                                                                    <option value="7 Hours">7 Hours</option>
-                                                                                    <option value="8 Hours">8 Hours</option>
-                                                                                    <option value="9 Hours">9 Hours</option>
-                                                                                    <option value="10 Hours">10 Hours</option>
-                                                                                </select>
-                                                                            )}
-                                                                        />
-                                                                        {errors.workingHours && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.workingHours.message}</p>
+                                                                        {errors.numberOfShifts && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.numberOfShifts.message}</p>
                                                                         )}
                                                                     </div>
 
@@ -1191,7 +1158,6 @@ const StaffManagement = () => {
 
                                                                     <div>
                                                                         <Label>Status</Label>
-
                                                                         <Controller
                                                                             name='status'
                                                                             control={control}
@@ -1219,12 +1185,111 @@ const StaffManagement = () => {
                                                                         )}
                                                                     </div>
                                                                 </div>
+
+                                                                {/* Dynamic Shifts Section */}
+                                                                <div className="mt-6 mb-4">
+                                                                    <div className="flex items-center space-x-2 mb-4">
+                                                                        <PlusCircle className="w-5 h-5 text-indigo-500" />
+                                                                        <h2 className="text-lg font-semibold text-indigo-500">Shift Details</h2>
+                                                                    </div>
+
+                                                                    <div className="space-y-4">
+                                                                        {shifts.map((shift, index) => (
+                                                                            <div key={shift.id} className="p-4 border border-gray-200 rounded-md bg-gray-50">
+                                                                                <div className="flex justify-between items-center mb-3">
+                                                                                    <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
+                                                                                </div>
+                                                                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                                    <div>
+                                                                                        <Label>Shift Type</Label>
+                                                                                        <Controller
+                                                                                            name={`shift_${index + 1}_type`}
+                                                                                            control={control}
+                                                                                            defaultValue={shift.type}
+                                                                                            render={({ field }) => (
+                                                                                                <select
+                                                                                                    {...field}
+                                                                                                    value={field.value}
+                                                                                                    onChange={(e) => {
+                                                                                                        const selectedValue = e.target.value;
+                                                                                                        handleShiftTypeChange(index, selectedValue);
+                                                                                                        field.onChange(selectedValue);
+                                                                                                    }}
+                                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                                >
+                                                                                                    <option value="">Select Shift</option>
+                                                                                                    <option value="Morning">Morning</option>
+                                                                                                    <option value="Day">Day</option>
+                                                                                                    <option value="Evening">Evening</option>
+                                                                                                </select>
+                                                                                            )}
+                                                                                        />
+                                                                                        {errors[`shift_${index + 1}_type`] && (
+                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_type`].message}</p>
+                                                                                        )}
+                                                                                    </div>
+
+                                                                                    <div>
+                                                                                        <Label>Check In</Label>
+                                                                                        <Controller
+                                                                                            name={`shift_${index + 1}_checkIn`}
+                                                                                            control={control}
+                                                                                            defaultValue={shift.checkIn}
+                                                                                            render={({ field }) => (
+                                                                                                <Input
+                                                                                                    {...field}
+                                                                                                    type="time"
+                                                                                                    value={field.value}
+                                                                                                    onChange={(e) => {
+                                                                                                        handleCheckInChange(index, e.target.value);
+                                                                                                        field.onChange(e);
+                                                                                                    }}
+                                                                                                    className="rounded-md focus:outline-none"
+                                                                                                />
+                                                                                            )}
+                                                                                        />
+                                                                                        {errors[`shift_${index + 1}_checkIn`] && (
+                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkIn`].message}</p>
+                                                                                        )}
+                                                                                    </div>
+
+                                                                                    <div>
+                                                                                        <Label>Check Out</Label>
+                                                                                        <Controller
+                                                                                            name={`shift_${index + 1}_checkOut`}
+                                                                                            control={control}
+                                                                                            defaultValue={shift.checkOut}
+                                                                                            render={({ field }) => (
+                                                                                                <Input
+                                                                                                    {...field}
+                                                                                                    type="time"
+                                                                                                    value={field.value}
+                                                                                                    onChange={(e) => {
+                                                                                                        handleCheckOutChange(index, e.target.value);
+                                                                                                        field.onChange(e);
+                                                                                                    }}
+                                                                                                    className="rounded-md focus:outline-none"
+                                                                                                />
+                                                                                            )}
+                                                                                        />
+                                                                                        {errors[`shift_${index + 1}_checkOut`] && (
+                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkOut`].message}</p>
+                                                                                        )}
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         )}
 
                                                         {currentStep === 4 && (
                                                             <div className='pb-4 border-b border-indigo-500'>
-                                                                <h1 className="text-lg font-semibold mb-4">Credentials</h1>
+                                                                <div className="flex items-center space-x-2 mb-4">
+                                                                    <MdSecurity className="w-6 h-6 text-indigo-500" />
+                                                                    <h1 className="text-lg font-semibold text-indigo-500">Credentials</h1>
+                                                                </div>
 
                                                                 <div>
                                                                     <Label>Salary</Label>
@@ -1278,7 +1343,10 @@ const StaffManagement = () => {
 
                                                         {currentStep === 5 && (
                                                             <div className='border-b pb-4 border-indigo-500'>
-                                                                <h1 className="text-lg font-semibold mb-4">Emergency Contact</h1>
+                                                                <div className="flex items-center space-x-2 mb-4">
+                                                                    <MdContactEmergency className="w-6 h-6 text-indigo-500" />
+                                                                    <h1 className="text-lg font-semibold text-indigo-500">Emergency Details</h1>
+                                                                </div>
 
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                                     <div>
