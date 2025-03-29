@@ -141,7 +141,6 @@ const StaffManagement = () => {
     const [openForm, setOpenForm] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
 
-    console.log('Form step: ', currentStep);
     const totalSteps = 5;
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -227,7 +226,7 @@ const StaffManagement = () => {
     const endEntry = Math.min(currentPage * limit, totalStaffs);
 
     const handleSubmitStaff = async (data) => {
-
+        console.log("Data: ", data);
         const {
             fullName, email, contactNo, emergencyContactNo, address, dob, gender, shift, joinedDate, workingHours, status, salary, role
         } = data;
@@ -687,7 +686,7 @@ const StaffManagement = () => {
                                                 <div>
 
                                                     {/* Progress bar */}
-                                                    <div className="px-6 pt-4">
+                                                    <div className="px-6 mb-6 pt-4">
                                                         <div className="h-2 bg-gray-200 rounded-full">
                                                             <div
                                                                 className="h-full bg-indigo-600 rounded-full transition-all duration-300"
@@ -719,7 +718,7 @@ const StaffManagement = () => {
                                                                     <h1 className="text-lg font-semibold text-indigo-500">Personal Information</h1>
                                                                 </div>
 
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 md:gap-6">
+                                                                <div className="grid border-b pb-4 border-indigo-500 grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
                                                                     <div>
                                                                         <Label>Full Name</Label>
                                                                         <Controller
@@ -859,7 +858,7 @@ const StaffManagement = () => {
 
                                                                 <form className="w-full space-x-6 flex justify-between">
                                                                     {/* Current Address Section */}
-                                                                    <div className="w-full border-b pb-4">
+                                                                    <div className="w-full border-b pb-4 border-indigo-500">
                                                                         <h3 className="text-md font-semibold mb-4">Current Address</h3>
                                                                         <div className="grid md:grid-cols-2 gap-4">
                                                                             <div>
@@ -920,7 +919,7 @@ const StaffManagement = () => {
                                                                     </div>
 
                                                                     {/* Permanent Address Section */}
-                                                                    <div className="w-full">
+                                                                    <div className="w-full border-indigo-500 border-b pb-4">
                                                                         <div>
                                                                             <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
                                                                             <div className="grid md:grid-cols-2 gap-4">
@@ -976,7 +975,7 @@ const StaffManagement = () => {
                                                             <div>
                                                                 <h1 className="text-lg font-semibold mb-4">Job Details</h1>
 
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                <div className="grid border-b border-indigo-500 pb-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                                                     <div>
                                                                         <Label>Role</Label>
                                                                         <Controller
@@ -1224,7 +1223,7 @@ const StaffManagement = () => {
                                                         )}
 
                                                         {currentStep === 4 && (
-                                                            <div>
+                                                            <div className='pb-4 border-b border-indigo-500'>
                                                                 <h1 className="text-lg font-semibold mb-4">Credentials</h1>
 
                                                                 <div>
@@ -1278,7 +1277,7 @@ const StaffManagement = () => {
                                                         )}
 
                                                         {currentStep === 5 && (
-                                                            <div>
+                                                            <div className='border-b pb-4 border-indigo-500'>
                                                                 <h1 className="text-lg font-semibold mb-4">Emergency Contact</h1>
 
                                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1360,9 +1359,13 @@ const StaffManagement = () => {
                                                 <div className='flex justify-between items-center my-4'>
                                                     <button
                                                         onClick={handlePrev}
-                                                        disabled={currentStep < 2}
+                                                        disabled={currentStep === 1}
                                                         type='button'
-                                                        className='flex cursor-pointer hover:bg-gray-100 transition-colors duration-100 items-center bg-transparent px-4 py-2 rounded-sm'
+                                                        className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
+                                                            ${currentStep === 1
+                                                                ? 'cursor-not-allowed text-gray-400'
+                                                                : 'cursor-pointer hover:bg-gray-100 text-black'
+                                                            }`}
                                                     ><ChevronLeft />Previous</button>
 
                                                     {currentStep < totalSteps && (
