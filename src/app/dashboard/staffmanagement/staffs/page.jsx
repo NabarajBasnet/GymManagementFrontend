@@ -317,17 +317,17 @@ const StaffManagement = () => {
 
     const handleSubmitStaff = async (data) => {
 
-        // destructure numberOfShifts for destructuring shifts checkin, checkout and type
+        // destructure numberOfShifts for destructuring shift object
         const shifts = {};
         const { numberOfShifts } = data;
 
-        for (let i = 1; i <= numberOfShifts; i++) {  // FIX: Use <=
+        for (let i = 1; i <= numberOfShifts; i++) {
             shifts[`shift_${i}_checkIn`] = data[`shift_${i}_checkIn`] || "";
             shifts[`shift_${i}_checkOut`] = data[`shift_${i}_checkOut`] || "";
             shifts[`shift_${i}_type`] = data[`shift_${i}_type`] || "";
         };
 
-        const { imageUrl, message } = await handleUpload()
+        const { imageUrl, message } = await handleUpload();
 
         // destructure fields from data
         const {
@@ -371,7 +371,6 @@ const StaffManagement = () => {
             emergencyContactNo,
             relationship
         };
-        console.log("Final Data: ", finalData);
 
         try {
             const url = currentStaffId
@@ -1388,7 +1387,7 @@ const StaffManagement = () => {
                                                                     <div>
                                                                         <Label>Emergency Contact Name</Label>
                                                                         <Controller
-                                                                            name='emergencyName'
+                                                                            name='emergencyContactName'
                                                                             control={control}
                                                                             render={({ field }) => (
                                                                                 <Input
@@ -1397,14 +1396,14 @@ const StaffManagement = () => {
                                                                                     onChange={(e) => {
                                                                                         field.onChange(e)
                                                                                     }}
-                                                                                    {...register("emergencyName")}
+                                                                                    {...register("emergencyContactName")}
                                                                                     className="rounded-md focus:outline-none"
                                                                                     placeholder="Emergency Contact Name"
                                                                                 />
                                                                             )}
                                                                         />
-                                                                        {errors.emergencyName && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.emergencyName.message}</p>
+                                                                        {errors.emergencyContactName && (
+                                                                            <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactName.message}</p>
                                                                         )}
 
                                                                         <div className="my-2">
