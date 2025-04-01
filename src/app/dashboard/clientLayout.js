@@ -32,7 +32,7 @@ export default function ClientLayout({ children }) {
 
                         {/* Scrollable content area */}
                         <main className="flex-1 overflow-auto bg-white">
-                            <div className="w-full mb-1 p-4"> {/* Added padding for spacing */}
+                            <div className="w-full mb-1"> {/* Added padding for spacing */}
                                 {children}
                             </div>
                         </main>

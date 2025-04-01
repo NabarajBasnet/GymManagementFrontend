@@ -30,20 +30,14 @@ import {
     DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuPortal,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MdDelete, MdClose, MdEmail, MdMenu, MdDone, MdError } from "react-icons/md";
+import { MdDelete, MdClose, MdMenu, MdDone, MdError } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -56,7 +50,6 @@ import {
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
@@ -66,29 +59,14 @@ import { useState } from "react";
 import * as React from 'react';
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
-import {
-    Cloud,
-    CreditCard,
-    Github,
-    Keyboard,
-    LifeBuoy,
-    LogOut,
-    Mail,
-    MessageSquare,
-    Plus,
-    PlusCircle,
-    Settings,
-    User,
-    UserPlus,
-    Users,
-} from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import { TiUserAdd } from "react-icons/ti";
 import Link from "next/link.js";
 import { usePagination } from "@/hooks/Pagination.js";
 import Loader from "@/components/Loader/Loader.jsx";
 import { useRouter } from 'next/navigation.js';
-import { Trash2 } from 'lucide-react';
 import { useEffect } from "react";
+import EditStaffDetails from "./editStaffDetails";
 
 const StaffManagement = () => {
 
@@ -501,6 +479,22 @@ const StaffManagement = () => {
         }
     };
 
+    const [editStaff, setEditStaff] = useState(false);
+    const [staffDetails, setStaffDetails] = useState(null);
+
+    const editStaffDetails = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                setEditStaff(true);
+                setStaffDetails(responseBody);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
     return (
         <div className="w-full">
             <div className='w-full bg-gray-100'
@@ -508,32 +502,8 @@ const StaffManagement = () => {
                     setToast(false);
                     setDeleting(false);
                 }}>
-                <Breadcrumb className='p-6'>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Staffs</BreadcrumbLink>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
 
-                <div className="flex justify-between items-center bg-blue-600 text-white p-4">
+<div className="flex justify-between items-center bg-blue-600 text-white p-4">
                     <h1 className="text-xl font-bold">Staff Management</h1>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -566,6 +536,32 @@ const StaffManagement = () => {
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
+
+                {/* <Breadcrumb className='p-6'>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </DropdownMenuTrigger>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Staffs</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb> */}
+
             </div>
 
             {deleting ? (
@@ -649,6 +645,11 @@ const StaffManagement = () => {
                         </div>
                     </div>
                 </>
+            )}
+
+            {/* Render staff details edit form */}
+            {editStaff && (
+                <EditStaffDetails staff={staffDetails} editStaff={editStaff} setEditStaff={setEditStaff} />
             )}
 
             <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
@@ -740,9 +741,10 @@ const StaffManagement = () => {
                                                                 {user && user.user.role === 'Gym Admin' ? (
                                                                     <></>
                                                                 ) : (
-                                                                    <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                                        <FaUserEdit className="cursor-pointer text-lg" />
-                                                                    </Link>
+                                                                    <FaUserEdit className="cursor-pointer text-lg" onClick={() => editStaffDetails(staff._id)} />
+                                                                    // <Link href={`/dashboard/staffmanagement/${staff._id}`}>
+                                                                    //     <FaUserEdit className="cursor-pointer text-lg" />
+                                                                    // </Link>
                                                                 )}
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger asChild>
@@ -832,8 +834,9 @@ const StaffManagement = () => {
                                                         <div className="flex justify-between mt-2 text-sm text-gray-500">
                                                             {Array.from({ length: totalSteps }).map((_, idx) => (
                                                                 <div
+                                                                    onClick={() => setCurrentStep(idx + 1)}
                                                                     key={idx}
-                                                                    className={`flex items-center ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
+                                                                    className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
                                                                         }`}
                                                                 >
                                                                     <CheckCircle2 size={16} className="mr-1" />
@@ -1070,8 +1073,6 @@ const StaffManagement = () => {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-
-                                                                <button type="submit" className="mt-4 px-4 py-2 bg-indigo-500 text-white rounded">Submit</button>
                                                             </div>
                                                         )}
 

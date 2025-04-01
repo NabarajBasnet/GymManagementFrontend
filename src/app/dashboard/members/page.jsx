@@ -472,7 +472,7 @@ const AllMembers = () => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full bg-white p-4">
+                <div className="w-full bg-white">
                     <div className="w-full flex justify-start">
                         <div className="w-full overflow-x-auto">
                             <Table className='w-full overflow-x-auto'>
