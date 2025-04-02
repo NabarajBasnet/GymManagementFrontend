@@ -288,6 +288,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             });
             const responseBody = await response.json();
             if (response.ok) {
+                toastMessage.success(responseBody.message);
                 return true;
             };
 

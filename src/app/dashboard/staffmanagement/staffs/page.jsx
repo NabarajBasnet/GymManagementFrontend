@@ -1,5 +1,7 @@
 'use client';
 
+import { Checkbox } from "@/components/ui/checkbox"
+import { TiArrowUnsorted, TiArrowUp, TiArrowDown } from "react-icons/ti";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -230,9 +232,9 @@ const StaffManagement = () => {
 
     const handleUpload = async () => {
         if (!staffImage) {
-            toastMessage.error("Please select an image of staff first");
-        };
-
+            toastMessage.error('Staff image is not selected');
+            return;
+        }
         const formData = new FormData();
         formData.append("staffImage", staffImage);
 
@@ -248,11 +250,12 @@ const StaffManagement = () => {
                 setValue('imageUrl', imageUrl);
                 toastMessage.success(responseBody.message);
             } else {
-                toastMessage.success(responseBody.message);
+                toastMessage.error(responseBody.message);
             };
             return responseBody;
         } catch (error) {
-            toastMessage.error("Upload failed!");
+            console.log("Error: ", error.message);
+            toastMessage.error(error.message);
         }
     };
 
@@ -341,6 +344,16 @@ const StaffManagement = () => {
         } = data;
 
         // Prepare final data
+        // function validateData(data) {
+        //     for (const key in data) {
+        //         if (!data[key] || data[key].toString().trim() === "") {
+        //             toastMessage.error(`Error: ${key} is required!`);
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
+
         const finalData = {
             fullName,
             dob,
@@ -581,6 +594,19 @@ const StaffManagement = () => {
         };
     };
 
+    const [sortBy, setSortBy] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
+
+    // Sorting handler
+    const handleSort = (field) => {
+        if (sortBy === field) {
+            setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        } else {
+            setSortBy(field);
+            setSortOrder('asc');
+        }
+    };
+
     return (
         <div className="w-full">
             <div className='w-full'
@@ -729,7 +755,7 @@ const StaffManagement = () => {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Gym Admins</CardTitle>
-                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <Dumbbell className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{gymAdmins ? gymAdmins.length : 'Null'}</div>
@@ -747,7 +773,7 @@ const StaffManagement = () => {
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Gym Trainers</CardTitle>
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                        <Dumbbell className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{gymTrainers ? gymTrainers.length : 'Null'}</div>
@@ -799,7 +825,7 @@ const StaffManagement = () => {
                                                 <TableHeader>
                                                     <TableRow className='bg-gray-200 text-black'>
                                                         <TableHead>Avatar</TableHead>
-                                                        <TableHead className='text-center'>Name</TableHead>
+                                                        <TableHead>Name</TableHead>
                                                         <TableHead className='text-center'>Contact</TableHead>
                                                         <TableHead className='text-center'>Address</TableHead>
                                                         <TableHead className='text-center'>No Of Shifts</TableHead>
@@ -810,7 +836,7 @@ const StaffManagement = () => {
                                                         {user && user.user.role === 'Gym Admin' ? (
                                                             <></>
                                                         ) : (
-                                                            <TableHead className='text-end'>Action</TableHead>
+                                                            <TableHead className='text-center'>Action</TableHead>
                                                         )}
                                                     </TableRow>
                                                 </TableHeader>
@@ -825,7 +851,7 @@ const StaffManagement = () => {
                                                                         className="w-10 h-10 cursor-pointer rounded-full border border-indigo-500"
                                                                     />
                                                                 </TableCell>
-                                                                <TableCell className='font-semibold text-center'>{staff.fullName}</TableCell>
+                                                                <TableCell className='font-semibold'>{staff.fullName}</TableCell>
                                                                 <TableCell className='text-center'>
                                                                     <p className="flex flex-col text-[11px] items-center">
                                                                         <span className="text-sm">
@@ -844,10 +870,10 @@ const StaffManagement = () => {
                                                                     onClick={() => populateShiftDetails(staff._id)}
                                                                 >View</p></TableCell>
                                                                 <TableCell className='text-center'>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
-                                                                <TableCell className='text-center'> <p className={`text-center ${staff.status === 'Active' ? 'bg-green-400' : ''} ${staff.status === 'Inactive' ? 'bg-red-400' : ''} ${staff.status === 'OnLeave' ? 'bg-yellow-400' : ''} rounded-3xl`}>{staff.status}</p> </TableCell>
+                                                                <TableCell className='text-center'> <p className={`text-center ${staff.status === 'Active' ? 'bg-green-400' : ''} ${staff.status === 'Inactive' ? 'bg-red-400' : ''} ${staff.status === 'On Leave' ? 'bg-yellow-400' : ''} rounded-3xl`}>{staff.status}</p> </TableCell>
                                                                 <TableCell className='text-center'>{staff.role}</TableCell>
                                                                 <TableCell className='text-end items-end'>
-                                                                    <div className="flex items-end space-x-1">
+                                                                    <div className="flex items-end justify-center space-x-1">
                                                                         {user && user.user.role === 'Gym Admin' ? (
                                                                             <></>
                                                                         ) : (
@@ -1061,7 +1087,6 @@ const StaffManagement = () => {
                             </div>
                         )}
 
-
                         {
                             openForm && (
                                 <>
@@ -1130,6 +1155,7 @@ const StaffManagement = () => {
                                                                                         />
                                                                                     )}
                                                                                 />
+
                                                                                 {errors.fullName && (
                                                                                     <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
                                                                                 )}
