@@ -8,20 +8,18 @@ import { ChevronRight, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import { FiUser } from "react-icons/fi";
 import { toast as toastMessage } from "react-hot-toast";
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
-import { MdDelete, MdClose, MdMenu, MdDone, MdError } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
 import * as React from 'react';
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { PlusCircle } from "lucide-react";
-import { usePagination } from "@/hooks/Pagination.js";
 import { useRouter } from 'next/navigation.js';
 import { useEffect } from "react";
 
 const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
-    console.log("Staff Details: ", staff);
     const {
         register,
         reset,
@@ -43,39 +41,57 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             fullName: staff.staff.fullName,
             dob: new Date(staff.staff.dob).toISOString().split('T')[0],
             gender: staff.staff.gender,
-            contactNo:staff.staff.contactNo,
-            email:staff.staff.email,
-            role:staff.staff.role,
-            joinedDate:new Date(staff.staff.dob).toISOString().split('T')[0],
-            numberOfShifts:staff.staff.numberOfShifts,
-            salary:staff.staff.salary,
-            status:staff.staff.status,
+            contactNo: staff.staff.contactNo,
+            email: staff.staff.email,
+            role: staff.staff.role,
+            joinedDate: new Date(staff.staff.dob).toISOString().split('T')[0],
+            numberOfShifts: staff.staff.numberOfShifts,
+            salary: staff.staff.salary,
+            status: staff.staff.status,
 
+            username: staff.staff.username,
+            password: staff.staff.password,
 
-            username:staff.staff.username,
-            password:staff.staff.password,
-
-            emergencyContactName:staff.staff.emergencyContactName,
-            emergencyContactNo:staff.staff.emergencyContactNo,
-            relationship:staff.staff.relationship,
+            emergencyContactName: staff.staff.emergencyContactName,
+            emergencyContactNo: staff.staff.emergencyContactNo,
+            relationship: staff.staff.relationship,
 
         });
 
         // set current address value
-        setValue('currentAddress.street',staff.staff.permanentAddress.street);
-        setValue('currentAddress.city',staff.staff.permanentAddress.city);
-        setValue('currentAddress.state',staff.staff.permanentAddress.state);
-        setValue('currentAddress.postalCode',staff.staff.permanentAddress.postalCode);
-        setValue('currentAddress.country',staff.staff.permanentAddress.country);
-    
+        setValue('currentAddress.street', staff.staff.permanentAddress.street);
+        setValue('currentAddress.city', staff.staff.permanentAddress.city);
+        setValue('currentAddress.state', staff.staff.permanentAddress.state);
+        setValue('currentAddress.postalCode', staff.staff.permanentAddress.postalCode);
+        setValue('currentAddress.country', staff.staff.permanentAddress.country);
+
         // set permanent address value
-        setValue('permanentAddress.street',staff.staff.permanentAddress.street);
-        setValue('permanentAddress.city',staff.staff.permanentAddress.city);
-        setValue('permanentAddress.state',staff.staff.permanentAddress.state);
-        setValue('permanentAddress.postalCode',staff.staff.permanentAddress.postalCode);
-        setValue('permanentAddress.country',staff.staff.permanentAddress.country);
-    
-    
+        setValue('permanentAddress.street', staff.staff.permanentAddress.street);
+        setValue('permanentAddress.city', staff.staff.permanentAddress.city);
+        setValue('permanentAddress.state', staff.staff.permanentAddress.state);
+        setValue('permanentAddress.postalCode', staff.staff.permanentAddress.postalCode);
+        setValue('permanentAddress.country', staff.staff.permanentAddress.country);
+
+        const dbShifts = staff.staff.shifts;
+
+        // Populate time in form
+        if (dbShifts) {
+            const shiftArray = Object.keys(dbShifts)
+                .filter(key => key.includes("shift_"))
+                .reduce((acc, key) => {
+                    const match = key.match(/shift_(\d+)_(\w+)/);
+                    if (match) {
+                        const index = parseInt(match[1]) - 1;
+                        const field = match[2];
+
+                        if (!acc[index]) acc[index] = {};
+                        acc[index][field] = dbShifts[key];
+                    }
+                    return acc;
+                }, []);
+
+            setShifts(shiftArray);
+        }
     }, []);
 
     // Update shifts array when number of shifts changes
@@ -133,7 +149,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         clearErrors(`shift_${index + 1}_checkOut`);
     };
 
-
     const { user, loading } = useUser();
     const router = useRouter()
     const checkUserPermission = () => {
@@ -142,8 +157,8 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         } else {
             if (user && user.user.role === 'Gym Admin') {
                 router.push('/unauthorized');
-            }
-        }
+            };
+        };
     };
 
     React.useEffect(() => {
@@ -154,26 +169,11 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     const [staffImage, setStaffImage] = useState(null)
     const [preview, setPreview] = useState(null);
 
-    const [checkInTime, setCheckInTime] = useState(null);
-    const [checkOutTime, setCheckOutTime] = useState(null);
-
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit, setLimit] = useState(15);
-    const [currentStaffId, setCurrentStaffId] = useState();
-    const [searchQuery, setSearchQuery] = useState();
-
     const queryclient = useQueryClient();
     const [openForm, setOpenForm] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
 
     const totalSteps = 5;
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('');
-    const responseResultType = ['Success', 'Failure'];
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
-    const [deleting, setDeleting] = useState(false);
 
     const handleNext = () => {
         if (currentStep < totalSteps) {
@@ -189,10 +189,10 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
     // Functions
 
+    // Upload staff image
     const handleUpload = async () => {
         if (!staffImage) {
-            toastMessage.error("Please select an image of staff first");
-            return;
+            toastMessage.error("Staff image is not selected");
         }
 
         const formData = new FormData();
@@ -217,56 +217,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             toastMessage.error("Upload failed!")
         }
     };
-
-    const debounce = (func, delay) => {
-        let timerId;
-        return (...args) => {
-            if (timerId) clearTimeout(timerId)
-            timerId = setTimeout(() => func(...args), delay)
-        };
-    };
-
-    const fetchAllStaffs = async ({ queryKey }) => {
-        const [, page, searchQuery] = queryKey;
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-        }
-    };
-
-    const { data, isLoading } = useQuery({
-        queryKey: ['staffs', currentPage, searchQuery || '', limit],
-        queryFn: fetchAllStaffs,
-        keepPreviousData: true,
-    });
-
-    const { staffs, totalPages, totalStaffs } = data || {}
-
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
-
-    React.useEffect(() => {
-        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
-        return () => { clearTimeout(handler) }
-    }, [searchQuery, limit]);
-
-    React.useEffect(() => {
-        fetchAllStaffs();
-    }, [limit]);
-
-
-    const startEntry = (currentPage - 1) * limit + 1;
-    const endEntry = Math.min(currentPage * limit, totalStaffs);
 
     const handleSubmitStaff = async (data) => {
 
@@ -324,11 +274,10 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             emergencyContactNo,
             relationship
         };
-
         try {
-            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
 
-            const method = currentStaffId ? "PATCH" : "POST";
+            const method = "PATCH";
 
             const response = await fetch(url, {
                 method,
@@ -339,11 +288,10 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             });
             const responseBody = await response.json();
             if (response.ok) {
-                setOpenForm(false);
+                return true;
             };
 
             if (response.status === 200) {
-                setOpenForm(false);
                 queryclient.invalidateQueries(['staffs']);
             };
             if (responseBody.errors && response.status === 400) {
@@ -556,6 +504,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                                             className="rounded-md focus:outline-none"
                                                             placeholder="Profile picture"
                                                         />
+                                                    </div>
+                                                    <div>
+                                                        <img src={`http://localhost:5000` + staff.staff.imageUrl} />
                                                     </div>
                                                 </div>
                                             </div>
@@ -1035,7 +986,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     )}
 
                                     {currentStep === totalSteps && (
-                                        <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>Submit</button>
+                                        <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>{isSubmitting ? 'Processing...' : 'Submit'}</button>
                                     )}
                                 </div>
 

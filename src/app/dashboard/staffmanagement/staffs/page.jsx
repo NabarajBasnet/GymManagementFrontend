@@ -1,5 +1,22 @@
 'use client';
 
+import {
+    Breadcrumb,
+    BreadcrumbEllipsis,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { RiUserAddFill } from "react-icons/ri";
+import {
+    Calendar,
+    Dumbbell,
+    Clock,
+} from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { MdContactEmergency } from "react-icons/md";
 import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
@@ -44,15 +61,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
@@ -191,6 +199,9 @@ const StaffManagement = () => {
     const [openForm, setOpenForm] = useState(false);
     const [currentStep, setCurrentStep] = useState(1);
 
+    const [showAddressDetails, setShowAddressDetails] = useState(false);
+    const [showShiftDetails, setShowShiftDetails] = useState(false);
+
     const totalSteps = 5;
     const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
@@ -217,8 +228,7 @@ const StaffManagement = () => {
     const handleUpload = async () => {
         if (!staffImage) {
             toastMessage.error("Please select an image of staff first");
-            return;
-        }
+        };
 
         const formData = new FormData();
         formData.append("staffImage", staffImage);
@@ -239,7 +249,7 @@ const StaffManagement = () => {
             };
             return responseBody;
         } catch (error) {
-            toastMessage.error("Upload failed!")
+            toastMessage.error("Upload failed!");
         }
     };
 
@@ -259,7 +269,7 @@ const StaffManagement = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data, isLoading } = useQuery({
@@ -268,7 +278,7 @@ const StaffManagement = () => {
         keepPreviousData: true,
     });
 
-    const { staffs, totalPages, totalStaffs } = data || {}
+    const { staffs, totalPages, totalStaffs, gymAdmins, gymTrainers, personalTrainers } = data || {}
 
     const { range, setPage, active } = usePagination({
         total: totalPages ? totalPages : 1,
@@ -495,72 +505,108 @@ const StaffManagement = () => {
         };
     };
 
+    const populateAddressDetails = async (id) => {
+        try {
+
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                setShowAddressDetails(true);
+            };
+
+            // set current address value
+            setValue('currentAddress.street', responseBody.staff.permanentAddress.street);
+            setValue('currentAddress.city', responseBody.staff.permanentAddress.city);
+            setValue('currentAddress.state', responseBody.staff.permanentAddress.state);
+            setValue('currentAddress.postalCode', responseBody.staff.permanentAddress.postalCode);
+            setValue('currentAddress.country', responseBody.staff.permanentAddress.country);
+
+            // set permanent address value
+            setValue('permanentAddress.street', responseBody.staff.permanentAddress.street);
+            setValue('permanentAddress.city', responseBody.staff.permanentAddress.city);
+            setValue('permanentAddress.state', responseBody.staff.permanentAddress.state);
+            setValue('permanentAddress.postalCode', responseBody.staff.permanentAddress.postalCode);
+            setValue('permanentAddress.country', responseBody.staff.permanentAddress.country);
+        } catch (error) {
+            toastMessage.error('Something went wrong!');
+        };
+    };
+
+    const populateShiftDetails = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const responseBody = await response.json();
+
+            if (response.ok) {
+                const dbShifts = responseBody.staff.shifts;
+
+                if (dbShifts) {
+                    // Convert shifts object into an array
+                    const shiftArray = Object.keys(dbShifts)
+                        .filter((key) => key.includes("shift_"))
+                        .reduce((acc, key) => {
+                            const match = key.match(/shift_(\d+)_(\w+)/);
+                            if (match) {
+                                const index = parseInt(match[1]) - 1;
+                                const field = match[2];
+
+                                if (!acc[index]) acc[index] = {};
+                                acc[index][field] = dbShifts[key];
+                            }
+                            return acc;
+                        }, []);
+
+                    setShifts(shiftArray);
+                    setShowShiftDetails(true);
+                }
+            }
+        } catch (error) {
+            console.log("Error:", error);
+        }
+    };
+
     return (
         <div className="w-full">
-            <div className='w-full bg-gray-100'
+            <div className='w-full'
                 onClick={() => {
                     setToast(false);
                     setDeleting(false);
                 }}>
 
-<div className="flex justify-between items-center bg-blue-600 text-white p-4">
-                    <h1 className="text-xl font-bold">Staff Management</h1>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <MdMenu className="text-3xl cursor-pointer" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel>
-                                <Link href={'/MyProfile'} className='cursor-pointer'>
-                                    My Account
-                                </Link>
-                            </DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuGroup>
-                                <DropdownMenuItem className='cursor-pointer' onClick={() => {
-                                    reset();
-                                    setOpenForm(!openForm);
-                                }
-                                }>
-                                    <TiUserAdd />
-                                    <span>Add Staff</span>
-                                </DropdownMenuItem>
-
-                                <DropdownMenuItem>
-                                    <FcSettings />
-                                    <span>Settings</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                <div className="p-6">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="flex items-center gap-1">
+                                        <BreadcrumbEllipsis className="h-4 w-4" />
+                                    </DropdownMenuTrigger>
+                                </DropdownMenu>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>Staff Management</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
                 </div>
 
-                {/* <Breadcrumb className='p-6'>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Staffs</BreadcrumbLink>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb> */}
+                <div className="flex justify-between border-b border-gray-500 items-center p-4">
+                    <h1 className="text-xl font-bold">Staff Management</h1>
+                    <Button className='rounded-sm' onClick={() => {
+                        reset();
+                        setOpenForm(!openForm);
+                    }
+                    }><RiUserAddFill className="h-6 w-6" />Add New Staff</Button>
+                </div>
 
             </div>
 
@@ -652,844 +698,1010 @@ const StaffManagement = () => {
                 <EditStaffDetails staff={staffDetails} editStaff={editStaff} setEditStaff={setEditStaff} />
             )}
 
-            <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
-                <div className="w-full md:w-6/12 flex py-2 md:py-0 items-center gap-3 px-4 rounded-lg">
-                    <h1 className="text-sm font-semibold text-gray-700">Show</h1>
-                    <select
-                        onChange={(e) => setLimit(Number(e.target.value))}
-                        className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="15">15</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value={totalStaffs}>All</option>
-                    </select>
-                    <h1 className="text-sm font-semibold text-gray-700">staffs</h1>
-                    <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
-                </div>
-                <div className="w-full md:w-6/12 flex bg-white items-center border-b px-4 my-2">
-                    <IoSearch />
-                    <Input
-                        className='rounded-none border-none bg-transparent'
-                        placeholder='Search staffs...'
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setCurrentPage(1);
-                            setSearchQuery(e.target.value);
-                        }
-                        }
-                    />
-                </div>
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Total Staff</CardTitle>
+                        <Dumbbell className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{staffs ? staffs.length : 'Null'}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Gym Admins</CardTitle>
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{gymAdmins ? gymAdmins.length : 'Null'}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Personal Trainers</CardTitle>
+                        <Dumbbell className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{personalTrainers ? personalTrainers.length : 'Null'}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                        <CardTitle className="text-sm font-medium">Gym Trainers</CardTitle>
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{gymTrainers ? gymTrainers.length : 'Null'}</div>
+                    </CardContent>
+                </Card>
             </div>
 
-            <div className="w-full flex justify-between items-start">
-                <div className="w-full bg-white">
-                    <div className="w-full">
-                        <div className="w-full overflow-x-auto">
-                            {isLoading ? (
-                                <Loader />
-                            ) : (
-                                <div className="w-full flex justify-center">
-                                    <Table className='w-full overflow-x-auto px-4'>
-                                        <TableHeader>
-                                            <TableRow className='bg-gray-200 text-black'>
-                                                <TableHead>Id</TableHead>
-                                                <TableHead>Name</TableHead>
-                                                <TableHead>Number</TableHead>
-                                                <TableHead>Address</TableHead>
-                                                <TableHead>CheckIn</TableHead>
-                                                <TableHead>CheckOut</TableHead>
-                                                <TableHead>Joined At</TableHead>
-                                                <TableHead>Status</TableHead>
-                                                <TableHead>Role</TableHead>
-                                                {user && user.user.role === 'Gym Admin' ? (
-                                                    <></>
-                                                ) : (
-                                                    <TableHead>Action</TableHead>
-                                                )}
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody className='pl-4 ml-4'>
-                                            {Array.isArray(staffs) && staffs.length > 0 ? (
-                                                staffs.map((staff) => (
-                                                    <TableRow key={staff._id}>
-                                                        <TableCell className="font-medium">{staff._id}</TableCell>
-                                                        <TableCell>{staff.fullName}</TableCell>
-                                                        <TableCell>{staff.contactNo}</TableCell>
-                                                        <TableCell>{staff.address}</TableCell>
-                                                        <TableCell>{staff.checkInTime
-                                                            ? new Date(staff.checkInTime).toLocaleTimeString('en-US', {
-                                                                hour: 'numeric',
-                                                                minute: 'numeric',
-                                                                hour12: true,
-                                                                timeZone: 'UTC',
-                                                            })
-                                                            : ''}</TableCell>
-                                                        <TableCell>{staff.checkOutTime
-                                                            ? new Date(staff.checkOutTime).toLocaleTimeString('en-US', {
-                                                                hour: 'numeric',
-                                                                minute: 'numeric',
-                                                                hour12: true,
-                                                                timeZone: 'UTC',
-                                                            })
-                                                            : ''}</TableCell>
-                                                        <TableCell>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
-                                                        <TableCell>{staff.status}</TableCell>
-                                                        <TableCell>{staff.role}</TableCell>
-                                                        <TableCell>
-                                                            <div className="flex items-center space-x-1">
-                                                                {user && user.user.role === 'Gym Admin' ? (
-                                                                    <></>
-                                                                ) : (
-                                                                    <FaUserEdit className="cursor-pointer text-lg" onClick={() => editStaffDetails(staff._id)} />
-                                                                    // <Link href={`/dashboard/staffmanagement/${staff._id}`}>
-                                                                    //     <FaUserEdit className="cursor-pointer text-lg" />
-                                                                    // </Link>
-                                                                )}
-                                                                <AlertDialog>
-                                                                    <AlertDialogTrigger asChild>
+            <div className="w-full flex justify-center">
+                <div className="w-full border mx-4 rounded-lg">
+                    <div className="w-full md:flex justify-between items-center px-4">
+                        <div className="w-full md:w-6/12 flex py-2 md:py-0 items-center gap-3 rounded-lg">
+                            <h1 className="text-sm font-semibold text-gray-700">Show</h1>
+                            <select
+                                onChange={(e) => setLimit(Number(e.target.value))}
+                                className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            >
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value={totalStaffs}>All</option>
+                            </select>
+                            <h1 className="text-sm font-semibold text-gray-700">staffs</h1>
+                            <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
+                        </div>
+                        <div className="w-full md:w-6/12 flex bg-white items-center border rounded-lg active:border-indigo-600 px-4 my-2">
+                            <IoSearch />
+                            <Input
+                                className='rounded-none border-none bg-transparent'
+                                placeholder='Search staffs...'
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setCurrentPage(1);
+                                    setSearchQuery(e.target.value);
+                                }
+                                }
+                            />
+                        </div>
+                    </div>
+
+                    <div className="w-full flex justify-between items-start">
+                        <div className="w-full bg-white">
+                            <div className="w-full">
+                                <div className="w-full overflow-x-auto">
+                                    {isLoading ? (
+                                        <Loader />
+                                    ) : (
+                                        <div className="w-full flex justify-center">
+                                            <Table className='w-full overflow-x-auto px-4'>
+                                                <TableHeader>
+                                                    <TableRow className='bg-gray-200 text-black'>
+                                                        {/* <TableHead>Id</TableHead> */}
+                                                        <TableHead>Name</TableHead>
+                                                        <TableHead className='text-center'>Contact</TableHead>
+                                                        <TableHead className='text-center'>Address</TableHead>
+                                                        <TableHead className='text-center'>No Of Shifts</TableHead>
+                                                        <TableHead className='text-center'>Shift Details</TableHead>
+                                                        <TableHead className='text-center'>Joined At</TableHead>
+                                                        <TableHead className='text-center'>Status</TableHead>
+                                                        <TableHead className='text-center'>Role</TableHead>
+                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                            <></>
+                                                        ) : (
+                                                            <TableHead className='text-end'>Action</TableHead>
+                                                        )}
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody className='pl-4 ml-4'>
+                                                    {Array.isArray(staffs) && staffs.length > 0 ? (
+                                                        staffs.map((staff) => (
+                                                            <TableRow key={staff._id}>
+                                                                <TableCell className='font-semibold'>{staff.fullName}</TableCell>
+                                                                <TableCell className='text-center'>
+                                                                    <p className="flex flex-col text-[11px] items-center">
+                                                                        <span className="text-sm">
+                                                                            {staff.contactNo}
+                                                                        </span>
+                                                                        <span className="text-sm">
+                                                                            {staff.email}
+                                                                        </span>
+                                                                    </p></TableCell>
+                                                                <TableCell className='text-center'>
+                                                                    <p
+                                                                        onClick={() => populateAddressDetails(staff._id)}
+                                                                        className="text-center text-sm font-semibold text-indigo-600 cursor-pointer">View</p></TableCell>
+                                                                <TableCell className='text-center'>{staff.numberOfShifts}</TableCell>
+                                                                <TableCell className='text-center'><p className='text-center text-sm font-semibold text-indigo-600 cursor-pointer'
+                                                                    onClick={() => populateShiftDetails(staff._id)}
+                                                                >View</p></TableCell>
+                                                                <TableCell className='text-center'>{new Date(staff.joinedDate).toISOString().split("T")[0]}</TableCell>
+                                                                <TableCell className='text-center'> <p className={`text-center ${staff.status === 'Active' ? 'bg-green-400' : ''} ${staff.status === 'Inactive' ? 'bg-red-400' : ''} ${staff.status === 'OnLeave' ? 'bg-yellow-400' : ''} rounded-3xl`}>{staff.status}</p> </TableCell>
+                                                                <TableCell className='text-center'>{staff.role}</TableCell>
+                                                                <TableCell className='text-end items-end'>
+                                                                    <div className="flex items-end space-x-1">
                                                                         {user && user.user.role === 'Gym Admin' ? (
                                                                             <></>
                                                                         ) : (
-                                                                            <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                                            <FaUserEdit className="cursor-pointer text-lg" onClick={() => editStaffDetails(staff._id)} />
                                                                         )}
-                                                                    </AlertDialogTrigger>
-                                                                    <AlertDialogContent>
-                                                                        <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                This action cannot be undone. This will permanently delete staff
-                                                                                account and remove data from servers.
-                                                                            </AlertDialogDescription>
-                                                                        </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction onClick={() => deleteStaff(staff._id)}>Continue</AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </AlertDialogContent>
-                                                                </AlertDialog>
-                                                            </div>
-                                                        </TableCell>
+                                                                        <AlertDialog>
+                                                                            <AlertDialogTrigger asChild>
+                                                                                {user && user.user.role === 'Gym Admin' ? (
+                                                                                    <></>
+                                                                                ) : (
+                                                                                    <MdDelete className="text-red-600 cursor-pointer text-lg" />
+                                                                                )}
+                                                                            </AlertDialogTrigger>
+                                                                            <AlertDialogContent>
+                                                                                <AlertDialogHeader>
+                                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                                    <AlertDialogDescription>
+                                                                                        This action cannot be undone. This will permanently delete staff
+                                                                                        account and remove data from servers.
+                                                                                    </AlertDialogDescription>
+                                                                                </AlertDialogHeader>
+                                                                                <AlertDialogFooter>
+                                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                                    <AlertDialogAction onClick={() => deleteStaff(staff._id)}>Continue</AlertDialogAction>
+                                                                                </AlertDialogFooter>
+                                                                            </AlertDialogContent>
+                                                                        </AlertDialog>
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        ))
+                                                    ) : (
+                                                        <TableRow>
+                                                            <TableCell colSpan={14} className="text-center text-sm font-semibold">
+                                                                No staff found.
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                                <TableFooter>
+                                                    <TableRow>
+                                                        <div className='my-4'>
+                                                            <TableCell className="text-left" colSpan={1}>Total Staffs</TableCell>
+                                                            <TableCell className="text-left font-medium">{totalStaffs}</TableCell>
+                                                        </div>
                                                     </TableRow>
-                                                ))
-                                            ) : (
-                                                <TableRow>
-                                                    <TableCell colSpan={14} className="text-center text-sm font-semibold">
-                                                        No staff found.
-                                                    </TableCell>
-                                                </TableRow>
-                                            )}
-                                        </TableBody>
-                                        <TableFooter>
-                                            <TableRow>
-                                                <TableCell className="text-left" colSpan={1}>Total Staffs</TableCell>
-                                                <TableCell className="text-left font-medium">{totalStaffs}</TableCell>
-                                            </TableRow>
-                                        </TableFooter>
-                                    </Table>
+                                                </TableFooter>
+                                            </Table>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
 
-                        <div className='border-t border-gray-600'>
-                            <div className="mt-4 px-4 md:flex justify-between items-center">
-                                <p className="font-medium text-center text-sm font-gray-700">
-                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalStaffs}</span> entries
-                                </p>
-                                <Pagination
-                                    total={totalPages}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                />
+                                <div className='border-t border-gray-600'>
+                                    <div className="my-2 px-4 md:flex justify-between items-center">
+                                        <p className="font-medium text-center text-sm font-gray-700">
+                                            Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalStaffs}</span> entries
+                                        </p>
+                                        <Pagination
+                                            total={totalPages}
+                                            page={currentPage || 1}
+                                            onChange={setCurrentPage}
+                                            withEdges={true}
+                                            siblings={1}
+                                            boundaries={1}
+                                        />
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {
-                    openForm && (
-                        <>
-                            <div className="fixed inset-0 bg-black bg-opacity-65 z-40"></div>
-                            <div className="fixed inset-0 z-40 flex items-center justify-center">
-                                <div className="w-full flex justify-center">
-                                    <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
-                                        <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
-                                            <h1 className="font-bold m-3 text-white text-md md:text-xl">Staff Registration</h1>
-                                            <MdClose className="m-4 h-6 w-6 cursor-pointer text-white" onClick={() => setOpenForm(!openForm)} />
-                                        </div>
-                                        <div className="w-full md:flex md:justify-center md:items-center">
-                                            <form className="w-full max-h-[90vh] p-4 transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
-                                                <div>
 
-                                                    {/* Progress bar */}
-                                                    <div className="mb-6 pt-4">
-                                                        <div className="h-2 bg-gray-200 rounded-full">
-                                                            <div
-                                                                className="h-full bg-indigo-600 rounded-full transition-all duration-300"
-                                                                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                        {/* Render address and shift details of staff */}
+                        {showAddressDetails && (
+                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50">
+                                <div className="fixed inset-0 flex justify-center items-center">
+                                    <div className="bg-white rounded-md p-4">
+                                        <div>
+                                            <div className="flex justify-between items-center space-x-2 mb-4 bg-white">
+                                                <div className="flex items-center">
+                                                    <FaLocationDot className="w-6 h-6 text-indigo-500" />
+                                                    <h1 className="text-lg font-semibold text-indigo-500">Address Details</h1>
+                                                </div>
+                                                <MdClose className="h-6 w-6 cursor-pointer" onClick={() => setShowAddressDetails(false)} />
+                                            </div>
+
+                                            <form className="w-full space-x-6 flex justify-between">
+                                                {/* Current Address Section */}
+                                                <div className="w-full border-b pb-4 border-indigo-500">
+                                                    <h3 className="text-md font-semibold mb-4">Current Address</h3>
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <Label>Street Address</Label>
+                                                            <Controller
+                                                                name="currentAddress.street"
+                                                                control={control}
+                                                                defaultValue=""
+                                                                render={({ field }) => (
+                                                                    <Input {...field} placeholder="Enter street address" className="rounded-md focus:outline-none" />
+                                                                )}
                                                             />
+                                                            {errors.currentAddress?.street && <p className="text-red-600 font-semibold text-sm">{errors.currentAddress.street.message}</p>}
                                                         </div>
-                                                        <div className="flex justify-between mt-2 text-sm text-gray-500">
-                                                            {Array.from({ length: totalSteps }).map((_, idx) => (
-                                                                <div
-                                                                    onClick={() => setCurrentStep(idx + 1)}
-                                                                    key={idx}
-                                                                    className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
-                                                                        }`}
-                                                                >
-                                                                    <CheckCircle2 size={16} className="mr-1" />
-                                                                    Step {idx + 1}
-                                                                </div>
-                                                            ))}
+                                                        <div>
+                                                            <Label>City</Label>
+                                                            <Input {...register("currentAddress.city")} placeholder="Enter city" required />
                                                         </div>
-                                                    </div>
-
-
-                                                </div>
-                                                <div className="rounded-md">
-                                                    <div className="grid grid-cols-1 gap-4">
-                                                        {currentStep === 1 && (
-                                                            <div>
-                                                                <div className="flex items-center space-x-2 mb-4">
-                                                                    <FiUser className="w-6 h-6 text-indigo-500" />
-                                                                    <h1 className="text-lg font-semibold text-indigo-500">Personal Information</h1>
-                                                                </div>
-
-                                                                <div className="grid border-b pb-4 border-indigo-500 grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
-                                                                    <div>
-                                                                        <Label>Full Name</Label>
-                                                                        <Controller
-                                                                            name="fullName"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    {...register("fullName")}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Full Name"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.fullName && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Date Of Birth</Label>
-                                                                        <Controller
-                                                                            name="dob"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    {...register("dob")}
-                                                                                    type="date"
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.dob && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Gender</Label>
-                                                                        <Controller
-                                                                            name="gender"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <select
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        setValue('gender', e.target.value);
-                                                                                        field.onChange(e);
-                                                                                        clearErrors('gender');
-                                                                                    }}
-                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                >
-                                                                                    <option>Select</option>
-                                                                                    <option value="Male">Male</option>
-                                                                                    <option value="Female">Female</option>
-                                                                                    <option value="Other">Other</option>
-                                                                                </select>
-                                                                            )}
-                                                                        />
-                                                                        {errors.gender && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Contact Number</Label>
-                                                                        <Controller
-                                                                            name="contactNo"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    {...register("contactNo")}
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Contact Number"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.contactNo && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Email Address</Label>
-                                                                        <Controller
-                                                                            name="email"
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    {...register("email")}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Email address"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.email && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Profile Picture</Label>
-                                                                        <Input
-                                                                            type='file'
-                                                                            onChange={(e) => {
-                                                                                const file = e.target.files[0];
-                                                                                if (file) {
-                                                                                    if (file.size > 10 * 1024 * 1024) {
-                                                                                        toastMessage.error("File size must be less than 10MB")
-                                                                                        return;
-                                                                                    }
-
-                                                                                    setStaffImage(file);
-                                                                                    setPreview(URL.createObjectURL(file));
-                                                                                }
-                                                                            }}
-                                                                            accept="image/*"
-                                                                            className="rounded-md focus:outline-none"
-                                                                            placeholder="Profile picture"
-                                                                        />
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {currentStep === 2 && (
-                                                            <div>
-                                                                <div className="flex items-center space-x-2 mb-4">
-                                                                    <FaLocationDot className="w-6 h-6 text-indigo-500" />
-                                                                    <h1 className="text-lg font-semibold text-indigo-500">Address Details</h1>
-                                                                </div>
-
-                                                                <div className="w-full space-x-6 flex justify-between">
-                                                                    {/* Current Address Section */}
-                                                                    <div className="w-full border-b pb-4 border-indigo-500">
-                                                                        <h3 className="text-md font-semibold mb-4">Current Address</h3>
-                                                                        <div className="grid md:grid-cols-2 gap-4">
-                                                                            <div>
-                                                                                <Label>Street Address</Label>
-                                                                                <Controller
-                                                                                    name="currentAddress.street"
-                                                                                    control={control}
-                                                                                    defaultValue=""
-                                                                                    render={({ field }) => (
-                                                                                        <Input {...field} placeholder="Enter street address" className="rounded-md focus:outline-none" />
-                                                                                    )}
-                                                                                />
-                                                                                {errors.currentAddress?.street && <p className="text-red-600 font-semibold text-sm">{errors.currentAddress.street.message}</p>}
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>City</Label>
-                                                                                <Input {...register("currentAddress.city")} placeholder="Enter city" required />
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>State</Label>
-                                                                                <Input {...register("currentAddress.state")} placeholder="Enter state" required />
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>Postal Code</Label>
-                                                                                <Input {...register("currentAddress.postalCode")} placeholder="Enter postal code" required />
-                                                                            </div>
-                                                                            <div className="md:col-span-2">
-                                                                                <Label>Country</Label>
-                                                                                <Input {...register("currentAddress.country")} placeholder="Enter country" required />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    {/* Permanent Address Section */}
-                                                                    <div className="w-full border-b pb-4 border-indigo-500">
-                                                                        <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
-                                                                        <div className="grid md:grid-cols-2 gap-4">
-                                                                            <div>
-                                                                                <Label>Street Address</Label>
-                                                                                <Input {...register("permanentAddress.street")} placeholder="Enter street address" required />
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>City</Label>
-                                                                                <Input {...register("permanentAddress.city")} placeholder="Enter city" required />
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>State</Label>
-                                                                                <Input {...register("permanentAddress.state")} placeholder="Enter state" required />
-                                                                            </div>
-                                                                            <div>
-                                                                                <Label>Postal Code</Label>
-                                                                                <Input {...register("permanentAddress.postalCode")} placeholder="Enter postal code" required />
-                                                                            </div>
-                                                                            <div className="md:col-span-2">
-                                                                                <Label>Country</Label>
-                                                                                <Input {...register("permanentAddress.country")} placeholder="Enter country" required />
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {currentStep === 3 && (
-                                                            <div>
-                                                                <div className="flex items-center space-x-2 mb-4">
-                                                                    <TbListDetails className="w-6 h-6 text-indigo-500" />
-                                                                    <h1 className="text-lg font-semibold text-indigo-500">Job Details</h1>
-                                                                </div>
-
-                                                                <div className="grid border-b border-indigo-500 pb-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                                    <div>
-                                                                        <Label>Role</Label>
-                                                                        <Controller
-                                                                            name='role'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <select
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        const selectedValue = e.target.value;
-                                                                                        setValue('role', selectedValue);
-                                                                                        clearErrors("role");
-                                                                                        field.onChange(selectedValue);
-                                                                                    }}
-                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                >
-                                                                                    <option>Select</option>
-                                                                                    <option value="Super Admin">Super Admin</option>
-                                                                                    <option value="Gym Admin">Gym Admin</option>
-                                                                                    <option value="Floor Trainer">Trainer</option>
-                                                                                    <option value="Personal Trainer">Personal Trainer</option>
-                                                                                    <option value="Operational Manager">Operational Manager</option>
-                                                                                    <option value="HR Manager">HR Manager</option>
-                                                                                    <option value="CEO">CEO</option>
-                                                                                    <option value="Developer">Developer</option>
-                                                                                    <option value="Intern">Intern</option>
-                                                                                </select>
-                                                                            )}
-                                                                        />
-                                                                        {errors.role && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Joined Date</Label>
-                                                                        <Controller
-                                                                            name='joinedDate'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    {...register("joinedDate")}
-                                                                                    type="date"
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.joinedDate && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>No. Of Shifts</Label>
-                                                                        <Controller
-                                                                            name='numberOfShifts'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    type='number'
-                                                                                    min="1"
-                                                                                    max="5"
-                                                                                    placeholder='Enter Number Of Shifts'
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    onChange={(e) => {
-                                                                                        const value = Math.min(Math.max(parseInt(e.target.value) || 1, 1), 5);
-                                                                                        field.onChange(value);
-                                                                                        setValue('numberOfShifts', value);
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.numberOfShifts && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.numberOfShifts.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Salary</Label>
-                                                                        <Controller
-                                                                            name='salary'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e);
-                                                                                    }}
-                                                                                    {...register("salary")}
-                                                                                    type="text"
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Salary"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.salary && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
-                                                                        )}
-                                                                    </div>
-
-                                                                    <div>
-                                                                        <Label>Status</Label>
-                                                                        <Controller
-                                                                            name='status'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <select
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        const selectedValue = e.target.value;
-                                                                                        setValue('status', selectedValue);
-                                                                                        clearErrors('status')
-                                                                                        field.onChange(selectedValue)
-                                                                                    }}
-                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                >
-                                                                                    <option>Status</option>
-                                                                                    <option value="Active">Active</option>
-                                                                                    <option value="On Leave">On Leave</option>
-                                                                                    <option value="Inactive">Inactive</option>
-                                                                                </select>
-                                                                            )}
-                                                                        />
-                                                                        {errors.status && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-
-                                                                {/* Dynamic Shifts Section */}
-                                                                <div className="mt-6 mb-4">
-                                                                    <div className="flex items-center space-x-2 mb-4">
-                                                                        <PlusCircle className="w-5 h-5 text-indigo-500" />
-                                                                        <h2 className="text-lg font-semibold text-indigo-500">Shift Details</h2>
-                                                                    </div>
-
-                                                                    <div className="space-y-4">
-                                                                        {shifts.map((shift, index) => (
-                                                                            <div key={shift.id} className="p-4 border border-gray-200 rounded-md bg-gray-50">
-                                                                                <div className="flex justify-between items-center mb-3">
-                                                                                    <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
-                                                                                </div>
-                                                                                <div className="grid grid-cols-3 overflow-x-auto gap-4">
-                                                                                    <div>
-                                                                                        <Label>Shift Type</Label>
-                                                                                        <Controller
-                                                                                            name={`shift_${index + 1}_type`}
-                                                                                            control={control}
-                                                                                            defaultValue={shift.type}
-                                                                                            render={({ field }) => (
-                                                                                                <select
-                                                                                                    {...field}
-                                                                                                    value={field.value}
-                                                                                                    onChange={(e) => {
-                                                                                                        const selectedValue = e.target.value;
-                                                                                                        handleShiftTypeChange(index, selectedValue);
-                                                                                                        field.onChange(selectedValue);
-                                                                                                    }}
-                                                                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                                                                >
-                                                                                                    <option value="">Select Shift</option>
-                                                                                                    <option value="Morning">Morning</option>
-                                                                                                    <option value="Day">Day</option>
-                                                                                                    <option value="Evening">Evening</option>
-                                                                                                </select>
-                                                                                            )}
-                                                                                        />
-                                                                                        {errors[`shift_${index + 1}_type`] && (
-                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_type`].message}</p>
-                                                                                        )}
-                                                                                    </div>
-
-                                                                                    <div>
-                                                                                        <Label>Check In</Label>
-                                                                                        <Controller
-                                                                                            name={`shift_${index + 1}_checkIn`}
-                                                                                            control={control}
-                                                                                            defaultValue={shift.checkIn}
-                                                                                            render={({ field }) => (
-                                                                                                <Input
-                                                                                                    {...field}
-                                                                                                    type="time"
-                                                                                                    value={field.value}
-                                                                                                    onChange={(e) => {
-                                                                                                        handleCheckInChange(index, e.target.value);
-                                                                                                        field.onChange(e);
-                                                                                                    }}
-                                                                                                    className="rounded-md focus:outline-none"
-                                                                                                />
-                                                                                            )}
-                                                                                        />
-                                                                                        {errors[`shift_${index + 1}_checkIn`] && (
-                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkIn`].message}</p>
-                                                                                        )}
-                                                                                    </div>
-
-                                                                                    <div>
-                                                                                        <Label>Check Out</Label>
-                                                                                        <Controller
-                                                                                            name={`shift_${index + 1}_checkOut`}
-                                                                                            control={control}
-                                                                                            defaultValue={shift.checkOut}
-                                                                                            render={({ field }) => (
-                                                                                                <Input
-                                                                                                    {...field}
-                                                                                                    type="time"
-                                                                                                    value={field.value}
-                                                                                                    onChange={(e) => {
-                                                                                                        handleCheckOutChange(index, e.target.value);
-                                                                                                        field.onChange(e);
-                                                                                                    }}
-                                                                                                    className="rounded-md focus:outline-none"
-                                                                                                />
-                                                                                            )}
-                                                                                        />
-                                                                                        {errors[`shift_${index + 1}_checkOut`] && (
-                                                                                            <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkOut`].message}</p>
-                                                                                        )}
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {currentStep === 4 && (
-                                                            <div className='pb-4 border-b border-indigo-500'>
-                                                                <div className="flex items-center space-x-2 mb-4">
-                                                                    <MdSecurity className="w-6 h-6 text-indigo-500" />
-                                                                    <h1 className="text-lg font-semibold text-indigo-500">Credentials</h1>
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Username</Label>
-                                                                    <Controller
-                                                                        name='username'
-                                                                        control={control}
-                                                                        render={({ field }) => (
-                                                                            <Input
-                                                                                {...field}
-                                                                                value={field.value}
-                                                                                onChange={(e) => {
-                                                                                    field.onChange(e);
-                                                                                }}
-                                                                                {...register("username")}
-                                                                                type="text"
-                                                                                className="rounded-md focus:outline-none"
-                                                                                placeholder="Username"
-                                                                            />
-                                                                        )}
-                                                                    />
-                                                                    {errors.username && (
-                                                                        <p className="text-red-600 font-semibold text-sm">{errors.username.message}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Password</Label>
-                                                                    <Controller
-                                                                        name='password'
-                                                                        control={control}
-                                                                        render={({ field }) => (
-                                                                            <Input
-                                                                                {...field}
-                                                                                value={field.value}
-                                                                                onChange={(e) => {
-                                                                                    field.onChange(e);
-                                                                                }}
-                                                                                {...register("password")}
-                                                                                type="password"
-                                                                                className="rounded-md focus:outline-none"
-                                                                                placeholder="Password"
-                                                                            />
-                                                                        )}
-                                                                    />
-                                                                    {errors.password && (
-                                                                        <p className="text-red-600 font-semibold text-sm">{errors.password.message}</p>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {currentStep === 5 && (
-                                                            <div className='border-b pb-4 border-indigo-500'>
-                                                                <div className="flex items-center space-x-2 mb-4">
-                                                                    <MdContactEmergency className="w-6 h-6 text-indigo-500" />
-                                                                    <h1 className="text-lg font-semibold text-indigo-500">Emergency Details</h1>
-                                                                </div>
-
-                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                    <div>
-                                                                        <Label>Emergency Contact Name</Label>
-                                                                        <Controller
-                                                                            name='emergencyContactName'
-                                                                            control={control}
-                                                                            render={({ field }) => (
-                                                                                <Input
-                                                                                    {...field}
-                                                                                    value={field.value}
-                                                                                    onChange={(e) => {
-                                                                                        field.onChange(e)
-                                                                                    }}
-                                                                                    {...register("emergencyContactName")}
-                                                                                    className="rounded-md focus:outline-none"
-                                                                                    placeholder="Emergency Contact Name"
-                                                                                />
-                                                                            )}
-                                                                        />
-                                                                        {errors.emergencyContactName && (
-                                                                            <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactName.message}</p>
-                                                                        )}
-
-                                                                        <div className="my-2">
-                                                                            <Label>Emergency Contact Number</Label>
-                                                                            <Controller
-                                                                                name='emergencyContactNo'
-                                                                                control={control}
-                                                                                render={({ field }) => (
-                                                                                    <Input
-                                                                                        {...field}
-                                                                                        value={field.value}
-                                                                                        onChange={(e) => {
-                                                                                            field.onChange(e)
-                                                                                        }}
-                                                                                        {...register("emergencyContactNo")}
-                                                                                        className="rounded-md focus:outline-none"
-                                                                                        placeholder="Emergency Contact No"
-                                                                                    />
-                                                                                )}
-                                                                            />
-                                                                            {errors.emergencyContactNo && (
-                                                                                <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
-                                                                            )}
-                                                                        </div>
-
-                                                                        <div>
-                                                                            <Label>Relationship</Label>
-                                                                            <Controller
-                                                                                name='relationship'
-                                                                                control={control}
-                                                                                render={({ field }) => (
-                                                                                    <Input
-                                                                                        {...field}
-                                                                                        value={field.value}
-                                                                                        onChange={(e) => {
-                                                                                            field.onChange(e)
-                                                                                        }}
-                                                                                        {...register("relationship")}
-                                                                                        className="rounded-md focus:outline-none"
-                                                                                        placeholder="Relationship"
-                                                                                    />
-                                                                                )}
-                                                                            />
-                                                                            {errors.relationship && (
-                                                                                <p className="text-red-600 font-semibold text-sm">{errors.relationship.message}</p>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-
+                                                        <div>
+                                                            <Label>State</Label>
+                                                            <Input {...register("currentAddress.state")} placeholder="Enter state" required />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Postal Code</Label>
+                                                            <Input {...register("currentAddress.postalCode")} placeholder="Enter postal code" required />
+                                                        </div>
+                                                        <div className="md:col-span-2">
+                                                            <Label>Country</Label>
+                                                            <Input {...register("currentAddress.country")} placeholder="Enter country" required />
+                                                        </div>
                                                     </div>
                                                 </div>
 
-                                                <div className='flex justify-between items-center my-4'>
-                                                    <button
-                                                        onClick={handlePrev}
-                                                        disabled={currentStep === 1}
-                                                        type='button'
-                                                        className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
-                                                            ${currentStep === 1
-                                                                ? 'cursor-not-allowed text-gray-400'
-                                                                : 'cursor-pointer hover:bg-gray-100 text-black'
-                                                            }`}
-                                                    ><ChevronLeft />Previous</button>
-
-                                                    {currentStep < totalSteps && (
-                                                        <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
-                                                    )}
-
-                                                    {currentStep === totalSteps && (
-                                                        <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>Submit</button>
-                                                    )}
+                                                {/* Permanent Address Section */}
+                                                <div className="w-full border-b pb-4 border-indigo-500">
+                                                    <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
+                                                    <div className="grid md:grid-cols-2 gap-4">
+                                                        <div>
+                                                            <Label>Street Address</Label>
+                                                            <Input {...register("permanentAddress.street")} placeholder="Enter street address" required />
+                                                        </div>
+                                                        <div>
+                                                            <Label>City</Label>
+                                                            <Input {...register("permanentAddress.city")} placeholder="Enter city" required />
+                                                        </div>
+                                                        <div>
+                                                            <Label>State</Label>
+                                                            <Input {...register("permanentAddress.state")} placeholder="Enter state" required />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Postal Code</Label>
+                                                            <Input {...register("permanentAddress.postalCode")} placeholder="Enter postal code" required />
+                                                        </div>
+                                                        <div className="md:col-span-2">
+                                                            <Label>Country</Label>
+                                                            <Input {...register("permanentAddress.country")} placeholder="Enter country" required />
+                                                        </div>
+                                                    </div>
                                                 </div>
-
                                             </form>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </>
-                    )
-                }
+                        )}
+
+                        {showShiftDetails && (
+                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50">
+                                <div className="fixed inset-0 flex justify-center items-center">
+                                    <div className="bg-white pb-4 pr-4 pl-4 rounded-md">
+                                        <div className="mt-6 mb-4">
+                                            <div className="flex items-center justify-between space-x-2 mb-4">
+                                                <div className="flex items-center">
+                                                    <PlusCircle className="w-5 h-5 text-indigo-500" />
+                                                    <h2 className="text-lg font-semibold text-indigo-500 mx-2">Shift Details</h2>
+                                                </div>
+                                                <MdClose className="h-6 w-6 cursor-pointer" onClick={() => setShowShiftDetails(false)} />
+                                            </div>
+
+                                            <form className="space-y-4">
+                                                {shifts.map((shift, index) => (
+                                                    <div key={index} className="p-4 border border-gray-200 rounded-md bg-gray-50">
+                                                        <div className="flex justify-between items-center mb-3">
+                                                            <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
+                                                        </div>
+                                                        <div className="grid grid-cols-3 overflow-x-auto gap-4">
+                                                            <div>
+                                                                <Label>Shift Type</Label>
+                                                                <Input value={shift.type || ''} readOnly />
+                                                            </div>
+                                                            <div>
+                                                                <Label>Check In</Label>
+                                                                <Input type="time" value={shift.checkIn || ''} readOnly />
+                                                            </div>
+                                                            <div>
+                                                                <Label>Check Out</Label>
+                                                                <Input type="time" value={shift.checkOut || ''} readOnly />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {
+                            openForm && (
+                                <>
+                                    <div className="fixed inset-0 bg-black bg-opacity-65 z-40"></div>
+                                    <div className="fixed inset-0 z-40 flex items-center justify-center">
+                                        <div className="w-full flex justify-center">
+                                            <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
+                                                <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
+                                                    <h1 className="font-bold m-3 text-white text-md md:text-xl">Staff Registration</h1>
+                                                    <MdClose className="m-4 h-6 w-6 cursor-pointer text-white" onClick={() => setOpenForm(!openForm)} />
+                                                </div>
+                                                <div className="w-full md:flex md:justify-center md:items-center">
+                                                    <form className="w-full max-h-[90vh] p-4 transition-transform duration-500 overflow-y-auto" onSubmit={handleSubmit(handleSubmitStaff)}>
+                                                        <div>
+
+                                                            {/* Progress bar */}
+                                                            <div className="mb-6 pt-4">
+                                                                <div className="h-2 bg-gray-200 rounded-full">
+                                                                    <div
+                                                                        className="h-full bg-indigo-600 rounded-full transition-all duration-300"
+                                                                        style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                                                                    />
+                                                                </div>
+                                                                <div className="flex justify-between mt-2 text-sm text-gray-500">
+                                                                    {Array.from({ length: totalSteps }).map((_, idx) => (
+                                                                        <div
+                                                                            onClick={() => setCurrentStep(idx + 1)}
+                                                                            key={idx}
+                                                                            className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
+                                                                                }`}
+                                                                        >
+                                                                            <CheckCircle2 size={16} className="mr-1" />
+                                                                            Step {idx + 1}
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                        <div className="rounded-md">
+                                                            <div className="grid grid-cols-1 gap-4">
+                                                                {currentStep === 1 && (
+                                                                    <div>
+                                                                        <div className="flex items-center space-x-2 mb-4">
+                                                                            <FiUser className="w-6 h-6 text-indigo-500" />
+                                                                            <h1 className="text-lg font-semibold text-indigo-500">Personal Information</h1>
+                                                                        </div>
+
+                                                                        <div className="grid border-b pb-4 border-indigo-500 grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                                                                            <div>
+                                                                                <Label>Full Name</Label>
+                                                                                <Controller
+                                                                                    name="fullName"
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            {...register("fullName")}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Full Name"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.fullName && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.fullName.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Date Of Birth</Label>
+                                                                                <Controller
+                                                                                    name="dob"
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            {...register("dob")}
+                                                                                            type="date"
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.dob && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.dob.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Gender</Label>
+                                                                                <Controller
+                                                                                    name="gender"
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <select
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                setValue('gender', e.target.value);
+                                                                                                field.onChange(e);
+                                                                                                clearErrors('gender');
+                                                                                            }}
+                                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                        >
+                                                                                            <option>Select</option>
+                                                                                            <option value="Male">Male</option>
+                                                                                            <option value="Female">Female</option>
+                                                                                            <option value="Other">Other</option>
+                                                                                        </select>
+                                                                                    )}
+                                                                                />
+                                                                                {errors.gender && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.gender.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Contact Number</Label>
+                                                                                <Controller
+                                                                                    name="contactNo"
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            {...register("contactNo")}
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Contact Number"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.contactNo && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.contactNo.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Email Address</Label>
+                                                                                <Controller
+                                                                                    name="email"
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            {...register("email")}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Email address"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.email && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.email.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Profile Picture</Label>
+                                                                                <Input
+                                                                                    type='file'
+                                                                                    onChange={(e) => {
+                                                                                        const file = e.target.files[0];
+                                                                                        if (file) {
+                                                                                            if (file.size > 10 * 1024 * 1024) {
+                                                                                                toastMessage.error("File size must be less than 10MB")
+                                                                                                return;
+                                                                                            }
+
+                                                                                            setStaffImage(file);
+                                                                                            setPreview(URL.createObjectURL(file));
+                                                                                        }
+                                                                                    }}
+                                                                                    accept="image/*"
+                                                                                    className="rounded-md focus:outline-none"
+                                                                                    placeholder="Profile picture"
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {currentStep === 2 && (
+                                                                    <div>
+                                                                        <div className="flex items-center space-x-2 mb-4">
+                                                                            <FaLocationDot className="w-6 h-6 text-indigo-500" />
+                                                                            <h1 className="text-lg font-semibold text-indigo-500">Address Details</h1>
+                                                                        </div>
+
+                                                                        <div className="w-full space-x-6 flex justify-between">
+                                                                            {/* Current Address Section */}
+                                                                            <div className="w-full border-b pb-4 border-indigo-500">
+                                                                                <h3 className="text-md font-semibold mb-4">Current Address</h3>
+                                                                                <div className="grid md:grid-cols-2 gap-4">
+                                                                                    <div>
+                                                                                        <Label>Street Address</Label>
+                                                                                        <Controller
+                                                                                            name="currentAddress.street"
+                                                                                            control={control}
+                                                                                            defaultValue=""
+                                                                                            render={({ field }) => (
+                                                                                                <Input {...field} placeholder="Enter street address" className="rounded-md focus:outline-none" />
+                                                                                            )}
+                                                                                        />
+                                                                                        {errors.currentAddress?.street && <p className="text-red-600 font-semibold text-sm">{errors.currentAddress.street.message}</p>}
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>City</Label>
+                                                                                        <Input {...register("currentAddress.city")} placeholder="Enter city" required />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>State</Label>
+                                                                                        <Input {...register("currentAddress.state")} placeholder="Enter state" required />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>Postal Code</Label>
+                                                                                        <Input {...register("currentAddress.postalCode")} placeholder="Enter postal code" required />
+                                                                                    </div>
+                                                                                    <div className="md:col-span-2">
+                                                                                        <Label>Country</Label>
+                                                                                        <Input {...register("currentAddress.country")} placeholder="Enter country" required />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            {/* Permanent Address Section */}
+                                                                            <div className="w-full border-b pb-4 border-indigo-500">
+                                                                                <h3 className="text-md font-semibold mb-4">Permanent Address</h3>
+                                                                                <div className="grid md:grid-cols-2 gap-4">
+                                                                                    <div>
+                                                                                        <Label>Street Address</Label>
+                                                                                        <Input {...register("permanentAddress.street")} placeholder="Enter street address" required />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>City</Label>
+                                                                                        <Input {...register("permanentAddress.city")} placeholder="Enter city" required />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>State</Label>
+                                                                                        <Input {...register("permanentAddress.state")} placeholder="Enter state" required />
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <Label>Postal Code</Label>
+                                                                                        <Input {...register("permanentAddress.postalCode")} placeholder="Enter postal code" required />
+                                                                                    </div>
+                                                                                    <div className="md:col-span-2">
+                                                                                        <Label>Country</Label>
+                                                                                        <Input {...register("permanentAddress.country")} placeholder="Enter country" required />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {currentStep === 3 && (
+                                                                    <div>
+                                                                        <div className="flex items-center space-x-2 mb-4">
+                                                                            <TbListDetails className="w-6 h-6 text-indigo-500" />
+                                                                            <h1 className="text-lg font-semibold text-indigo-500">Job Details</h1>
+                                                                        </div>
+
+                                                                        <div className="grid border-b border-indigo-500 pb-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                                            <div>
+                                                                                <Label>Role</Label>
+                                                                                <Controller
+                                                                                    name='role'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <select
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                const selectedValue = e.target.value;
+                                                                                                setValue('role', selectedValue);
+                                                                                                clearErrors("role");
+                                                                                                field.onChange(selectedValue);
+                                                                                            }}
+                                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                        >
+                                                                                            <option>Select</option>
+                                                                                            <option value="Super Admin">Super Admin</option>
+                                                                                            <option value="Gym Admin">Gym Admin</option>
+                                                                                            <option value="Floor Trainer">Trainer</option>
+                                                                                            <option value="Personal Trainer">Personal Trainer</option>
+                                                                                            <option value="Operational Manager">Operational Manager</option>
+                                                                                            <option value="HR Manager">HR Manager</option>
+                                                                                            <option value="CEO">CEO</option>
+                                                                                            <option value="Developer">Developer</option>
+                                                                                            <option value="Intern">Intern</option>
+                                                                                        </select>
+                                                                                    )}
+                                                                                />
+                                                                                {errors.role && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.role.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Joined Date</Label>
+                                                                                <Controller
+                                                                                    name='joinedDate'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            {...register("joinedDate")}
+                                                                                            type="date"
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.joinedDate && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.joinedDate.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>No. Of Shifts</Label>
+                                                                                <Controller
+                                                                                    name='numberOfShifts'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            type='number'
+                                                                                            min="1"
+                                                                                            max="5"
+                                                                                            placeholder='Enter Number Of Shifts'
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            onChange={(e) => {
+                                                                                                const value = Math.min(Math.max(parseInt(e.target.value) || 1, 1), 5);
+                                                                                                field.onChange(value);
+                                                                                                setValue('numberOfShifts', value);
+                                                                                            }}
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.numberOfShifts && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.numberOfShifts.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Salary</Label>
+                                                                                <Controller
+                                                                                    name='salary'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e);
+                                                                                            }}
+                                                                                            {...register("salary")}
+                                                                                            type="text"
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Salary"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.salary && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.salary.message}</p>
+                                                                                )}
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <Label>Status</Label>
+                                                                                <Controller
+                                                                                    name='status'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <select
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                const selectedValue = e.target.value;
+                                                                                                setValue('status', selectedValue);
+                                                                                                clearErrors('status')
+                                                                                                field.onChange(selectedValue)
+                                                                                            }}
+                                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                        >
+                                                                                            <option>Status</option>
+                                                                                            <option value="Active">Active</option>
+                                                                                            <option value="On Leave">On Leave</option>
+                                                                                            <option value="Inactive">Inactive</option>
+                                                                                        </select>
+                                                                                    )}
+                                                                                />
+                                                                                {errors.status && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.status.message}</p>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Dynamic Shifts Section */}
+                                                                        <div className="mt-6 mb-4">
+                                                                            <div className="flex items-center space-x-2 mb-4">
+                                                                                <PlusCircle className="w-5 h-5 text-indigo-500" />
+                                                                                <h2 className="text-lg font-semibold text-indigo-500">Shift Details</h2>
+                                                                            </div>
+
+                                                                            <div className="space-y-4">
+                                                                                {shifts.map((shift, index) => (
+                                                                                    <div key={shift.id} className="p-4 border border-gray-200 rounded-md bg-gray-50">
+                                                                                        <div className="flex justify-between items-center mb-3">
+                                                                                            <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
+                                                                                        </div>
+                                                                                        <div className="grid grid-cols-3 overflow-x-auto gap-4">
+                                                                                            <div>
+                                                                                                <Label>Shift Type</Label>
+                                                                                                <Controller
+                                                                                                    name={`shift_${index + 1}_type`}
+                                                                                                    control={control}
+                                                                                                    defaultValue={shift.type}
+                                                                                                    render={({ field }) => (
+                                                                                                        <select
+                                                                                                            {...field}
+                                                                                                            value={field.value}
+                                                                                                            onChange={(e) => {
+                                                                                                                const selectedValue = e.target.value;
+                                                                                                                handleShiftTypeChange(index, selectedValue);
+                                                                                                                field.onChange(selectedValue);
+                                                                                                            }}
+                                                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                                        >
+                                                                                                            <option value="">Select Shift</option>
+                                                                                                            <option value="Morning">Morning</option>
+                                                                                                            <option value="Day">Day</option>
+                                                                                                            <option value="Evening">Evening</option>
+                                                                                                        </select>
+                                                                                                    )}
+                                                                                                />
+                                                                                                {errors[`shift_${index + 1}_type`] && (
+                                                                                                    <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_type`].message}</p>
+                                                                                                )}
+                                                                                            </div>
+
+                                                                                            <div>
+                                                                                                <Label>Check In</Label>
+                                                                                                <Controller
+                                                                                                    name={`shift_${index + 1}_checkIn`}
+                                                                                                    control={control}
+                                                                                                    defaultValue={shift.checkIn}
+                                                                                                    render={({ field }) => (
+                                                                                                        <Input
+                                                                                                            {...field}
+                                                                                                            type="time"
+                                                                                                            value={field.value}
+                                                                                                            onChange={(e) => {
+                                                                                                                handleCheckInChange(index, e.target.value);
+                                                                                                                field.onChange(e);
+                                                                                                            }}
+                                                                                                            className="rounded-md focus:outline-none"
+                                                                                                        />
+                                                                                                    )}
+                                                                                                />
+                                                                                                {errors[`shift_${index + 1}_checkIn`] && (
+                                                                                                    <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkIn`].message}</p>
+                                                                                                )}
+                                                                                            </div>
+
+                                                                                            <div>
+                                                                                                <Label>Check Out</Label>
+                                                                                                <Controller
+                                                                                                    name={`shift_${index + 1}_checkOut`}
+                                                                                                    control={control}
+                                                                                                    defaultValue={shift.checkOut}
+                                                                                                    render={({ field }) => (
+                                                                                                        <Input
+                                                                                                            {...field}
+                                                                                                            type="time"
+                                                                                                            value={field.value}
+                                                                                                            onChange={(e) => {
+                                                                                                                handleCheckOutChange(index, e.target.value);
+                                                                                                                field.onChange(e);
+                                                                                                            }}
+                                                                                                            className="rounded-md focus:outline-none"
+                                                                                                        />
+                                                                                                    )}
+                                                                                                />
+                                                                                                {errors[`shift_${index + 1}_checkOut`] && (
+                                                                                                    <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_checkOut`].message}</p>
+                                                                                                )}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {currentStep === 4 && (
+                                                                    <div className='pb-4 border-b border-indigo-500'>
+                                                                        <div className="flex items-center space-x-2 mb-4">
+                                                                            <MdSecurity className="w-6 h-6 text-indigo-500" />
+                                                                            <h1 className="text-lg font-semibold text-indigo-500">Credentials</h1>
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <Label>Username</Label>
+                                                                            <Controller
+                                                                                name='username'
+                                                                                control={control}
+                                                                                render={({ field }) => (
+                                                                                    <Input
+                                                                                        {...field}
+                                                                                        value={field.value}
+                                                                                        onChange={(e) => {
+                                                                                            field.onChange(e);
+                                                                                        }}
+                                                                                        {...register("username")}
+                                                                                        type="text"
+                                                                                        className="rounded-md focus:outline-none"
+                                                                                        placeholder="Username"
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.username && (
+                                                                                <p className="text-red-600 font-semibold text-sm">{errors.username.message}</p>
+                                                                            )}
+                                                                        </div>
+
+                                                                        <div>
+                                                                            <Label>Password</Label>
+                                                                            <Controller
+                                                                                name='password'
+                                                                                control={control}
+                                                                                render={({ field }) => (
+                                                                                    <Input
+                                                                                        {...field}
+                                                                                        value={field.value}
+                                                                                        onChange={(e) => {
+                                                                                            field.onChange(e);
+                                                                                        }}
+                                                                                        {...register("password")}
+                                                                                        type="password"
+                                                                                        className="rounded-md focus:outline-none"
+                                                                                        placeholder="Password"
+                                                                                    />
+                                                                                )}
+                                                                            />
+                                                                            {errors.password && (
+                                                                                <p className="text-red-600 font-semibold text-sm">{errors.password.message}</p>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                {currentStep === 5 && (
+                                                                    <div className='border-b pb-4 border-indigo-500'>
+                                                                        <div className="flex items-center space-x-2 mb-4">
+                                                                            <MdContactEmergency className="w-6 h-6 text-indigo-500" />
+                                                                            <h1 className="text-lg font-semibold text-indigo-500">Emergency Details</h1>
+                                                                        </div>
+
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <Label>Emergency Contact Name</Label>
+                                                                                <Controller
+                                                                                    name='emergencyContactName'
+                                                                                    control={control}
+                                                                                    render={({ field }) => (
+                                                                                        <Input
+                                                                                            {...field}
+                                                                                            value={field.value}
+                                                                                            onChange={(e) => {
+                                                                                                field.onChange(e)
+                                                                                            }}
+                                                                                            {...register("emergencyContactName")}
+                                                                                            className="rounded-md focus:outline-none"
+                                                                                            placeholder="Emergency Contact Name"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                                {errors.emergencyContactName && (
+                                                                                    <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactName.message}</p>
+                                                                                )}
+
+                                                                                <div className="my-2">
+                                                                                    <Label>Emergency Contact Number</Label>
+                                                                                    <Controller
+                                                                                        name='emergencyContactNo'
+                                                                                        control={control}
+                                                                                        render={({ field }) => (
+                                                                                            <Input
+                                                                                                {...field}
+                                                                                                value={field.value}
+                                                                                                onChange={(e) => {
+                                                                                                    field.onChange(e)
+                                                                                                }}
+                                                                                                {...register("emergencyContactNo")}
+                                                                                                className="rounded-md focus:outline-none"
+                                                                                                placeholder="Emergency Contact No"
+                                                                                            />
+                                                                                        )}
+                                                                                    />
+                                                                                    {errors.emergencyContactNo && (
+                                                                                        <p className="text-red-600 font-semibold text-sm">{errors.emergencyContactNo.message}</p>
+                                                                                    )}
+                                                                                </div>
+
+                                                                                <div>
+                                                                                    <Label>Relationship</Label>
+                                                                                    <Controller
+                                                                                        name='relationship'
+                                                                                        control={control}
+                                                                                        render={({ field }) => (
+                                                                                            <Input
+                                                                                                {...field}
+                                                                                                value={field.value}
+                                                                                                onChange={(e) => {
+                                                                                                    field.onChange(e)
+                                                                                                }}
+                                                                                                {...register("relationship")}
+                                                                                                className="rounded-md focus:outline-none"
+                                                                                                placeholder="Relationship"
+                                                                                            />
+                                                                                        )}
+                                                                                    />
+                                                                                    {errors.relationship && (
+                                                                                        <p className="text-red-600 font-semibold text-sm">{errors.relationship.message}</p>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div className='flex justify-between items-center my-4'>
+                                                            <button
+                                                                onClick={handlePrev}
+                                                                disabled={currentStep === 1}
+                                                                type='button'
+                                                                className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
+                                                            ${currentStep === 1
+                                                                        ? 'cursor-not-allowed text-gray-400'
+                                                                        : 'cursor-pointer hover:bg-gray-100 text-black'
+                                                                    }`}
+                                                            ><ChevronLeft />Previous</button>
+
+                                                            {currentStep < totalSteps && (
+                                                                <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
+                                                            )}
+
+                                                            {currentStep === totalSteps && (
+                                                                <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>{isSubmitting ? 'Processing...' : 'Submit'}</button>
+                                                            )}
+                                                        </div>
+
+                                                    </form>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            )
+                        }
+                    </div>
+                </div>
             </div>
         </div>
     );
