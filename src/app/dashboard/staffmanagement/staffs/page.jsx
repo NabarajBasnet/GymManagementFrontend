@@ -169,6 +169,9 @@ const StaffManagement = () => {
     const [staffImage, setStaffImage] = useState(null)
     const [preview, setPreview] = useState(null);
 
+    const [renderImage, setRenderImage] = useState(false);
+    const [dbImage, setDbImage] = useState(null);
+
     const [checkInTime, setCheckInTime] = useState(null);
     const [checkOutTime, setCheckOutTime] = useState(null);
 
@@ -565,12 +568,27 @@ const StaffManagement = () => {
         }
     };
 
+    const renderStaffImage = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                setRenderImage(true);
+                setDbImage(responseBody.staff.imageUrl);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
     return (
         <div className="w-full">
             <div className='w-full'
                 onClick={() => {
                     setToast(false);
                     setDeleting(false);
+                    setShowAddressDetails(false);
+                    setShowShiftDetails(false);
                 }}>
 
                 <div className="p-6">
@@ -780,8 +798,8 @@ const StaffManagement = () => {
                                             <Table className='w-full overflow-x-auto px-4'>
                                                 <TableHeader>
                                                     <TableRow className='bg-gray-200 text-black'>
-                                                        {/* <TableHead>Id</TableHead> */}
-                                                        <TableHead>Name</TableHead>
+                                                        <TableHead>Avatar</TableHead>
+                                                        <TableHead className='text-center'>Name</TableHead>
                                                         <TableHead className='text-center'>Contact</TableHead>
                                                         <TableHead className='text-center'>Address</TableHead>
                                                         <TableHead className='text-center'>No Of Shifts</TableHead>
@@ -800,7 +818,14 @@ const StaffManagement = () => {
                                                     {Array.isArray(staffs) && staffs.length > 0 ? (
                                                         staffs.map((staff) => (
                                                             <TableRow key={staff._id}>
-                                                                <TableCell className='font-semibold'>{staff.fullName}</TableCell>
+                                                                <TableCell className='font-semibold'>
+                                                                    <img
+                                                                        onClick={() => renderStaffImage(staff._id)}
+                                                                        src={`http://localhost:5000${staff.imageUrl}`}
+                                                                        className="w-10 h-10 cursor-pointer rounded-full border border-indigo-500"
+                                                                    />
+                                                                </TableCell>
+                                                                <TableCell className='font-semibold text-center'>{staff.fullName}</TableCell>
                                                                 <TableCell className='text-center'>
                                                                     <p className="flex flex-col text-[11px] items-center">
                                                                         <span className="text-sm">
@@ -1017,6 +1042,25 @@ const StaffManagement = () => {
                                 </div>
                             </div>
                         )}
+
+                        {/* Show staff image */}
+                        {renderImage && (
+                            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50">
+                                <div className="relative bg-transparent p-4">
+                                    <Button
+                                        onClick={() => setRenderImage(false)}
+                                        className="absolute top-2 right-2 bg-red-500 text-white px-3 hover:bg-red-500 rounded-md"
+                                    >
+                                        <MdClose />
+                                        Close
+                                    </Button>
+                                    <div className="flex justify-center">
+                                        <img src={`http://localhost:5000${dbImage}`} alt="Preview" className="max-w-full max-h-[80vh] rounded-xl" />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
 
                         {
                             openForm && (

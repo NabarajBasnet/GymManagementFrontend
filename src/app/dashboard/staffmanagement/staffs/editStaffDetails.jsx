@@ -505,9 +505,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                                             placeholder="Profile picture"
                                                         />
                                                     </div>
-                                                    <div>
-                                                        <img src={`http://localhost:5000` + staff.staff.imageUrl} />
-                                                    </div>
                                                 </div>
                                             </div>
                                         )}
