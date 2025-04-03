@@ -444,7 +444,7 @@ const StaffTaskManagement = () => {
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                             >
-                                <option value="all">All Categories</option>
+                                <option value="">All Categories</option>
                                 {CATEGORIES.map(category => (
                                     <option key={category} value={category}>{category}</option>
                                 ))}
