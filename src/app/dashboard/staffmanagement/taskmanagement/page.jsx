@@ -163,6 +163,25 @@ const StaffTaskManagement = () => {
     const [priority, setPriority] = useState('');
     const [category, setCategory] = useState('');
 
+    const [selectedTasks, setSelectedTasks] = useState([]);
+
+    // Toggle individual task selection
+    const handleTaskSelect = (taskId) => {
+        setSelectedTasks(prev => prev.includes(taskId)
+            ? prev.filter(id => id !== taskId)
+            : [...prev, taskId]
+        );
+    };
+
+    // Toggle select all/none
+    const handleSelectAll = () => {
+        if (selectedTasks.length === data.tasks?.length) {
+            setSelectedTasks([]);
+        } else {
+            setSelectedTasks(data.tasks?.map(task => task._id) || []);
+        }
+    };
+
     // Form states
     const {
         register,
@@ -360,6 +379,34 @@ const StaffTaskManagement = () => {
         return `${formattedHour}:${minute.toString().padStart(2, "0")} ${ampm}`;
     };
 
+    const deleteSelectedTask = async () => {
+        setDeleting(true);
+        try {
+            const response = await fetch(`http://localhost:3000/api/tasks/delete-multiple-tasks`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ taskIds: selectedTasks })
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                setDeleting(false);
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['tasks']);
+                setSelectedTasks([]);
+            } else {
+                setDeleting(false);
+                toast.error(responseBody.message);
+                queryClient.invalidateQueries(['tasks']);
+            }
+        } catch (error) {
+            setDeleting(false);
+            console.log("Error: ", error);
+        };
+    };
+
     return (
         <div className="min-h-screen w-full bg-gray-50">
             <div className="w-full px-4 sm:px-6 py-6">
@@ -418,7 +465,41 @@ const StaffTaskManagement = () => {
                                 />
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className={`grid grid-cols-1 sm:grid-cols-3 ${selectedTasks.length === 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-4'} gap-4`}>
+                            {selectedTasks.length === 0 ? (
+                                <></>
+                            ) : (
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            variant="destructive"
+                                            disabled={selectedTasks.length === 0}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                            Delete Selected ({selectedTasks.length})
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This action cannot be undone. This will permanently delete the assigned task
+                                                and remove data from servers.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogAction
+                                                className='bg-red-600 hover:bg-red-700'
+                                                onClick={() => deleteSelectedTask()}
+                                            >
+                                                Delete
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+
+                            )}
                             <select
                                 className="w-full border rounded-sm px-3 py-2 bg-white"
                                 value={status}
@@ -464,23 +545,32 @@ const StaffTaskManagement = () => {
                                 <TableHeader className="bg-gray-50">
                                     <TableRow>
                                         <TableHead>
-                                            <Checkbox />
+                                            <Checkbox
+                                                checked={data.tasks?.length > 0 && selectedTasks.length === data.tasks.length}
+                                                onCheckedChange={handleSelectAll}
+                                            />
                                         </TableHead>
-                                        <TableHead className="">Task</TableHead>
-                                        <TableHead className="">Assigned To</TableHead>
-                                        <TableHead className="">Status</TableHead>
-                                        <TableHead className="">Priority</TableHead>
-                                        <TableHead className="">Due Date & Time</TableHead>
-                                        <TableHead className="">Category</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
+                                        <TableHead>Task</TableHead>
+                                        <TableHead>Assigned To</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Priority</TableHead>
+                                        <TableHead>Due Date & Time</TableHead>
+                                        <TableHead>Category</TableHead>
+                                        <TableHead className='text-center'>Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {Array.isArray(data.tasks) && data.tasks.length > 0 ? (
                                         data.tasks.map((task) => (
-                                            <TableRow key={task._id} className="hover:bg-gray-50">
+                                            <TableRow
+                                                key={task._id}
+                                                className={selectedTasks.includes(task._id) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'}
+                                            >
                                                 <TableCell>
-                                                    <Checkbox />
+                                                    <Checkbox
+                                                        checked={selectedTasks.includes(task._id)}
+                                                        onCheckedChange={() => handleTaskSelect(task._id)}
+                                                    />
                                                 </TableCell>
 
                                                 <TableCell>
@@ -551,7 +641,7 @@ const StaffTaskManagement = () => {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex items-center justify-end space-x-2">
+                                                    <div className="flex items-center justify-end">
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
