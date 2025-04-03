@@ -424,7 +424,7 @@ const MyProfile = () => {
                                                     value={new Date(staffDetails?.dob).toLocaleDateString()}
                                                     icon={<FaCalendarAlt />}
                                                 />
-                                                <InfoItem label="Address" value={staffDetails?.address} icon={<HiLocationMarker />} />
+                                                <InfoItem label="Address" value={staffDetails?.currentAddress.street} icon={<HiLocationMarker />} />
                                             </dl>
                                         </div>
 
@@ -449,14 +449,13 @@ const MyProfile = () => {
                                         <h3 className="text-lg font-semibold text-gray-800 mb-4">Emergency Contact</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ContactPerson
-                                                name="Emily Johnson"
-                                                relationship="Spouse"
-                                                phone="+1 (555) 234-5678"
+                                                name="Emergency Contact Name"
+                                                relationship="Parent"
+                                                phone={staffDetails?.emergencyContactName}
                                             />
                                             <ContactPerson
-                                                name="Michael Chen"
-                                                relationship="Father"
-                                                phone="+1 (555) 345-6789"
+                                                name="Emergency Contact No"
+                                                phone={staffDetails?.emergencyContactNo}
                                             />
                                         </div>
                                     </div>
