@@ -1,12 +1,7 @@
 'use client';
 
+import { IoCloseSharp } from "react-icons/io5";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -26,20 +21,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { TiEdit } from "react-icons/ti";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -67,6 +48,7 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Button } from "@/components/ui/button";
 import Loader from '@/components/Loader/Loader';
 import Deleteing from "@/components/Deleting/Deleting";
+import EditTaskDetails from "./editTaskDetails";
 
 const INITIAL_TASKS = [
     {
@@ -198,6 +180,7 @@ const StaffTaskManagement = () => {
         queryKey: ['staffs'],
         queryFn: getAllStaffMembers
     });
+    const staffs = STAFF_MEMBERS?.staffs || [];
 
     const getAllTasks = async ({ queryKey }) => {
         try {
@@ -214,28 +197,20 @@ const StaffTaskManagement = () => {
         queryFn: getAllTasks
     });
 
-    console.log("Task assigned to: ", taskAssignedTo);
+    const [currentTask, setCurrentTask] = useState(null);
+
+    const [openEditTaskForm, setEditOpenTaskForm] = useState(false);
 
     const getSingleTask = async (id) => {
-        setTaskMode('Edit');
         try {
             const response = await fetch(`http://localhost:3000/api/tasks/${id}`);
             const responseBody = await response.json();
             if (response.ok && response.status === 200) {
+                setCurrentTask(responseBody.task)
                 toast.success(responseBody.message);
                 setTaskAssignedTo(responseBody.task.assignedTo);
+                setEditOpenTaskForm(true);
 
-                // Populate data in form for edit
-                reset({
-                    title: responseBody.task.title,
-                    description: responseBody.task.description,
-                    assignedTo: responseBody.task.assignedTo?._id || responseBody.task.assignedTo || "",
-                    category: responseBody.task.category,
-                    priority: responseBody.task.priority,
-                    dueDate: responseBody.task.dueDate ? new Date(responseBody.task.dueDate).toISOString().split('T')[0] : '',
-                });
-
-                setIsAddingTask(true);
             } else {
                 toast.error(responseBody.message);
                 toast.error(responseBody.error);
@@ -249,8 +224,8 @@ const StaffTaskManagement = () => {
 
     const addNewTask = async (data) => {
         try {
-            const { title, description, assignedTo, category, priority, dueDate } = data;
-            const finalData = { title: title, description: description, assignedTo: assignedTo, status: 'Not Started', category: category, priority: priority, dueDate: dueDate };
+            const { title, description, assignedTo, category, priority, dueDate, dueTime } = data;
+            const finalData = { title: title, description: description, assignedTo: assignedTo, status: 'Not Started', category: category, priority: priority, dueDate: dueDate, dueTime: dueTime };
             for (let key in finalData) {
                 if (!finalData[key]) {
                     toast.error(`${key.charAt(0).toUpperCase() + key.slice(1)} field is missing, Please fill this field`);
@@ -275,26 +250,6 @@ const StaffTaskManagement = () => {
             toast.error(error.message);
             console.log("Error: ", error);
             console.log("Error Message: ", error.message);
-        };
-    };
-
-    const editTask = async (id) => {
-        setIsAddingTask(true);
-        try {
-            const response = await fetch(`http://localhost:3000/api/tasks/update/${id}`, {
-                method: 'PATCH',
-                body: JSON.stringify('update')
-            });
-            const responseBody = await response.json();
-            console.log('Response body: ', responseBody);
-            if (response.ok) {
-                toast.success(responseBody.message);
-                setIsAddingTask(false);
-                reset();
-            };
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.success(error.message);
         };
     };
 
@@ -363,6 +318,13 @@ const StaffTaskManagement = () => {
         );
     });
 
+    const formatTo12Hour = (timeStr) => {
+        const [hour, minute] = timeStr.split(":").map(Number);
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+    };
+
     return (
         <div className="min-h-screen w-full bg-gray-50">
             <div className="w-full px-4 sm:px-6 py-6">
@@ -396,6 +358,10 @@ const StaffTaskManagement = () => {
                     <Deleteing />
                 ) : (
                     <></>
+                )}
+
+                {openEditTaskForm && (
+                    <EditTaskDetails task={currentTask} id={currentTask ? currentTask._id : 'null'} />
                 )}
 
                 {/* Filters and Search */}
@@ -454,16 +420,16 @@ const StaffTaskManagement = () => {
                             <Table>
                                 <TableHeader className="bg-gray-50">
                                     <TableRow>
-                                        <TableHead className="w-[50px]">
+                                        <TableHead className="">
                                             <input type='checkbox' className="rounded text-blue-600 focus:ring-blue-500" />
                                         </TableHead>
-                                        <TableHead className="min-w-[250px]">Task</TableHead>
-                                        <TableHead className="min-w-[150px]">Assigned To</TableHead>
-                                        <TableHead className="min-w-[100px]">Status</TableHead>
-                                        <TableHead className="min-w-[100px]">Priority</TableHead>
-                                        <TableHead className="min-w-[120px]">Due Date</TableHead>
-                                        <TableHead className="min-w-[120px]">Category</TableHead>
-                                        <TableHead className="min-w-[100px] text-right">Actions</TableHead>
+                                        <TableHead className="">Task</TableHead>
+                                        <TableHead className="">Assigned To</TableHead>
+                                        <TableHead className="">Status</TableHead>
+                                        <TableHead className="">Priority</TableHead>
+                                        <TableHead className="">Due Date & Time</TableHead>
+                                        <TableHead className="">Category</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -493,22 +459,30 @@ const StaffTaskManagement = () => {
                                                 <TableCell>
                                                     <div className="flex items-center space-x-3">
                                                         <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger asChild>
-                                                                        <span className="text-sm hover:cursor-pointer font-medium text-blue-800">
-                                                                            {task.assignedTo.split(" ").map((n) => n[0]).join("")}
-                                                                        </span>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>View staff profile</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
+                                                            {(() => {
+                                                                const assignedStaff = staffs.find((staff) => staff._id === task.assignedTo);
+                                                                return assignedStaff ? (
+                                                                    <img
+                                                                        src={`http://localhost:5000${assignedStaff.imageUrl}`}
+                                                                        alt={assignedStaff.name}
+                                                                        className="w-16 hover:cursor-pointer h-8 rounded-full"
+                                                                    />
+                                                                ) : (
+                                                                    <span className="text-sm hover:cursor-pointer font-medium text-blue-800">
+                                                                        {task.assignedTo?.split(" ").map((n) => n[0]).join("")}
+                                                                    </span>
+                                                                );
+                                                            })()}
                                                         </div>
-                                                        <span className="text-sm font-medium text-gray-900">{task.assignedTo}</span>
+                                                        <span className="text-sm font-medium text-gray-900 hover:cursor-pointer">
+                                                            {(() => {
+                                                                const assignedStaff = staffs.find((staff) => staff._id === task.assignedTo);
+                                                                return assignedStaff ? assignedStaff.fullName : "Unknown Staff";
+                                                            })()}
+                                                        </span>
                                                     </div>
                                                 </TableCell>
+
                                                 <TableCell>
                                                     <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${getStatusColor(task.status)}`}>
                                                         {task.status}
@@ -523,11 +497,11 @@ const StaffTaskManagement = () => {
                                                     <div className="flex flex-col text-gray-500 text-sm">
                                                         <div className="flex items-center">
                                                             <Calendar size={16} className="mr-2 text-gray-400" />
-                                                            {new Date(task.dueDate).toLocaleDateString()}
+                                                            {new Date(task.dueDate).toISOString().split('T')[0]}
                                                         </div>
                                                         <div className="flex items-center">
-                                                            <Calendar size={16} className="mr-2 text-gray-400" />
-                                                            {new Date(task.dueDate).toLocaleTimeString()}
+                                                            <Clock size={16} className="mr-2 text-gray-400" />
+                                                            {formatTo12Hour(task.dueTime)}
                                                         </div>
                                                     </div>
                                                 </TableCell>
@@ -605,9 +579,12 @@ const StaffTaskManagement = () => {
             {/* Add Task Modal */}
             {
                 isAddingTask && (
-                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 p-4">
+                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-40 p-4">
                         <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <h2 className="text-2xl font-bold mb-6">Add New Task</h2>
+                            <div className="flex items-center justify-between mb-6">
+                                <h2 className="text-2xl font-bold">Add New Task</h2>
+                                <IoCloseSharp className="cursor-pointer w-5 h-5" onClick={() => setIsAddingTask(false)} />
+                            </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="col-span-1 md:col-span-2">
                                     <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
@@ -641,11 +618,15 @@ const StaffTaskManagement = () => {
                                             className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         >
                                             <option value="">Select Staff</option>
-                                            {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
-                                                <option key={staff._id} value={taskAssignedTo}>{taskAssignedTo}</option>
-                                            )) :
+                                            {STAFF_MEMBERS?.staffs?.length > 0 ? (
+                                                STAFF_MEMBERS.staffs.map((staff) => (
+                                                    <option key={staff._id} value={staff._id} selected={staff._id === currentTask.assignedTo}>
+                                                        {staff.fullName}
+                                                    </option>
+                                                ))
+                                            ) : (
                                                 <option>Not registered</option>
-                                            }
+                                            )}
                                         </select>
                                     ) : (
                                         <select
@@ -693,13 +674,22 @@ const StaffTaskManagement = () => {
                                 </div>
                                 <div>
                                     <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date</Label>
-                                    <Input
-                                        id="dueDate"
-                                        type="date"
-                                        name="dueDate"
-                                        {...register('dueDate')}
-                                        className="mt-1 rounded-sm"
-                                    />
+                                    <div className="flex items-center">
+                                        <Input
+                                            id="dueDate"
+                                            type="date"
+                                            name="dueDate"
+                                            {...register('dueDate')}
+                                            className="mt-1 rounded-sm"
+                                        />
+                                        <Input
+                                            id="dueDate"
+                                            type="time"
+                                            name="dueTime"
+                                            {...register('dueTime')}
+                                            className="mt-1 rounded-sm"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex flex-col sm:flex-row justify-end gap-4 mt-6">
