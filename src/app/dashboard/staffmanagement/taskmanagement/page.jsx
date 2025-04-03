@@ -1,5 +1,8 @@
 'use client';
 
+import Pagination from "@/components/ui/CustomPagination.jsx";
+import { usePagination } from "@/hooks/Pagination.js";
+import { Checkbox } from "@/components/ui/checkbox"
 import { IoCloseSharp } from "react-icons/io5";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import {
@@ -152,6 +155,13 @@ const StaffTaskManagement = () => {
     const queryClient = useQueryClient();
     const [deleteing, setDeleting] = useState(false);
     const { user, loading } = useUser();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(15);
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
+    const [searchQuery, setSearchQuery] = useState();
+    const [status, setStatus] = useState('');
+    const [priority, setPriority] = useState('');
+    const [category, setCategory] = useState('');
 
     // Form states
     const {
@@ -183,8 +193,9 @@ const StaffTaskManagement = () => {
     const staffs = STAFF_MEMBERS?.staffs || [];
 
     const getAllTasks = async ({ queryKey }) => {
+        const [, page, searchQuery, status, priority, category] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/tasks`);
+            const response = await fetch(`http://localhost:3000/api/tasks?page=${page}&limit=${limit}&taskSearchQuery=${searchQuery}&status=${status}&priority=${priority}&category=${category}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -193,9 +204,33 @@ const StaffTaskManagement = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['tasks'],
+        queryKey: ['tasks', currentPage, searchQuery || '', status, priority, category, limit],
         queryFn: getAllTasks
     });
+
+    const { totalPages, tasks: satffTasks, totalTasks } = data || {};
+
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
+
+    useEffect(() => {
+        const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => { clearTimeout(handler) }
+    }, [searchQuery, limit]);
+
+    useEffect(() => {
+        getAllTasks();
+    }, [limit]);
+
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, totalTasks);
 
     const [currentTask, setCurrentTask] = useState(null);
 
@@ -374,32 +409,40 @@ const StaffTaskManagement = () => {
                                     type="text"
                                     placeholder="Search tasks..."
                                     className="w-full pl-10 pr-4 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                                    value={searchQuery}
+                                    onChange={(e) => {
+                                        setCurrentPage(1);
+                                        setSearchQuery(e.target.value);
+                                    }
+                                    }
                                 />
                             </div>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             <select
                                 className="w-full border rounded-sm px-3 py-2 bg-white"
-                                onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
                             >
-                                <option value="all">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="in progress">In Progress</option>
-                                <option value="completed">Completed</option>
+                                <option value="">All Status</option>
+                                <option value="Not Started">Not Started</option>
+                                <option value="In Progress">In Progress</option>
+                                <option value="Completed">Completed</option>
                             </select>
                             <select
                                 className="w-full border rounded-sm px-3 py-2 bg-white"
-                                onChange={(e) => setFilters({ ...filters, priority: e.target.value })}
+                                value={priority}
+                                onChange={(e) => setPriority(e.target.value)}
                             >
-                                <option value="all">All Priority</option>
-                                <option value="high">High</option>
-                                <option value="medium">Medium</option>
-                                <option value="low">Low</option>
+                                <option value="">All Priority</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
                             </select>
                             <select
                                 className="w-full border rounded-sm px-3 py-2 bg-white"
-                                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                                value={category}
+                                onChange={(e) => setCategory(e.target.value)}
                             >
                                 <option value="all">All Categories</option>
                                 {CATEGORIES.map(category => (
@@ -420,8 +463,8 @@ const StaffTaskManagement = () => {
                             <Table>
                                 <TableHeader className="bg-gray-50">
                                     <TableRow>
-                                        <TableHead className="">
-                                            <input type='checkbox' className="rounded text-blue-600 focus:ring-blue-500" />
+                                        <TableHead>
+                                            <Checkbox />
                                         </TableHead>
                                         <TableHead className="">Task</TableHead>
                                         <TableHead className="">Assigned To</TableHead>
@@ -437,10 +480,7 @@ const StaffTaskManagement = () => {
                                         data.tasks.map((task) => (
                                             <TableRow key={task._id} className="hover:bg-gray-50">
                                                 <TableCell>
-                                                    <input
-                                                        type='checkbox'
-                                                        className="rounded text-blue-600 focus:ring-blue-500"
-                                                    />
+                                                    <Checkbox />
                                                 </TableCell>
 
                                                 <TableCell>
@@ -572,6 +612,22 @@ const StaffTaskManagement = () => {
                                 </TableBody>
                             </Table>
                         )}
+
+                        <div className='border-t border-gray-600'>
+                            <div className="my-2 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm font-gray-700">
+                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalTasks}</span> entries
+                                </p>
+                                <Pagination
+                                    total={totalPages}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
