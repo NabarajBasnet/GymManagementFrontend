@@ -39,6 +39,7 @@ import {
     MessageSquare,
     Plus,
     PlusCircle,
+    Clock,
     Settings,
     User,
     UserPlus,
@@ -88,18 +89,29 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+const CATEGORIES = [
+    'Maintenance',
+    'Inventory',
+    'Training',
+    'Customer Service',
+    'Administration'
+];
+
 
 const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
     const router = useRouter();
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('')
-    const responseResultType = ['Success', 'Failure'];
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
+    const [myTasks, setMyTasks] = useState(null);
+    console.log("My Tasks: ", myTasks);
+
+    // States for flitering tasks
+    const [status, setStatus] = useState('');
+    const [priority, setPriority] = useState('');
+    const [category, setCategory] = useState('');
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -109,11 +121,37 @@ const MyProfile = () => {
         return () => clearInterval(interval);
     }, []);
 
+    const getMyTasks = async (id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                setMyTasks(responseBody.myTasks);
+            } else {
+                toast.error(responseBody.message);
+            }
+        } catch (error) {
+            toast.error(error.message);
+            console.log("Error: ", error);
+        };
+    };
+
+    useEffect(() => {
+        const fetchTasks = async () => {
+            if (loggedinStaff) {
+                await getMyTasks(loggedinStaff._id);
+            }
+        };
+        fetchTasks();
+    }, [status, priority, category, limit]);
+
     const fetchedLoggedStaffDetails = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
+                await getMyTasks(responseBody.loggedInStaff._id);
                 setStaffDetails(responseBody.loggedInStaff)
             }
             return responseBody;
@@ -193,6 +231,14 @@ const MyProfile = () => {
             console.log("Error: ", error);
         }
     };
+
+    const formatTo12Hour = (timeStr) => {
+        const [hour, minute] = timeStr.split(":").map(Number);
+        const ampm = hour >= 12 ? "PM" : "AM";
+        const formattedHour = hour % 12 || 12;
+        return `${formattedHour}:${minute.toString().padStart(2, "0")} ${ampm}`;
+    };
+
     // Helper components
     const InfoItem = ({ label, value, icon }) => (
         <div className="flex items-center justify-between py-2 border-b border-gray-100">
@@ -456,29 +502,52 @@ const MyProfile = () => {
                                         <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-700 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                             <h2 className="text-2xl font-bold text-white">Task Management</h2>
                                             <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                                                <Select defaultValue="all">
-                                                    <SelectTrigger className="bg-white/90 hover:bg-white/100 transition-colors w-full sm:w-[180px]">
-                                                        <SelectValue placeholder="Filter tasks" />
+                                                <Select value={status} onValueChange={(value) => setStatus(value === "all" ? "" : value)}>
+                                                    <SelectTrigger className="w-full rounded-sm">
+                                                        <SelectValue placeholder="All Status" />
                                                     </SelectTrigger>
                                                     <SelectContent>
-                                                        <SelectItem value="all" className="flex items-center gap-2">
-                                                            <span className="w-2 h-2 rounded-full bg-blue-500" /> All Tasks
-                                                        </SelectItem>
-                                                        <SelectItem value="pending">
-                                                            <span className="w-2 h-2 rounded-full bg-yellow-500" /> Pending
-                                                        </SelectItem>
-                                                        <SelectItem value="inProgress">
-                                                            <span className="w-2 h-2 rounded-full bg-purple-500" /> In Progress
-                                                        </SelectItem>
-                                                        <SelectItem value="completed">
-                                                            <span className="w-2 h-2 rounded-full bg-green-500" /> Completed
-                                                        </SelectItem>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Status</SelectLabel>
+                                                            <SelectItem value="all">All Status</SelectItem>
+                                                            <SelectItem value="Not Started">Not Started</SelectItem>
+                                                            <SelectItem value="In Progress">In Progress</SelectItem>
+                                                            <SelectItem value="Completed">Completed</SelectItem>
+                                                        </SelectGroup>
                                                     </SelectContent>
                                                 </Select>
-                                                <Button className="shrink-0 bg-white/90 hover:bg-white text-blue-600 hover:text-blue-700 shadow-sm">
-                                                    <Plus className="h-4 w-4 mr-2" />
-                                                    New Task
-                                                </Button>
+
+                                                <Select value={priority} onValueChange={(value) => setPriority(value === "all" ? "" : value)}>
+                                                    <SelectTrigger className="w-full rounded-sm">
+                                                        <SelectValue placeholder="All Priority" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Priority</SelectLabel>
+                                                            <SelectItem value="all">All Priority</SelectItem>
+                                                            <SelectItem value="High">High</SelectItem>
+                                                            <SelectItem value="Medium">Medium</SelectItem>
+                                                            <SelectItem value="Low">Low</SelectItem>
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
+
+                                                <Select value={category} onValueChange={(value) => setCategory(value === "all" ? "" : value)}>
+                                                    <SelectTrigger className="w-full rounded-sm">
+                                                        <SelectValue placeholder="All Categories" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        <SelectGroup>
+                                                            <SelectLabel>Category</SelectLabel>
+                                                            <SelectItem value="all">All Categories</SelectItem>
+                                                            {CATEGORIES.map((category) => (
+                                                                <SelectItem key={category} value={category}>
+                                                                    {category}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectGroup>
+                                                    </SelectContent>
+                                                </Select>
                                             </div>
                                         </div>
 
@@ -487,8 +556,8 @@ const MyProfile = () => {
                                             <div className="bg-white p-4 rounded-xl shadow-sm border-l-4 border-blue-500 hover:shadow-md transition-shadow">
                                                 <div className="flex justify-between items-center">
                                                     <div>
-                                                        <p className="text-sm text-gray-500 mb-1">Total Tasks</p>
-                                                        <p className="text-2xl font-bold">24</p>
+                                                        <p className="text-sm text-gray-500 mb-1">My Total Tasks</p>
+                                                        <p className="text-2xl font-bold">{myTasks ? myTasks.length : 'Null'}</p>
                                                     </div>
                                                     <div className="bg-blue-100 p-2 rounded-lg">
                                                         <FaClipboard className="h-6 w-6 text-blue-600" />
@@ -501,88 +570,80 @@ const MyProfile = () => {
                                         {/* Task List */}
                                         <div className="p-6 space-y-4">
                                             {/* High Priority Task */}
-                                            <div className="group bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all">
-                                                <div className="flex items-start justify-between gap-4">
-                                                    <Checkbox id="task1" className="mt-1.5 h-5 w-5 border-2" />
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <Label htmlFor="task1" className="text-base font-semibold">
-                                                                Complete monthly report
-                                                            </Label>
-                                                            <Badge variant="destructive" className="rounded-md px-2 py-1">
-                                                                <GoAlertFill className="h-4 w-4 mr-1" /> High Priority
-                                                            </Badge>
-                                                        </div>
-                                                        <p className="text-sm text-gray-600 mb-4">
-                                                            Prepare and submit the monthly performance report for department review
-                                                        </p>
-                                                        <div className="flex items-center justify-between">
-                                                            <div className="flex items-center gap-3 text-sm text-gray-500">
-                                                                <FaCalendarAlt className="h-4 w-4" />
-                                                                <span>Due: Mar 24, 2025</span>
-                                                                <Progress value={30} className="h-2 w-32" />
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <DropdownMenu>
-                                                                    <DropdownMenuTrigger asChild>
-                                                                        <Button variant="ghost" size="sm" className="rounded-lg">
-                                                                            <FiMoreHorizontal className="h-4 w-4" />
-                                                                        </Button>
-                                                                    </DropdownMenuTrigger>
-                                                                    <DropdownMenuContent align="end" className="min-w-[200px]">
-                                                                        <DropdownMenuItem className="gap-2">
-                                                                            <MdEdit className="h-4 w-4" /> Edit Task
-                                                                        </DropdownMenuItem>
-                                                                        <DropdownMenuItem className="gap-2">
-                                                                            <LuMessageSquareText className="h-4 w-4" /> Add Comment
-                                                                        </DropdownMenuItem>
-                                                                        <DropdownMenuSeparator />
-                                                                        <DropdownMenuItem className="text-red-600 gap-2">
-                                                                            <IoMdTrash className="h-4 w-4" /> Delete Task
-                                                                        </DropdownMenuItem>
-                                                                    </DropdownMenuContent>
-                                                                </DropdownMenu>
-                                                                <Button variant="outline" size="sm" className="rounded-lg gap-2">
-                                                                    <RiArrowRightCircleFill className="h-4 w-4" /> Start Task
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {myTasks && myTasks.length > 0 ? (
+                                                myTasks.map((task, index) => (
+                                                    <div
+                                                        key={task._id || index}
+                                                        className="group bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all mb-4"
+                                                    >
+                                                        <div className="flex items-start justify-between gap-4">
+                                                            <Checkbox id={`task-${index}`} className="mt-1.5 h-5 w-5 border-2" />
+                                                            <div className="flex-1">
+                                                                <div className="flex items-center gap-3 mb-2">
+                                                                    <Label htmlFor={`task-${index}`} className="text-base font-semibold">
+                                                                        {task.title}
+                                                                    </Label>
 
-                                            {/* Completed Task */}
-                                            <div className="group bg-green-50 p-4 rounded-lg border border-green-200 opacity-75 hover:opacity-100 transition-opacity">
-                                                <div className="flex items-start justify-between gap-4">
-                                                    <Checkbox
-                                                        id="task3"
-                                                        checked={true}
-                                                        className="mt-1.5 h-5 w-5 border-2 data-[state=checked]:border-green-600"
-                                                    />
-                                                    <div className="flex-1">
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <Label
-                                                                htmlFor="task3"
-                                                                className="text-base font-medium line-through text-green-800"
-                                                            >
-                                                                Schedule team meeting
-                                                            </Label>
-                                                            <Badge variant="outline" className="border-green-300 text-green-800">
-                                                                <BiSolidCheckCircle className="h-4 w-4 mr-1" /> Completed
-                                                            </Badge>
-                                                        </div>
-                                                        <div className="flex items-center justify-between text-sm text-green-700">
-                                                            <div className="flex items-center gap-3">
-                                                                <BiSolidCalendarCheck className="h-4 w-4" />
-                                                                <span>Completed on Mar 21, 2025</span>
+                                                                    <Badge
+                                                                        variant={task.priority === "High" ? "destructive" : "secondary"}
+                                                                        className="rounded-md px-2 py-1"
+                                                                    >
+                                                                        <GoAlertFill className="h-4 w-4 mr-1" /> {task.priority} Priority
+                                                                    </Badge>
+                                                                </div>
+
+                                                                <p className="text-sm text-gray-600 mb-4">
+                                                                    {task.description}
+                                                                </p>
+
+                                                                <div className="flex items-center justify-between">
+                                                                    <div>
+                                                                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                                            <FaCalendarAlt size={16} className="h-4 w-4" />
+                                                                            <span>Due Date: {new Date(task.dueDate).toLocaleDateString()}</span>
+                                                                            <Progress value={0} className="h-2 w-32" />
+                                                                        </div>
+
+                                                                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                                            <Clock size={16} className="h-4 w-4" />
+                                                                            <span>Due Date:{formatTo12Hour(task.dueTime)}
+                                                                            </span>
+                                                                            <Progress value={0} className="h-2 w-32" />
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div className="flex gap-2">
+                                                                        <DropdownMenu>
+                                                                            <DropdownMenuTrigger asChild>
+                                                                                <Button variant="ghost" size="sm" className="rounded-lg">
+                                                                                    <FiMoreHorizontal className="h-4 w-4" />
+                                                                                </Button>
+                                                                            </DropdownMenuTrigger>
+                                                                            <DropdownMenuContent align="end" className="min-w-[200px]">
+                                                                                <DropdownMenuItem className="gap-2">
+                                                                                    <MdEdit className="h-4 w-4" /> Edit Task
+                                                                                </DropdownMenuItem>
+                                                                                <DropdownMenuItem className="gap-2">
+                                                                                    <LuMessageSquareText className="h-4 w-4" /> Add Comment
+                                                                                </DropdownMenuItem>
+                                                                                <DropdownMenuSeparator />
+                                                                                <DropdownMenuItem className="text-red-600 gap-2">
+                                                                                    <IoMdTrash className="h-4 w-4" /> Delete Task
+                                                                                </DropdownMenuItem>
+                                                                            </DropdownMenuContent>
+                                                                        </DropdownMenu>
+                                                                        <Button variant="outline" size="sm" className="rounded-lg gap-2">
+                                                                            <RiArrowRightCircleFill className="h-4 w-4" /> Start Task
+                                                                        </Button>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-                                                            <Button variant="ghost" size="sm" className="text-green-700 hover:bg-green-100">
-                                                                <FiRotateCw className="h-4 w-4 mr-2" /> Reopen
-                                                            </Button>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
+                                                ))
+                                            ) : (
+                                                <Loader />
+                                            )}
                                         </div>
 
                                         {/* Enhanced Pagination */}

@@ -6,7 +6,6 @@ import RTKProvider from "@/state/ReduxProvider";
 import { useSelector } from "react-redux";
 import DashboardFooter from "@/components/DashboardFooter/Footer";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
-import { Toaster } from "react-hot-toast";
 
 export default function ClientLayout({ children }) {
     const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
