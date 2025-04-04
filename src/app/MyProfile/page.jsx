@@ -106,7 +106,6 @@ const MyProfile = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
     const [myTasks, setMyTasks] = useState(null);
-    console.log("My Tasks: ", myTasks);
 
     // States for flitering tasks
     const [status, setStatus] = useState('');
@@ -230,6 +229,27 @@ const MyProfile = () => {
             toast.error(error);
             console.log("Error: ", error);
         }
+    };
+
+    const startTask = async (id) => {
+        try {
+            const status = 'In Progress';
+            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?startTask=${'In Progress'}`, {
+                method: "PATCH",
+                body: JSON.stringify(status)
+            });
+
+            const responseBody = await response.json();
+
+            if (response.ok) {
+                toast.success(responseBody.message);
+            } else {
+                toast.error(responseBody.message);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+        };
     };
 
     const formatTo12Hour = (timeStr) => {
@@ -568,13 +588,13 @@ const MyProfile = () => {
                                         </div>
 
                                         {/* Task List */}
-                                        <div className="p-6 space-y-4">
+                                        <div className="p-2 md:p-6 space-y-4">
                                             {/* High Priority Task */}
                                             {myTasks && myTasks.length > 0 ? (
                                                 myTasks.map((task, index) => (
                                                     <div
                                                         key={task._id || index}
-                                                        className="group bg-white p-4 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all mb-4"
+                                                        className="group bg-white md:p-4 p-2 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all mb-4"
                                                     >
                                                         <div className="flex items-start justify-between gap-4">
                                                             <Checkbox id={`task-${index}`} className="mt-1.5 h-5 w-5 border-2" />
@@ -586,9 +606,9 @@ const MyProfile = () => {
 
                                                                     <Badge
                                                                         variant={task.priority === "High" ? "destructive" : "secondary"}
-                                                                        className="rounded-md px-2 py-1"
+                                                                        className="rounded-md flex items-center px-2 py-1"
                                                                     >
-                                                                        <GoAlertFill className="h-4 w-4 mr-1" /> {task.priority} Priority
+                                                                        <GoAlertFill className="h-4 text-red-600 w-4 mr-1" /> {task.priority} Priority
                                                                     </Badge>
                                                                 </div>
 
@@ -601,14 +621,12 @@ const MyProfile = () => {
                                                                         <div className="flex items-center gap-3 text-sm text-gray-500">
                                                                             <FaCalendarAlt size={16} className="h-4 w-4" />
                                                                             <span>Due Date: {new Date(task.dueDate).toLocaleDateString()}</span>
-                                                                            <Progress value={0} className="h-2 w-32" />
                                                                         </div>
 
                                                                         <div className="flex items-center gap-3 text-sm text-gray-500">
                                                                             <Clock size={16} className="h-4 w-4" />
                                                                             <span>Due Date:{formatTo12Hour(task.dueTime)}
                                                                             </span>
-                                                                            <Progress value={0} className="h-2 w-32" />
                                                                         </div>
                                                                     </div>
 
@@ -621,18 +639,14 @@ const MyProfile = () => {
                                                                             </DropdownMenuTrigger>
                                                                             <DropdownMenuContent align="end" className="min-w-[200px]">
                                                                                 <DropdownMenuItem className="gap-2">
-                                                                                    <MdEdit className="h-4 w-4" /> Edit Task
-                                                                                </DropdownMenuItem>
-                                                                                <DropdownMenuItem className="gap-2">
                                                                                     <LuMessageSquareText className="h-4 w-4" /> Add Comment
                                                                                 </DropdownMenuItem>
                                                                                 <DropdownMenuSeparator />
-                                                                                <DropdownMenuItem className="text-red-600 gap-2">
-                                                                                    <IoMdTrash className="h-4 w-4" /> Delete Task
-                                                                                </DropdownMenuItem>
                                                                             </DropdownMenuContent>
                                                                         </DropdownMenu>
-                                                                        <Button variant="outline" size="sm" className="rounded-lg gap-2">
+                                                                        <Button
+                                                                            onClick={() => startTask(task._id)}
+                                                                            variant="outline" size="sm" className="rounded-lg gap-2">
                                                                             <RiArrowRightCircleFill className="h-4 w-4" /> Start Task
                                                                         </Button>
                                                                     </div>
@@ -647,16 +661,20 @@ const MyProfile = () => {
                                         </div>
 
                                         {/* Enhanced Pagination */}
-                                        <div className="p-6 border-t">
-                                            <Pagination
-                                                total={totalPages || 1}
-                                                page={currentPage || 1}
-                                                onChange={setCurrentPage}
-                                                withEdges={true}
-                                                siblings={1}
-                                                boundaries={1}
-                                            />
+                                        <div className="flex justify-between items-center">
+                                            <div></div>
+                                            <div className="p-6 border-t">
+                                                <Pagination
+                                                    total={totalPages || 1}
+                                                    page={currentPage || 1}
+                                                    onChange={setCurrentPage}
+                                                    withEdges={true}
+                                                    siblings={1}
+                                                    boundaries={1}
+                                                />
+                                            </div>
                                         </div>
+
                                     </div>
                                 </TabsContent>
 
