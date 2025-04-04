@@ -6,6 +6,7 @@ import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider"
 import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
 import LoggedInUserProvider from "@/components/Providers/LoggedInUserProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,6 +31,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LoggedInUserProvider>
+          <Toaster />
           <ReactQueryClientProvider>
             <MantineProvider
               withGlobalStyles

@@ -1,5 +1,6 @@
 'use client';
 
+import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import { FaTasks } from "react-icons/fa";
 import { FaUserCheck } from "react-icons/fa";
@@ -25,7 +26,6 @@ import { Progress } from "@/components/ui/progress"
 import { FaCalendarAlt } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { FaClipboard } from "react-icons/fa";
-import toast, { Toaster } from 'react-hot-toast';
 import { Label } from '@/components/ui/label';
 import Badge from '@mui/material/Badge';
 import { Calendar } from "@/components/ui/calendar"
@@ -34,6 +34,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import Pagination from "@/components/ui/CustomPagination";
 import { FiMoreHorizontal } from "react-icons/fi";
 import {
+    LogOut,
     Mail,
     MessageSquare,
     Plus,
@@ -93,7 +94,6 @@ const MyProfile = () => {
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
     const router = useRouter();
-    const [toast, setToast] = useState(false);
     const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
     const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
     const [responseType, setResponseType] = useState('')
@@ -178,31 +178,14 @@ const MyProfile = () => {
                 method: "POST",
             })
             const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (response.status !== 200) {
                 toast.error('An unexpected error occurred. Please try again.');
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
             }
             else {
                 if (response.status === 200) {
                     toast.success('Logout successful! Redirecting...');
                     router.push(responseBody.redirect);
-                    setResponseType(responseResultType[0]);
-                    setToast(true);
-                    setTimeout(() => {
-                        setToast(false)
-                    }, 10000);
-                    setSuccessMessage({
-                        icon: MdError,
-                        message: responseBody.message || 'Unauthorized action'
-                    })
                 }
             }
         } catch (error) {
@@ -240,9 +223,7 @@ const MyProfile = () => {
 
     return (
         <div className="w-full">
-            <div
-                onClick={() => setToast(false)}
-                className="w-full flex justify-center">
+            <div className="w-full flex justify-center">
                 <div className="w-11/12 md:w-10/12 flex justify-between items-center">
                     <img
                         src='/LOGO-BLACK.png'
@@ -311,7 +292,14 @@ const MyProfile = () => {
                                         <span>New Team</span>
                                         <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
                                     </DropdownMenuItem>
+
+                                    <DropdownMenuItem onClick={() => logoutStaff()} className='cursor-pointer'>
+                                        <LogOut />
+                                        <span>Log Out</span>
+                                        <DropdownMenuShortcut>⌘+L</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
                                 </DropdownMenuGroup>
+
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
@@ -439,7 +427,7 @@ const MyProfile = () => {
                                                 />
                                                 <InfoItem label="Department" value="Human Resources" icon={<PiBuildingOfficeFill />} />
                                                 <InfoItem label="Employee ID" value={staffDetails ? staffDetails._id : 'Loading...'} icon={<HiIdentification />} />
-                                                {/* <InfoItem label="Reports To" value="Sarah Johnson (HR Manager)" icon={<FaUser />} /> */}
+                                                <InfoItem label="Role" value={staffDetails ? staffDetails.role : 'Loading...'} icon={<FaUser />} />
                                             </dl>
                                         </div>
                                     </div>

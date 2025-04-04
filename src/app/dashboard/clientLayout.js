@@ -14,7 +14,6 @@ export default function ClientLayout({ children }) {
 
     return (
         <RTKProvider>
-            <Toaster />
             <ReactQueryClientProvider>
                 <div className="w-full flex">
                     {adminSidebar && (
