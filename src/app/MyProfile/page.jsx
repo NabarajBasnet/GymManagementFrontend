@@ -15,20 +15,13 @@ import { MdEmail } from "react-icons/md";
 import { FaPhone } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
-import { FiRotateCw } from "react-icons/fi";
-import { BiSolidCalendarCheck } from "react-icons/bi";
-import { BiSolidCheckCircle } from "react-icons/bi";
 import { RiArrowRightCircleFill } from "react-icons/ri";
-import { IoMdTrash } from "react-icons/io";
-import { MdEdit } from "react-icons/md";
 import { LuMessageSquareText } from "react-icons/lu";
-import { Progress } from "@/components/ui/progress"
 import { FaCalendarAlt } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { FaClipboard } from "react-icons/fa";
 import { Label } from '@/components/ui/label';
 import Badge from '@mui/material/Badge';
-import { Calendar } from "@/components/ui/calendar"
 import { Button } from '@/components/ui/button';
 import { Checkbox } from "@/components/ui/checkbox"
 import Pagination from "@/components/ui/CustomPagination";
@@ -89,6 +82,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+
 const CATEGORIES = [
     'Maintenance',
     'Inventory',
@@ -102,6 +96,7 @@ const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
+    console.log('Staff Details: ', staffDetails);
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
@@ -440,9 +435,7 @@ const MyProfile = () => {
                                     <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
                                         <div className="flex items-center space-x-4">
                                             <div className="flex-shrink-0">
-                                                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-pink-600  flex items-center justify-center text-white text-2xl font-bold">
-                                                    {staffDetails?.fullName[0]}
-                                                </div>
+                                                <img src={`http://localhost:5000${staffDetails?.imageUrl}`} className="w-20 h-20 rounded-full" />
                                             </div>
                                             <div>
                                                 <h1 className="text-md md:text-2xl font-bold text-gray-800">
@@ -601,19 +594,26 @@ const MyProfile = () => {
                                                             <div className="flex-1">
                                                                 <div className="flex items-center gap-3 mb-2">
                                                                     <Label htmlFor={`task-${index}`} className="text-base font-semibold">
-                                                                        {task.title}
+                                                                        Title: {task.title}
                                                                     </Label>
 
                                                                     <Badge
                                                                         variant={task.priority === "High" ? "destructive" : "secondary"}
                                                                         className="rounded-md flex items-center px-2 py-1"
                                                                     >
-                                                                        <GoAlertFill className="h-4 text-red-600 w-4 mr-1" /> {task.priority} Priority
+                                                                        <GoAlertFill
+                                                                            className={`h-4 w-4 mr-1 ${task.priority === "High"
+                                                                                ? "text-red-600"
+                                                                                : task.priority === "Medium"
+                                                                                    ? "text-yellow-500"
+                                                                                    : "text-green-500"
+                                                                                }`}
+                                                                        />
                                                                     </Badge>
                                                                 </div>
 
                                                                 <p className="text-sm text-gray-600 mb-4">
-                                                                    {task.description}
+                                                                    Description: {task.description}
                                                                 </p>
 
                                                                 <div className="flex items-center justify-between">
