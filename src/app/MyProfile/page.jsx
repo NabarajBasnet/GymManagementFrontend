@@ -435,7 +435,9 @@ const MyProfile = () => {
                                     <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
                                         <div className="flex items-center space-x-4">
                                             <div className="flex-shrink-0">
-                                                <img src={`http://localhost:5000${staffDetails?.imageUrl}`} className="w-20 h-20 rounded-full" />
+                                                <img
+                                                    src={`http://localhost:5000${staffDetails?.imageUrl}`}
+                                                    className="w-20 h-20 rounded-full cursor-pointer" />
                                             </div>
                                             <div>
                                                 <h1 className="text-md md:text-2xl font-bold text-gray-800">
@@ -497,7 +499,6 @@ const MyProfile = () => {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ContactPerson
                                                 name="Emergency Contact Name"
-                                                relationship="Parent"
                                                 phone={staffDetails?.emergencyContactName}
                                             />
                                             <ContactPerson
@@ -763,85 +764,10 @@ const MyProfile = () => {
                                 {/* Chat Tab */}
                                 <TabsContent value="chats">
                                     <div>
-                                        <h1 className="my-4 font-bold text-center">Attendance History</h1>
-                                        <TableContainer component={Paper}>
-                                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                                                <TableHead>
-                                                    <TableRow>
-                                                        <TableCell className="w-[100px]">Staff Id</TableCell>
-                                                        <TableCell>Name</TableCell>
-                                                        <TableCell>Email</TableCell>
-                                                        <TableCell>Check In</TableCell>
-                                                        <TableCell>Check Out</TableCell>
-                                                        <TableCell>Remark</TableCell>
-                                                        <TableCell>Late Flag</TableCell>
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    {Array.isArray(history) && history.length >= 1 ? (
-                                                        history.map((attendance) => (
-                                                            <TableRow
-                                                                key={attendance._id}
-                                                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                            >
-                                                                <TableCell component="th" scope="row">{attendance.staffId}</TableCell>
-                                                                <TableCell component="th" scope="row">{attendance.fullName}</TableCell>
-                                                                <TableCell component="th" scope="row">{attendance.email}</TableCell>
-                                                                <TableCell component="th" scope="row">
-                                                                    {attendance.checkIn
-                                                                        ? new Date(attendance.checkIn).toLocaleString('en-US', {
-                                                                            year: 'numeric',
-                                                                            month: '2-digit',
-                                                                            day: '2-digit',
-                                                                            hour: '2-digit',
-                                                                            minute: '2-digit',
-                                                                            second: '2-digit',
-                                                                            hour12: true,
-                                                                        })
-                                                                        : ''}
-                                                                </TableCell>
-                                                                <TableCell component="th" scope="row">
-                                                                    {attendance.checkOut
-                                                                        ? new Date(attendance.checkOut).toLocaleString('en-US', {
-                                                                            year: 'numeric',
-                                                                            month: '2-digit',
-                                                                            day: '2-digit',
-                                                                            hour: '2-digit',
-                                                                            minute: '2-digit',
-                                                                            second: '2-digit',
-                                                                            hour12: true,
-                                                                        })
-                                                                        : ''}
-                                                                </TableCell>
-                                                                <TableCell component="th" scope="row">{attendance.remark}</TableCell>
-                                                                <TableCell component="th" scope="row">{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
-                                                            </TableRow>
-                                                        ))
-                                                    ) : (
-                                                        <TableRow
-                                                            key={'row.name'}
-                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                        >
-                                                            <TableCell component="th" scope="row"></TableCell>
-                                                            <TableCell align="right">{'Attendance not found.'}</TableCell>
-                                                        </TableRow>
-                                                    )}
-                                                </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                        <div className="my-4">
-                                            <Pagination
-                                                total={totalPages || 1}
-                                                page={currentPage || 1}
-                                                onChange={setCurrentPage}
-                                                withEdges={true}
-                                                siblings={1}
-                                                boundaries={1}
-                                            />
-                                        </div>
+                                        <h1 className="my-4 font-bold text-center">Chat section</h1>
+                                        <p className="text-center">This feature will be implemented soon</p>
                                     </div>
                                 </TabsContent>
-
                             </Tabs>
                         </div>
                     </div>
