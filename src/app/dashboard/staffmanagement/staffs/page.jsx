@@ -1149,17 +1149,16 @@ const StaffManagement = () => {
                                                                 <AlertDialog open={renderAvatarAlert} onOpenChange={setRenderAvatarAlert}>
                                                                     <AlertDialogContent className="max-w-md">
                                                                         <AlertDialogHeader className="flex flex-col gap-2">
-                                                                            <h1 className="font-bold text-red-600">Are you absolutely sure?</h1>
-                                                                            <AlertDialogDescription className="text-sm font-semibold text-start mt-2">
-                                                                                Staff avatar is not selected. Do you want to use default?
+                                                                            <h1 className="font-bold ">Are you absolutely sure?</h1>
+                                                                            <AlertDialogDescription className="text-sm text-start mt-2">
+                                                                                Staff avatar is not selected. If you want to use your own avatar please select from form or click continue to use default.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
-                                                                            <AlertDialogCancel className="bg-red-500 hover:bg-red-600 text-white">
+                                                                            <AlertDialogCancel className="bg-white hover:bg-gray-50 text-black hover:text-black">
                                                                                 Cancel
                                                                             </AlertDialogCancel>
                                                                             <AlertDialogAction
-                                                                                className="bg-green-600 hover:bg-green-700 text-white"
                                                                                 onClick={() => {
                                                                                     setDefaultStaffAvatar()
                                                                                     setRenderAvatarAlert(false)
