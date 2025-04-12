@@ -233,16 +233,15 @@ const StaffManagement = () => {
 
     // Functions
 
-    const setDefaultStaffAvatar = async()=>{
+    const setDefaultStaffAvatar = async () => {
         setValidating(false);
         const response = await fetch(defaultStaffAvatar);
-  const blob = await response.blob();
-  
-  const file = new File([blob], 'defaultavatar.jpg', { type: blob.type });
+        const blob = await response.blob();
+
+        const file = new File([blob], 'defaultavatar.jpg', { type: blob.type });
         setRenderAvatarAlert(false);
-        console.log('File: ',file);
         setStaffImage(file)
-  return file;
+        return file;
     }
 
     const handleUpload = async () => {
@@ -261,7 +260,6 @@ const StaffManagement = () => {
             });
 
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (response.ok) {
                 const { imageUrl, message } = responseBody;
                 setValue('imageUrl', imageUrl);
@@ -374,17 +372,6 @@ const StaffManagement = () => {
             emergencyContactNo,
             relationship
         } = data;
-
-        // Prepare final data
-        // function validateData(data) {
-        //     for (const key in data) {
-        //         if (!data[key] || data[key].toString().trim() === "") {
-        //             toastMessage.error(`Error: ${key} is required!`);
-        //             return false;
-        //         }
-        //     }
-        //     return true;
-        // }
 
         const finalData = {
             fullName,
@@ -1167,16 +1154,16 @@ const StaffManagement = () => {
                                                                         <div className="bg-white rounded-lg py-4 px-6">
                                                                             <div className="flex justify-between items-center">
                                                                                 <div className="flex items-center">
-                                                                                    <MdImage className="w-6 h-6" />
-                                                                                    <h1 className="font-semibold ml-4">Staff Avatar Alert</h1>
+                                                                                    <MdError className="w-6 h-6 text-red-600" />
+                                                                                    <h1 className="font-bold ml-4 text-red-600">Staff Avatar Alert</h1>
                                                                                 </div>
-                                                                                <MdClose className="cursor-pointer h-5 w-5" onClick={() => setRenderAvatarAlert(false)} />
+                                                                                <MdClose className="cursor-pointer hover:bg-gray-200 transition-all duration-300 rounded-full p-1 h-7 w-7 text-red-600" onClick={() => setRenderAvatarAlert(false)} />
                                                                             </div>
                                                                             <div className="my-4">
-                                                                                <p className="text-start">Staff avatar is not selected. Do you want to use default?</p>
+                                                                                <p className="text-start text-sm font-semibold">Staff avatar is not selected. Do you want to use default?</p>
                                                                             </div>
                                                                             <div className="flex items-center justify-end space-x-2">
-                                                                                <Button onClick={() => setRenderAvatarAlert(false)}>Cancel</Button>
+                                                                                <Button onClick={() => setRenderAvatarAlert(false)} className='bg-red-500 hover:bg-red-600 transition-colors duration-300'>Cancel</Button>
                                                                                 <Button
                                                                                     className='bg-green-600 hover:bg-green-700 transition-all duration-500'
                                                                                     onClick={() => setDefaultStaffAvatar()}
