@@ -374,7 +374,7 @@ const MemberAttendance = () => {
                 <h1 className="text-xl font-bold mt-3">Member Attendance</h1>
             </div>
 
-            <div className="min-h-screen bg-gray-50 p-6">
+            <div className="min-h-screen bg-gray-50 p-6 flex justify-center">
                 <div className="w-full mx-4">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         {/* Member Check-in Section */}

@@ -94,8 +94,7 @@ const StaffManagement = () => {
 
     const [shifts, setShifts] = useState([{ id: 1, type: '', checkIn: '', checkOut: '' }]);
     const numberOfShifts = watch('numberOfShifts') || 1;
-    const defaultStaffAvatar = '/images/defaultavatar.jpg'
-    const [staffDefaultAvatarBool, setStaffDefaultAvatarBool] = useState(false);
+    const defaultStaffAvatar = '/images/defaultavatar.jpg';
     const [renderAvatarAlert, setRenderAvatarAlert] = useState(false);
 
 
@@ -172,7 +171,7 @@ const StaffManagement = () => {
     }, []);
 
     // States
-    let [staffImage, setStaffImage] = useState(null)
+    let [staffImage, setStaffImage] = useState(null);
     const [preview, setPreview] = useState(null);
 
     const [renderImage, setRenderImage] = useState(false);
@@ -234,6 +233,18 @@ const StaffManagement = () => {
 
     // Functions
 
+    const setDefaultStaffAvatar = async()=>{
+        setValidating(false);
+        const response = await fetch(defaultStaffAvatar);
+  const blob = await response.blob();
+  
+  const file = new File([blob], 'defaultavatar.jpg', { type: blob.type });
+        setRenderAvatarAlert(false);
+        console.log('File: ',file);
+        setStaffImage(file)
+  return file;
+    }
+
     const handleUpload = async () => {
         if (!staffImage) {
             toastMessage.error('Staff image is not selected');
@@ -250,6 +261,7 @@ const StaffManagement = () => {
             });
 
             const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (response.ok) {
                 const { imageUrl, message } = responseBody;
                 setValue('imageUrl', imageUrl);
@@ -314,18 +326,18 @@ const StaffManagement = () => {
     const startEntry = (currentPage - 1) * limit + 1;
     const endEntry = Math.min(currentPage * limit, totalStaffs);
 
-    const [validating,setValidating]  =useState(false);
-    const runDataValidation = async()=>{
-        try{
+    const [validating, setValidating] = useState(false);
+    const runDataValidation = async () => {
+        try {
             setValidating(true);
-if(!staffImage){
-    setRenderAvatarAlert(true);
-};
-if(staffImage){
-    setValidating(false);
-}
-        }catch(error){
-            console.log("Error: ",error);
+            if (!staffImage) {
+                setRenderAvatarAlert(true);
+            };
+            if (staffImage) {
+                setValidating(false);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
         };
     };
 
@@ -1167,12 +1179,7 @@ if(staffImage){
                                                                                 <Button onClick={() => setRenderAvatarAlert(false)}>Cancel</Button>
                                                                                 <Button
                                                                                     className='bg-green-600 hover:bg-green-700 transition-all duration-500'
-                                                                                    onClick={() => {
-                                                                                        setStaffImage(defaultStaffAvatar);
-                                                                                        setValidating(false);
-                                                                                        console.log('staf image', staffImage);
-                                                                                        setRenderAvatarAlert(false);
-                                                                                    }}
+                                                                                    onClick={() => setDefaultStaffAvatar()}
                                                                                 >Continue</Button>
                                                                             </div>
                                                                         </div>
@@ -1810,16 +1817,16 @@ if(staffImage){
                                                                 <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
                                                             )}
 
-                                                            {currentStep === totalSteps && !staffImage &&(
-                                                                <button 
-                                                                type='button' 
-                                                                className='bg-blue-600 px-4 py-2 rounded-sm text-white'
-                                                                onClick={()=>runDataValidation()}
-                                                                >                                                                    
+                                                            {currentStep === totalSteps && !staffImage && (
+                                                                <button
+                                                                    type='button'
+                                                                    className='bg-blue-600 px-4 py-2 rounded-sm text-white'
+                                                                    onClick={() => runDataValidation()}
+                                                                >
                                                                     {validating ? 'Wait...' : 'Run Validation'}</button>
                                                             )}
 
-                                                            {currentStep === totalSteps && staffImage &&(
+                                                            {currentStep === totalSteps && staffImage && (
                                                                 <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>{isSubmitting ? 'Processing...' : 'Submit'}</button>
                                                             )}
                                                         </div>
