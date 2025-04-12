@@ -725,7 +725,7 @@ const StaffTaskManagement = () => {
             {/* Add Task Modal */}
             {
                 isAddingTask && (
-                    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-40 p-4">
+                    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-40 p-4">
                         <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <div className="flex items-center justify-between mb-6">
                                 <h2 className="text-2xl font-bold">Add New Task</h2>
