@@ -1,7 +1,5 @@
 'use client';
 
-import { Checkbox } from "@/components/ui/checkbox"
-import { TiArrowUnsorted, TiArrowUp, TiArrowDown } from "react-icons/ti";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -1115,7 +1113,7 @@ const StaffManagement = () => {
                                         <div className="w-full flex justify-center">
 
                                             <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
-                                                <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
+                                                <div className="w-full flex justify-between bg-indigo-600 items-center py-2">
                                                     <h1 className="font-bold m-3 text-white text-md md:text-xl">Staff Registration</h1>
                                                     <MdClose className="m-4 h-6 w-6 cursor-pointer text-white" onClick={() => setOpenForm(!openForm)} />
                                                 </div>
@@ -1136,7 +1134,7 @@ const StaffManagement = () => {
                                                                         <div
                                                                             onClick={() => setCurrentStep(idx + 1)}
                                                                             key={idx}
-                                                                            className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? 'text-indigo-600' : ''
+                                                                            className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? 'text-black' : ''
                                                                                 }`}
                                                                         >
                                                                             <CheckCircle2 size={16} className="mr-1" />
@@ -1148,30 +1146,30 @@ const StaffManagement = () => {
 
                                                             {/* Default image chose alert */}
                                                             {renderAvatarAlert && (
-                                                                <>
-                                                                    <div className="inset-0 fixed bg-opacity-80 bg-black"></div>
-                                                                    <div className="inset-0 fixed flex items-center z-50 justify-center rounded-md">
-                                                                        <div className="bg-white rounded-lg py-4 px-6">
-                                                                            <div className="flex justify-between items-center">
-                                                                                <div className="flex items-center">
-                                                                                    <MdError className="w-6 h-6 text-red-600" />
-                                                                                    <h1 className="font-bold ml-4 text-red-600">Staff Avatar Alert</h1>
-                                                                                </div>
-                                                                                <MdClose className="cursor-pointer hover:bg-gray-200 transition-all duration-300 rounded-full p-1 h-7 w-7 text-red-600" onClick={() => setRenderAvatarAlert(false)} />
-                                                                            </div>
-                                                                            <div className="my-4">
-                                                                                <p className="text-start text-sm font-semibold">Staff avatar is not selected. Do you want to use default?</p>
-                                                                            </div>
-                                                                            <div className="flex items-center justify-end space-x-2">
-                                                                                <Button onClick={() => setRenderAvatarAlert(false)} className='bg-red-500 hover:bg-red-600 transition-colors duration-300'>Cancel</Button>
-                                                                                <Button
-                                                                                    className='bg-green-600 hover:bg-green-700 transition-all duration-500'
-                                                                                    onClick={() => setDefaultStaffAvatar()}
-                                                                                >Continue</Button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </>
+                                                                <AlertDialog open={renderAvatarAlert} onOpenChange={setRenderAvatarAlert}>
+                                                                    <AlertDialogContent className="max-w-md">
+                                                                        <AlertDialogHeader className="flex flex-col gap-2">
+                                                                            <h1 className="font-bold text-red-600">Are you absolutely sure?</h1>
+                                                                            <AlertDialogDescription className="text-sm font-semibold text-start mt-2">
+                                                                                Staff avatar is not selected. Do you want to use default?
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel className="bg-red-500 hover:bg-red-600 text-white">
+                                                                                Cancel
+                                                                            </AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                className="bg-green-600 hover:bg-green-700 text-white"
+                                                                                onClick={() => {
+                                                                                    setDefaultStaffAvatar()
+                                                                                    setRenderAvatarAlert(false)
+                                                                                }}
+                                                                            >
+                                                                                Continue
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
                                                             )}
 
                                                         </div>
