@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MdContactEmergency } from "react-icons/md";
+import { MdContactEmergency, MdImage } from "react-icons/md";
 import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import { FaLocationDot } from "react-icons/fa6";
@@ -94,6 +94,10 @@ const StaffManagement = () => {
 
     const [shifts, setShifts] = useState([{ id: 1, type: '', checkIn: '', checkOut: '' }]);
     const numberOfShifts = watch('numberOfShifts') || 1;
+    const defaultStaffAvatar = '/images/defaultavatar.jpg'
+    const [staffDefaultAvatarBool, setStaffDefaultAvatarBool] = useState(false);
+    const [renderAvatarAlert, setRenderAvatarAlert] = useState(false);
+
 
     // Update shifts array when number of shifts changes
     useEffect(() => {
@@ -168,7 +172,7 @@ const StaffManagement = () => {
     }, []);
 
     // States
-    const [staffImage, setStaffImage] = useState(null)
+    let [staffImage, setStaffImage] = useState(null)
     const [preview, setPreview] = useState(null);
 
     const [renderImage, setRenderImage] = useState(false);
@@ -233,6 +237,7 @@ const StaffManagement = () => {
     const handleUpload = async () => {
         if (!staffImage) {
             toastMessage.error('Staff image is not selected');
+            setRenderAvatarAlert(true);
             return;
         }
         const formData = new FormData();
@@ -308,6 +313,21 @@ const StaffManagement = () => {
 
     const startEntry = (currentPage - 1) * limit + 1;
     const endEntry = Math.min(currentPage * limit, totalStaffs);
+
+    const [validating,setValidating]  =useState(false);
+    const runDataValidation = async()=>{
+        try{
+            setValidating(true);
+if(!staffImage){
+    setRenderAvatarAlert(true);
+};
+if(staffImage){
+    setValidating(false);
+}
+        }catch(error){
+            console.log("Error: ",error);
+        };
+    };
 
     const handleSubmitStaff = async (data) => {
 
@@ -653,6 +673,7 @@ const StaffManagement = () => {
                 </div>
 
             </div>
+
 
             {deleting ? (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -1093,6 +1114,7 @@ const StaffManagement = () => {
                                     <div className="fixed inset-0 bg-black bg-opacity-65 z-40"></div>
                                     <div className="fixed inset-0 z-40 flex items-center justify-center">
                                         <div className="w-full flex justify-center">
+
                                             <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
                                                 <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
                                                     <h1 className="font-bold m-3 text-white text-md md:text-xl">Staff Registration</h1>
@@ -1125,6 +1147,38 @@ const StaffManagement = () => {
                                                                 </div>
                                                             </div>
 
+                                                            {/* Default image chose alert */}
+                                                            {renderAvatarAlert && (
+                                                                <>
+                                                                    <div className="inset-0 fixed bg-opacity-80 bg-black"></div>
+                                                                    <div className="inset-0 fixed flex items-center z-50 justify-center rounded-md">
+                                                                        <div className="bg-white rounded-lg py-4 px-6">
+                                                                            <div className="flex justify-between items-center">
+                                                                                <div className="flex items-center">
+                                                                                    <MdImage className="w-6 h-6" />
+                                                                                    <h1 className="font-semibold ml-4">Staff Avatar Alert</h1>
+                                                                                </div>
+                                                                                <MdClose className="cursor-pointer h-5 w-5" onClick={() => setRenderAvatarAlert(false)} />
+                                                                            </div>
+                                                                            <div className="my-4">
+                                                                                <p className="text-start">Staff avatar is not selected. Do you want to use default?</p>
+                                                                            </div>
+                                                                            <div className="flex items-center justify-end space-x-2">
+                                                                                <Button onClick={() => setRenderAvatarAlert(false)}>Cancel</Button>
+                                                                                <Button
+                                                                                    className='bg-green-600 hover:bg-green-700 transition-all duration-500'
+                                                                                    onClick={() => {
+                                                                                        setStaffImage(defaultStaffAvatar);
+                                                                                        setValidating(false);
+                                                                                        console.log('staf image', staffImage);
+                                                                                        setRenderAvatarAlert(false);
+                                                                                    }}
+                                                                                >Continue</Button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+                                                            )}
 
                                                         </div>
                                                         <div className="rounded-md">
@@ -1756,7 +1810,16 @@ const StaffManagement = () => {
                                                                 <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
                                                             )}
 
-                                                            {currentStep === totalSteps && (
+                                                            {currentStep === totalSteps && !staffImage &&(
+                                                                <button 
+                                                                type='button' 
+                                                                className='bg-blue-600 px-4 py-2 rounded-sm text-white'
+                                                                onClick={()=>runDataValidation()}
+                                                                >                                                                    
+                                                                    {validating ? 'Wait...' : 'Run Validation'}</button>
+                                                            )}
+
+                                                            {currentStep === totalSteps && staffImage &&(
                                                                 <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>{isSubmitting ? 'Processing...' : 'Submit'}</button>
                                                             )}
                                                         </div>
