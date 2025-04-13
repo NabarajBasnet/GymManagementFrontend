@@ -610,9 +610,9 @@ const PausedMembers = () => {
             )}
             <div className='border-t border-gray-600'>
                 <div className="mt-4 px-4 md:flex justify-between items-center">
-                    <p className="font-medium text-center text-sm font-gray-700">
+                    {/* <p className="font-medium text-center text-sm font-gray-700">
                         Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalOnHoldCount}</span> entries
-                    </p>
+                    </p> */}
                     <Pagination
                         total={totalPages}
                         page={currentPage || 1}
