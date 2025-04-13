@@ -90,7 +90,7 @@ const StaffManagement = () => {
         watch
     } = useForm();
 
-    const [shifts, setShifts] = useState([{ id: 1, type: '', checkIn: '', checkOut: '' }]);
+    const [shifts, setShifts] = useState([{ id: 1, role: '', type: '', checkIn: '', checkOut: '' }]);
     const numberOfShifts = watch('numberOfShifts') || 1;
     const defaultStaffAvatar = '/images/defaultavatar.jpg';
     const [renderAvatarAlert, setRenderAvatarAlert] = useState(false);
@@ -125,6 +125,14 @@ const StaffManagement = () => {
     }, [shifts, setValue]);
 
     // Handle shift type change
+    const handleShiftRoleChange = (index, value) => {
+        const updatedShifts = [...shifts];
+        updatedShifts[index].role = value;
+        setShifts(updatedShifts);
+        setValue(`shift_${index + 1}_role`, value);
+        clearErrors(`shift_${index + 1}_role`);
+    };
+
     const handleShiftTypeChange = (index, value) => {
         const updatedShifts = [...shifts];
         updatedShifts[index].type = value;
@@ -344,6 +352,7 @@ const StaffManagement = () => {
         const { numberOfShifts } = data;
 
         for (let i = 1; i <= numberOfShifts; i++) {
+            shifts[`shift_${i}_role`] = data[`shift_${i}_role`] || "";
             shifts[`shift_${i}_checkIn`] = data[`shift_${i}_checkIn`] || "";
             shifts[`shift_${i}_checkOut`] = data[`shift_${i}_checkOut`] || "";
             shifts[`shift_${i}_type`] = data[`shift_${i}_type`] || "";
@@ -1064,7 +1073,11 @@ const StaffManagement = () => {
                                                         <div className="flex justify-between items-center mb-3">
                                                             <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
                                                         </div>
-                                                        <div className="grid grid-cols-3 overflow-x-auto gap-4">
+                                                        <div className="grid grid-cols-4 overflow-x-auto gap-4">
+                                                            <div>
+                                                                <Label>Shift Role</Label>
+                                                                <Input value={shift.role || ''} readOnly />
+                                                            </div>
                                                             <div>
                                                                 <Label>Shift Type</Label>
                                                                 <Input value={shift.type || ''} readOnly />
@@ -1560,7 +1573,42 @@ const StaffManagement = () => {
                                                                                         <div className="flex justify-between items-center mb-3">
                                                                                             <h3 className="font-medium text-indigo-600">Shift {index + 1}</h3>
                                                                                         </div>
-                                                                                        <div className="grid grid-cols-3 overflow-x-auto gap-4">
+                                                                                        <div className="grid grid-cols-4 overflow-x-auto gap-4">
+                                                                                            <div>
+                                                                                                <Label>Shift Role</Label>
+                                                                                                <Controller
+                                                                                                    name={`shift_${index + 1}_role`}
+                                                                                                    control={control}
+                                                                                                    defaultValue={shift.role}
+                                                                                                    render={({ field }) => (
+                                                                                                        <select
+                                                                                                            {...field}
+                                                                                                            value={field.value}
+                                                                                                            onChange={(e) => {
+                                                                                                                const selectedValue = e.target.value;
+                                                                                                                handleShiftRoleChange(index, selectedValue);
+                                                                                                                field.onChange(selectedValue);
+                                                                                                            }}
+                                                                                                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                                                                        >
+                                                                                                            <option>Select</option>
+                                                                                                            <option value="Super Admin">Super Admin</option>
+                                                                                                            <option value="Gym Admin">Gym Admin</option>
+                                                                                                            <option value="Floor Trainer">Trainer</option>
+                                                                                                            <option value="Personal Trainer">Personal Trainer</option>
+                                                                                                            <option value="Operational Manager">Operational Manager</option>
+                                                                                                            <option value="HR Manager">HR Manager</option>
+                                                                                                            <option value="CEO">CEO</option>
+                                                                                                            <option value="Developer">Developer</option>
+                                                                                                            <option value="Intern">Intern</option>
+                                                                                                        </select>
+                                                                                                    )}
+                                                                                                />
+                                                                                                {errors[`shift_${index + 1}_role`] && (
+                                                                                                    <p className="text-red-600 font-semibold text-sm">{errors[`shift_${index + 1}_role`].message}</p>
+                                                                                                )}
+                                                                                            </div>
+
                                                                                             <div>
                                                                                                 <Label>Shift Type</Label>
                                                                                                 <Controller
