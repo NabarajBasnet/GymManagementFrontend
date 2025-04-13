@@ -1,5 +1,16 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { MdContactEmergency } from "react-icons/md";
 import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
@@ -34,6 +45,8 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
     const [shifts, setShifts] = useState([{ id: 1, type: '', checkIn: '', checkOut: '' }]);
     const numberOfShifts = watch('numberOfShifts') || 1;
+    const defaultStaffAvatar = '/images/defaultavatar.jpg';
+    const [renderAvatarAlert, setRenderAvatarAlert] = useState(false);
 
     // Populate staff details
     useEffect(() => {
@@ -189,11 +202,24 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
     // Functions
 
+    const setDefaultStaffAvatar = async () => {
+        setValidating(false);
+        const response = await fetch(defaultStaffAvatar);
+        const blob = await response.blob();
+
+        const file = new File([blob], 'defaultavatar.jpg', { type: blob.type });
+        setRenderAvatarAlert(false);
+        setStaffImage(file)
+        return file;
+    };
+
     // Upload staff image
     const handleUpload = async () => {
         if (!staffImage) {
-            toastMessage.error("Staff image is not selected");
-        }
+            toastMessage.error('Staff image is not selected');
+            setRenderAvatarAlert(true);
+            return;
+        };
 
         const formData = new FormData();
         formData.append("staffImage", staffImage);
@@ -216,6 +242,21 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         } catch (error) {
             toastMessage.error("Upload failed!")
         }
+    };
+
+    const [validating, setValidating] = useState(false);
+    const runDataValidation = async () => {
+        try {
+            setValidating(true);
+            if (!staffImage) {
+                setRenderAvatarAlert(true);
+            };
+            if (staffImage) {
+                setValidating(false);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        };
     };
 
     const handleSubmitStaff = async (data) => {
@@ -353,6 +394,32 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                         </div>
                                     </div>
 
+                                    {/* Default image chose alert */}
+                                    {renderAvatarAlert && (
+                                        <AlertDialog open={renderAvatarAlert} onOpenChange={setRenderAvatarAlert}>
+                                            <AlertDialogContent className="max-w-md">
+                                                <AlertDialogHeader className="flex flex-col gap-2">
+                                                    <h1 className="font-bold ">Are you absolutely sure?</h1>
+                                                    <AlertDialogDescription className="text-sm text-start mt-2">
+                                                        Staff avatar is not selected. If you want to use your own avatar please select from form or click continue to use default.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel onClick={() => setValidating(false)} className="bg-white hover:bg-gray-50 text-black hover:text-black">
+                                                        Cancel
+                                                    </AlertDialogCancel>
+                                                    <AlertDialogAction
+                                                        onClick={() => {
+                                                            setDefaultStaffAvatar()
+                                                            setRenderAvatarAlert(false)
+                                                        }}
+                                                    >
+                                                        Continue
+                                                    </AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
 
                                 </div>
                                 <div className="rounded-md">
@@ -983,7 +1050,16 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                         <button onClick={handleNext} type='button' className='cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2'>Next <ChevronRight /></button>
                                     )}
 
-                                    {currentStep === totalSteps && (
+                                    {currentStep === totalSteps && !staffImage && (
+                                        <button
+                                            type='button'
+                                            className='bg-blue-600 px-4 py-2 rounded-sm text-white'
+                                            onClick={() => runDataValidation()}
+                                        >
+                                            {validating ? 'Wait...' : 'Run Validation'}</button>
+                                    )}
+
+                                    {currentStep === totalSteps && staffImage && (
                                         <button type='submit' className='bg-green-600 px-4 py-2 rounded-sm text-white'>{isSubmitting ? 'Processing...' : 'Submit'}</button>
                                     )}
                                 </div>

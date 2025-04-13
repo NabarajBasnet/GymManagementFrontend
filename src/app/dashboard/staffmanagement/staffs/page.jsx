@@ -1155,7 +1155,7 @@ const StaffManagement = () => {
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
-                                                                            <AlertDialogCancel onClick={()=>setValidating(false)} className="bg-white hover:bg-gray-50 text-black hover:text-black">
+                                                                            <AlertDialogCancel onClick={() => setValidating(false)} className="bg-white hover:bg-gray-50 text-black hover:text-black">
                                                                                 Cancel
                                                                             </AlertDialogCancel>
                                                                             <AlertDialogAction

@@ -251,6 +251,11 @@ const Header = () => {
             ]
         },
         {
+            icon: MdPayments,
+            title: 'Billing',
+            link: '/dashboard/billing',
+        },
+        {
             icon: RiCustomerService2Fill,
             title: 'Customer Support',
             link: '/dashboard/customersupport',
