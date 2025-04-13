@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import toast from 'react-hot-toast';
 import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
 import {
     FaCheckCircle,
@@ -86,11 +87,15 @@ const StaffAttendance = () => {
             });
 
             const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
                 setSuccessfulMessage(responseBody.message);
                 setSuccessfulAlert(true);
-            };
+                toast.success(responseBody.message);
+            }else{
+                toast.error(responseBody.message);
+            }
         } catch (error) {
             console.log("Error: ", error);
         };
@@ -189,6 +194,20 @@ const StaffAttendance = () => {
             alert(err.message);
         };
     };
+
+    function format12Hour(date) {
+        const options = {
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true,
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        };
+        return date.toLocaleString('en-US', options); // e.g. "04/13/2025, 1:45:00 PM"
+    }
+
 
     return (
         <div className='w-full bg-gray-100'>
@@ -421,8 +440,31 @@ const StaffAttendance = () => {
                                                     <TableCell className="font-medium text-sm">{attendance.staffId}</TableCell>
                                                     <TableCell className="text-sm">{attendance.fullName}</TableCell>
                                                     <TableCell className="text-sm">{attendance.role}</TableCell>
-                                                    <TableCell className="text-sm">{attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''} - {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
-                                                    <TableCell className="text-sm">{attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''} - {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] > 12 ? 'PM' : "AM" : ''}</TableCell>
+                                                    <TableCell className="text-sm">
+                                                        {attendance.checkIn ?
+                                                            `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
+                                                            new Date(attendance.checkIn).toLocaleTimeString('en-US', {
+                                                                hour12: true,
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                timeZone: 'UTC'
+                                                            })
+                                                            : ''}
+                                                    </TableCell>
+
+                                                    <TableCell className="text-sm">
+                                                        {attendance.checkOut ?
+                                                            `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
+                                                            new Date(attendance.checkOut).toLocaleTimeString('en-US', {
+                                                                hour12: true,
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                timeZone: 'UTC'
+                                                            })
+                                                            : ''}
+                                                    </TableCell>
                                                     <TableCell className="text-sm">{attendance.remark}</TableCell>
                                                 </TableRow>
                                             ))
