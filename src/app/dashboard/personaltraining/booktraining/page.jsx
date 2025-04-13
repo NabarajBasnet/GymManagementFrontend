@@ -112,7 +112,7 @@ const BookTrainer = () => {
     };
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -127,7 +127,7 @@ const BookTrainer = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -144,7 +144,7 @@ const BookTrainer = () => {
     const fetchAllPersonalTrainings = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}`);
             return await response.json();
         } catch (error) {
             console.log("Error: ", error);
@@ -174,8 +174,8 @@ const BookTrainer = () => {
 
         try {
             const url = updateDocument
-                ? `http://localhost:3000/api/personaltraining/${documentUpdateId}` :
-                'http://localhost:3000/api/personaltraining'
+                ? `http://88.198.112.156:3000/api/personaltraining/${documentUpdateId}` :
+                'http://88.198.112.156:3000/api/personaltraining'
             const response = await fetch(url, {
                 method: updateDocument ? 'PATCH' : 'POST',
                 headers: {
@@ -218,7 +218,7 @@ const BookTrainer = () => {
     const deletePersonalTraining = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();

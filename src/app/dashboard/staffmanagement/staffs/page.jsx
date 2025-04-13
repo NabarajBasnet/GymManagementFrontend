@@ -159,7 +159,6 @@ const StaffManagement = () => {
         clearErrors(`shift_${index + 1}_checkOut`);
     };
 
-
     const { user, loading } = useUser();
     const router = useRouter()
     const checkUserPermission = () => {
@@ -190,24 +189,6 @@ const StaffManagement = () => {
     const [limit, setLimit] = useState(15);
     const [currentStaffId, setCurrentStaffId] = useState();
     const [searchQuery, setSearchQuery] = useState();
-
-    const handleCheckInTimeChange = (e) => {
-        const timeValue = e.target.value;
-        const [hours, minutes] = timeValue.split(':').map(Number);
-        const checkInTime = new Date();
-        checkInTime.setHours(hours);
-        checkInTime.setMinutes(minutes);
-        setCheckInTime(checkInTime);
-    };
-
-    const handleCheckOutTimeChange = (e) => {
-        const timeValue = e.target.value;
-        const [hours, minutes] = timeValue.split(':').map(Number);
-        const checkOutTime = new Date();
-        checkOutTime.setHours(hours);
-        checkOutTime.setMinutes(minutes);
-        setCheckOutTime(checkOutTime);
-    };
 
     const queryclient = useQueryClient();
     const [openForm, setOpenForm] = useState(false);
@@ -260,7 +241,7 @@ const StaffManagement = () => {
         formData.append("staffImage", staffImage);
 
         try {
-            const response = await fetch("http://localhost:3000/api/staffsmanagement/upload-image", {
+            const response = await fetch("http://88.198.112.156:3000/api/staffsmanagement/upload-image", {
                 method: "POST",
                 body: formData,
             });
@@ -291,7 +272,7 @@ const StaffManagement = () => {
     const fetchAllStaffs = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -404,8 +385,8 @@ const StaffManagement = () => {
 
         try {
             const url = currentStaffId
-                ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
-                : 'http://localhost:3000/api/staffsmanagement/create';
+                ? `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+                : 'http://88.198.112.156:3000/api/staffsmanagement/create';
 
             const method = currentStaffId ? "PATCH" : "POST";
 
@@ -482,7 +463,7 @@ const StaffManagement = () => {
     const deleteStaff = async (id) => {
         setDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/remove/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -536,7 +517,7 @@ const StaffManagement = () => {
 
     const editStaffDetails = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setEditStaff(true);
@@ -550,7 +531,7 @@ const StaffManagement = () => {
     const populateAddressDetails = async (id) => {
         try {
 
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setShowAddressDetails(true);
@@ -576,7 +557,7 @@ const StaffManagement = () => {
 
     const populateShiftDetails = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
 
             if (response.ok) {
@@ -609,7 +590,7 @@ const StaffManagement = () => {
 
     const renderStaffImage = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/${id}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setRenderImage(true);
@@ -874,7 +855,7 @@ const StaffManagement = () => {
                                                                 <TableCell className='font-semibold'>
                                                                     <img
                                                                         onClick={() => renderStaffImage(staff._id)}
-                                                                        src={`http://localhost:5000${staff.imageUrl}`}
+                                                                        src={`http://88.198.112.156:5000${staff.imageUrl}`}
                                                                         className="w-10 h-10 cursor-pointer rounded-full border border-indigo-500"
                                                                     />
                                                                 </TableCell>
@@ -1112,7 +1093,7 @@ const StaffManagement = () => {
                                         Close
                                     </Button>
                                     <div className="flex justify-center">
-                                        <img src={`http://localhost:5000${dbImage}`} alt="Preview" className="max-w-full max-h-[80vh] rounded-xl" />
+                                        <img src={`http://88.198.112.156:5000${dbImage}`} alt="Preview" className="max-w-full max-h-[80vh] rounded-xl" />
                                     </div>
                                 </div>
                             </div>

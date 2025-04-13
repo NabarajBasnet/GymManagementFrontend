@@ -1,5 +1,7 @@
 'use client';
 
+import { toast as notify } from "react-hot-toast";
+import { MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import {
@@ -81,7 +83,7 @@ const PausedMembers = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members/pausedmembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://88.198.112.156:3000/api/members/pausedmembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -120,7 +122,7 @@ const PausedMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -170,7 +172,7 @@ const PausedMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
@@ -221,6 +223,16 @@ const PausedMembers = () => {
                 message: "An unexpected error occurred."
             })
         };
+    };
+
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                notify.success("ID copied to clipboard");
+            })
+            .catch(() => {
+                notify.error("Failed to copy ID");
+            });
     };
 
     const startEntry = (currentPage - 1) * limit + 1;
@@ -460,41 +472,69 @@ const PausedMembers = () => {
                             <Table className='w-full overflow-x-auto'>
                                 <TableHeader>
                                     <TableRow className='bg-gray-200 text-black'>
-                                        <TableHead>Member Id</TableHead>
+                                        <TableHead className='text-center'>Member Id</TableHead>
                                         <TableHead>Full Name</TableHead>
-                                        <TableHead>Duration</TableHead>
-                                        <TableHead>Option</TableHead>
-                                        <TableHead>Renew</TableHead>
-                                        <TableHead>Type</TableHead>
-                                        <TableHead>Expire</TableHead>
-                                        <TableHead>Contact No</TableHead>
-                                        <TableHead>Shift</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Fee</TableHead>
-                                        <TableHead>Action</TableHead>
+                                        <TableHead className='text-center'>Duration</TableHead>
+                                        <TableHead className='text-center'>Option</TableHead>
+                                        <TableHead className='text-center'>Renew</TableHead>
+                                        <TableHead className='text-center'>Type</TableHead>
+                                        <TableHead className='text-center'>Expire</TableHead>
+                                        <TableHead className='text-center'>Contact No</TableHead>
+                                        <TableHead className='text-center'>Shift</TableHead>
+                                        <TableHead className='text-center'>Status</TableHead>
+                                        <TableHead className='text-center'>Fee</TableHead>
+                                        <TableHead className='text-center'>Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {members && members.length > 0 ? (
                                         members.map((member) => {
                                             const textColor =
-                                                member.status === 'Active' ? 'text-green-500' :
+                                                member.status === 'Active' ? 'text-black' :
                                                     member.status === 'OnHold' ? 'text-yellow-500' :
                                                         'text-red-500';
                                             return (
-                                                <TableRow key={member._id} className={textColor}>
-                                                    <TableCell><p>{member._id}</p></TableCell>
+                                                <TableRow key={member._id} className={textColor}
+                                                    sx={{
+                                                        '&:hover': { backgroundColor: '#f9fafb' },
+                                                        '& td': {
+                                                            padding: '0.75rem 1rem',
+                                                            fontSize: '0.875rem',
+                                                            color: '#4b5563',
+                                                            borderBottom: '1px solid #e5e7eb'
+                                                        }
+                                                    }}>
+                                                    <TableCell className="text-center flex justify-center items-center" component="th" scope="row" sx={{ width: '120px', maxWidth: '120px' }}>
+                                                        <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
+                                                            <span className="truncate text-center font-mono text-xs">{member._id}</span>
+                                                            <TooltipProvider>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <button
+                                                                            onClick={() => copyToClipboard(member._id)}
+                                                                            className="text-gray-400 hover:text-blue-600 transition-colors p-1"
+                                                                        >
+                                                                            <MdContentCopy size={14} />
+                                                                        </button>
+                                                                    </TooltipTrigger>
+                                                                    <TooltipContent>
+                                                                        <p>Copy ID</p>
+                                                                    </TooltipContent>
+                                                                </Tooltip>
+                                                            </TooltipProvider>
+                                                        </div>
+                                                    </TableCell>
                                                     <TableCell>{member.fullName}</TableCell>
-                                                    <TableCell>{member.membershipDuration}</TableCell>
-                                                    <TableCell>{member.membershipOption}</TableCell>
-                                                    <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell>{member.membershipType}</TableCell>
-                                                    <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell>{member.contactNo}</TableCell>
-                                                    <TableCell>{member.membershipShift}</TableCell>
-                                                    <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                                    <TableCell>{member.paidAmmount}</TableCell>
-                                                    <TableCell>
+                                                    <TableCell className='text-center'>{member.membershipDuration}</TableCell>
+                                                    <TableCell className='text-center'>{member.membershipOption}</TableCell>
+                                                    <TableCell className='text-center'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell className='text-center'>{member.membershipType}</TableCell>
+                                                    <TableCell className='text-center'>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                    <TableCell className='text-center'>{member.contactNo}</TableCell>
+                                                    <TableCell className='text-center'>{member.membershipShift}</TableCell>
+                                                    <TableCell className='text-center'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                    <TableCell className='text-center'>{member.paidAmmount}</TableCell>
+                                                    <TableCell className='text-center'>
                                                         <div className="flex items-center justify-center space-x-1">
                                                             <Link href={`/dashboard/members/${member._id}`}>
                                                                 <FaUserEdit className='cursor-pointer text-lg' />
@@ -559,8 +599,8 @@ const PausedMembers = () => {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={3}>Total Paused Memberships</TableCell>
-                                        <TableCell className="text-right">{totalOnHoldCount}</TableCell>
+                                        <TableCell colSpan={3}>Total Memberships</TableCell>
+                                        <TableCell className="text-right">{totalMembers}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>

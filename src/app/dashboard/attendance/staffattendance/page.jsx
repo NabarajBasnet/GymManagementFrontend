@@ -59,7 +59,7 @@ const StaffAttendance = () => {
 
     const checkIfStaffCheckedIn = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/checkedin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -78,7 +78,7 @@ const StaffAttendance = () => {
 
     const checkInStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -87,13 +87,18 @@ const StaffAttendance = () => {
             });
 
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
+
+            if (response.status === 201 && responseBody.type === 'QrExpired') {
+                toast.error(responseBody.message);
+                return;
+            };
+
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
                 setSuccessfulMessage(responseBody.message);
                 setSuccessfulAlert(true);
                 toast.success(responseBody.message);
-            }else{
+            } else {
                 toast.error(responseBody.message);
             }
         } catch (error) {
@@ -107,7 +112,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -137,7 +142,7 @@ const StaffAttendance = () => {
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -194,20 +199,6 @@ const StaffAttendance = () => {
             alert(err.message);
         };
     };
-
-    function format12Hour(date) {
-        const options = {
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit'
-        };
-        return date.toLocaleString('en-US', options); // e.g. "04/13/2025, 1:45:00 PM"
-    }
-
 
     return (
         <div className='w-full bg-gray-100'>
