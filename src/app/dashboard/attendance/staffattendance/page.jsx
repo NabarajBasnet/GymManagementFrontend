@@ -88,11 +88,6 @@ const StaffAttendance = () => {
 
             const responseBody = await response.json();
 
-            if (response.status === 201 && responseBody.type === 'QrExpired') {
-                toast.error(responseBody.message);
-                return;
-            };
-
             if (response.ok && responseBody.type !== 'CheckedIn') {
                 setConfirmCheckInState(false);
                 setSuccessfulMessage(responseBody.message);

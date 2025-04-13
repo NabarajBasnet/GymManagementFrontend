@@ -96,7 +96,6 @@ const MyProfile = () => {
 
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
-    console.log('Staff Details: ', staffDetails);
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 10;
