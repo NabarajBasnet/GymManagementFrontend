@@ -119,7 +119,6 @@ const MyProfile = () => {
             const response = await fetch(`http://88.198.112.156:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success(responseBody.message);
                 setMyTasks(responseBody.myTasks);
             } else {
                 toast.error(responseBody.message);
@@ -209,7 +208,6 @@ const MyProfile = () => {
                 method: "POST",
             })
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (response.status !== 200) {
                 toast.error('An unexpected error occurred. Please try again.');
             }
@@ -305,17 +303,14 @@ const MyProfile = () => {
                                     <DropdownMenuItem>
                                         <User />
                                         <span>Profile</span>
-                                        <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <Settings />
                                         <span>Settings</span>
-                                        <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                     <DropdownMenuItem>
                                         <IoMdNotificationsOutline />
                                         <span>Notifications</span>
-                                        <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
                                 <DropdownMenuSeparator />
@@ -324,39 +319,10 @@ const MyProfile = () => {
                                         <Users />
                                         <span>Team</span>
                                     </DropdownMenuItem>
-                                    <DropdownMenuSub>
-                                        <DropdownMenuSubTrigger>
-                                            <UserPlus />
-                                            <span>Invite users</span>
-                                        </DropdownMenuSubTrigger>
-                                        <DropdownMenuPortal>
-                                            <DropdownMenuSubContent>
-                                                <DropdownMenuItem>
-                                                    <Mail />
-                                                    <span>Email</span>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem>
-                                                    <MessageSquare />
-                                                    <span>Message</span>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuSeparator />
-                                                <DropdownMenuItem>
-                                                    <PlusCircle />
-                                                    <span>More...</span>
-                                                </DropdownMenuItem>
-                                            </DropdownMenuSubContent>
-                                        </DropdownMenuPortal>
-                                    </DropdownMenuSub>
-                                    <DropdownMenuItem>
-                                        <Plus />
-                                        <span>New Team</span>
-                                        <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
-                                    </DropdownMenuItem>
 
                                     <DropdownMenuItem onClick={() => logoutStaff()} className='cursor-pointer'>
                                         <LogOut />
                                         <span>Log Out</span>
-                                        <DropdownMenuShortcut>⌘+L</DropdownMenuShortcut>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
 
@@ -374,16 +340,16 @@ const MyProfile = () => {
                             <Tabs defaultValue="profile" className="w-full">
                                 <TabsList className="w-full grid grid-cols-4 mb-4">
                                     <TabsTrigger value="profile" className="flex items-center justify-center gap-2">
-                                        <FaUserCircle /> <span>My Profile</span>
+                                        <FaUserCircle className="hidden md:flex" /> <span>Profile</span>
                                     </TabsTrigger>
                                     <TabsTrigger value="tasks" className="flex items-center justify-center gap-2">
-                                        <FaTasks /> <span>My Tasks</span>
+                                        <FaTasks className="hidden md:flex" /> <span>Tasks</span>
                                     </TabsTrigger>
                                     <TabsTrigger value="attendance" className="flex items-center justify-center gap-2">
-                                        <FaUserCheck /> <span>My Attendance</span>
+                                        <FaUserCheck className="hidden md:flex" /> <span>Attendance</span>
                                     </TabsTrigger>
                                     <TabsTrigger value="chats" className="flex items-center justify-center gap-2">
-                                        <BsChatFill /> <span>Chats</span>
+                                        <BsChatFill className="hidden md:flex" /> <span>Chats</span>
                                     </TabsTrigger>
                                 </TabsList>
 
@@ -665,8 +631,8 @@ const MyProfile = () => {
                                             <div></div>
                                             <div className="p-6 border-t">
                                                 <Pagination
-                                                    total={totalPages || 1}
-                                                    page={currentPage || 1}
+                                                    total={1}
+                                                    page={1}
                                                     onChange={setCurrentPage}
                                                     withEdges={true}
                                                     siblings={1}
@@ -688,7 +654,7 @@ const MyProfile = () => {
                                                     <TableRow>
                                                         <TableCell className="w-[100px]">Staff Id</TableCell>
                                                         <TableCell>Name</TableCell>
-                                                        <TableCell>Email</TableCell>
+                                                        <TableCell>Role</TableCell>
                                                         <TableCell>Check In</TableCell>
                                                         <TableCell>Check Out</TableCell>
                                                         <TableCell>Remark</TableCell>
@@ -704,7 +670,7 @@ const MyProfile = () => {
                                                             >
                                                                 <TableCell component="th" scope="row">{attendance.staffId}</TableCell>
                                                                 <TableCell component="th" scope="row">{attendance.fullName}</TableCell>
-                                                                <TableCell component="th" scope="row">{attendance.email}</TableCell>
+                                                                <TableCell component="th" scope="row">{attendance.role}</TableCell>
                                                                 <TableCell component="th" scope="row">
                                                                     {attendance.checkIn
                                                                         ? new Date(attendance.checkIn).toLocaleString('en-US', {
