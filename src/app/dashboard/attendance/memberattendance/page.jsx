@@ -374,9 +374,9 @@ const MemberAttendance = () => {
                 <h1 className="text-xl font-bold mt-3">Member Attendance</h1>
             </div>
 
-            <div className="min-h-screen bg-gray-50 p-6 flex justify-center">
-                <div className="w-full mx-4">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="min-h-screen bg-gray-50 md:p-6 p-1 flex justify-center">
+                <div className="w-full md:mx-4 mx-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-6">
                         {/* Member Check-in Section */}
                         <Card className="p-4 shadow-sm">
                             <div className="flex items-center justify-between mb-6">
@@ -391,7 +391,7 @@ const MemberAttendance = () => {
                                 </Button>
                             </div>
 
-                            <form className="space-y-4 max-w-2xl mx-4">
+                            <form className="space-y-4 max-w-2xl mx-1 md:mx-4">
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
                                         <QrCode className="h-5 w-5 text-gray-400" />
@@ -518,7 +518,7 @@ const MemberAttendance = () => {
                         </Card>
 
                         {/* Attendance History Section */}
-                        <Card className="p-4 shadow-sm">
+                        <Card className="p-2 md:p-4 shadow-sm">
                             <div className="space-y-4">
                                 <h2 className="text-xl font-semibold text-gray-800">Member Attendance Record</h2>
 
