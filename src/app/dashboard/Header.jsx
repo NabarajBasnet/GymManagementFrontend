@@ -246,7 +246,6 @@ const Header = () => {
             title: 'Personal Training',
             link: '/dashboard/personaltraining',
             subObj: [
-                { icon: RiRunLine, title: 'Trainer Availability', link: '/dashboard/personaltraining/traineravailability' },
                 { icon: GiBiceps, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' }
             ]
         },

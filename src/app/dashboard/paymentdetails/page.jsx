@@ -300,44 +300,6 @@ const PaymentDetails = () => {
                 </Breadcrumb>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4">
                     <h1 className="text-2xl font-bold text-gray-900">Payment Details</h1>
-
-                    <div className="flex items-center space-x-2 mt-4 md:mt-0">
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="rounded-md border border-gray-300 text-gray-700"
-                                        onClick={handlePrint}
-                                        disabled={!paginatedPaymentDetails || paginatedPaymentDetails.length === 0}
-                                    >
-                                        <MdPrint className="mr-1.5" /> Print
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Export as PDF</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-
-                        <TooltipProvider>
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="rounded-md border border-gray-300 text-gray-700"
-                                        onClick={handleExportExcel}
-                                        disabled={!paginatedPaymentDetails || paginatedPaymentDetails.length === 0}
-                                    >
-                                        <MdFileDownload className="mr-1.5" /> Export
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Export as Excel</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        </TooltipProvider>
-                    </div>
                 </div>
             </div>
 
@@ -345,7 +307,7 @@ const PaymentDetails = () => {
             <div className="max-w-[1400px] mx-auto p-4 md:p-6">
                 {/* Search Form */}
                 <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-                    <form className="w-full">
+                    <form className="w-full md:flex justify-between items-center">
                         <div className="w-full md:max-w-md">
                             <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Member</Label>
                             <div ref={searchRef} className="relative">
@@ -409,6 +371,44 @@ const PaymentDetails = () => {
                                 )}
                             </div>
                         </div>
+
+                        <div className="flex items-center space-x-2 mt-4 md:mt-0">
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="rounded-md border border-gray-300 text-gray-700"
+                                            onClick={handlePrint}
+                                            disabled={!paginatedPaymentDetails || paginatedPaymentDetails.length === 0}
+                                        >
+                                            <MdPrint className="mr-1.5" /> Print
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Export as PDF</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+
+                            <TooltipProvider>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="rounded-md border border-gray-300 text-gray-700"
+                                            onClick={handleExportExcel}
+                                            disabled={!paginatedPaymentDetails || paginatedPaymentDetails.length === 0}
+                                        >
+                                            <MdFileDownload className="mr-1.5" /> Export
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent>
+                                        <p>Export as Excel</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </div>
                     </form>
                 </div>
 
@@ -464,15 +464,15 @@ const PaymentDetails = () => {
                                         }}>
                                             <TableCell sx={{ width: '120px' }}>ID</TableCell>
                                             <TableCell>Name</TableCell>
-                                            <TableCell>Action Taker</TableCell>
-                                            <TableCell>Receipt No</TableCell>
-                                            <TableCell>Paid Amount</TableCell>
-                                            <TableCell>Payment Date</TableCell>
-                                            <TableCell>Duration</TableCell>
-                                            <TableCell>Method</TableCell>
-                                            <TableCell>Discount</TableCell>
-                                            <TableCell>Reference Code</TableCell>
-                                            <TableCell align="center">Action</TableCell>
+                                            <TableCell className="text-center">Action Taker</TableCell>
+                                            <TableCell className="text-center">Receipt No</TableCell>
+                                            <TableCell className="text-center">Paid Amount</TableCell>
+                                            <TableCell className="text-center">Payment Date</TableCell>
+                                            <TableCell className="text-center">Duration</TableCell>
+                                            <TableCell className="text-center">Method</TableCell>
+                                            <TableCell className="text-center">Discount</TableCell>
+                                            <TableCell className="text-center">Reference Code</TableCell>
+                                            {/* <TableCell align="center">Action</TableCell> */}
                                         </TableRow>
                                     </TableHead>
                                     <TableBody className="w-full mx-6">
@@ -511,28 +511,28 @@ const PaymentDetails = () => {
                                                         </div>
                                                     </TableCell>
                                                     <TableCell>{detail.member.fullName}</TableCell>
-                                                    <TableCell>{detail.actionTaker}</TableCell>
-                                                    <TableCell>{detail.receiptNo}</TableCell>
-                                                    <TableCell sx={{ fontWeight: 500 }}>{detail.paidAmmount}</TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="text-center">{detail.actionTaker}</TableCell>
+                                                    <TableCell className="text-center">{detail.receiptNo}</TableCell>
+                                                    <TableCell className="text-center">{detail.paidAmmount}</TableCell>
+                                                    <TableCell className="text-center">
                                                         {detail.paymentDate ? new Date(detail.paymentDate).toLocaleString('en-US', {
                                                             year: 'numeric',
                                                             month: '2-digit',
                                                             day: '2-digit',
                                                         }) : ''}
-                                                    </TableCell>
-                                                    <TableCell>{detail.membershipDuration}</TableCell>
-                                                    <TableCell>
-                                                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${detail.paymentMethod === 'Cash' ? 'bg-green-100 text-green-800' :
+                                                    </TableCell >
+                                                    <TableCell className="text-center">{detail.membershipDuration}</TableCell>
+                                                    <TableCell className="text-center">
+                                                        <span className={`inline-flex items-center px-2.5 py-0.5 text-center rounded-full text-xs font-medium ${detail.paymentMethod === 'Cash' ? 'bg-green-100 text-green-800' :
                                                             detail.paymentMethod === 'Card' ? 'bg-blue-100 text-blue-800' :
                                                                 'bg-gray-100 text-gray-800'
                                                             }`}>
                                                             {detail.paymentMethod}
                                                         </span>
                                                     </TableCell>
-                                                    <TableCell>{detail.discount || '-'}</TableCell>
-                                                    <TableCell>{detail.referenceCode}</TableCell>
-                                                    <TableCell>
+                                                    <TableCell className="text-center">{detail.discount || '-'}</TableCell>
+                                                    <TableCell className="text-center">{detail.referenceCode}</TableCell>
+                                                    {/* <TableCell>
                                                         <div className="flex items-center justify-center space-x-2">
                                                             <TooltipProvider>
                                                                 <Tooltip>
@@ -573,7 +573,7 @@ const PaymentDetails = () => {
                                                                 </AlertDialogContent>
                                                             </AlertDialog>
                                                         </div>
-                                                    </TableCell>
+                                                    </TableCell> */}
                                                 </TableRow>
                                             ))
                                         ) : (

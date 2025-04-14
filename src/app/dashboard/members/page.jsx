@@ -254,7 +254,7 @@ const AllMembers = () => {
 
     return (
         <div className="w-full">
-            <div className='w-full p-6' onClick={() => {
+            <div className='w-full p-4' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
             }
@@ -431,220 +431,229 @@ const AllMembers = () => {
                 ) : (
                     <></>
                 )}
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>All Members</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+
+                <div className="bg-white shadow-md rounded-lg flex items-center py-6 px-1 border">
+                    <Breadcrumb>
+                        <BreadcrumbList>
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger className="flex items-center gap-1">
+                                        <BreadcrumbEllipsis className="h-4 w-4" />
+                                    </DropdownMenuTrigger>
+                                </DropdownMenu>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                            </BreadcrumbItem>
+                            <BreadcrumbSeparator />
+                            <BreadcrumbItem>
+                                <BreadcrumbPage>All Members</BreadcrumbPage>
+                            </BreadcrumbItem>
+                        </BreadcrumbList>
+                    </Breadcrumb>
+                </div>
                 <h1 className="text-xl font-bold mt-3">All Members</h1>
             </div>
 
-            <div className="w-full md:flex justify-between items-center bg-gray-100 px-4">
-                <div className="w-full md:w-6/12 flex items-center gap-3 px-4 rounded-lg">
-                    <h1 className="text-sm font-semibold text-gray-700">Show</h1>
-                    <select
-                        onChange={(e) => setLimit(Number(e.target.value))}
-                        className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    >
-                        <option value="15">15</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value={totalMembers}>All</option>
-                    </select>
-                    <h1 className="text-sm font-semibold text-gray-700">members</h1>
-                    <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
-                </div>
-                <div className="w-full md:w-6/12 flex bg-white items-center border-b px-4 my-2">
-                    <IoSearch />
-                    <Input
-                        className='rounded-none border-none bg-transparent'
-                        placeholder='Search members...'
-                        value={searchQuery}
-                        onChange={(e) => {
-                            setCurrentPage(1);
-                            setSearchQuery(e.target.value);
-                        }
-                        }
-                    />
-                </div>
-            </div>
+            <div className="mx-4 bg-white shadow-lg rounded-lg border">
+                <div className="w-full md:flex justify-between items-center">
+                    <div className="w-full md:w-6/12 my-2 md:my-0 flex items-center gap-3 px-4 rounded-lg">
+                        <h1 className="text-sm font-semibold text-gray-700">Display</h1>
+                        <select
+                            onChange={(e) => setLimit(Number(e.target.value))}
+                            className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="15">15</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value={totalMembers}>All</option>
+                        </select>
+                        <h1 className="text-sm font-semibold text-gray-700">members</h1>
+                        <p className="text-sm text-gray-500 italic">Selected Limit: {limit}</p>
+                    </div>
 
-            {isLoading ? (
-                <Loader />
-            ) : (
-                <div className="w-full bg-white">
-                    <div className="w-full flex justify-start">
-                        <div className="w-full overflow-x-auto">
-                            <Table className='w-full overflow-x-auto'>
-                                <TableHeader>
-                                    <TableRow className='bg-gray-200 text-black'>
-                                        <TableHead className='text-center'>Member Id</TableHead>
-                                        <TableHead>Full Name</TableHead>
-                                        <TableHead className='text-center'>Duration</TableHead>
-                                        <TableHead className='text-center'>Option</TableHead>
-                                        <TableHead className='text-center'>Renew</TableHead>
-                                        <TableHead className='text-center'>Type</TableHead>
-                                        <TableHead className='text-center'>Expire</TableHead>
-                                        <TableHead className='text-center'>Contact No</TableHead>
-                                        <TableHead className='text-center'>Shift</TableHead>
-                                        <TableHead className='text-center'>Status</TableHead>
-                                        <TableHead className='text-center'>Fee</TableHead>
-                                        <TableHead className='text-center'>Action</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {members && members.length > 0 ? (
-                                        members.map((member) => {
-                                            const textColor =
-                                                member.status === 'Active' ? 'text-black' :
-                                                    member.status === 'OnHold' ? 'text-yellow-500' :
-                                                        'text-red-500';
-                                            return (
-                                                <TableRow key={member._id} className={textColor}
-                                                    sx={{
-                                                        '&:hover': { backgroundColor: '#f9fafb' },
-                                                        '& td': {
-                                                            padding: '0.75rem 1rem',
-                                                            fontSize: '0.875rem',
-                                                            color: '#4b5563',
-                                                            borderBottom: '1px solid #e5e7eb'
-                                                        }
-                                                    }}>
-                                                    <TableCell className="text-center flex justify-center items-center" component="th" scope="row" sx={{ width: '120px', maxWidth: '120px' }}>
-                                                        <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
-                                                            <span className="truncate text-center font-mono text-xs">{member._id}</span>
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger asChild>
-                                                                        <button
-                                                                            onClick={() => copyToClipboard(member._id)}
-                                                                            className="text-gray-400 hover:text-blue-600 transition-colors p-1"
-                                                                        >
-                                                                            <MdContentCopy size={14} />
-                                                                        </button>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent>
-                                                                        <p>Copy ID</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>{member.fullName}</TableCell>
-                                                    <TableCell className='text-center'>{member.membershipDuration}</TableCell>
-                                                    <TableCell className='text-center'>{member.membershipOption}</TableCell>
-                                                    <TableCell className='text-center'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell className='text-center'>{member.membershipType}</TableCell>
-                                                    <TableCell className='text-center'>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
-                                                    <TableCell className='text-center'>{member.contactNo}</TableCell>
-                                                    <TableCell className='text-center'>{member.membershipShift}</TableCell>
-                                                    <TableCell className='text-center'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                                    <TableCell className='text-center'>{member.paidAmmount}</TableCell>
-                                                    <TableCell className='text-center'>
-                                                        <div className="flex items-center justify-center space-x-1">
-                                                            <Link href={`/dashboard/members/${member._id}`}>
-                                                                <FaUserEdit className='cursor-pointer text-lg' />
-                                                            </Link>
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    <MdEmail
-                                                                        className='cursor-pointer text-lg'
-                                                                    />
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            This action will send QR attached to {member.fullName}, Are you sure about that?
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    {user && user.user.role === 'Gym Admin' ? (
-                                                                        <></>
-                                                                    ) : (
-                                                                        <MdDelete
-                                                                            className="cursor-pointer text-red-600 text-lg"
-                                                                        />
-                                                                    )}
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            This action cannot be undone. This will permanently delete member
-                                                                            account and remove data from servers.
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction
-                                                                            onClick={() => deleteMember(member._id)}
-                                                                        >Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            );
-                                        })
-                                    ) : (
-                                        <TableRow>
-                                            <TableCell colSpan={13} className="text-center">
-                                                No memberships found.
-                                            </TableCell>
-                                        </TableRow>
-                                    )}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow>
-                                        <TableCell colSpan={3} className='ml-2'>Total Memberships</TableCell>
-                                        <TableCell className="text-right">{totalMembers}</TableCell>
-                                    </TableRow>
-                                </TableFooter>
-                            </Table>
+                    <div className="w-full flex justify-end">
+                        <div className="w-full md:w-6/12 flex bg-white items-center border px-4 my-2 rounded-full mx-2">
+                            <IoSearch />
+                            <Input
+                                className='rounded-none border-none bg-transparent'
+                                placeholder='Search members...'
+                                value={searchQuery}
+                                onChange={(e) => {
+                                    setCurrentPage(1);
+                                    setSearchQuery(e.target.value);
+                                }
+                                }
+                            />
                         </div>
                     </div>
+
                 </div>
-            )}
-            <div className='border-t border-gray-600'>
-                <div className="mt-4 px-4 md:flex justify-between items-center">
-                    <p className="font-medium text-center text-sm font-gray-700">
-                        Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalMembers}</span> entries
-                    </p>
-                    <Pagination
-                        total={totalPages}
-                        page={currentPage || 1}
-                        onChange={setCurrentPage}
-                        withEdges={true}
-                        siblings={1}
-                        boundaries={1}
-                    />
+
+                {isLoading ? (
+                    <Loader />
+                ) : (
+                    <div className="w-full bg-white">
+                        <div className="w-full flex justify-start">
+                            <div className="w-full overflow-x-auto">
+                                <Table className='w-full overflow-x-auto'>
+                                    <TableHeader>
+                                        <TableRow className='bg-gray-200 text-black'>
+                                            <TableHead>Member Id</TableHead>
+                                            <TableHead>Full Name</TableHead>
+                                            <TableHead className='text-center'>Duration</TableHead>
+                                            <TableHead className='text-center'>Option</TableHead>
+                                            <TableHead className='text-center'>Renew</TableHead>
+                                            <TableHead className='text-center'>Type</TableHead>
+                                            <TableHead className='text-center'>Expire</TableHead>
+                                            <TableHead className='text-center'>Contact No</TableHead>
+                                            <TableHead className='text-center'>Shift</TableHead>
+                                            <TableHead className='text-center'>Status</TableHead>
+                                            <TableHead className='text-center'>Fee</TableHead>
+                                            <TableHead className='text-center'>Action</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {members && members.length > 0 ? (
+                                            members.map((member) => {
+                                                const textColor =
+                                                    member.status === 'Active' ? 'text-black' :
+                                                        member.status === 'OnHold' ? 'text-yellow-500' :
+                                                            'text-red-500';
+                                                return (
+                                                    <TableRow key={member._id} className={textColor}
+                                                        sx={{
+                                                            '&:hover': { backgroundColor: '#f9fafb' },
+                                                            '& td': {
+                                                                padding: '0.75rem 1rem',
+                                                                fontSize: '0.875rem',
+                                                                color: '#4b5563',
+                                                                borderBottom: '1px solid #e5e7eb'
+                                                            }
+                                                        }}>
+                                                        <TableCell className="text-center flex justify-start items-center" component="th" scope="row" sx={{ width: '120px', maxWidth: '120px' }}>
+                                                            <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
+                                                                <span className="truncate text-center font-mono text-xs">{member._id}</span>
+                                                                <TooltipProvider>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <button
+                                                                                onClick={() => copyToClipboard(member._id)}
+                                                                                className="text-gray-400 hover:text-blue-600 transition-colors p-1"
+                                                                            >
+                                                                                <MdContentCopy size={14} />
+                                                                            </button>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent>
+                                                                            <p>Copy ID</p>
+                                                                        </TooltipContent>
+                                                                    </Tooltip>
+                                                                </TooltipProvider>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>{member.fullName}</TableCell>
+                                                        <TableCell className='text-center'>{member.membershipDuration}</TableCell>
+                                                        <TableCell className='text-center'>{member.membershipOption}</TableCell>
+                                                        <TableCell className='text-center'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell className='text-center'>{member.membershipType}</TableCell>
+                                                        <TableCell className='text-center'>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell className='text-center'>{member.contactNo}</TableCell>
+                                                        <TableCell className='text-center'>{member.membershipShift}</TableCell>
+                                                        <TableCell className='text-center'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                        <TableCell className='text-center'>{member.paidAmmount}</TableCell>
+                                                        <TableCell className='text-center'>
+                                                            <div className="flex items-center justify-center space-x-1">
+                                                                <Link href={`/dashboard/members/${member._id}`}>
+                                                                    <FaUserEdit className='cursor-pointer text-lg' />
+                                                                </Link>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        <MdEmail
+                                                                            className='cursor-pointer text-lg'
+                                                                        />
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This action will send QR attached to {member.fullName}, Are you sure about that?
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction onClick={() => sendQrInEmail(member._id)}>Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        {user && user.user.role === 'Gym Admin' ? (
+                                                                            <></>
+                                                                        ) : (
+                                                                            <MdDelete
+                                                                                className="cursor-pointer text-red-600 text-lg"
+                                                                            />
+                                                                        )}
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This action cannot be undone. This will permanently delete member
+                                                                                account and remove data from servers.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() => deleteMember(member._id)}
+                                                                            >Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                );
+                                            })
+                                        ) : (
+                                            <TableRow>
+                                                <TableCell colSpan={13} className="text-center">
+                                                    No memberships found.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                    <TableFooter className='text-center text-black'>
+                                        <TableRow>
+                                            <TableCell colSpan={1}>Total Memberships</TableCell>
+                                            <TableCell className="text-right">{totalMembers}</TableCell>
+                                        </TableRow>
+                                    </TableFooter>
+                                </Table>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <div className='my-2'>
+                    <div className="mt-4 px-4 md:flex justify-between items-center">
+                        <p className="font-medium text-center text-sm font-gray-700">
+                            Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalMembers}</span> entries
+                        </p>
+                        <Pagination
+                            total={totalPages}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
                 </div>
             </div>
         </div>

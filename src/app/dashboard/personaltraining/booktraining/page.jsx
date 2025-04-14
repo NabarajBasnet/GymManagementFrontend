@@ -1,739 +1,825 @@
-'use client';
+// PersonalTrainingManager.js
+"use client";
+import { useState, useEffect, useCallback } from 'react';
+import { format, addMonths, subMonths, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parse, addDays } from 'date-fns';
 
-import { RiEditBoxLine } from "react-icons/ri";
-import Box from '@mui/material/Box';
-import LinearProgress from '@mui/material/LinearProgress';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import Pagination from "@/components/ui/CustomPagination";
-import { IoSearch } from "react-icons/io5";
-import {
-    Table,
-    TableBody,
-    TableCaption,
-    TableCell,
-    TableFooter,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import React, { useState, useRef, useEffect } from 'react';
-import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from '@/components/ui/button';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { usePagination } from "@/hooks/Pagination";
-import Loader from "@/components/Loader/Loader";
-import { useForm, Controller } from "react-hook-form";
-import { MdError, MdDelete, MdDone, MdClose } from "react-icons/md";
+export default function PersonalTrainingManager() {
+  // State management
+  const [view, setView] = useState('calendar'); // calendar, list, form, details
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDay, setSelectedDay] = useState(new Date());
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [sessions, setSessions] = useState([]);
+  const [trainers, setTrainers] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [packages, setPackages] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [formData, setFormData] = useState({
+    title: '',
+    clientId: '',
+    trainerId: '',
+    packageId: '',
+    date: format(new Date(), 'yyyy-MM-dd'),
+    startTime: '09:00',
+    duration: 60,
+    notes: '',
+    status: 'scheduled'
+  });
 
-const BookTrainer = () => {
-
-    const queryClient = useQueryClient();
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
-    const [trainerSearchQuery, setTrainerSearchQuery] = useState('');
-    const [clientSearchQuery, setClientSearchQuery] = useState('');
-
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('');
-    const responseResultType = ['Success', 'Failure'];
-    const [deleting, setDeleting] = useState(false);
-    const [updateDocument, setUpdateDocument] = useState(false);
-    const [documentUpdateId, setUpdateDocumentId] = useState('');
-
-    const { control, reset, register, setError, clearErrors, setValue, handleSubmit, formState: { errors, isSubmitting } } = useForm();
-    const [submitting, setSubmitting] = useState(false);
-
-    const trainerSearchRef = useRef(null);
-    const clientSearchRef = useRef(null);
-
-    const [renderTrainerDropdown, setRenderTrainerDropdown] = useState(false);
-    const [renderClientDropdown, setRenderClientDropdown] = useState(false);
-
-    const [selectedTrainer, setSelectedTrainer] = useState(null);
-    const [selectedClient, setSelectedClient] = useState(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (
-                trainerSearchRef.current &&
-                !trainerSearchRef.current.contains(event.target)
-            ) {
-                setRenderTrainerDropdown(false);
-            }
-            if (
-                clientSearchRef.current &&
-                !clientSearchRef.current.contains(event.target)
-            ) {
-                setRenderClientDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, []);
-
-    const handleTrainerFocus = () => {
-        setRenderTrainerDropdown(true);
-        setRenderClientDropdown(false);
+  // Fetch data when component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        // Replace with your actual API endpoints
+        const [sessionsData, trainersData, clientsData, packagesData] = await Promise.all([
+          fetch('/api/sessions').then(res => res.json()),
+          fetch('/api/trainers').then(res => res.json()),
+          fetch('/api/clients').then(res => res.json()),
+          fetch('/api/packages').then(res => res.json())
+        ]);
+        
+        setSessions(sessionsData || []);
+        setTrainers(trainersData || []);
+        setClients(clientsData || []);
+        setPackages(packagesData || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        // Handle error state here if needed
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    const handleClientFocus = () => {
-        setRenderClientDropdown(true);
-        setRenderTrainerDropdown(false);
-    };
-    const fetchAllStaffs = async () => {
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-        };
-    };
-    const { data, isLoading, error } = useQuery({
-        queryKey: ['staffs'],
-        queryFn: fetchAllStaffs
-    })
-    const { staffs } = data || {};
+    fetchData();
+  }, []);
 
-    const getAllMembers = async () => {
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members`);
-            const resBody = await response.json();
-            return resBody;
-        } catch (error) {
-            console.error('Error: ', error);
-        }
-    };
-    const { data: allMembers, isLoading: isMemberLoading } = useQuery({
-        queryKey: ['members'],
-        queryFn: getAllMembers,
-        keepPreviousData: true,
+  // Get sessions for selected day
+  const dailySessions = useCallback(() => {
+    return sessions.filter(session => 
+      isSameDay(new Date(session.date), selectedDay)
+    ).sort((a, b) => a.startTime.localeCompare(b.startTime));
+  }, [sessions, selectedDay]);
+
+  // Calendar navigation
+  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+
+  // Date helpers
+  const getWeekDays = () => {
+    const start = startOfWeek(currentDate);
+    const end = endOfWeek(currentDate);
+    return eachDayOfInterval({ start, end });
+  };
+
+  // Form handlers
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    try {
+      const formattedData = {
+        ...formData,
+        date: formData.date,
+        duration: parseInt(formData.duration),
+        clientId: parseInt(formData.clientId),
+        trainerId: parseInt(formData.trainerId),
+        packageId: formData.packageId ? parseInt(formData.packageId) : null
+      };
+
+      const method = selectedSession ? 'PUT' : 'POST';
+      const url = selectedSession 
+        ? `/api/sessions/${selectedSession.id}` 
+        : '/api/sessions';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formattedData)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save session');
+      }
+
+      const savedSession = await response.json();
+      
+      if (selectedSession) {
+        setSessions(sessions.map(s => s.id === savedSession.id ? savedSession : s));
+      } else {
+        setSessions([...sessions, savedSession]);
+      }
+
+      // Reset form and return to calendar view
+      setFormData({
+        title: '',
+        clientId: '',
+        trainerId: '',
+        packageId: '',
+        date: format(new Date(), 'yyyy-MM-dd'),
+        startTime: '09:00',
+        duration: 60,
+        notes: '',
+        status: 'scheduled'
+      });
+      setSelectedSession(null);
+      setView('calendar');
+    } catch (error) {
+      console.error("Error saving session:", error);
+      // Handle error state if needed
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleEditSession = (session) => {
+    setSelectedSession(session);
+    setFormData({
+      title: session.title,
+      clientId: session.clientId.toString(),
+      trainerId: session.trainerId.toString(),
+      packageId: session.packageId ? session.packageId.toString() : '',
+      date: session.date,
+      startTime: session.startTime,
+      duration: session.duration.toString(),
+      notes: session.notes || '',
+      status: session.status
     });
-    const { members } = allMembers || {};
+    setView('form');
+  };
 
-    const fetchAllPersonalTrainings = async ({ queryKey }) => {
-        const [, page] = queryKey;
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}`);
-            return await response.json();
-        } catch (error) {
-            console.log("Error: ", error);
-        };
-    };
+  const handleDeleteSession = async (sessionId) => {
+    if (!confirm('Are you sure you want to delete this session?')) return;
+    
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/sessions/${sessionId}`, {
+        method: 'DELETE'
+      });
 
-    const { data: personalTrainingsData, isLoading: isPersonalTrainingLoading } = useQuery({
-        queryKey: ['personaltrainings', currentPage],
-        queryFn: fetchAllPersonalTrainings
-    })
-    const { personalTrainings, totalPersonalTrainings, totalPages, } = personalTrainingsData || {}
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
+      if (!response.ok) {
+        throw new Error('Failed to delete session');
+      }
+
+      setSessions(sessions.filter(s => s.id !== sessionId));
+      setView('calendar');
+    } catch (error) {
+      console.error("Error deleting session:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancelSession = async (sessionId) => {
+    if (!confirm('Are you sure you want to cancel this session?')) return;
+    
+    setIsLoading(true);
+    try {
+      const session = sessions.find(s => s.id === sessionId);
+      const updatedSession = { ...session, status: 'cancelled' };
+      
+      const response = await fetch(`/api/sessions/${sessionId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedSession)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to cancel session');
+      }
+
+      const savedSession = await response.json();
+      setSessions(sessions.map(s => s.id === savedSession.id ? savedSession : s));
+    } catch (error) {
+      console.error("Error cancelling session:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Get client and trainer details
+  const getClientName = (clientId) => {
+    const client = clients.find(c => c.id === clientId);
+    return client ? `${client.firstName} ${client.lastName}` : 'Unknown Client';
+  };
+
+  const getTrainerName = (trainerId) => {
+    const trainer = trainers.find(t => t.id === trainerId);
+    return trainer ? `${trainer.firstName} ${trainer.lastName}` : 'Unknown Trainer';
+  };
+
+  // Get package details
+  const getPackageName = (packageId) => {
+    const pkg = packages.find(p => p.id === packageId);
+    return pkg ? pkg.name : 'No Package';
+  };
+
+  // Calculate time slots
+  const getTimeSlots = () => {
+    const slots = [];
+    for (let i = 5; i < 22; i++) {
+      for (let j = 0; j < 60; j += 30) {
+        slots.push(`${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`);
+      }
+    }
+    return slots;
+  };
+
+  // Filter sessions for list view
+  const getFilteredSessions = () => {
+    let filtered = [...sessions];
+    
+    if (selectedTrainer) {
+      filtered = filtered.filter(s => s.trainerId === selectedTrainer);
+    }
+    
+    if (selectedClient) {
+      filtered = filtered.filter(s => s.clientId === selectedClient);
+    }
+    
+    return filtered.sort((a, b) => {
+      // Sort by date first
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      if (dateA < dateB) return -1;
+      if (dateA > dateB) return 1;
+      
+      // Then by start time
+      return a.startTime.localeCompare(b.startTime);
     });
+  };
 
+  // Calendar grid days
+  const getDaysInMonth = () => {
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Get the first day of the week of the month
+    const startDate = startOfWeek(firstDay);
+    
+    // Get the last day of the week of the last day of the month
+    const endDate = endOfWeek(lastDay);
 
-    const handleFormSubmit = async (data) => {
-        setSubmitting(true);
-        const { from, duration, to, fee, discount, finalCharge, status } = data;
-        const finalData = { trainer: selectedTrainer, client: selectedClient, from, duration, to, fee, discount, finalCharge, status };
+    // Return array of dates
+    return eachDayOfInterval({ start: startDate, end: endDate });
+  };
 
-        try {
-            const url = updateDocument
-                ? `http://88.198.112.156:3000/api/personaltraining/${documentUpdateId}` :
-                'http://88.198.112.156:3000/api/personaltraining'
-            const response = await fetch(url, {
-                method: updateDocument ? 'PATCH' : 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(finalData)
-            });
+  // Check if day has sessions
+  const dayHasSessions = (day) => {
+    return sessions.some(session => 
+      isSameDay(new Date(session.date), day)
+    );
+  };
 
-            const responseBody = await response.json()
-            if (response.ok) {
-                setSubmitting(false);
-                setUpdateDocument(false);
-                reset();
-                queryClient.invalidateQueries(['personaltrainings']);
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
+  const renderCalendarView = () => {
+    const days = getDaysInMonth();
+    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    return (
+      <div className="calendar-container">
+        <div className="calendar-header flex justify-between items-center mb-4">
+          <button onClick={prevMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
+            &lt; Prev
+          </button>
+          <h2 className="text-xl font-bold">{format(currentDate, 'MMMM yyyy')}</h2>
+          <button onClick={nextMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
+            Next &gt;
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-7 gap-1">
+          {weekDays.map(day => (
+            <div key={day} className="text-center font-semibold py-2 bg-gray-100">
+              {day}
+            </div>
+          ))}
+          
+          {days.map((day, i) => {
+            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
+            const isToday = isSameDay(day, new Date());
+            const isSelected = isSameDay(day, selectedDay);
+            const hasSessions = dayHasSessions(day);
+            
+            return (
+              <div 
+                key={i}
+                className={`
+                  min-h-24 p-2 border border-gray-200 cursor-pointer
+                  ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : ''}
+                  ${isToday ? 'bg-blue-50' : ''}
+                  ${isSelected ? 'bg-blue-100 border-blue-500' : ''}
+                  ${hasSessions ? 'font-semibold' : ''}
+                `}
+                onClick={() => {
+                  setSelectedDay(day);
+                  setView('details');
+                }}
+              >
+                <div className="flex justify-between">
+                  <span>{format(day, 'd')}</span>
+                  {hasSessions && (
+                    <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-xs">
+                      {sessions.filter(s => isSameDay(new Date(s.date), day)).length}
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-4 flex justify-end space-x-2">
+          <button
+            onClick={() => setView('list')}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            List View
+          </button>
+          <button
+            onClick={() => {
+              setSelectedSession(null);
+              setFormData({
+                ...formData,
+                date: format(selectedDay, 'yyyy-MM-dd')
+              });
+              setView('form');
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            New Session
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const renderDayDetailView = () => {
+    const sessions = dailySessions();
+    return (
+      <div className="day-detail">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">{format(selectedDay, 'EEEE, MMMM d, yyyy')}</h2>
+          <button
+            onClick={() => setView('calendar')}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Back to Calendar
+          </button>
+        </div>
+        
+        {sessions.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded">
+            <p className="text-gray-500">No sessions scheduled for this day.</p>
+            <button
+              onClick={() => {
+                setSelectedSession(null);
+                setFormData({
+                  ...formData,
+                  date: format(selectedDay, 'yyyy-MM-dd')
                 });
-            }
-        } catch (error) {
-            setSubmitting(false);
-            console.log("Error: ", error);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message || 'Unauthorized action'
-            });
-        };
-    };
+                setView('form');
+              }}
+              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+              Add Session
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {sessions.map(session => (
+              <div key={session.id} className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
+                <div className="flex justify-between">
+                  <h3 className="font-bold text-lg">{session.title}</h3>
+                  <span className={`px-2 py-1 rounded text-sm ${
+                    session.status === 'completed' ? 'bg-green-100 text-green-800' :
+                    session.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                  </span>
+                </div>
+                
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <div>
+                    <p className="text-sm text-gray-500">Time</p>
+                    <p>{session.startTime} ({session.duration} min)</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Client</p>
+                    <p>{getClientName(session.clientId)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Trainer</p>
+                    <p>{getTrainerName(session.trainerId)}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-500">Package</p>
+                    <p>{session.packageId ? getPackageName(session.packageId) : 'No Package'}</p>
+                  </div>
+                </div>
+                
+                {session.notes && (
+                  <div className="mt-2">
+                    <p className="text-sm text-gray-500">Notes</p>
+                    <p className="text-sm">{session.notes}</p>
+                  </div>
+                )}
+                
+                <div className="mt-4 flex justify-end space-x-2">
+                  {session.status === 'scheduled' && (
+                    <>
+                      <button
+                        onClick={() => handleCancelSession(session.id)}
+                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={() => handleEditSession(session)}
+                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+                      >
+                        Edit
+                      </button>
+                    </>
+                  )}
+                  {session.status === 'cancelled' && (
+                    <button
+                      onClick={() => handleDeleteSession(session.id)}
+                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+            
+            <div className="flex justify-end mt-4">
+              <button
+                onClick={() => {
+                  setSelectedSession(null);
+                  setFormData({
+                    ...formData,
+                    date: format(selectedDay, 'yyyy-MM-dd')
+                  });
+                  setView('form');
+                }}
+                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              >
+                Add Session
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
-    const deletePersonalTraining = async (id) => {
-        setDeleting(true);
-        try {
-            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
-                method: "DELETE",
-            });
-            const responseBody = await response.json();
-            if (response.ok) {
-                queryClient.invalidateQueries(['personaltrainings']);
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-                setDeleting(false);
-            }
-        } catch (error) {
-            console.log("Error: ", error);
-            setDeleting(false);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message || 'Unauthorized action'
-            });
-        };
-    };
+  const renderListView = () => {
+    const filteredSessions = getFilteredSessions();
 
     return (
-        <div
-            className='w-full bg-gray-200'
-            onClick={() => {
-                setToast(false);
-                setDeleting(false)
-            }}
-        >
-
-            {submitting && (
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box>
-            )}
-
-            {deleting && (
-                <Box sx={{ width: '100%' }}>
-                    <LinearProgress />
-                </Box>
-            )}
-
-            {toast && (
-                <>
-                    <div
-                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
-                        onClick={() => setToast(false)}
-                    ></div>
-
-                    <div className="fixed top-4 right-4 z-50 animate-slide-in">
-                        <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                                  transition-all duration-300 ease-in-out w-80
-                                  ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
-
-                            <div className={`flex items-center justify-center p-2 rounded-full 
-                                          ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
-                                {responseType === 'Success' ? (
-                                    <MdDone className="text-xl text-emerald-600" />
-                                ) : (
-                                    <MdError className="text-xl text-rose-600" />
-                                )}
-                            </div>
-
-                            <div className="flex-1">
-                                <h3 className={`text-base font-semibold mb-1
-                                          ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
-                                    {responseType === 'Success' ? "Successfully!" : "Action required"}
-                                </h3>
-
-                                <p className="text-sm text-gray-600 leading-relaxed">
-                                    {responseType === 'Success'
-                                        ? (
-                                            <>
-                                                <p>{successMessage.message}</p>
-                                            </>
-                                        )
-                                        :
-                                        (
-                                            <>
-                                                <p>{errorMessage.message}</p>
-                                            </>
-                                        )
-                                    }
-                                </p>
-
-                                <div className="mt-3 flex items-center gap-2">
-                                    {responseType === 'Success' ? (
-                                        <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
-                                            Done
-                                        </button>
-                                    ) : (
-                                        <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
-                                            Retry Now
-                                        </button>
-                                    )}
-                                    <span className="text-gray-400">|</span>
-                                    <button
-                                        className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
-                                        onClick={() => setToast(false)}>
-                                        Dismiss
-                                    </button>
-                                </div>
-                            </div>
-
-                            <MdClose
-                                onClick={() => setToast(false)}
-                                className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
-                            />
-                        </div>
-                    </div>
-                </>
-            )}
-
-            {deleting ? (
-                <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="absolute inset-0 bg-black opacity-50"></div>
-                    <div className={`bg-white border shadow-2xl flex items-center justify-between p-4 relative`}>
-                        <h1 className="w-full text-xl font-bold animate-pulse duration-500 transition-all">Loading...</h1>
-                    </div>
-                </div>
-            ) : (
-                <></>
-            )}
-            <div className='w-full p-4'>
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem>Themes</DropdownMenuItem>
-                                    <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink>Book Trainer</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage>Personal Trainer Booking</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Book Trainer</h1>
-            </div>
-
-            <div className="w-full bg-white">
-                <form onSubmit={handleSubmit(handleFormSubmit)} className="w-full p-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="w-full">
-                        <Label>Select Trainer</Label>
-                        <div ref={trainerSearchRef} className="w-full flex justify-center">
-                            <div className="relative w-full">
-                                <div className="w-full">
-                                    <Input
-                                        autoComplete="off"
-                                        value={trainerSearchQuery}
-                                        onChange={(e) => { setTrainerSearchQuery(e.target.value); }}
-                                        onFocus={handleTrainerFocus}
-                                        className="w-full rounded-lg"
-                                        placeholder="Select Trainers..."
-                                    />
-                                    {errors.trainerName && (
-                                        <p className="text-sm font-semibold text-red-600">
-                                            {errors.trainerName.message}
-                                        </p>
-                                    )}
-                                </div>
-                                {renderTrainerDropdown && (
-                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
-                                        {staffs
-                                            ?.filter((staff) => {
-                                                const matchByName = staff.fullName
-                                                    .toLowerCase()
-                                                    .includes(trainerSearchQuery.toLowerCase());
-                                                return matchByName;
-                                            })
-                                            .map((staff) => (
-                                                <p
-                                                    onClick={() => {
-                                                        setRenderTrainerDropdown(false);
-                                                        setSelectedTrainer(staff);
-                                                        setTrainerSearchQuery(staff.fullName)
-                                                    }}
-                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                    key={staff._id}
-                                                    value={staff._id}
-                                                >
-                                                    {staff.fullName}
-                                                </p>
-                                            ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Select Client</Label>
-                        <div ref={clientSearchRef} className="w-full flex justify-center">
-                            <div className="relative w-full">
-                                <div className="w-full">
-                                    <Input
-                                        autoComplete="off"
-                                        value={clientSearchQuery}
-                                        onChange={(e) => { setClientSearchQuery(e.target.value); }}
-                                        onFocus={handleClientFocus}
-                                        className="w-full rounded-lg"
-                                        placeholder="Select Clients..."
-                                    />
-                                    {errors.clientName && (
-                                        <p className="text-sm font-semibold text-red-600">
-                                            {errors.clientName.message}
-                                        </p>
-                                    )}
-                                </div>
-                                {renderClientDropdown && (
-                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
-                                        {members
-                                            ?.filter((member) => {
-                                                const matchByName = member.fullName
-                                                    .toLowerCase()
-                                                    .includes(clientSearchQuery.toLowerCase());
-                                                return matchByName;
-                                            })
-                                            .map((member) => (
-                                                <p
-                                                    onClick={() => {
-                                                        setRenderClientDropdown(false);
-                                                        setSelectedClient(member);
-                                                        setClientSearchQuery(member.fullName)
-                                                    }}
-                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                    key={member._id}
-                                                    value={member._id}
-                                                >
-                                                    {member.fullName}
-                                                </p>
-                                            ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="w-full">
-                        <Label>From</Label>
-                        <Input
-                            {...register('from', {
-                                required: {
-                                    value: true,
-                                    message: 'Please select date range'
-                                }
-                            })}
-                            type='date'
-                            placeholder='Select Date From'
-                            className='w-full rounded-md'
-                        />
-                        {errors.from && (
-                            <p className="text-sm font-semibold text-red-600">{errors.from.status}</p>
-                        )}
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Training Duration</Label>
-                        <select
-                            {...register('duration', {
-                                required: {
-                                    value: true,
-                                    message: 'Please select training duration'
-                                }
-                            })}
-                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                        >
-                            <option>Select</option>
-                            <option value="1 Month">1 Month</option>
-                            <option value="3 Months">3 Months</option>
-                            <option value="6 Months">6 Months</option>
-                        </select>
-                        {errors.duration && (
-                            <p className="text-sm font-semibold text-red-600">{errors.duration.status}</p>
-                        )}
-                    </div>
-
-                    <div className="w-full">
-                        <Label>To</Label>
-                        <Input
-                            type='date'
-                            {...register('to', {
-                                required: {
-                                    value: true,
-                                    message: 'Please select date range'
-                                }
-                            })}
-                            placeholder='Select Date To'
-                            className='w-full rounded-md'
-                        />
-                        {errors.to && (
-                            <p className="text-sm font-semibold text-red-600">{errors.to.status}</p>
-                        )}
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Fee</Label>
-                        <Input
-                            type='text'
-                            {...register('fee', {
-                                required: {
-                                    value: true,
-                                    message: "Fee is required"
-                                }
-                            })}
-                            placeholder='Charge Fee'
-                            className='w-full rounded-md'
-                        />
-                        {errors.fee && (
-                            <p className="text-sm font-semibold text-red-600">{errors.fee.status}</p>
-                        )}
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Discount</Label>
-                        <Input
-                            {...register('discount')}
-                            type='text'
-                            placeholder='Discount'
-                            className='w-full rounded-md'
-                        />
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Final Charge/Fee</Label>
-                        <Input
-                            {...register('finalCharge', {
-                                required: {
-                                    value: true,
-                                    message: "Final charge/fee is required"
-                                }
-                            })}
-                            type='text'
-                            placeholder='Final Charge'
-                            className='w-full rounded-md'
-                        />
-                        {errors.finalCharge && (
-                            <p className="text-sm font-semibold text-red-600">{errors.finalCharge.status}</p>
-                        )}
-                    </div>
-
-                    <div className="w-full">
-                        <Label>Status</Label>
-                        <select
-                            {...register('status', {
-                                required: {
-                                    value: true,
-                                    message: "Please select one status"
-                                }
-                            })}
-                            className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                        >
-                            <option>Select</option>
-                            <option value="Booked">Booked</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Freezed">Freezed</option>
-                        </select>
-                        {errors.status && (
-                            <p className="text-sm font-semibold text-red-600">{errors.message.status}</p>
-                        )}
-                    </div>
-
-                    <div className="flex items-center mb-2 space-x-3">
-                        <Button type='button' onClick={() => reset()} className='rounded-sm bg-red-600'>Reset</Button>
-                        <Button type='button' onClick={() => window.location.reload()} className='rounded-sm mx-4'>Refresh</Button>
-                        {updateDocument ? (
-                            <Button type='submit' className='rounded-sm bg-green-600'>{isSubmitting ? 'Updating...' : 'Update'}</Button>
-                        ) : (
-                            <Button type='submit' className='rounded-sm bg-green-600'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
-                        )}
-                    </div>
-                </form>
-            </div>
-
-            <div className="w-full bg-white mt-5 p-3">
-                <div>
-                    <div className="flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-start border border-gray-400 rounded-sm items-center">
-                            <IoSearch className="text-xl" />
-                            <Input
-                                className='w-full border-none bg-none'
-                                placeholder='Search Member...'
-                            />
-                        </div>
-                    </div>
-                    {isPersonalTrainingLoading ? (
-                        <Loader />
-                    ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Trainer</TableHead>
-                                    <TableHead>From</TableHead>
-                                    <TableHead>To</TableHead>
-                                    <TableHead>Client Name</TableHead>
-                                    <TableHead>Fee</TableHead>
-                                    <TableHead>Discount</TableHead>
-                                    <TableHead>Final Charge</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {Array.isArray(personalTrainings) && personalTrainings.length >= 1 ? (
-                                    personalTrainings.map((training) => {
-                                        const textColor = training.status === 'Expired' ? 'text-red-600' :
-                                            training.status === 'Paused' ? 'text-yellow-600' : 'text-black'
-                                        return (
-                                            <TableRow key={training._id} className={textColor}>
-                                                <TableCell className="font-medium">{training.trainer ? training.trainer.fullName : ''}</TableCell>
-                                                <TableCell>{training.from ? new Date(training.from).toISOString().split('T')[0] : ''}</TableCell>
-                                                <TableCell>{training.to ? new Date(training.to).toISOString().split('T')[0] : ''}</TableCell>
-                                                <TableCell>{training.client ? training.client.fullName : ''}</TableCell>
-                                                <TableCell>{training.fee ? training.fee : ''}</TableCell>
-                                                <TableCell>{training.discount ? training.discount : ''}</TableCell>
-                                                <TableCell>{training.finalCharge ? training.finalCharge : ''}</TableCell>
-                                                <TableCell>{training.status ? training.status : ''}</TableCell>
-                                                <TableCell className="text-right">
-                                                    <div className="flex items-center">
-                                                        <RiEditBoxLine onClick={() => {
-                                                            setUpdateDocumentId(training._id);
-                                                            setUpdateDocument(!updateDocument);
-                                                            setTrainerSearchQuery(training.trainer.fullName);
-                                                            setSelectedTrainer(training.trainer);
-                                                            setSelectedClient(training.client);
-                                                            setClientSearchQuery(training.client.fullName);
-                                                            reset({
-                                                                from: training.from ? new Date(training.from).toISOString().split('T')[0] : '',
-                                                                duration: training.duration,
-                                                                to: training.to ? new Date(training.to).toISOString().split('T')[0] : '',
-                                                                fee: training.fee,
-                                                                discount: training.discount,
-                                                                finalCharge: training.finalCharge,
-                                                                status: training.status
-                                                            })
-                                                        }} className="cursor-pointer text-xl mx-2" />
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <MdDelete className="cursor-pointer text-red-600 text-xl" />
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete your
-                                                                        personal training and remove data from server.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => deletePersonalTraining(training._id)}>Continue</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        )
-                                    })
-                                ) : (
-                                    <TableRow >
-                                        <TableCell className="font-medium text-center" colSpan={12}>No Personal Trainings Available</TableCell>
-                                    </TableRow>
-                                )}
-                            </TableBody>
-                            <TableFooter>
-                                <TableRow>
-                                    <TableCell colSpan={3}>Total Personal Trainings</TableCell>
-                                    <TableCell className="text-right">{totalPersonalTrainings ? totalPersonalTrainings : ''}</TableCell>
-                                </TableRow>
-                            </TableFooter>
-                        </Table>
-                    )}
-
-                    <div className="py-3">
-                        <Pagination
-                            total={totalPages || 1}
-                            page={currentPage || 1}
-                            onChange={setCurrentPage}
-                            withEdges={true}
-                            siblings={1}
-                            boundaries={1}
-                        />
-                    </div>
-                </div>
-            </div>
+      <div className="list-view">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">All Sessions</h2>
+          <button
+            onClick={() => setView('calendar')}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Back to Calendar
+          </button>
         </div>
-    )
-}
+        
+        <div className="mb-4 flex flex-wrap gap-4">
+          <div className="w-64">
+            <label className="block mb-1 text-sm">Filter by Trainer</label>
+            <select
+              value={selectedTrainer || ''}
+              onChange={(e) => setSelectedTrainer(e.target.value === '' ? null : parseInt(e.target.value))}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">All Trainers</option>
+              {trainers.map(trainer => (
+                <option key={trainer.id} value={trainer.id}>
+                  {trainer.firstName} {trainer.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="w-64">
+            <label className="block mb-1 text-sm">Filter by Client</label>
+            <select
+              value={selectedClient || ''}
+              onChange={(e) => setSelectedClient(e.target.value === '' ? null : parseInt(e.target.value))}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">All Clients</option>
+              {clients.map(client => (
+                <option key={client.id} value={client.id}>
+                  {client.firstName} {client.lastName}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        
+        {filteredSessions.length === 0 ? (
+          <div className="text-center py-8 bg-gray-50 rounded">
+            <p className="text-gray-500">No sessions found with the current filters.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="py-2 px-4 text-left">Date</th>
+                  <th className="py-2 px-4 text-left">Time</th>
+                  <th className="py-2 px-4 text-left">Title</th>
+                  <th className="py-2 px-4 text-left">Client</th>
+                  <th className="py-2 px-4 text-left">Trainer</th>
+                  <th className="py-2 px-4 text-left">Status</th>
+                  <th className="py-2 px-4 text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredSessions.map(session => (
+                  <tr key={session.id} className="border-t">
+                    <td className="py-2 px-4">{format(new Date(session.date), 'MMM d, yyyy')}</td>
+                    <td className="py-2 px-4">{session.startTime}</td>
+                    <td className="py-2 px-4">{session.title}</td>
+                    <td className="py-2 px-4">{getClientName(session.clientId)}</td>
+                    <td className="py-2 px-4">{getTrainerName(session.trainerId)}</td>
+                    <td className="py-2 px-4">
+                      <span className={`px-2 py-1 rounded text-xs ${
+                        session.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        session.status === 'cancelled' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4">
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => {
+                            setSelectedDay(new Date(session.date));
+                            setView('details');
+                          }}
+                          className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs"
+                        >
+                          View
+                        </button>
+                        {session.status === 'scheduled' && (
+                          <>
+                            <button
+                              onClick={() => handleEditSession(session)}
+                              className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleCancelSession(session.id)}
+                              className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
+                            >
+                              Cancel
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={() => {
+              setSelectedSession(null);
+              setFormData({
+                ...formData,
+                date: format(new Date(), 'yyyy-MM-dd')
+              });
+              setView('form');
+            }}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          >
+            New Session
+          </button>
+        </div>
+      </div>
+    );
+  };
 
-export default BookTrainer;
+  const renderFormView = () => {
+    return (
+      <div className="form-view">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold">
+            {selectedSession ? 'Edit Session' : 'Create New Session'}
+          </h2>
+          <button
+            onClick={() => setView(selectedSession ? 'details' : 'calendar')}
+            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+        </div>
+        
+        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block mb-1">Title</label>
+              <input
+                type="text"
+                name="title"
+                value={formData.title}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+                placeholder="Session Title"
+              />
+            </div>
+            
+            <div>
+              <label className="block mb-1">Date</label>
+              <input
+                type="date"
+                name="date"
+                value={formData.date}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            
+            <div>
+              <label className="block mb-1">Start Time</label>
+              <select
+                name="startTime"
+                value={formData.startTime}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                {getTimeSlots().map((time) => (
+                  <option key={time} value={time}>{time}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block mb-1">Duration (minutes)</label>
+              <select
+                name="duration"
+                value={formData.duration}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                <option value="30">30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">60 minutes</option>
+                <option value="90">90 minutes</option>
+                <option value="120">120 minutes</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block mb-1">Client</label>
+              <select
+                name="clientId"
+                value={formData.clientId}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                <option value="">Select Client</option>
+                {clients.map(client => (
+                  <option key={client.id} value={client.id}>
+                    {client.firstName} {client.lastName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block mb-1">Trainer</label>
+              <select
+                name="trainerId"
+                value={formData.trainerId}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                <option value="">Select Trainer</option>
+                {trainers.map(trainer => (
+                  <option key={trainer.id} value={trainer.id}>
+                    {trainer.firstName} {trainer.lastName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block mb-1">Package (Optional)</label>
+              <select
+                name="packageId"
+                value={formData.packageId}
+                onChange={handleInputChange}
+                className="w-full p-2 border rounded"
+              >
+                <option value="">No Package</option>
+                {packages.map(pkg => (
+                  <option key={pkg.id} value={pkg.id}>
+                    {pkg.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div>
+              <label className="block mb-1">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                required
+                className="w-full p-2 border rounded"
+              >
+                <option value="scheduled">Scheduled</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="mt-4">
+            <label className="block mb-1">Notes</label>
+            <textarea
+              name="notes"
+              value={formData.notes}
+              onChange={handleInputChange}
+              className="w-full p-2 border rounded"
+              rows="4"
+              placeholder="Session notes, client goals, exercises, etc."
+            />
+          </div>
+          
+          <div className="mt-6 flex justify-end space-x-2">
+            <button
+              type="button"
+              onClick={() => setView(selectedSession ? 'details' : 'calendar')}
+              className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              disabled={isLoading}
+            >
+              {isLoading ? 'Saving...' : (selectedSession ? 'Update Session' : 'Create Session')}
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
+  // Loading state
+  if (isLoading && (sessions.length === 0 || trainers.length === 0 || clients.length === 0)) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
+          <p className="mt-2">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render component based on current view
+  return (
+    <div className="personal-training-manager">
+      <h1 className="text-2xl font-bold mb-6">Personal Training Session Management</h1>
+      
+      {view === 'calendar' && renderCalendarView()}
+      {view === 'details' && renderDayDetailView()}
+      {view === 'list' && renderListView()}
+      {view === 'form' && renderFormView()}
+    </div>
+  );
+}
