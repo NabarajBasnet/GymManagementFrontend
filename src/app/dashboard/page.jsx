@@ -164,7 +164,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-gray-50/50">
-      <div className="w-full mx-4 px-4 py-8">
+      <div className="w-full md:mx-4 px-4 py-8">
         <div className="mb-8">
           <Breadcrumb>
             <BreadcrumbList>

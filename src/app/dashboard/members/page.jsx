@@ -467,13 +467,13 @@ const AllMembers = () => {
                 <AllMembersAreaChart />
             </div>
 
-            {renderNewMemberRegistration && (
+            {/* {renderNewMemberRegistration && (
                 <div className="fixed top-0 left-0 w-full h-95vh bg-black bg-opacity-50 flex items-start justify-center z-50">
                     <div className="bg-white mt-10 p-6 flex justify-center items-center rounded-xl shadow-lg overflow-y-auto w-full">
                         <NewMemberRegistrationForm />
                     </div>
                 </div>
-            )}
+            )} */}
 
             <div className="mx-4 bg-white shadow-lg rounded-lg border">
                 <div className="w-full flex p-4 justify-between items-center">
