@@ -627,9 +627,8 @@ const MyProfile = () => {
                                         </div>
 
                                         {/* Enhanced Pagination */}
-                                        <div className="flex justify-between items-center">
-                                            <div></div>
-                                            <div className="p-6 border-t">
+                                        <div className="w-full flex justify-center items-center">
+                                            <div className="w-full border-t">
                                                 <Pagination
                                                     total={1}
                                                     page={1}
@@ -672,28 +671,25 @@ const MyProfile = () => {
                                                                 <TableCell component="th" scope="row">{attendance.fullName}</TableCell>
                                                                 <TableCell component="th" scope="row">{attendance.role}</TableCell>
                                                                 <TableCell component="th" scope="row">
-                                                                    {attendance.checkIn
-                                                                        ? new Date(attendance.checkIn).toLocaleString('en-US', {
-                                                                            year: 'numeric',
-                                                                            month: '2-digit',
-                                                                            day: '2-digit',
-                                                                            hour: '2-digit',
+                                                                    {attendance.checkIn ?
+                                                                        `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
+                                                                        new Date(attendance.checkIn).toLocaleTimeString('en-US', {
+                                                                            hour12: true,
+                                                                            hour: 'numeric',
                                                                             minute: '2-digit',
                                                                             second: '2-digit',
-                                                                            hour12: true,
+                                                                            timeZone: 'UTC'
                                                                         })
-                                                                        : ''}
-                                                                </TableCell>
+                                                                        : ''}                                                                </TableCell>
                                                                 <TableCell component="th" scope="row">
-                                                                    {attendance.checkOut
-                                                                        ? new Date(attendance.checkOut).toLocaleString('en-US', {
-                                                                            year: 'numeric',
-                                                                            month: '2-digit',
-                                                                            day: '2-digit',
-                                                                            hour: '2-digit',
+                                                                    {attendance.checkOut ?
+                                                                        `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
+                                                                        new Date(attendance.checkOut).toLocaleTimeString('en-US', {
+                                                                            hour12: true,
+                                                                            hour: 'numeric',
                                                                             minute: '2-digit',
                                                                             second: '2-digit',
-                                                                            hour12: true,
+                                                                            timeZone: 'UTC'
                                                                         })
                                                                         : ''}
                                                                 </TableCell>

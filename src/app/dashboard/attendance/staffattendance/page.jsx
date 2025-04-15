@@ -442,8 +442,10 @@ const StaffAttendance = () => {
                                                                 timeZone: 'UTC'
                                                             })
                                                             : ''}
+                                                        {/* {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''}
+                                                        {' - '}
+                                                        {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''} */}
                                                     </TableCell>
-
                                                     <TableCell className="text-sm">
                                                         {attendance.checkOut ?
                                                             `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
@@ -455,6 +457,9 @@ const StaffAttendance = () => {
                                                                 timeZone: 'UTC'
                                                             })
                                                             : ''}
+                                                        {/* {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''}
+                                                        {' - '}
+                                                        {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''} */}
                                                     </TableCell>
                                                     <TableCell className="text-sm">{attendance.remark}</TableCell>
                                                 </TableRow>

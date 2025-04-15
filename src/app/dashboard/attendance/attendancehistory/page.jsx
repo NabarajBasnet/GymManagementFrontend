@@ -349,14 +349,28 @@ const AttendanceHistory = () => {
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.role}</TableCell>
                                                             <TableCell className="text-sm">
-                                                                {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[0] : ''}
-                                                                {' - '}
-                                                                {attendance.checkIn ? new Date(attendance.checkIn).toISOString().split('T')[1].split('.')[0] : ''}
+                                                                {attendance.checkIn ?
+                                                                    `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
+                                                                    new Date(attendance.checkIn).toLocaleTimeString('en-US', {
+                                                                        hour12: true,
+                                                                        hour: 'numeric',
+                                                                        minute: '2-digit',
+                                                                        second: '2-digit',
+                                                                        timeZone: 'UTC'
+                                                                    })
+                                                                    : ''}
                                                             </TableCell>
                                                             <TableCell className="text-sm">
-                                                                {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[0] : ''}
-                                                                {' - '}
-                                                                {attendance.checkOut ? new Date(attendance.checkOut).toISOString().split('T')[1].split('.')[0] : ''}
+                                                                {attendance.checkOut ?
+                                                                    `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
+                                                                    new Date(attendance.checkOut).toLocaleTimeString('en-US', {
+                                                                        hour12: true,
+                                                                        hour: 'numeric',
+                                                                        minute: '2-digit',
+                                                                        second: '2-digit',
+                                                                        timeZone: 'UTC'
+                                                                    })
+                                                                    : ''}
                                                             </TableCell>
                                                             <TableCell>{attendance.remark}</TableCell>
                                                             <TableCell>{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
