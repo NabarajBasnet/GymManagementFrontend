@@ -63,6 +63,7 @@ import Loader from "@/components/Loader/Loader";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePagination, DOTS } from "@/hooks/Pagination";
+import AllMembersAreaChart from "./charts/allmembersareachart";
 
 const AllMembers = () => {
 
@@ -457,7 +458,10 @@ const AllMembers = () => {
                         </BreadcrumbList>
                     </Breadcrumb>
                 </div>
-                <h1 className="text-xl font-bold mt-3">All Members</h1>
+            </div>
+
+            <div className="mx-4 flex justify-center items-center bg-white shadow-md rounded-lg border mb-4">
+                <AllMembersAreaChart />
             </div>
 
             <div className="mx-4 bg-white shadow-lg rounded-lg border">
