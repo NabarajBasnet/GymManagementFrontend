@@ -1,5 +1,7 @@
 'use client';
 
+import NewMemberRegistrationForm from "../newmember/page";
+import { IoMdPersonAdd } from "react-icons/io";
 import { toast as notify } from "react-hot-toast";
 import { MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import {
@@ -82,7 +84,8 @@ const AllMembers = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [limit, setLimit] = useState(15);
     const [isDeleting, setIsDeleting] = useState(false);
-
+    const [renderNewMemberRegistration, setRenderNewMemberRegistration] = useState(false);
+    console.log("RenderNewMemberRegistration: ", renderNewMemberRegistration)
     const debounce = (func, delay) => {
         let timerId;
         return (...args) => {
@@ -460,11 +463,23 @@ const AllMembers = () => {
                 </div>
             </div>
 
-            <div className="mx-4 flex justify-center items-center bg-white shadow-md rounded-lg border mb-4">
+            <div className="mx-4 bg-white shadow-md rounded-lg border mb-4">
                 <AllMembersAreaChart />
             </div>
 
+            {renderNewMemberRegistration && (
+                <div className="fixed top-0 left-0 w-full h-95vh bg-black bg-opacity-50 flex items-start justify-center z-50">
+                    <div className="bg-white mt-10 p-6 flex justify-center items-center rounded-xl shadow-lg overflow-y-auto w-full">
+                        <NewMemberRegistrationForm />
+                    </div>
+                </div>
+            )}
+
             <div className="mx-4 bg-white shadow-lg rounded-lg border">
+                <div className="w-full flex p-4 justify-between items-center">
+                    <h1 className="font-bold text-xl">Members List</h1>
+                    <Button onClick={() => setRenderNewMemberRegistration(true)}> <IoMdPersonAdd />Add New Member</Button>
+                </div>
                 <div className="w-full md:flex justify-between items-center">
                     <div className="w-full md:w-6/12 my-2 md:my-0 flex items-center gap-3 px-4 rounded-lg">
                         <h1 className="text-sm font-semibold text-gray-700">Display</h1>

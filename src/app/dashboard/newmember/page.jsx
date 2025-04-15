@@ -49,7 +49,7 @@ import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useQuery } from "@tanstack/react-query";
 
-const newMemberRegistrationForm = () => {
+const NewMemberRegistrationForm = () => {
     const [imagePreview, setImagePreview] = useState(null);
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
@@ -1413,4 +1413,4 @@ const newMemberRegistrationForm = () => {
     );
 }
 
-export default newMemberRegistrationForm;
+export default NewMemberRegistrationForm;
