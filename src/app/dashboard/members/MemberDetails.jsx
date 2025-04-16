@@ -1,5 +1,7 @@
 'use client';
 
+import { FaChevronUp, FaChevronDown } from "react-icons/fa";
+import { HiXMark } from "react-icons/hi2";
 import { FaRegEye } from "react-icons/fa";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import {
@@ -71,6 +73,8 @@ const MemberDetails = ({ memberId }) => {
     };
 
     // For rendering states
+    const [renderPaymentHistory, setRenderPaymentHistory] = useState(false);
+    const [selectedPayment, setSelectedPayment] = useState(null);
     const [renderSnapshot, setRenderSnapshot] = useState(false);
     const [selectedSnapshot, setSelectedSnapshot] = useState(null);
     const [activeSnapshotLog, setActiveSnapshotLog] = useState(null);
@@ -169,6 +173,7 @@ const MemberDetails = ({ memberId }) => {
     });
     const { member, message, qrCode } = data || {};
     console.log("Member details: ", member);
+
     // Populate Data
     useEffect(() => {
         if (data) {
@@ -1042,6 +1047,7 @@ const MemberDetails = ({ memberId }) => {
                                                     )
                                                 }
 
+                                                {/* Shows Membership Logs */}
                                                 {data && data.member && data.member.membershipLogs && data.member.membershipLogs.length > 0 && (
                                                     <div>
                                                         {/* Toggle Button */}
@@ -1166,9 +1172,9 @@ const MemberDetails = ({ memberId }) => {
                                                                                 <h3 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Financials</h3>
                                                                                 <dl className="space-y-3">
                                                                                     <div>
-                                                                                        <dt className="text-xs text-gray-500">Final Amount</dt>
+                                                                                        <dt className="text-xs text-gray-500">Paid Amount</dt>
                                                                                         <dd className="font-medium text-gray-900">
-                                                                                            ₹{Number(selectedSnapshot.finalAmmount).toLocaleString()}
+                                                                                            ₹{Number(selectedSnapshot.paidAmmount).toLocaleString()}
                                                                                         </dd>
                                                                                     </div>
                                                                                     <div>
@@ -1225,6 +1231,158 @@ const MemberDetails = ({ memberId }) => {
                                                     </div>
                                                 )}
 
+                                                {/* Render Payment History */}
+                                                {data && data.member && data.member.paymentHistory && data.member.paymentHistory.length > 0 && (
+                                                    <div className="">
+                                                        {/* Toggle Header */}
+                                                        <div
+                                                            className="bg-blue-50 border rounded-md py-2 px-4 cursor-pointer flex justify-between items-center"
+                                                            onClick={() => setRenderPaymentHistory(!renderPaymentHistory)}
+                                                        >
+                                                            <h2 className=" text-blue-600 font-semibold">
+                                                                Payment History
+                                                            </h2>
+                                                            <FaChevronUp className={`text-white transform transition-transform ${renderPaymentHistory ? 'rotate-180' : ''
+                                                                }`} />
+                                                        </div>
+
+                                                        {renderPaymentHistory && (
+                                                            <div className="border rounded-b-lg shadow-sm">
+                                                                {/* Table Header */}
+                                                                <div className="grid grid-cols-12 gap-4 bg-gray-50 p-3 text-xs font-medium uppercase tracking-wider text-gray-500">
+                                                                    <div className="col-span-1">SN</div>
+                                                                    <div className="col-span-2">Receipt No</div>
+                                                                    <div className="col-span-2">Payment Date</div>
+                                                                    <div className="col-span-2">Paid Amount</div>
+                                                                    <div className="col-span-2">Payment Method</div>
+                                                                    <div className="col-span-2">Action Taker</div>
+                                                                    <div className="col-span-1">Details</div>
+                                                                </div>
+
+                                                                {/* Payment Rows */}
+                                                                {data.member.paymentHistory.map((payment, index) => (
+                                                                    <div
+                                                                        key={payment._id}
+                                                                        className="grid grid-cols-12 gap-4 p-3 border-t hover:bg-gray-50 text-sm"
+                                                                    >
+                                                                        <div className="col-span-1">{index + 1}</div>
+                                                                        <div className="col-span-2 font-mono">{payment.receiptNo}</div>
+                                                                        <div className="col-span-2">
+                                                                            {new Date(payment.paymentDate).toLocaleDateString('en-GB')}
+                                                                        </div>
+                                                                        <div className="col-span-2 font-medium text-green-700">
+                                                                            ₹{Number(payment.paidAmmount).toLocaleString()}
+                                                                        </div>
+                                                                        <div className="col-span-2 capitalize">{payment.paymentMethod}</div>
+                                                                        <div className="col-span-2">{payment.actionTaker}</div>
+                                                                        <div className="col-span-1">
+                                                                            <button
+                                                                                onClick={() => setSelectedPayment(payment)}
+                                                                                className="text-blue-600 hover:text-blue-800 font-medium"
+                                                                            >
+                                                                                View
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Payment Detail Modal */}
+                                                        {selectedPayment && (
+                                                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center backdrop-blur-sm">
+                                                                <div className="bg-white p-6 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+                                                                    <div className="flex justify-between items-center mb-6 pb-4 border-b">
+                                                                        <div>
+                                                                            <h2 className="text-xl font-bold text-gray-800">
+                                                                                Payment Receipt Details
+                                                                            </h2>
+                                                                            <p className="text-sm text-gray-500 mt-1">
+                                                                                {selectedPayment.receiptNo}
+                                                                            </p>
+                                                                        </div>
+                                                                        <button
+                                                                            type='button'
+                                                                            onClick={() => setSelectedPayment(null)}
+                                                                            className="text-gray-400 hover:text-gray-600 p-2 -m-2"
+                                                                        >
+                                                                            <HiXMark className="w-6 h-6" />
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div className="space-y-4">
+                                                                        {/* Payment Details Section */}
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <label className="text-xs text-gray-500 uppercase">Payment Date</label>
+                                                                                <p className="font-medium">
+                                                                                    {new Date(selectedPayment.paymentDate).toLocaleDateString('en-GB', {
+                                                                                        weekday: 'short',
+                                                                                        year: 'numeric',
+                                                                                        month: 'short',
+                                                                                        day: 'numeric'
+                                                                                    })}
+                                                                                </p>
+                                                                            </div>
+
+                                                                            <div>
+                                                                                <label className="text-xs text-gray-500 uppercase">Paid Amount</label>
+                                                                                <p className="font-medium text-green-700">
+                                                                                    ₹{Number(selectedPayment.paidAmmount).toLocaleString()}
+                                                                                </p>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Membership Details Section */}
+                                                                        <div className="bg-gray-50 p-4 rounded-lg">
+                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase">Membership Information</h3>
+                                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Membership Type</label>
+                                                                                    <p className="font-medium">{selectedPayment.membershipOption}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Duration</label>
+                                                                                    <p className="font-medium">{selectedPayment.membershipDuration}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Renewal Date</label>
+                                                                                    <p className="font-medium">
+                                                                                        {new Date(selectedPayment.membershipRenewDate).toLocaleDateString('en-GB')}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Expiry Date</label>
+                                                                                    <p className="font-medium">
+                                                                                        {new Date(selectedPayment.membershipExpireDate).toLocaleDateString('en-GB')}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Transaction Details */}
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                            <div>
+                                                                                <label className="text-xs text-gray-500 uppercase">Payment Method</label>
+                                                                                <p className="font-medium capitalize">{selectedPayment.paymentMethod}</p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="text-xs text-gray-500 uppercase">Reference Code</label>
+                                                                                <p className="font-medium font-mono">{selectedPayment.referenceCode}</p>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Action Taker */}
+                                                                        <div className="border-t pt-4">
+                                                                            <label className="text-xs text-gray-500 uppercase">Processed By</label>
+                                                                            <p className="font-medium">{selectedPayment.actionTaker}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
 
                                                 <div className="bg-blue-50 rounded-md border py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
                                                     <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
