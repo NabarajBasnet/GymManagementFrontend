@@ -1,5 +1,6 @@
 'use client';
 
+import { FaRegEye } from "react-icons/fa";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import {
     Tooltip,
@@ -70,11 +71,15 @@ const MemberDetails = ({ memberId }) => {
     };
 
     // For rendering states
+    const [renderSnapshot, setRenderSnapshot] = useState(false);
+    const [selectedSnapshot, setSelectedSnapshot] = useState(null);
+    const [activeSnapshotLog, setActiveSnapshotLog] = useState(null);
     const [renderPersonalInformationForm, setRenderPersonalInformationForm] = useState(true);
     const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
+    const [renderMembershipLogs, setRenderMembershipLogs] = useState(false);
     const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
     const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
-    const [renderProfileDetails, setRenderProfileDetails] = useState(true);
+    const [renderProfileDetails, setRenderProfileDetails] = useState(false);
 
     // States
     const queryClient = useQueryClient();
@@ -1036,6 +1041,190 @@ const MemberDetails = ({ memberId }) => {
                                                         <div className='ease-in-out duration-700'></div>
                                                     )
                                                 }
+
+                                                {data && data.member && data.member.membershipLogs && data.member.membershipLogs.length > 0 && (
+                                                    <div>
+                                                        {/* Toggle Button */}
+                                                        <div
+                                                            className="bg-blue-600 py-2 my-2 w-full cursor-pointer"
+                                                            onClick={() => setRenderMembershipLogs(!renderMembershipLogs)}
+                                                        >
+                                                            <h1 className="mx-4 text-white font-semibold">Membership Logs</h1>
+                                                        </div>
+
+                                                        {/* Logs Table */}
+                                                        {renderMembershipLogs && (
+                                                            <div className="overflow-x-auto">
+                                                                {/* Table Header - Fixed column count to 7 */}
+                                                                <div className="grid grid-cols-7 gap-4 bg-gray-100 p-2 font-semibold text-sm border-b">
+                                                                    <div>SN</div>
+                                                                    <div>Action Date</div>
+                                                                    <div>Action Taker</div>
+                                                                    <div>Action Type</div>
+                                                                    <div>Created By</div>
+                                                                    <div>Reason</div>
+                                                                    <div>Snapshot</div>
+                                                                </div>
+
+                                                                {/* Log Rows */}
+                                                                {data.member.membershipLogs.map((log, index) => (
+                                                                    <div
+                                                                        key={log.id || index}
+                                                                        className="grid grid-cols-7 gap-4 p-2 border-b text-sm hover:bg-gray-50"
+                                                                    >
+                                                                        <div>{index + 1}.</div>
+                                                                        <div>{log.actionDate}</div>
+                                                                        <div>{log.actionTaker}</div>
+                                                                        <div>{log.actionType}</div>
+                                                                        <div>{log.createdBy}</div>
+                                                                        <div>{log.reason}</div>
+                                                                        <div>
+                                                                            <button
+                                                                                type="button"
+                                                                                onClick={() => setSelectedSnapshot(log.snapshot)}
+                                                                                className="text-blue-600 bg-blue-100 p-2 rounded-md"
+                                                                            >
+                                                                                <FaRegEye className="inline-block mr-1" />
+                                                                                View Snapshot
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        )}
+
+                                                        {/* Snapshot Modal - Moved outside the loop */}
+                                                        {selectedSnapshot && (
+                                                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center backdrop-blur-sm">
+                                                                <div className="bg-white p-8 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+                                                                    <div className="flex justify-between items-center mb-6 border-b pb-4">
+                                                                        <h2 className="text-2xl font-bold text-gray-800">
+                                                                            Membership Snapshot Details
+                                                                            <span className="block text-sm font-normal text-gray-500 mt-1">
+                                                                                Historical record at time of modification
+                                                                            </span>
+                                                                        </h2>
+                                                                        <button
+                                                                            onClick={() => setSelectedSnapshot(null)}
+                                                                            className="text-gray-400 hover:text-gray-600 transition-colors p-2 -m-2"
+                                                                            aria-label="Close"
+                                                                        >
+                                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                                                            </svg>
+                                                                        </button>
+                                                                    </div>
+
+                                                                    <div className="space-y-6">
+                                                                        {/* Dates Section */}
+                                                                        <div className="bg-gray-100 shadow-md p-4 rounded-lg">
+                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Key Dates</h3>
+                                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Membership Date</label>
+                                                                                    <p className="font-medium text-gray-900">
+                                                                                        {new Date(selectedSnapshot.membershipDate).toLocaleDateString('en-GB')}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Renewal Date</label>
+                                                                                    <p className="font-medium text-gray-900">
+                                                                                        {new Date(selectedSnapshot.membershipRenewDate).toLocaleDateString('en-GB')}
+                                                                                    </p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Expiration Date</label>
+                                                                                    <p className="font-medium text-gray-900">
+                                                                                        {new Date(selectedSnapshot.membershipExpireDate).toLocaleDateString('en-GB')}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Membership Details */}
+                                                                        <div className="grid grid-cols-1 md:grid-cols-2 shadow-md p-4 bg-gray-50 border rounded-md gap-6">
+                                                                            <div>
+                                                                                <h3 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Membership Info</h3>
+                                                                                <dl className="space-y-3">
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Type</dt>
+                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipType}</dd>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Duration</dt>
+                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipDuration} months</dd>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Shift</dt>
+                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipShift}</dd>
+                                                                                    </div>
+                                                                                </dl>
+                                                                            </div>
+
+                                                                            {/* Financial Details */}
+                                                                            <div>
+                                                                                <h3 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Financials</h3>
+                                                                                <dl className="space-y-3">
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Final Amount</dt>
+                                                                                        <dd className="font-medium text-gray-900">
+                                                                                            ₹{Number(selectedSnapshot.finalAmmount).toLocaleString()}
+                                                                                        </dd>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Due Amount</dt>
+                                                                                        <dd className="font-medium text-gray-900">
+                                                                                            ₹{Number(selectedSnapshot.dueAmmount).toLocaleString()}
+                                                                                        </dd>
+                                                                                    </div>
+                                                                                    <div>
+                                                                                        <dt className="text-xs text-gray-500">Discount</dt>
+                                                                                        <dd className="font-medium text-gray-900">
+                                                                                            ₹{Number(selectedSnapshot.discountAmmount || 0).toLocaleString()}
+                                                                                            <span className="text-gray-500 text-xs ml-2">({selectedSnapshot.discountReason || 'No reason provided'})</span>
+                                                                                        </dd>
+                                                                                    </div>
+                                                                                </dl>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Transaction Details */}
+                                                                        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Transaction Info</h3>
+                                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Payment Method</label>
+                                                                                    <p className="font-medium text-gray-900 capitalize">{selectedSnapshot.paymentMethod}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Receipt Number</label>
+                                                                                    <p className="font-medium text-gray-900 font-mono">{selectedSnapshot.receiptNo}</p>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className="text-xs text-gray-500">Status</label>
+                                                                                    <p className="font-medium text-gray-900">
+                                                                                        <span className={`px-2 py-1 rounded-full text-xs ${selectedSnapshot.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                                                                            {selectedSnapshot.status}
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                        {/* Remarks */}
+                                                                        <div>
+                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">Additional Remarks</h3>
+                                                                            <p className="text-gray-600 text-sm leading-relaxed">
+                                                                                {selectedSnapshot.remark || 'No remarks provided'}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
+
 
                                                 <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
                                                     <h1 className="mx-4 text-white font-semibold">Membership Information</h1>
