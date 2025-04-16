@@ -1057,7 +1057,7 @@ const MemberDetails = ({ memberId }) => {
                                                             <div className="overflow-x-auto">
                                                                 {/* Table Header - Fixed column count to 7 */}
                                                                 <div className="grid grid-cols-7 gap-4 bg-gray-100 p-2 font-semibold text-sm border-b">
-                                                                    <div>SN</div>
+                                                                    <div className="text-center">SN</div>
                                                                     <div>Action Date</div>
                                                                     <div>Action Taker</div>
                                                                     <div>Action Type</div>
@@ -1072,8 +1072,8 @@ const MemberDetails = ({ memberId }) => {
                                                                         key={log.id || index}
                                                                         className="grid grid-cols-7 gap-4 p-2 border-b text-sm hover:bg-gray-50"
                                                                     >
-                                                                        <div>{index + 1}.</div>
-                                                                        <div>{log.actionDate}</div>
+                                                                        <div className="text-center">{index + 1}.</div>
+                                                                        <div>{new Date(log.actionDate).toISOString().split('T')[0]}</div>
                                                                         <div>{log.actionTaker}</div>
                                                                         <div>{log.actionType}</div>
                                                                         <div>{log.createdBy}</div>
