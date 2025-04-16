@@ -1263,23 +1263,25 @@ const MemberDetails = ({ memberId }) => {
                                                                 {data.member.paymentHistory.map((payment, index) => (
                                                                     <div
                                                                         key={payment._id}
-                                                                        className="grid grid-cols-12 gap-4 p-3 border-t hover:bg-gray-50 text-sm"
+                                                                        className="grid grid-cols-12 gap-4 p-2 border-t hover:bg-gray-50 text-sm"
                                                                     >
-                                                                        <div className="col-span-1">{index + 1}</div>
+                                                                        <div className="col-span-1">{index + 1}.</div>
                                                                         <div className="col-span-2 font-mono">{payment.receiptNo}</div>
                                                                         <div className="col-span-2">
                                                                             {new Date(payment.paymentDate).toLocaleDateString('en-GB')}
                                                                         </div>
-                                                                        <div className="col-span-2 font-medium text-green-700">
+                                                                        <div className="col-span-2 font-medium text-green-600">
                                                                             ₹{Number(payment.paidAmmount).toLocaleString()}
                                                                         </div>
                                                                         <div className="col-span-2 capitalize">{payment.paymentMethod}</div>
                                                                         <div className="col-span-2">{payment.actionTaker}</div>
-                                                                        <div className="col-span-1">
+                                                                        <div className="col-span-1 text-center">
                                                                             <button
+                                                                                type="button"
                                                                                 onClick={() => setSelectedPayment(payment)}
-                                                                                className="text-blue-600 hover:text-blue-800 font-medium"
+                                                                                className="text-blue-600 bg-blue-100 p-2 rounded-md"
                                                                             >
+                                                                                {/* <FaRegEye className="inline-block mr-1" /> */}
                                                                                 View
                                                                             </button>
                                                                         </div>
