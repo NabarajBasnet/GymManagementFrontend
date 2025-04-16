@@ -575,8 +575,8 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-blue-600 py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
-                <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
+            <div className="flex justify-between items-center bg-blue-50 border rounded-md py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
+                <h1 className="mx-4 text-blue-600 font-semibold">Profile Details</h1>
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
@@ -782,8 +782,8 @@ const MemberDetails = ({ memberId }) => {
                                     {
                                         data ? (
                                             <form className="w-full" onSubmit={handleSubmit(updateMemberDetails)}>
-                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
-                                                    <h1 className="mx-4 text-white font-semibold">Personal Information</h1>
+                                                <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
+                                                    <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>
                                                 </div>
                                                 {
                                                     renderPersonalInformationForm ? (
@@ -884,8 +884,8 @@ const MemberDetails = ({ memberId }) => {
                                                     )
                                                 }
 
-                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
-                                                    <h1 className="mx-4 text-white font-semibold">Body Measurements</h1>
+                                                <div className="bg-blue-50 py-2 my-2 border rounded-md w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
+                                                    <h1 className="mx-4 text-blue-600 font-semibold">Body Measurements</h1>
                                                 </div>
                                                 {
                                                     renderBodyMeasurementsForm ? (
@@ -1046,10 +1046,10 @@ const MemberDetails = ({ memberId }) => {
                                                     <div>
                                                         {/* Toggle Button */}
                                                         <div
-                                                            className="bg-blue-600 py-2 my-2 w-full cursor-pointer"
+                                                            className="bg-transparent border rounded-md py-2 my-2 w-full cursor-pointer"
                                                             onClick={() => setRenderMembershipLogs(!renderMembershipLogs)}
                                                         >
-                                                            <h1 className="mx-4 text-white font-semibold">Membership Logs</h1>
+                                                            <h1 className="mx-4 text-blue-600 font-semibold">Membership Logs</h1>
                                                         </div>
 
                                                         {/* Logs Table */}
@@ -1226,8 +1226,8 @@ const MemberDetails = ({ memberId }) => {
                                                 )}
 
 
-                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
-                                                    <h1 className="mx-4 text-white font-semibold">Membership Information</h1>
+                                                <div className="bg-blue-50 rounded-md border py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
+                                                    <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
                                                 </div>
                                                 {
                                                     renderMembershipInformationForm ? (
@@ -1381,8 +1381,8 @@ const MemberDetails = ({ memberId }) => {
                                                     )
                                                 }
 
-                                                <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
-                                                    <h1 className="mx-4 text-white font-semibold">Payment Details</h1>
+                                                <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
+                                                    <h1 className="mx-4 text-blue-600 font-semibold">Payment Details</h1>
                                                 </div>
                                                 {
                                                     renderPaymentDetailForm ? (
