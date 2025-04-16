@@ -85,7 +85,6 @@ const AllMembers = () => {
     const [limit, setLimit] = useState(15);
     const [isDeleting, setIsDeleting] = useState(false);
     const [renderNewMemberRegistration, setRenderNewMemberRegistration] = useState(false);
-    console.log("RenderNewMemberRegistration: ", renderNewMemberRegistration)
     const debounce = (func, delay) => {
         let timerId;
         return (...args) => {

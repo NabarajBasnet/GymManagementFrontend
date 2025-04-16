@@ -1,5 +1,6 @@
 'use client';
 
+import { MdOutlineArrowDropDown } from "react-icons/md";
 import {
     Tooltip,
     TooltipContent,
@@ -162,7 +163,7 @@ const MemberDetails = ({ memberId }) => {
         enabled: !!memberId,
     });
     const { member, message, qrCode } = data || {};
-
+    console.log("Member details: ", member);
     // Populate Data
     useEffect(() => {
         if (data) {
@@ -305,7 +306,6 @@ const MemberDetails = ({ memberId }) => {
                 body: JSON.stringify(imagePreview)
             })
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
                 setResponseType(responseResultType[1]);
                 setImageUploading(false);
@@ -575,10 +575,13 @@ const MemberDetails = ({ memberId }) => {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <IoIosInformationCircleOutline className="text-white mx-4 cursor-pointer h-5 w-5" />
+                            <MdOutlineArrowDropDown
+                                className={`text-white mx-4 cursor-pointer h-5 w-5 transition-transform duration-300 ${renderProfileDetails ? 'rotate-0' : 'rotate-180'
+                                    }`}
+                            />
                         </TooltipTrigger>
                         <TooltipContent>
-                            <p>Click here to view members profile details.</p>
+                            <p>Click in dropdown to view details.</p>
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
@@ -587,12 +590,12 @@ const MemberDetails = ({ memberId }) => {
             {renderProfileDetails && (
                 <div className=" bg-gray-50">
                     <div className="max-w-full mx-4">
-                        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-                            <div className="grid md:grid-cols-3 gap-6 p-6">
+                        <div className="bg-white mt-4 rounded-xl shadow-xl overflow-hidden">
+                            <div className="md:flex items-center justify-between px-4 py-2">
                                 {/* Image Upload Section */}
-                                <div className="space-y-4">
+                                <div className="space-y-2">
                                     <div className="bg-white rounded-lg overflow-hidden">
-                                        <div className="space-y-4">
+                                        <div className="space-y-1">
                                             <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
 
                                             {imagePreview ? (
@@ -600,7 +603,7 @@ const MemberDetails = ({ memberId }) => {
                                                     <img
                                                         src={imagePreview}
                                                         alt="Preview"
-                                                        className="w-full h-64 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
+                                                        className="w-full h-40 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
                                                     />
                                                     <button
                                                         onClick={removeImage}
@@ -611,7 +614,7 @@ const MemberDetails = ({ memberId }) => {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
+                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
                                                     <div className="flex flex-col items-center justify-center space-y-3">
                                                         <div className="p-3 bg-blue-50 rounded-full">
                                                             <ImagePlus className="w-8 h-8 text-blue-500" />
@@ -658,13 +661,13 @@ const MemberDetails = ({ memberId }) => {
                                         <img
                                             src={qrCode}
                                             alt="Membership QR Code"
-                                            className="w-64 h-64 rounded-lg"
+                                            className="w-40 h-40 rounded-lg"
                                         />
                                     </div>
                                 </div>
 
                                 {/* Membership Controls & Info */}
-                                <div className="space-y-6">
+                                <div className="space-y-2">
                                     <h2 className="text-2xl font-bold text-gray-800">Membership Status</h2>
 
                                     <div className="flex gap-4">
@@ -728,7 +731,7 @@ const MemberDetails = ({ memberId }) => {
                                         </AlertDialog>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-2 gap-2">
                                         <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
                                             <p className="text-sm text-blue-600 font-medium mb-1">Hold Date</p>
                                             <p className="text-lg font-semibold text-gray-800">
