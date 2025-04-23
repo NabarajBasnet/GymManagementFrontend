@@ -2,8 +2,8 @@ import { LoginForm } from "@/components/login-form";
 
 export default function Page() {
   return (
-    (<div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="w-full max-w-4xl border rounded-xl p-4 shadow-2xl">
+    (<div className="flex bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 min-h-svh w-full items-center justify-center p-6 md:p-10">
+      <div className="w-full max-w-4xl rounded-xl p-4 shadow-2xl border border-gray-300">
         <LoginForm />
       </div>
     </div>)

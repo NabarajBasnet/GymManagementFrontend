@@ -45,6 +45,7 @@ export default function SignUpPage() {
             });
             const responseBody = await response.json();
             if (response.ok) {
+                toast.success('Account created successfully!');
                 reset();
             } else {
                 toast.error(responseBody.message || 'Failed to create account');
@@ -105,7 +106,6 @@ export default function SignUpPage() {
 
     return (
         <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 overflow-auto">
-            <Toaster position="top-right" />
 
             <motion.div
                 className="w-full max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
@@ -325,4 +325,4 @@ export default function SignUpPage() {
             </motion.div>
         </div>
     );
-}
+};

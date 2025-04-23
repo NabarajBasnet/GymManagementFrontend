@@ -1,37 +1,36 @@
 'use client';
 
-import { FaMeta } from "react-icons/fa6";
-import { FaApple, FaGoogle } from "react-icons/fa";
-import { MdDone, MdClose, MdError } from "react-icons/md";
-import { IoMdClose } from "react-icons/io";
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import * as React from 'react';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useRouter } from "next/navigation";
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import toast, { Toaster } from 'react-hot-toast';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { FaApple, FaGoogle } from "react-icons/fa";
+import { FaMeta } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+import {
+  X,
+  AtSign,
+  Lock,
+  User,
+  CheckCircle2,
+  ChevronRight,
+  Github,
+  Linkedin
+} from 'lucide-react';
 
 export function LoginForm({ className, ...props }) {
-
-  const [toast, setToast] = React.useState(false);
-  const [successMessage, setSuccessMessage] = React.useState({ icon: MdDone, message: '' });
-  const [errorMessage, setErrorMessage] = React.useState({ icon: MdError, message: '' });
-  const [responseType, setResponseType] = React.useState('');
-  const responseResultType = ['Success', 'Failure'];
-
   const router = useRouter();
   const {
     register,
     reset,
-    formState: { isSubmitting, errors },
     handleSubmit,
+    formState: { isSubmitting, errors },
     setError
   } = useForm();
-
-  const [responseMessage, setResponseMessage] = React.useState('');
-  const [responseStatus, setResponseStatus] = React.useState('');
 
   const onLoginUser = async (data) => {
     try {
@@ -45,224 +44,253 @@ export function LoginForm({ className, ...props }) {
       });
 
       const responseBody = await response.json();
-      setResponseStatus(response.status);
 
       if (response.status === 404) {
         setError(
           "email", {
           type: "manual",
-          message: responseMessage
+          message: responseBody.message
         }
-        )
-      };
+        );
+      }
 
       if (response.status === 403) {
         setError(
           "password", {
           type: "manual",
-          message: responseMessage
+          message: responseBody.message
         }
-        )
-      };
+        );
+      }
 
       if (response.status === 400) {
         setError(
           ["password", "email"], {
           type: "manual",
-          message: responseMessage
+          message: responseBody.message
         }
-        )
-      };
+        );
+      }
 
       if (response.status === 200) {
-        setToast(true);
-        setResponseType(responseResultType[0]);
-        setTimeout(() => {
-          setToast(false)
-        }, 10000);
-        setSuccessMessage({
-          icon: MdDone,
-          message: responseBody.message || 'Unauthorized action'
-        });
+        toast.success(responseBody.message || 'Login successful!');
         router.push('/dashboard');
-      };
+      }
 
-      setResponseMessage(responseBody.message);
       if (response.ok) {
-        setToast(true);
-        setResponseType(responseResultType[0]);
-        setTimeout(() => {
-          setToast(false)
-        }, 10000);
-        setSuccessMessage({
-          icon: MdDone,
-          message: responseBody.message || 'Unauthorized action'
-        });
+        toast.success(responseBody.message || 'Login successful!');
         reset();
-      };
+      }
     } catch (error) {
-      setToast(true);
-      setResponseType(responseResultType[1]);
-      setTimeout(() => {
-        setToast(false)
-      }, 10000);
-      setErrorMessage({
-        icon: MdError,
-        message: responseBody.message || 'Unauthorized action'
-      });
+      toast.error('An unexpected error occurred. Please try again.');
       console.log('Error: ', error);
-    };
+    }
   };
 
+  const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder, rightElement }) => (
+    <div className="space-y-1">
+      <div className="flex items-center">
+        <Label
+          htmlFor={name}
+          className="text-sm font-medium text-gray-700 block"
+        >
+          {label}
+        </Label>
+        {rightElement && rightElement}
+      </div>
+
+      <div className="relative">
+        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+          {icon}
+        </div>
+
+        <Input
+          id={name}
+          type={type}
+          className={`pl-10 w-full transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
+          placeholder={placeholder}
+          {...register(name, validation)}
+        />
+
+        {error && (
+          <motion.div
+            className="absolute inset-y-0 right-0 pr-3 flex items-center"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <X className="h-5 w-5 text-red-500" />
+          </motion.div>
+        )}
+      </div>
+
+      {error && (
+        <motion.p
+          className="text-sm font-medium text-red-500 mt-1"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
+          {error.message}
+        </motion.p>
+      )}
+    </div>
+  );
 
   return (
-    (<div
-      onClick={() => setToast(false)}
-      className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className="w-full flex items-center justify-center p-4">
+      <Toaster position="top-right" />
 
-      {toast && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
-            onClick={() => setToast(false)}
-          ></div>
+      <motion.div
+        className="w-full max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex flex-col lg:flex-row">
+          {/* Left side - Brand panel */}
+          <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-8 text-white">
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              <motion.div
+                className="mb-8 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
+              >
+                <User className="w-8 h-8 text-white" />
+              </motion.div>
 
-          <div className="fixed top-4 right-4 z-50 animate-slide-in">
-            <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                            transition-all duration-300 ease-in-out w-80
-                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+              <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
+              <p className="text-white/80 mb-8">Log in to access your dashboard and track your progress.</p>
 
-              <div className={`flex items-center justify-center p-2 rounded-full 
-                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
-                {responseType === 'Success' ? (
-                  <MdDone className="text-xl text-emerald-600" />
-                ) : (
-                  <MdError className="text-xl text-rose-600" />
-                )}
-              </div>
-
-              <div className="flex-1">
-                <h3 className={`text-base font-semibold mb-1
-                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
-                  {responseType === 'Success' ? "Successfully sent!" : "Action required"}
-                </h3>
-
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  {responseType === 'Success'
-                    ? (
-                      <div>
-                        {successMessage.message}
-                      </div>
-                    )
-                    : (
-                      <div>
-                        {errorMessage.message}
-                      </div>
-                    )
-                  }
-                </p>
-
-                <div className="mt-3 flex items-center gap-2">
-                  {responseType === 'Success' ? (
-                    <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
-                      Done
-                    </button>
-                  ) : (
-                    <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
-                      Retry Now
-                    </button>
-                  )}
-                  <span className="text-gray-400">|</span>
-                  <button
-                    className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
-                    onClick={() => setToast(false)}>
-                    Dismiss
-                  </button>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-center space-x-3 text-sm">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <span>Secure account access</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <span>Personalized dashboard</span>
+                </div>
+                <div className="flex items-center space-x-3 text-sm">
+                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <span>Seamless user experience</span>
                 </div>
               </div>
 
-              <MdClose
-                onClick={() => setToast(false)}
-                className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
-              />
-            </div>
+              <div className="pt-4 text-sm">
+                <p>Don't have an account?</p>
+                <Link href="/signup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
+                  Create a new account <ChevronRight className="ml-1 w-4 h-4" />
+                </Link>
+              </div>
+            </motion.div>
           </div>
-        </>
-      )}
 
-      <Card className="overflow-hidden">
-        <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" onSubmit={handleSubmit(onLoginUser)}>
-            <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">Welcome back</h1>
-                <p className="text-balance text-muted-foreground">
-                  Login to your account
+          {/* Right side - Form */}
+          <div className="lg:w-7/12 p-8 bg-white/95">
+            <div className="max-w-md mx-auto">
+              <div className="mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
+                <p className="text-gray-600">Fill in your credentials to access your account</p>
+              </div>
+
+              <form onSubmit={handleSubmit(onLoginUser)} className="space-y-4">
+                <FormField
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  icon={<AtSign className="text-gray-400" />}
+                  validation={{
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Please enter a valid email"
+                    }
+                  }}
+                  error={errors.email}
+                  placeholder="john.doe@example.com"
+                />
+
+                <FormField
+                  label="Password"
+                  name="password"
+                  type="password"
+                  icon={<Lock className="text-gray-400" />}
+                  validation={{
+                    required: "Password is required"
+                  }}
+                  error={errors.password}
+                  placeholder="Enter your password"
+                  rightElement={
+                    <a href="#" className="ml-auto text-sm text-blue-600 hover:underline">
+                      Forgot password?
+                    </a>
+                  }
+                />
+
+                <Button
+                  type="submit"
+                  className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Processing...
+                    </span>
+                  ) : (
+                    <span>Sign In</span>
+                  )}
+                </Button>
+
+                <div className="relative text-center text-sm mt-4">
+                  <span className="relative z-10 bg-white/95 px-4 text-gray-500">
+                    Or continue with
+                  </span>
+                  <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-4">
+                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                    <FaApple className="text-xl" />
+                  </Button>
+                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                    <FaGoogle className="text-xl" />
+                  </Button>
+                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                    <FaMeta className="text-xl" />
+                  </Button>
+                </div>
+              </form>
+
+              <div className="mt-6 text-center">
+                <p className="text-xs text-gray-500">
+                  By signing in, you agree to our{' '}
+                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
+                  and{' '}
+                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
                 </p>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" {...register('email')} placeholder="m@example.com" required />
-                {errors.email && (
-                  <p className="text-sm font-semibold text-red-600">{`${errors.email.message}`}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a href="#" className="ml-auto text-sm underline-offset-2 hover:underline">
-                    Forgot your password?
+
+                <div className="mt-6 flex items-center justify-center space-x-4">
+                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
+                    <Github className="h-5 w-5" />
+                  </a>
+                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
+                    <Linkedin className="h-5 w-5" />
                   </a>
                 </div>
-                <Input id="password" type="password" {...register('password')} required />
-                {errors.password && (
-                  <p className="text-sm font-semibold text-red-600">{`${errors.password.message}`}</p>
-                )}
-              </div>
-              <Button type="submit" className="w-full">
-                {isSubmitting ? 'Wait...' : 'Login'}
-              </Button>
-              <div
-                className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                  Or continue with
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                <Button variant="outline" className="w-full">
-                  <FaApple className='text-2xl' />
-                  <span className="sr-only">Login with Apple</span>
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <FaGoogle className='text-2xl' />
-                  <span className="sr-only">Login with Google</span>
-                </Button>
-                <Button variant="outline" className="w-full">
-                  <FaMeta className='text-2xl' />
-                  <span className="sr-only">Login with Meta</span>
-                </Button>
-              </div>
-              <div className="text-center text-sm">
-                Don&apos;t have an account?{" "}
-                <a href="#" className="underline underline-offset-4">
-                  Sign up
-                </a>
               </div>
             </div>
-          </form>
-          <div className="relative hidden bg-muted md:block">
-            <img
-              src="/dumbell.jpg"
-              alt="Image"
-              className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale" />
           </div>
-        </CardContent>
-      </Card>
-      <div
-        className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-        and <a href="#">Privacy Policy</a>.
-      </div>
-    </div>)
+        </div>
+      </motion.div>
+    </div>
   );
 }
