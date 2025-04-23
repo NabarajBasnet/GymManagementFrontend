@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
@@ -23,10 +23,6 @@ import {
 } from 'lucide-react';
 
 export default function SignUpPage() {
-    const [password, setPassword] = useState('');
-    const [strength, setStrength] = useState(0);
-    const [label, setLabel] = useState('');
-
     const {
         register,
         reset,
@@ -36,33 +32,6 @@ export default function SignUpPage() {
     } = useForm();
 
     const watchPassword = watch('password', '');
-
-    useEffect(() => {
-        // Calculate password strength
-        let score = 0;
-
-        if (password.length >= 8) score += 1;
-        if (password.length >= 12) score += 1;
-        if (/[A-Z]/.test(password)) score += 1;
-        if (/[a-z]/.test(password)) score += 1;
-        if (/[0-9]/.test(password)) score += 1;
-        if (/[^A-Za-z0-9]/.test(password)) score += 1;
-
-        const normalizedScore = Math.min(Math.floor((score / 6) * 100), 100);
-        setStrength(normalizedScore);
-
-        if (normalizedScore < 30) setLabel('Weak');
-        else if (normalizedScore < 60) setLabel('Fair');
-        else if (normalizedScore < 80) setLabel('Good');
-        else setLabel('Strong');
-    }, [password]);
-
-    const getColor = () => {
-        if (strength < 30) return 'bg-red-500';
-        if (strength < 60) return 'bg-orange-500';
-        if (strength < 80) return 'bg-yellow-500';
-        return 'bg-green-500';
-    };
 
     const onSignUp = async (data) => {
         try {
@@ -136,7 +105,7 @@ export default function SignUpPage() {
     );
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center p-4 bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900">
+        <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 overflow-auto">
             <Toaster position="top-right" />
 
             <motion.div
@@ -145,9 +114,9 @@ export default function SignUpPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
             >
-                <div className="flex flex-col lg:flex-row">
+                <div className="flex flex-col lg:flex-row max-h-screen overflow-auto">
                     {/* Left side - Brand panel */}
-                    <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-8 text-white">
+                    <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-6 text-white">
                         <motion.div
                             className="text-center"
                             initial={{ opacity: 0, y: 20 }}
@@ -155,49 +124,49 @@ export default function SignUpPage() {
                             transition={{ delay: 0.3, duration: 0.8 }}
                         >
                             <motion.div
-                                className="mb-8 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
+                                className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
                             >
-                                <User className="w-8 h-8 text-white" />
+                                <User className="w-7 h-7 text-white" />
                             </motion.div>
 
-                            <h1 className="text-3xl font-bold mb-4">Create Account</h1>
-                            <p className="text-white/80 mb-8">Join thousands of users and start your journey today.</p>
+                            <h1 className="text-2xl font-bold mb-3">Create Account</h1>
+                            <p className="text-white/80 mb-6 text-sm">Join thousands of users and start your journey today.</p>
 
-                            <div className="space-y-4 mb-8">
-                                <div className="flex items-center space-x-3 text-sm">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                            <div className="space-y-3 mb-6">
+                                <div className="flex items-center space-x-3 text-xs">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                     <span>Premium design templates</span>
                                 </div>
-                                <div className="flex items-center space-x-3 text-sm">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                                <div className="flex items-center space-x-3 text-xs">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                     <span>Advanced analytics dashboard</span>
                                 </div>
-                                <div className="flex items-center space-x-3 text-sm">
-                                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                                <div className="flex items-center space-x-3 text-xs">
+                                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                     <span>Priority customer support</span>
                                 </div>
                             </div>
 
-                            <div className="pt-4 text-sm">
+                            <div className="pt-3 text-xs">
                                 <p>Already have an account?</p>
                                 <Link href="/login" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
-                                    Sign in to your account <ChevronRight className="ml-1 w-4 h-4" />
+                                    Sign in to your account <ChevronRight className="ml-1 w-3 h-3" />
                                 </Link>
                             </div>
                         </motion.div>
                     </div>
 
                     {/* Right side - Form */}
-                    <div className="lg:w-7/12 p-8 bg-white/95">
+                    <div className="lg:w-7/12 p-6 bg-white/95 overflow-y-auto max-h-screen">
                         <div className="max-w-md mx-auto">
-                            <div className="mb-6">
-                                <h2 className="text-2xl font-bold text-gray-800">Sign Up</h2>
-                                <p className="text-gray-600">Fill in your information to create an account</p>
+                            <div className="mb-4">
+                                <h2 className="text-xl font-bold text-gray-800">Sign Up</h2>
+                                <p className="text-gray-600 text-sm">Fill in your information to create an account</p>
                             </div>
 
-                            <form onSubmit={handleSubmit(onSignUp)} className="space-y-4">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <form onSubmit={handleSubmit(onSignUp)} className="space-y-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     <FormField
                                         label="First Name"
                                         name="firstName"
@@ -253,71 +222,45 @@ export default function SignUpPage() {
                                     placeholder="+1 (555) 000-0000"
                                 />
 
-                                <div className="space-y-1">
-                                    <Label className="text-sm font-medium text-gray-700 block">
-                                        Password
-                                    </Label>
-                                    <div className="relative">
-                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <Lock className="h-5 w-5 text-gray-400" />
+                                <div className='flex items-center justify-between'>
+                                    <div className="space-y-1">
+                                        <Label className="text-sm font-medium text-gray-700 block">
+                                            Password
+                                        </Label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <Lock className="h-5 w-5 text-gray-400" />
+                                            </div>
+                                            <Input
+                                                type="password"
+                                                className="pl-10 w-full transition-all duration-200"
+                                                placeholder="Create a password"
+                                                {...register('password', {
+                                                    required: "Password is required"
+                                                })}
+                                            />
                                         </div>
-                                        <Input
-                                            type="password"
-                                            className="pl-10 w-full focus:ring-2 focus:ring-blue-500 transition-all duration-200"
-                                            placeholder="Create a strong password"
-                                            {...register('password', {
-                                                required: "Password is required",
-                                                minLength: {
-                                                    value: 8,
-                                                    message: "Password must be at least 8 characters"
-                                                }
-                                            })}
-                                            onChange={(e) => setPassword(e.target.value)}
-                                        />
+                                        {errors.password && (
+                                            <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                <X className="w-4 h-4 mr-1" /> {errors.password.message}
+                                            </p>
+                                        )}
                                     </div>
-                                    {errors.password && (
-                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                            <X className="w-4 h-4 mr-1" /> {errors.password.message}
-                                        </p>
-                                    )}
-                                    {password && (
-                                        <div className="mt-2">
-                                            <div className="flex items-center justify-between mb-1">
-                                                <span className="text-xs text-gray-500">Password strength</span>
-                                                <span className={`text-xs font-medium ${strength < 30 ? 'text-red-500' :
-                                                        strength < 60 ? 'text-orange-500' :
-                                                            strength < 80 ? 'text-yellow-500' :
-                                                                'text-green-500'
-                                                    }`}>
-                                                    {label}
-                                                </span>
-                                            </div>
 
-                                            <div className="h-1.5 w-full bg-gray-200 rounded-full overflow-hidden">
-                                                <motion.div
-                                                    className={`h-full ${getColor()}`}
-                                                    initial={{ width: '0%' }}
-                                                    animate={{ width: `${strength}%` }}
-                                                    transition={{ duration: 0.5 }}
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
+                                    <FormField
+                                        label="Confirm Password"
+                                        name="confirmPassword"
+                                        type="password"
+                                        icon={<Lock className="text-gray-400" />}
+                                        validation={{
+                                            required: "Please confirm your password",
+                                            validate: value =>
+                                                value === watchPassword || "Passwords do not match"
+                                        }}
+                                        error={errors.confirmPassword}
+                                        placeholder="Confirm your password"
+                                    />
                                 </div>
-
-                                <FormField
-                                    label="Confirm Password"
-                                    name="confirmPassword"
-                                    type="password"
-                                    icon={<Lock className="text-gray-400" />}
-                                    validation={{
-                                        required: "Please confirm your password",
-                                        validate: value =>
-                                            value === watchPassword || "Passwords do not match"
-                                    }}
-                                    error={errors.confirmPassword}
-                                    placeholder="Confirm your password"
-                                />
 
                                 <FormField
                                     label="Address"
@@ -343,7 +286,7 @@ export default function SignUpPage() {
 
                                 <Button
                                     type="submit"
-                                    className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
+                                    className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? (
@@ -360,7 +303,7 @@ export default function SignUpPage() {
                                 </Button>
                             </form>
 
-                            <div className="mt-6 text-center">
+                            <div className="mt-4 text-center">
                                 <p className="text-xs text-gray-500">
                                     By signing up, you agree to our{' '}
                                     <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
@@ -368,7 +311,7 @@ export default function SignUpPage() {
                                     <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
                                 </p>
 
-                                <div className="mt-6 flex items-center justify-center space-x-4">
+                                <div className="mt-4 flex items-center justify-center space-x-4">
                                     <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
                                         <Github className="h-5 w-5" />
                                     </a>
