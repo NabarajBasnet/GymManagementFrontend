@@ -18,22 +18,22 @@ const AccordionTrigger = React.forwardRef(({ className, children, ...props }, re
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
 
     return (
-        <AccordionPrimitive.Header className="flex">
+        <AccordionPrimitive.Header className="flex w-full">
             <AccordionPrimitive.Trigger
                 ref={ref}
                 className={cn(
-                    "flex items-center justify-start font-medium transition-all hover:underline-none [&[data-state=open]>svg]:rotate-0",
+                    "flex items-center justify-between w-full transition-all [&[data-state=open]]:text-indigo-700 [&[data-state=open]]:bg-indigo-50",
                     className
                 )}
                 {...props}
             >
-                {children}
-
-                <div className="flex justify-end items-center">
-                    {sidebarMinimized ? '' : (
-                        <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                    )}
+                <div className="flex items-center">
+                    {children}
                 </div>
+
+                {!sidebarMinimized && (
+                    <ChevronDown className="h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300 [&[data-state=open]]:rotate-180 [&[data-state=open]]:text-indigo-600" />
+                )}
             </AccordionPrimitive.Trigger>
         </AccordionPrimitive.Header>
     );
@@ -43,10 +43,10 @@ AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
 const AccordionContent = React.forwardRef(({ className, children, ...props }, ref) => (
     <AccordionPrimitive.Content
         ref={ref}
-        className="overflow-hidden text-sm pt-3 transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+        className="overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
         {...props}
     >
-        <div className={cn("pb-0 pt-0", className)}>{children}</div>
+        <div className={cn("py-1", className)}>{children}</div>
     </AccordionPrimitive.Content>
 ))
 AccordionContent.displayName = AccordionPrimitive.Content.displayName
