@@ -22,7 +22,7 @@ const AccordionTrigger = React.forwardRef(({ className, children, ...props }, re
             <AccordionPrimitive.Trigger
                 ref={ref}
                 className={cn(
-                    "flex items-center justify-between w-full transition-all [&[data-state=open]]:text-indigo-700 [&[data-state=open]]:bg-indigo-50",
+                    "flex items-center justify-between w-full transition-all [&[data-state=open]]:text-indigo-700",
                     className
                 )}
                 {...props}
@@ -32,7 +32,7 @@ const AccordionTrigger = React.forwardRef(({ className, children, ...props }, re
                 </div>
 
                 {!sidebarMinimized && (
-                    <ChevronDown className="h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300 [&[data-state=open]]:rotate-180 [&[data-state=open]]:text-indigo-600" />
+                    <ChevronDown className="h-4 w-4 shrink-0 text-gray-500 transition-transform duration-300 [&[data-state=open]]:rotate-180" />
                 )}
             </AccordionPrimitive.Trigger>
         </AccordionPrimitive.Header>

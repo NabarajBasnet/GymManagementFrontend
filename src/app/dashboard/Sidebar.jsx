@@ -294,7 +294,7 @@ const Sidebar = () => {
                 </div>
             ) : null}
 
-            <Link href={'/dashboard'} className="flex py-3 items-center">
+            <Link href={'/dashboard'} className="flex py-3 items-center border-b border-gra-50">
                 <BiSolidDashboard className='text-3xl mx-2 text-start bg-blue-600 text-white p-1 rounded-md' />
                 <div className="">
                     {sidebarMinimized ? (
@@ -322,7 +322,7 @@ const Sidebar = () => {
                                         <Accordion type="single" collapsible className="w-full py-1">
                                             <AccordionItem value={`item-${categoryIndex}-${index}`}>
                                                 <AccordionTrigger className="w-full flex items-center px-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
-                                                    <sidebar.icon className='text-xl text-blue-500 hover:text-blue-300' />
+                                                    <sidebar.icon className='text-xl text-blue-600 hover:text-blue-500' />
                                                     {
                                                         sidebarMinimized ? (
                                                             <></>
@@ -369,14 +369,14 @@ const Sidebar = () => {
 
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                    <div className="flex items-center hover:bg-gray-800 cursor-pointer p-2 border-t border-gray-800">
-                        <FaUserCircle className="text-3xl mr-2 text-blue-400" />
+                    <div className="flex items-center cursor-pointer p-2 border-t border-gray-400 hover:bg-gray-200">
+                        <FaUserCircle className="text-3xl mr-2 text-blue-600" />
                         {sidebarMinimized ? null : (
                             <div>
                                 <div className="flex items-center">
-                                    <h1 className="text-sm text-gray-100 hover:text-white">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                                    <h1 className="text-sm text-gray-800 hover:text-blue-600">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
                                 </div>
-                                <p className="font-semibold text-[11px] text-gray-400 hover:text-gray-300">
+                                <p className="font-semibold text-[11px] text-gray-900 hover:text-gray-800">
                                     {user && user.user.email || ''}
                                 </p>
                             </div>

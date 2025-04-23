@@ -462,7 +462,7 @@ const AllMembers = () => {
                 </div>
             </div>
 
-            <div className="mx-4 bg-white shadow-md rounded-lg border mb-4">
+            <div className="mx-4 bg-white shadow-md rounded-lg mb-4">
                 <AllMembersAreaChart />
             </div>
 
