@@ -202,6 +202,22 @@ const Header = () => {
                 }
             ]
         },
+        // Checkin Management 
+        {
+            category: "Attendance Management",
+            items: [
+                {
+                    icon: BiSolidUserCheck,
+                    title: 'Attendance',
+                    link: '/dashboard/attendance/memberattendance',
+                    subObj: [
+                        { icon: FaRegUser, title: 'Member Attendance', link: '/dashboard/attendance/memberattendance' },
+                        { icon: FaUserCog, title: 'Staff Attendance', link: '/dashboard/attendance/staffattendance' },
+                        { icon: FaClipboardList, title: 'Attendance History', link: '/dashboard/attendance/attendancehistory' }
+                    ]
+                },
+            ]
+        },
         // Member Management
         {
             category: "Member Management",
@@ -219,16 +235,6 @@ const Header = () => {
                         { icon: PiUsersFourFill, title: 'All Members', link: '/dashboard/members' },
                         { icon: PiUsersThreeBold, title: 'Inactive Members', link: '/dashboard/members/inactivemembers' },
                         { icon: FaUsersRays, title: 'Paused Members', link: '/dashboard/members/pausedmembers' }
-                    ]
-                },
-                {
-                    icon: BiSolidUserCheck,
-                    title: 'Attendance',
-                    link: '/dashboard/attendance/memberattendance',
-                    subObj: [
-                        { icon: FaRegUser, title: 'Member Attendance', link: '/dashboard/attendance/memberattendance' },
-                        { icon: FaUserCog, title: 'Staff Attendance', link: '/dashboard/attendance/staffattendance' },
-                        { icon: FaClipboardList, title: 'Attendance History', link: '/dashboard/attendance/attendancehistory' }
                     ]
                 },
                 {
