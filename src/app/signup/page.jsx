@@ -45,7 +45,6 @@ export default function SignUpPage() {
             });
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success('Account created successfully!');
                 reset();
             } else {
                 toast.error(responseBody.message || 'Failed to create account');
