@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
 import Link from 'next/link';
@@ -74,17 +73,14 @@ export function LoginForm({ className, ...props }) {
 
       if (response.status === 200) {
         toast.success(responseBody.message || 'Login successful!');
-        router.push('/dashboard');
-      }
-
-      if (response.ok) {
-        toast.success(responseBody.message || 'Login successful!');
         reset();
-      }
+        router.push('/dashboard');
+      };
+
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again.');
       console.log('Error: ', error);
-    }
+    };
   };
 
   const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder, rightElement }) => (
@@ -139,7 +135,6 @@ export function LoginForm({ className, ...props }) {
 
   return (
     <div className="w-full flex items-center justify-center p-4">
-      <Toaster position="top-right" />
 
       <motion.div
         className="w-full max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
