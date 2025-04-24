@@ -1,5 +1,8 @@
 'use client';
 
+import { FaRulerHorizontal } from "react-icons/fa";
+import { LuLogs } from "react-icons/lu";
+import { MdAutoGraph } from "react-icons/md";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FcParallelTasks } from "react-icons/fc";
 import { FaUsersRays } from "react-icons/fa6";
@@ -180,6 +183,26 @@ const Sidebar = () => {
                     title: 'Membership Plans',
                     link: '/dashboard/membershipplans',
                 },
+                {
+                    icon: LuLogs,
+                    title: 'Membership Logs',
+                    link: '/dashboard/members/membershiplogs',
+                },
+                {
+                    icon: MdAutoGraph,
+                    title: 'Member Performance',
+                    link: '/dashboard/members/memberperformance',
+                },
+                {
+                    icon: MdPayments,
+                    title: 'Payment History',
+                    link: '/dashboard/members/paymenthistory',
+                },
+                {
+                    icon: FaRulerHorizontal,
+                    title: 'Body Measurements',
+                    link: '/dashboard/members/bodymeasurements',
+                },
             ]
         },
         // Staff Operations
@@ -319,7 +342,7 @@ const Sidebar = () => {
                 {sidebarContent.map((category, categoryIndex) => (
                     <div key={categoryIndex} className="mb-1">
                         {!sidebarMinimized && (
-                            <p className='text-[11px] uppercase tracking-wider font-bold text-black ml-3 mt-3 mb-1'>{category.category}</p>
+                            <p className='text-[11px] uppercase tracking-wider font-bold text-black ml-3 mt-3 mb-1 text-gray-500'>{category.category}</p>
                         )}
                         <ul>
                             {category.items.map((sidebar, index) => (
@@ -327,7 +350,7 @@ const Sidebar = () => {
                                     {sidebar.subObj ? (
                                         <Accordion type="single" collapsible className="w-full py-1">
                                             <AccordionItem value={`item-${categoryIndex}-${index}`}>
-                                                <AccordionTrigger className="w-full flex items-center px-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
+                                                <AccordionTrigger className="w-full flex items-center px-2 ml-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
                                                     <sidebar.icon className='text-xl text-blue-600 hover:text-blue-500' />
                                                     {
                                                         sidebarMinimized ? (
@@ -355,7 +378,7 @@ const Sidebar = () => {
                                             </AccordionItem>
                                         </Accordion>
                                     ) : (
-                                        <Link href={sidebar.link} className="flex items-center p-2 text-gray-800 hover:text-black cursor-pointer rounded transition-colors">
+                                        <Link href={sidebar.link} className="flex items-center p-2 ml-2 text-gray-800 hover:text-black cursor-pointer rounded transition-colors">
                                             <sidebar.icon className='text-xl text-blue-600' />
                                             {
                                                 sidebarMinimized ? (
