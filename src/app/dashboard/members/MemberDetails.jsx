@@ -308,7 +308,7 @@ const MemberDetails = ({ memberId }) => {
     const uploadMemberImage = async () => {
         setImageUploading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -363,7 +363,7 @@ const MemberDetails = ({ memberId }) => {
     const updateMemberDetails = async (data) => {
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -415,7 +415,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -464,7 +464,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -585,8 +585,8 @@ const MemberDetails = ({ memberId }) => {
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <MdOutlineArrowDropDown
-                                className={`text-white mx-4 cursor-pointer h-5 w-5 transition-transform duration-300 ${renderProfileDetails ? 'rotate-0' : 'rotate-180'
+                            <FaChevronUp
+                                className={`mx-4 text-blue-600 cursor-pointer h-4 w-4 transition-transform duration-300 ${renderProfileDetails ? 'rotate-180' : 'rotate-0'
                                     }`}
                             />
                         </TooltipTrigger>
@@ -1052,7 +1052,7 @@ const MemberDetails = ({ memberId }) => {
                                                     <div>
                                                         {/* Toggle Button */}
                                                         <div
-                                                            className="bg-transparent border rounded-md py-2 my-2 w-full cursor-pointer"
+                                                            className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer"
                                                             onClick={() => setRenderMembershipLogs(!renderMembershipLogs)}
                                                         >
                                                             <h1 className="mx-4 text-blue-600 font-semibold">Membership Logs</h1>
@@ -1242,7 +1242,7 @@ const MemberDetails = ({ memberId }) => {
                                                             <h2 className=" text-blue-600 font-semibold">
                                                                 Payment History
                                                             </h2>
-                                                            <FaChevronUp className={`text-white transform transition-transform ${renderPaymentHistory ? 'rotate-180' : ''
+                                                            <FaChevronUp className={`text-blue-600 transform transition-transform ${renderPaymentHistory ? 'rotate-180' : ''
                                                                 }`} />
                                                         </div>
 
