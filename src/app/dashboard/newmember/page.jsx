@@ -551,7 +551,7 @@ const NewMemberRegistrationForm = () => {
                     </div>
                 </>
             )}
-
+            {/* 
             <div className="flex justify-between items-center bg-blue-600 py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
                 <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
                 <TooltipProvider>
@@ -564,7 +564,7 @@ const NewMemberRegistrationForm = () => {
                         </TooltipContent>
                     </Tooltip>
                 </TooltipProvider>
-            </div>
+            </div> */}
 
             {renderProfileDetails && (
                 <div className=" bg-gray-50">
@@ -643,8 +643,8 @@ const NewMemberRegistrationForm = () => {
                 <div className="w-full">
                     <div className="w-full">
                         <form onSubmit={handleSubmit(onRegisterMember)} className="w-full">
-                            <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
-                                <h1 className="mx-4 text-white font-semibold">Personal Information</h1>
+                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
+                                <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>
                             </div>
                             {
                                 renderPersonalInformationForm ? (
@@ -823,8 +823,8 @@ const NewMemberRegistrationForm = () => {
                                 )
                             }
 
-                            <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
-                                <h1 className="mx-4 text-white font-semibold">Body Measurements</h1>
+                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
+                                <h1 className="mx-4 text-blue-600 font-semibold">Body Measurements</h1>
                             </div>
                             {
                                 renderBodyMeasurementsForm ? (
@@ -981,8 +981,8 @@ const NewMemberRegistrationForm = () => {
                                 )
                             }
 
-                            <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
-                                <h1 className="mx-4 text-white font-semibold">Membership Information</h1>
+                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
+                                <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
                             </div>
                             {
                                 renderMembershipInformationForm ? (
@@ -1183,8 +1183,8 @@ const NewMemberRegistrationForm = () => {
                                 )
                             }
 
-                            <div className="bg-blue-600 py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
-                                <h1 className="mx-4 text-white font-semibold">Payment Details</h1>
+                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
+                                <h1 className="mx-4 text-blue-600 font-semibold">Payment Details</h1>
                             </div>
                             {
                                 renderPaymentDetailForm ? (
