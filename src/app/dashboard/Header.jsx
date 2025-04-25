@@ -256,11 +256,6 @@ const Header = () => {
                     link: '/dashboard/members/memberperformance',
                 },
                 {
-                    icon: MdPayments,
-                    title: 'Payment History',
-                    link: '/dashboard/members/paymenthistory',
-                },
-                {
                     icon: FaRulerHorizontal,
                     title: 'Body Measurements',
                     link: '/dashboard/members/bodymeasurements',
@@ -291,6 +286,11 @@ const Header = () => {
         {
             category: "Financial",
             items: [
+                {
+                    icon: MdPayments,
+                    title: 'Payment History',
+                    link: '/dashboard/members/paymenthistory',
+                },
                 {
                     icon: MdPayments,
                     title: 'Payment Details',

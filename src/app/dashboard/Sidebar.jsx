@@ -194,11 +194,6 @@ const Sidebar = () => {
                     link: '/dashboard/members/memberperformance',
                 },
                 {
-                    icon: MdPayments,
-                    title: 'Payment History',
-                    link: '/dashboard/members/paymenthistory',
-                },
-                {
                     icon: FaRulerHorizontal,
                     title: 'Body Measurements',
                     link: '/dashboard/members/bodymeasurements',
@@ -229,6 +224,11 @@ const Sidebar = () => {
         {
             category: "Financial",
             items: [
+                {
+                    icon: MdPayments,
+                    title: 'Payment History',
+                    link: '/dashboard/members/paymenthistory',
+                },
                 {
                     icon: MdPayments,
                     title: 'Payment Details',
