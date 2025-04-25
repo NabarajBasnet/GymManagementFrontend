@@ -32,6 +32,7 @@ import { format } from 'date-fns';
 import { Line, LineChart, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CalendarIcon, Printer, FileDown, RotateCcw, PencilIcon, ChevronDownIcon, ChevronUpIcon, Search, XCircle, ArrowDown, ArrowUp, Minus } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { BodyMeasurementChartBySelectedValue } from "./BodyMeasurementsChart";
 
 const BodyMeasurements = ({ memberId }) => {
 
@@ -494,7 +495,7 @@ const BodyMeasurements = ({ memberId }) => {
     ] : [];
 
     return (
-        <div className="body-measurement-tracker w-full max-w-7xl mx-auto p-4">
+        <div className="body-measurement-tracker w-full p-4">
 
             <div className="bg-white rounded-sm mb-3 shadow-sm flex items-center py-6 px-1 border">
                 <Breadcrumb>
@@ -620,79 +621,101 @@ const BodyMeasurements = ({ memberId }) => {
                 </Card>
             ) : (
                 <>
-
                     <div>
                         <form>
-
-                            <div>
-                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Member</Label>
-                                <div ref={searchRef} className="relative">
-                                    <Controller
-                                        name="memberName"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <div className="relative">
-                                                <Input
-                                                    {...field}
-                                                    autoComplete="off"
-                                                    value={searchQuery}
-                                                    onChange={(e) => {
-                                                        setSearchQuery(e.target.value);
-                                                        field.onChange(e);
-                                                    }}
-                                                    onFocus={handleSearchFocus}
-                                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                    placeholder="Search members..."
-                                                />
-                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                    <FiSearch className="h-5 w-5" />
+                            <div className="flex mb-4 flex-col md:flex-row items-start md:items-end gap-4 my-6">
+                                {/* Member Search */}
+                                <div className="w-full md:w-90">
+                                    <div ref={searchRef} className="relative">
+                                        <Controller
+                                            name="memberName"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <div className="relative">
+                                                    <Input
+                                                        id="member-search"
+                                                        {...field}
+                                                        autoComplete="off"
+                                                        value={searchQuery}
+                                                        onChange={(e) => {
+                                                            setSearchQuery(e.target.value);
+                                                            field.onChange(e);
+                                                        }}
+                                                        onFocus={handleSearchFocus}
+                                                        className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
+                                                        placeholder="Type member name..."
+                                                    />
+                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                        <FiSearch className="h-4 w-4" />
+                                                    </div>
                                                 </div>
+                                            )}
+                                        />
+                                        {errors.memberName && (
+                                            <p className="mt-1 text-xs text-red-600">
+                                                {errors.memberName.message}
+                                            </p>
+                                        )}
+
+                                        {renderDropdown && (
+                                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                {members?.length > 0 ? (
+                                                    members
+                                                        .filter((member) => {
+                                                            return member.fullName
+                                                                .toLowerCase()
+                                                                .includes(searchQuery.toLowerCase());
+                                                        })
+                                                        .map((member) => (
+                                                            <div
+                                                                onClick={() => {
+                                                                    setSearchQuery(member.fullName);
+                                                                    setRenderDropdown(false);
+                                                                }}
+                                                                className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                key={member._id}
+                                                                value={member._id}
+                                                            >
+                                                                {member.fullName}
+                                                            </div>
+                                                        ))
+                                                ) : (
+                                                    <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
+                                                )}
                                             </div>
                                         )}
-                                    />
-                                    {errors.memberName && (
-                                        <p className="mt-1.5 text-sm font-medium text-red-600">
-                                            {errors.memberName.message}
-                                        </p>
-                                    )}
+                                    </div>
+                                </div>
 
-                                    {renderDropdown && (
-                                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                            {members?.length > 0 ? (
-                                                members
-                                                    .filter((member) => {
-                                                        return member.fullName
-                                                            .toLowerCase()
-                                                            .includes(searchQuery.toLowerCase());
-                                                    })
-                                                    .map((member) => (
-                                                        <div
-                                                            onClick={() => {
-                                                                setSearchQuery(member.fullName);
-                                                                setRenderDropdown(false);
-                                                            }}
-                                                            className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                            key={member._id}
-                                                            value={member._id}
-                                                        >
-                                                            {member.fullName}
-                                                        </div>
-                                                    ))
-                                            ) : (
-                                                <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
-                                            )}
-                                        </div>
-                                    )}
+                                {/* Date Range */}
+                                <div className="flex flex-col md:flex-row gap-4">
+                                    <div className="w-full md:w-48">
+                                        <Input
+                                            id="start-date"
+                                            type="date"
+                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
+                                        />
+                                    </div>
+
+                                    <div className="w-full md:w-48">
+                                        <Input
+                                            id="end-date"
+                                            type="date"
+                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Submit Button */}
+                                <div className="md:w-auto">
+                                    <Button
+                                        type="submit"
+                                        className="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                                    >
+                                        Filter Results
+                                    </Button>
                                 </div>
                             </div>
-
-                            <Input
-                                type='date'
-                            />
-
-                            <Input
-                                type='date'
-                            />
                         </form>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -711,7 +734,7 @@ const BodyMeasurements = ({ memberId }) => {
                     </div>
 
                     <Tabs defaultValue="charts" className="mt-6">
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex border py-3 px-1 rounded-md justify-between items-center mb-4">
                             <TabsList>
                                 <TabsTrigger value="charts">Charts</TabsTrigger>
                                 <TabsTrigger value="table">Data Table</TabsTrigger>
@@ -720,25 +743,13 @@ const BodyMeasurements = ({ memberId }) => {
                             <Button onClick={handleAddNew}>Add New Measurement</Button>
                         </div>
 
-                        <TabsContent value="charts" className="mt-0">
-                            <div className="space-y-6">
-                                <div className="flex justify-end">
-                                    <Tabs value={chartPeriod} onValueChange={setChartPeriod}>
-                                        <TabsList>
-                                            <TabsTrigger value="month">1 Month</TabsTrigger>
-                                            <TabsTrigger value="quarter">3 Months</TabsTrigger>
-                                            <TabsTrigger value="all">All Time</TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
-                                </div>
+                        <BodyMeasurementChartBySelectedValue />
 
-                            </div>
-                        </TabsContent>
 
                         <TabsContent value="table" className="mt-0">
                             <Card>
                                 <CardContent className="p-6">
-                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                                    {/* <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                                         <div className="relative w-full md:w-64">
                                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
@@ -761,9 +772,9 @@ const BodyMeasurements = ({ memberId }) => {
                                                 </button>
                                             )}
                                         </div>
-                                    </div>
+                                    </div> */}
 
-                                    <div className="rounded-md border">
+                                    {/* <div className="rounded-md border">
                                         <Table>
                                             <TableHeader>
                                                 <TableRow>
@@ -849,7 +860,7 @@ const BodyMeasurements = ({ memberId }) => {
                                                 ))}
                                             </TableBody>
                                         </Table>
-                                    </div>
+                                    </div> */}
 
                                     {totalPages > 1 && (
                                         <div className="flex items-center justify-between space-x-2 py-4">
