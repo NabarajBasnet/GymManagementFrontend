@@ -1,5 +1,14 @@
 "use client";
 
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { FiSearch } from "react-icons/fi";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -39,6 +48,7 @@ const BodyMeasurements = ({ memberId }) => {
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
+    const [renderMainContents, setRenderMainContents] = useState(false);
     const [measurements, setMeasurements] = useState([]);
     const [selectedMeasurement, setSelectedMeasurement] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +72,6 @@ const BodyMeasurements = ({ memberId }) => {
         try {
             const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -77,10 +86,28 @@ const BodyMeasurements = ({ memberId }) => {
 
     const { members } = data || {};
 
-    console.log('Members: ', members);
+    // Get Body Measurement Details
+    const [selectedMemberId, setSelectedMemberId] = useState('');
+
+    const getBodyMeasurementDetails = async () => {
+        setRenderMainContents(true);
+        try {
+            console.log("Fetching data from backend...");
+            const response = await fetch(`http://localhost:3000/api/members/bodymeasurements/${selectedMemberId}`);
+            const responseBody = await response.json();
+            console.log('Response Body: ', responseBody);
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    useEffect(() => {
+        if (searchQuery, selectedMemberId) {
+            getBodyMeasurementDetails();
+        };
+    }, [searchQuery, selectedMemberId]);
 
     const searchRef = useRef(null);
-
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -92,7 +119,6 @@ const BodyMeasurements = ({ memberId }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [searchRef]);
-
     const handleSearchFocus = () => {
         setRenderDropdown(true);
     };
@@ -191,22 +217,6 @@ const BodyMeasurements = ({ memberId }) => {
         return mockData.sort((a, b) => new Date(b.bodyMeasuredate) - new Date(a.bodyMeasuredate));
     };
 
-    const handleEditMeasurement = (measurement) => {
-        setSelectedMeasurement(measurement);
-        setSelectedDate(new Date(measurement.bodyMeasuredate));
-        form.reset({
-            weight: measurement.weight,
-            height: measurement.height,
-            upperArm: measurement.upperArm,
-            foreArm: measurement.foreArm,
-            chest: measurement.chest,
-            waist: measurement.waist,
-            thigh: measurement.thigh,
-            calf: measurement.calf,
-        });
-        setIsEditing(true);
-    };
-
     const handleSaveMeasurement = (values) => {
         const updatedMeasurement = {
             ...selectedMeasurement,
@@ -272,6 +282,9 @@ const BodyMeasurements = ({ memberId }) => {
     };
 
     const handleResetFilters = () => {
+        setRenderMainContents(false);
+        setSearchQuery('');
+        setSelectedMemberId('');
         setDateRange({
             start: new Date(new Date().setMonth(new Date().getMonth() - 3)),
             end: new Date()
@@ -290,13 +303,6 @@ const BodyMeasurements = ({ memberId }) => {
         const measureDate = new Date(m.bodyMeasuredate);
         return measureDate >= dateRange.start && measureDate <= dateRange.end;
     });
-
-    const formatDateRange = () => {
-        if (dateRange.start && dateRange.end) {
-            return `${format(dateRange.start, 'MMM d, yyyy')} - ${format(dateRange.end, 'MMM d, yyyy')}`;
-        }
-        return 'Select date range';
-    };
 
     // Chart data preparation
     const getFilteredChartData = () => {
@@ -325,33 +331,6 @@ const BodyMeasurements = ({ memberId }) => {
                 thigh: parseFloat(m.thigh.toFixed(1)),
                 calf: parseFloat(m.calf.toFixed(1)),
             }));
-    };
-
-    const proportionalData = measurements.length > 0 ? [
-        { name: 'Chest', value: measurements[0].chest },
-        { name: 'Waist', value: measurements[0].waist },
-        { name: 'Upper Arm', value: measurements[0].upperArm },
-        { name: 'Fore Arm', value: measurements[0].foreArm },
-        { name: 'Thigh', value: measurements[0].thigh },
-        { name: 'Calf', value: measurements[0].calf },
-    ] : [];
-
-    // Table sorting and filtering
-    const requestSort = (key) => {
-        let direction = 'asc';
-        if (sortConfig.key === key && sortConfig.direction === 'asc') {
-            direction = 'desc';
-        }
-        setSortConfig({ key, direction });
-    };
-
-    const getSortIcon = (columnName) => {
-        if (sortConfig.key !== columnName) {
-            return null;
-        }
-        return sortConfig.direction === 'asc' ?
-            <ChevronUpIcon className="h-4 w-4 inline ml-1" /> :
-            <ChevronDownIcon className="h-4 w-4 inline ml-1" />;
     };
 
     const filterAndSortData = () => {
@@ -436,32 +415,32 @@ const BodyMeasurements = ({ memberId }) => {
         { name: "calf", label: "Calf (cm)", description: "Circumference of calf" },
     ];
 
-    if (loading) {
-        return (
-            <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {[1, 2, 3, 4].map((i) => (
-                        <Card key={i}>
-                            <CardContent className="p-6">
-                                <Skeleton className="h-4 w-24 mb-2" />
-                                <Skeleton className="h-8 w-16 mb-2" />
-                                <Skeleton className="h-4 w-32" />
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-                <Card>
-                    <CardHeader>
-                        <Skeleton className="h-6 w-48" />
-                        <Skeleton className="h-4 w-72" />
-                    </CardHeader>
-                    <CardContent>
-                        <Skeleton className="h-[300px] w-full" />
-                    </CardContent>
-                </Card>
-            </div>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <div className="space-y-6">
+    //             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    //                 {[1, 2, 3, 4].map((i) => (
+    //                     <Card key={i}>
+    //                         <CardContent className="p-6">
+    //                             <Skeleton className="h-4 w-24 mb-2" />
+    //                             <Skeleton className="h-8 w-16 mb-2" />
+    //                             <Skeleton className="h-4 w-32" />
+    //                         </CardContent>
+    //                     </Card>
+    //                 ))}
+    //             </div>
+    //             <Card>
+    //                 <CardHeader>
+    //                     <Skeleton className="h-6 w-48" />
+    //                     <Skeleton className="h-4 w-72" />
+    //                 </CardHeader>
+    //                 <CardContent>
+    //                     <Skeleton className="h-[300px] w-full" />
+    //                 </CardContent>
+    //             </Card>
+    //         </div>
+    //     );
+    // }
 
     const chartData = getFilteredChartData();
     const latest = filteredMeasurements[0];
@@ -671,6 +650,7 @@ const BodyMeasurements = ({ memberId }) => {
                                                                 onClick={() => {
                                                                     setSearchQuery(member.fullName);
                                                                     setRenderDropdown(false);
+                                                                    setSelectedMemberId(member._id);
                                                                 }}
                                                                 className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                                                 key={member._id}
@@ -686,6 +666,25 @@ const BodyMeasurements = ({ memberId }) => {
                                         )}
                                     </div>
                                 </div>
+
+                                {/* Select Data Group */}
+                                <Select className='rounded-sm'>
+                                    <SelectTrigger className="w-full rounded-sm">
+                                        <SelectValue placeholder="Select field" />
+                                    </SelectTrigger>
+                                    <SelectContent className='rounded-sm'>
+                                        <SelectGroup>
+                                            <SelectLabel>Select</SelectLabel>
+                                            <SelectItem value="Weight">Weight</SelectItem>
+                                            <SelectItem value="Chest">Chest</SelectItem>
+                                            <SelectItem value="Upper Arm">Upper Arm</SelectItem>
+                                            <SelectItem value="Fore Arm">Fore Arm</SelectItem>
+                                            <SelectItem value="Waist">Waist</SelectItem>
+                                            <SelectItem value="Thigh">Thigh</SelectItem>
+                                            <SelectItem value="Calf">Calf</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
 
                                 {/* Date Range */}
                                 <div className="flex flex-col md:flex-row gap-4">
@@ -718,189 +717,81 @@ const BodyMeasurements = ({ memberId }) => {
                             </div>
                         </form>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {summaryMetrics.map((metric, index) => (
-                            <Card key={index} className="overflow-hidden transition-all duration-200 hover:shadow-md">
-                                <CardContent className="p-6">
-                                    <h3 className="text-sm font-medium text-muted-foreground">{metric.title}</h3>
-                                    <div className="flex items-end gap-2 mt-1">
-                                        <p className="text-2xl font-bold">{metric.value}</p>
-                                        {renderChangeIndicator(metric.change)}
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mt-1">{metric.subtitle}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
 
-                    <Tabs defaultValue="charts" className="mt-6">
-                        <div className="flex border py-3 px-1 rounded-md justify-between items-center mb-4">
-                            <TabsList>
-                                <TabsTrigger value="charts">Charts</TabsTrigger>
-                                <TabsTrigger value="table">Data Table</TabsTrigger>
-                            </TabsList>
+                    {renderMainContents && (
+                        <div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                {summaryMetrics.map((metric, index) => (
+                                    <Card key={index} className="overflow-hidden transition-all duration-200 hover:shadow-md">
+                                        <CardContent className="p-6">
+                                            <h3 className="text-sm font-medium text-muted-foreground">{metric.title}</h3>
+                                            <div className="flex items-end gap-2 mt-1">
+                                                <p className="text-2xl font-bold">{metric.value}</p>
+                                                {renderChangeIndicator(metric.change)}
+                                            </div>
+                                            <p className="text-xs text-muted-foreground mt-1">{metric.subtitle}</p>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </div>
 
-                            <Button onClick={handleAddNew}>Add New Measurement</Button>
-                        </div>
+                            <Tabs defaultValue="charts" className="mt-6">
+                                <div className="flex border py-3 px-1 rounded-md justify-between items-center mb-4">
+                                    <TabsList>
+                                        <TabsTrigger value="charts">Charts</TabsTrigger>
+                                        <TabsTrigger value="table">Data Table</TabsTrigger>
+                                    </TabsList>
 
-                        <BodyMeasurementChartBySelectedValue />
+                                    <Button onClick={handleAddNew}>Add New Measurement</Button>
+                                </div>
+
+                                <BodyMeasurementChartBySelectedValue />
 
 
-                        <TabsContent value="table" className="mt-0">
-                            <Card>
-                                <CardContent className="p-6">
-                                    {/* <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                                        <div className="relative w-full md:w-64">
-                                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                type="text"
-                                                placeholder="Search by date..."
-                                                value={searchTerm}
-                                                onChange={(e) => {
-                                                    setSearchTerm(e.target.value);
-                                                    setCurrentPage(1);
-                                                }}
-                                                className="pl-8"
-                                            />
-                                            {searchTerm && (
-                                                <button
-                                                    className="absolute right-2.5 top-2.5"
-                                                    onClick={() => setSearchTerm('')}
-                                                    aria-label="Clear search"
-                                                >
-                                                    <XCircle className="h-4 w-4 text-muted-foreground hover:text-foreground" />
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div> */}
-
-                                    {/* <div className="rounded-md border">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead
-                                                        className="w-[120px] cursor-pointer"
-                                                        onClick={() => requestSort('bodyMeasuredate')}
-                                                    >
-                                                        Date {getSortIcon('bodyMeasuredate')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('weight')}
-                                                    >
-                                                        Weight (kg) {getSortIcon('weight')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('height')}
-                                                    >
-                                                        Height (cm) {getSortIcon('height')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('upperArm')}
-                                                    >
-                                                        Upper Arm {getSortIcon('upperArm')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('chest')}
-                                                    >
-                                                        Chest {getSortIcon('chest')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('waist')}
-                                                    >
-                                                        Waist {getSortIcon('waist')}
-                                                    </TableHead>
-                                                    <TableHead
-                                                        className="text-right cursor-pointer"
-                                                        onClick={() => requestSort('thigh')}
-                                                    >
-                                                        Thigh {getSortIcon('thigh')}
-                                                    </TableHead>
-                                                    <TableHead className="text-right">Actions</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {currentItems.map((measurement, index) => (
-                                                    <TableRow key={measurement._id || index} className="hover:bg-muted/50">
-                                                        <TableCell className="font-medium">
-                                                            {format(new Date(measurement.bodyMeasuredate), 'MMM d, yyyy')}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.weight?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.height?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.upperArm?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.chest?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.waist?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
-                                                            {measurement.thigh?.toFixed(1)}
-                                                        </TableCell>
-                                                        <TableCell className="text-right">
+                                <TabsContent value="table" className="mt-0">
+                                    <Card>
+                                        <CardContent className="p-6">
+                                            {totalPages > 1 && (
+                                                <div className="flex items-center justify-between space-x-2 py-4">
+                                                    <div className="text-sm text-muted-foreground">
+                                                        Showing {firstItemIndex + 1}-{Math.min(lastItemIndex, sortedData.length)} of {sortedData.length}
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                                                            disabled={currentPage === 1}
+                                                        >
+                                                            Previous
+                                                        </Button>
+                                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                                             <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => handleEditMeasurement(measurement)}
+                                                                key={page}
+                                                                variant={currentPage === page ? "default" : "outline"}
+                                                                size="sm"
+                                                                onClick={() => setCurrentPage(page)}
                                                             >
-                                                                <PencilIcon className="h-4 w-4" />
+                                                                {page}
                                                             </Button>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    </div> */}
-
-                                    {totalPages > 1 && (
-                                        <div className="flex items-center justify-between space-x-2 py-4">
-                                            <div className="text-sm text-muted-foreground">
-                                                Showing {firstItemIndex + 1}-{Math.min(lastItemIndex, sortedData.length)} of {sortedData.length}
-                                            </div>
-                                            <div className="flex items-center space-x-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                                                    disabled={currentPage === 1}
-                                                >
-                                                    Previous
-                                                </Button>
-                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                                    <Button
-                                                        key={page}
-                                                        variant={currentPage === page ? "default" : "outline"}
-                                                        size="sm"
-                                                        onClick={() => setCurrentPage(page)}
-                                                    >
-                                                        {page}
-                                                    </Button>
-                                                ))}
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                                                    disabled={currentPage === totalPages}
-                                                >
-                                                    Next
-                                                </Button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        </TabsContent>
-                    </Tabs>
+                                                        ))}
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                                                            disabled={currentPage === totalPages}
+                                                        >
+                                                            Next
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                            </Tabs>
+                        </div>
+                    )}
                 </>
             )}
         </div>
