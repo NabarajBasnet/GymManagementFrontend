@@ -95,6 +95,10 @@ const BodyMeasurements = ({ memberId }) => {
             console.log("Fetching data from backend...");
             const response = await fetch(`http://localhost:3000/api/members/bodymeasurements/${selectedMemberId}`);
             const responseBody = await response.json();
+            if (response.ok) {
+                setRenderMainContents(true);
+            };
+
             console.log('Response Body: ', responseBody);
         } catch (error) {
             console.log("Error: ", error);
