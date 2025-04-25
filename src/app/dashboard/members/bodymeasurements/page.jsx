@@ -1,5 +1,7 @@
 "use client";
 
+import { FiSearch } from "react-icons/fi";
+import { Controller, useForm } from "react-hook-form";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -13,7 +15,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -24,14 +26,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from 'date-fns';
 import { Line, LineChart, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { CalendarIcon, Printer, FileDown, RotateCcw, PencilIcon, ChevronDownIcon, ChevronUpIcon, Search, XCircle, ArrowDown, ArrowUp, Minus } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 const BodyMeasurements = ({ memberId }) => {
+
+    const [renderDropdown, setRenderDropdown] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
     const [measurements, setMeasurements] = useState([]);
     const [selectedMeasurement, setSelectedMeasurement] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -49,6 +55,46 @@ const BodyMeasurements = ({ memberId }) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDate, setSelectedDate] = useState(new Date());
     const itemsPerPage = 5;
+    const { control, formState: { errors }, handleSubmit } = useForm();
+
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/members`);
+            const responseBody = await response.json();
+            console.log("Response body: ", responseBody);
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to fetch members");
+        }
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
+
+    const { members } = data || {};
+
+    console.log('Members: ', members);
+
+    const searchRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (searchRef.current && !searchRef.current.contains(event.target)) {
+                setRenderDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [searchRef]);
+
+    const handleSearchFocus = () => {
+        setRenderDropdown(true);
+    };
 
     // Form validation schema
     const formSchema = z.object({
@@ -450,77 +496,52 @@ const BodyMeasurements = ({ memberId }) => {
     return (
         <div className="body-measurement-tracker w-full max-w-7xl mx-auto p-4">
 
-               <div className="bg-white rounded-sm mb-3 shadow-sm flex items-center py-6 px-1 border">
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Members</BreadcrumbPage>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Body Measurements</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                </div>
+            <div className="bg-white rounded-sm mb-3 shadow-sm flex items-center py-6 px-1 border">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                </DropdownMenuTrigger>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Members</BreadcrumbPage>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Body Measurements</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+            </div>
 
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
-
+            <div className="flex flex-col border px-2 py-2 rounded-sm md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h1 className="text-2xl font-bold text-primary">Body Measurement Tracker</h1>
-                    <p className="text-muted-foreground">Track and analyze body measurements over time</p>
+                    <h1 className="text-2xl font-bold text-primary">Body Measurement</h1>
+                    <p className="text-muted-foreground text-xs font-semibold my-1">Track and analyze body measurements over time</p>
                 </div>
 
-                <div className="flex items-center gap-2 self-end md:self-auto">
-                    <Popover>
-                        <PopoverTrigger asChild>
-                            <Button variant="outline" className="w-[240px] justify-start text-left font-normal">
-                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                {formatDateRange()}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0" align="end">
-                            <Calendar
-                                mode="range"
-                                selected={{
-                                    from: dateRange.start,
-                                    to: dateRange.end,
-                                }}
-                                onSelect={(range) => {
-                                    if (range?.from && range?.to) {
-                                        setDateRange({ start: range.from, end: range.to });
-                                    }
-                                }}
-                                initialFocus
-                            />
-                        </PopoverContent>
-                    </Popover>
-
+                <div className="flex items-center gap-2">
                     <Button variant="ghost" size="icon" onClick={handleResetFilters} title="Reset filters">
                         <RotateCcw className="h-4 w-4" />
                     </Button>
 
-                    <Button variant="outline" size="icon" onClick={handlePrint} title="Print">
+                    <Button variant="outline" className='px-4' size="icon" onClick={handlePrint} title="Print">
                         <Printer className="h-4 w-4" />
                     </Button>
 
-                    <Button variant="outline" size="icon" onClick={handleExport} title="Export data">
+                    <Button variant="outline" className='px-4' size="icon" onClick={handleExport} title="Export data">
                         <FileDown className="h-4 w-4" />
                     </Button>
                 </div>
@@ -599,6 +620,81 @@ const BodyMeasurements = ({ memberId }) => {
                 </Card>
             ) : (
                 <>
+
+                    <div>
+                        <form>
+
+                            <div>
+                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Member</Label>
+                                <div ref={searchRef} className="relative">
+                                    <Controller
+                                        name="memberName"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <div className="relative">
+                                                <Input
+                                                    {...field}
+                                                    autoComplete="off"
+                                                    value={searchQuery}
+                                                    onChange={(e) => {
+                                                        setSearchQuery(e.target.value);
+                                                        field.onChange(e);
+                                                    }}
+                                                    onFocus={handleSearchFocus}
+                                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                    placeholder="Search members..."
+                                                />
+                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                    <FiSearch className="h-5 w-5" />
+                                                </div>
+                                            </div>
+                                        )}
+                                    />
+                                    {errors.memberName && (
+                                        <p className="mt-1.5 text-sm font-medium text-red-600">
+                                            {errors.memberName.message}
+                                        </p>
+                                    )}
+
+                                    {renderDropdown && (
+                                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                            {members?.length > 0 ? (
+                                                members
+                                                    .filter((member) => {
+                                                        return member.fullName
+                                                            .toLowerCase()
+                                                            .includes(searchQuery.toLowerCase());
+                                                    })
+                                                    .map((member) => (
+                                                        <div
+                                                            onClick={() => {
+                                                                setSearchQuery(member.fullName);
+                                                                setRenderDropdown(false);
+                                                            }}
+                                                            className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                            key={member._id}
+                                                            value={member._id}
+                                                        >
+                                                            {member.fullName}
+                                                        </div>
+                                                    ))
+                                            ) : (
+                                                <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <Input
+                                type='date'
+                            />
+
+                            <Input
+                                type='date'
+                            />
+                        </form>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {summaryMetrics.map((metric, index) => (
                             <Card key={index} className="overflow-hidden transition-all duration-200 hover:shadow-md">
