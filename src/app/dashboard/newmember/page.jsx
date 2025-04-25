@@ -377,7 +377,7 @@ const NewMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://88.198.112.156:3000/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -452,7 +452,7 @@ const NewMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -844,10 +844,10 @@ const NewMemberRegistrationForm = () => {
                                 )
                             }
 
-                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
+                            {/* <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
                                 <h1 className="mx-4 text-blue-600 font-semibold">Body Measurements</h1>
-                            </div>
-                            {
+                            </div> */}
+                            {/* {
                                 renderBodyMeasurementsForm ? (
                                     <div className="p-2 bg-white ease-in-out duration-700">
                                         <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
@@ -997,7 +997,7 @@ const NewMemberRegistrationForm = () => {
                                 ) : (
                                     <div className='ease-in-out duration-700'></div>
                                 )
-                            }
+                            } */}
 
                             <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
                                 <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
