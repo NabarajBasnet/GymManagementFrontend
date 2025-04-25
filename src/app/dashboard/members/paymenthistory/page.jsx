@@ -113,7 +113,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -142,14 +142,13 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`http://localhost:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
             const responseBody = await response.json();
-            console.log('Payment History: ', responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -552,7 +551,7 @@ const PaymentHistory = () => {
                                     value={timeframe}
                                     onValueChange={setTimeframe}
                                 >
-                                    <SelectTrigger className="w-full border-gray-300">
+                                    <SelectTrigger className="w-full rounded-md border-gray-300">
                                         <SelectValue placeholder="Select period" />
                                     </SelectTrigger>
                                     <SelectContent>
