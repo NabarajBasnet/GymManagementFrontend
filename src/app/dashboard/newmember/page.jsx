@@ -1,13 +1,6 @@
 'use client'
 
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { motion } from "framer-motion";
+import { toast as notify } from 'react-hot-toast';
 import '../../globals.css';
 import { MdDone, MdError, MdClose } from "react-icons/md";
 import { ImagePlus, X } from 'lucide-react';
@@ -309,6 +302,16 @@ const NewMemberRegistrationForm = () => {
                 secondaryContactNo,
                 address,
 
+                bodyMeasuredate,
+                weight,
+                height,
+                upperArm,
+                foreArm,
+                chest,
+                waist,
+                thigh,
+                calf,
+
                 discountReason,
                 discountCode,
                 receiptNo,
@@ -324,6 +327,17 @@ const NewMemberRegistrationForm = () => {
                 secondaryContactNo,
                 gender,
                 address,
+
+                bodyMeasuredate,
+                weight,
+                height,
+                upperArm,
+                foreArm,
+                chest,
+                waist,
+                thigh,
+                calf,
+
                 status,
                 membershipOption,
                 membershipType,
@@ -371,7 +385,16 @@ const NewMemberRegistrationForm = () => {
                 body: JSON.stringify(membersFinalData)
             })
             const responseBody = await response.json();
-            if (response.status === 401) {
+
+            if (response.status === 400 && type === 'fullName') {
+                setError('fullName', {
+                    type: 'manual',
+                    message: 'This full name already exists',
+                });
+            };
+
+            if (response.status === 400) {
+                notify.error(responseBody.message);
                 setToast(true);
                 setTimeout(() => {
                     setToast(false)
@@ -654,7 +677,6 @@ const NewMemberRegistrationForm = () => {
                                                 <Label>Member Full Name</Label>
                                                 <Input
                                                     {
-
                                                     ...register('fullName', {
                                                         required: {
                                                             value: true,
@@ -665,8 +687,8 @@ const NewMemberRegistrationForm = () => {
                                                     className='rounded-md focus:outline-none'
                                                     placeholder='Full Name'
                                                 />
-                                                {errors.firstName && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.firstName.message}`}</p>
+                                                {errors.fullName && (
+                                                    <p className="text-sm font-semibold text-red-600">{`${errors.fullName.message}`}</p>
                                                 )}
                                             </div>
 
@@ -674,7 +696,6 @@ const NewMemberRegistrationForm = () => {
                                                 <Label>Contact No</Label>
                                                 <Input
                                                     {
-
                                                     ...register('contactNo', {
                                                         required: {
                                                             value: true,
@@ -879,9 +900,6 @@ const NewMemberRegistrationForm = () => {
                                                 />
                                                 {errors.height && (
                                                     <p className="text-sm font-semibold text-red-600">{`${errors.height.message}`}</p>
-                                                )}
-                                                {errors.userRegistered && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.userRegistered.message}`}</p>
                                                 )}
                                             </div>
 

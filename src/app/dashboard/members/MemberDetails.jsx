@@ -1,17 +1,13 @@
 'use client';
 
-import { FaChevronUp, FaChevronDown } from "react-icons/fa";
-import { HiXMark } from "react-icons/hi2";
-import { FaRegEye } from "react-icons/fa";
-import { MdOutlineArrowDropDown } from "react-icons/md";
+import { FaChevronUp } from "react-icons/fa";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import React, { ChangeEvent } from 'react';
+import React from 'react';
 import { ImagePlus, X } from 'lucide-react';
 import {
     AlertDialog,
@@ -74,6 +70,7 @@ const MemberDetails = ({ memberId }) => {
 
     // For rendering states
     const [renderPaymentHistory, setRenderPaymentHistory] = useState(false);
+    const [currentActionTaker, setCurrentActionTaker] = useState('');
     const [selectedPayment, setSelectedPayment] = useState(null);
     const [renderSnapshot, setRenderSnapshot] = useState(false);
     const [selectedSnapshot, setSelectedSnapshot] = useState(null);
@@ -172,7 +169,6 @@ const MemberDetails = ({ memberId }) => {
         enabled: !!memberId,
     });
     const { member, message, qrCode } = data || {};
-    console.log("Member details: ", member);
 
     // Populate Data
     useEffect(() => {
@@ -302,7 +298,6 @@ const MemberDetails = ({ memberId }) => {
     }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
 
     // Functions
-
     // Upload member image
     const [imageUloading, setImageUploading] = useState(false);
     const uploadMemberImage = async () => {
@@ -358,7 +353,6 @@ const MemberDetails = ({ memberId }) => {
         };
     };
 
-
     // Update member details
     const updateMemberDetails = async (data) => {
 
@@ -412,7 +406,7 @@ const MemberDetails = ({ memberId }) => {
     // Hold membership
     const holdMembership = async () => {
 
-        const membershipHoldData = { membershipHoldDate, status: 'OnHold' };
+        const membershipHoldData = { membershipHoldDate, status: 'OnHold', actionTaker: currentActionTaker };
 
         try {
             const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
@@ -599,11 +593,11 @@ const MemberDetails = ({ memberId }) => {
 
             {renderProfileDetails && (
                 <div className=" bg-gray-50">
-                    <div className="max-w-full mx-4">
+                    <div className="max-w-full">
                         <div className="bg-white mt-4 rounded-xl shadow-xl overflow-hidden">
                             <div className="md:flex items-center justify-between px-4 py-2">
                                 {/* Image Upload Section */}
-                                <div className="space-y-2">
+                                {/* <div className="space-y-2">
                                     <div className="bg-white rounded-lg overflow-hidden">
                                         <div className="space-y-1">
                                             <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
@@ -662,7 +656,7 @@ const MemberDetails = ({ memberId }) => {
 
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 {/* QR Code Section */}
                                 <div className="flex flex-col items-center justify-center space-y-4">
@@ -888,503 +882,6 @@ const MemberDetails = ({ memberId }) => {
                                                         <div className='ease-in-out duration-700'></div>
                                                     )
                                                 }
-
-                                                <div className="bg-blue-50 py-2 my-2 border rounded-md w-full cursor-pointer" onClick={() => setRenderBodyMeasurementsForm(!renderBodyMeasurementsForm)}>
-                                                    <h1 className="mx-4 text-blue-600 font-semibold">Body Measurements</h1>
-                                                </div>
-                                                {
-                                                    renderBodyMeasurementsForm ? (
-                                                        <div className="p-2 bg-white ease-in-out duration-700">
-                                                            <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
-                                                                <div>
-                                                                    <Label>Date</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('bodyMeasuredate', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Date'
-                                                                        type='date'
-                                                                    />
-                                                                    {errors.bodyMeasuredate && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.bodyMeasuredate.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Weight</Label>
-                                                                    <Input
-                                                                        {
-
-                                                                        ...register('weight', {
-                                                                            required: {
-                                                                                value: true,
-                                                                                message: "Enter client weight!"
-                                                                            }
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Weight'
-                                                                    />
-                                                                    {errors.weight && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.weight.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Height</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('height', {
-                                                                        })
-                                                                        }
-                                                                        onChange={() => clearErrors('userRegistered')}
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Enter height'
-                                                                    />
-                                                                    {errors.height && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.height.message}`}</p>
-                                                                    )}
-                                                                    {errors.userRegistered && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.userRegistered.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Upper Arm</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('upperArm')
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Upper Arm Size'
-                                                                    />
-                                                                    {errors.upperArm && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.upperArm.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Fore Arm</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('foreArm', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Fore Arm Size'
-                                                                    />
-                                                                    {errors.foreArm && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.foreArm.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Chest</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('chest', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Chest Size'
-                                                                    />
-                                                                    {errors.chest && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.chest.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Waist</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('waist', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Waist Size'
-                                                                    />
-                                                                    {errors.waist && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.waist.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Thigh</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('thigh', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Thigh Size'
-                                                                    />
-                                                                    {errors.thigh && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.thigh.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                                <div>
-                                                                    <Label>Calf</Label>
-                                                                    <Input
-                                                                        {
-                                                                        ...register('calf', {
-                                                                        })
-                                                                        }
-                                                                        className='rounded-md focus:outline-none'
-                                                                        placeholder='Calf Size'
-                                                                    />
-                                                                    {errors.calf && (
-                                                                        <p className="text-sm font-semibold text-red-600">{`${errors.calf.message}`}</p>
-                                                                    )}
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    ) : (
-                                                        <div className='ease-in-out duration-700'></div>
-                                                    )
-                                                }
-
-                                                {/* Shows Membership Logs */}
-                                                {data && data.member && data.member.membershipLogs && data.member.membershipLogs.length > 0 && (
-                                                    <div>
-                                                        {/* Toggle Button */}
-                                                        <div
-                                                            className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer"
-                                                            onClick={() => setRenderMembershipLogs(!renderMembershipLogs)}
-                                                        >
-                                                            <h1 className="mx-4 text-blue-600 font-semibold">Membership Logs</h1>
-                                                        </div>
-
-                                                        {/* Logs Table */}
-                                                        {renderMembershipLogs && (
-                                                            <div className="overflow-x-auto">
-                                                                {/* Table Header - Fixed column count to 7 */}
-                                                                <div className="grid grid-cols-7 gap-4 bg-gray-100 p-2 font-semibold text-sm border-b">
-                                                                    <div className="text-center">SN</div>
-                                                                    <div>Action Date</div>
-                                                                    <div>Action Taker</div>
-                                                                    <div>Action Type</div>
-                                                                    <div>Created By</div>
-                                                                    <div>Reason</div>
-                                                                    <div>Snapshot</div>
-                                                                </div>
-
-                                                                {/* Log Rows */}
-                                                                {data.member.membershipLogs.map((log, index) => (
-                                                                    <div
-                                                                        key={log.id || index}
-                                                                        className="grid grid-cols-7 gap-4 p-2 border-b text-sm hover:bg-gray-50"
-                                                                    >
-                                                                        <div className="text-center">{index + 1}.</div>
-                                                                        <div>{new Date(log.actionDate).toISOString().split('T')[0]}</div>
-                                                                        <div>{log.actionTaker}</div>
-                                                                        <div>{log.actionType}</div>
-                                                                        <div>{log.createdBy}</div>
-                                                                        <div>{log.reason}</div>
-                                                                        <div>
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => setSelectedSnapshot(log.snapshot)}
-                                                                                className="text-blue-600 bg-blue-100 p-2 rounded-md"
-                                                                            >
-                                                                                <FaRegEye className="inline-block mr-1" />
-                                                                                View Snapshot
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        )}
-
-                                                        {/* Snapshot Modal - Moved outside the loop */}
-                                                        {selectedSnapshot && (
-                                                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center backdrop-blur-sm">
-                                                                <div className="bg-white p-8 rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-                                                                    <div className="flex justify-between items-center mb-6 border-b pb-4">
-                                                                        <h2 className="text-2xl font-bold text-gray-800">
-                                                                            Membership Snapshot Details
-                                                                            <span className="block text-sm font-normal text-gray-500 mt-1">
-                                                                                Historical record at time of modification
-                                                                            </span>
-                                                                        </h2>
-                                                                        <button
-                                                                            onClick={() => setSelectedSnapshot(null)}
-                                                                            className="text-gray-400 hover:text-gray-600 transition-colors p-2 -m-2"
-                                                                            aria-label="Close"
-                                                                        >
-                                                                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                                            </svg>
-                                                                        </button>
-                                                                    </div>
-
-                                                                    <div className="space-y-6">
-                                                                        {/* Dates Section */}
-                                                                        <div className="bg-gray-100 shadow-md p-4 rounded-lg">
-                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Key Dates</h3>
-                                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Membership Date</label>
-                                                                                    <p className="font-medium text-gray-900">
-                                                                                        {new Date(selectedSnapshot.membershipDate).toLocaleDateString('en-GB')}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Renewal Date</label>
-                                                                                    <p className="font-medium text-gray-900">
-                                                                                        {new Date(selectedSnapshot.membershipRenewDate).toLocaleDateString('en-GB')}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Expiration Date</label>
-                                                                                    <p className="font-medium text-gray-900">
-                                                                                        {new Date(selectedSnapshot.membershipExpireDate).toLocaleDateString('en-GB')}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Membership Details */}
-                                                                        <div className="grid grid-cols-1 md:grid-cols-2 shadow-md p-4 bg-gray-50 border rounded-md gap-6">
-                                                                            <div>
-                                                                                <h3 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Membership Info</h3>
-                                                                                <dl className="space-y-3">
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Type</dt>
-                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipType}</dd>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Duration</dt>
-                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipDuration} months</dd>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Shift</dt>
-                                                                                        <dd className="font-medium text-gray-900">{selectedSnapshot.membershipShift}</dd>
-                                                                                    </div>
-                                                                                </dl>
-                                                                            </div>
-
-                                                                            {/* Financial Details */}
-                                                                            <div>
-                                                                                <h3 className="text-sm font-semibold text-gray-700 mb-4 uppercase tracking-wide">Financials</h3>
-                                                                                <dl className="space-y-3">
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Paid Amount</dt>
-                                                                                        <dd className="font-medium text-gray-900">
-                                                                                            ₹{Number(selectedSnapshot.paidAmmount).toLocaleString()}
-                                                                                        </dd>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Due Amount</dt>
-                                                                                        <dd className="font-medium text-gray-900">
-                                                                                            ₹{Number(selectedSnapshot.dueAmmount).toLocaleString()}
-                                                                                        </dd>
-                                                                                    </div>
-                                                                                    <div>
-                                                                                        <dt className="text-xs text-gray-500">Discount</dt>
-                                                                                        <dd className="font-medium text-gray-900">
-                                                                                            ₹{Number(selectedSnapshot.discountAmmount || 0).toLocaleString()}
-                                                                                            <span className="text-gray-500 text-xs ml-2">({selectedSnapshot.discountReason || 'No reason provided'})</span>
-                                                                                        </dd>
-                                                                                    </div>
-                                                                                </dl>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Transaction Details */}
-                                                                        <div className="bg-gray-100 p-4 rounded-lg shadow-md">
-                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase tracking-wide">Transaction Info</h3>
-                                                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Payment Method</label>
-                                                                                    <p className="font-medium text-gray-900 capitalize">{selectedSnapshot.paymentMethod}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Receipt Number</label>
-                                                                                    <p className="font-medium text-gray-900 font-mono">{selectedSnapshot.receiptNo}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Status</label>
-                                                                                    <p className="font-medium text-gray-900">
-                                                                                        <span className={`px-2 py-1 rounded-full text-xs ${selectedSnapshot.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                                                                                            {selectedSnapshot.status}
-                                                                                        </span>
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Remarks */}
-                                                                        <div>
-                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-2 uppercase tracking-wide">Additional Remarks</h3>
-                                                                            <p className="text-gray-600 text-sm leading-relaxed">
-                                                                                {selectedSnapshot.remark || 'No remarks provided'}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
-
-                                                {/* Render Payment History */}
-                                                {data && data.member && data.member.paymentHistory && data.member.paymentHistory.length > 0 && (
-                                                    <div className="">
-                                                        {/* Toggle Header */}
-                                                        <div
-                                                            className="bg-blue-50 border rounded-md py-2 px-4 cursor-pointer flex justify-between items-center"
-                                                            onClick={() => setRenderPaymentHistory(!renderPaymentHistory)}
-                                                        >
-                                                            <h2 className=" text-blue-600 font-semibold">
-                                                                Payment History
-                                                            </h2>
-                                                            <FaChevronUp className={`text-blue-600 transform transition-transform ${renderPaymentHistory ? 'rotate-180' : ''
-                                                                }`} />
-                                                        </div>
-
-                                                        {renderPaymentHistory && (
-                                                            <div className="border rounded-b-lg shadow-sm">
-                                                                {/* Table Header */}
-                                                                <div className="grid grid-cols-12 gap-4 bg-gray-50 p-3 text-xs font-medium uppercase tracking-wider text-gray-500">
-                                                                    <div className="col-span-1">SN</div>
-                                                                    <div className="col-span-2">Receipt No</div>
-                                                                    <div className="col-span-2">Payment Date</div>
-                                                                    <div className="col-span-2">Paid Amount</div>
-                                                                    <div className="col-span-2">Payment Method</div>
-                                                                    <div className="col-span-2">Action Taker</div>
-                                                                    <div className="col-span-1">Details</div>
-                                                                </div>
-
-                                                                {/* Payment Rows */}
-                                                                {data.member.paymentHistory.map((payment, index) => (
-                                                                    <div
-                                                                        key={payment._id}
-                                                                        className="grid grid-cols-12 gap-4 p-2 border-t hover:bg-gray-50 text-sm"
-                                                                    >
-                                                                        <div className="col-span-1">{index + 1}.</div>
-                                                                        <div className="col-span-2 font-mono">{payment.receiptNo}</div>
-                                                                        <div className="col-span-2">
-                                                                            {new Date(payment.paymentDate).toLocaleDateString('en-GB')}
-                                                                        </div>
-                                                                        <div className="col-span-2 font-medium text-green-600">
-                                                                            ₹{Number(payment.paidAmmount).toLocaleString()}
-                                                                        </div>
-                                                                        <div className="col-span-2 capitalize">{payment.paymentMethod}</div>
-                                                                        <div className="col-span-2">{payment.actionTaker}</div>
-                                                                        <div className="col-span-1 text-center">
-                                                                            <button
-                                                                                type="button"
-                                                                                onClick={() => setSelectedPayment(payment)}
-                                                                                className="text-blue-600 bg-blue-100 p-2 rounded-md"
-                                                                            >
-                                                                                {/* <FaRegEye className="inline-block mr-1" /> */}
-                                                                                View
-                                                                            </button>
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        )}
-
-                                                        {/* Payment Detail Modal */}
-                                                        {selectedPayment && (
-                                                            <div className="fixed inset-0 bg-black bg-opacity-70 z-50 flex items-center justify-center backdrop-blur-sm">
-                                                                <div className="bg-white p-6 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-                                                                    <div className="flex justify-between items-center mb-6 pb-4 border-b">
-                                                                        <div>
-                                                                            <h2 className="text-xl font-bold text-gray-800">
-                                                                                Payment Receipt Details
-                                                                            </h2>
-                                                                            <p className="text-sm text-gray-500 mt-1">
-                                                                                {selectedPayment.receiptNo}
-                                                                            </p>
-                                                                        </div>
-                                                                        <button
-                                                                            type='button'
-                                                                            onClick={() => setSelectedPayment(null)}
-                                                                            className="text-gray-400 hover:text-gray-600 p-2 -m-2"
-                                                                        >
-                                                                            <HiXMark className="w-6 h-6" />
-                                                                        </button>
-                                                                    </div>
-
-                                                                    <div className="space-y-4">
-                                                                        {/* Payment Details Section */}
-                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                            <div>
-                                                                                <label className="text-xs text-gray-500 uppercase">Payment Date</label>
-                                                                                <p className="font-medium">
-                                                                                    {new Date(selectedPayment.paymentDate).toLocaleDateString('en-GB', {
-                                                                                        weekday: 'short',
-                                                                                        year: 'numeric',
-                                                                                        month: 'short',
-                                                                                        day: 'numeric'
-                                                                                    })}
-                                                                                </p>
-                                                                            </div>
-
-                                                                            <div>
-                                                                                <label className="text-xs text-gray-500 uppercase">Paid Amount</label>
-                                                                                <p className="font-medium text-green-700">
-                                                                                    ₹{Number(selectedPayment.paidAmmount).toLocaleString()}
-                                                                                </p>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Membership Details Section */}
-                                                                        <div className="bg-gray-50 p-4 rounded-lg">
-                                                                            <h3 className="text-sm font-semibold text-gray-700 mb-3 uppercase">Membership Information</h3>
-                                                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Membership Type</label>
-                                                                                    <p className="font-medium">{selectedPayment.membershipOption}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Duration</label>
-                                                                                    <p className="font-medium">{selectedPayment.membershipDuration}</p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Renewal Date</label>
-                                                                                    <p className="font-medium">
-                                                                                        {new Date(selectedPayment.membershipRenewDate).toLocaleDateString('en-GB')}
-                                                                                    </p>
-                                                                                </div>
-                                                                                <div>
-                                                                                    <label className="text-xs text-gray-500">Expiry Date</label>
-                                                                                    <p className="font-medium">
-                                                                                        {new Date(selectedPayment.membershipExpireDate).toLocaleDateString('en-GB')}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Transaction Details */}
-                                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                                            <div>
-                                                                                <label className="text-xs text-gray-500 uppercase">Payment Method</label>
-                                                                                <p className="font-medium capitalize">{selectedPayment.paymentMethod}</p>
-                                                                            </div>
-                                                                            <div>
-                                                                                <label className="text-xs text-gray-500 uppercase">Reference Code</label>
-                                                                                <p className="font-medium font-mono">{selectedPayment.referenceCode}</p>
-                                                                            </div>
-                                                                        </div>
-
-                                                                        {/* Action Taker */}
-                                                                        <div className="border-t pt-4">
-                                                                            <label className="text-xs text-gray-500 uppercase">Processed By</label>
-                                                                            <p className="font-medium">{selectedPayment.actionTaker}</p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                )}
 
                                                 <div className="bg-blue-50 rounded-md border py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
                                                     <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
@@ -1724,7 +1221,7 @@ const MemberDetails = ({ memberId }) => {
                                                                                     </option>
                                                                                     {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
                                                                                         actionTakersDB.map((actionTaker) => (
-                                                                                            <option key={actionTaker._id} value={actionTaker.fullName}>
+                                                                                            <option onClick={() => setCurrentActionTaker(actionTaker.fullName)} key={actionTaker._id} value={actionTaker.fullName}>
                                                                                                 {actionTaker.fullName}
                                                                                             </option>
                                                                                         ))

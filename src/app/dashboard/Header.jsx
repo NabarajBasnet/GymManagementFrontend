@@ -472,7 +472,7 @@ const Header = () => {
                                                         {sidebar.subObj ? (
                                                             <Accordion type="single" collapsible className="w-full">
                                                                 <AccordionItem value={`item-${categoryIndex}-${index}`}>
-                                                                    <AccordionTrigger className="w-full flex items-center p-2 ml-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
+                                                                    <AccordionTrigger className="w-full flex items-center p-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
                                                                         <sidebar.icon className='text-xl text-blue-400' />
                                                                         <span className='text-start mx-2 text-sm font-medium'>{sidebar.title}</span>
                                                                     </AccordionTrigger>
@@ -492,7 +492,7 @@ const Header = () => {
                                                                 </AccordionItem>
                                                             </Accordion>
                                                         ) : (
-                                                            <Link href={sidebar.link} className="flex items-center p-2 ml-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
+                                                            <Link href={sidebar.link} className="flex items-center p-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
                                                                 <sidebar.icon className='text-xl text-blue-400' />
                                                                 <span className='mx-2 text-sm font-medium'>{sidebar.title}</span>
                                                             </Link>

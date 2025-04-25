@@ -350,7 +350,7 @@ const Sidebar = () => {
                                     {sidebar.subObj ? (
                                         <Accordion type="single" collapsible className="w-full py-1">
                                             <AccordionItem value={`item-${categoryIndex}-${index}`}>
-                                                <AccordionTrigger className="w-full flex items-center px-2 ml-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
+                                                <AccordionTrigger className="w-full flex items-center px-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
                                                     <sidebar.icon className='text-xl text-blue-600 hover:text-blue-500' />
                                                     {
                                                         sidebarMinimized ? (
@@ -378,7 +378,7 @@ const Sidebar = () => {
                                             </AccordionItem>
                                         </Accordion>
                                     ) : (
-                                        <Link href={sidebar.link} className="flex items-center p-2 ml-2 text-gray-800 hover:text-black cursor-pointer rounded transition-colors">
+                                        <Link href={sidebar.link} className="flex items-center p-2 text-gray-800 hover:text-black cursor-pointer rounded transition-colors">
                                             <sidebar.icon className='text-xl text-blue-600' />
                                             {
                                                 sidebarMinimized ? (
