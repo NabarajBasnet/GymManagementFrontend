@@ -24,9 +24,11 @@ import {
     QrCode
 } from 'lucide-react';
 import { IoMenu } from "react-icons/io5";
+import { useRouter } from "next/navigation";
 
 const MemberHeader = ({ activeTab, setActiveTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
+    const router = useRouter();
 
     // Sample member data
     const memberData = {
@@ -38,14 +40,15 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
     };
 
     const navItems = [
-        { id: 'home', icon: <QrCode size={20} />, label: "My QR Code" },
+        { id: 'qrcode', icon: <QrCode size={20} />, label: "My QR Code" },
         { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat with Staff" },
         { id: 'feedback', icon: <Star size={20} />, label: "Give Feedback" },
         { id: 'measurements', icon: <LineChart size={20} />, label: "My Progress" },
         { id: 'settings', icon: <Settings size={20} />, label: "Settings" }
     ];
 
-    const handleNavClick = (tab) => {
+    const handleNavClick = (id, tab) => {
+        router.push(id);
         setActiveTab(tab);
         setIsSheetOpen(false);
     };
@@ -110,8 +113,8 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
                                                 key={item.id}
                                                 onClick={() => handleNavClick(item.id)}
                                                 className={`flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === item.id
-                                                        ? 'bg-indigo-50 text-indigo-700'
-                                                        : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                                                    ? 'bg-indigo-50 text-indigo-700'
+                                                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                                                     }`}
                                             >
                                                 <span className="mr-3 opacity-80">{item.icon}</span>
@@ -150,8 +153,8 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
                                 key={item.id}
                                 onClick={() => handleNavClick(item.id)}
                                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${activeTab === item.id
-                                        ? 'bg-indigo-100 text-indigo-700'
-                                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                                    ? 'bg-indigo-100 text-indigo-700'
+                                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                                     }`}
                             >
                                 {item.label}
