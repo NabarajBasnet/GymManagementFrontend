@@ -11,6 +11,11 @@ export const middleware = async (request) => {
     let loggedInMember = null;
 
     try {
+        // Early block: If no member token and trying to access member pages
+        if (!memberLoginToken && path.startsWith('/member')) {
+            return NextResponse.redirect(new URL('/memberlogin', request.url));
+        }
+
         // Now decode after confirming token exists
         if (token) {
             loggedInUser = jwtDecode(token);
@@ -18,11 +23,6 @@ export const middleware = async (request) => {
 
         if (memberLoginToken) {
             loggedInMember = jwtDecode(memberLoginToken);
-        }
-
-        // Early block: If no member token and trying to access member pages
-        if (!memberLoginToken && path.startsWith('/member')) {
-            return NextResponse.redirect(new URL('/memberlogin', request.url));
         }
 
         // If member is logged in, prevent accessing dashboard/admin/staff routes
