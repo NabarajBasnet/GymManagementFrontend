@@ -167,15 +167,6 @@ const Header = () => {
 
             if (response.ok) {
                 setLoading(false);
-                // setResponseType(responseResultType[0]);
-                // setToast(true);
-                // setTimeout(() => {
-                //     setToast(false);
-                // }, 6000);
-                // setSuccessMessage({
-                //     icon: MdDone,
-                //     message: responseBody.message
-                // })
                 notify.success(responseBody.message);
                 router.push("/login");
                 window.location.reload();
