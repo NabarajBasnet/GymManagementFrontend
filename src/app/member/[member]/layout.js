@@ -1,4 +1,3 @@
-import getTokenDetails from "@/utils/getTokenDetails";
 import MemberHeader from "./Header";
 
 const MemberLayout = ({ children }) => {
