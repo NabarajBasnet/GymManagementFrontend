@@ -1,7 +1,8 @@
+import getTokenDetails from "@/utils/getTokenDetails";
 import MemberHeader from "./Header";
-import toast, { Toaster } from 'react-hot-toast';
 
 const MemberLayout = ({ children }) => {
+    
     return (
         <div className='w-full'>
             <MemberHeader />

@@ -1,4 +1,9 @@
+'use client';
+
+import { useEffect } from 'react';
+
 const QRCodePage = ({ memberData }) => {
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white rounded-lg shadow-md p-6 max-w-md border w-full flex flex-col items-center">

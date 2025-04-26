@@ -60,7 +60,6 @@ export const middleware = async (request) => {
         console.error('Error verifying token:', error);
     }
 
-
     return NextResponse.next();
 }
 
