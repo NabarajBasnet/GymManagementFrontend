@@ -1,5 +1,6 @@
 'use client';
 
+import { toast as notify } from 'react-hot-toast';
 import { FaRulerHorizontal } from "react-icons/fa";
 import { LuLogs } from "react-icons/lu";
 import { MdAutoGraph } from "react-icons/md";
@@ -93,16 +94,18 @@ const Sidebar = () => {
 
             if (response.ok) {
                 setLoading(false);
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false);
-                }, 6000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message
-                })
+                // setResponseType(responseResultType[0]);
+                // setToast(true);
+                // setTimeout(() => {
+                //     setToast(false);
+                // }, 6000);
+                // setSuccessMessage({
+                //     icon: MdDone,
+                //     message: responseBody.message
+                // })
+                notify.success(responseBody.message);
                 router.push("/login");
+                window.location.reload();
             };
         } catch (error) {
             const responseResultType = ['Success', 'Failure'];
