@@ -60,7 +60,6 @@ const Users = () => {
     const [userId, setUserId] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [limit, setLimit] = useState(15);
-    const [confirmDeleteUser, setConfirmDeleteUser] = useState({ value: false, userId: '' });
     const [isUserDeleting, setIsUserDeleting] = useState(false);
     const [user, setUser] = useState();
     const router = useRouter();
@@ -295,17 +294,24 @@ const Users = () => {
 
                                             {/* Role and Approval */}
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+
                                                 <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">User Role</Label>
+                                                    <Label>User Role</Label>
                                                     <Controller
                                                         name="role"
                                                         control={control}
                                                         render={({ field }) => (
                                                             <select
                                                                 {...field}
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 transition-colors appearance-none"
+                                                                value={field.value}
+                                                                onChange={(e) => {
+                                                                    setUserRole(e.target.value)
+                                                                    field.onChange(e)
+                                                                }}
+                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                             >
-                                                                <option value="" disabled>Select role</option>
+                                                                <option>Select</option>
                                                                 <option value="Super Admin">Super Admin</option>
                                                                 <option value="Gym Admin">Gym Admin</option>
                                                                 <option value="Operation Manager">Operation Manager</option>
@@ -318,16 +324,21 @@ const Users = () => {
                                                 </div>
 
                                                 <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">User Approval</Label>
+                                                    <Label>User Approval</Label>
                                                     <Controller
                                                         name="approval"
                                                         control={control}
                                                         render={({ field }) => (
                                                             <select
                                                                 {...field}
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-700 transition-colors appearance-none"
+                                                                value={field.value}
+                                                                onChange={(e) => {
+                                                                    setUserApproval(e.target.value)
+                                                                    field.onChange(e)
+                                                                }}
+                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                             >
-                                                                <option value="" disabled>Select status</option>
+                                                                <option>Select</option>
                                                                 <option value="Approved">Approve</option>
                                                                 <option value="Rejected">Reject</option>
                                                                 <option value="Pending">Pending</option>
