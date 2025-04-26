@@ -1,7 +1,7 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -43,7 +43,6 @@ export function LoginForm({ className, ...props }) {
       });
 
       const responseBody = await response.json();
-
       if (response.status === 404) {
         setError(
           "email", {
@@ -75,7 +74,9 @@ export function LoginForm({ className, ...props }) {
         toast.success(responseBody.message || 'Login successful!');
         reset();
         router.push('/dashboard');
-      };
+      } else {
+        toast.error(responseBody.message);
+      }
 
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again.');
