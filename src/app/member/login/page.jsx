@@ -1,5 +1,7 @@
 'use client';
 
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import {
     Lock,
@@ -10,43 +12,44 @@ import {
     Loader2
 } from 'lucide-react';
 import Link from 'next/link';
+import { useForm } from 'react-hook-form';
 
 const MemberLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [errors, setErrors] = useState({});
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [loginError, setLoginError] = useState('');
+    const router = useRouter();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm();
 
-        // Validate form
-        const validationErrors = {};
-        if (!email.trim()) validationErrors.email = 'Email is required';
-        if (!password.trim()) validationErrors.password = 'Password is required';
-
-        setErrors(validationErrors);
-        if (Object.keys(validationErrors).length > 0) return;
-
-        // Submit login
-        setIsSubmitting(true);
-        setLoginError('');
-
+    const loginMember = async (data) => {
         try {
-            // Replace with actual API call
-            // const response = await loginUser(email, password);
-            await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API delay
+            const { email, password } = data;
+            const credentials = { email, password }
+            const response = await fetch('http://localhost:3000/api/member/auth/member-login', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(credentials),
+            });
 
-            // Handle successful login
-            // Redirect or handle auth state
-            alert('Login successful! Redirecting to dashboard...');
-        } catch (err) {
-            setLoginError(err.message || 'Invalid email or password');
-        } finally {
-            setIsSubmitting(false);
-        }
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                router.push(`/member/${responseBody.redirect}`);
+            } else {
+                toast.error(responseBody.message);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        };
     };
 
     return (
@@ -76,7 +79,7 @@ const MemberLogin = () => {
                     </div>
                 )}
 
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form className="mt-8 space-y-6" onSubmit={handleSubmit(loginMember)}>
                     <div className="rounded-md shadow-sm space-y-4">
                         {/* Email Field */}
                         <div>
@@ -92,17 +95,14 @@ const MemberLogin = () => {
                                     name="email"
                                     type="email"
                                     autoComplete="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    {...register('email')}
                                     className={`block w-full pl-10 pr-3 py-2 border ${errors.email ? 'border-red-300' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                                     placeholder="your@email.com"
                                 />
+                                {errors.email && (
+                                    <p className='text-sm font-semibold text-red-600'>{errors.email.message}</p>
+                                )}
                             </div>
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-600">
-                                    {errors.email}
-                                </p>
-                            )}
                         </div>
 
                         {/* Password Field */}
@@ -119,11 +119,11 @@ const MemberLogin = () => {
                                     name="password"
                                     type={showPassword ? "text" : "password"}
                                     autoComplete="current-password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    {...register('password')}
                                     className={`block w-full pl-10 pr-10 py-2 border ${errors.password ? 'border-red-300' : 'border-gray-300'} rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                                     placeholder="••••••••"
                                 />
+
                                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
                                     <button
                                         type="button"
@@ -139,9 +139,7 @@ const MemberLogin = () => {
                                 </div>
                             </div>
                             {errors.password && (
-                                <p className="mt-1 text-sm text-red-600">
-                                    {errors.password}
-                                </p>
+                                <p className='text-sm font-semibold text-red-600'>{errors.password.message}</p>
                             )}
                         </div>
                     </div>

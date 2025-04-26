@@ -31,7 +31,6 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LoggedInUserProvider>
-          <Toaster />
           <ReactQueryClientProvider>
             <MantineProvider
               withGlobalStyles
@@ -59,6 +58,7 @@ export default function RootLayout({ children }) {
             >
               <RTKProvider>
                 <UserProvider>
+                  <Toaster />
                   <div className='w-full'>
                     {children}
                   </div>

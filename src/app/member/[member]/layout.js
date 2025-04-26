@@ -1,6 +1,7 @@
 import MemberHeader from "./Header";
+import toast, { Toaster } from 'react-hot-toast';
 
-export default function MemberLayout({ children }) {
+const MemberLayout = ({ children }) => {
     return (
         <div className='w-full'>
             <MemberHeader />
@@ -8,3 +9,5 @@ export default function MemberLayout({ children }) {
         </div>
     );
 }
+
+export default MemberLayout;
