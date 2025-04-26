@@ -1,5 +1,6 @@
 'use client';
 
+import { MdFeedback } from "react-icons/md";
 import { toast as notify } from 'react-hot-toast';
 import { FaRulerHorizontal } from "react-icons/fa";
 import { LuLogs } from "react-icons/lu";
@@ -275,6 +276,11 @@ const Sidebar = () => {
                     icon: FaChartLine,
                     title: 'Analytics & Reports',
                     link: '/dashboard/analytics',
+                },
+                {
+                    icon: MdFeedback,
+                    title: 'Members Feedback',
+                    link: '/dashboard/feedbacks',
                 },
                 {
                     icon: RiCustomerService2Fill,
