@@ -5,30 +5,51 @@ export const middleware = async (request) => {
     const path = request.nextUrl.pathname;
     const token = request.cookies.get('loginToken')?.value || '';
     const staffLoginToken = request.cookies.get('staffLoginToken')?.value || '';
+    const memberLoginToken = request.cookies.get('memberLoginToken')?.value || '';
+
     let loggedInUser = null;
+    let loggedInMember = null;
 
     try {
-        // Decode token if it exists
+        // Early block: If no member token and trying to access member pages
+        if (!memberLoginToken && path.startsWith('/member')) {
+            return NextResponse.redirect(new URL('/memberlogin', request.url));
+        }
+
+        // Now decode after confirming token exists
         if (token) {
             loggedInUser = jwtDecode(token);
         }
 
-        // Redirect to login if not authenticated for dashboard routes
+        if (memberLoginToken) {
+            loggedInMember = jwtDecode(memberLoginToken);
+        }
+
+        // If member is logged in, prevent accessing dashboard/admin/staff routes
+        if (loggedInMember?.type === 'member' && (
+            path.startsWith('/dashboard') ||
+            path.startsWith('/StaffLogin') ||
+            path.startsWith('/login') ||
+            path.startsWith('/signup') ||
+            path.startsWith('/member/login') ||
+            path.startsWith('/MyProfile')
+        )) {
+            return NextResponse.redirect(new URL(`/member/${loggedInMember.id}/qrcode`, request.url));
+        }
+
+        // Redirect to login if admin not logged in
         if (!token && path.startsWith('/dashboard')) {
             return NextResponse.redirect(new URL('/login', request.url));
         }
 
-        // Prevent authenticated users from accessing login or signup
         if (token && (path === '/login' || path === '/signup')) {
             return NextResponse.redirect(new URL('/dashboard', request.url));
         }
 
-        // Protect role-based routes for Gym Admin
         if (loggedInUser?.role === 'Gym Admin' && (path.includes('/users') || path.includes('/staffmanagement/staffs'))) {
             return NextResponse.redirect(new URL('/unauthorized', request.url));
         }
 
-        // Staff login redirection
         if (!staffLoginToken && path.startsWith('/MyProfile')) {
             return NextResponse.redirect(new URL('/StaffLogin', request.url));
         } else if (staffLoginToken && path === '/StaffLogin') {
@@ -39,9 +60,17 @@ export const middleware = async (request) => {
         console.error('Error verifying token:', error);
     }
 
+
     return NextResponse.next();
 }
 
 export const config = {
-    matcher: ['/login', '/signup', '/dashboard/:path*', '/MyProfile', '/StaffLogin'],
+    matcher: [
+        '/login',
+        '/signup',
+        '/dashboard/:path*',
+        '/MyProfile',
+        '/StaffLogin',
+        '/member/:path*'
+    ],
 };

@@ -144,7 +144,7 @@ export function LoginForm({ className, ...props }) {
       >
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-8 text-white">
+          <div className="lg:w-5/12 hidden md:flex relative flex-col items-center justify-center p-8 text-white">
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 20 }}

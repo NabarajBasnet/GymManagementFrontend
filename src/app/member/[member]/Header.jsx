@@ -1,5 +1,6 @@
 'use client';
 
+import toast from "react-hot-toast";
 import { TbBarbellFilled } from "react-icons/tb";
 import { MdCardMembership } from "react-icons/md";
 import {
@@ -28,7 +29,7 @@ import {
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 
-const MemberHeader = ({ activeTab, setActiveTab }) => {
+const MemberHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
 
@@ -52,13 +53,32 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
 
     const handleNavClick = (id, tab) => {
         router.push(id);
-        setActiveTab(tab);
         setIsSheetOpen(false);
+    };
+
+    const logOutMember = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/member/auth/member-logout`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                router.push(responseBody.redirect);
+            };
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
     };
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-10">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Mobile menu button */}
                     <div className="flex items-center">
@@ -130,7 +150,7 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
                                     <div className="px-4 py-4 border-t border-gray-200">
                                         <button
                                             onClick={() => {
-                                                // Handle logout logic
+                                                logOutMember()
                                                 setIsSheetOpen(false);
                                             }}
                                             className="flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
