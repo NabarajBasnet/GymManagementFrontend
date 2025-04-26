@@ -1,5 +1,7 @@
 'use client';
 
+import { TbBarbellFilled } from "react-icons/tb";
+import { MdCardMembership } from "react-icons/md";
 import {
     Sheet,
     SheetClose,
@@ -40,11 +42,12 @@ const MemberHeader = ({ activeTab, setActiveTab }) => {
     };
 
     const navItems = [
-        { id: 'qrcode', icon: <QrCode size={20} />, label: "My QR Code" },
-        { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat with Staff" },
-        { id: 'feedback', icon: <Star size={20} />, label: "Give Feedback" },
-        { id: 'measurements', icon: <LineChart size={20} />, label: "My Progress" },
-        { id: 'settings', icon: <Settings size={20} />, label: "Settings" }
+        { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
+        { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat" },
+        { id: 'membershipdetails', icon: <MdCardMembership size={20} />, label: "Membership Details" },
+        { id: 'measurements', icon: <LineChart size={20} />, label: "Measurements" },
+        { id: 'feedback', icon: <Star size={20} />, label: "Feedback" },
+        { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
     const handleNavClick = (id, tab) => {

@@ -1,9 +1,7 @@
 const QRCodePage = ({ memberData }) => {
     return (
-        <div className="flex flex-col items-center">
-            <h2 className="text-2xl font-bold mb-6">Member QR Code</h2>
-
-            <div className="bg-white rounded-lg shadow-md p-6 max-w-md w-full flex flex-col items-center">
+        <div className="flex items-center justify-center min-h-screen">
+            <div className="bg-white rounded-lg shadow-md p-6 max-w-md border w-full flex flex-col items-center">
                 <img
                     src={'memberData.qrCodeUrl'}
                     alt="Member QR Code"

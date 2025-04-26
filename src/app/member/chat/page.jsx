@@ -100,10 +100,8 @@ const ChatSection = () => {
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Chat with Staff</h2>
-
-            <div className="bg-white rounded-xl shadow-lg flex flex-col md:flex-row h-[calc(100vh-180px)] md:h-[32rem]">
+        <div className="w-full min-h-screen sm:px-6">
+            <div className="bg-white rounded-xl shadow-lg flex flex-col md:flex-row min-h-[90vh]">
                 {/* Trainers list - visible on mobile unless chat is open */}
                 <div
                     id="trainer-list"

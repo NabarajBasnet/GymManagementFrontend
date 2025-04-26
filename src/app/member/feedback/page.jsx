@@ -53,8 +53,6 @@ const FeedbackSection = () => {
 
     return (
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800">Provide Feedback</h2>
-
             {submitSuccess ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
                     <div className="flex items-center">
