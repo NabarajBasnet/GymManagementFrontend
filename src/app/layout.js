@@ -7,7 +7,6 @@ import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
 import LoggedInUserProvider from "@/components/Providers/LoggedInUserProvider";
 import { Toaster } from "react-hot-toast";
-import getTokenDetails from "@/utils/getTokenDetails";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,7 +25,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  getTokenDetails();
   return (
     <html lang="en">
       <body
