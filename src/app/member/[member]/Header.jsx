@@ -39,6 +39,9 @@ import {
     User,
     QrCode
 } from 'lucide-react';
+import { FaTag } from "react-icons/fa";
+import { RiCustomerServiceFill } from "react-icons/ri";
+import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useMember } from "@/components/Providers/LoggedInMemberProvider";
@@ -53,7 +56,10 @@ const MemberHeader = ({ activeTab }) => {
         { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat" },
         { id: 'membershipdetails', icon: <MdCardMembership size={20} />, label: "Membership Details" },
         { id: 'measurements', icon: <LineChart size={20} />, label: "Measurements" },
+        { id: 'payments', icon: <FaMoneyBillWaveAlt size={20} />, label: "Payments" },
         { id: 'feedback', icon: <Star size={20} />, label: "Feedback" },
+        { id: 'promotions&offers', icon: <FaTag size={20} />, label: "Promotions & Offers" },
+        { id: 'customersupport', icon: <RiCustomerServiceFill size={20} />, label: "Customer Support" },
         { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
@@ -64,7 +70,7 @@ const MemberHeader = ({ activeTab }) => {
 
     const logOutMember = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/member/auth/member-logout`, {
+            const response = await fetch(`http://localhost:3000/api/member/auth/member-logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -85,6 +91,7 @@ const MemberHeader = ({ activeTab }) => {
     const memberName = member?.member?.loggedInMember?.fullName || '';
     const memberStatus = member?.member?.loggedInMember?.status || '';
     const memberId = member?.member?.loggedInMember?._id || '';
+    const gymName = member?.member?.loggedInMember?.gymName || '';
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -105,11 +112,8 @@ const MemberHeader = ({ activeTab }) => {
                                 <div className="h-full flex flex-col">
                                     <SheetHeader className="px-4 pt-4 pb-2 border-b border-gray-200">
                                         <SheetTitle className="text-xl font-bold text-indigo-600">
-                                            FitHub Pro
+                                            {gymName}
                                         </SheetTitle>
-                                        <SheetDescription className="text-xs text-gray-500">
-                                            Member Portal
-                                        </SheetDescription>
                                     </SheetHeader>
 
                                     {/* User profile */}
@@ -178,7 +182,9 @@ const MemberHeader = ({ activeTab }) => {
 
                     {/* Logo - hidden on mobile */}
                     <div className="hidden md:flex items-center">
-                        <h1 className="text-xl font-bold text-indigo-600">FitHub Pro</h1>
+                        <h1 className="text-xl font-bold text-indigo-600">
+                            {gymName}
+                        </h1>
                     </div>
 
                     {/* User profile */}

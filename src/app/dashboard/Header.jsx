@@ -156,7 +156,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -354,7 +354,7 @@ const Header = () => {
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
         ${isScrolled ? 'bg-white shadow-md' : 'bg-white'} 
         ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
-        w-full flex justify-between py-3 px-4 items-center`}>
+        w-full flex justify-between px-2 py-3 md:px-4 items-center`}>
             <div className='mx-4 flex items-center'>
                 <div className="flex items-center gap-2" ref={searchRef}>
                     <FiSidebar
@@ -526,18 +526,18 @@ const Header = () => {
             </div>
 
             {/* Date/Time for mobile */}
-            <div className="flex items-center md:hidden space-x-4">
-                <div className="flex items-center bg-gray-100 rounded-md px-3 py-2">
+            <div className="flex items-center md:hidden space-x-2">
+                <div className="flex items-center bg-gray-100 rounded-md px-2 py-2">
                     <Calendar size={14} className="text-blue-600 mr-1" />
                     <h1 className="text-xs font-medium text-gray-700">{currentDateTime.date}</h1>
                 </div>
-                <div className="flex items-center bg-gray-100 rounded-md px-3 py-2">
+                <div className="flex items-center bg-gray-100 rounded-md px-2 py-2">
                     <Clock size={14} className="text-blue-600 mr-1" />
                     <h1 className="text-xs font-medium text-gray-700">{currentDateTime.time}</h1>
                 </div>
             </div>
 
-            <div className='flex items-center space-x-4'>
+            <div className='flex items-center space-x-2 md:space-x-4'>
                 {/* Date/Time for desktop */}
                 <div className="hidden items-center md:flex space-x-4">
                     <div className="flex items-center bg-gray-100 rounded-md px-3 py-2">
@@ -552,7 +552,7 @@ const Header = () => {
 
                 {/* Notifications */}
                 <Badge badgeContent={2} color="error">
-                    <div className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors">
+                    <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors">
                         <Bell size={20} className="text-blue-600" />
                     </div>
                 </Badge>
@@ -560,7 +560,7 @@ const Header = () => {
                 {/* Settings Dialog */}
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <div className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors cursor-pointer">
+                        <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors cursor-pointer">
                             <SettingsIcon size={20} className="text-blue-600" />
                         </div>
                     </AlertDialogTrigger>
@@ -584,7 +584,7 @@ const Header = () => {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <div className='cursor-pointer'>
-                            <div className="bg-gray-100 hover:bg-gray-200 p-2 rounded-full transition-colors">
+                            <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors">
                                 <FaUserCircle className="text-2xl text-blue-600" />
                             </div>
                         </div>
