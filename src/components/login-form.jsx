@@ -33,7 +33,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://88.198.112.156:3000/api/auth/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -135,17 +135,17 @@ export function LoginForm({ className, ...props }) {
   );
 
   return (
-    <div className="w-full flex items-center justify-center p-4">
+    <div className="w-full flex items-center justify-center md:p-4">
 
       <motion.div
-        className="w-full max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
+        className="w-full rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
         <div className="flex flex-col lg:flex-row">
           {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 hidden md:flex relative flex-col items-center justify-center p-8 text-white">
+          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 text-white">
             <motion.div
               className="text-center"
               initial={{ opacity: 0, y: 20 }}
@@ -153,16 +153,16 @@ export function LoginForm({ className, ...props }) {
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               <motion.div
-                className="mb-8 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
+                className="md:mb-8 mb-1 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
               >
                 <User className="w-8 h-8 text-white" />
               </motion.div>
 
               <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
-              <p className="text-white/80 mb-8">Log in to access your dashboard and track your progress.</p>
+              <p className="text-white/80 md:mb-8">Log in to access your dashboard and track your progress.</p>
 
-              <div className="space-y-4 mb-8">
+              <div className="hidden md:flex flex-col space-y-4 mb-8">
                 <div className="flex items-center space-x-3 text-sm">
                   <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   <span>Secure account access</span>
@@ -188,7 +188,7 @@ export function LoginForm({ className, ...props }) {
 
           {/* Right side - Form */}
           <div className="lg:w-7/12 p-8 bg-white/95">
-            <div className="max-w-md mx-auto">
+            <div className="w-full md:mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
                 <p className="text-gray-600">Fill in your credentials to access your account</p>

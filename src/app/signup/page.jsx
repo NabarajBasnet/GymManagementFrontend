@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
@@ -35,7 +34,7 @@ export default function SignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/signup', {
+            const response = await fetch('http://88.198.112.156:3000/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -108,7 +107,7 @@ export default function SignUpPage() {
         <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 overflow-auto">
 
             <motion.div
-                className="w-full max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
+                className="w-full md:max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5 }}
@@ -123,16 +122,16 @@ export default function SignUpPage() {
                             transition={{ delay: 0.3, duration: 0.8 }}
                         >
                             <motion.div
-                                className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm"
+                                className="md:mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm"
                                 whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
                             >
                                 <User className="w-7 h-7 text-white" />
                             </motion.div>
 
                             <h1 className="text-2xl font-bold mb-3">Create Account</h1>
-                            <p className="text-white/80 mb-6 text-sm">Join thousands of users and start your journey today.</p>
+                            <p className="text-white/80 md:mb-6 text-sm">Join thousands of users and start your journey today.</p>
 
-                            <div className="space-y-3 mb-6">
+                            <div className="hidden md:flex flex-col space-y-3 mb-6">
                                 <div className="flex items-center space-x-3 text-xs">
                                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                     <span>Premium design templates</span>
@@ -158,7 +157,7 @@ export default function SignUpPage() {
 
                     {/* Right side - Form */}
                     <div className="lg:w-7/12 p-6 bg-white/95 overflow-y-auto max-h-screen">
-                        <div className="max-w-md mx-auto">
+                        <div className="w-full mx-auto">
                             <div className="mb-4">
                                 <h2 className="text-xl font-bold text-gray-800">Sign Up</h2>
                                 <p className="text-gray-600 text-sm">Fill in your information to create an account</p>
@@ -221,7 +220,7 @@ export default function SignUpPage() {
                                     placeholder="+1 (555) 000-0000"
                                 />
 
-                                <div className='flex items-center justify-between'>
+                                <div className='md:flex items-center justify-between'>
                                     <div className="space-y-1">
                                         <Label className="text-sm font-medium text-gray-700 block">
                                             Password

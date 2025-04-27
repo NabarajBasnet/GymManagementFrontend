@@ -1,7 +1,20 @@
 'use client';
 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuSubTrigger,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { TbBarbellFilled } from "react-icons/tb";
 import { MdCardMembership } from "react-icons/md";
 import {
     Sheet,
@@ -33,19 +46,7 @@ import { useMember } from "@/components/Providers/LoggedInMemberProvider";
 const MemberHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
-
     const member = useMember();
-
-    console.log("Member: ", member);
-
-    // Sample member data
-    const memberData = {
-        name: "Alex Johnson",
-        membershipStatus: "Premium",
-        membershipId: "MEM-2025-4872",
-        qrCodeUrl: "/api/placeholder/300/300",
-        avatar: "/api/placeholder/100/100"
-    };
 
     const navItems = [
         { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
@@ -63,7 +64,7 @@ const MemberHeader = ({ activeTab }) => {
 
     const logOutMember = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/member/auth/member-logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/member/auth/member-logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -75,11 +76,15 @@ const MemberHeader = ({ activeTab }) => {
                 toast.success(responseBody.message);
                 router.push(responseBody.redirect);
             };
-
         } catch (error) {
             console.log("Error: ", error);
         };
     };
+
+    // Safe access to member data
+    const memberName = member?.member?.loggedInMember?.fullName || '';
+    const memberStatus = member?.member?.loggedInMember?.status || '';
+    const memberId = member?.member?.loggedInMember?._id || '';
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -108,12 +113,12 @@ const MemberHeader = ({ activeTab }) => {
                                     </SheetHeader>
 
                                     {/* User profile */}
-                                    {member && (
+                                    {member && member.member && member.member.loggedInMember && (
                                         <div className="px-4 py-6 border-b border-gray-200">
                                             <div className="flex items-center">
                                                 <div className="relative">
-                                                    <div className="relative w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
-                                                        {member.loggedInMember.fullName
+                                                    <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
+                                                        {memberName
                                                             ?.split(' ')
                                                             .map((word) => word[0])
                                                             .join('')
@@ -124,12 +129,12 @@ const MemberHeader = ({ activeTab }) => {
                                                     <span className="absolute bottom-0 right-0 block w-3 h-3 rounded-full bg-green-500 border-2 border-white"></span>
                                                 </div>
                                                 <div className="ml-3">
-                                                    <p className="font-medium text-gray-900">{member.loggedInMember.fullName}</p>
+                                                    <p className="font-medium text-gray-900">{memberName}</p>
                                                     <p className="text-sm text-gray-500 flex items-center">
                                                         <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
-                                                            {member.loggedInMember.status}
+                                                            {memberStatus}
                                                         </span>
-                                                        {member.loggedInMember._id}
+                                                        {/* {memberId} */}
                                                     </p>
                                                 </div>
                                             </div>
@@ -176,23 +181,32 @@ const MemberHeader = ({ activeTab }) => {
                         <h1 className="text-xl font-bold text-indigo-600">FitHub Pro</h1>
                     </div>
 
-                    {/* User profile - desktop */}
-                    {member && (
-                        <div className="flex items-center">
-                            <div className="relative w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
-                                {member.loggedInMember.fullName
-                                    ?.split(' ')
-                                    .map((word) => word[0])
-                                    .join('')
-                                    .slice(0, 2)
-                                    .toUpperCase()}
-                                <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
+                    {/* User profile */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <div>
+                                {member?.member?.loggedInMember && (
+                                    <div className="flex cursor-pointer items-center">
+                                        <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
+                                            {memberName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
+                                            <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
+                                        </div>
+                                        <span className="ml-2 text-sm font-medium text-gray-700 hidden lg:inline">
+                                            {memberName}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
-                            <span className="ml-2 text-sm font-medium text-gray-700 hidden lg:inline">
-                                {member.loggedInMember.fullName}
-                            </span>
-                        </div>
-                    )}
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel className='cursor-pointer'>My Account</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutMember}>
+                                <LogOut />
+                                Log out
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
                 </div>
             </div>
         </header>

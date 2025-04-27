@@ -32,7 +32,7 @@ const MemberLogin = () => {
         try {
             const { email, password } = data;
             const credentials = { email, password }
-            const response = await fetch('http://localhost:3000/api/member/auth/member-login', {
+            const response = await fetch('http://88.198.112.156:3000/api/member/auth/member-login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
