@@ -1,8 +1,17 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useMember } from '@/components/Providers/LoggedInMemberProvider';
+
 
 const ChatSection = () => {
+
+    const { member } = useMember();
+
+    useEffect(() => {
+        console.log("Member: ", member);
+    }, [member]);
+
     const [selectedTrainer, setSelectedTrainer] = useState(null);
     const [messages, setMessages] = useState([]);
     const [chatInput, setChatInput] = useState('');

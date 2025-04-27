@@ -116,7 +116,7 @@ const MyProfile = () => {
 
     const getMyTasks = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
+            const response = await fetch(`http://localhost:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setMyTasks(responseBody.myTasks);
@@ -140,7 +140,7 @@ const MyProfile = () => {
 
     const fetchedLoggedStaffDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/loggedin-staff`);
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 await getMyTasks(responseBody.loggedInStaff._id);
@@ -159,7 +159,7 @@ const MyProfile = () => {
 
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffqr/${staffDetails._id}`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -176,7 +176,7 @@ const MyProfile = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `http://localhost:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             const responseBody = await response.json();
             return responseBody;
@@ -204,7 +204,7 @@ const MyProfile = () => {
 
     const logoutStaff = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();
@@ -226,7 +226,7 @@ const MyProfile = () => {
     const startTask = async (id) => {
         try {
             const status = 'In Progress';
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/start/${id}?startTask=${'In Progress'}`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?startTask=${'In Progress'}`, {
                 method: "PATCH",
                 body: JSON.stringify(status)
             });
@@ -401,7 +401,7 @@ const MyProfile = () => {
                                         <div className="flex items-center space-x-4">
                                             <div className="flex-shrink-0">
                                                 <img
-                                                    src={`http://88.198.112.156:5000${staffDetails?.imageUrl}`}
+                                                    src={`http://localhost:5000${staffDetails?.imageUrl}`}
                                                     className="w-20 h-20 rounded-full cursor-pointer" />
                                             </div>
                                             <div>

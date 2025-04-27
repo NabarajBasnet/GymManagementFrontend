@@ -8,6 +8,7 @@ export const middleware = async (request) => {
     const memberLoginToken = request.cookies.get('memberLoginToken')?.value || '';
 
     let loggedInUser = null;
+    
     let loggedInMember = null;
 
     try {

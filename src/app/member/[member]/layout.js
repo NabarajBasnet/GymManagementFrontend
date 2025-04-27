@@ -1,11 +1,14 @@
+import LoggedInMemberProvider from "@/components/Providers/LoggedInMemberProvider";
 import MemberHeader from "./Header";
 
 const MemberLayout = ({ children }) => {
-    
+
     return (
         <div className='w-full'>
-            <MemberHeader />
-            {children}
+            <LoggedInMemberProvider>
+                <MemberHeader />
+                {children}
+            </LoggedInMemberProvider>
         </div>
     );
 }
