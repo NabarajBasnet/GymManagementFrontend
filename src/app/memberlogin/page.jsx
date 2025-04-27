@@ -189,18 +189,6 @@ const MemberLogin = () => {
                         </button>
                     </div>
                 </form>
-
-                <div className="text-center text-sm text-gray-600 mt-6">
-                    <p>
-                        Not a member yet?{' '}
-                        <Link
-                            href="/"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
-                        >
-                            Join now
-                        </Link>
-                    </p>
-                </div>
             </div>
         </div>
     );
