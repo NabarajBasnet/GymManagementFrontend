@@ -59,7 +59,7 @@ export function BodyMeasurementChartBySelectedValue() {
             <Card className='p-0'>
                 <CardHeader className='mb-2'>
 
-                    <div className="flex items-center justify-between">
+                    <div className="md:flex items-center justify-between">
                         <div className="w-full">
                             <CardTitle className='font-bold'>Measurement Chart</CardTitle>
                             <CardDescription>
@@ -69,7 +69,7 @@ export function BodyMeasurementChartBySelectedValue() {
 
                         {/* Select Data Group */}
                         <div className="w-full flex justify-center">
-                            <Select className='w-4/12 rounded-sm'>
+                            <Select className='w-full my-3 md:my-0 md:w-4/12 rounded-sm'>
                                 <SelectTrigger className="w-full rounded-sm">
                                     <SelectValue placeholder="Select field" />
                                 </SelectTrigger>
@@ -91,7 +91,7 @@ export function BodyMeasurementChartBySelectedValue() {
                         <div className="w-full">
                             <TabsContent value="charts" className="mt-0">
                                 <div className="space-y-6">
-                                    <div className="flex justify-end">
+                                    <div className="flex justify-start md:justify-end">
                                         <Tabs>
                                             <TabsList>
                                                 <TabsTrigger value="month">1 Month</TabsTrigger>
