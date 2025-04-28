@@ -2,15 +2,6 @@
 
 import { usePagination } from "@/hooks/Pagination";
 import Pagination from "@/components/ui/CustomPagination";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { FiSearch } from "react-icons/fi";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -271,25 +262,6 @@ const BodyMeasurements = () => {
                             </div>
                         </div>
 
-                        {/* Select Data Group */}
-                        <Select className='rounded-sm'>
-                            <SelectTrigger className="w-full rounded-sm">
-                                <SelectValue placeholder="Select field" />
-                            </SelectTrigger>
-                            <SelectContent className='rounded-sm'>
-                                <SelectGroup>
-                                    <SelectLabel>Select</SelectLabel>
-                                    <SelectItem value="Weight">Weight</SelectItem>
-                                    <SelectItem value="Chest">Chest</SelectItem>
-                                    <SelectItem value="Upper Arm">Upper Arm</SelectItem>
-                                    <SelectItem value="Fore Arm">Fore Arm</SelectItem>
-                                    <SelectItem value="Waist">Waist</SelectItem>
-                                    <SelectItem value="Thigh">Thigh</SelectItem>
-                                    <SelectItem value="Calf">Calf</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-
                         {/* Date Range */}
                         <div className="flex flex-col md:flex-row gap-4">
                             <div className="w-full md:w-48">
@@ -324,17 +296,17 @@ const BodyMeasurements = () => {
 
             {renderMainContents && (
                 <div>
-                    <Tabs defaultValue="charts" className="mt-6">
+                    <Tabs defaultValue="table" className="mt-6">
                         <div className="flex px-1 rounded-md justify-between items-center mb-4">
                             <TabsList>
-                                <TabsTrigger value="charts">Charts</TabsTrigger>
                                 <TabsTrigger value="table">Data Table</TabsTrigger>
+                                <TabsTrigger value="charts">Charts</TabsTrigger>
                             </TabsList>
                         </div>
 
                         <TabsContent value="charts" className="mt-0">
-                            <Card>
-                                <CardContent className="p-6">
+                            <Card className='px-0 border-none'>
+                                <CardContent>
                                     <BodyMeasurementChartBySelectedValue />
                                 </CardContent>
                             </Card>
@@ -379,9 +351,9 @@ const BodyMeasurements = () => {
                                                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Thigh
                                                     </th>
-                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    {/* <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                         Notes
-                                                    </th>
+                                                    </th> */}
                                                 </tr>
                                             </thead>
                                             <tbody className="bg-white divide-y divide-gray-200">
@@ -406,9 +378,9 @@ const BodyMeasurements = () => {
                                                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                                 {measurement.thigh?.toFixed(1)} cm
                                                             </td>
-                                                            <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                            {/* <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
                                                                 {measurement.notes}
-                                                            </td>
+                                                            </td> */}
                                                         </tr>
                                                     ))
                                                 ) : (

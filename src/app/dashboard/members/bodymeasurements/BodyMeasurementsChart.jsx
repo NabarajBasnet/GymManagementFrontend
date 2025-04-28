@@ -1,9 +1,17 @@
 "use client"
 
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TrendingUp } from "lucide-react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
-
 import {
     Card,
     CardContent,
@@ -17,7 +25,8 @@ import {
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart";
+
 const chartData = [
     { month: "January", desktop: 186, mobile: 80 },
     { month: "February", desktop: 200, mobile: 200 },
@@ -31,7 +40,7 @@ const chartData = [
     { month: "April", desktop: 73, mobile: 190 },
     { month: "May", desktop: 120, mobile: 130 },
     { month: "June", desktop: 180, mobile: 140 },
-]
+];
 
 const chartConfig = {
     desktop: {
@@ -46,31 +55,56 @@ const chartConfig = {
 
 export function BodyMeasurementChartBySelectedValue() {
     return (
-        <div className="h-[600px]">
-            <Card>
+        <div>
+            <Card className='p-0'>
                 <CardHeader className='mb-2'>
+
                     <div className="flex items-center justify-between">
-                        <div>
-                            <CardTitle>Body Measurement Chart</CardTitle>
+                        <div className="w-full">
+                            <CardTitle className='font-bold'>Measurement Chart</CardTitle>
                             <CardDescription>
-                                Showing total visitors for the last 6 months
+                                Showing body measurement on chart
                             </CardDescription>
                         </div>
 
-                        <TabsContent value="charts" className="mt-0">
-                            <div className="space-y-6">
-                                <div className="flex justify-end">
-                                    <Tabs>
-                                        <TabsList>
-                                            <TabsTrigger value="month">1 Month</TabsTrigger>
-                                            <TabsTrigger value="quarter">3 Months</TabsTrigger>
-                                            <TabsTrigger value="all">All Time</TabsTrigger>
-                                        </TabsList>
-                                    </Tabs>
+                        {/* Select Data Group */}
+                        <div className="w-full flex justify-center">
+                            <Select className='w-4/12 rounded-sm'>
+                                <SelectTrigger className="w-full rounded-sm">
+                                    <SelectValue placeholder="Select field" />
+                                </SelectTrigger>
+                                <SelectContent className='rounded-sm'>
+                                    <SelectGroup>
+                                        <SelectLabel>Select</SelectLabel>
+                                        <SelectItem value="Weight">Weight</SelectItem>
+                                        <SelectItem value="Chest">Chest</SelectItem>
+                                        <SelectItem value="Upper Arm">Upper Arm</SelectItem>
+                                        <SelectItem value="Fore Arm">Fore Arm</SelectItem>
+                                        <SelectItem value="Waist">Waist</SelectItem>
+                                        <SelectItem value="Thigh">Thigh</SelectItem>
+                                        <SelectItem value="Calf">Calf</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+
+                        <div className="w-full">
+                            <TabsContent value="charts" className="mt-0">
+                                <div className="space-y-6">
+                                    <div className="flex justify-end">
+                                        <Tabs>
+                                            <TabsList>
+                                                <TabsTrigger value="month">1 Month</TabsTrigger>
+                                                <TabsTrigger value="quarter">3 Months</TabsTrigger>
+                                                <TabsTrigger value="all">All Time</TabsTrigger>
+                                            </TabsList>
+                                        </Tabs>
+                                    </div>
                                 </div>
-                            </div>
-                        </TabsContent>
+                            </TabsContent>
+                        </div>
                     </div>
+
                 </CardHeader>
                 <CardContent className='p-0 mt-2 pt-2'>
                     <ChartContainer config={chartConfig}>
@@ -130,5 +164,5 @@ export function BodyMeasurementChartBySelectedValue() {
                 </CardFooter>
             </Card>
         </div>
-    )
-}
+    );
+};
