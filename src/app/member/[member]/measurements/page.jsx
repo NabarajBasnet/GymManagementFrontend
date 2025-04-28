@@ -1,5 +1,6 @@
 'use client';
 
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { usePagination } from "@/hooks/Pagination";
 import Pagination from "@/components/ui/CustomPagination";
 import {
@@ -32,8 +33,6 @@ import Loader from "@/components/Loader/Loader";
 
 const MemberBodyMeasurements = () => {
     // States for managing measurements and UI
-    const [measurements, setMeasurements] = useState([]);
-    const [goals, setGoals] = useState({});
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [viewMode, setViewMode] = useState('measurements');
@@ -49,8 +48,6 @@ const MemberBodyMeasurements = () => {
         register,
         handleSubmit,
         formState: { errors, isSubmitting },
-        setValue,
-        setError,
         reset
     } = useForm();
 
@@ -139,153 +136,10 @@ const MemberBodyMeasurements = () => {
     const startEntry = (currentPage - 1) * limit + 1;
     const endEntry = Math.min(currentPage * limit, totalBodyMeasurements);
 
-    // Form states
-    const [formData, setFormData] = useState({
-        bodyMeasureDate: new Date().toISOString().split('T')[0],
-        weight: '',
-        height: '',
-        upperArm: '',
-        foreArm: '',
-        chest: '',
-        waist: '',
-        thigh: '',
-        calf: '',
-        notes: '',
-        // Custom metrics can be added here
-        customMetrics: {}
-    });
-
-    const [goalFormData, setGoalFormData] = useState({
-        weightGoal: '',
-        upperArmGoal: '',
-        chestGoal: '',
-        waistGoal: '',
-        thighGoal: '',
-        calfGoal: '',
-        goalType: 'maintenance',
-        goalDeadline: new Date(new Date().setMonth(new Date().getMonth() + 3)).toISOString().split('T')[0]
-    });
-
-    // Fetch data (in a real app, this would call your API)
-    useEffect(() => {
-        // Simulate API fetch
-        const fetchData = async () => {
-            try {
-                // Replace with actual API call
-                // const response = await fetch(`/api/bodymeasurements/${memberId}`);
-                // const data = await response.json();
-
-                // Mock data for demonstration
-                const mockMeasurements = [
-                    {
-                        _id: '1',
-                        bodyMeasureDate: '2023-11-15',
-                        weight: 82.4,
-                        height: 180,
-                        upperArm: 35.2,
-                        foreArm: 28.3,
-                        chest: 108.0,
-                        waist: 91.4,
-                        thigh: 58.5,
-                        calf: 38.2,
-                        goalType: 'weight_loss',
-                        progressPercentage: 45,
-                        progressType: 'Decreasing',
-                        status: 'Active',
-                        notes: "Started new training program",
-                        customMetrics: { hipCircumference: 102.5 }
-                    },
-                    {
-                        _id: '2',
-                        bodyMeasureDate: '2023-10-15',
-                        weight: 83.6,
-                        height: 180,
-                        upperArm: 34.9,
-                        foreArm: 28.1,
-                        chest: 107.0,
-                        waist: 92.5,
-                        thigh: 58.0,
-                        calf: 38.0,
-                        goalType: 'weight_loss',
-                        progressPercentage: 35,
-                        progressType: 'Decreasing',
-                        status: 'Active',
-                        notes: "",
-                        customMetrics: { hipCircumference: 103.2 }
-                    },
-                    {
-                        _id: '3',
-                        bodyMeasureDate: '2023-09-15',
-                        weight: 85.1,
-                        height: 180,
-                        upperArm: 34.5,
-                        foreArm: 27.8,
-                        chest: 106.5,
-                        waist: 94.0,
-                        thigh: 57.5,
-                        calf: 37.5,
-                        goalType: 'weight_loss',
-                        progressPercentage: 20,
-                        progressType: 'Decreasing',
-                        status: 'Active',
-                        notes: "Started diet plan",
-                        customMetrics: { hipCircumference: 104.5 }
-                    }
-                ];
-
-                const mockGoal = {
-                    weightGoal: 78.0,
-                    upperArmGoal: 36.5,
-                    chestGoal: 110.0,
-                    waistGoal: 86.0,
-                    thighGoal: 60.0,
-                    calfGoal: 40.0,
-                    goalType: 'weight_loss',
-                    goalDeadline: '2024-03-15'
-                };
-
-                setMeasurements(mockMeasurements);
-                setGoals(mockGoal);
-
-                // Initialize goal form with current goals
-                setGoalFormData(mockGoal);
-
-                // setIsLoading(false);
-            } catch (error) {
-                console.error("Failed to fetch measurements:", error);
-                // setIsLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [memberId]);
-
-
-    const handleGoalInputChange = (e) => {
-        const { name, value } = e.target;
-        setGoalFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     // Form actions
     const handleAddMeasurement = () => {
         setIsAdding(true);
         setEditingId(null);
-        setFormData({
-            bodyMeasureDate: new Date().toISOString().split('T')[0],
-            weight: '',
-            height: '',
-            upperArm: '',
-            foreArm: '',
-            chest: '',
-            waist: '',
-            thigh: '',
-            calf: '',
-            notes: '',
-            customMetrics: {}
-        });
     };
 
     const handleDelete = async (id) => {
@@ -306,8 +160,6 @@ const MemberBodyMeasurements = () => {
             toast.error(error.message);
         };
     };
-
-    const getLatestMeasurement = () => measurements[0] || null;
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString();
@@ -330,7 +182,7 @@ const MemberBodyMeasurements = () => {
                                 }}
                                 className="text-gray-500 hover:text-gray-700"
                             >
-                                <IoIosClose size={20} />
+                                <IoIosClose size={30} />
                             </button>
                         </div>
                         <form onSubmit={handleSubmit(submitBodyMeasurements)}>
@@ -616,7 +468,7 @@ const MemberBodyMeasurements = () => {
                                                                 </AlertDialogHeader>
                                                                 <AlertDialogFooter>
                                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => handleDelete(measurement._id)}>Continue</AlertDialogAction>
+                                                                    <AlertDialogAction className='bg-red-500 hover:bg-red-600' onClick={() => handleDelete(measurement._id)}>Continue</AlertDialogAction>
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
@@ -697,7 +549,9 @@ const MemberBodyMeasurements = () => {
                                     className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm flex items-center"
                                 >
                                     <Plus size={16} className="mr-1 text-white" />
-                                    Add Measurement
+                                    {isSubmitting ? (<>
+                                        <AiOutlineLoading3Quarters className="animate-spin" />Procesing...
+                                    </>) : (<><h1>Add Measurement</h1></>)}
                                 </button>
                             </div>
                         </div>
