@@ -6,35 +6,90 @@ import {
     ArrowUp,
     ArrowDown,
     Plus,
-    LineChart,
-    Calendar,
     Trash2,
     Edit,
-    Target,
-    TrendingUp,
-    Clock
 } from 'lucide-react';
-import {
-    LineChart as RechartsLineChart,
-    Line,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    Legend,
-    ResponsiveContainer
-} from 'recharts';
 import { MeasurementGraph } from "./measurementGraph";
+import { useMember } from "@/components/Providers/LoggedInMemberProvider";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
-const MemberBodyMeasurements = ({ memberId }) => {
+const MemberBodyMeasurements = () => {
     // States for managing measurements and UI
     const [measurements, setMeasurements] = useState([]);
     const [goals, setGoals] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState(null);
-    const [viewMode, setViewMode] = useState('measurements'); // 'measurements', 'goals', 'charts'
-    const [chartMetric, setChartMetric] = useState('weight');
+    const [viewMode, setViewMode] = useState('measurements');
+
+    // get logged in member
+    const { member } = useMember();
+    const memberId = member?.loggedInMember?._id || '';
+
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        setValue,
+        setError,
+        reset
+    } = useForm();
+
+    const submitBodyMeasurements = async (data) => {
+        try {
+            const {
+                bodyMeasureDate,
+                weight,
+                height,
+                chest,
+                upperArm,
+                foreArm,
+                waist,
+                hip,
+                thigh,
+                calf
+            } = data;
+
+            const jsonData = {
+                bodyMeasureDate,
+                weight,
+                height,
+                chest,
+                upperArm,
+                foreArm,
+                waist,
+                hip,
+                thigh,
+                calf
+            };
+
+            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonData)
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                reset();
+                setIsAdding(false);
+                toast.success(responseBody.message);
+            };
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+
+
+
+
+
+
 
     // Form states
     const [formData, setFormData] = useState({
@@ -227,59 +282,6 @@ const MemberBodyMeasurements = ({ memberId }) => {
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            // Format data for submission
-            const submissionData = {
-                ...formData,
-                member: memberId,
-                editedBy: 'Member' // Assuming this is a member view
-            };
-
-            // In a real app, you would send this to your API
-            // if (editingId) {
-            //   await fetch(`/api/bodymeasurements/${editingId}`, {
-            //     method: 'PUT',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(submissionData)
-            //   });
-            // } else {
-            //   await fetch('/api/bodymeasurements', {
-            //     method: 'POST',
-            //     headers: { 'Content-Type': 'application/json' },
-            //     body: JSON.stringify(submissionData)
-            //   });
-            // }
-
-            // For demo: update the local state
-            if (editingId) {
-                setMeasurements(measurements.map(m =>
-                    m._id === editingId ? {
-                        ...m,
-                        ...submissionData,
-                        _id: editingId
-                    } : m
-                ));
-            } else {
-                const newMeasurement = {
-                    _id: Math.random().toString(36).substr(2, 9),
-                    ...submissionData,
-                    progressPercentage: 0,
-                    progressType: 'Maintaining',
-                    status: 'Active'
-                };
-                setMeasurements([newMeasurement, ...measurements]);
-            }
-
-            setIsAdding(false);
-            setEditingId(null);
-        } catch (error) {
-            console.error("Error saving measurement:", error);
-            alert("Failed to save measurement. Please try again.");
-        }
-    };
 
     const handleGoalSubmit = async (e) => {
         e.preventDefault();
@@ -469,7 +471,7 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                 <IoIosClose size={20} />
                             </button>
                         </div>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit(submitBodyMeasurements)}>
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 <div className="space-y-1">
                                     <label htmlFor="bodyMeasureDate" className="block text-sm font-medium text-gray-700">
@@ -479,9 +481,8 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                         <input
                                             type="date"
                                             id="bodyMeasureDate"
+                                            {...register('bodyMeasureDate')}
                                             name="bodyMeasureDate"
-                                            value={formData.bodyMeasureDate}
-                                            onChange={handleInputChange}
                                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                             required
                                         />
@@ -495,12 +496,9 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                     <input
                                         type="number"
                                         id="weight"
+                                        {...register('weight')}
                                         name="weight"
-                                        value={formData.weight}
-                                        onChange={handleInputChange}
                                         step="0.1"
-                                        min="30"
-                                        max="200"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                         required
                                     />
@@ -513,114 +511,93 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                     <input
                                         type="number"
                                         id="height"
+                                        {...register('height')}
                                         name="height"
-                                        value={formData.height}
-                                        onChange={handleInputChange}
                                         step="0.1"
-                                        min="100"
-                                        max="250"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="chest" className="block text-sm font-medium text-gray-700">
-                                        Chest (cm)
+                                        Chest (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="chest"
                                         name="chest"
-                                        value={formData.chest}
-                                        onChange={handleInputChange}
+                                        {...register('chest')}
                                         step="0.1"
-                                        min="50"
-                                        max="200"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="waist" className="block text-sm font-medium text-gray-700">
-                                        Waist (cm)
+                                        Waist (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="waist"
                                         name="waist"
-                                        value={formData.waist}
-                                        onChange={handleInputChange}
+                                        {...register('waist')}
                                         step="0.1"
-                                        min="50"
-                                        max="200"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="upperArm" className="block text-sm font-medium text-gray-700">
-                                        Upper Arm (cm)
+                                        Upper Arm (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="upperArm"
                                         name="upperArm"
-                                        value={formData.upperArm}
-                                        onChange={handleInputChange}
+                                        {...register('upperArm')}
                                         step="0.1"
-                                        min="15"
-                                        max="60"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="foreArm" className="block text-sm font-medium text-gray-700">
-                                        Forearm (cm)
+                                        Forearm (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="foreArm"
                                         name="foreArm"
-                                        value={formData.foreArm}
-                                        onChange={handleInputChange}
+                                        {...register('foreArm')}
                                         step="0.1"
-                                        min="15"
-                                        max="50"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="thigh" className="block text-sm font-medium text-gray-700">
-                                        Thigh (cm)
+                                        Thigh (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="thigh"
                                         name="thigh"
-                                        value={formData.thigh}
-                                        onChange={handleInputChange}
+                                        {...register('thigh')}
                                         step="0.1"
-                                        min="30"
-                                        max="100"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
 
                                 <div className="space-y-1">
                                     <label htmlFor="calf" className="block text-sm font-medium text-gray-700">
-                                        Calf (cm)
+                                        Calf (inch)
                                     </label>
                                     <input
                                         type="number"
                                         id="calf"
                                         name="calf"
-                                        value={formData.calf}
-                                        onChange={handleInputChange}
+                                        {...register('calf')}
                                         step="0.1"
-                                        min="20"
-                                        max="60"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
@@ -628,15 +605,12 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                 {/* Custom metrics field */}
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium text-gray-700">
-                                        Hip Circumference (cm)
+                                        Hip Circumference (inch)
                                     </label>
                                     <input
                                         type="number"
-                                        value={formData.customMetrics?.hipCircumference || ''}
-                                        onChange={(e) => handleCustomMetricChange('hipCircumference', e.target.value)}
+                                        {...register('hip')}
                                         step="0.1"
-                                        min="60"
-                                        max="150"
                                         className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                     />
                                 </div>
@@ -648,8 +622,7 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                     <textarea
                                         id="notes"
                                         name="notes"
-                                        value={formData.notes}
-                                        onChange={handleInputChange}
+                                        {...register('notes')}
                                         rows={2}
                                         className="w-full p-2 border border-gray-300 h-[150px] rounded-md focus:ring-indigo-500 focus:border-indigo-500"
                                         placeholder="Any additional notes about this measurement..."
@@ -683,7 +656,7 @@ const MemberBodyMeasurements = ({ memberId }) => {
             {/* Measurement History */}
             <div className="bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h3 className="text-lg font-medium">Measurement History</h3>
+                    <h3 className="text-lg font-medium">My Measurement History</h3>
                     <div className="text-sm text-gray-500">
                         {measurements.length} records
                     </div>
@@ -1006,12 +979,12 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                 >
                                     Measurements
                                 </button>
-                                <button
+                                {/* <button
                                     onClick={() => setViewMode('goals')}
                                     className={`px-4 py-2 rounded-sm ${viewMode === 'goals' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                 >
                                     Goals
-                                </button>
+                                </button> */}
                                 <button
                                     onClick={() => setViewMode('charts')}
                                     className={`px-4 py-2 rounded-sm ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
