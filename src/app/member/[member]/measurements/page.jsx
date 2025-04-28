@@ -82,7 +82,7 @@ const MemberBodyMeasurements = () => {
                 notes
             };
 
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/member/bodymeasurements/${memberId}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ const MemberBodyMeasurements = () => {
     const getAllBodyMeasurements = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -144,7 +144,7 @@ const MemberBodyMeasurements = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/member/bodymeasurements/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -531,13 +531,13 @@ const MemberBodyMeasurements = () => {
                             <div className='w-full flex space-x-2'>
                                 <button
                                     onClick={() => setViewMode('measurements')}
-                                    className={`px-4 py-2 rounded-sm ${viewMode === 'measurements' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                    className={`md:px-4 px-2 py-2 rounded-sm ${viewMode === 'measurements' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                 >
                                     Measurements
                                 </button>
                                 <button
                                     onClick={() => setViewMode('charts')}
-                                    className={`px-4 py-2 rounded-sm ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                    className={`md:px-4 px-2 py-2 rounded-sm ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
                                 >
                                     Graphs
                                 </button>
@@ -546,7 +546,7 @@ const MemberBodyMeasurements = () => {
                             <div className='w-full flex justify-end'>
                                 <button
                                     onClick={handleAddMeasurement}
-                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm flex items-center"
+                                    className="md:px-4 px-2 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm flex items-center"
                                 >
                                     <Plus size={16} className="mr-1 text-white" />
                                     {isSubmitting ? (<>

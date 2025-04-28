@@ -47,7 +47,7 @@ const BodyMeasurements = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -70,7 +70,7 @@ const BodyMeasurements = () => {
     const getBodyMeasurementDetails = async () => {
         setRenderMainContents(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setRenderMainContents(true);
@@ -263,8 +263,8 @@ const BodyMeasurements = () => {
                         </div>
 
                         {/* Date Range */}
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <div className="w-full md:w-48">
+                        <div className="w-full flex flex-col md:flex-row gap-4">
+                            <div className="w-full">
                                 <Input
                                     id="start-date"
                                     type="date"
@@ -272,7 +272,7 @@ const BodyMeasurements = () => {
                                 />
                             </div>
 
-                            <div className="w-full md:w-48">
+                            <div className="w-full">
                                 <Input
                                     id="end-date"
                                     type="date"

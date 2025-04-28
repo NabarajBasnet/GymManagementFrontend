@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
       if (responseBody.redirect) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/averageactivemembers');
+      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
         </Alert>
 
         <Card className="py-6 mb-8">
-          <form className="flex flex-wrap px-2 gap-6">
+          <form className="flex justify-between px-4 md:justify-start flex-wrap gap-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="startDate" className="font-medium text-gray-700">
                 From

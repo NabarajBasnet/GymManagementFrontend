@@ -68,8 +68,8 @@ export function BodyMeasurementChartBySelectedValue() {
                         </div>
 
                         {/* Select Data Group */}
-                        <div className="w-full flex justify-center">
-                            <Select className='w-full my-3 md:my-0 md:w-4/12 rounded-sm'>
+                        <div className="w-full flex my-3 md:my-0 justify-center">
+                            <Select className='w-full md:w-4/12 rounded-sm'>
                                 <SelectTrigger className="w-full rounded-sm">
                                     <SelectValue placeholder="Select field" />
                                 </SelectTrigger>
