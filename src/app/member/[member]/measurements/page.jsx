@@ -1,5 +1,6 @@
 'use client';
 
+import { IoIosClose } from "react-icons/io";
 import { useState, useEffect } from 'react';
 import {
     ArrowUp,
@@ -23,6 +24,7 @@ import {
     Legend,
     ResponsiveContainer
 } from 'recharts';
+import { MeasurementGraph } from "./measurementGraph";
 
 const MemberBodyMeasurements = ({ memberId }) => {
     // States for managing measurements and UI
@@ -449,242 +451,232 @@ const MemberBodyMeasurements = ({ memberId }) => {
 
     const renderMeasurementsView = () => (
         <>
-            {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <MeasurementCard
-                    title="Current Weight"
-                    value={getLatestMeasurement()?.weight ? `${getLatestMeasurement().weight.toFixed(1)} kg` : 'N/A'}
-                    metric="weight"
-                    icon={<LineChart size={20} />}
-                />
-                <MeasurementCard
-                    title="Waist"
-                    value={getLatestMeasurement()?.waist ? `${getLatestMeasurement().waist.toFixed(1)} cm` : 'N/A'}
-                    metric="waist"
-                    icon={<LineChart size={20} />}
-                />
-                <MeasurementCard
-                    title="Chest"
-                    value={getLatestMeasurement()?.chest ? `${getLatestMeasurement().chest.toFixed(1)} cm` : 'N/A'}
-                    metric="chest"
-                    icon={<LineChart size={20} />}
-                />
-            </div>
-
             {/* Add/Edit Form */}
             {(isAdding || editingId) && (
-                <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-                    <h3 className="text-lg font-medium mb-4">
-                        {editingId ? 'Edit Measurement' : 'Add New Measurement'}
-                    </h3>
-                    <form onSubmit={handleSubmit}>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <div className="space-y-1">
-                                <label htmlFor="bodyMeasureDate" className="block text-sm font-medium text-gray-700">
-                                    Date
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="date"
-                                        id="bodyMeasureDate"
-                                        name="bodyMeasureDate"
-                                        value={formData.bodyMeasureDate}
-                                        onChange={handleInputChange}
-                                        className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                        required
-                                    />
-                                    <Calendar size={18} className="absolute right-3 top-2.5 text-gray-400" />
-                                </div>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
-                                    Weight (kg)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="weight"
-                                    name="weight"
-                                    value={formData.weight}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="30"
-                                    max="200"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                    required
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="height" className="block text-sm font-medium text-gray-700">
-                                    Height (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="height"
-                                    name="height"
-                                    value={formData.height}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="100"
-                                    max="250"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="chest" className="block text-sm font-medium text-gray-700">
-                                    Chest (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="chest"
-                                    name="chest"
-                                    value={formData.chest}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="50"
-                                    max="200"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="waist" className="block text-sm font-medium text-gray-700">
-                                    Waist (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="waist"
-                                    name="waist"
-                                    value={formData.waist}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="50"
-                                    max="200"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="upperArm" className="block text-sm font-medium text-gray-700">
-                                    Upper Arm (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="upperArm"
-                                    name="upperArm"
-                                    value={formData.upperArm}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="15"
-                                    max="60"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="foreArm" className="block text-sm font-medium text-gray-700">
-                                    Forearm (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="foreArm"
-                                    name="foreArm"
-                                    value={formData.foreArm}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="15"
-                                    max="50"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="thigh" className="block text-sm font-medium text-gray-700">
-                                    Thigh (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="thigh"
-                                    name="thigh"
-                                    value={formData.thigh}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="30"
-                                    max="100"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label htmlFor="calf" className="block text-sm font-medium text-gray-700">
-                                    Calf (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    id="calf"
-                                    name="calf"
-                                    value={formData.calf}
-                                    onChange={handleInputChange}
-                                    step="0.1"
-                                    min="20"
-                                    max="60"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            {/* Custom metrics field */}
-                            <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">
-                                    Hip Circumference (cm)
-                                </label>
-                                <input
-                                    type="number"
-                                    value={formData.customMetrics?.hipCircumference || ''}
-                                    onChange={(e) => handleCustomMetricChange('hipCircumference', e.target.value)}
-                                    step="0.1"
-                                    min="60"
-                                    max="150"
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                />
-                            </div>
-
-                            <div className="md:col-span-2 lg:col-span-3 space-y-1">
-                                <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
-                                    Notes
-                                </label>
-                                <textarea
-                                    id="notes"
-                                    name="notes"
-                                    value={formData.notes}
-                                    onChange={handleInputChange}
-                                    rows={2}
-                                    className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                                    placeholder="Any additional notes about this measurement..."
-                                />
-                            </div>
-                        </div>
-
-                        <div className="mt-6 flex justify-end space-x-3">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4">
+                    <div className="bg-white rounded-xl shadow-md p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-medium">
+                                {editingId ? 'Edit Measurement' : 'Add New Measurement'}
+                            </h3>
                             <button
-                                type="button"
                                 onClick={() => {
                                     setIsAdding(false);
                                     setEditingId(null);
                                 }}
-                                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
+                                className="text-gray-500 hover:text-gray-700"
                             >
-                                Cancel
-                            </button>
-                            <button
-                                type="submit"
-                                className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
-                            >
-                                {editingId ? 'Update' : 'Save'} Measurement
+                                <IoIosClose size={20} />
                             </button>
                         </div>
-                    </form>
+                        <form onSubmit={handleSubmit}>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="space-y-1">
+                                    <label htmlFor="bodyMeasureDate" className="block text-sm font-medium text-gray-700">
+                                        Date
+                                    </label>
+                                    <div className="relative">
+                                        <input
+                                            type="date"
+                                            id="bodyMeasureDate"
+                                            name="bodyMeasureDate"
+                                            value={formData.bodyMeasureDate}
+                                            onChange={handleInputChange}
+                                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="weight" className="block text-sm font-medium text-gray-700">
+                                        Weight (kg)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="weight"
+                                        name="weight"
+                                        value={formData.weight}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="30"
+                                        max="200"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="height" className="block text-sm font-medium text-gray-700">
+                                        Height (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="height"
+                                        name="height"
+                                        value={formData.height}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="100"
+                                        max="250"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="chest" className="block text-sm font-medium text-gray-700">
+                                        Chest (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="chest"
+                                        name="chest"
+                                        value={formData.chest}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="50"
+                                        max="200"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="waist" className="block text-sm font-medium text-gray-700">
+                                        Waist (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="waist"
+                                        name="waist"
+                                        value={formData.waist}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="50"
+                                        max="200"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="upperArm" className="block text-sm font-medium text-gray-700">
+                                        Upper Arm (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="upperArm"
+                                        name="upperArm"
+                                        value={formData.upperArm}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="15"
+                                        max="60"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="foreArm" className="block text-sm font-medium text-gray-700">
+                                        Forearm (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="foreArm"
+                                        name="foreArm"
+                                        value={formData.foreArm}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="15"
+                                        max="50"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="thigh" className="block text-sm font-medium text-gray-700">
+                                        Thigh (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="thigh"
+                                        name="thigh"
+                                        value={formData.thigh}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="30"
+                                        max="100"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="space-y-1">
+                                    <label htmlFor="calf" className="block text-sm font-medium text-gray-700">
+                                        Calf (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        id="calf"
+                                        name="calf"
+                                        value={formData.calf}
+                                        onChange={handleInputChange}
+                                        step="0.1"
+                                        min="20"
+                                        max="60"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                {/* Custom metrics field */}
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">
+                                        Hip Circumference (cm)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={formData.customMetrics?.hipCircumference || ''}
+                                        onChange={(e) => handleCustomMetricChange('hipCircumference', e.target.value)}
+                                        step="0.1"
+                                        min="60"
+                                        max="150"
+                                        className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                    />
+                                </div>
+
+                                <div className="md:col-span-2 lg:col-span-3 space-y-1">
+                                    <label htmlFor="notes" className="block text-sm font-medium text-gray-700">
+                                        Notes
+                                    </label>
+                                    <textarea
+                                        id="notes"
+                                        name="notes"
+                                        value={formData.notes}
+                                        onChange={handleInputChange}
+                                        rows={2}
+                                        className="w-full p-2 border border-gray-300 h-[150px] rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                        placeholder="Any additional notes about this measurement..."
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="mt-6 flex justify-end space-x-3">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setIsAdding(false);
+                                        setEditingId(null);
+                                    }}
+                                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md"
+                                >
+                                    {editingId ? 'Update' : 'Save'} Measurement
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             )}
 
@@ -785,13 +777,7 @@ const MemberBodyMeasurements = ({ memberId }) => {
                     <div className="text-sm text-gray-500">
                         Showing {measurements.length} of {measurements.length} records
                     </div>
-                    <button
-                        onClick={handleAddMeasurement}
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center"
-                    >
-                        <Plus size={16} className="mr-1" />
-                        Add Measurement
-                    </button>
+
                 </div>
             </div>
         </>
@@ -832,7 +818,6 @@ const MemberBodyMeasurements = ({ memberId }) => {
                                 onChange={handleGoalInputChange}
                                 className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
                             />
-                            <Calendar size={18} className="absolute right-3 top-2.5 text-gray-400" />
                         </div>
                     </div>
 
@@ -997,55 +982,8 @@ const MemberBodyMeasurements = ({ memberId }) => {
     );
 
     const renderChartsView = () => (
-        <div className="bg-white rounded-xl shadow-md p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h3 className="text-lg font-medium">Progress Charts</h3>
-                <div className="flex space-x-2">
-                    <select
-                        value={chartMetric}
-                        onChange={(e) => setChartMetric(e.target.value)}
-                        className="p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                    >
-                        <option value="weight">Weight</option>
-                        <option value="waist">Waist</option>
-                        <option value="chest">Chest</option>
-                        <option value="upperArm">Upper Arm</option>
-                        <option value="thigh">Thigh</option>
-                        <option value="calf">Calf</option>
-                    </select>
-                </div>
-            </div>
-
-            <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                    <RechartsLineChart
-                        data={prepareChartData()}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-                        <YAxis />
-                        <Tooltip />
-                        <Legend />
-                        <Line
-                            type="monotone"
-                            dataKey={chartMetric}
-                            stroke="#4f46e5"
-                            activeDot={{ r: 8 }}
-                            name={chartMetric.charAt(0).toUpperCase() + chartMetric.slice(1)}
-                        />
-                    </RechartsLineChart>
-                </ResponsiveContainer>
-            </div>
-
-            <div className="mt-6 flex justify-end">
-                <button
-                    onClick={() => setViewMode('measurements')}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                >
-                    Back to Measurements
-                </button>
-            </div>
+        <div>
+            <MeasurementGraph />
         </div>
     );
 
@@ -1059,26 +997,38 @@ const MemberBodyMeasurements = ({ memberId }) => {
             ) : (
                 <>
                     {/* View Mode Tabs */}
-                    <div className="flex justify-between items-center mb-8">
-                        <div className="flex space-x-2">
-                            <button
-                                onClick={() => setViewMode('measurements')}
-                                className={`px-4 py-2 rounded-lg ${viewMode === 'measurements' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                            >
-                                Measurements
-                            </button>
-                            <button
-                                onClick={() => setViewMode('goals')}
-                                className={`px-4 py-2 rounded-lg ${viewMode === 'goals' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                            >
-                                Goals
-                            </button>
-                            <button
-                                onClick={() => setViewMode('charts')}
-                                className={`px-4 py-2 rounded-lg ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                            >
-                                Charts
-                            </button>
+                    <div className="w-full">
+                        <div className="w-full flex justify-between space-x-2 mb-6">
+                            <div className='w-full flex space-x-2'>
+                                <button
+                                    onClick={() => setViewMode('measurements')}
+                                    className={`px-4 py-2 rounded-sm ${viewMode === 'measurements' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                >
+                                    Measurements
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('goals')}
+                                    className={`px-4 py-2 rounded-sm ${viewMode === 'goals' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                >
+                                    Goals
+                                </button>
+                                <button
+                                    onClick={() => setViewMode('charts')}
+                                    className={`px-4 py-2 rounded-sm ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                                >
+                                    Graphs
+                                </button>
+                            </div>
+
+                            <div className='w-full flex justify-end'>
+                                <button
+                                    onClick={handleAddMeasurement}
+                                    className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-sm flex items-center"
+                                >
+                                    <Plus size={16} className="mr-1 text-white" />
+                                    Add Measurement
+                                </button>
+                            </div>
                         </div>
                     </div>
 
