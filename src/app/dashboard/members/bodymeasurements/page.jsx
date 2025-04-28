@@ -306,7 +306,7 @@ const BodyMeasurements = () => {
 
                         <TabsContent value="charts" className="mt-0">
                             <Card className='p-0 border-none'>
-                                <CardContent>
+                                <CardContent className='p-0'>
                                     <BodyMeasurementChartBySelectedValue />
                                 </CardContent>
                             </Card>
