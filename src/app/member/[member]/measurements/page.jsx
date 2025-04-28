@@ -1,5 +1,19 @@
 'use client';
 
+import { usePagination } from "@/hooks/Pagination";
+import Pagination from "@/components/ui/CustomPagination";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
 import { IoIosClose } from "react-icons/io";
 import { useState, useEffect } from 'react';
 import {
@@ -13,19 +27,23 @@ import { MeasurementGraph } from "./measurementGraph";
 import { useMember } from "@/components/Providers/LoggedInMemberProvider";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import Loader from "@/components/Loader/Loader";
 
 const MemberBodyMeasurements = () => {
     // States for managing measurements and UI
     const [measurements, setMeasurements] = useState([]);
     const [goals, setGoals] = useState({});
-    const [isLoading, setIsLoading] = useState(true);
     const [isAdding, setIsAdding] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [viewMode, setViewMode] = useState('measurements');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(6);
 
     // get logged in member
     const { member } = useMember();
     const memberId = member?.loggedInMember?._id || '';
+    const queryClient = useQueryClient();
 
     const {
         register,
@@ -36,6 +54,7 @@ const MemberBodyMeasurements = () => {
         reset
     } = useForm();
 
+    // Add Body Measurements
     const submitBodyMeasurements = async (data) => {
         try {
             const {
@@ -48,7 +67,8 @@ const MemberBodyMeasurements = () => {
                 waist,
                 hip,
                 thigh,
-                calf
+                calf,
+                notes
             } = data;
 
             const jsonData = {
@@ -61,7 +81,8 @@ const MemberBodyMeasurements = () => {
                 waist,
                 hip,
                 thigh,
-                calf
+                calf,
+                notes
             };
 
             const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}`, {
@@ -69,7 +90,7 @@ const MemberBodyMeasurements = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(jsonData)
+                body: JSON.stringify(jsonData),
             });
 
             const responseBody = await response.json();
@@ -77,6 +98,7 @@ const MemberBodyMeasurements = () => {
                 reset();
                 setIsAdding(false);
                 toast.success(responseBody.message);
+                queryClient.invalidateQueries(['bodymeasurements']);
             };
 
         } catch (error) {
@@ -84,12 +106,38 @@ const MemberBodyMeasurements = () => {
         };
     };
 
+    // Fetch All Body Measurements
+    const getAllBodyMeasurements = async ({ queryKey }) => {
+        const [, page] = queryKey;
+        try {
+            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log('Error', error);
+        };
+    };
 
+    const { data, isLoading } = useQuery({
+        queryFn: getAllBodyMeasurements,
+        queryKey: ['bodymeasurements', currentPage, limit],
+        enabled: !!memberId
+    });
 
+    const { bodyMeasurements, totalBodyMeasurements, totalPages } = data || {};
 
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
-
-
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, totalBodyMeasurements);
 
     // Form states
     const [formData, setFormData] = useState({
@@ -202,40 +250,22 @@ const MemberBodyMeasurements = () => {
                 // Initialize goal form with current goals
                 setGoalFormData(mockGoal);
 
-                setIsLoading(false);
+                // setIsLoading(false);
             } catch (error) {
                 console.error("Failed to fetch measurements:", error);
-                setIsLoading(false);
+                // setIsLoading(false);
             }
         };
 
         fetchData();
     }, [memberId]);
 
-    // Input change handlers
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
 
     const handleGoalInputChange = (e) => {
         const { name, value } = e.target;
         setGoalFormData(prev => ({
             ...prev,
             [name]: value
-        }));
-    };
-
-    const handleCustomMetricChange = (metricName, value) => {
-        setFormData(prev => ({
-            ...prev,
-            customMetrics: {
-                ...prev.customMetrics,
-                [metricName]: value
-            }
         }));
     };
 
@@ -258,197 +288,29 @@ const MemberBodyMeasurements = () => {
         });
     };
 
-    const handleEditMeasurement = (measurement) => {
-        setIsAdding(false);
-        setEditingId(measurement._id);
-
-        // Convert customMetrics Map to object if needed
-        const customMetricsObj = measurement.customMetrics instanceof Map
-            ? Object.fromEntries(measurement.customMetrics)
-            : measurement.customMetrics || {};
-
-        setFormData({
-            bodyMeasureDate: new Date(measurement.bodyMeasureDate).toISOString().split('T')[0],
-            weight: measurement.weight,
-            height: measurement.height,
-            upperArm: measurement.upperArm,
-            foreArm: measurement.foreArm,
-            chest: measurement.chest,
-            waist: measurement.waist,
-            thigh: measurement.thigh,
-            calf: measurement.calf,
-            notes: measurement.notes,
-            customMetrics: customMetricsObj
-        });
-    };
-
-
-    const handleGoalSubmit = async (e) => {
-        e.preventDefault();
-
-        try {
-            // In a real app, send to API
-            // await fetch(`/api/bodymeasurements/${memberId}/goals`, {
-            //   method: 'PUT',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify(goalFormData)
-            // });
-
-            // Update local state
-            setGoals(goalFormData);
-            alert("Goals updated successfully!");
-        } catch (error) {
-            console.error("Error updating goals:", error);
-            alert("Failed to update goals. Please try again.");
-        }
-    };
-
     const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this measurement?")) return;
-
         try {
-            // In a real app, send to API
-            // await fetch(`/api/bodymeasurements/${id}`, {
-            //   method: 'DELETE'
-            // });
-
-            // Update local state
-            setMeasurements(measurements.filter(m => m._id !== id));
+            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['bodymeasurements']);
+            };
         } catch (error) {
             console.error("Error deleting measurement:", error);
-            alert("Failed to delete measurement. Please try again.");
-        }
-    };
-
-    // Helper functions
-    const calculateProgress = (current, previous, metric) => {
-        if (!previous) return { value: 0, trend: 'neutral' };
-
-        const change = current - previous;
-        const percentage = ((Math.abs(change) / previous) * 100).toFixed(1);
-
-        // For metrics where decrease is progress (like weight, waist)
-        const decreaseIsGood = ['weight', 'waist'];
-        const isGoodChange = decreaseIsGood.includes(metric) ? change < 0 : change > 0;
-
-        return {
-            value: percentage,
-            trend: change > 0 ? 'up' : change < 0 ? 'down' : 'neutral',
-            isGood: isGoodChange
+            toast.error(error.message);
         };
     };
 
     const getLatestMeasurement = () => measurements[0] || null;
-    const getPreviousMeasurement = () => measurements[1] || null;
-
-    const progressToGoal = (metric) => {
-        const latest = getLatestMeasurement();
-        if (!latest || !goals || !goals[`${metric}Goal`]) return { percent: 0, remaining: 0 };
-
-        const currentValue = latest[metric];
-        const goalValue = goals[`${metric}Goal`];
-        const diff = Math.abs(currentValue - goalValue);
-
-        // Determine if we're trying to increase or decrease this metric
-        const isDecreasing = currentValue > goalValue;
-
-        // Calculate based on whether our goal is to increase or decrease
-        let percent;
-        if (isDecreasing) {
-            // For decrease goals (like weight loss): original - current / original - goal
-            const originalValue = measurements[measurements.length - 1][metric];
-            percent = ((originalValue - currentValue) / (originalValue - goalValue)) * 100;
-        } else {
-            // For increase goals (like muscle gain): current - original / goal - original
-            const originalValue = measurements[measurements.length - 1][metric];
-            percent = ((currentValue - originalValue) / (goalValue - originalValue)) * 100;
-        }
-
-        return {
-            percent: Math.min(Math.max(percent, 0), 100).toFixed(1),
-            remaining: diff.toFixed(1),
-            increasing: !isDecreasing
-        };
-    };
-
-    // Prepare chart data
-    const prepareChartData = () => {
-        return measurements
-            .slice()
-            .reverse()
-            .map(m => ({
-                date: new Date(m.bodyMeasureDate).toLocaleDateString(),
-                weight: m.weight,
-                waist: m.waist,
-                chest: m.chest,
-                upperArm: m.upperArm,
-                thigh: m.thigh,
-                calf: m.calf,
-                foreArm: m.foreArm,
-                ...(m.customMetrics || {})
-            }));
-    };
 
     const formatDate = (dateString) => {
         return new Date(dateString).toLocaleDateString();
-    };
-
-    // UI Components
-    const MeasurementCard = ({ title, value, metric, icon }) => {
-        const latest = getLatestMeasurement();
-        const previous = getPreviousMeasurement();
-
-        let progress = null;
-        let goalProgress = null;
-
-        if (latest && previous) {
-            progress = calculateProgress(latest[metric], previous[metric], metric);
-        }
-
-        if (goals && goals[`${metric}Goal`]) {
-            goalProgress = progressToGoal(metric);
-        }
-
-        return (
-            <div className="bg-white rounded-xl shadow-md p-6">
-                <div className="flex items-center justify-between">
-                    <h3 className="text-gray-500 text-sm font-medium">{title}</h3>
-                    <div className="text-gray-400">
-                        {icon}
-                    </div>
-                </div>
-                <div className="flex items-baseline mt-2">
-                    <p className="text-2xl font-semibold">{value}</p>
-                    {progress && progress.value > 0 && (
-                        <span className={`ml-2 flex items-center text-sm ${progress.isGood ? 'text-green-600' : 'text-red-600'
-                            }`}>
-                            {progress.trend === 'up' ? <ArrowUp size={14} className="mr-0.5" /> :
-                                progress.trend === 'down' ? <ArrowDown size={14} className="mr-0.5" /> : null}
-                            {progress.value}%
-                        </span>
-                    )}
-                </div>
-                <p className="text-xs text-gray-500 mt-1">vs previous measurement</p>
-
-                {goalProgress && goalProgress.percent > 0 && (
-                    <div className="mt-3">
-                        <div className="flex justify-between text-xs text-gray-600 mb-1">
-                            <span>Goal Progress</span>
-                            <span>{goalProgress.percent}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                            <div
-                                className="bg-blue-600 h-2 rounded-full"
-                                style={{ width: `${goalProgress.percent}%` }}
-                            ></div>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {goalProgress.remaining} {goalProgress.increasing ? 'to gain' : 'to lose'}
-                        </p>
-                    </div>
-                )}
-            </div>
-        );
     };
 
     const renderMeasurementsView = () => (
@@ -654,304 +516,146 @@ const MemberBodyMeasurements = () => {
             )}
 
             {/* Measurement History */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-                    <h3 className="text-lg font-medium">My Measurement History</h3>
-                    <div className="text-sm text-gray-500">
-                        {measurements.length} records
+            {
+                isLoading ? (
+                    <div>
+                        <Loader />
                     </div>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                            <tr>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Date
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Weight
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Chest
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Waist
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Upper Arm
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Thigh
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Notes
-                                </th>
-                                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                            {measurements.length > 0 ? (
-                                measurements.map((measurement) => (
-                                    <tr key={measurement._id} className="hover:bg-gray-50">
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {formatDate(measurement.bodyMeasureDate)}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {measurement.weight?.toFixed(1)} kg
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {measurement.chest?.toFixed(1)} cm
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {measurement.waist?.toFixed(1)} cm
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {measurement.upperArm?.toFixed(1)} cm
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            {measurement.thigh?.toFixed(1)} cm
-                                        </td>
-                                        <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
-                                            {measurement.notes}
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div className="flex justify-end space-x-2">
-                                                <button
-                                                    onClick={() => handleEditMeasurement(measurement)}
-                                                    className="text-indigo-600 hover:text-indigo-900"
-                                                    title="Edit"
-                                                >
-                                                    <Edit size={16} />
-                                                </button>
-                                                <button
-                                                    onClick={() => handleDelete(measurement._id)}
-                                                    className="text-red-600 hover:text-red-900"
-                                                    title="Delete"
-                                                >
-                                                    <Trash2 size={16} />
-                                                </button>
-                                            </div>
-                                        </td>
+                ) : (
+                    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+                        <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+                            <h3 className="text-lg font-medium">My Measurement History</h3>
+                            <div className="text-sm text-gray-500">
+                                {bodyMeasurements?.length} records
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2 p-2">
+                            <span className="text-sm font-medium text-gray-600">Show</span>
+                            <select
+                                onChange={(e) => setLimit(Number(e.target.value))}
+                                className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg px-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                            >
+                                <option value="15">15</option>
+                                <option value="25">25</option>
+                                <option value="50">50</option>
+                                <option value={totalBodyMeasurements}>All</option>
+                            </select>
+                            <span className="text-sm font-medium text-gray-600">Body Measurements</span>
+                            <span className="text-xs text-gray-500 ml-2">(Selected: {limit})</span>
+                        </div>
+                        <div className="overflow-x-auto">
+                            <table className="min-w-full divide-y divide-gray-200">
+                                <thead className="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Date
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Weight
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Chest
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Waist
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Upper Arm
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Thigh
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Notes
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Actions
+                                        </th>
                                     </tr>
-                                ))
-                            ) : (
-                                <tr>
-                                    <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
-                                        No measurements recorded yet
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-                <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                    <div className="text-sm text-gray-500">
-                        Showing {measurements.length} of {measurements.length} records
-                    </div>
+                                </thead>
+                                <tbody className="bg-white divide-y divide-gray-200">
+                                    {Array.isArray(bodyMeasurements) && bodyMeasurements.length > 0 ? (
+                                        bodyMeasurements.map((measurement) => (
+                                            <tr key={measurement._id} className="hover:bg-gray-50">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {formatDate(measurement.bodyMeasureDate)}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {measurement.weight?.toFixed(1)} kg
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {measurement.chest?.toFixed(1)} cm
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {measurement.waist?.toFixed(1)} cm
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {measurement.upperArm?.toFixed(1)} cm
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                    {measurement.thigh?.toFixed(1)} cm
+                                                </td>
+                                                <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                    {measurement.notes}
+                                                </td>
+                                                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <div className="flex justify-end space-x-2">
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button variant="outline" className='text-red-600 hover:text-red-600 border-none hover:bg-transparent bg-transparent'>
+                                                                    <Trash2 size={16} />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete your
+                                                                        body measurement and remove data from our servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => handleDelete(measurement._id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))
+                                    ) : (
+                                        <tr>
+                                            <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
+                                                No measurements recorded yet
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+                            <p className="text-sm text-gray-500">
+                                Showing <span className="font-medium">{startEntry}</span> to <span className="font-medium">{endEntry}</span> of{' '}
+                                <span className="font-medium">{totalBodyMeasurements}</span> results
+                            </p>
 
-                </div>
-            </div>
-        </>
-    );
-
-    const renderGoalsView = () => (
-        <div className="bg-white rounded-xl shadow-md p-6">
-            <h3 className="text-lg font-medium mb-6">Body Measurement Goals</h3>
-            <form onSubmit={handleGoalSubmit}>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-1">
-                        <label htmlFor="goalType" className="block text-sm font-medium text-gray-700">
-                            Goal Type
-                        </label>
-                        <select
-                            id="goalType"
-                            name="goalType"
-                            value={goalFormData.goalType}
-                            onChange={handleGoalInputChange}
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        >
-                            <option value="weight_loss">Weight Loss</option>
-                            <option value="muscle_gain">Muscle Gain</option>
-                            <option value="maintenance">Maintenance</option>
-                        </select>
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="goalDeadline" className="block text-sm font-medium text-gray-700">
-                            Target Date
-                        </label>
-                        <div className="relative">
-                            <input
-                                type="date"
-                                id="goalDeadline"
-                                name="goalDeadline"
-                                value={goalFormData.goalDeadline}
-                                onChange={handleGoalInputChange}
-                                className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                            />
+                            <div>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                    className="flex items-center space-x-1"
+                                />
+                            </div>
                         </div>
                     </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="weightGoal" className="block text-sm font-medium text-gray-700">
-                            Target Weight (kg)
-                        </label>
-                        <input
-                            type="number"
-                            id="weightGoal"
-                            name="weightGoal"
-                            value={goalFormData.weightGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="30"
-                            max="200"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="chestGoal" className="block text-sm font-medium text-gray-700">
-                            Target Chest (cm)
-                        </label>
-                        <input
-                            type="number"
-                            id="chestGoal"
-                            name="chestGoal"
-                            value={goalFormData.chestGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="50"
-                            max="200"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="waistGoal" className="block text-sm font-medium text-gray-700">
-                            Target Waist (cm)
-                        </label>
-                        <input
-                            type="number"
-                            id="waistGoal"
-                            name="waistGoal"
-                            value={goalFormData.waistGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="50"
-                            max="200"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="upperArmGoal" className="block text-sm font-medium text-gray-700">
-                            Target Upper Arm (cm)
-                        </label>
-                        <input
-                            type="number"
-                            id="upperArmGoal"
-                            name="upperArmGoal"
-                            value={goalFormData.upperArmGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="15"
-                            max="60"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="thighGoal" className="block text-sm font-medium text-gray-700">
-                            Target Thigh (cm)
-                        </label>
-                        <input
-                            type="number"
-                            id="thighGoal"
-                            name="thighGoal"
-                            value={goalFormData.thighGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="30"
-                            max="100"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-
-                    <div className="space-y-1">
-                        <label htmlFor="calfGoal" className="block text-sm font-medium text-gray-700">
-                            Target Calf (cm)
-                        </label>
-                        <input
-                            type="number"
-                            id="calfGoal"
-                            name="calfGoal"
-                            value={goalFormData.calfGoal}
-                            onChange={handleGoalInputChange}
-                            step="0.1"
-                            min="20"
-                            max="60"
-                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                </div>
-
-                <div className="mt-8">
-                    <h4 className="text-md font-medium mb-4">Current Progress</h4>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {goals.weightGoal && (
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-sm font-medium">Weight</span>
-                                    <span className="text-sm text-gray-500">
-                                        {getLatestMeasurement()?.weight?.toFixed(1)} kg → {goals.weightGoal} kg
-                                    </span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div
-                                        className="bg-blue-600 h-2.5 rounded-full"
-                                        style={{ width: `${progressToGoal('weight').percent}%` }}
-                                    ></div>
-                                </div>
-                            </div>
-                        )}
-                        {goals.chestGoal && (
-                            <div className="bg-gray-50 p-4 rounded-lg">
-                                <div className="flex justify-between mb-2">
-                                    <span className="text-sm font-medium">Chest</span>
-                                    <span className="text-sm text-gray-500">
-                                        {getLatestMeasurement()?.chest?.toFixed(1)} cm → {goals.chestGoal} cm
-                                    </span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                    <div
-                                        className="bg-blue-600 h-2.5 rounded-full"
-                                        style={{ width: `${progressToGoal('chest').percent}%` }}
-                                    ></div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="mt-6 flex justify-end space-x-3">
-                    <button
-                        type="button"
-                        onClick={() => setViewMode('measurements')}
-                        className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg"
-                    >
-                        Update Goals
-                    </button>
-                </div>
-            </form>
-        </div>
+                )
+            }
+        </>
     );
 
     const renderChartsView = () => (
@@ -979,12 +683,6 @@ const MemberBodyMeasurements = () => {
                                 >
                                     Measurements
                                 </button>
-                                {/* <button
-                                    onClick={() => setViewMode('goals')}
-                                    className={`px-4 py-2 rounded-sm ${viewMode === 'goals' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                                >
-                                    Goals
-                                </button> */}
                                 <button
                                     onClick={() => setViewMode('charts')}
                                     className={`px-4 py-2 rounded-sm ${viewMode === 'charts' ? 'bg-indigo-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
