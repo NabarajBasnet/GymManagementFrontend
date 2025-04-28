@@ -1,5 +1,7 @@
 "use client";
 
+import { usePagination } from "@/hooks/Pagination";
+import Pagination from "@/components/ui/CustomPagination";
 import {
     Select,
     SelectContent,
@@ -26,47 +28,31 @@ import {
 } from "@/components/ui/breadcrumb";
 import React, { useState, useRef, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Skeleton } from "@/components/ui/skeleton";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { format } from 'date-fns';
-import { Line, LineChart, BarChart, Bar, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { CalendarIcon, Printer, FileDown, RotateCcw, PencilIcon, ChevronDownIcon, ChevronUpIcon, Search, XCircle, ArrowDown, ArrowUp, Minus } from "lucide-react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Printer, FileDown, RotateCcw } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { BodyMeasurementChartBySelectedValue } from "./BodyMeasurementsChart";
 
-const BodyMeasurements = ({ memberId }) => {
+const BodyMeasurements = () => {
 
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     const [renderMainContents, setRenderMainContents] = useState(false);
     const [measurements, setMeasurements] = useState([]);
-    const [selectedMeasurement, setSelectedMeasurement] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
+
     const [dateRange, setDateRange] = useState({
         start: new Date(new Date().setMonth(new Date().getMonth() - 3)),
         end: new Date()
     });
     const [loading, setLoading] = useState(true);
-    const [chartPeriod, setChartPeriod] = useState("all");
-    const [sortConfig, setSortConfig] = useState({
-        key: 'bodyMeasuredate',
-        direction: 'desc'
-    });
-    const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-    const itemsPerPage = 5;
+
     const { control, formState: { errors }, handleSubmit } = useForm();
+    const [currentPage, setCurrentPage] = useState(1);
+    const [limit, setLimit] = useState(6);
+    let totalBodyMeasurements = measurements ? measurements.length : 0;
 
     const getAllMembers = async () => {
         try {
@@ -88,30 +74,44 @@ const BodyMeasurements = ({ memberId }) => {
 
     // Get Body Measurement Details
     const [selectedMemberId, setSelectedMemberId] = useState('');
+    const [totalPages, setTotalPages] = useState(null);
 
     const getBodyMeasurementDetails = async () => {
         setRenderMainContents(true);
         try {
-            console.log("Fetching data from backend...");
-            const response = await fetch(`http://localhost:3000/api/members/bodymeasurements/${selectedMemberId}`);
+            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setRenderMainContents(true);
+                setMeasurements(responseBody.bodyMeasurements);
+                setTotalPages(responseBody.totalPages);
             };
-
-            console.log('Response Body: ', responseBody);
         } catch (error) {
             console.log("Error: ", error);
         };
     };
 
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
+
     useEffect(() => {
         if (searchQuery, selectedMemberId) {
             getBodyMeasurementDetails();
         };
-    }, [searchQuery, selectedMemberId]);
+    }, [searchQuery, selectedMemberId, currentPage, limit]);
+
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit, totalBodyMeasurements);
 
     const searchRef = useRef(null);
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -123,166 +123,9 @@ const BodyMeasurements = ({ memberId }) => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [searchRef]);
+
     const handleSearchFocus = () => {
         setRenderDropdown(true);
-    };
-
-    // Form validation schema
-    const formSchema = z.object({
-        weight: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Weight must be a positive number").optional()
-        ),
-        height: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Height must be a positive number").optional()
-        ),
-        upperArm: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Upper arm must be a positive number").optional()
-        ),
-        foreArm: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Forearm must be a positive number").optional()
-        ),
-        chest: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Chest must be a positive number").optional()
-        ),
-        waist: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Waist must be a positive number").optional()
-        ),
-        thigh: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Thigh must be a positive number").optional()
-        ),
-        calf: z.preprocess(
-            (val) => (val === '' ? undefined : Number(val)),
-            z.number().min(0, "Calf must be a positive number").optional()
-        ),
-    });
-
-    // Initialize form
-    const form = useForm({
-        resolver: zodResolver(formSchema),
-        defaultValues: {
-            weight: selectedMeasurement?.weight || "",
-            height: selectedMeasurement?.height || "",
-            upperArm: selectedMeasurement?.upperArm || "",
-            foreArm: selectedMeasurement?.foreArm || "",
-            chest: selectedMeasurement?.chest || "",
-            waist: selectedMeasurement?.waist || "",
-            thigh: selectedMeasurement?.thigh || "",
-            calf: selectedMeasurement?.calf || "",
-        },
-    });
-
-    useEffect(() => {
-        const mockData = generateMockData(memberId);
-        setTimeout(() => {
-            setMeasurements(mockData);
-            setLoading(false);
-        }, 800);
-    }, [memberId]);
-
-    const generateMockData = (memberId) => {
-        const mockData = [];
-        const now = new Date();
-
-        for (let i = 0; i < 12; i++) {
-            const date = new Date(now);
-            date.setMonth(now.getMonth() - i);
-
-            const weightBase = 80 - (i * 0.5);
-            const armBase = 35 - (i * 0.2);
-            const chestBase = 105 - (i * 0.3);
-            const waistBase = 85 - (i * 0.4);
-            const thighBase = 58 - (i * 0.2);
-            const calfBase = 38 - (i * 0.1);
-
-            mockData.push({
-                _id: `measurement_${i}`,
-                member: memberId,
-                bodyMeasuredate: date,
-                weight: weightBase + (Math.random() * 1 - 0.5),
-                height: 180,
-                upperArm: armBase + (Math.random() * 0.5 - 0.25),
-                foreArm: 30 - (i * 0.1) + (Math.random() * 0.4 - 0.2),
-                chest: chestBase + (Math.random() * 0.8 - 0.4),
-                waist: waistBase + (Math.random() * 0.6 - 0.3),
-                thigh: thighBase + (Math.random() * 0.6 - 0.3),
-                calf: calfBase + (Math.random() * 0.4 - 0.2),
-                createdAt: date,
-                updatedAt: date
-            });
-        }
-
-        return mockData.sort((a, b) => new Date(b.bodyMeasuredate) - new Date(a.bodyMeasuredate));
-    };
-
-    const handleSaveMeasurement = (values) => {
-        const updatedMeasurement = {
-            ...selectedMeasurement,
-            ...values,
-            bodyMeasuredate: selectedDate,
-        };
-
-        Object.keys(updatedMeasurement).forEach(key => {
-            if (typeof updatedMeasurement[key] === 'string' && !isNaN(updatedMeasurement[key])) {
-                updatedMeasurement[key] = parseFloat(updatedMeasurement[key]);
-            }
-        });
-
-        if (updatedMeasurement._id) {
-            setMeasurements(measurements.map(m =>
-                m._id === updatedMeasurement._id ? updatedMeasurement : m
-            ));
-        } else {
-            const newMeasurement = {
-                ...updatedMeasurement,
-                _id: `measurement_${Date.now()}`,
-                member: memberId,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            };
-            setMeasurements([newMeasurement, ...measurements]);
-        }
-
-        setSelectedMeasurement(null);
-        setIsEditing(false);
-    };
-
-    const handleAddNew = () => {
-        setSelectedMeasurement({
-            member: memberId,
-            bodyMeasuredate: new Date(),
-            weight: 0,
-            height: 0,
-            upperArm: 0,
-            foreArm: 0,
-            chest: 0,
-            waist: 0,
-            thigh: 0,
-            calf: 0
-        });
-        setSelectedDate(new Date());
-        form.reset({
-            weight: "",
-            height: "",
-            upperArm: "",
-            foreArm: "",
-            chest: "",
-            waist: "",
-            thigh: "",
-            calf: "",
-        });
-        setIsEditing(true);
-    };
-
-    const handleCancel = () => {
-        setSelectedMeasurement(null);
-        setIsEditing(false);
     };
 
     const handleResetFilters = () => {
@@ -303,179 +146,9 @@ const BodyMeasurements = ({ memberId }) => {
         alert('Export functionality would be implemented here');
     };
 
-    const filteredMeasurements = measurements.filter(m => {
-        const measureDate = new Date(m.bodyMeasuredate);
-        return measureDate >= dateRange.start && measureDate <= dateRange.end;
-    });
-
-    // Chart data preparation
-    const getFilteredChartData = () => {
-        const today = new Date();
-        let filtered = [...filteredMeasurements];
-
-        if (chartPeriod === "month") {
-            const monthAgo = new Date(today);
-            monthAgo.setMonth(monthAgo.getMonth() - 1);
-            filtered = filtered.filter(m => new Date(m.bodyMeasuredate) >= monthAgo);
-        } else if (chartPeriod === "quarter") {
-            const quarterAgo = new Date(today);
-            quarterAgo.setMonth(quarterAgo.getMonth() - 3);
-            filtered = filtered.filter(m => new Date(m.bodyMeasuredate) >= quarterAgo);
-        }
-
-        return filtered
-            .sort((a, b) => new Date(a.bodyMeasuredate) - new Date(b.bodyMeasuredate))
-            .map(m => ({
-                date: format(new Date(m.bodyMeasuredate), 'MMM d'),
-                weight: parseFloat(m.weight.toFixed(1)),
-                waist: parseFloat(m.waist.toFixed(1)),
-                chest: parseFloat(m.chest.toFixed(1)),
-                upperArm: parseFloat(m.upperArm.toFixed(1)),
-                foreArm: parseFloat(m.foreArm.toFixed(1)),
-                thigh: parseFloat(m.thigh.toFixed(1)),
-                calf: parseFloat(m.calf.toFixed(1)),
-            }));
+    const formatDate = (dateString) => {
+        return new Date(dateString).toLocaleDateString();
     };
-
-    const filterAndSortData = () => {
-        const filtered = searchTerm
-            ? filteredMeasurements.filter(m =>
-                format(new Date(m.bodyMeasuredate), 'MMM d, yyyy').toLowerCase().includes(searchTerm.toLowerCase())
-            )
-            : filteredMeasurements;
-
-        return [...filtered].sort((a, b) => {
-            const aValue = a[sortConfig.key];
-            const bValue = b[sortConfig.key];
-
-            if (sortConfig.key === 'bodyMeasuredate') {
-                const aDate = new Date(aValue);
-                const bDate = new Date(bValue);
-                return sortConfig.direction === 'asc' ? aDate - bDate : bDate - aDate;
-            }
-
-            if (typeof aValue === 'number') {
-                return sortConfig.direction === 'asc' ? aValue - bValue : bValue - aValue;
-            }
-
-            return sortConfig.direction === 'asc'
-                ? aValue.localeCompare(bValue)
-                : bValue.localeCompare(aValue);
-        });
-    };
-
-    const sortedData = filterAndSortData();
-    const lastItemIndex = currentPage * itemsPerPage;
-    const firstItemIndex = lastItemIndex - itemsPerPage;
-    const currentItems = sortedData.slice(firstItemIndex, lastItemIndex);
-    const totalPages = Math.ceil(sortedData.length / itemsPerPage);
-
-    // Summary calculations
-    const calculateChange = (current, previous, field) => {
-        if (!previous) return { value: 0, direction: 'neutral' };
-
-        const diff = current[field] - previous[field];
-        const direction = diff === 0 ? 'neutral' : diff < 0 ? 'down' : 'up';
-
-        let effectiveDirection = direction;
-        if (field === 'waist') {
-            effectiveDirection = direction === 'down' ? 'up' : direction === 'up' ? 'down' : 'neutral';
-        }
-
-        return {
-            value: Math.abs(diff).toFixed(1),
-            direction,
-            effectiveDirection
-        };
-    };
-
-    const renderChangeIndicator = (change) => {
-        if (!filteredMeasurements[1]) return null;
-
-        const effectiveClass = change.effectiveDirection === 'up'
-            ? 'text-green-500'
-            : change.effectiveDirection === 'down'
-                ? 'text-red-500'
-                : 'text-yellow-500';
-
-        return (
-            <div className={`flex items-center gap-1 ${effectiveClass}`}>
-                {change.direction === 'up' && <ArrowUp className="h-4 w-4" />}
-                {change.direction === 'down' && <ArrowDown className="h-4 w-4" />}
-                {change.direction === 'neutral' && <Minus className="h-4 w-4" />}
-                <span>{change.value}</span>
-            </div>
-        );
-    };
-
-    const measurementFields = [
-        { name: "weight", label: "Weight (kg)", description: "Member's weight in kilograms" },
-        { name: "height", label: "Height (cm)", description: "Member's height in centimeters" },
-        { name: "upperArm", label: "Upper Arm (cm)", description: "Circumference of upper arm" },
-        { name: "foreArm", label: "Forearm (cm)", description: "Circumference of forearm" },
-        { name: "chest", label: "Chest (cm)", description: "Chest circumference at nipple level" },
-        { name: "waist", label: "Waist (cm)", description: "Waist circumference at navel" },
-        { name: "thigh", label: "Thigh (cm)", description: "Circumference of upper thigh" },
-        { name: "calf", label: "Calf (cm)", description: "Circumference of calf" },
-    ];
-
-    // if (loading) {
-    //     return (
-    //         <div className="space-y-6">
-    //             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    //                 {[1, 2, 3, 4].map((i) => (
-    //                     <Card key={i}>
-    //                         <CardContent className="p-6">
-    //                             <Skeleton className="h-4 w-24 mb-2" />
-    //                             <Skeleton className="h-8 w-16 mb-2" />
-    //                             <Skeleton className="h-4 w-32" />
-    //                         </CardContent>
-    //                     </Card>
-    //                 ))}
-    //             </div>
-    //             <Card>
-    //                 <CardHeader>
-    //                     <Skeleton className="h-6 w-48" />
-    //                     <Skeleton className="h-4 w-72" />
-    //                 </CardHeader>
-    //                 <CardContent>
-    //                     <Skeleton className="h-[300px] w-full" />
-    //                 </CardContent>
-    //             </Card>
-    //         </div>
-    //     );
-    // }
-
-    const chartData = getFilteredChartData();
-    const latest = filteredMeasurements[0];
-    const previous = filteredMeasurements[1];
-
-    const summaryMetrics = latest ? [
-        {
-            title: 'Weight',
-            value: `${latest.weight.toFixed(1)} kg`,
-            change: calculateChange(latest, previous, 'weight'),
-            subtitle: 'Since last measurement'
-        },
-        {
-            title: 'Waist',
-            value: `${latest.waist.toFixed(1)} cm`,
-            change: calculateChange(latest, previous, 'waist'),
-            subtitle: 'Since last measurement'
-        },
-        {
-            title: 'Chest',
-            value: `${latest.chest.toFixed(1)} cm`,
-            change: calculateChange(latest, previous, 'chest'),
-            subtitle: 'Since last measurement'
-        },
-        {
-            title: 'Upper Arm',
-            value: `${latest.upperArm.toFixed(1)} cm`,
-            change: calculateChange(latest, previous, 'upperArm'),
-            subtitle: 'Since last measurement'
-        }
-    ] : [];
 
     return (
         <div className="body-measurement-tracker w-full p-4">
@@ -531,272 +204,251 @@ const BodyMeasurements = ({ memberId }) => {
                 </div>
             </div>
 
-            {isEditing ? (
-                <Card>
-                    <CardContent className="p-6">
-                        <div>
-                            <h2 className="text-xl font-semibold mb-4">
-                                {selectedMeasurement?._id ? "Edit Measurement" : "Add New Measurement"}
-                            </h2>
-
-                            <div className="mb-6">
-                                <Label>Measurement Date</Label>
-                                <Popover>
-                                    <PopoverTrigger asChild>
-                                        <Button
-                                            variant="outline"
-                                            className="w-full justify-start text-left font-normal mt-1"
-                                        >
-                                            <CalendarIcon className="mr-2 h-4 w-4" />
-                                            {selectedDate ? format(selectedDate, 'PPP') : "Select date"}
-                                        </Button>
-                                    </PopoverTrigger>
-                                    <PopoverContent className="w-auto p-0" align="start">
-                                        <Calendar
-                                            mode="single"
-                                            selected={selectedDate}
-                                            onSelect={(date) => setSelectedDate(date)}
-                                            initialFocus
-                                        />
-                                    </PopoverContent>
-                                </Popover>
-                            </div>
-
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(handleSaveMeasurement)} className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {measurementFields.map((field) => (
-                                            <FormField
-                                                key={field.name}
-                                                control={form.control}
-                                                name={field.name}
-                                                render={({ field: formField }) => (
-                                                    <FormItem>
-                                                        <FormLabel>{field.label}</FormLabel>
-                                                        <FormControl>
-                                                            <Input
-                                                                type="number"
-                                                                step="0.1"
-                                                                placeholder="0.0"
-                                                                {...formField}
-                                                            />
-                                                        </FormControl>
-                                                        <FormDescription>{field.description}</FormDescription>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
+            <div>
+                <form>
+                    <div className="flex mb-4 flex-col md:flex-row items-start md:items-end gap-4 my-6">
+                        {/* Member Search */}
+                        <div className="w-full md:w-90">
+                            <div ref={searchRef} className="relative">
+                                <Controller
+                                    name="memberName"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            <Input
+                                                id="member-search"
+                                                {...field}
+                                                autoComplete="off"
+                                                value={searchQuery}
+                                                onChange={(e) => {
+                                                    setSearchQuery(e.target.value);
+                                                    field.onChange(e);
+                                                }}
+                                                onFocus={handleSearchFocus}
+                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
+                                                placeholder="Type member name..."
                                             />
-                                        ))}
-                                    </div>
+                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                <FiSearch className="h-4 w-4" />
+                                            </div>
+                                        </div>
+                                    )}
+                                />
+                                {errors.memberName && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.memberName.message}
+                                    </p>
+                                )}
 
-                                    <div className="flex justify-end gap-2 pt-4">
-                                        <Button type="button" variant="outline" onClick={handleCancel}>
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit">
-                                            {selectedMeasurement?._id ? "Update Measurement" : "Save Measurement"}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </Form>
-                        </div>
-                    </CardContent>
-                </Card>
-            ) : (
-                <>
-                    <div>
-                        <form>
-                            <div className="flex mb-4 flex-col md:flex-row items-start md:items-end gap-4 my-6">
-                                {/* Member Search */}
-                                <div className="w-full md:w-90">
-                                    <div ref={searchRef} className="relative">
-                                        <Controller
-                                            name="memberName"
-                                            control={control}
-                                            render={({ field }) => (
-                                                <div className="relative">
-                                                    <Input
-                                                        id="member-search"
-                                                        {...field}
-                                                        autoComplete="off"
-                                                        value={searchQuery}
-                                                        onChange={(e) => {
-                                                            setSearchQuery(e.target.value);
-                                                            field.onChange(e);
+                                {renderDropdown && (
+                                    <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                        {members?.length > 0 ? (
+                                            members
+                                                .filter((member) => {
+                                                    return member.fullName
+                                                        .toLowerCase()
+                                                        .includes(searchQuery.toLowerCase());
+                                                })
+                                                .map((member) => (
+                                                    <div
+                                                        onClick={() => {
+                                                            setSearchQuery(member.fullName);
+                                                            setRenderDropdown(false);
+                                                            setSelectedMemberId(member._id);
                                                         }}
-                                                        onFocus={handleSearchFocus}
-                                                        className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
-                                                        placeholder="Type member name..."
-                                                    />
-                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                        <FiSearch className="h-4 w-4" />
+                                                        className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                        key={member._id}
+                                                        value={member._id}
+                                                    >
+                                                        {member.fullName}
                                                     </div>
-                                                </div>
-                                            )}
-                                        />
-                                        {errors.memberName && (
-                                            <p className="mt-1 text-xs text-red-600">
-                                                {errors.memberName.message}
-                                            </p>
-                                        )}
-
-                                        {renderDropdown && (
-                                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                {members?.length > 0 ? (
-                                                    members
-                                                        .filter((member) => {
-                                                            return member.fullName
-                                                                .toLowerCase()
-                                                                .includes(searchQuery.toLowerCase());
-                                                        })
-                                                        .map((member) => (
-                                                            <div
-                                                                onClick={() => {
-                                                                    setSearchQuery(member.fullName);
-                                                                    setRenderDropdown(false);
-                                                                    setSelectedMemberId(member._id);
-                                                                }}
-                                                                className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                key={member._id}
-                                                                value={member._id}
-                                                            >
-                                                                {member.fullName}
-                                                            </div>
-                                                        ))
-                                                ) : (
-                                                    <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
-                                                )}
-                                            </div>
+                                                ))
+                                        ) : (
+                                            <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
                                         )}
                                     </div>
-                                </div>
-
-                                {/* Select Data Group */}
-                                <Select className='rounded-sm'>
-                                    <SelectTrigger className="w-full rounded-sm">
-                                        <SelectValue placeholder="Select field" />
-                                    </SelectTrigger>
-                                    <SelectContent className='rounded-sm'>
-                                        <SelectGroup>
-                                            <SelectLabel>Select</SelectLabel>
-                                            <SelectItem value="Weight">Weight</SelectItem>
-                                            <SelectItem value="Chest">Chest</SelectItem>
-                                            <SelectItem value="Upper Arm">Upper Arm</SelectItem>
-                                            <SelectItem value="Fore Arm">Fore Arm</SelectItem>
-                                            <SelectItem value="Waist">Waist</SelectItem>
-                                            <SelectItem value="Thigh">Thigh</SelectItem>
-                                            <SelectItem value="Calf">Calf</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-
-                                {/* Date Range */}
-                                <div className="flex flex-col md:flex-row gap-4">
-                                    <div className="w-full md:w-48">
-                                        <Input
-                                            id="start-date"
-                                            type="date"
-                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
-                                        />
-                                    </div>
-
-                                    <div className="w-full md:w-48">
-                                        <Input
-                                            id="end-date"
-                                            type="date"
-                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Submit Button */}
-                                <div className="md:w-auto">
-                                    <Button
-                                        type="submit"
-                                        className="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                                    >
-                                        Filter Results
-                                    </Button>
-                                </div>
+                                )}
                             </div>
-                        </form>
-                    </div>
-
-                    {renderMainContents && (
-                        <div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                                {summaryMetrics.map((metric, index) => (
-                                    <Card key={index} className="overflow-hidden transition-all duration-200 hover:shadow-md">
-                                        <CardContent className="p-6">
-                                            <h3 className="text-sm font-medium text-muted-foreground">{metric.title}</h3>
-                                            <div className="flex items-end gap-2 mt-1">
-                                                <p className="text-2xl font-bold">{metric.value}</p>
-                                                {renderChangeIndicator(metric.change)}
-                                            </div>
-                                            <p className="text-xs text-muted-foreground mt-1">{metric.subtitle}</p>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-
-                            <Tabs defaultValue="charts" className="mt-6">
-                                <div className="flex border py-3 px-1 rounded-md justify-between items-center mb-4">
-                                    <TabsList>
-                                        <TabsTrigger value="charts">Charts</TabsTrigger>
-                                        <TabsTrigger value="table">Data Table</TabsTrigger>
-                                    </TabsList>
-
-                                    <Button onClick={handleAddNew}>Add New Measurement</Button>
-                                </div>
-
-                                <BodyMeasurementChartBySelectedValue />
-
-
-                                <TabsContent value="table" className="mt-0">
-                                    <Card>
-                                        <CardContent className="p-6">
-                                            {totalPages > 1 && (
-                                                <div className="flex items-center justify-between space-x-2 py-4">
-                                                    <div className="text-sm text-muted-foreground">
-                                                        Showing {firstItemIndex + 1}-{Math.min(lastItemIndex, sortedData.length)} of {sortedData.length}
-                                                    </div>
-                                                    <div className="flex items-center space-x-2">
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                                                            disabled={currentPage === 1}
-                                                        >
-                                                            Previous
-                                                        </Button>
-                                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                                            <Button
-                                                                key={page}
-                                                                variant={currentPage === page ? "default" : "outline"}
-                                                                size="sm"
-                                                                onClick={() => setCurrentPage(page)}
-                                                            >
-                                                                {page}
-                                                            </Button>
-                                                        ))}
-                                                        <Button
-                                                            variant="outline"
-                                                            size="sm"
-                                                            onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
-                                                            disabled={currentPage === totalPages}
-                                                        >
-                                                            Next
-                                                        </Button>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                </TabsContent>
-                            </Tabs>
                         </div>
-                    )}
-                </>
+
+                        {/* Select Data Group */}
+                        <Select className='rounded-sm'>
+                            <SelectTrigger className="w-full rounded-sm">
+                                <SelectValue placeholder="Select field" />
+                            </SelectTrigger>
+                            <SelectContent className='rounded-sm'>
+                                <SelectGroup>
+                                    <SelectLabel>Select</SelectLabel>
+                                    <SelectItem value="Weight">Weight</SelectItem>
+                                    <SelectItem value="Chest">Chest</SelectItem>
+                                    <SelectItem value="Upper Arm">Upper Arm</SelectItem>
+                                    <SelectItem value="Fore Arm">Fore Arm</SelectItem>
+                                    <SelectItem value="Waist">Waist</SelectItem>
+                                    <SelectItem value="Thigh">Thigh</SelectItem>
+                                    <SelectItem value="Calf">Calf</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                        {/* Date Range */}
+                        <div className="flex flex-col md:flex-row gap-4">
+                            <div className="w-full md:w-48">
+                                <Input
+                                    id="start-date"
+                                    type="date"
+                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
+                                />
+                            </div>
+
+                            <div className="w-full md:w-48">
+                                <Input
+                                    id="end-date"
+                                    type="date"
+                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="md:w-auto">
+                            <Button
+                                type="submit"
+                                className="w-full md:w-auto px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                            >
+                                Filter Results
+                            </Button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            {renderMainContents && (
+                <div>
+                    <Tabs defaultValue="charts" className="mt-6">
+                        <div className="flex px-1 rounded-md justify-between items-center mb-4">
+                            <TabsList>
+                                <TabsTrigger value="charts">Charts</TabsTrigger>
+                                <TabsTrigger value="table">Data Table</TabsTrigger>
+                            </TabsList>
+                        </div>
+
+                        <TabsContent value="charts" className="mt-0">
+                            <Card>
+                                <CardContent className="p-6">
+                                    <BodyMeasurementChartBySelectedValue />
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+
+                        <TabsContent value="table" className="mt-0 shadow-lg bg-transparent">
+                            <Card className="bg-transparent">
+                                <div className="flex items-center gap-2 p-2">
+                                    <span className="text-sm font-medium text-gray-600">Show</span>
+                                    <select
+                                        onChange={(e) => setLimit(Number(e.target.value))}
+                                        className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg px-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    >
+                                        <option value="15">15</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value={totalBodyMeasurements}>All</option>
+                                    </select>
+                                    <span className="text-sm font-medium text-gray-600">Body Measurements</span>
+                                    <span className="text-xs text-gray-500 ml-2">(Selected: {limit})</span>
+                                </div>
+                                <CardContent className="p-6">
+                                    <div className="overflow-x-auto">
+                                        <table className="min-w-full divide-y divide-gray-200">
+                                            <thead className="bg-gray-50">
+                                                <tr>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Date
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Weight
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Chest
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Waist
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Upper Arm
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Thigh
+                                                    </th>
+                                                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                        Notes
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody className="bg-white divide-y divide-gray-200">
+                                                {Array.isArray(measurements) && measurements.length > 0 ? (
+                                                    measurements.map((measurement) => (
+                                                        <tr key={measurement._id} className="hover:bg-gray-50">
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {formatDate(measurement.bodyMeasureDate)}
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {measurement.weight?.toFixed(1)} kg
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {measurement.chest?.toFixed(1)} cm
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {measurement.waist?.toFixed(1)} cm
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {measurement.upperArm?.toFixed(1)} cm
+                                                            </td>
+                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                                                {measurement.thigh?.toFixed(1)} cm
+                                                            </td>
+                                                            <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                                                                {measurement.notes}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
+                                                            No measurements recorded yet
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div className="w-full border border-0.5 mb-3"></div>
+
+                                    <div className='flex justify-between my-2 items-center'>
+                                        <div>
+                                            <p className="text-sm text-gray-500">
+                                                Showing <span className="font-medium">{startEntry}</span> to <span className="font-medium">{endEntry}</span> of{' '}
+                                                <span className="font-medium">{totalBodyMeasurements}</span> results
+                                            </p>
+                                        </div>
+
+                                        <div>
+                                            <Pagination
+                                                total={totalPages || 1}
+                                                page={currentPage || 1}
+                                                onChange={setCurrentPage}
+                                                withEdges={true}
+                                                siblings={1}
+                                                boundaries={1}
+                                                className="flex items-center space-x-1"
+                                            />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+                </div>
             )}
         </div>
     );
