@@ -198,10 +198,32 @@ const Attendance = () => {
                                                 </TableCell>
 
                                                 <TableCell>
-                                                    {formatDateTime(attendance.checkIn)}
+                                                    {
+                                                        attendance.checkIn ?
+                                                            `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
+                                                            new Date(attendance.checkIn).toLocaleTimeString('en-US', {
+                                                                hour12: true,
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                timeZone: 'UTC'
+                                                            })
+                                                            : ''
+                                                    }
                                                 </TableCell>
                                                 <TableCell>
-                                                    {formatDateTime(attendance.checkOut)}
+                                                    {
+                                                        attendance.checkOut ?
+                                                            `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
+                                                            new Date(attendance.checkOut).toLocaleTimeString('en-US', {
+                                                                hour12: true,
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                second: '2-digit',
+                                                                timeZone: 'UTC'
+                                                            })
+                                                            : ''
+                                                    }
                                                 </TableCell>
                                                 <TableCell>
                                                     {getRemarkBadge(attendance.remark)}
