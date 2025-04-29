@@ -19,7 +19,6 @@ import { FaUserCircle } from "react-icons/fa";
 import { FaTasks } from "react-icons/fa";
 import { FaUserCheck } from "react-icons/fa";
 import { BsChatFill } from "react-icons/bs";
-import { IoMdNotificationsOutline } from "react-icons/io";
 import { FaUsers } from "react-icons/fa";
 import { HiIdentification } from "react-icons/hi2";
 import { PiBuildingOfficeFill } from "react-icons/pi";
@@ -42,6 +41,8 @@ import {
     LogOut,
     Clock,
     Settings,
+    User,
+    UserPlus,
     Users,
 } from "lucide-react";
 import {
@@ -62,8 +63,8 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { MdDone, MdDelete, MdClose, MdError } from "react-icons/md";
 import Loader from "@/components/Loader/Loader";
+import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -87,6 +88,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useStaff } from "@/components/Providers/LoggedInStaffProvider";
 
 const CATEGORIES = [
     'Maintenance',
@@ -96,9 +98,10 @@ const CATEGORIES = [
     'Administration'
 ];
 
-
 const MyProfile = () => {
 
+    const { staff } = useStaff();
+    const staffId = staff?.loggedInStaff?._id || '';
     const [currentTime, setCurrentTime] = useState(null);
     const [staffDetails, setStaffDetails] = useState(null);
     const router = useRouter();
@@ -127,7 +130,7 @@ const MyProfile = () => {
                 setMyTasks(responseBody.myTasks);
             } else {
                 toast.error(responseBody.message);
-            }
+            };
         } catch (error) {
             toast.error(error.message);
             console.log("Error: ", error);
@@ -138,7 +141,7 @@ const MyProfile = () => {
         const fetchTasks = async () => {
             if (loggedinStaff) {
                 await getMyTasks(loggedinStaff._id);
-            }
+            };
         };
         fetchTasks();
     }, [status, priority, category, limit]);
@@ -150,11 +153,11 @@ const MyProfile = () => {
             if (response.ok) {
                 await getMyTasks(responseBody.loggedInStaff._id);
                 setStaffDetails(responseBody.loggedInStaff)
-            }
+            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data: loggedinStaff, isLoading: isLoggedinStaffLoading } = useQuery({
@@ -169,7 +172,7 @@ const MyProfile = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data, isLoading } = useQuery({
@@ -187,7 +190,7 @@ const MyProfile = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        }
+        };
     };
 
     const { data: AttendanceHistory, isLoading: isHistoryLoading } = useQuery({
@@ -231,7 +234,7 @@ const MyProfile = () => {
     const startTask = async (id) => {
         try {
             const status = 'In Progress';
-            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?status=${'In Progress'}`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/changestatus/${id}?status=${'In Progress'}`, {
                 method: "PATCH",
                 body: JSON.stringify(status)
             });
@@ -252,7 +255,7 @@ const MyProfile = () => {
     const completeTask = async (id) => {
         try {
             const status = 'Completed';
-            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?status=${status}`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/changestatus/${id}?status=${status}`, {
                 method: "PATCH",
                 body: JSON.stringify(status)
             });
@@ -307,56 +310,6 @@ const MyProfile = () => {
 
     return (
         <div className="w-full">
-            <div className="w-full flex justify-center">
-                <div className="w-11/12 md:w-10/12 flex justify-between items-center">
-                    <img
-                        src='/LOGO-BLACK.png'
-                        className="w-20 h-20"
-                    />
-
-                    <div>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <div className="flex items-center bg-gradient-to-r from-blue-400 via-blue-600 to-blue-700 hover:bg-gradient-to-l duration-500 transition-colors cursor-pointer p-2 rounded-sm shadow-lg">
-                                    <h1 className="font-semibold text-white mx-2">My Profile</h1>
-                                    <FaRegUserCircle className="text-2xl cursor-pointer text-white" />
-                                </div>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>
-                                        <User />
-                                        <span>Profile</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <Settings />
-                                        <span>Settings</span>
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem>
-                                        <IoMdNotificationsOutline />
-                                        <span>Notifications</span>
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuGroup>
-                                    <DropdownMenuItem>
-                                        <Users />
-                                        <span>Team</span>
-                                    </DropdownMenuItem>
-
-                                    <DropdownMenuItem onClick={() => logoutStaff()} className='cursor-pointer'>
-                                        <LogOut />
-                                        <span>Log Out</span>
-                                    </DropdownMenuItem>
-                                </DropdownMenuGroup>
-
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </div>
-            </div>
             {isLoading ? (
                 <Loader />
             ) : (

@@ -160,7 +160,7 @@ export function LoginForm({ className, ...props }) {
               </motion.div>
 
               <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
-              <p className="text-white/80 md:mb-8">Log in to access your dashboard and track your progress.</p>
+              <p className="text-white/80 md:mb-8">Log in to access your dashboard.</p>
 
               <div className="hidden md:flex flex-col space-y-4 mb-8">
                 <div className="flex items-center space-x-3 text-sm">
@@ -246,14 +246,14 @@ export function LoginForm({ className, ...props }) {
                   )}
                 </Button>
 
-                <div className="relative text-center text-sm mt-4">
+                {/* <div className="relative text-center text-sm mt-4">
                   <span className="relative z-10 bg-white/95 px-4 text-gray-500">
                     Or continue with
                   </span>
                   <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div>
+                </div> */}
 
-                <div className="grid grid-cols-3 gap-4">
+                {/* <div className="grid grid-cols-3 gap-4">
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaApple className="text-xl" />
                   </Button>
@@ -263,7 +263,7 @@ export function LoginForm({ className, ...props }) {
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaMeta className="text-xl" />
                   </Button>
-                </div>
+                </div> */}
               </form>
 
               <div className="mt-6 text-center">

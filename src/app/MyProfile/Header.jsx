@@ -1,5 +1,10 @@
 'use client';
 
+import { CgProfile } from "react-icons/cg";
+import { MdLocalOffer } from "react-icons/md";
+import { VscFeedback } from "react-icons/vsc";
+import { FaUserCheck } from "react-icons/fa6";
+import { GoTasklist } from "react-icons/go";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,7 +20,6 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { MdCardMembership } from "react-icons/md";
 import {
     Sheet,
     SheetClose,
@@ -39,28 +43,29 @@ import {
     User,
     QrCode
 } from 'lucide-react';
-import { FaTag } from "react-icons/fa";
 import { RiCustomerServiceFill } from "react-icons/ri";
-import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { useMember } from "@/components/Providers/LoggedInMemberProvider";
+import { useStaff } from "@/components/Providers/LoggedInStaffProvider";
 
 const StaffHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
-    const member = useMember();
+    const { staff } = useStaff();
+
+    const staffName = staff?.loggedInStaff?.fullName || '';
+    const staffStatus = staff?.loggedInStaff?.status || '';
+    const gymName = staff?.loggedInStaff?.gymName || '';
 
     const navItems = [
-        { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
-        { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat" },
-        { id: 'membershipdetails', icon: <MdCardMembership size={20} />, label: "Membership Details" },
-        { id: 'measurements', icon: <LineChart size={20} />, label: "Measurements" },
-        { id: 'payments', icon: <FaMoneyBillWaveAlt size={20} />, label: "Payments" },
-        { id: 'feedback', icon: <Star size={20} />, label: "Feedback" },
-        { id: 'promotions&offers', icon: <FaTag size={20} />, label: "Promotions & Offers" },
-        { id: 'customersupport', icon: <RiCustomerServiceFill size={20} />, label: "Customer Support" },
-        { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
+        { id: '/MyProfile', icon: <CgProfile size={20} />, label: "Profile" },
+        { id: '/MyProfile/chat', icon: <MessageSquare size={20} />, label: "Chat" },
+        { id: '/MyProfile/taskmanagement', icon: <GoTasklist size={20} />, label: "Task Management" },
+        { id: '/MyProfile/attendance', icon: <FaUserCheck size={20} />, label: "Attendance" },
+        { id: '/MyProfile/feedbacks', icon: <VscFeedback size={20} />, label: "Feedbacks & Ratings" },
+        { id: '/MyProfile/promotions&offers', icon: <MdLocalOffer size={20} />, label: "Promotions & Offers" },
+        { id: '/MyProfile/customersupport', icon: <RiCustomerServiceFill size={20} />, label: "Customer Support" },
+        { id: '/MyProfile/settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
     const handleNavClick = (id, tab) => {
@@ -68,30 +73,26 @@ const StaffHeader = ({ activeTab }) => {
         setIsSheetOpen(false);
     };
 
-    const logOutMember = async () => {
+    const logOutStaff = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/member/auth/member-logout`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
-
+            })
             const responseBody = await response.json();
-            if (response.ok) {
-                toast.success(responseBody.message);
-                router.push(responseBody.redirect);
-            };
+            if (response.status !== 200) {
+                toast.error('An unexpected error occurred. Please try again.');
+            }
+            else {
+                if (response.status === 200) {
+                    toast.success(responseBody.message);
+                    router.push(responseBody.redirect);
+                }
+            }
         } catch (error) {
+            toast.error(error);
             console.log("Error: ", error);
-        };
+        }
     };
-
-    // Safe access to member data
-    const memberName = member?.member?.loggedInMember?.fullName || '';
-    const memberStatus = member?.member?.loggedInMember?.status || '';
-    const memberId = member?.member?.loggedInMember?._id || '';
-    const gymName = member?.member?.loggedInMember?.gymName || '';
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -117,12 +118,12 @@ const StaffHeader = ({ activeTab }) => {
                                     </SheetHeader>
 
                                     {/* User profile */}
-                                    {member && member.member && member.member.loggedInMember && (
+                                    {staff && staff && staff.loggedInStaff && (
                                         <div className="px-4 py-6 border-b border-gray-200">
                                             <div className="flex items-center">
                                                 <div className="relative">
                                                     <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
-                                                        {memberName
+                                                        {staffName
                                                             ?.split(' ')
                                                             .map((word) => word[0])
                                                             .join('')
@@ -133,10 +134,10 @@ const StaffHeader = ({ activeTab }) => {
                                                     <span className="absolute bottom-0 right-0 block w-3 h-3 rounded-full bg-green-500 border-2 border-white"></span>
                                                 </div>
                                                 <div className="ml-3">
-                                                    <p className="font-medium text-gray-900">{memberName}</p>
+                                                    <p className="font-medium text-gray-900">{staffName}</p>
                                                     <p className="text-sm text-gray-500 flex items-center">
                                                         <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
-                                                            {memberStatus}
+                                                            {staffStatus}
                                                         </span>
                                                         {/* {memberId} */}
                                                     </p>
@@ -166,7 +167,7 @@ const StaffHeader = ({ activeTab }) => {
                                     <div className="px-4 py-4 border-t border-gray-200">
                                         <button
                                             onClick={() => {
-                                                logOutMember()
+                                                logOutStaff()
                                                 setIsSheetOpen(false);
                                             }}
                                             className="flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
@@ -191,14 +192,14 @@ const StaffHeader = ({ activeTab }) => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <div>
-                                {member?.member?.loggedInMember && (
+                                {staff?.loggedInStaff && (
                                     <div className="flex cursor-pointer items-center">
                                         <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
-                                            {memberName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
+                                            {staffName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
                                             <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
                                         </div>
                                         <span className="ml-2 text-sm font-medium text-gray-700 hidden lg:inline">
-                                            {memberName}
+                                            {staffName}
                                         </span>
                                     </div>
                                 )}
@@ -207,7 +208,7 @@ const StaffHeader = ({ activeTab }) => {
                         <DropdownMenuContent className="w-56">
                             <DropdownMenuLabel className='cursor-pointer'>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutMember}>
+                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutStaff}>
                                 <LogOut />
                                 Log out
                             </DropdownMenuItem>

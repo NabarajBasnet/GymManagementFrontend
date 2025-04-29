@@ -15,7 +15,6 @@ const LoggedInStaffProvider = ({ children }) => {
             });
             if (response.ok) {
                 const responseBody = await response.json();
-                console.log("Response body: ", responseBody);
                 setStaff(responseBody);
             } else {
                 setStaff(null);
