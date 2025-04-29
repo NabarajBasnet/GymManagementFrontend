@@ -56,6 +56,7 @@ const StaffHeader = ({ activeTab }) => {
     const staffName = staff?.loggedInStaff?.fullName || '';
     const staffStatus = staff?.loggedInStaff?.status || '';
     const gymName = staff?.loggedInStaff?.gymName || '';
+    const gymBranchName = staff?.loggedInStaff?.gymBranch || '';
 
     const navItems = [
         { id: '/MyProfile', icon: <CgProfile size={20} />, label: "Profile" },
@@ -75,7 +76,7 @@ const StaffHeader = ({ activeTab }) => {
 
     const logOutStaff = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();
@@ -135,11 +136,13 @@ const StaffHeader = ({ activeTab }) => {
                                                 </div>
                                                 <div className="ml-3">
                                                     <p className="font-medium text-gray-900">{staffName}</p>
-                                                    <p className="text-sm text-gray-500 flex items-center">
+                                                    <p className="text-sm text-gray-500 flex items-center space-x-2">
                                                         <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
                                                             {staffStatus}
                                                         </span>
-                                                        {/* {memberId} */}
+                                                        <span className="bg-indigo-100 text-black text-xs px-2 py-0.5 rounded-full mr-1">
+                                                            Branch: {gymBranchName}
+                                                        </span>
                                                     </p>
                                                 </div>
                                             </div>
