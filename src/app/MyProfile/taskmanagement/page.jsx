@@ -124,7 +124,7 @@ const TaskManagement = () => {
 
     const startTask = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/changestatus/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/tasks/changestatus/${id}?status=${'In Progress'}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const TaskManagement = () => {
 
     const completeTask = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/changestatus/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/tasks/changestatus/${id}?status=${'Completed'}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
@@ -445,10 +445,6 @@ const TaskManagement = () => {
                                                                     Add Comment
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
-                                                                <DropdownMenuItem className="gap-2 text-red-600">
-                                                                    <FaUserCircle className="h-4 w-4" />
-                                                                    Request Reassignment
-                                                                </DropdownMenuItem>
                                                             </DropdownMenuContent>
                                                         </DropdownMenu>
                                                     </div>
