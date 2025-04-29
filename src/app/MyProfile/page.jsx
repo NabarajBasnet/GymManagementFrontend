@@ -1,5 +1,19 @@
 'use client';
 
+import { FaCircleCheck } from "react-icons/fa6";
+import { FaLongArrowAltRight } from "react-icons/fa";
+import { FaCalendarAlt } from "react-icons/fa";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import toast from "react-hot-toast";
 import { FaUserCircle } from "react-icons/fa";
 import { FaTasks } from "react-icons/fa";
@@ -15,9 +29,7 @@ import { MdEmail } from "react-icons/md";
 import { FaPhone } from "react-icons/fa";
 import { FaUserAlt } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa";
-import { RiArrowRightCircleFill } from "react-icons/ri";
 import { LuMessageSquareText } from "react-icons/lu";
-import { FaCalendarAlt } from "react-icons/fa";
 import { GoAlertFill } from "react-icons/go";
 import { FaClipboard } from "react-icons/fa";
 import { Label } from '@/components/ui/label';
@@ -28,14 +40,8 @@ import Pagination from "@/components/ui/CustomPagination";
 import { FiMoreHorizontal } from "react-icons/fi";
 import {
     LogOut,
-    Mail,
-    MessageSquare,
-    Plus,
-    PlusCircle,
     Clock,
     Settings,
-    User,
-    UserPlus,
     Users,
 } from "lucide-react";
 import {
@@ -58,7 +64,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MdDone, MdDelete, MdClose, MdError } from "react-icons/md";
 import Loader from "@/components/Loader/Loader";
-import * as React from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -116,7 +121,7 @@ const MyProfile = () => {
 
     const getMyTasks = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
+            const response = await fetch(`http://localhost:3000/api/tasks/get-my-tasks/${id}?page=${currentPage}&limit=${limit}&status=${status}&priority=${priority}&category=${category}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setMyTasks(responseBody.myTasks);
@@ -140,7 +145,7 @@ const MyProfile = () => {
 
     const fetchedLoggedStaffDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/loggedin-staff`);
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 await getMyTasks(responseBody.loggedInStaff._id);
@@ -159,7 +164,7 @@ const MyProfile = () => {
 
     const fetchStaffQr = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffqr/${staffDetails._id}`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffDetails._id}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -176,7 +181,7 @@ const MyProfile = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `http://localhost:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             const responseBody = await response.json();
             return responseBody;
@@ -204,7 +209,7 @@ const MyProfile = () => {
 
     const logoutStaff = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();
@@ -226,7 +231,7 @@ const MyProfile = () => {
     const startTask = async (id) => {
         try {
             const status = 'In Progress';
-            const response = await fetch(`http://88.198.112.156:3000/api/tasks/start/${id}?startTask=${'In Progress'}`, {
+            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?status=${'In Progress'}`, {
                 method: "PATCH",
                 body: JSON.stringify(status)
             });
@@ -234,6 +239,27 @@ const MyProfile = () => {
             const responseBody = await response.json();
 
             if (response.ok) {
+                toast.success(responseBody.message);
+            } else {
+                toast.error(responseBody.message);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+        };
+    };
+
+    const completeTask = async (id) => {
+        try {
+            const status = 'Completed';
+            const response = await fetch(`http://localhost:3000/api/tasks/start/${id}?status=${status}`, {
+                method: "PATCH",
+                body: JSON.stringify(status)
+            });
+
+            const responseBody = await response.json();
+
+            if (response.ok && response.status === 200) {
                 toast.success(responseBody.message);
             } else {
                 toast.error(responseBody.message);
@@ -401,7 +427,7 @@ const MyProfile = () => {
                                         <div className="flex items-center space-x-4">
                                             <div className="flex-shrink-0">
                                                 <img
-                                                    src={`http://88.198.112.156:5000${staffDetails?.imageUrl}`}
+                                                    src={`http://localhost:5000${staffDetails?.imageUrl}`}
                                                     className="w-20 h-20 rounded-full cursor-pointer" />
                                             </div>
                                             <div>
@@ -547,74 +573,135 @@ const MyProfile = () => {
                                         </div>
 
                                         {/* Task List */}
-                                        <div className="p-2 md:p-6 space-y-4">
-                                            {/* High Priority Task */}
+                                        <div className="space-y-3 p-2 md:p-4 lg:p-6">
                                             {myTasks && myTasks.length > 0 ? (
                                                 myTasks.map((task, index) => (
                                                     <div
                                                         key={task._id || index}
-                                                        className="group bg-white md:p-4 p-2 rounded-lg border border-gray-200 hover:border-blue-200 hover:shadow-lg transition-all mb-4"
+                                                        className="group relative bg-white p-3 md:p-4 rounded-xl border border-gray-100 hover:border-blue-300 hover:shadow-lg transition-all duration-200 ease-in-out"
                                                     >
-                                                        <div className="flex items-start justify-between gap-4">
-                                                            <Checkbox id={`task-${index}`} className="mt-1.5 h-5 w-5 border-2" />
-                                                            <div className="flex-1">
-                                                                <div className="flex items-center gap-3 mb-2">
-                                                                    <Label htmlFor={`task-${index}`} className="text-base font-semibold">
-                                                                        Title: {task.title}
+                                                        {/* Priority indicator bar */}
+                                                        <div
+                                                            className={`absolute left-0 top-0 h-full w-1 rounded-l-lg ${task.priority === "High" ? "bg-red-500" :
+                                                                task.priority === "Medium" ? "bg-yellow-500" : "bg-green-500"
+                                                                }`}
+                                                        />
+
+                                                        <div className="flex items-start gap-3 pl-2 md:pl-3">
+                                                            {/* Checkbox */}
+                                                            <Checkbox
+                                                                id={`task-${index}`}
+                                                                className="mt-1 h-5 w-5 border-2 border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+                                                            />
+
+                                                            {/* Task Content */}
+                                                            <div className="flex-1 space-y-2">
+                                                                {/* Title and Priority */}
+                                                                <div className="flex flex-wrap items-center gap-2">
+                                                                    <Label
+                                                                        htmlFor={`task-${index}`}
+                                                                        className="text-base font-semibold text-gray-800 line-clamp-1"
+                                                                    >
+                                                                        {task.title}
                                                                     </Label>
 
                                                                     <Badge
                                                                         variant={task.priority === "High" ? "destructive" : "secondary"}
-                                                                        className="rounded-md flex items-center px-2 py-1"
+                                                                        className="rounded-md px-2 py-1 text-xs"
                                                                     >
-                                                                        <GoAlertFill
-                                                                            className={`h-4 w-4 mr-1 ${task.priority === "High"
-                                                                                ? "text-red-600"
-                                                                                : task.priority === "Medium"
-                                                                                    ? "text-yellow-500"
-                                                                                    : "text-green-500"
-                                                                                }`}
-                                                                        />
+                                                                        <span className="flex items-center gap-1">
+                                                                            <GoAlertFill
+                                                                                className={`h-3 w-3 ${task.priority === "High" ? "text-red-600" :
+                                                                                    task.priority === "Medium" ? "text-yellow-500" : "text-green-500"
+                                                                                    }`}
+                                                                            />
+                                                                            {task.priority} Priority
+                                                                        </span>
                                                                     </Badge>
                                                                 </div>
 
-                                                                <p className="text-sm text-gray-600 mb-4">
-                                                                    Description: {task.description}
+                                                                {/* Description */}
+                                                                <p className="text-sm text-gray-600 line-clamp-2">
+                                                                    {task.description || "No description provided"}
                                                                 </p>
 
-                                                                <div className="flex items-center justify-between">
-                                                                    <div>
-                                                                        <div className="flex items-center gap-3 text-sm text-gray-500">
-                                                                            <FaCalendarAlt size={16} className="h-4 w-4" />
-                                                                            <span>Due Date: {new Date(task.dueDate).toLocaleDateString()}</span>
+                                                                {/* Metadata and Actions */}
+                                                                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pt-1">
+                                                                    <div className="space-y-1.5">
+                                                                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                                            <FaCalendarAlt className="h-3.5 w-3.5 text-gray-400" />
+                                                                            <span>Due: {new Date(task.dueDate).toLocaleDateString()}</span>
                                                                         </div>
 
-                                                                        <div className="flex items-center gap-3 text-sm text-gray-500">
-                                                                            <Clock size={16} className="h-4 w-4" />
-                                                                            <span>Due Date:{formatTo12Hour(task.dueTime)}
-                                                                            </span>
+                                                                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                                                                            <Clock className="h-3.5 w-3.5 text-gray-400" />
+                                                                            <span>{formatTo12Hour(task.dueTime)}</span>
                                                                         </div>
                                                                     </div>
 
-                                                                    <div className="flex gap-2">
+                                                                    <div className="flex items-center gap-2 self-end md:self-auto">
+                                                                        {/* Dropdown Menu */}
                                                                         <DropdownMenu>
                                                                             <DropdownMenuTrigger asChild>
-                                                                                <Button variant="ghost" size="sm" className="rounded-lg">
+                                                                                <Button
+                                                                                    variant="ghost"
+                                                                                    size="sm"
+                                                                                    className="rounded-lg h-8 w-8 p-0 hover:bg-gray-100"
+                                                                                >
                                                                                     <FiMoreHorizontal className="h-4 w-4" />
                                                                                 </Button>
                                                                             </DropdownMenuTrigger>
-                                                                            <DropdownMenuContent align="end" className="min-w-[200px]">
-                                                                                <DropdownMenuItem className="gap-2">
-                                                                                    <LuMessageSquareText className="h-4 w-4" /> Add Comment
+                                                                            <DropdownMenuContent align="end" className="w-48">
+                                                                                <DropdownMenuItem className="gap-2 text-sm">
+                                                                                    <LuMessageSquareText className="h-4 w-4" />
+                                                                                    Add Comment
                                                                                 </DropdownMenuItem>
                                                                                 <DropdownMenuSeparator />
                                                                             </DropdownMenuContent>
                                                                         </DropdownMenu>
-                                                                        <Button
-                                                                            onClick={() => startTask(task._id)}
-                                                                            variant="outline" size="sm" className="rounded-lg gap-2">
-                                                                            <RiArrowRightCircleFill className="h-4 w-4" /> Start Task
-                                                                        </Button>
+
+                                                                        {/* Action Buttons */}
+                                                                        <div className="flex gap-2">
+                                                                            <Button
+                                                                                onClick={() => startTask(task._id)}
+                                                                                variant="outline"
+                                                                                size="sm"
+                                                                                className="rounded-lg gap-1.5 h-8 text-sm font-medium"
+                                                                            >
+                                                                                <FaLongArrowAltRight className="h-4 w-4 text-blue-500" />
+                                                                                <span className="hidden sm:inline">Start</span>
+                                                                            </Button>
+
+                                                                            <AlertDialog>
+                                                                                <AlertDialogTrigger asChild>
+                                                                                    <Button
+                                                                                        variant="outline"
+                                                                                        size="sm"
+                                                                                        className="rounded-lg gap-1.5 h-8 text-sm font-medium text-green-600 hover:text-green-700 border-green-200 hover:bg-green-50"
+                                                                                    >
+                                                                                        <FaCircleCheck className="h-4 w-4" />
+                                                                                        <span className="hidden sm:inline">Complete</span>
+                                                                                    </Button>
+                                                                                </AlertDialogTrigger>
+                                                                                <AlertDialogContent>
+                                                                                    <AlertDialogHeader>
+                                                                                        <AlertDialogTitle>Mark task as completed?</AlertDialogTitle>
+                                                                                        <AlertDialogDescription>
+                                                                                            This will move the task to your completed tasks. You can view it later in your task history.
+                                                                                        </AlertDialogDescription>
+                                                                                    </AlertDialogHeader>
+                                                                                    <AlertDialogFooter>
+                                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                                        <AlertDialogAction
+                                                                                            onClick={() => completeTask(task._id)}
+                                                                                            className="bg-green-600 hover:bg-green-700"
+                                                                                        >
+                                                                                            Confirm
+                                                                                        </AlertDialogAction>
+                                                                                    </AlertDialogFooter>
+                                                                                </AlertDialogContent>
+                                                                            </AlertDialog>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -622,13 +709,16 @@ const MyProfile = () => {
                                                     </div>
                                                 ))
                                             ) : (
-                                                <Loader />
+                                                <div className="flex flex-col items-center justify-center py-12">
+                                                    <Loader />
+                                                    <p className="mt-4 text-gray-500">Loading your tasks...</p>
+                                                </div>
                                             )}
                                         </div>
 
                                         {/* Enhanced Pagination */}
-                                        <div className="w-full flex justify-center items-center">
-                                            <div className="w-full border-t">
+                                        <div className="w-full flex justify-center md:justify-end items-center border-t">
+                                            <div className="w-full my-4">
                                                 <Pagination
                                                     total={1}
                                                     page={1}
@@ -709,7 +799,7 @@ const MyProfile = () => {
                                                 </TableBody>
                                             </Table>
                                         </TableContainer>
-                                        <div className="my-4">
+                                        <div className="my-8 ">
                                             <Pagination
                                                 total={totalPages || 1}
                                                 page={currentPage || 1}

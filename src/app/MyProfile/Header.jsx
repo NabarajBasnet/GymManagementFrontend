@@ -46,7 +46,7 @@ import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useMember } from "@/components/Providers/LoggedInMemberProvider";
 
-const MemberHeader = ({ activeTab }) => {
+const StaffHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
     const member = useMember();
@@ -219,4 +219,4 @@ const MemberHeader = ({ activeTab }) => {
     );
 };
 
-export default MemberHeader;
+export default StaffHeader;
