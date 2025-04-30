@@ -19,7 +19,7 @@ function App() {
         const { email, password } = data;
         const finalData = { email, password };
         try {
-            const response = await fetch(`http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/staff-login/login`, {
+            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

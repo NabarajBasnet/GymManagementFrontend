@@ -7,7 +7,7 @@ const LearnAggregation = () => {
 
   const getData = async () => {
     try {
-      const response = await fetch('http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/aggregation');
+      const response = await fetch('http://gymmanagementbackend-o2l3.onrender.com:3000/api/aggregation');
 
       const resBody = await response.json();
       console.log(resBody);

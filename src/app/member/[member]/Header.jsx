@@ -70,7 +70,7 @@ const MemberHeader = ({ activeTab }) => {
 
     const logOutMember = async () => {
         try {
-            const response = await fetch(`http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/member/auth/member-logout`, {
+            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/member/auth/member-logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

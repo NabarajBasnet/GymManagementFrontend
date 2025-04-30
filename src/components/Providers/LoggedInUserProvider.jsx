@@ -10,7 +10,7 @@ const LoggedInUserProvider = ({ children }) => {
 
     const getLoggedInUserDetails = async () => {
         try {
-            const response = await fetch(`http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/auth/me`, {
+            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/auth/me`, {
                 credentials: 'include',
             });
             if (response.ok) {

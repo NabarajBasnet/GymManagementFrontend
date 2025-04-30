@@ -35,7 +35,7 @@ const Attendance = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `http://gymmanagementbackend-o2l3.onrender.com:3000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Network response was not ok');

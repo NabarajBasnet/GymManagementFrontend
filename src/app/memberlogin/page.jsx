@@ -32,7 +32,7 @@ const MemberLogin = () => {
         try {
             const { email, password } = data;
             const credentials = { email, password }
-            const response = await fetch('http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/member/auth/member-login', {
+            const response = await fetch('http://gymmanagementbackend-o2l3.onrender.com:3000/api/member/auth/member-login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

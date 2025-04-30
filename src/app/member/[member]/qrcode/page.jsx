@@ -23,7 +23,7 @@ const QRCodePage = () => {
         setError(null);
 
         try {
-            const response = await fetch(`http://https://gymmanagementbackend-o2l3.onrender.com:3000/api/member/member-qr/${memberId}`);
+            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/member/member-qr/${memberId}`);
             const responseBody = await response.json();
 
             if (response.ok) {
