@@ -234,7 +234,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         formData.append("staffImage", staffImage);
 
         try {
-            const response = await fetch("http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffsmanagement/upload-image", {
+            const response = await fetch("gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement/upload-image", {
                 method: "POST",
                 body: formData,
             });
@@ -326,7 +326,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             relationship
         };
         try {
-            const url = `http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
+            const url = `gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement/changedetails/${staff.staff._id}`
 
             const method = "PATCH";
 

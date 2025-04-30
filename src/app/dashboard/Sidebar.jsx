@@ -99,7 +99,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/auth/logout`, {
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"

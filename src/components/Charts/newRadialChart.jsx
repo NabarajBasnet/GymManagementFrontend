@@ -68,7 +68,7 @@ export function NewRadialChart() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);

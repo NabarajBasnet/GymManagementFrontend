@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://gymmanagementbackend-o2l3.onrender.com:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
       if (responseBody.redirect) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://gymmanagementbackend-o2l3.onrender.com:3000/api/averageactivemembers');
+      const response = await fetch('gymmanagementbackend-o2l3.onrender.com/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);

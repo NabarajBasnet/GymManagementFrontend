@@ -113,7 +113,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/members`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -142,7 +142,7 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

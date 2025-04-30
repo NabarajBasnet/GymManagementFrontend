@@ -64,7 +64,7 @@ const MembershipLogs = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/members`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -86,7 +86,7 @@ const MembershipLogs = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
             const responseBody = await response.json();
             console.log('Response Body: ', responseBody);
             return responseBody;

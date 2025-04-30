@@ -34,7 +34,7 @@ export default function SignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('http://gymmanagementbackend-o2l3.onrender.com:3000/api/auth/signup', {
+            const response = await fetch('gymmanagementbackend-o2l3.onrender.com/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

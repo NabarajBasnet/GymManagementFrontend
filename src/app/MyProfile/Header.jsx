@@ -76,7 +76,7 @@ const StaffHeader = ({ activeTab }) => {
 
     const logOutStaff = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/staff-login/logout`, {
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();

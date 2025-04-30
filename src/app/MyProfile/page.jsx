@@ -26,7 +26,7 @@ const MyProfile = () => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/loggedin-staff`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 setStaffDetails(responseBody.loggedInStaff);
@@ -43,7 +43,7 @@ const MyProfile = () => {
     const fetchStaffQr = async () => {
         try {
             if (!staffId) return null;
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffqr/${staffId}`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffqr/${staffId}`);
             const responseBody = await response.json();
             if (!response.ok) {
                 throw new Error(responseBody.message || 'Failed to fetch QR code');

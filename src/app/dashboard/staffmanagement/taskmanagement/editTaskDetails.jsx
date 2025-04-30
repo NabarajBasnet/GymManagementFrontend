@@ -143,7 +143,7 @@ const EditTaskDetails = ({ task, id }) => {
     // Functions
     const getAllStaffMembers = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffsmanagement`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -169,7 +169,7 @@ const EditTaskDetails = ({ task, id }) => {
                     return;
                 };
             };
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/tasks/edit/${id}`, {
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/tasks/edit/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

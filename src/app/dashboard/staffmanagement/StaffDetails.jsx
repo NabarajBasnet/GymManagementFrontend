@@ -68,7 +68,7 @@ const StaffDetails = ({ staffId }) => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffsmanagement/${staffId}`);
+            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement/${staffId}`);
             const responseBody = await response.json();
             if (response.status === 200 && responseBody.staff) {
                 reset({
@@ -133,7 +133,7 @@ const StaffDetails = ({ staffId }) => {
             gender, shift, joinedDate, workingHours, status, salary, role
         };
         try {
-            const url = `http://gymmanagementbackend-o2l3.onrender.com:3000/api/staffsmanagement/changedetails/${staffId}`
+            const url = `gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
 
             const response = await fetch(url, {
