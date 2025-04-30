@@ -1,31 +1,64 @@
 'use client';
 
-import { MdFeedback } from "react-icons/md";
-import { toast as notify } from 'react-hot-toast';
-import { FaRulerHorizontal } from "react-icons/fa";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from "next/navigation";
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-hot-toast';
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { motion } from 'framer-motion';
+
+// Icons
+import { FaDumbbell } from "react-icons/fa6";
+import {
+    RiCustomerService2Fill,
+} from 'react-icons/ri';
+import {
+    BiSolidUserCheck,
+} from 'react-icons/bi';
+import {
+    FaUsers,
+    FaMoneyCheckAlt,
+    FaRegUser,
+    FaChartLine,
+    FaTags,
+    FaClipboardList,
+    FaUserCog,
+    FaBoxOpen,
+    FaRulerHorizontal,
+} from 'react-icons/fa';
+import {
+    MdPayments,
+    MdFeedback,
+    MdAutoGraph,
+    MdAttachMoney,
+} from 'react-icons/md';
 import { LuLogs } from "react-icons/lu";
-import { MdAutoGraph } from "react-icons/md";
+import { GiLockers, GiBiceps } from 'react-icons/gi';
+import { TiUserAdd } from 'react-icons/ti';
+import { AiOutlineSchedule } from 'react-icons/ai';
+import { HiUsers } from "react-icons/hi2";
+import { FaUsersGear, FaUsersRays } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FcParallelTasks } from "react-icons/fc";
-import { FaUsersRays } from "react-icons/fa6";
-import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
-import { PiStarFour } from "react-icons/pi";
-import { Button } from "@/components/ui/button";
-import { FaBoxOpen } from "react-icons/fa";
-import { BiSolidDashboard } from "react-icons/bi";
+import { PiUsersFourFill, PiUsersThreeBold, PiStarFour } from "react-icons/pi";
 import {
-    ChevronsUpDown,
     LogOut,
     Settings,
     User,
-    UserPlus,
-    Users,
-    Plus,
-    FileBarChart,
-    Calendar,
-    Tag,
-    Box,
+    ChevronRight,
+    LayoutDashboard,
+    Bell,
+    Crown,
 } from "lucide-react";
+
+// Components
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/DashboardUI/SidebarAccrodin";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -34,51 +67,34 @@ import {
     DropdownMenuLabel,
     DropdownMenuPortal,
     DropdownMenuSeparator,
-    DropdownMenuShortcut,
     DropdownMenuSub,
     DropdownMenuSubContent,
     DropdownMenuSubTrigger,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FaUserCircle } from "react-icons/fa";
-import { HiUsers } from "react-icons/hi2";
-import { useSelector, useDispatch } from 'react-redux';
-import '../globals.css'
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/DashboardUI/SidebarAccrodin";
-import React from 'react';
-import { RiDashboard2Line, RiUserUnfollowFill, RiCustomerService2Fill, RiRunLine } from 'react-icons/ri';
-import { BiSolidUserCheck } from 'react-icons/bi';
-import { GiLockers, GiBiceps } from 'react-icons/gi';
-import { TiUserAdd } from 'react-icons/ti';
-import { FaUsers, FaMoneyCheckAlt, FaRegUser, FaBox, FaChartLine, FaTags, FaCog, FaDumbbell, FaCalendarAlt, FaTicketAlt, FaClipboardList, FaUserCog } from 'react-icons/fa';
-import { MdPayments, MdFitnessCenter, MdEventAvailable, MdAttachMoney, MdSupportAgent } from 'react-icons/md';
-import { AiOutlineSchedule } from 'react-icons/ai';
-import Link from 'next/link';
-import { FaUsersGear } from "react-icons/fa6";
-import { RiDashboard3Fill } from "react-icons/ri";
-import { ToggleAdminSidebar, MinimizeSidebar } from '@/state/slicer';
-import { useRouter } from "next/navigation";
-import { MdDelete, MdError, MdClose, MdDone } from "react-icons/md";
-import { useState } from "react";
-import { Separator } from "@/components/ui/separator";
-import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Badge } from "@/components/ui/badge";
 
 const Sidebar = () => {
-
     const { user } = useUser();
-
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const dispatch = useDispatch();
 
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('')
+    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
+    const [activeItem, setActiveItem] = useState('');
+    const [hoveredItem, setHoveredItem] = useState(null);
+    const [notifications, setNotifications] = useState(3); // Demo notification count
+
+    // Set active item based on current route
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const path = window.location.pathname;
+            setActiveItem(path);
+        }
+    }, []);
 
     const logoutUser = async () => {
         setLoading(true);
@@ -91,64 +107,67 @@ const Sidebar = () => {
                 credentials: "include"
             });
             const responseBody = await response.json();
-            const responseResultType = ['Success', 'Failure'];
 
             if (response.ok) {
                 setLoading(false);
-                // setResponseType(responseResultType[0]);
-                // setToast(true);
-                // setTimeout(() => {
-                //     setToast(false);
-                // }, 6000);
-                // setSuccessMessage({
-                //     icon: MdDone,
-                //     message: responseBody.message
-                // })
-                notify.success(responseBody.message);
+                toast.success(responseBody.message, {
+                    style: {
+                        background: '#10B981',
+                        color: '#FFFFFF',
+                        fontWeight: '500'
+                    },
+                    iconTheme: {
+                        primary: '#FFFFFF',
+                        secondary: '#10B981',
+                    }
+                });
                 router.push("/login");
                 window.location.reload();
-            };
+            }
         } catch (error) {
-            const responseResultType = ['Success', 'Failure'];
             console.log("Error: ", error);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false);
-            }, 6000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message
-            })
-        };
+            toast.error("Failed to logout. Please try again.", {
+                style: {
+                    background: '#EF4444',
+                    color: '#FFFFFF',
+                    fontWeight: '500'
+                }
+            });
+            setLoading(false);
+        }
     };
 
-    const dispatch = useDispatch();
-    const adminSidebar = useSelector(state => state.rtkreducer.adminSidebar);
-    const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
-
-    const minimizeSidebar = () => {
-        if (sidebarMinimized) {
-            dispatch(MinimizeSidebar());
+    // Animation variants
+    const itemVariants = {
+        hidden: { opacity: 0, x: -20 },
+        visible: {
+            opacity: 1, x: 0,
+            transition: {
+                type: "spring",
+                stiffness: 500,
+                damping: 30,
+                duration: 0.3
+            }
         }
-    }
+    };
 
-    // Categorized sidebar content
+    // Advanced sidebar content
     const sidebarContent = [
         // Dashboard
         {
             category: "Main",
             items: [
                 {
-                    icon: RiDashboard3Fill,
+                    icon: LayoutDashboard,
                     title: 'Dashboard',
                     link: '/dashboard',
+                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500'
                 }
             ]
         },
-        // Checkin Management
+        // Attendance Management
         {
-            category: "Attendance Management",
+            category: "Attendance",
             items: [
                 {
                     icon: BiSolidUserCheck,
@@ -157,19 +176,20 @@ const Sidebar = () => {
                     subObj: [
                         { icon: FaRegUser, title: 'Member Attendance', link: '/dashboard/attendance/memberattendance' },
                         { icon: FaUserCog, title: 'Staff Attendance', link: '/dashboard/attendance/staffattendance' },
-                        { icon: FaClipboardList, title: 'Attendance History', link: '/dashboard/attendance/attendancehistory' }
+                        { icon: FaClipboardList, title: 'Attendance History', link: '/dashboard/attendance/attendancehistory', }
                     ]
                 },
             ]
         },
         // Member Management
         {
-            category: "Member Management",
+            category: "Members",
             items: [
                 {
                     icon: TiUserAdd,
                     title: 'New Member',
                     link: '/dashboard/newmember',
+                    highlight: true
                 },
                 {
                     icon: FaUsers,
@@ -195,6 +215,8 @@ const Sidebar = () => {
                     icon: MdAutoGraph,
                     title: 'Member Performance',
                     link: '/dashboard/members/memberperformance',
+                    badge: 'Pro',
+                    badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
                 },
                 {
                     icon: FaRulerHorizontal,
@@ -205,7 +227,7 @@ const Sidebar = () => {
         },
         // Staff Operations
         {
-            category: "Staff Management",
+            category: "Staff",
             items: [
                 {
                     icon: HiUsers,
@@ -218,7 +240,7 @@ const Sidebar = () => {
                     link: '/dashboard/staffmanagement',
                     subObj: [
                         { icon: IoPeopleSharp, title: 'Staffs', link: '/dashboard/staffmanagement/staffs' },
-                        { icon: FcParallelTasks, title: 'Task Management', link: '/dashboard/staffmanagement/taskmanagement' },
+                        { icon: FcParallelTasks, title: 'Task Management', link: '/dashboard/staffmanagement/taskmanagement', badge: 'New', badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500' },
                     ]
                 },
             ]
@@ -246,7 +268,7 @@ const Sidebar = () => {
         },
         // Facility Management
         {
-            category: "Facility Management",
+            category: "Facility",
             items: [
                 {
                     icon: GiLockers,
@@ -258,33 +280,35 @@ const Sidebar = () => {
                     title: 'Personal Training',
                     link: '/dashboard/personaltraining',
                     subObj: [
-                        { icon: FaDumbbell, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' }
+                        { icon: FaDumbbell, title: 'Book Training', link: '/dashboard/personaltraining/booktraining' }
                     ]
                 },
                 {
                     icon: AiOutlineSchedule,
-                    title: 'Schedule Management',
+                    title: 'Schedule',
                     link: '/dashboard/schedulemanagement',
                 },
             ]
         },
         // Analytics & Support
         {
-            category: "Reports & Support",
+            category: "Reports",
             items: [
                 {
                     icon: FaChartLine,
-                    title: 'Analytics & Reports',
+                    title: 'Analytics',
                     link: '/dashboard/analytics',
+                    badge: 'Pro',
+                    badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
                 },
                 {
                     icon: MdFeedback,
-                    title: 'Members Feedback',
+                    title: 'Feedback',
                     link: '/dashboard/feedbacks',
                 },
                 {
                     icon: RiCustomerService2Fill,
-                    title: 'Customer Support',
+                    title: 'Support',
                     link: '/dashboard/customersupport',
                 },
                 {
@@ -296,172 +320,327 @@ const Sidebar = () => {
         },
     ];
 
+    // Function to determine if a link is active
+    const isActive = (link) => {
+        return activeItem === link || activeItem.startsWith(link + '/');
+    };
+
     return (
-        <div
-            onClick={() => setToast(false)}
-            className={`fixed left-0 transition-all bg-gray-100 duration-500 rounded-none top-0 h-full ${sidebarMinimized ? 'w-12' : 'w-60'} z-20 flex border-r flex-col`}
-        >
-            {toast ? (
-                <div className="fixed top-0 left-1/2 transform -translate-x-1/2 mt-4 z-[1000] flex items-center justify-between bg-white border shadow-2xl p-4 rounded">
-                    <div>
-                        {responseType === 'Success' ? (
-                            <MdDone className="text-3xl mx-4 text-green-600" />
-                        ) : (
-                            <MdError className="text-3xl mx-4 text-red-600" />
-                        )}
-                    </div>
-                    <div className="block">
-                        {responseType === 'Success' ? (
-                            <p className="text-sm font-semibold text-green-600">{successMessage.message}</p>
-                        ) : (
-                            <p className="text-sm font-semibold text-red-600">{errorMessage.message}</p>
-                        )}
-                    </div>
-                    <div>
-                        <MdClose
-                            onClick={() => setToast(false)}
-                            className="cursor-pointer text-3xl ml-4"
-                        />
-                    </div>
-                </div>
-            ) : null}
-
-            <Link href={'/dashboard'} className="flex py-3 items-center border-b border-gra-50">
-                <BiSolidDashboard className='text-3xl mx-2 text-start bg-blue-600 text-white p-1 rounded-md' />
-                <div className="">
-                    {sidebarMinimized ? (
-                        <></>
-                    ) : (
-                        <span>
-                            <p className="w-full text-md font-bold text-gray-900">Revive Fitness</p>
-                            <p className="w-full text-[10px] font-semibold text-blue-400">Starter</p>
-                        </span>
-                    )}
-                </div>
-            </Link>
-
-            <div className="flex-grow overflow-y-auto ::-webkit-scrollbar ::-webkit-scrollbar-track ::-webkit-scrollbar-thumb ::-webkit-scrollbar-thumb:hover">
-                {/* Render categorized sidebar items */}
-                {sidebarContent.map((category, categoryIndex) => (
-                    <div key={categoryIndex} className="mb-1">
+        <TooltipProvider delayDuration={200}>
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3 }}
+                className={`fixed left-0 transition-all duration-300 bg-white dark:bg-gray-900 top-0 h-full 
+          ${sidebarMinimized ? 'w-20' : 'w-60'} z-50 flex flex-col 
+          shadow-[5px_0_30px_rgba(0,0,0,0.05)] dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
+            >
+                {/* Logo and Brand */}
+                <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-2 py-5">
+                    <Link href={'/dashboard'} className="flex items-center">
+                        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z" fill="white" />
+                                <path d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z" fill="white" />
+                                <path d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z" fill="white" />
+                                <path d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z" fill="white" />
+                                <path d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z" fill="white" />
+                                <path d="M13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7C12.5523 7 13 7.44772 13 8Z" fill="white" />
+                                <path d="M9 8C9 8.55228 8.55228 9 8 9C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7C8.55228 7 9 7.44772 9 8Z" fill="white" />
+                            </svg>
+                            <div className="absolute inset-0 bg-white opacity-10 rounded-xl animate-pulse" style={{ animationDuration: '3s' }}></div>
+                        </div>
                         {!sidebarMinimized && (
-                            <p className='text-[11px] uppercase tracking-wider font-bold text-black ml-3 mt-3 mb-1 text-gray-500'>{category.category}</p>
-                        )}
-                        <ul>
-                            {category.items.map((sidebar, index) => (
-                                <li key={index} className="p-1">
-                                    {sidebar.subObj ? (
-                                        <Accordion type="single" collapsible className="w-full py-1">
-                                            <AccordionItem value={`item-${categoryIndex}-${index}`}>
-                                                <AccordionTrigger className="w-full flex items-center px-2 text-gray-800 hover:text-black rounded cursor-pointer transition-colors font-normal">
-                                                    <sidebar.icon className='text-xl text-blue-600 hover:text-blue-500' />
-                                                    {
-                                                        sidebarMinimized ? (
-                                                            <></>
-                                                        ) : (
-                                                            <h1 className='text-start mx-2 text-sm font-medium'>{sidebar.title}</h1>
-                                                        )
-                                                    }
-                                                </AccordionTrigger>
-                                                <div className="border-l border-gray-700 ml-6 flex flex-col">
-                                                    {sidebar.subObj.map((subItem, subIndex) => (
-                                                        <AccordionContent key={subIndex} className="flex items-center">
-                                                            <Link
-                                                                href={subItem.link}
-                                                                className="flex items-center text-gray-800 hover:text-blue-600 w-full pl-2 py-1 rounded"
-                                                            >
-                                                                <subItem.icon className="text-sm text-gray-800 hover:text-blue-600" />
-                                                                {!sidebarMinimized && (
-                                                                    <h1 className="mx-2 text-xs">{subItem.title}</h1>
-                                                                )}
-                                                            </Link>
-                                                        </AccordionContent>
-                                                    ))}
-                                                </div>
-                                            </AccordionItem>
-                                        </Accordion>
-                                    ) : (
-                                        <Link href={sidebar.link} className="flex items-center p-2 text-gray-800 hover:text-black cursor-pointer rounded transition-colors">
-                                            <sidebar.icon className='text-xl text-blue-600' />
-                                            {
-                                                sidebarMinimized ? (
-                                                    <></>
-                                                ) : (
-                                                    <h1 className='mx-2 text-sm font-medium'>{sidebar.title}</h1>
-                                                )
-                                            }
-                                        </Link>
-                                    )}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                ))}
-            </div>
-
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <div className="flex items-center cursor-pointer p-2 border-t border-gray-400 hover:bg-gray-200">
-                        <FaUserCircle className="text-3xl mr-2 text-blue-600" />
-                        {sidebarMinimized ? null : (
-                            <div>
-                                <div className="flex items-center">
-                                    <h1 className="text-sm text-gray-800 hover:text-blue-600">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                            <div className="ml-3.5">
+                                <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">Revive Fitness</p>
+                                <div className="flex items-center gap-1.5">
+                                    <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Fitness Center</p>
+                                    <Badge variant="outline" className="text-[9px] py-0 h-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 font-medium">
+                                        Pro
+                                    </Badge>
                                 </div>
-                                <p className="font-semibold text-[11px] text-gray-900 hover:text-gray-800">
-                                    {user && user.user.email || ''}
-                                </p>
                             </div>
                         )}
-                    </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-gray-900 text-gray-200 border-gray-700" side="right" align="start">
-                    <DropdownMenuLabel className="text-gray-300">My Account</DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-gray-700" />
-                    <DropdownMenuGroup>
-                        <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
-                            <Button className='space-x-2 flex justify-between items-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700'>
-                                <PiStarFour />
-                                Upgrade Plan
+                    </Link>
+                </div>
+
+                {/* Sidebar Content */}
+                <div className="flex-grow overflow-y-auto px-3 py-5 scrollbar-background-white scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
+                    {sidebarContent.map((category, categoryIndex) => (
+                        <motion.div
+                            key={categoryIndex}
+                            initial="hidden"
+                            animate="visible"
+                            transition={{ staggerChildren: 0.05, delayChildren: categoryIndex * 0.05 }}
+                            className="mb-6"
+                        >
+                            {!sidebarMinimized && (
+                                <motion.p
+                                    variants={itemVariants}
+                                    className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 ml-3 mb-3 letter-spacing-[0.2em]"
+                                >
+                                    {category.category}
+                                </motion.p>
+                            )}
+                            <ul>
+                                {category.items.map((item, index) => (
+                                    <motion.li
+                                        key={index}
+                                        variants={itemVariants}
+                                        className="mb-1.5"
+                                        onMouseEnter={() => setHoveredItem(`${categoryIndex}-${index}`)}
+                                        onMouseLeave={() => setHoveredItem(null)}
+                                    >
+                                        {item.subObj ? (
+                                            <Accordion type="single" collapsible className="w-full">
+                                                <AccordionItem value={`item-${categoryIndex}-${index}`}>
+                                                    <AccordionTrigger
+                                                        className={`group w-full flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
+                                                            ${isActive(item.link)
+                                                                ? 'bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500'
+                                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                                            }`}
+                                                    >
+                                                        <div className={`flex items-center ${isActive(item.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`}>
+                                                            <div className="relative">
+                                                                <item.icon className={`w-5 h-5 transition-all duration-200 
+                                                                ${hoveredItem === `${categoryIndex}-${index}` ? 'scale-110' : ''}`} />
+                                                                {hoveredItem === `${categoryIndex}-${index}` && (
+                                                                    <motion.div
+                                                                        initial={{ scale: 0 }}
+                                                                        animate={{ scale: 1 }}
+                                                                        className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                            {!sidebarMinimized && (
+                                                                <span className="ml-3.5 font-medium">{item.title}</span>
+                                                            )}
+                                                            {item.badge && !sidebarMinimized && (
+                                                                <Badge className={`ml-2.5 text-[9px] py-0 h-5 text-white ${item.badgeColor}`}>
+                                                                    {item.badge}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </AccordionTrigger>
+                                                    <div className={`ml-7 border-l-2 ${isActive(item.link) ? 'border-indigo-300 dark:border-indigo-700' : 'border-gray-200 dark:border-gray-700'}`}>
+                                                        {item.subObj.map((subItem, subIndex) => (
+                                                            <AccordionContent key={subIndex}>
+                                                                <Tooltip>
+                                                                    <TooltipTrigger asChild>
+                                                                        <Link
+                                                                            href={subItem.link}
+                                                                            className={`group flex items-center px-4 py-2 text-sm transition-all duration-200 rounded-xl
+                                                                                    ${isActive(subItem.link)
+                                                                                    ? 'text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/60 dark:bg-indigo-900/10'
+                                                                                    : 'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800/40'
+                                                                                }`}
+                                                                        >
+                                                                            <div className="relative">
+                                                                                <subItem.icon className={`w-4 h-4 ${isActive(subItem.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`} />
+                                                                            </div>
+                                                                            {!sidebarMinimized && (
+                                                                                <span className="ml-3 text-sm tracking-tight">{subItem.title}</span>
+                                                                            )}
+                                                                            {subItem.badge && !sidebarMinimized && (
+                                                                                <Badge className={`ml-2 text-[9px] py-0 h-5 text-white ${subItem.badgeColor}`}>
+                                                                                    {subItem.badge}
+                                                                                </Badge>
+                                                                            )}
+                                                                        </Link>
+                                                                    </TooltipTrigger>
+                                                                    {sidebarMinimized && (
+                                                                        <TooltipContent side="right" sideOffset={20} className="bg-gray-900 text-white text-xs font-medium py-1.5 px-3">
+                                                                            {subItem.title}
+                                                                            {subItem.badge && (
+                                                                                <span className={`ml-1.5 text-[9px] py-0.5 px-1.5 rounded-sm text-white ${subItem.badgeColor}`}>
+                                                                                    {subItem.badge}
+                                                                                </span>
+                                                                            )}
+                                                                        </TooltipContent>
+                                                                    )}
+                                                                </Tooltip>
+                                                            </AccordionContent>
+                                                        ))}
+                                                    </div>
+                                                </AccordionItem>
+                                            </Accordion>
+                                        ) : (
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Link
+                                                        href={item.link}
+                                                        className={`group flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
+                                                                ${isActive(item.link)
+                                                                ? 'bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500'
+                                                                : item.highlight
+                                                                    ? 'text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20'
+                                                                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                                            }`}
+                                                    >
+                                                        <div className={`flex items-center ${isActive(item.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`}>
+                                                            <div className="relative">
+                                                                <item.icon className={`w-5 h-5 transition-all duration-200 
+                                                                ${hoveredItem === `${categoryIndex}-${index}` ? 'scale-110 rotate-3' : ''}`} />
+                                                                {hoveredItem === `${categoryIndex}-${index}` && (
+                                                                    <motion.div
+                                                                        initial={{ scale: 0 }}
+                                                                        animate={{ scale: 1 }}
+                                                                        className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                            {!sidebarMinimized && (
+                                                                <span className="ml-3.5 font-medium tracking-tight">{item.title}</span>
+                                                            )}
+                                                            {item.badge && !sidebarMinimized && (
+                                                                <Badge className={`ml-2.5 text-[9px] py-0 h-5 text-white ${item.badgeColor}`}>
+                                                                    {item.badge}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
+                                                    </Link>
+                                                </TooltipTrigger>
+                                                {sidebarMinimized && (
+                                                    <TooltipContent side="right" sideOffset={20} className="bg-gray-900 text-white text-xs font-medium py-1.5 px-3">
+                                                        {item.title}
+                                                        {item.badge && (
+                                                            <span className={`ml-1.5 text-[9px] py-0.5 px-1.5 rounded-sm text-white ${item.badgeColor}`}>
+                                                                {item.badge}
+                                                            </span>
+                                                        )}
+                                                    </TooltipContent>
+                                                )}
+                                            </Tooltip>
+                                        )}
+                                    </motion.li>
+                                ))}
+                            </ul>
+                        </motion.div>
+                    ))}
+                </div>
+
+                {/* User Profile Section */}
+                <div className="mt-auto border-t border-gray-100 dark:border-gray-800 px-3 pt-3 pb-4">
+                    {/* Notifications badge */}
+                    {sidebarMinimized ? (
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="w-full mb-2 h-12 relative flex items-center justify-center hover:bg-gray-50 dark:hover:bg-gray-800 rounded-xl"
+                                >
+                                    <Bell className="h-5 w-5 text-gray-500" />
+                                    {notifications > 0 && (
+                                        <span className="absolute top-2 right-3 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">{notifications}</span>
+                                    )}
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent side="right" sideOffset={20} className="bg-gray-900 text-white text-xs">
+                                Notifications
+                            </TooltipContent>
+                        </Tooltip>
+                    ) : (
+                        <div className="px-2 mb-3">
+                            <Button
+                                variant="ghost"
+                                className="w-full justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
+                            >
+                                <div className="flex items-center">
+                                    <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
+                                        <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+                                    </div>
+                                    <span className="font-medium text-gray-700 dark:text-gray-200">Notifications</span>
+                                </div>
+                                {notifications > 0 && (
+                                    <Badge className="bg-red-500 text-white hover:bg-red-600">{notifications}</Badge>
+                                )}
                             </Button>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
-                            <User className="text-blue-400 mr-2" />
-                            <span>Profile</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuGroup>
-                        <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
-                            <Settings className="text-blue-400 mr-2" />
-                            <a href='/settings'>Settings</a>
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-gray-700" />
-                    <DropdownMenuGroup>
-                        <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
-                            <Users className="text-blue-400 mr-2" />
-                            <span>Team</span>
-                        </DropdownMenuItem>
-                        <DropdownMenuSub>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent className="bg-gray-900 text-gray-200 border-gray-700">
-                                    <DropdownMenuSeparator className="bg-gray-700" />
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-                        <DropdownMenuItem className="focus:bg-gray-800 focus:text-white">
-                            <Plus className="text-blue-400 mr-2" />
-                            <span>New Team</span>
-                        </DropdownMenuItem>
-                    </DropdownMenuGroup>
-                    <DropdownMenuSeparator className="bg-gray-700" />
-                    <DropdownMenuItem onClick={() => logoutUser()} className="focus:bg-gray-800 focus:text-white">
-                        <LogOut className="text-blue-400 mr-2" />
-                        <span className="cursor-pointer">{loading ? 'Processing...' : 'Log out'}</span>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        </div>
+                        </div>
+                    )}
+
+                    <DropdownMenu className='border'>
+                        <DropdownMenuTrigger asChild>
+                            <div className={`flex items-center rounded-xl cursor-pointer p-2 ${sidebarMinimized ? 'justify-center' : 'px-3'} hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}>
+                                <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
+                                    <AvatarImage src={user?.user.avatarUrl || ''} alt={user?.user.firstName || ''} />
+                                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
+                                        {user?.user.firstName?.charAt(0) || 'U'}
+                                    </AvatarFallback>
+                                </Avatar>
+
+                                {!sidebarMinimized && (
+                                    <div className="ml-3 overflow-hidden">
+                                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight">
+                                            {user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                                            {user && user.user.email || ''}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {!sidebarMinimized && (
+                                    <ChevronRight className="ml-auto h-4 w-4 text-gray-400" />
+                                )}
+                            </div>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent className="w-64 p-0 rounded-xl shadow-2xl shadow-gray-200/70 dark:shadow-none border border-gray-100 dark:border-gray-800" side={sidebarMinimized ? "right" : "top"} align={sidebarMinimized ? "start" : "end"} alignOffset={10}>
+                            <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                                <div className="flex items-center">
+                                    <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm mr-3">
+                                        <AvatarImage src={user?.user.avatarUrl || ''} alt={user?.user.firstName || ''} />
+                                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
+                                            {user?.user.firstName?.charAt(0) || 'U'}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                        <p className="font-semibold text-gray-800 dark:text-gray-200">
+                                            {user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                                            {user && user.user.email || ''}
+                                        </p>
+                                    </div>
+                                </div>
+                            </DropdownMenuLabel>
+
+                            <DropdownMenuGroup className="p-1.5">
+                                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
+                                    <User className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                    <span>Profile</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
+                                    <Settings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                    <span>Settings</span>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
+                                    <Crown className="mr-2 h-4 w-4 text-amber-500" />
+                                    <span>Upgrade to Premium</span>
+                                    <Badge variant="outline" className="ml-auto text-[10px] bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-amber-100 dark:border-amber-800 text-amber-600 dark:text-amber-400">
+                                        PRO
+                                    </Badge>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+
+                            <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-800" />
+
+                            <DropdownMenuGroup className="p-1.5">
+                                <DropdownMenuItem
+                                    onClick={logoutUser}
+                                    className="px-3 py-2.5 rounded-lg focus:bg-red-50 dark:focus:bg-red-900/20 cursor-pointer text-red-600 dark:text-red-400"
+                                >
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    <span>Log out</span>
+                                </DropdownMenuItem>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </motion.div>
+        </TooltipProvider>
     );
 };
 

@@ -164,17 +164,18 @@ html {
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+  background: white;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: white;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d1d1;
+  background: rgb(170, 170, 170);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b3b3b3;
+  background: white;
 }

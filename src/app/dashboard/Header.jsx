@@ -353,7 +353,7 @@ const Header = () => {
     return (
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
         ${isScrolled ? 'bg-white shadow-md' : 'bg-white'} 
-        ${sidebarMinimized ? 'md:w-[calc(100%-48px)]' : 'md:w-[calc(100%-240px)]'} 
+        ${sidebarMinimized ? 'md:w-[calc(100%-80px)]' : 'md:w-[calc(100%-240px)]'} 
         w-full flex justify-between px-2 py-3 md:px-4 items-center`}>
             <div className='mx-4 flex items-center'>
                 <div className="flex items-center gap-2" ref={searchRef}>
@@ -549,13 +549,6 @@ const Header = () => {
                         <h1 className="text-sm font-medium text-gray-700">{currentDateTime.time}</h1>
                     </div>
                 </div>
-
-                {/* Notifications */}
-                <Badge badgeContent={2} color="error">
-                    <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors">
-                        <Bell size={20} className="text-blue-600" />
-                    </div>
-                </Badge>
 
                 {/* Settings Dialog */}
                 <AlertDialog>

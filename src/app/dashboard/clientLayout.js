@@ -22,7 +22,7 @@ export default function ClientLayout({ children }) {
                     )}
 
                     {/* Right-side container with constrained height */}
-                    <div className={`w-full transition-all duration-500 ${sidebarMinimized ? 'md:ml-12' : 'md:ml-60'} flex flex-col min-h-screen`}>
+                    <div className={`w-full transition-all duration-500 ${sidebarMinimized ? 'md:ml-20' : 'md:ml-60'} flex flex-col min-h-screen`}>
                         {/* Header with fixed height */}
                         <div className="mt-14">
                             <Header />
