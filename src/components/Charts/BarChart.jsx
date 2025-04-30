@@ -35,7 +35,7 @@ export function BarChartMultiple() {
 
     const getTotalMembers = async () => {
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
             const responseBody = await response.json();
             if (responseBody.redirect) {
                 router.push(responseBody.redirect);

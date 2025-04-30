@@ -40,7 +40,7 @@ const ScheduleManagement = () => {
 
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -56,7 +56,7 @@ const ScheduleManagement = () => {
 
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffschedules`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/staffschedules`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -73,7 +73,7 @@ const ScheduleManagement = () => {
 
     const getSingleSchedule = async (id) => {
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/staffschedules/${id}`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/staffschedules/${id}`);
             const responseBody = await response.json();
             if (responseBody && responseBody.schedule) {
                 reset({
@@ -90,7 +90,7 @@ const ScheduleManagement = () => {
 
     const handleSave = async (data) => {
         try {
-            const url = 'gymmanagementbackend-o2l3.onrender.com/api/staffschedules'
+            const url = 'https://gymmanagementbackend-o2l3.onrender.com/api/staffschedules'
             const response = await fetch(url, {
                 method: saveType === "POST" ? "POST" : "PATCH",
                 headers: {

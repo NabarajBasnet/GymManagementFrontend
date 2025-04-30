@@ -33,7 +33,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('gymmanagementbackend-o2l3.onrender.com/api/auth/login', {
+      const response = await fetch('https://gymmanagementbackend-o2l3.onrender.com/api/auth/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

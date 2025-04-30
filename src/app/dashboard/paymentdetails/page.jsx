@@ -75,7 +75,7 @@ const PaymentDetails = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/members`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -94,7 +94,7 @@ const PaymentDetails = () => {
     const getPaymentDetails = async ({ queryKey }) => {
         const [, page, memberId] = queryKey;
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/paymentdetails/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -141,7 +141,7 @@ const PaymentDetails = () => {
     const deletePaymentDetail = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`gymmanagementbackend-o2l3.onrender.com/api/paymentdetails/${id}`,
+            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/paymentdetails/${id}`,
                 {
                     method: "DELETE",
                 });
