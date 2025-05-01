@@ -90,8 +90,17 @@ const currencies = [
         symbol: "C$"
     }
 ];
+
 const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquatics", "Equipment"];
-const taxRate = ['0', '3', '5', '7', '9', '11', '13', '15', '20', '25'];
+
+const subCategories = {
+    Membership: ["Monthly", "Quarterly", "Half-Yearly", "Yearly", "Student", "Corporate"],
+    Training: ["Personal Training", "Group Classes", "Yoga", "CrossFit", "Zumba", "Online Coaching"],
+    Nutrition: ["Supplements", "Diet Plans", "Protein", "Vitamins", 'Creatines', "Consultation", "Others"],
+    Merchandise: ["T-Shirts", "Shakers", "Gym Bags", "Caps", "Wristbands", "Others"],
+    Aquatics: ["Swimming Lessons", "Aqua Therapy", "Pool Membership", "Hydro Fitness"],
+    Equipment: ["Treadmills", "Dumbbells", "Resistance Bands", "Mats", "Foam Rollers", "Barbells", "Plates"],
+};
 
 const ServiceAndProducts = () => {
     const [activeTab, setActiveTab] = useState("all");
@@ -99,19 +108,15 @@ const ServiceAndProducts = () => {
     const [openAddItemForm, setOpenAddItemForm] = useState(false);
 
     // Items states
+
+    const [isAvailableOnline, setIsAvailableOnline] = useState(false);
+    const [isActive, setIsActive] = useState(false);
     const [itemType, setItemType] = useState('');
     const [warehouse, setWareHouse] = useState('');
     const [category, setCategory] = useState('');
     const [subCategory, setSubCategory] = useState('');
     const [currency, setCurrency] = useState('');
     const [taxRate, setTaxRate] = useState('');
-
-    console.log('Item Type: ', itemType);
-    console.log('Warehouse: ', warehouse);
-    console.log('Category: ', category)
-    console.log('Sub Category: ', subCategory)
-    console.log('Currency: ', currency)
-    console.log('Tax Rate: ', taxRate)
 
     // React Hook Form
     const {
@@ -122,15 +127,16 @@ const ServiceAndProducts = () => {
         setValue,
         setError } = useForm();
 
-    const handleAddItem = async () => {
+    const handleAddItem = async (data) => {
         try {
+            console.log("Data: ", data);
+            const { itemName, SKU, description, sellingPrice, costPrice, maxDiscount } = data;
 
         } catch (error) {
             console.log('Error: ', error);
             toast.error('Internal Server Error!');
         };
     };
-
 
     const mockData = [
         {
@@ -184,7 +190,6 @@ const ServiceAndProducts = () => {
             active: false
         },
     ];
-
 
     const filteredData = activeTab === "all"
         ? mockData
@@ -417,7 +422,7 @@ const ServiceAndProducts = () => {
             {/* Open Add Items Form */}
             {openAddItemForm && (
                 <div className="fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-sm shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
+                    <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-sm shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
                         {/* Header Section */}
                         <header className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10'>
                             <h1 className='text-xl font-semibold flex items-center gap-2'>
@@ -485,6 +490,7 @@ const ServiceAndProducts = () => {
                                             </Label>
                                             <Input
                                                 id="itemName"
+                                                {...register('itemName', { required: 'Item name is required' })}
                                                 placeholder="Enter name"
                                                 className="w-full"
                                             />
@@ -511,16 +517,16 @@ const ServiceAndProducts = () => {
                                         {/* Sub Category */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Sub Category</Label>
-                                            <Select onValueChange={(value) => setSubCategory(value)}>
+                                            <Select onValueChange={(value) => setSubCategory(value)} disabled={!category}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Sub Category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='Sub Category One'>Sub Category One</SelectItem>
-                                                        <SelectItem value='Sub Category Two'>Sub Category Two</SelectItem>
-                                                        <SelectItem value='Sub Category Three'>Sub Category Three</SelectItem>
+                                                        {(subCategories[category] || []).map((subCat, index) => (
+                                                            <SelectItem key={index} value={subCat}>{subCat}</SelectItem>
+                                                        ))}
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
@@ -533,6 +539,7 @@ const ServiceAndProducts = () => {
                                             </Label>
                                             <Input
                                                 id="itemSKU"
+                                                {...register('SKU')}
                                                 placeholder="Enter unique SKU"
                                                 className="w-full"
                                             />
@@ -545,8 +552,9 @@ const ServiceAndProducts = () => {
                                             </Label>
                                             <textarea
                                                 id="itemDescription"
+                                                {...register('description', { required: 'Item description is required' })}
                                                 placeholder="Enter description"
-                                                className="flex w-full rounded-sm bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
+                                                className="flex w-full rounded-sm border focus:outline-none focus:border-blue-500 bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
                                             />
                                         </div>
                                     </div>
@@ -580,9 +588,10 @@ const ServiceAndProducts = () => {
                                                 Selling Price <span className="text-red-500">*</span>
                                             </Label>
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
                                                 <Input
                                                     id="itemPrice"
+                                                    {...register('sellingPrice', { required: 'Item selling price is required' })}
                                                     className="pl-8 w-full"
                                                     placeholder="0.00"
                                                     type="number"
@@ -598,9 +607,10 @@ const ServiceAndProducts = () => {
                                                 Cost Price
                                             </Label>
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
                                                 <Input
                                                     id="itemCostPrice"
+                                                    {...register('costPrice')}
                                                     className="pl-8 w-full"
                                                     placeholder="0.00"
                                                     type="number"
@@ -636,13 +646,14 @@ const ServiceAndProducts = () => {
 
                                         {/* Available Discount Percentage */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="itemCostPrice">
+                                            <Label className="font-medium" htmlFor="maxDiscount">
                                                 Max Discount Percent
                                             </Label>
                                             <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-500">$</span>
+                                                <span className="absolute left-3 top-2.5 text-gray-500">%</span>
                                                 <Input
-                                                    id="itemCostPrice"
+                                                    id="maxDiscount"
+                                                    {...register('maxDiscount')}
                                                     className="pl-8 w-full"
                                                     placeholder="0.00"
                                                     type="number"
@@ -662,6 +673,8 @@ const ServiceAndProducts = () => {
                                         <div className="flex items-center space-x-2">
                                             <Switch
                                                 id="itemActive"
+                                                checked={isActive}
+                                                onCheckedChange={(value) => setIsActive(value)}
                                             />
                                             <Label htmlFor="itemActive">Active</Label>
                                         </div>
@@ -669,6 +682,8 @@ const ServiceAndProducts = () => {
                                         <div className="flex items-center space-x-2">
                                             <Switch
                                                 id="itemOnline"
+                                                checked={isAvailableOnline}
+                                                onCheckedChange={(value) => setIsAvailableOnline(value)}
                                             />
                                             <Label htmlFor="itemOnline">Available Online</Label>
                                         </div>
@@ -681,17 +696,20 @@ const ServiceAndProducts = () => {
                         <footer className="flex justify-end gap-3 p-4 border-t sticky bottom-0 bg-white">
                             <Button
                                 variant="outline"
+                                type='button'
                                 onClick={() => setOpenAddItemForm(false)}
                                 className="min-w-[100px]"
                             >
                                 Cancel
                             </Button>
-                            <Button className="min-w-[100px] bg-blue-600 hover:bg-blue-700">
+                            <Button
+                                type='submit'
+                                className="min-w-[100px] bg-blue-600 hover:bg-blue-700">
                                 <Save className="mr-2 h-4 w-4" />
                                 Save
                             </Button>
                         </footer>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>
