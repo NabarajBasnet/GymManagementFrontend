@@ -86,7 +86,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -104,7 +104,7 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/validate-qr/${memberId}`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -175,7 +175,7 @@ const MemberAttendance = () => {
         const membershipHoldData = { status: 'Active' };
 
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members/resume-membership/${memberId}`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'

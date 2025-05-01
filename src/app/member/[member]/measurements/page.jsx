@@ -82,7 +82,7 @@ const MemberBodyMeasurements = () => {
                 notes
             };
 
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/member/bodymeasurements/${memberId}`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/bodymeasurements/${memberId}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ const MemberBodyMeasurements = () => {
     const getAllBodyMeasurements = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -144,7 +144,7 @@ const MemberBodyMeasurements = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/member/bodymeasurements/${id}`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/bodymeasurements/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

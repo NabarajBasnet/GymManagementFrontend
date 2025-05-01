@@ -10,7 +10,7 @@ const LoggedInUserProvider = ({ children }) => {
 
     const getLoggedInUserDetails = async () => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/auth/me`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/auth/me`, {
                 credentials: 'include',
             });
             if (response.ok) {

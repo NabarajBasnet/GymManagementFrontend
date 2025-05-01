@@ -90,7 +90,7 @@ const InactiveMembers = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `https://94d6-120-89-104-124.ngrok-free.app/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -129,7 +129,7 @@ const InactiveMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/send-qr`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -179,7 +179,7 @@ const InactiveMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members/deleteMember/${id}`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

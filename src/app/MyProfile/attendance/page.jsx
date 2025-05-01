@@ -35,7 +35,7 @@ const Attendance = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `https://94d6-120-89-104-124.ngrok-free.app/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Network response was not ok');

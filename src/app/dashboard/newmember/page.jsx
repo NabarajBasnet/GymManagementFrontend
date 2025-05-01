@@ -377,7 +377,7 @@ const NewMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('https://94d6-120-89-104-124.ngrok-free.app/api/members', {
+            const response = await fetch('https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -452,7 +452,7 @@ const NewMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {

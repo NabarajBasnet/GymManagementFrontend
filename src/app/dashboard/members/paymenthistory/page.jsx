@@ -113,7 +113,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members`);
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -142,7 +142,7 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

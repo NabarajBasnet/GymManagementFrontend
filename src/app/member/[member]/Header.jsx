@@ -70,7 +70,7 @@ const MemberHeader = ({ activeTab }) => {
 
     const logOutMember = async () => {
         try {
-            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/member/auth/member-logout`, {
+            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/auth/member-logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

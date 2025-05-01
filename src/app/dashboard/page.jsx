@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `https://94d6-120-89-104-124.ngrok-free.app/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
       if (responseBody.redirect) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('https://94d6-120-89-104-124.ngrok-free.app/api/averageactivemembers');
+      const response = await fetch('https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
