@@ -1,5 +1,7 @@
 'use client';
 
+import { useQuery } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
@@ -25,8 +27,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,11 +41,96 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch";
+import toast from "react-hot-toast";
+
+const currencies = [
+    {
+        code: "NPR",
+        name: "Nepalese Rupee",
+        symbol: "₨"
+    },
+    {
+        code: "INR",
+        name: "Indian Rupee",
+        symbol: "₹"
+    },
+    {
+        code: "USD",
+        name: "United States Dollar",
+        symbol: "$"
+    },
+    {
+        code: "EUR",
+        name: "Euro",
+        symbol: "€"
+    },
+    {
+        code: "GBP",
+        name: "British Pound Sterling",
+        symbol: "£"
+    },
+    {
+        code: "JPY",
+        name: "Japanese Yen",
+        symbol: "¥"
+    },
+    {
+        code: "CNY",
+        name: "Chinese Yuan",
+        symbol: "¥"
+    },
+    {
+        code: "AUD",
+        name: "Australian Dollar",
+        symbol: "A$"
+    },
+    {
+        code: "CAD",
+        name: "Canadian Dollar",
+        symbol: "C$"
+    }
+];
+const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquatics", "Equipment"];
+const taxRate = ['0', '3', '5', '7', '9', '11', '13', '15', '20', '25'];
 
 const ServiceAndProducts = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [openAddItemForm, setOpenAddItemForm] = useState(false);
+
+    // Items states
+    const [itemType, setItemType] = useState('');
+    const [warehouse, setWareHouse] = useState('');
+    const [category, setCategory] = useState('');
+    const [subCategory, setSubCategory] = useState('');
+    const [currency, setCurrency] = useState('');
+    const [taxRate, setTaxRate] = useState('');
+
+    console.log('Item Type: ', itemType);
+    console.log('Warehouse: ', warehouse);
+    console.log('Category: ', category)
+    console.log('Sub Category: ', subCategory)
+    console.log('Currency: ', currency)
+    console.log('Tax Rate: ', taxRate)
+
+    // React Hook Form
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        setValue,
+        setError } = useForm();
+
+    const handleAddItem = async () => {
+        try {
+
+        } catch (error) {
+            console.log('Error: ', error);
+            toast.error('Internal Server Error!');
+        };
+    };
+
 
     const mockData = [
         {
@@ -99,7 +185,6 @@ const ServiceAndProducts = () => {
         },
     ];
 
-    const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquatics", "Equipment"];
 
     const filteredData = activeTab === "all"
         ? mockData
@@ -244,7 +329,7 @@ const ServiceAndProducts = () => {
                                     <td className="align-middle text-center font-medium">
                                         <Checkbox id="terms" />
                                     </td>
-                                    <td className="align-middle text-center font-medium">{item.itemId}</td>
+                                    <td className="align-middle md:text-center font-medium">{item.itemId}</td>
                                     <td className="p-4 align-middle font-medium">{item.name}</td>
                                     <td className="p-4 align-middle">
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.type === "service"
@@ -361,7 +446,7 @@ const ServiceAndProducts = () => {
                                         {/* Item Type */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Item Type</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setItemType(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Item Type" />
                                                 </SelectTrigger>
@@ -378,7 +463,7 @@ const ServiceAndProducts = () => {
                                         {/* Warehouse */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Warehouse</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setWareHouse(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Warehouse" />
                                                 </SelectTrigger>
@@ -408,15 +493,15 @@ const ServiceAndProducts = () => {
                                         {/* Category */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Category</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setCategory(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Category" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select</SelectLabel>
-                                                        {categories.map((index, category) =>
-                                                            <SelectItem key={index} value='Category One'>{category}</SelectItem>
+                                                        {categories.map((category, index) =>
+                                                            <SelectItem key={index} value={category}>{category}</SelectItem>
                                                         )}
                                                     </SelectGroup>
                                                 </SelectContent>
@@ -426,7 +511,7 @@ const ServiceAndProducts = () => {
                                         {/* Sub Category */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Sub Category</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setSubCategory(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Sub Category" />
                                                 </SelectTrigger>
@@ -474,16 +559,16 @@ const ServiceAndProducts = () => {
                                         {/* Currency */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Currency</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setCurrency(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Currency" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='Sub Category One'>NPR</SelectItem>
-                                                        <SelectItem value='Sub Category Two'>INR</SelectItem>
-                                                        <SelectItem value='Sub Category Three'>$ USD</SelectItem>
+                                                        {currencies.map((currency, index) =>
+                                                            <SelectItem key={index} value={`${currency.symbol}-${currency.name}`}>{currency.code}</SelectItem>
+                                                        )}
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
@@ -528,9 +613,9 @@ const ServiceAndProducts = () => {
                                         {/* Tax Rate */}
                                         <div className="space-y-2">
                                             <Label className="font-medium">Tax Rate</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setTaxRate(value)}>
                                                 <SelectTrigger>
-                                                    <SelectValue placeholder="Select a fruit" />
+                                                    <SelectValue placeholder="Tax Rate" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
