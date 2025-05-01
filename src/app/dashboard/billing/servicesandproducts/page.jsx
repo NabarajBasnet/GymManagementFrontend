@@ -107,6 +107,7 @@ const ServiceAndProducts = () => {
     const [activeTab, setActiveTab] = useState("all");
     const [currentPage, setCurrentPage] = useState(1);
     const [openAddItemForm, setOpenAddItemForm] = useState(false);
+    const [openAddMoreForm, setOpenAddMoreForm] = useState(false);
 
     // Items states
 
@@ -420,9 +421,54 @@ const ServiceAndProducts = () => {
                 </div>
             </div>
 
+            {/* Open Add More Form */}
+            {openAddMoreForm && (
+                <div className="fixed inset-0 z-[51] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+                    <form
+                        onSubmit={handleSubmit(handleAddItem)}
+                        className="relative bg-white rounded-md shadow-xl w-full max-w-md md:max-w-lg p-6 space-y-4"
+                    >
+                        {/* Close Button */}
+                        <button
+                            type="button"
+                            onClick={() => setOpenAddMoreForm(false)}
+                            className="absolute top-2 right-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
+                        >
+                            <X className="w-5 h-5 text-gray-500" />
+                        </button>
+
+                        {/* Title */}
+                        <h2 className="text-lg font-semibold text-gray-800">Add New Item</h2>
+
+                        {/* Input Field */}
+                        <div>
+                            <Label htmlFor="itemName" className="block font-medium text-sm">
+                                Name <span className="text-red-500">*</span>
+                            </Label>
+                            <Input
+                                id="itemName"
+                                {...register("itemName")}
+                                placeholder="Add Item"
+                                className="mt-1 w-full"
+                            />
+                        </div>
+
+                        {/* Submit Button */}
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+                            >
+                                Add Item
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
             {/* Open Add Items Form */}
             {openAddItemForm && (
-                <div className="fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-40 p-4">
+                <div className={`fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-50 p-4`}>
                     <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-sm shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
                         {/* Header Section */}
                         <header className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10'>
@@ -453,7 +499,7 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Item Type</Label>
-                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                <Button variant="ghost" onClick={() => setOpenAddMoreForm(true)} size="sm" className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
                                                 </Button>
@@ -476,7 +522,7 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Warehouse</Label>
-                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
                                                 </Button>
@@ -499,10 +545,10 @@ const ServiceAndProducts = () => {
                                         {/* Name */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="itemName">
+                                                <Label className="font-medium" htmlFor="itemName">
                                                     Name <span className="text-red-500">*</span>
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
                                             <Input
                                                 id="itemName"
@@ -516,7 +562,7 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Category</Label>
-                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
                                                 </Button>
@@ -540,7 +586,7 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Sub Category</Label>
-                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
                                                 </Button>
@@ -563,10 +609,10 @@ const ServiceAndProducts = () => {
                                         {/* SKU/Code */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="itemSKU">
+                                                <Label className="font-medium" htmlFor="itemSKU">
                                                     SKU/Code
                                                 </Label>
-                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                                <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
                                             <Input
                                                 id="itemSKU"
