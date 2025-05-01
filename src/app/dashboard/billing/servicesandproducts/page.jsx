@@ -1,6 +1,6 @@
 'use client';
 
-import { Separator } from "@/components/ui/separator"
+import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
 import React, { useState } from 'react';
@@ -39,18 +39,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 
 const ServiceAndProducts = () => {
     const [activeTab, setActiveTab] = useState("all");
-    const [isAddItemDialogOpen, setIsAddItemDialogOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [openAddItemForm, setOpenAddItemForm] = useState(false);
 
     const mockData = [
         {
             id: 1,
+            itemId: '100',
             name: "Monthly Membership",
             type: "service",
             price: 49.99,
@@ -60,6 +59,7 @@ const ServiceAndProducts = () => {
         },
         {
             id: 2,
+            itemId: '101',
             name: "Personal Training Session",
             type: "service",
             price: 39.99,
@@ -69,6 +69,7 @@ const ServiceAndProducts = () => {
         },
         {
             id: 3,
+            itemId: '102',
             name: "Protein Shake",
             type: "product",
             price: 5.99,
@@ -78,6 +79,7 @@ const ServiceAndProducts = () => {
         },
         {
             id: 4,
+            itemId: '103',
             name: "Gym Towel",
             type: "product",
             price: 15.99,
@@ -87,6 +89,7 @@ const ServiceAndProducts = () => {
         },
         {
             id: 5,
+            itemId: '104',
             name: "Swimming Classes",
             type: "service",
             price: 29.99,
@@ -97,7 +100,6 @@ const ServiceAndProducts = () => {
     ];
 
     const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquatics", "Equipment"];
-    const taxRates = [0, 3, 5, 7, 10, 13, 15, 20];
 
     const filteredData = activeTab === "all"
         ? mockData
@@ -188,39 +190,49 @@ const ServiceAndProducts = () => {
                         <thead>
                             <tr className="border-b bg-muted/50">
                                 <th className="h-16 px-4 text-left font-medium">
+                                    <Checkbox id="terms" />
+                                </th>
+
+                                <th className="h-16 px-4 text-left font-medium">
+                                    <div className="flex items-center">
+                                        Item ID
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                    </div>
+                                </th>
+                                <th className="h-16 px-4 text-left font-medium">
                                     <div className="flex items-center">
                                         Name
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-left font-medium">
                                     <div className="flex items-center">
                                         Type
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-left font-medium">
                                     <div className="flex items-center">
                                         Category
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-right font-medium">
                                     <div className="flex items-center">
                                         Price
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-right font-medium">
                                     <div className="flex items-center">
                                         Tax Rate
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-left font-medium">
                                     <div className="flex items-center">
                                         Status
-                                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                                        <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                     </div>
                                 </th>
                                 <th className="h-10 px-4 text-right font-medium">Actions</th>
@@ -229,6 +241,10 @@ const ServiceAndProducts = () => {
                         <tbody>
                             {filteredData.map((item) => (
                                 <tr key={item.id} className="border-b hover:bg-muted/50">
+                                    <td className="align-middle text-center font-medium">
+                                        <Checkbox id="terms" />
+                                    </td>
+                                    <td className="align-middle text-center font-medium">{item.itemId}</td>
                                     <td className="p-4 align-middle font-medium">{item.name}</td>
                                     <td className="p-4 align-middle">
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.type === "service"
@@ -399,9 +415,9 @@ const ServiceAndProducts = () => {
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='Category One'>Category One</SelectItem>
-                                                        <SelectItem value='Category Two'>Category Two</SelectItem>
-                                                        <SelectItem value='Category Three'>Category Three</SelectItem>
+                                                        {categories.map((index, category) =>
+                                                            <SelectItem key={index} value='Category One'>{category}</SelectItem>
+                                                        )}
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
