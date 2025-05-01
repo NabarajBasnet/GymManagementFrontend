@@ -263,7 +263,7 @@ const Sidebar = () => {
                     title: 'Billing',
                     link: '/dashboard/billing',
                     subObj: [
-                        { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
+                        { icon: AiFillProduct, title: 'Create Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
                         { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billinb/proformainvoice' },
