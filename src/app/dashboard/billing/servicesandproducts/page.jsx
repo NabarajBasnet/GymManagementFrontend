@@ -1,5 +1,6 @@
 'use client';
 
+import { IoAddCircle } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox"
@@ -345,8 +346,8 @@ const ServiceAndProducts = () => {
                                         </span>
                                     </td>
                                     <td className="p-4 align-middle">{item.category}</td>
-                                    <td className="p-4 align-middle text-right">${item.price.toFixed(2)}</td>
-                                    <td className="p-4 align-middle text-right">{item.taxRate}%</td>
+                                    <td className="p-4 align-middle text-center">${item.price.toFixed(2)}</td>
+                                    <td className="p-4 align-middle text-center">{item.taxRate}%</td>
                                     <td className="p-4 align-middle">
                                         <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.active
                                             ? "bg-green-100 text-green-800"
@@ -355,7 +356,7 @@ const ServiceAndProducts = () => {
                                             {item.active ? "Active" : "Inactive"}
                                         </span>
                                     </td>
-                                    <td className="p-4 align-middle text-right">
+                                    <td className="p-4 align-middle text-center">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
@@ -421,7 +422,7 @@ const ServiceAndProducts = () => {
 
             {/* Open Add Items Form */}
             {openAddItemForm && (
-                <div className="fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-40 p-4">
                     <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-sm shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
                         {/* Header Section */}
                         <header className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10'>
@@ -447,10 +448,16 @@ const ServiceAndProducts = () => {
                                 {/* General Information Section */}
                                 <div className="border rounded-sm p-4 space-y-4">
                                     <h3 className="font-medium text-lg">General Information</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                                         {/* Item Type */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Item Type</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Item Type</Label>
+                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                    <IoAddCircle className="mr-1" />
+                                                    Add More
+                                                </Button>
+                                            </div>
                                             <Select onValueChange={(value) => setItemType(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Item Type" />
@@ -467,7 +474,13 @@ const ServiceAndProducts = () => {
 
                                         {/* Warehouse */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Warehouse</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Warehouse</Label>
+                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                    <IoAddCircle className="mr-1" />
+                                                    Add More
+                                                </Button>
+                                            </div>
                                             <Select onValueChange={(value) => setWareHouse(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Warehouse" />
@@ -485,9 +498,12 @@ const ServiceAndProducts = () => {
 
                                         {/* Name */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="itemName">
-                                                Name <span className="text-red-500">*</span>
-                                            </Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="itemName">
+                                                    Name <span className="text-red-500">*</span>
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <Input
                                                 id="itemName"
                                                 {...register('itemName', { required: 'Item name is required' })}
@@ -498,7 +514,13 @@ const ServiceAndProducts = () => {
 
                                         {/* Category */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Category</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Category</Label>
+                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                    <IoAddCircle className="mr-1" />
+                                                    Add More
+                                                </Button>
+                                            </div>
                                             <Select onValueChange={(value) => setCategory(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Category" />
@@ -516,7 +538,13 @@ const ServiceAndProducts = () => {
 
                                         {/* Sub Category */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Sub Category</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Sub Category</Label>
+                                                <Button variant="ghost" size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                    <IoAddCircle className="mr-1" />
+                                                    Add More
+                                                </Button>
+                                            </div>
                                             <Select onValueChange={(value) => setSubCategory(value)} disabled={!category}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Sub Category" />
@@ -534,9 +562,12 @@ const ServiceAndProducts = () => {
 
                                         {/* SKU/Code */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="itemSKU">
-                                                SKU/Code
-                                            </Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="itemSKU">
+                                                    SKU/Code
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <Input
                                                 id="itemSKU"
                                                 {...register('SKU')}
@@ -546,10 +577,13 @@ const ServiceAndProducts = () => {
                                         </div>
 
                                         {/* Description */}
-                                        <div className="space-y-2 md:col-span-2 lg:col-span-3">
-                                            <Label className="font-medium" htmlFor="itemDescription">
-                                                Description
-                                            </Label>
+                                        <div className="space-y-2 md:col-span-2 lg:col-span-2">
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="itemDescription">
+                                                    Description
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <textarea
                                                 id="itemDescription"
                                                 {...register('description', { required: 'Item description is required' })}
@@ -563,10 +597,13 @@ const ServiceAndProducts = () => {
                                 {/* Pricing Section */}
                                 <div className="border rounded-sm p-4 space-y-4">
                                     <h3 className="font-medium text-lg">Pricing</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
                                         {/* Currency */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Currency</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Currency</Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <Select onValueChange={(value) => setCurrency(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Select Currency" />
@@ -584,9 +621,12 @@ const ServiceAndProducts = () => {
 
                                         {/* Selling Price */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="itemPrice">
-                                                Selling Price <span className="text-red-500">*</span>
-                                            </Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="itemPrice">
+                                                    Selling Price <span className="text-red-500">*</span>
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
                                                 <Input
@@ -603,9 +643,12 @@ const ServiceAndProducts = () => {
 
                                         {/* Cost Price */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="itemCostPrice">
-                                                Cost Price
-                                            </Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="itemCostPrice">
+                                                    Cost Price
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
                                                 <Input
@@ -622,7 +665,10 @@ const ServiceAndProducts = () => {
 
                                         {/* Tax Rate */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium">Tax Rate</Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1">Tax Rate</Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <Select onValueChange={(value) => setTaxRate(value)}>
                                                 <SelectTrigger>
                                                     <SelectValue placeholder="Tax Rate" />
@@ -646,9 +692,12 @@ const ServiceAndProducts = () => {
 
                                         {/* Available Discount Percentage */}
                                         <div className="space-y-2">
-                                            <Label className="font-medium" htmlFor="maxDiscount">
-                                                Max Discount Percent
-                                            </Label>
+                                            <div className='flex items-center justify-between'>
+                                                <Label className="font-medium flex-1" htmlFor="maxDiscount">
+                                                    Max Discount Percent
+                                                </Label>
+                                                <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
+                                            </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">%</span>
                                                 <Input
