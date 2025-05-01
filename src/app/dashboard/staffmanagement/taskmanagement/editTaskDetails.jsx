@@ -143,7 +143,7 @@ const EditTaskDetails = ({ task, id }) => {
     // Functions
     const getAllStaffMembers = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -169,7 +169,7 @@ const EditTaskDetails = ({ task, id }) => {
                     return;
                 };
             };
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/tasks/edit/${id}`, {
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/tasks/edit/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

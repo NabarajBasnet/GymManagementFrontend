@@ -32,7 +32,7 @@ const MemberLogin = () => {
         try {
             const { email, password } = data;
             const credentials = { email, password }
-            const response = await fetch('https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/auth/member-login', {
+            const response = await fetch('https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/member/auth/member-login', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

@@ -64,7 +64,7 @@ const MembershipLogs = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -86,7 +86,7 @@ const MembershipLogs = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
             const responseBody = await response.json();
             console.log('Response Body: ', responseBody);
             return responseBody;

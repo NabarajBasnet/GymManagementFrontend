@@ -47,7 +47,7 @@ const BodyMeasurements = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/members`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -70,7 +70,7 @@ const BodyMeasurements = () => {
     const getBodyMeasurementDetails = async () => {
         setRenderMainContents(true);
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setRenderMainContents(true);

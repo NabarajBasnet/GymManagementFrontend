@@ -68,7 +68,7 @@ const StaffDetails = ({ staffId }) => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement/${staffId}`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement/${staffId}`);
             const responseBody = await response.json();
             if (response.status === 200 && responseBody.staff) {
                 reset({
@@ -133,7 +133,7 @@ const StaffDetails = ({ staffId }) => {
             gender, shift, joinedDate, workingHours, status, salary, role
         };
         try {
-            const url = `https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement/changedetails/${staffId}`
+            const url = `https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement/changedetails/${staffId}`
             const method = "PATCH";
 
             const response = await fetch(url, {

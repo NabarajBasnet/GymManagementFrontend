@@ -40,7 +40,7 @@ const ScheduleManagement = () => {
 
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -56,7 +56,7 @@ const ScheduleManagement = () => {
 
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffschedules`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffschedules`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -73,7 +73,7 @@ const ScheduleManagement = () => {
 
     const getSingleSchedule = async (id) => {
         try {
-            const response = await fetch(`https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffschedules/${id}`);
+            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffschedules/${id}`);
             const responseBody = await response.json();
             if (responseBody && responseBody.schedule) {
                 reset({
@@ -90,7 +90,7 @@ const ScheduleManagement = () => {
 
     const handleSave = async (data) => {
         try {
-            const url = 'https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffschedules'
+            const url = 'https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffschedules'
             const response = await fetch(url, {
                 method: saveType === "POST" ? "POST" : "PATCH",
                 headers: {

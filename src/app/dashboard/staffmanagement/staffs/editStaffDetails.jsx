@@ -234,7 +234,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         formData.append("staffImage", staffImage);
 
         try {
-            const response = await fetch("https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement/upload-image", {
+            const response = await fetch("https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement/upload-image", {
                 method: "POST",
                 body: formData,
             });
@@ -326,7 +326,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             relationship
         };
         try {
-            const url = `https://7232397b19d1ad937691d5b90ab2d795.serveo.net/api/staffsmanagement/changedetails/${staff.staff._id}`
+            const url = `https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement/changedetails/${staff.staff._id}`
 
             const method = "PATCH";
 
