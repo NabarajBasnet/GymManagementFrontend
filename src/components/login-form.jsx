@@ -38,8 +38,8 @@ export function LoginForm({ className, ...props }) {
         headers: {
           'Content-Type': 'application/json'
         },
+        body: JSON.stringify(data),
         credentials: 'include',
-        body: JSON.stringify(data)
       });
 
       const responseBody = await response.json();
