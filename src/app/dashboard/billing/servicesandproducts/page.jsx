@@ -1,5 +1,6 @@
 'use client';
 
+import { BiLoaderAlt } from "react-icons/bi";
 import { IoAddCircle } from "react-icons/io5";
 import { useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
@@ -96,7 +97,7 @@ const categories = ["Membership", "Training", "Nutrition", "Merchandise", "Aquat
 
 const subCategories = {
     Membership: ["Monthly", "Quarterly", "Half-Yearly", "Yearly", "Student", "Corporate"],
-    Training: ["Personal Training", "Group Classes", "Yoga", "CrossFit", "Zumba", "Online Coaching"],
+    Training: ["Normal Training", "Personal Training", "Group Classes", "Yoga", "CrossFit", "Zumba", "Online Coaching"],
     Nutrition: ["Supplements", "Diet Plans", "Protein", "Vitamins", 'Creatines', "Consultation", "Others"],
     Merchandise: ["T-Shirts", "Shakers", "Gym Bags", "Caps", "Wristbands", "Others"],
     Aquatics: ["Swimming Lessons", "Aqua Therapy", "Pool Membership", "Hydro Fitness"],
@@ -131,8 +132,42 @@ const ServiceAndProducts = () => {
 
     const handleAddItem = async (data) => {
         try {
-            console.log("Data: ", data);
             const { itemName, SKU, description, sellingPrice, costPrice, maxDiscount } = data;
+            const finalData = {
+                itemName,
+                SKU,
+                description,
+                sellingPrice,
+                costPrice,
+                maxDiscount,
+                isAvailableOnline,
+                isActive,
+                itemType,
+                warehouse,
+                category,
+                subCategory,
+                currency,
+                taxRate
+            };
+
+            const response = await fetch('http://localhost:3000/api/accounting/serviceandproducts', {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(finalData),
+            });
+
+            const responseBody = await response.json();
+            console.log('Response Body: ', responseBody);
+
+            if (response.ok && response.status===200) {
+                toast.success(responseBody.message),
+                    reset();
+                setOpenAddItemForm(false);
+            }else{
+                toast.error(responseBody.message);
+            };
 
         } catch (error) {
             console.log('Error: ', error);
@@ -800,8 +835,8 @@ const ServiceAndProducts = () => {
                             <Button
                                 type='submit'
                                 className="min-w-[100px] bg-blue-600 hover:bg-blue-700">
-                                <Save className="mr-2 h-4 w-4" />
-                                Save
+                                {isSubmitting ? <BiLoaderAlt className="h-4 w-4 mr-2 animate-spin duration-500" /> : <Save className="mr-2 h-4 w-4" />}
+                                {isSubmitting ? 'Submitting...' : 'Save'}
                             </Button>
                         </footer>
                     </form>
