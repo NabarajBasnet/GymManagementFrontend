@@ -10,7 +10,7 @@ const LoggedInStaffProvider = ({ children }) => {
 
     const getLoggedInStaffDetails = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/loggedin-staff`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/loggedin-staff`, {
                 credentials: 'include',
             });
             if (response.ok) {

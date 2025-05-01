@@ -64,7 +64,7 @@ const MembershipLogs = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members`);
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -86,7 +86,7 @@ const MembershipLogs = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members/membershiplogs/${memberId}?page=${page}&limit=${limit}${dateParams}`);
             const responseBody = await response.json();
             console.log('Response Body: ', responseBody);
             return responseBody;

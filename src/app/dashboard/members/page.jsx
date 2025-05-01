@@ -103,7 +103,7 @@ const AllMembers = () => {
 
         try {
             const response = await fetch(
-                `https://gymmanagementbackend-o2l3.onrender.com/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `https://94d6-120-89-104-124.ngrok-free.app/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
             );
             const resBody = await response.json();
             return resBody;
@@ -140,7 +140,7 @@ const AllMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/send-qr`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -190,7 +190,7 @@ const AllMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members/deleteMember/${id}`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

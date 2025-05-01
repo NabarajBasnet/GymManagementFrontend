@@ -34,7 +34,7 @@ export default function SignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('https://gymmanagementbackend-o2l3.onrender.com/api/auth/signup', {
+            const response = await fetch('https://94d6-120-89-104-124.ngrok-free.app/api/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

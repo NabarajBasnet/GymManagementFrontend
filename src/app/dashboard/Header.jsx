@@ -156,7 +156,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/auth/logout`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"

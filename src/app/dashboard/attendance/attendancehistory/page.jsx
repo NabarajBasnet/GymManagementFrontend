@@ -74,7 +74,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -85,7 +85,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/staffsmanagement`);
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -107,8 +107,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `https://gymmanagementbackend-o2l3.onrender.com/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `https://gymmanagementbackend-o2l3.onrender.com/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `https://94d6-120-89-104-124.ngrok-free.app/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `https://94d6-120-89-104-124.ngrok-free.app/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (response.ok) {

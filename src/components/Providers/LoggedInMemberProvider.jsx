@@ -11,7 +11,7 @@ const LoggedInMemberProvider = ({ children }) => {
 
     const getLoggedInMemberDetails = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/member/details`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/member/details`, {
                 credentials: 'include',
             });
             if (response.ok) {

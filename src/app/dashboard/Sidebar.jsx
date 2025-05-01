@@ -99,7 +99,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/auth/logout`, {
+            const response = await fetch(`https://94d6-120-89-104-124.ngrok-free.app/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -332,8 +332,7 @@ const Sidebar = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
                 className={`fixed left-0 transition-all duration-300 bg-white dark:bg-gray-900 top-0 h-full 
-          ${sidebarMinimized ? 'w-20' : 'w-60'} z-50 flex flex-col 
-          shadow-[5px_0_30px_rgba(0,0,0,0.05)] dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
+          ${sidebarMinimized ? 'w-20' : 'w-60'} z-50 flex flex-col border-r dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
             >
                 {/* Logo and Brand */}
                 <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-2 py-5">
@@ -521,7 +520,7 @@ const Sidebar = () => {
                 </div>
 
                 {/* User Profile Section */}
-                <div className="mt-auto border-t border-gray-100 dark:border-gray-800 px-3 pt-3 pb-4">
+                <div className="mt-auto border-t border-gray-100 px-3 dark:border-gray-800 pt-3 pb-4">
                     {/* Notifications badge */}
                     {sidebarMinimized ? (
                         <Tooltip>
@@ -542,10 +541,10 @@ const Sidebar = () => {
                             </TooltipContent>
                         </Tooltip>
                     ) : (
-                        <div className="px-2 mb-3">
+                        <div className="">
                             <Button
                                 variant="ghost"
-                                className="w-full justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
+                                className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
                             >
                                 <div className="flex items-center">
                                     <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">

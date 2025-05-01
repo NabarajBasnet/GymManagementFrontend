@@ -52,7 +52,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `https://gymmanagementbackend-o2l3.onrender.com/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `https://94d6-120-89-104-124.ngrok-free.app/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
       if (responseBody.redirect) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('https://gymmanagementbackend-o2l3.onrender.com/api/averageactivemembers');
+      const response = await fetch('https://94d6-120-89-104-124.ngrok-free.app/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
@@ -164,7 +164,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-gray-50/50">
-      <div className="w-full md:mx-4 px-4 py-8">
+      <div className="w-full px-5 py-6">
         <div className="mb-8">
           <Breadcrumb>
             <BreadcrumbList>
