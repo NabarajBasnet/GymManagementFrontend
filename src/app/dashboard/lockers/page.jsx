@@ -97,7 +97,7 @@ const Lockers = () => {
 
     const getAllLockers = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/lockers?order=${lockerOrder}&status=${lockerStatus}`);
+            const response = await fetch(`http://localhost:3000/api/lockers?order=${lockerOrder}&status=${lockerStatus}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -116,7 +116,7 @@ const Lockers = () => {
     // Pululate lockers data
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -193,7 +193,7 @@ const Lockers = () => {
             const { fee, referenceCode, receiptNo } = data;
             const finalData = { lockerId, lockerNumber, memberId, memberName, renewDate, duration, expireDate, fee, paymentMethod, referenceCode, receiptNo };
 
-            const response = await fetch('https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/lockers/put', {
+            const response = await fetch('http://localhost:3000/api/lockers/put', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -282,7 +282,7 @@ const Lockers = () => {
 
     const getSingleLockerInfo = async (id) => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/lockers/${id}`);
+            const response = await fetch(`http://localhost:3000/api/lockers/${id}`);
             const responseBody = await response.json();
             setFetchedLocker(responseBody.lockerDetails);
             if (response.ok) {
@@ -306,7 +306,7 @@ const Lockers = () => {
 
     const resetLocker = async (id) => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/lockers/patch/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/lockers/patch/${id}`, {
                 method: "PATCH",
             })
             const responseBody = await response.json();

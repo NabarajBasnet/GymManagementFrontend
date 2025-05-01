@@ -10,7 +10,7 @@ const LoggedInStaffProvider = ({ children }) => {
 
     const getLoggedInStaffDetails = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/loggedin-staff`, {
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`, {
                 credentials: 'include',
             });
             if (response.ok) {

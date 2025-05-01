@@ -26,7 +26,7 @@ const MyProfile = () => {
 
     const fetchStaffDetails = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/loggedin-staff`);
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`);
             const responseBody = await response.json();
             if (response.ok) {
                 setStaffDetails(responseBody.loggedInStaff);
@@ -43,7 +43,7 @@ const MyProfile = () => {
     const fetchStaffQr = async () => {
         try {
             if (!staffId) return null;
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffqr/${staffId}`);
+            const response = await fetch(`http://localhost:3000/api/staffqr/${staffId}`);
             const responseBody = await response.json();
             if (!response.ok) {
                 throw new Error(responseBody.message || 'Failed to fetch QR code');
@@ -153,7 +153,7 @@ const MyProfile = () => {
                 <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
                         <img
-                            src={`http://https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net:5000${staffDetails?.imageUrl}`}
+                            src={`http://http://localhost:3000:5000${staffDetails?.imageUrl}`}
                             alt="Profile"
                             className="w-20 h-20 rounded-full cursor-pointer"
                         />

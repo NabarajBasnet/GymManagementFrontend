@@ -33,7 +33,7 @@ export function LoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/auth/login', {
+      const response = await fetch('http://localhost:3000/api/auth/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'

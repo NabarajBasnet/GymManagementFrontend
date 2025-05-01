@@ -113,7 +113,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members`);
+            const response = await fetch(`http://localhost:3000/api/members`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -142,7 +142,7 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`http://localhost:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

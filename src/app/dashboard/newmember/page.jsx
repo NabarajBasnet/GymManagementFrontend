@@ -377,7 +377,7 @@ const NewMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -452,7 +452,7 @@ const NewMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {

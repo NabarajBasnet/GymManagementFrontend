@@ -19,7 +19,7 @@ function App() {
         const { email, password } = data;
         const finalData = { email, password };
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staff-login/login`, {
+            const response = await fetch(`http://localhost:3000/api/staff-login/login`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'

@@ -74,7 +74,7 @@ const AttendanceHistory = () => {
 
     const fetchAllMembers = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             return responseBody.members;
@@ -85,7 +85,7 @@ const AttendanceHistory = () => {
 
     const fetchAllStaffs = async () => {
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             return responseBody;
@@ -107,8 +107,8 @@ const AttendanceHistory = () => {
 
     const fetchAttendanceHistory = async () => {
         try {
-            const staffsAttendanceURL = `https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
             if (response.ok) {

@@ -1,5 +1,9 @@
 "use client";
 
+import { RiBillFill } from "react-icons/ri";
+import { FaMoneyBillAlt } from "react-icons/fa";
+import { IoReceiptSharp } from "react-icons/io5";
+import { AiFillProduct } from "react-icons/ai";
 import { MdFeedback } from "react-icons/md";
 import { toast as notify } from 'react-hot-toast';
 import { FaRulerHorizontal } from "react-icons/fa";
@@ -156,7 +160,7 @@ const Header = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://38ff26b62e8fb10c5911b95dbbd1747b.serveo.net/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -289,6 +293,13 @@ const Header = () => {
                     icon: MdAttachMoney,
                     title: 'Billing',
                     link: '/dashboard/billing',
+                    subObj: [
+                        { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
+                        { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
+                        { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
+                        { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billinb/proformainvoice' },
+                        { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+                    ]
                 },
                 {
                     icon: FaTags,
