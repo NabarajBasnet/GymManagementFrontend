@@ -166,7 +166,7 @@ const ServiceAndProducts = () => {
                 taxRate
             };
 
-            const response = await fetch('http://localhost:3000/api/accounting/serviceandproducts', {
+            const response = await fetch('http://88.198.112.156:3000/api/accounting/serviceandproducts', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ const ServiceAndProducts = () => {
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -300,7 +300,7 @@ const ServiceAndProducts = () => {
             </div>
 
             {/* Table Section */}
-            <div className="w-full rounded-md border shadow">
+            <div className="w-full rounded-lg border shadow">
                 {Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
                     <div className="w-full">
                         <div className="overflow-x-auto">
@@ -626,10 +626,10 @@ const ServiceAndProducts = () => {
 
             {/* Open Add Items Form */}
             {openAddItemForm && (
-                <div className={`fixed inset-0 bg-black/50 rounded-sm backdrop-blur-sm flex items-center justify-center z-50 p-4`}>
-                    <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-sm shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
+                <div className={`fixed inset-0 bg-black/50 rounded-lg backdrop-blur-sm flex items-center justify-center z-50 p-4`}>
+                    <form onSubmit={handleSubmit(handleAddItem)} className="bg-white rounded-lg shadow-xl w-11/12 md:w-10/12 max-h-[90vh] flex flex-col">
                         {/* Header Section */}
-                        <header className='flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10'>
+                        <header className='flex justify-between rounded-lg items-center p-4 border-b sticky top-0 bg-white z-10'>
                             <h1 className='text-xl font-semibold flex items-center gap-2'>
                                 <IoIosInformationCircle className="text-blue-500" />
                                 Add New Product
@@ -643,7 +643,7 @@ const ServiceAndProducts = () => {
                         </header>
 
                         {/* Form Section */}
-                        <div className="overflow-y-auto flex-1 p-4 md:p-6">
+                        <div className="overflow-y-auto rounded-lg flex-1 p-4 md:p-6">
                             <div className="space-y-6">
                                 <p className="text-gray-600 text-sm">
                                     Fill in the details to add a new product to inventory
@@ -946,7 +946,7 @@ const ServiceAndProducts = () => {
                         </div>
 
                         {/* Footer with actions */}
-                        <footer className="flex justify-end gap-3 p-4 border-t sticky bottom-0 bg-white">
+                        <footer className="flex justify-end rounded-lg gap-3 p-4 border-t sticky bottom-0 bg-white">
                             <Button
                                 variant="outline"
                                 type='button'

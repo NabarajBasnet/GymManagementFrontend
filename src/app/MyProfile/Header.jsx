@@ -76,7 +76,7 @@ const StaffHeader = ({ activeTab }) => {
 
     const logOutStaff = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staff-login/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/staff-login/logout`, {
                 method: "POST",
             })
             const responseBody = await response.json();
