@@ -95,7 +95,7 @@ const PausedMembers = () => {
     }, [searchQuery, limit]);
 
     const getAllMembers = async ({ queryKey }) => {
-        const [, page, searchQuery] = queryKey;
+        const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
         try {
             const response = await fetch(
                 `http://88.198.112.156:3000/api/members/pausedmembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&&&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}`
@@ -108,7 +108,7 @@ const PausedMembers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, searchQuery, sortBy, sortOrderDesc],
+        queryKey: ['members', currentPage, searchQuery, sortBy, sortOrderDesc, limit],
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
@@ -241,13 +241,29 @@ const PausedMembers = () => {
     };
 
     const copyToClipboard = (_id) => {
-        navigator.clipboard.writeText(_id)
-            .then(() => {
-                notify.success(`Member ID ${_id} copied to clipboard`);
-            })
-            .catch(() => {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(_id)
+                .then(() => notify.success(`Member ID ${_id} copied to clipboard`))
+                .catch(() => notify.error("Failed to copy ID"));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = _id;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    notify.success(`Member ID ${_id} copied to clipboard`);
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
                 notify.error("Failed to copy ID");
-            });
+            }
+            document.body.removeChild(textArea);
+        }
     };
 
     const startEntry = (currentPage - 1) * limit + 1;

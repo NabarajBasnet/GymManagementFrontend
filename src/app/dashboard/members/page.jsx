@@ -99,7 +99,7 @@ const AllMembers = () => {
     }, [searchQuery, limit]);
 
     const getAllMembers = async ({ queryKey }) => {
-        const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
+        const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
 
         try {
             const response = await fetch(
@@ -113,7 +113,7 @@ const AllMembers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
+        queryKey: ['members', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc, limit],
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
@@ -243,13 +243,29 @@ const AllMembers = () => {
     };
 
     const copyToClipboard = (_id) => {
-        navigator.clipboard.writeText(_id)
-            .then(() => {
-                notify.success(`Member ID ${_id} copied to clipboard`);
-            })
-            .catch(() => {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(_id)
+                .then(() => notify.success(`Member ID ${_id} copied to clipboard`))
+                .catch(() => notify.error("Failed to copy ID"));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = _id;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    notify.success(`Member ID ${_id} copied to clipboard`);
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
                 notify.error("Failed to copy ID");
-            });
+            }
+            document.body.removeChild(textArea);
+        }
     };
 
     const startEntry = (currentPage - 1) * limit + 1;
