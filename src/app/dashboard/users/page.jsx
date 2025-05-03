@@ -1,5 +1,7 @@
 'use client';
 
+import { IoClose } from "react-icons/io5";
+import { LuLoaderCircle } from "react-icons/lu";
 import { FiUsers } from "react-icons/fi";
 import toast from 'react-hot-toast'
 import { IoSearch } from "react-icons/io5";
@@ -50,6 +52,15 @@ import Loader from "@/components/Loader/Loader";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { usePagination } from "@/hooks/Pagination";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const Users = () => {
 
@@ -84,7 +95,7 @@ const Users = () => {
     const fetchAllUsers = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -119,7 +130,7 @@ const Users = () => {
     const fetchSingleUser = async (id) => {
         reset();
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/${id}`);
+            const response = await fetch(`http://localhost:3000/api/users/${id}`);
             const responseBody = await response.json();
             setUser(responseBody.user);
             setUserId(responseBody.user._id)
@@ -151,7 +162,7 @@ const Users = () => {
         try {
             const { firstName, lastName, email, phoneNumber, dob, address } = data;
             const finalData = { firstName, lastName, email, phoneNumber, dob, address, role, approval };
-            const response = await fetch(`http://88.198.112.156:3000/api/users/update/${userId}`, {
+            const response = await fetch(`http://localhost:3000/api/users/update/${userId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -178,7 +189,7 @@ const Users = () => {
     const deleteUser = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/users/remove/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/users/remove/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -249,207 +260,228 @@ const Users = () => {
 
                 {
                     editForm ? (
-                        <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-300">
-                            <div className="flex justify-center w-full max-w-2xl mx-4">
-                                <div className="bg-white rounded-xl shadow-2xl w-full transform transition-all duration-300 ease-out">
-                                    <div className="p-6 border-b border-gray-100">
-                                        <h2 className="text-2xl font-semibold text-gray-800">Edit User Profile</h2>
-                                        <p className="text-gray-500 text-sm mt-1">Update user details below</p>
+                        <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm flex rounded-md items-center justify-center z-50 p-4">
+                            <div className="flex justify-center w-full max-w-2xl rounded-md">
+                                <div className="bg-white rounded-xl shadow-2xl w-full flex flex-col max-h-[90vh]">
+
+                                    {/* Header Section */}
+                                    <div className="p-6 border-b border-gray-200 sticky top-0 bg-white z-10 rounded-t-xl">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <h2 className="text-xl font-semibold text-gray-800">Edit User Profile</h2>
+                                                <p className="text-gray-500 text-sm mt-1">Update the user information</p>
+                                            </div>
+                                            <button
+                                                onClick={() => setEditForm(false)}
+                                                className="text-gray-400 hover:text-gray-500 transition-colors p-1 -mr-1"
+                                                aria-label="Close"
+                                            >
+                                                <IoClose className="h-5 w-5" />
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    <form className="w-full" onSubmit={handleSubmit(editUser)}>
-                                        <div className="p-6 space-y-5">
-                                            {/* Name Row */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                                <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">First Name</Label>
-                                                    <Controller
-                                                        name="firstName"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                {...field}
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                                placeholder="John"
+                                    {/* Body Section - Scrollable Content */}
+                                    <div className="flex-1 overflow-y-auto">
+                                        <form onSubmit={handleSubmit(editUser)}>
+                                            <div className="p-6 space-y-6">
+                                                {/* Personal Information Section */}
+                                                <div className="space-y-6">
+                                                    <h3 className="text-base font-medium text-gray-900">Personal Information</h3>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div>
+                                                            <Label>First Name</Label>
+                                                            <Controller
+                                                                name="firstName"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        className="mt-1"
+                                                                        placeholder="John"
+                                                                    />
+                                                                )}
                                                             />
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">Last Name</Label>
-                                                    <Controller
-                                                        name="lastName"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                {...field}
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                                placeholder="Doe"
+                                                        </div>
+                                                        <div>
+                                                            <Label>Last Name</Label>
+                                                            <Controller
+                                                                name="lastName"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        className="mt-1"
+                                                                        placeholder="Doe"
+                                                                    />
+                                                                )}
                                                             />
-                                                        )}
-                                                    />
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div>
+                                                            <Label>Date of Birth</Label>
+                                                            <Controller
+                                                                name="dob"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        type="date"
+                                                                        className="mt-1"
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Phone Number</Label>
+                                                            <Controller
+                                                                name="phoneNumber"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Input
+                                                                        {...field}
+                                                                        type="tel"
+                                                                        className="mt-1"
+                                                                        placeholder="+1 (555) 123-4567"
+                                                                    />
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                            {/* Role and Approval */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-
-                                                <div>
-                                                    <Label>User Role</Label>
-                                                    <Controller
-                                                        name="role"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <select
-                                                                {...field}
-                                                                value={field.value}
-                                                                onChange={(e) => {
-                                                                    setUserRole(e.target.value)
-                                                                    field.onChange(e)
-                                                                }}
-                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                            >
-                                                                <option>Select</option>
-                                                                <option value="Super Admin">Super Admin</option>
-                                                                <option value="Gym Admin">Gym Admin</option>
-                                                                <option value="Operation Manager">Operation Manager</option>
-                                                                <option value="Developer">Developer</option>
-                                                                <option value="CEO">CEO</option>
-                                                                <option value="HR Manager">HR Manager</option>
-                                                            </select>
-                                                        )}
-                                                    />
-                                                </div>
-
-                                                <div>
-                                                    <Label>User Approval</Label>
-                                                    <Controller
-                                                        name="approval"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <select
-                                                                {...field}
-                                                                value={field.value}
-                                                                onChange={(e) => {
-                                                                    setUserApproval(e.target.value)
-                                                                    field.onChange(e)
-                                                                }}
-                                                                className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
-                                                            >
-                                                                <option>Select</option>
-                                                                <option value="Approved">Approve</option>
-                                                                <option value="Rejected">Reject</option>
-                                                                <option value="Pending">Pending</option>
-                                                                <option value="Blocked">Block</option>
-                                                            </select>
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Email */}
-                                            <div>
-                                                <Label className="block text-sm font-medium text-gray-700 mb-1">Email</Label>
-                                                <Controller
-                                                    name="email"
-                                                    control={control}
-                                                    render={({ field }) => (
-                                                        <Input
-                                                            {...field}
-                                                            type="email"
-                                                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                            placeholder="user@example.com"
+                                                {/* Account Information Section */}
+                                                <div className="space-y-6">
+                                                    <h3 className="text-base font-medium text-gray-900">Account Information</h3>
+                                                    <div>
+                                                        <Label>Email Address</Label>
+                                                        <Controller
+                                                            name="email"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <Input
+                                                                    {...field}
+                                                                    type="email"
+                                                                    className="mt-1"
+                                                                    placeholder="user@example.com"
+                                                                />
+                                                            )}
                                                         />
-                                                    )}
-                                                />
-                                            </div>
+                                                    </div>
 
-                                            {/* Phone and Address */}
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                                <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</Label>
-                                                    <Controller
-                                                        name="phoneNumber"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                {...field}
-                                                                type="tel"
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                                placeholder="+1 (555) 123-4567"
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        <div>
+                                                            <Label>User Role</Label>
+                                                            <Controller
+                                                                name="role"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Select
+                                                                        {...field}
+                                                                        onValueChange={(value) => {
+                                                                            setUserRole(value);
+                                                                            field.onChange(value);
+                                                                        }}
+                                                                    >
+                                                                        <SelectTrigger className="mt-1">
+                                                                            <SelectValue placeholder="Select role" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                                                            <SelectItem value="Gym Admin">Gym Admin</SelectItem>
+                                                                            <SelectItem value="Operation Manager">Operation Manager</SelectItem>
+                                                                            <SelectItem value="Developer">Developer</SelectItem>
+                                                                            <SelectItem value="CEO">CEO</SelectItem>
+                                                                            <SelectItem value="HR Manager">HR Manager</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                )}
                                                             />
-                                                        )}
-                                                    />
+                                                        </div>
+                                                        <div>
+                                                            <Label>Account Status</Label>
+                                                            <Controller
+                                                                name="approval"
+                                                                control={control}
+                                                                render={({ field }) => (
+                                                                    <Select
+                                                                        {...field}
+                                                                        onValueChange={(value) => {
+                                                                            setUserApproval(value);
+                                                                            field.onChange(value);
+                                                                        }}
+                                                                    >
+                                                                        <SelectTrigger className="mt-1">
+                                                                            <SelectValue placeholder="Select status" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent>
+                                                                            <SelectItem value="Approved">Approved</SelectItem>
+                                                                            <SelectItem value="Rejected">Rejected</SelectItem>
+                                                                            <SelectItem value="Pending">Pending</SelectItem>
+                                                                            <SelectItem value="Blocked">Blocked</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                )}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
 
-                                                <div>
-                                                    <Label className="block text-sm font-medium text-gray-700 mb-1">Date of Birth</Label>
-                                                    <Controller
-                                                        name="dob"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                {...field}
-                                                                type="date"
-                                                                className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors text-gray-700"
-                                                            />
-                                                        )}
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            {/* Address */}
-                                            <div>
-                                                <Label className="block text-sm font-medium text-gray-700 mb-1">Address</Label>
-                                                <Controller
-                                                    name="address"
-                                                    control={control}
-                                                    render={({ field }) => (
-                                                        <Input
-                                                            {...field}
-                                                            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                                                            placeholder="123 Main St, City, Country"
+                                                {/* Address Section */}
+                                                <div className="space-y-6">
+                                                    <h3 className="text-base font-medium text-gray-900">Address Information</h3>
+                                                    <div>
+                                                        <Label>Street Address</Label>
+                                                        <Controller
+                                                            name="address"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <Input
+                                                                    {...field}
+                                                                    className="mt-1"
+                                                                    placeholder="123 Main St, City, Country"
+                                                                />
+                                                            )}
                                                         />
-                                                    )}
-                                                />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Form Actions */}
-                                        <div className="p-6 border-t border-gray-100 flex justify-end space-x-3">
-                                            <Button
-                                                variant="outline"
-                                                onClick={() => setEditForm(false)}
-                                                className="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button
-                                                type="submit"
-                                                className="px-6 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
-                                                disabled={isSubmitting}
-                                            >
-                                                {isSubmitting ? (
-                                                    <span className="flex items-center">
-                                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                        </svg>
-                                                        Processing...
-                                                    </span>
-                                                ) : "Save Changes"}
-                                            </Button>
-                                        </div>
-                                    </form>
+                                            {/* Footer Section */}
+                                            <div className="p-6 border-t border-gray-200 sticky bottom-0 bg-white rounded-b-xl">
+                                                <div className="flex justify-end space-x-3">
+                                                    <Button
+                                                        type="button"
+                                                        variant="outline"
+                                                        onClick={() => setEditForm(false)}
+                                                        className="min-w-[100px]"
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        type="submit"
+                                                        className="min-w-[100px] bg-blue-600 hover:bg-blue-700"
+                                                        disabled={isSubmitting}
+                                                    >
+                                                        {isSubmitting ? (
+                                                            <>
+                                                                <LuLoaderCircle className="mr-2 h-4 w-4 animate-spin" />
+                                                                Saving...
+                                                            </>
+                                                        ) : "Save Changes"}
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    ) : (
-                        <></>
-                    )
+                    ) : null
                 }
+
                 <div className="w-full space-y-6">
                     {/* Controls Section */}
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">

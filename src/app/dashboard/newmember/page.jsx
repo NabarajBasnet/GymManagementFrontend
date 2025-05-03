@@ -377,7 +377,7 @@ const NewMemberRegistrationForm = () => {
                 }
                 )
             }
-            const response = await fetch('http://88.198.112.156:3000/api/members', {
+            const response = await fetch('http://localhost:3000/api/members', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -452,7 +452,7 @@ const NewMemberRegistrationForm = () => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -664,7 +664,7 @@ const NewMemberRegistrationForm = () => {
 
             <div className="w-full flex justify-center">
                 <div className="w-full">
-                    <div className="w-full">
+                    <div className="w-full px-4">
                         <form onSubmit={handleSubmit(onRegisterMember)} className="w-full">
                             <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
                                 <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>

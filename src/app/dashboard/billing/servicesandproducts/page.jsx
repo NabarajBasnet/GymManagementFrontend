@@ -166,7 +166,7 @@ const ServiceAndProducts = () => {
                 taxRate
             };
 
-            const response = await fetch('http://88.198.112.156:3000/api/accounting/serviceandproducts', {
+            const response = await fetch('http://localhost:3000/api/accounting/serviceandproducts', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ const ServiceAndProducts = () => {
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts?page=${page}&&limit=${limit}&&searchQuery=${searchQuery}&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}&&activeTab=${activeTab}`);
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -416,10 +416,10 @@ const ServiceAndProducts = () => {
                                                 <td className="p-4 align-middle">
                                                     <span
                                                         className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.status === 'Active'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : item.status === 'Inactive'
-                                                                    ? 'bg-red-100 text-red-800'
-                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                            ? 'bg-green-100 text-green-800'
+                                                            : item.status === 'Inactive'
+                                                                ? 'bg-red-100 text-red-800'
+                                                                : 'bg-yellow-100 text-yellow-800'
                                                             }`}
                                                     >
                                                         {item.status}

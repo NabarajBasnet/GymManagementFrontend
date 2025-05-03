@@ -20,7 +20,6 @@ import {
 import '../../../globals.css';
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
-import { IoSearch } from "react-icons/io5";
 import {
     Table,
     TableBody,
@@ -45,7 +44,7 @@ import {
     DropdownMenu,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Loader2, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
+import { QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -86,7 +85,7 @@ const MemberAttendance = () => {
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/temporary-member-attendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
@@ -104,7 +103,7 @@ const MemberAttendance = () => {
 
     const handleValidation = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-qr/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/validate-qr/${memberId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -175,7 +174,7 @@ const MemberAttendance = () => {
         const membershipHoldData = { status: 'Active' };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/resume-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -535,9 +534,7 @@ const MemberAttendance = () => {
                                 </div>
 
                                 {isAttendanceHistory ? (
-                                    <div className="flex justify-center items-center h-64">
-                                        <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
-                                    </div>
+                                    <Loader />
                                 ) : (
                                     <div className="rounded-lg border border-gray-200 overflow-hidden">
                                         <Table>

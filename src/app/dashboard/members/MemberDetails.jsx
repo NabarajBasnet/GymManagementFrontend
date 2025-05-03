@@ -303,7 +303,7 @@ const MemberDetails = ({ memberId }) => {
     const uploadMemberImage = async () => {
         setImageUploading(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -357,7 +357,7 @@ const MemberDetails = ({ memberId }) => {
     const updateMemberDetails = async (data) => {
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -409,7 +409,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold', actionTaker: currentActionTaker };
 
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -458,7 +458,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -477,7 +477,7 @@ const MemberDetails = ({ memberId }) => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full p-1 bg-gray-100">
+        <div className="w-full p-1 bg-gray-50">
             <div className='w-full p-6' onClick={() => setToast(false)}>
 
                 {toast && (
@@ -574,26 +574,28 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="flex justify-between items-center bg-blue-50 border rounded-md py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
-                <h1 className="mx-4 text-blue-600 font-semibold">Profile Details</h1>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <FaChevronUp
-                                className={`mx-4 text-blue-600 cursor-pointer h-4 w-4 transition-transform duration-300 ${renderProfileDetails ? 'rotate-180' : 'rotate-0'
-                                    }`}
-                            />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Click in dropdown to view details.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
+            <div className="w-full px-4 flex justify-center">
+                <div className="flex justify-between items-center bg-blue-50 border rounded-md py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
+                    <h1 className="mx-4 text-blue-600 font-semibold">Profile Details</h1>
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <FaChevronUp
+                                    className={`mx-4 text-blue-600 cursor-pointer h-4 w-4 transition-transform duration-300 ${renderProfileDetails ? 'rotate-180' : 'rotate-0'
+                                        }`}
+                                />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Click in dropdown to view details.</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                </div>
             </div>
 
             {renderProfileDetails && (
                 <div className=" bg-gray-50">
-                    <div className="max-w-full">
+                    <div className="max-w-full px-6">
                         <div className="bg-white mt-4 rounded-xl shadow-xl overflow-hidden">
                             <div className="md:flex items-center justify-between px-4 py-2">
                                 {/* Image Upload Section */}
@@ -777,7 +779,7 @@ const MemberDetails = ({ memberId }) => {
                     <div className="w-full">
                         {
                             data && (
-                                <div className="w-full">
+                                <div className="w-full px-4">
                                     {
                                         data ? (
                                             <form className="w-full" onSubmit={handleSubmit(updateMemberDetails)}>
