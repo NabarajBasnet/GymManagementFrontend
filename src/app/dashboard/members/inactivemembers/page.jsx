@@ -95,7 +95,7 @@ const InactiveMembers = () => {
         const [, page, searchQuery] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}`
+                `http://localhost:3000/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;
