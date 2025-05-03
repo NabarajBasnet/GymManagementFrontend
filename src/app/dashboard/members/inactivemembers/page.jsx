@@ -1,5 +1,6 @@
 'use client'
 
+import { ArrowUpDown } from 'lucide-react';
 import {
     Tooltip,
     TooltipContent,
@@ -81,6 +82,10 @@ const InactiveMembers = () => {
     const [limit, setLimit] = useState(15);
     const [isDeleting, setIsDeleting] = useState(false);
 
+    // Sorting States
+    const [sortBy, setSortBy] = useState('');
+    const [sortOrderDesc, setSortOrderDesc] = useState(true);
+
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => clearTimeout(handler);
@@ -100,7 +105,7 @@ const InactiveMembers = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['members', currentPage, searchQuery, limit],
+        queryKey: ['members', currentPage, searchQuery, sortBy, sortOrderDesc],
         queryFn: getAllMembers,
         keepPreviousData: true,
     });
@@ -497,17 +502,138 @@ const InactiveMembers = () => {
                                 <Table className='w-full overflow-x-auto'>
                                     <TableHeader>
                                         <TableRow className='bg-gray-200 text-black'>
-                                            <TableHead>Member Id</TableHead>
-                                            <TableHead>Full Name</TableHead>
-                                            <TableHead className='text-center'>Duration</TableHead>
-                                            <TableHead className='text-center'>Option</TableHead>
-                                            <TableHead className='text-center'>Renew</TableHead>
-                                            <TableHead className='text-center'>Type</TableHead>
-                                            <TableHead className='text-center'>Expire</TableHead>
-                                            <TableHead className='text-center'>Contact No</TableHead>
-                                            <TableHead className='text-center'>Shift</TableHead>
-                                            <TableHead className='text-center'>Status</TableHead>
-                                            <TableHead className='text-center'>Fee</TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    Member Id
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('_id');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead>
+                                                <div className="flex items-center">
+                                                    Full Name
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('fullName');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Duration
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipDuration');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Option
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipOption');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Renew
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipRenewDate');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Type
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipType');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Expire
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipExpireDate');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Contact No
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('contactNo');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Shift
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('membershipShift');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Status
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('status');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
+                                            <TableHead className='text-center'>
+                                                <div className="flex items-center">
+                                                    Fee
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('paidAmmount');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                            </TableHead>
                                             <TableHead className='text-center'>Action</TableHead>
                                         </TableRow>
                                     </TableHeader>
