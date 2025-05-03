@@ -241,10 +241,10 @@ const InactiveMembers = () => {
         };
     };
 
-    const copyToClipboard = (text) => {
-        navigator.clipboard.writeText(text)
+    const copyToClipboard = (_id) => {
+        navigator.clipboard.writeText(_id)
             .then(() => {
-                notify.success("ID copied to clipboard");
+                notify.success(`Member ID ${_id} copied to clipboard`);
             })
             .catch(() => {
                 notify.error("Failed to copy ID");
@@ -434,7 +434,7 @@ const InactiveMembers = () => {
                     <></>
                 )}
 
-                <div className="bg-white shadow-md rounded-lg flex items-center py-6 px-1 border">
+                <div className="bg-white shadow-sm rounded-lg flex items-center py-6 px-1 border">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -666,10 +666,11 @@ const InactiveMembers = () => {
                                                                     <Tooltip>
                                                                         <TooltipTrigger asChild>
                                                                             <button
-                                                                                onClick={() => copyToClipboard(member._id)}
                                                                                 className="text-gray-400 hover:text-blue-600 transition-colors p-1"
                                                                             >
-                                                                                <MdContentCopy size={14} />
+                                                                                <MdContentCopy
+                                                                                    onClick={() => copyToClipboard(member._id)}
+                                                                                    size={14} />
                                                                             </button>
                                                                         </TooltipTrigger>
                                                                         <TooltipContent>
@@ -680,15 +681,15 @@ const InactiveMembers = () => {
                                                             </div>
                                                         </TableCell>
                                                         <TableCell>{member.fullName}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipDuration}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipOption}</TableCell>
-                                                        <TableCell className='text-center'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipType}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipDuration}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipOption}</TableCell>
+                                                        <TableCell className='text-start'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipType}</TableCell>
                                                         <TableCell className='text-center'>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                         <TableCell className='text-center'>{member.contactNo}</TableCell>
                                                         <TableCell className='text-center'>{member.membershipShift}</TableCell>
-                                                        <TableCell className='text-center'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                                        <TableCell className='text-center'>{member.paidAmmount}</TableCell>
+                                                        <TableCell className='text-start'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                        <TableCell className='text-start'>{member.paidAmmount}</TableCell>
                                                         <TableCell className='text-center'>
                                                             <div className="flex items-center justify-center space-x-1">
                                                                 <Link href={`/dashboard/members/${member._id}`}>
