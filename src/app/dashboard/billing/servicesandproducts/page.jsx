@@ -166,7 +166,7 @@ const ServiceAndProducts = () => {
                 taxRate
             };
 
-            const response = await fetch('http://localhost:3000/api/accounting/serviceandproducts', {
+            const response = await fetch('http://88.198.112.156:3000/api/accounting/serviceandproducts', {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ const ServiceAndProducts = () => {
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&&limit=${limit}&&searchQuery=${searchQuery}&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}&&activeTab=${activeTab}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts?page=${page}&&limit=${limit}&&searchQuery=${searchQuery}&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}&&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
