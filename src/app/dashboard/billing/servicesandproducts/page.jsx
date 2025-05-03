@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Check, Plus, Search, Filter, Trash2, Save, X, Edit, ArrowUpDown, MoreHorizontal } from 'lucide-react';
 
 // Import shadcn components
@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
+import Loader from "@/components/Loader/Loader";
 
 const currencies = [
     {
@@ -105,8 +106,17 @@ const subCategories = {
 };
 
 const ServiceAndProducts = () => {
-    const [activeTab, setActiveTab] = useState("all");
+
     const queryClient = useQueryClient();
+
+    // Sort States
+    const [activeTab, setActiveTab] = useState("all");
+    const [sortBy, setSortBy] = useState('');
+    const [sortOrderDesc, setSortOrderDesc] = useState(true);
+
+    // Search Query
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
     // Pagination states
     let limit = 15;
@@ -184,9 +194,9 @@ const ServiceAndProducts = () => {
 
     // Get all services and products from server
     const getAllServicesAndProducts = async ({ queryKey }) => {
-        const [, page, searchQuery, sortBy] = queryKey;
+        const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&&limit=${limit}&&searchQuery=${searchQuery}&&sortBy=${sortBy}`);
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&&limit=${limit}&&searchQuery=${searchQuery}&&sortBy=${sortBy}&&sortOrderDesc=${sortOrderDesc}&&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -196,10 +206,19 @@ const ServiceAndProducts = () => {
 
     const { data, isLoading } = useQuery({
         queryFn: getAllServicesAndProducts,
-        queryKey: ['servicesandproducts', currentPage, 'Searched Query', 'Sort By Product'],
+        queryKey: ['servicesandproducts', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc, activeTab],
     });
 
     const { serviceAndProducts, totalPages } = data || {};
+
+    // Debounce Search Query
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery)
+        }, 300);
+
+        return () => clearTimeout(timerId);
+    }, [searchQuery]);
 
     return (
         <div className="w-full mx-auto py-6 px-4">
@@ -267,6 +286,8 @@ const ServiceAndProducts = () => {
                         <div className="relative flex-1">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Search items..."
                                 className="pl-8 w-full md:w-64"
                             />
@@ -283,124 +304,167 @@ const ServiceAndProducts = () => {
                 {Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
                     <div className="w-full">
                         <div className="overflow-x-auto">
-                            <table className="text-sm w-full">
-                                <thead>
-                                    <tr className="border-b bg-muted/50">
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <Checkbox id="terms" />
-                                        </th>
-
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center">
-                                                Item ID
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-16 px-4 text-left font-medium">
-                                            <div className="flex items-center">
-                                                Name
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
-                                                Type
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
-                                                Category
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center">
-                                                Price
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">
-                                            <div className="flex items-center">
-                                                Tax Rate
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-left font-medium">
-                                            <div className="flex items-center">
-                                                Status
-                                                <ArrowUpDown className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                            </div>
-                                        </th>
-                                        <th className="h-10 px-4 text-right font-medium">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {serviceAndProducts.map((item) => (
-                                        <tr key={item.itemId} className="border-b text-sm hover:bg-muted/50">
-                                            <td className="align-middle text-center font-medium">
+                            {isLoading ? (
+                                <Loader />
+                            ) : (
+                                <table className="text-sm w-full">
+                                    <thead>
+                                        <tr className="border-b bg-muted/50">
+                                            <th className="h-16 px-4 text-left font-medium">
                                                 <Checkbox id="terms" />
-                                            </td>
-                                            <td className="align-middle md:text-center font-medium">{item.itemId}</td>
-                                            <td className="p-4 align-middle font-medium">{item.itemName}</td>
-                                            <td className="p-4 align-middle">
-                                                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.type === "service"
-                                                    ? "bg-purple-100 text-purple-800"
-                                                    : "bg-blue-100 text-blue-800"
-                                                    }`}>
-                                                    {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 align-middle">{item.category}</td>
-                                            <td className="p-4 align-middle text-center">${item.sellingPrice.toFixed(2)}</td>
-                                            <td className="p-4 align-middle text-center">{item.taxRate}%</td>
-                                            <td className="p-4 align-middle">
-                                                <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.active
-                                                    ? "bg-green-100 text-green-800"
-                                                    : "bg-red-100 text-red-800"
-                                                    }`}>
-                                                    {item.status ? "Active" : "Inactive"}
-                                                </span>
-                                            </td>
-                                            <td className="p-4 align-middle text-center">
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem>
-                                                            <Edit className="mr-2 h-4 w-4" />
-                                                            Edit
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem>
-                                                            <Trash2 className="mr-2 h-4 w-4" />
-                                                            Delete
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem>
-                                                            {item.active ? (
-                                                                <>
-                                                                    <X className="mr-2 h-4 w-4" />
-                                                                    Deactivate
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <Check className="mr-2 h-4 w-4" />
-                                                                    Activate
-                                                                </>
-                                                            )}
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
-                                            </td>
+                                            </th>
+
+                                            <th className="h-16 px-4 text-left font-medium">
+                                                <div className="flex items-center">
+                                                    Item ID
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('itemId');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-16 px-4 text-left font-medium">
+                                                <div className="flex items-center">
+                                                    Name
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('itemName');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-10 px-4 text-left font-medium">
+                                                <div className="flex items-center">
+                                                    Type
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('itemType');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-10 px-4 text-left font-medium">
+                                                <div className="flex items-center">
+                                                    Category
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('category');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-10 px-4 text-right font-medium">
+                                                <div className="flex items-center">
+                                                    Price
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('sellingPrice');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="px-4 text-right font-medium">
+                                                <div className="flex items-center">
+                                                    TaxRate
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('taxRate');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-10 px-4 text-left font-medium">
+                                                <div className="flex items-center">
+                                                    Status
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('status');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                </div>
+                                            </th>
+                                            <th className="h-10 px-4 text-right font-medium">Actions</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {serviceAndProducts.map((item) => (
+                                            <tr key={item.itemId} className="border-b text-sm hover:bg-muted/50">
+                                                <td className="align-middle text-center font-medium">
+                                                    <Checkbox id="terms" />
+                                                </td>
+                                                <td className="align-middle md:text-center font-medium">{item.itemId}</td>
+                                                <td className="p-4 align-middle font-medium">{item.itemName}</td>
+                                                <td className="p-4 align-middle">
+                                                    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.type === "service"
+                                                        ? "bg-purple-100 text-purple-800"
+                                                        : "bg-blue-100 text-blue-800"
+                                                        }`}>
+                                                        {item.itemType.charAt(0).toUpperCase() + item.itemType.slice(1)}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 align-middle">{item.category}</td>
+                                                <td className="p-4 align-middle text-center">${item.sellingPrice.toFixed(2)}</td>
+                                                <td className="p-4 align-middle text-center">{item.taxRate}%</td>
+                                                <td className="p-4 align-middle">
+                                                    <span
+                                                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${item.status === 'Active'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : item.status === 'Inactive'
+                                                                    ? 'bg-red-100 text-red-800'
+                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                            }`}
+                                                    >
+                                                        {item.status}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4 align-middle text-center">
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem>
+                                                                <Edit className="mr-2 h-4 w-4" />
+                                                                Edit
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem>
+                                                                <Trash2 className="mr-2 h-4 w-4" />
+                                                                Delete
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem>
+                                                                {item.active ? (
+                                                                    <>
+                                                                        <X className="mr-2 h-4 w-4" />
+                                                                        Deactivate
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <Check className="mr-2 h-4 w-4" />
+                                                                        Activate
+                                                                    </>
+                                                                )}
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
                         </div>
                         <div className="flex items-center justify-between border-t px-4 py-4">
                             <div className="text-sm text-muted-foreground">
