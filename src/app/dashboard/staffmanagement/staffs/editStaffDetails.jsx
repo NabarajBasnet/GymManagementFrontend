@@ -369,7 +369,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
     return (
         <div className="w-full">
-            <div className="fixed inset-0 bg-black bg-opacity-80 z-[51]"></div>
+            <div className="fixed inset-0 bg-black bg-opacity-80 z-50"></div>
             <div className="fixed inset-0 z-40 flex items-center justify-center">
                 <div className="w-full flex justify-center">
                     <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
