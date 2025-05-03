@@ -1,6 +1,14 @@
 'use client';
 
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import NewMemberRegistrationForm from "../newmember/page";
 import { IoMdPersonAdd } from "react-icons/io";
 import { toast as notify } from "react-hot-toast";
@@ -54,10 +62,6 @@ import {
     TableHeader,
     TableRow,
 } from "./allmembertable.jsx";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
@@ -692,15 +696,15 @@ const AllMembers = () => {
                                                             </div>
                                                         </TableCell>
                                                         <TableCell>{member.fullName}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipDuration}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipOption}</TableCell>
-                                                        <TableCell className='text-center'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipType}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipDuration}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipOption}</TableCell>
+                                                        <TableCell className='text-start'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipType}</TableCell>
                                                         <TableCell className='text-center'>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                                         <TableCell className='text-center'>{member.contactNo}</TableCell>
-                                                        <TableCell className='text-center'>{member.membershipShift}</TableCell>
-                                                        <TableCell className='text-center'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                                        <TableCell className='text-center'>{member.paidAmmount}</TableCell>
+                                                        <TableCell className='text-start'>{member.membershipShift}</TableCell>
+                                                        <TableCell className='text-start'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                                        <TableCell className='text-start'>{member.paidAmmount}</TableCell>
                                                         <TableCell className='text-center'>
                                                             <div className="flex items-center justify-center space-x-1">
                                                                 <Link href={`/dashboard/members/${member._id}`}>

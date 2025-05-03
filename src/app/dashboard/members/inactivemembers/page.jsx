@@ -1,6 +1,14 @@
 'use client'
 
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
     Tooltip,
     TooltipContent,
@@ -53,10 +61,6 @@ import {
     TableHeader,
     TableRow,
 } from "../allmembertable.jsx";
-import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
