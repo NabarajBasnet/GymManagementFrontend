@@ -105,12 +105,6 @@ const PaymentReceipts = () => {
         { id: 3, name: 'Consultation', price: 100 },
     ];
 
-    const filteredProducts = query === ''
-        ? products
-        : products.filter((product) =>
-            product.name.toLowerCase().includes(query.toLowerCase())
-        );
-
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
             {/* Breadcrumb Navigation */}
@@ -203,7 +197,7 @@ const PaymentReceipts = () => {
             {/* Form Section */}
             {openReceiptForm && (
                 <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form className="bg-white w-full max-w-6xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
+                    <form className="bg-white w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
                         {/* Header */}
                         <div className="w-full flex justify-between p-6 items-center border-b border-gray-100">
                             <div>
@@ -312,50 +306,19 @@ const PaymentReceipts = () => {
                                             {items.map((item, index) => (
                                                 <tr key={index} className="hover:bg-gray-50 transition-colors">
                                                     <td className="px-4 py-3 whitespace-nowrap">
-                                                        <Combobox value={item.description} onChange={(value) => handleChange(index, "description", value)}>
-                                                            <div className="relative">
-                                                                <Combobox.Input
-                                                                    className="w-full p-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                                    placeholder="Search products..."
-                                                                    displayValue={(product) => product}
-                                                                    onChange={(e) => setQuery(e.target.value)}
-                                                                />
-                                                                <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                                                                    <BiChevronDown className="h-4 w-4 text-gray-400" />
-                                                                </Combobox.Button>
-                                                            </div>
-                                                            <Combobox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                                                {filteredProducts.length === 0 && query !== '' ? (
-                                                                    <div className="relative cursor-default select-none py-2 px-4 text-gray-700">
-                                                                        Nothing found.
-                                                                    </div>
-                                                                ) : (
-                                                                    filteredProducts.map((product) => (
-                                                                        <Combobox.Option
-                                                                            key={product.id}
-                                                                            value={product.name}
-                                                                            className={({ active }) =>
-                                                                                `relative cursor-default select-none py-2 pl-4 pr-4 ${active ? 'bg-blue-600 text-white' : 'text-gray-900'
-                                                                                }`
-                                                                            }
-                                                                        >
-                                                                            {({ selected, active }) => (
-                                                                                <>
-                                                                                    <span className={`block truncate ${selected ? 'font-medium' : 'font-normal'}`}>
-                                                                                        {product.name}
-                                                                                    </span>
-                                                                                    {product.price && (
-                                                                                        <span className={`absolute right-3 ${active ? 'text-blue-100' : 'text-gray-500'}`}>
-                                                                                            ${product.price.toFixed(2)}
-                                                                                        </span>
-                                                                                    )}
-                                                                                </>
-                                                                            )}
-                                                                        </Combobox.Option>
-                                                                    ))
-                                                                )}
-                                                            </Combobox.Options>
-                                                        </Combobox>
+                                                        <Select>
+                                                            <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                                                <SelectValue placeholder="Select staff" />
+                                                            </SelectTrigger>
+                                                            <SelectContent className="rounded-lg shadow-lg border border-gray-200">
+                                                                <SelectGroup>
+                                                                    <SelectLabel className="text-xs font-medium text-gray-500">Select Items</SelectLabel>
+                                                                    <SelectItem value="staff1" className="text-sm">Admin User</SelectItem>
+                                                                    <SelectItem value="staff2" className="text-sm">Sales Manager</SelectItem>
+                                                                    <SelectItem value="staff3" className="text-sm">Reception</SelectItem>
+                                                                </SelectGroup>
+                                                            </SelectContent>
+                                                        </Select>
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap">
                                                         <input
