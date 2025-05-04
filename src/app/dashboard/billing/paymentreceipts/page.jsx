@@ -94,6 +94,12 @@ const PaymentReceipts = () => {
     const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
     const staffSearchRef = useRef(null);
 
+    // Services and Products search states
+    const [serviceProductSearchQuery, setServiceProductSearchQuery] = useState('');
+    const [renderServiceProductDropdown, setRenderServiceProductDropdown] = useState(false);
+    const [currentEditingItemIndex, setCurrentEditingItemIndex] = useState(null);
+    const serviceProductSearchRef = useRef(null);
+
     // Other states
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -109,12 +115,12 @@ const PaymentReceipts = () => {
         }
     };
 
-    const { data, isLoading } = useQuery({
+    const { data: membersData, isLoading: membersLoading } = useQuery({
         queryKey: ['members'],
         queryFn: getAllMembers
     });
 
-    const { members } = data || {};
+    const { members } = membersData || {};
 
     // Get all staffs
     const getAllStaffs = async () => {
@@ -128,14 +134,36 @@ const PaymentReceipts = () => {
         }
     };
 
-    const { data: staffsData, isLoading: staffsFetching } = useQuery({
+    const { data: staffsData, isLoading: staffsLoading } = useQuery({
         queryKey: ['staffs'],
         queryFn: getAllStaffs
     });
 
     const { staffs } = staffsData || {};
 
-    // Handle click outside for member dropdown
+    // Get all services and products
+    const getAllServicesAndProducts = async () => {
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/accounting/serviceandproducts`
+            );
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to fetch services and products");
+        }
+    };
+
+    const { data: servicesProductsData, isLoading: servicesProductsLoading } = useQuery({
+        queryFn: getAllServicesAndProducts,
+        queryKey: ['servicesandproducts'],
+    });
+
+
+    const { serviceAndProducts } = servicesProductsData || {};
+
+    // Handle click outside for all dropdowns
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (memberSearchRef.current && !memberSearchRef.current.contains(event.target)) {
@@ -144,12 +172,15 @@ const PaymentReceipts = () => {
             if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
                 setRenderStaffDropdown(false);
             }
+            if (serviceProductSearchRef.current && !serviceProductSearchRef.current.contains(event.target)) {
+                setRenderServiceProductDropdown(false);
+            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [memberSearchRef, staffSearchRef]);
+    }, [memberSearchRef, staffSearchRef, serviceProductSearchRef]);
 
     const handleMemberSearchFocus = () => {
         setRenderMemberDropdown(true);
@@ -157,6 +188,11 @@ const PaymentReceipts = () => {
 
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
+    };
+
+    const handleServiceProductSearchFocus = (index) => {
+        setCurrentEditingItemIndex(index);
+        setRenderServiceProductDropdown(true);
     };
 
     const handleChange = (index, field, value) => {
@@ -180,11 +216,18 @@ const PaymentReceipts = () => {
         setItems(updatedItems);
     };
 
-    const products = [
-        { id: 1, name: 'Website Design', price: 500 },
-        { id: 2, name: 'SEO Service', price: 300 },
-        { id: 3, name: 'Consultation', price: 100 },
-    ];
+    const handleServiceProductSelect = (index, item) => {
+        const updatedItems = [...items];
+        updatedItems[index] = {
+            ...updatedItems[index],
+            description: item.itemName,
+            unitPrice: item.sellingPrice,
+            total: updatedItems[index].quantity * item.sellingPrice
+        };
+        setItems(updatedItems);
+        setRenderServiceProductDropdown(false);
+        setServiceProductSearchQuery("");
+    };
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -479,26 +522,54 @@ const PaymentReceipts = () => {
                                         <tbody className="bg-white divide-y divide-gray-200">
                                             {items.map((item, index) => (
                                                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-4 py-3 whitespace-nowrap">
-                                                        <Select>
-                                                            <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                                <SelectValue placeholder="Select item" />
-                                                            </SelectTrigger>
-                                                            <SelectContent className="rounded-lg shadow-lg border border-gray-200">
-                                                                <SelectGroup>
-                                                                    <SelectLabel className="text-xs font-medium text-gray-500">Select Items</SelectLabel>
-                                                                    {products.map((product) => (
-                                                                        <SelectItem
-                                                                            key={product.id}
-                                                                            value={product.name}
-                                                                            className="text-sm"
-                                                                        >
-                                                                            {product.name}
-                                                                        </SelectItem>
-                                                                    ))}
-                                                                </SelectGroup>
-                                                            </SelectContent>
-                                                        </Select>
+                                                    <td className="px-4 py-3 z-50 whitespace-nowrap">
+                                                        <div ref={serviceProductSearchRef} className="relative">
+                                                            <Input
+                                                                autoComplete="off"
+                                                                value={item.description}
+                                                                onChange={(e) => {
+                                                                    handleChange(index, "description", e.target.value);
+                                                                    setServiceProductSearchQuery(e.target.value);
+                                                                }}
+                                                                onFocus={() => handleServiceProductSearchFocus(index)}
+                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 h-10"
+                                                                placeholder="Search services/products..."
+                                                            />
+                                                            {renderServiceProductDropdown && currentEditingItemIndex === index && (
+                                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                                    {servicesProductsLoading ? (
+                                                                        <div className="px-4 py-3 text-sm text-gray-500">Loading...</div>
+                                                                    ) : serviceAndProducts?.length > 0 ? (
+                                                                        serviceAndProducts
+                                                                            .filter((product) => {
+                                                                                return product.itemName
+                                                                                    .toLowerCase()
+                                                                                    .includes(serviceProductSearchQuery.toLowerCase()) ||
+                                                                                    (product.description && product.description
+                                                                                        .toLowerCase()
+                                                                                        .includes(serviceProductSearchQuery.toLowerCase()));
+                                                                            })
+                                                                            .map((product) => (
+                                                                                <div
+                                                                                    onClick={() => handleServiceProductSelect(index, product)}
+                                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                                    key={product._id || product.itemId}
+                                                                                >
+                                                                                    <div className="flex justify-between">
+                                                                                        <span>{product.itemName}</span>
+                                                                                        <span className="font-medium">${product.sellingPrice}</span>
+                                                                                    </div>
+                                                                                    {product.description && (
+                                                                                        <p className="text-xs text-gray-500 mt-1 truncate">{product.description}</p>
+                                                                                    )}
+                                                                                </div>
+                                                                            ))
+                                                                    ) : (
+                                                                        <div className="px-4 py-3 text-sm text-gray-500">No services/products found</div>
+                                                                    )}
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                     <td className="px-4 py-3 whitespace-nowrap">
                                                         <input
@@ -557,139 +628,98 @@ const PaymentReceipts = () => {
                                     <div className="space-y-1.5">
                                         <Label className="text-sm font-medium text-gray-700">Payment Method</Label>
                                         <Select>
-                                            <SelectTrigger className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                <SelectValue placeholder="Select method" />
+                                            <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                                <SelectValue placeholder="Select payment method" />
                                             </SelectTrigger>
-                                            <SelectContent className="rounded-lg shadow-lg border border-gray-200">
+                                            <SelectContent>
                                                 <SelectGroup>
-                                                    <SelectLabel className="text-xs font-medium text-gray-500">Payment Methods</SelectLabel>
-                                                    <SelectItem value="fonepay" className="text-sm">Fonepay</SelectItem>
-                                                    <SelectItem value="esewa" className="text-sm">Esewa</SelectItem>
-                                                    <SelectItem value="khalti" className="text-sm">Khalti</SelectItem>
-                                                    <SelectItem value="cash" className="text-sm">Cash</SelectItem>
+                                                    <SelectLabel>Payment Methods</SelectLabel>
+                                                    <SelectItem value="cash">Cash</SelectItem>
+                                                    <SelectItem value="credit_card">Credit Card</SelectItem>
+                                                    <SelectItem value="debit_card">Debit Card</SelectItem>
+                                                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
+                                                    <SelectItem value="check">Check</SelectItem>
+                                                    <SelectItem value="mobile_payment">Mobile Payment</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Payment Status</Label>
-                                        <Select>
-                                            <SelectTrigger className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                <SelectValue placeholder="Select status" />
-                                            </SelectTrigger>
-                                            <SelectContent className="rounded-lg shadow-lg border border-gray-200">
-                                                <SelectGroup>
-                                                    <SelectLabel className="text-xs font-medium text-gray-500">Status Options</SelectLabel>
-                                                    <SelectItem value="paid" className="text-sm">Paid</SelectItem>
-                                                    <SelectItem value="partial" className="text-sm">Partially Paid</SelectItem>
-                                                    <SelectItem value="pending" className="text-sm">Pending</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
+                                        <Label className="text-sm font-medium text-gray-700">Reference No.</Label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Payment reference number"
+                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Amounts</h2>
+                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Amount Summary</h2>
 
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Subtotal</Label>
-                                        <Input
-                                            type="number"
-                                            placeholder="0.00"
-                                            className="h-10 text-sm rounded-lg border-gray-300 bg-gray-50 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Tax (%)</Label>
-                                            <Input
-                                                type="number"
-                                                placeholder="13"
-                                                className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            />
+                                    <div className="space-y-2">
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-gray-600">Subtotal</span>
+                                            <span className="text-sm font-medium">
+                                                ${items.reduce((sum, item) => sum + item.total, 0).toFixed(2)}
+                                            </span>
                                         </div>
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Discount</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    type="number"
-                                                    placeholder="0.00"
-                                                    className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-8"
-                                                />
-                                                <span className="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
-                                            </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-sm text-gray-600">Tax (10%)</span>
+                                            <span className="text-sm font-medium">
+                                                <span className="text-sm font-medium">
+                                                    {(items.reduce((sum, item) => sum + item.total, 0) * 0.1).toFixed(2)}
+                                                </span>
+                                            </span>
+                                        </div>
+                                        <div className="flex justify-between border-t border-gray-200 pt-2">
+                                            <span className="text-sm font-semibold text-gray-700">Total Amount</span>
+                                            <span className="text-sm font-bold">
+                                                ${(items.reduce((sum, item) => sum + item.total, 0) * 1.1).toFixed(2)}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Final Amount</h2>
-
+                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Notes</h2>
                                     <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Total Amount</Label>
-                                        <Input
-                                            type="number"
-                                            placeholder="0.00"
-                                            className="h-10 text-sm rounded-lg border-gray-300 bg-gray-50 font-medium focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Paid Amount</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    type="number"
-                                                    placeholder="0.00"
-                                                    className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-8"
-                                                />
-                                                <span className="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
-                                            </div>
-                                        </div>
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Due Amount</Label>
-                                            <div className="relative">
-                                                <Input
-                                                    type="number"
-                                                    placeholder="0.00"
-                                                    className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-8"
-                                                />
-                                                <span className="absolute left-3 top-2.5 text-gray-500 text-sm">$</span>
-                                            </div>
-                                        </div>
+                                        <Label className="text-sm font-medium text-gray-700">Additional Notes</Label>
+                                        <textarea
+                                            rows="3"
+                                            className="w-full p-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            placeholder="Any additional notes or comments..."
+                                        ></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Footer */}
-                        <div className="flex justify-end gap-3 p-4 border-t border-gray-100 bg-white sticky bottom-0 shadow-sm">
+                        <div className="w-full flex justify-end gap-3 p-6 border-t border-gray-100">
                             <Button
-                                variant="outline"
                                 type="button"
                                 onClick={() => setOpenReceiptForm(false)}
-                                className="min-w-[120px] h-10 text-sm font-medium border-gray-300 hover:bg-gray-50 text-gray-700"
+                                variant="outline"
+                                className="h-10 px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
-                                className="min-w-[120px] h-10 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white"
+                                className="h-10 px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
+                                disabled={isSubmitting}
                             >
                                 {isSubmitting ? (
                                     <div className="flex items-center gap-2">
-                                        <BiLoaderAlt className="animate-spin w-4 h-4" />
-                                        <span>Processing...</span>
+                                        <BiLoaderAlt className="animate-spin h-4 w-4" />
+                                        Processing...
                                     </div>
                                 ) : (
                                     <div className="flex items-center gap-2">
-                                        <Save className="w-4 h-4" />
-                                        <span>Save Receipt</span>
+                                        <Save className="h-4 w-4" />
+                                        Save Receipt
                                     </div>
                                 )}
                             </Button>
@@ -698,7 +728,7 @@ const PaymentReceipts = () => {
                 </div>
             )}
         </div>
-    )
+    );
 };
 
 export default PaymentReceipts;
