@@ -1,6 +1,6 @@
 "use client";
 
-import { RiBillFill } from "react-icons/ri";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { AiFillProduct } from "react-icons/ai";
@@ -62,9 +62,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { HiUsers } from "react-icons/hi2";
 import Badge from '@mui/material/Badge';
-import { IoIosNotifications, IoMdSettings } from "react-icons/io";
 import '../globals.css';
-import { RiAccountCircleFill } from "react-icons/ri";
 import React, { useEffect, useRef, useState } from 'react';
 import { MinimizeSidebar } from '@/state/slicer';
 import { useDispatch } from 'react-redux';
@@ -248,11 +246,11 @@ const Header = () => {
                     title: 'Membership Logs',
                     link: '/dashboard/members/membershiplogs',
                 },
-                {
-                    icon: MdAutoGraph,
-                    title: 'Member Performance',
-                    link: '/dashboard/members/memberperformance',
-                },
+                // {
+                //     icon: MdAutoGraph,
+                //     title: 'Member Performance',
+                //     link: '/dashboard/members/memberperformance',
+                // },
                 {
                     icon: FaRulerHorizontal,
                     title: 'Body Measurements',
@@ -297,8 +295,8 @@ const Header = () => {
                         { icon: AiFillProduct, title: 'Create Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
-                        { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-                        { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+                        // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+                        // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
                     ]
                 },
                 {
@@ -359,6 +357,15 @@ const Header = () => {
             ]
         },
     ];
+
+    const [activeItem, setActiveItem] = useState('');
+    const [hoveredItem, setHoveredItem] = useState(null);
+    const [notifications, setNotifications] = useState(3); // Demo notification count
+
+    // Function to determine if a link is active
+    const isActive = (link) => {
+        return activeItem === link || activeItem.startsWith(link + '/');
+    };
 
     return (
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
@@ -452,83 +459,162 @@ const Header = () => {
                                 />
                             </div>
                         </SheetTrigger>
-                        <SheetContent className="h-full flex flex-col bg-gray-900 text-white border-r border-gray-800">
-                            <SheetHeader className="bg-gray-900 border-b border-gray-800 pb-3">
+                        <SheetContent className="h-full flex flex-col bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800">
+                            <SheetHeader className="border-b border-gray-100 dark:border-gray-800 pb-3">
                                 <SheetTitle>
-                                    <Link href={'/dashboard'} className="flex justify-start py-2 items-center hover:bg-gray-800 rounded">
-                                        <BiSolidDashboard className='text-3xl mx-2 text-start bg-blue-600 text-white p-1 rounded-md' />
-                                        <div>
-                                            <p className="w-full text-lg font-bold text-white">Revive Fitness</p>
-                                            <p className="w-full text-[11px] font-bold text-blue-400">Starter</p>
+                                    <Link href={'/dashboard'} className="flex items-center px-2 py-5">
+                                        <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z" fill="white" />
+                                                <path d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z" fill="white" />
+                                                <path d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z" fill="white" />
+                                                <path d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z" fill="white" />
+                                                <path d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z" fill="white" />
+                                                <path d="M13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7C12.5523 7 13 7.44772 13 8Z" fill="white" />
+                                                <path d="M9 8C9 8.55228 8.55228 9 8 9C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7C8.55228 7 9 7.44772 9 8Z" fill="white" />
+                                            </svg>
+                                            <div className="absolute inset-0 bg-white opacity-10 rounded-xl animate-pulse" style={{ animationDuration: '3s' }}></div>
+                                        </div>
+                                        <div className="ml-3.5">
+                                            <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">Revive Fitness</p>
+                                            <div className="flex items-center gap-1.5">
+                                                <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">Fitness Center</p>
+                                                <Badge
+                                                    variant="outline"
+                                                    className="text-[9px] px-2 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 font-medium rounded-2xl"
+                                                >
+                                                    Pro
+                                                </Badge>
+                                            </div>
                                         </div>
                                     </Link>
                                 </SheetTitle>
                             </SheetHeader>
 
-                            <div className="flex-grow overflow-y-auto">
-                                <div className='h-full'>
-                                    {/* Render categorized sidebar items in mobile view */}
-                                    {sidebarContent.map((category, categoryIndex) => (
-                                        <div key={categoryIndex} className="mb-2 mt-3">
-                                            <p className='text-[11px] uppercase tracking-wider font-semibold text-gray-400 ml-3 mb-1'>{category.category}</p>
-                                            <ul>
-                                                {category.items.map((sidebar, index) => (
-                                                    <li key={index} className="p-1">
-                                                        {sidebar.subObj ? (
-                                                            <Accordion type="single" collapsible className="w-full">
-                                                                <AccordionItem value={`item-${categoryIndex}-${index}`}>
-                                                                    <AccordionTrigger className="w-full flex items-center p-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
-                                                                        <sidebar.icon className='text-xl text-blue-400' />
-                                                                        <span className='text-start mx-2 text-sm font-medium'>{sidebar.title}</span>
-                                                                    </AccordionTrigger>
-                                                                    <div className="border-l border-gray-700 ml-6 flex flex-col">
-                                                                        {sidebar.subObj.map((subItem, subIndex) => (
-                                                                            <AccordionContent key={subIndex} className="flex items-center">
-                                                                                <Link
-                                                                                    href={subItem.link}
-                                                                                    className="flex items-center text-gray-400 hover:text-white w-full pl-2 py-1 hover:bg-gray-800 rounded"
-                                                                                >
-                                                                                    <subItem.icon className="text-sm text-gray-400" />
-                                                                                    <h1 className="mx-2 text-xs">{subItem.title}</h1>
-                                                                                </Link>
-                                                                            </AccordionContent>
-                                                                        ))}
+                            <div className="flex-grow overflow-y-auto px-3 py-5 scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
+                                {sidebarContent.map((category, categoryIndex) => (
+                                    <div key={categoryIndex} className="mb-6">
+                                        <p className="text-[10px] uppercase tracking-widest font-bold text-gray-400 dark:text-gray-500 ml-3 mb-3 letter-spacing-[0.2em]">
+                                            {category.category}
+                                        </p>
+                                        <ul>
+                                            {category.items.map((item, index) => (
+                                                <li key={index} className="mb-1.5">
+                                                    {item.subObj ? (
+                                                        <Accordion type="single" collapsible className="w-full">
+                                                            <AccordionItem value={`item-${categoryIndex}-${index}`}>
+                                                                <AccordionTrigger
+                                                                    className={`group w-full flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
+                                                ${isActive(item.link)
+                                                                            ? 'bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500'
+                                                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                                                        }`}
+                                                                >
+                                                                    <div className={`flex items-center ${isActive(item.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`}>
+                                                                        <item.icon className="w-5 h-5" />
+                                                                        <span className="ml-3.5 font-medium">{item.title}</span>
+                                                                        {item.badge && (
+                                                                            <Badge className={`ml-2.5 text-[9px] py-0 h-5 text-white ${item.badgeColor}`}>
+                                                                                {item.badge}
+                                                                            </Badge>
+                                                                        )}
                                                                     </div>
-                                                                </AccordionItem>
-                                                            </Accordion>
-                                                        ) : (
-                                                            <Link href={sidebar.link} className="flex items-center p-2 cursor-pointer text-gray-300 hover:text-white hover:bg-gray-800 rounded transition-colors">
-                                                                <sidebar.icon className='text-xl text-blue-400' />
-                                                                <span className='mx-2 text-sm font-medium'>{sidebar.title}</span>
-                                                            </Link>
-                                                        )}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                    ))}
-                                </div>
+                                                                </AccordionTrigger>
+                                                                <div className={`ml-7 border-l-2 ${isActive(item.link) ? 'border-indigo-300 dark:border-indigo-700' : 'border-gray-200 dark:border-gray-700'}`}>
+                                                                    {item.subObj.map((subItem, subIndex) => (
+                                                                        <AccordionContent key={subIndex}>
+                                                                            <Link
+                                                                                href={subItem.link}
+                                                                                className={`group flex items-center px-4 py-2 text-sm transition-all duration-200 rounded-xl
+                                                                ${isActive(subItem.link)
+                                                                                        ? 'text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/60 dark:bg-indigo-900/10'
+                                                                                        : 'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800/40'
+                                                                                    }`}
+                                                                            >
+                                                                                <subItem.icon className={`w-4 h-4 ${isActive(subItem.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`} />
+                                                                                <span className="ml-3 text-sm tracking-tight">{subItem.title}</span>
+                                                                                {subItem.badge && (
+                                                                                    <Badge className={`ml-2 text-[9px] py-0 h-5 text-white ${subItem.badgeColor}`}>
+                                                                                        {subItem.badge}
+                                                                                    </Badge>
+                                                                                )}
+                                                                            </Link>
+                                                                        </AccordionContent>
+                                                                    ))}
+                                                                </div>
+                                                            </AccordionItem>
+                                                        </Accordion>
+                                                    ) : (
+                                                        <Link
+                                                            href={item.link}
+                                                            className={`group flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
+                                            ${isActive(item.link)
+                                                                    ? 'bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500'
+                                                                    : item.highlight
+                                                                        ? 'text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20'
+                                                                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60'
+                                                                }`}
+                                                        >
+                                                            <div className={`flex items-center ${isActive(item.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`}>
+                                                                <item.icon className="w-5 h-5" />
+                                                                <span className="ml-3.5 font-medium tracking-tight">{item.title}</span>
+                                                                {item.badge && (
+                                                                    <Badge className={`ml-2.5 text-[9px] py-0 h-5 text-white ${item.badgeColor}`}>
+                                                                        {item.badge}
+                                                                    </Badge>
+                                                                )}
+                                                            </div>
+                                                        </Link>
+                                                    )}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                ))}
                             </div>
 
-                            <div className="p-3 border-t border-gray-800 mt-auto">
-                                <div className="flex items-center hover:bg-gray-800 rounded cursor-pointer p-2">
-                                    <FaUserCircle className="text-3xl mr-2 text-blue-400" />
-                                    <div>
-                                        <div className="flex items-center">
-                                            <h1 className="text-sm text-gray-100">{user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}</h1>
+                            <div className="mt-auto border-t border-gray-100 dark:border-gray-800 px-3 pt-3 pb-4">
+                                <Button
+                                    variant="ghost"
+                                    className="w-full mb-3 justify-between bg-gray-50 hover:bg-gray-100 dark:bg-gray-800 dark:hover:bg-gray-700 rounded-xl h-12 pr-3.5"
+                                >
+                                    <div className="flex items-center">
+                                        <div className="bg-white dark:bg-gray-700 rounded-lg p-1.5 mr-2.5">
+                                            <Bell className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
                                         </div>
-                                        <p className="font-semibold text-[11px] text-gray-400">
+                                        <span className="font-medium text-gray-700 dark:text-gray-200">Notifications</span>
+                                    </div>
+                                    {notifications > 0 && (
+                                        <Badge className="bg-red-500 text-white hover:bg-red-600 px-4 rounded-full">{notifications}</Badge>
+                                    )}
+                                </Button>
+
+                                <div className={`flex items-center rounded-xl cursor-pointer p-2 px-3 hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}>
+                                    <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
+                                        <AvatarImage src={user?.user.avatarUrl || ''} alt={user?.user.firstName || ''} />
+                                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
+                                            {user?.user.firstName?.charAt(0) || 'U'}
+                                        </AvatarFallback>
+                                    </Avatar>
+
+                                    <div className="ml-3 overflow-hidden">
+                                        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight">
+                                            {user && user.user.firstName + ' ' + user.user.lastName || 'Admin'}
+                                        </p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                                             {user && user.user.email || ''}
                                         </p>
                                     </div>
+
+                                    <Button
+                                        variant="ghost"
+                                        size="sm"
+                                        className="ml-auto text-gray-500 dark:text-gray-400 hover:bg-transparent"
+                                        onClick={() => logoutUser()}
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                    </Button>
                                 </div>
-                                <Button
-                                    className='w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center gap-2'
-                                    onClick={() => logoutUser()}
-                                >
-                                    <LogOut size={16} />
-                                    {loading ? 'Processing...' : 'Log out'}
-                                </Button>
                             </div>
                         </SheetContent>
                     </Sheet>

@@ -215,13 +215,13 @@ const Sidebar = () => {
                     title: 'Membership Logs',
                     link: '/dashboard/members/membershiplogs',
                 },
-                {
-                    icon: MdAutoGraph,
-                    title: 'Member Performance',
-                    link: '/dashboard/members/memberperformance',
-                    badge: 'Pro',
-                    badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
-                },
+                // {
+                //     icon: MdAutoGraph,
+                //     title: 'Member Performance',
+                //     link: '/dashboard/members/memberperformance',
+                //     badge: 'Pro',
+                //     badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
+                // },
                 {
                     icon: FaRulerHorizontal,
                     title: 'Body Measurements',
@@ -266,8 +266,8 @@ const Sidebar = () => {
                         { icon: AiFillProduct, title: 'Create Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
-                        { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-                        { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+                        // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+                        // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
                     ]
                 },
                 {
