@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { FiSearch, FiCalendar } from "react-icons/fi";
+import { useRef, useEffect, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import {
     AlertDialog,
@@ -55,6 +56,7 @@ import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { useQuery } from '@tanstack/react-query';
 
 const PaymentReceipts = () => {
     const { user } = useUser();
@@ -77,6 +79,85 @@ const PaymentReceipts = () => {
     const [items, setItems] = useState([
         { description: "", quantity: 1, unitPrice: 0, total: 0 },
     ]);
+
+    // Member search states
+    const [memberSearchQuery, setMemberSearchQuery] = useState('');
+    const [memberName, setMemberName] = useState('');
+    const [memberId, setMemberId] = useState('');
+    const [renderMemberDropdown, setRenderMemberDropdown] = useState(false);
+    const memberSearchRef = useRef(null);
+
+    // Staff search states
+    const [staffSearchQuery, setStaffSearchQuery] = useState('');
+    const [staffName, setStaffName] = useState('');
+    const [staffId, setStaffId] = useState('');
+    const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
+    const staffSearchRef = useRef(null);
+
+    // Other states
+    const [searchQuery, setSearchQuery] = useState('');
+
+    // Get all members
+    const getAllMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/members`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to fetch members");
+        }
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
+
+    const { members } = data || {};
+
+    // Get all staffs
+    const getAllStaffs = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to fetch staffs");
+        }
+    };
+
+    const { data: staffsData, isLoading: staffsFetching } = useQuery({
+        queryKey: ['staffs'],
+        queryFn: getAllStaffs
+    });
+
+    const { staffs } = staffsData || {};
+
+    // Handle click outside for member dropdown
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (memberSearchRef.current && !memberSearchRef.current.contains(event.target)) {
+                setRenderMemberDropdown(false);
+            }
+            if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
+                setRenderStaffDropdown(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [memberSearchRef, staffSearchRef]);
+
+    const handleMemberSearchFocus = () => {
+        setRenderMemberDropdown(true);
+    };
+
+    const handleStaffSearchFocus = () => {
+        setRenderStaffDropdown(true);
+    };
 
     const handleChange = (index, field, value) => {
         const updatedItems = [...items];
@@ -142,7 +223,7 @@ const PaymentReceipts = () => {
             <div className="flex flex-col md:flex-row bg-white p-3 rounded-md shadow-md justify-between items-start md:items-center mb-6 gap-4">
                 <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Payment Receipts</h1>
-                    <p className="text-sm text-gray-500 mt-1">Manage and view all payment receipts</p>
+                    <p className="text-xs text-gray-500 font-semibold mt-1">Manage and view all payment receipts</p>
                 </div>
 
                 <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3">
@@ -224,7 +305,7 @@ const PaymentReceipts = () => {
                                             <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
                                             <Input
                                                 type="text"
-                                                placeholder="REC-2023-001"
+                                                placeholder="Receipt No"
                                                 className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                             />
                                         </div>
@@ -239,41 +320,134 @@ const PaymentReceipts = () => {
                                     </div>
 
                                     <div className="space-y-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Customer</Label>
-                                            <Select>
-                                                <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                    <SelectValue placeholder="Select customer" />
-                                                </SelectTrigger>
-                                                <SelectContent className="rounded-lg shadow-lg border border-gray-200">
-                                                    <SelectGroup>
-                                                        <SelectLabel className="text-xs font-medium text-gray-500">Customers</SelectLabel>
-                                                        <SelectItem value="customer1" className="text-sm">John Doe</SelectItem>
-                                                        <SelectItem value="customer2" className="text-sm">Jane Smith</SelectItem>
-                                                        <SelectItem value="customer3" className="text-sm">Acme Corporation</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                        <div>
+                                            <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Member</Label>
+                                            <div ref={memberSearchRef} className="relative">
+                                                <Controller
+                                                    name="memberName"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <div className="relative">
+                                                            <Input
+                                                                {...field}
+                                                                autoComplete="off"
+                                                                value={memberName || memberSearchQuery}
+                                                                onChange={(e) => {
+                                                                    setMemberSearchQuery(e.target.value);
+                                                                    field.onChange(e);
+                                                                    setMemberName('');
+                                                                }}
+                                                                onFocus={handleMemberSearchFocus}
+                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                                placeholder="Search members..."
+                                                            />
+                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                                <FiSearch className="h-5 w-5" />
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                />
+                                                {errors.memberName && (
+                                                    <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                        {errors.memberName.message}
+                                                    </p>
+                                                )}
+
+                                                {renderMemberDropdown && (
+                                                    <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                        {members?.length > 0 ? (
+                                                            members
+                                                                .filter((member) => {
+                                                                    return member.fullName
+                                                                        .toLowerCase()
+                                                                        .includes(memberSearchQuery.toLowerCase());
+                                                                })
+                                                                .map((member) => (
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            setMemberName(member.fullName);
+                                                                            setMemberSearchQuery(member.fullName);
+                                                                            setMemberId(member._id);
+                                                                            setRenderMemberDropdown(false);
+                                                                        }}
+                                                                        className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                        key={member._id}
+                                                                    >
+                                                                        {member.fullName}
+                                                                    </div>
+                                                                ))
+                                                        ) : (
+                                                            <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
 
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Issued By</Label>
-                                            <Select>
-                                                <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                    <SelectValue placeholder="Select staff" />
-                                                </SelectTrigger>
-                                                <SelectContent className="rounded-lg shadow-lg border border-gray-200">
-                                                    <SelectGroup>
-                                                        <SelectLabel className="text-xs font-medium text-gray-500">Staff Members</SelectLabel>
-                                                        <SelectItem value="staff1" className="text-sm">Admin User</SelectItem>
-                                                        <SelectItem value="staff2" className="text-sm">Sales Manager</SelectItem>
-                                                        <SelectItem value="staff3" className="text-sm">Reception</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                        <div>
+                                            <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Staff</Label>
+                                            <div ref={staffSearchRef} className="relative">
+                                                <Controller
+                                                    name="staffName"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <div className="relative">
+                                                            <Input
+                                                                {...field}
+                                                                autoComplete="off"
+                                                                value={staffName || staffSearchQuery}
+                                                                onChange={(e) => {
+                                                                    setStaffSearchQuery(e.target.value);
+                                                                    field.onChange(e);
+                                                                    setStaffName('');
+                                                                }}
+                                                                onFocus={handleStaffSearchFocus}
+                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                                placeholder="Search staff..."
+                                                            />
+                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                                <FiSearch className="h-5 w-5" />
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                />
+                                                {errors.staffName && (
+                                                    <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                        {errors.staffName.message}
+                                                    </p>
+                                                )}
+
+                                                {renderStaffDropdown && (
+                                                    <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                        {staffs?.length > 0 ? (
+                                                            staffs
+                                                                .filter((staff) => {
+                                                                    return staff.fullName
+                                                                        .toLowerCase()
+                                                                        .includes(staffSearchQuery.toLowerCase());
+                                                                })
+                                                                .map((staff) => (
+                                                                    <div
+                                                                        onClick={() => {
+                                                                            setStaffName(staff.fullName);
+                                                                            setStaffSearchQuery(staff.fullName);
+                                                                            setStaffId(staff._id);
+                                                                            setRenderStaffDropdown(false);
+                                                                        }}
+                                                                        className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                        key={staff._id}
+                                                                    >
+                                                                        {staff.fullName}
+                                                                    </div>
+                                                                ))
+                                                        ) : (
+                                                            <div className="px-4 py-3 text-sm text-gray-500">No staff found</div>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
 
@@ -308,14 +482,20 @@ const PaymentReceipts = () => {
                                                     <td className="px-4 py-3 whitespace-nowrap">
                                                         <Select>
                                                             <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                                <SelectValue placeholder="Select staff" />
+                                                                <SelectValue placeholder="Select item" />
                                                             </SelectTrigger>
                                                             <SelectContent className="rounded-lg shadow-lg border border-gray-200">
                                                                 <SelectGroup>
                                                                     <SelectLabel className="text-xs font-medium text-gray-500">Select Items</SelectLabel>
-                                                                    <SelectItem value="staff1" className="text-sm">Admin User</SelectItem>
-                                                                    <SelectItem value="staff2" className="text-sm">Sales Manager</SelectItem>
-                                                                    <SelectItem value="staff3" className="text-sm">Reception</SelectItem>
+                                                                    {products.map((product) => (
+                                                                        <SelectItem
+                                                                            key={product.id}
+                                                                            value={product.name}
+                                                                            className="text-sm"
+                                                                        >
+                                                                            {product.name}
+                                                                        </SelectItem>
+                                                                    ))}
                                                                 </SelectGroup>
                                                             </SelectContent>
                                                         </Select>

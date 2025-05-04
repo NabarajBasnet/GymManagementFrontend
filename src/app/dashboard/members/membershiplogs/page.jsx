@@ -174,7 +174,7 @@ const MembershipLogs = () => {
     };
 
     return (
-        <div className="w-full bg-gray-50 min-h-screen">
+        <div className="w-full bg-gray-100 min-h-screen">
             {/* Loading State */}
             {(isDeleting || isPrinting || isExporting) && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
