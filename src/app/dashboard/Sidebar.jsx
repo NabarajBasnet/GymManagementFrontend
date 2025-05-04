@@ -1,6 +1,5 @@
 'use client';
 
-import { RiBillFill } from "react-icons/ri";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { AiFillProduct } from "react-icons/ai";
@@ -263,7 +262,7 @@ const Sidebar = () => {
                     title: 'Billing',
                     link: '/dashboard/billing',
                     subObj: [
-                        { icon: AiFillProduct, title: 'Create Services & Products', link: '/dashboard/billing/servicesandproducts' },
+                        { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
                         // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },

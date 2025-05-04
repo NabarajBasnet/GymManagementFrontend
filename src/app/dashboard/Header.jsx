@@ -8,7 +8,6 @@ import { MdFeedback } from "react-icons/md";
 import { toast as notify } from 'react-hot-toast';
 import { FaRulerHorizontal } from "react-icons/fa";
 import { LuLogs } from "react-icons/lu";
-import { MdAutoGraph } from "react-icons/md";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FcParallelTasks } from "react-icons/fc";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
@@ -292,7 +291,7 @@ const Header = () => {
                     title: 'Billing',
                     link: '/dashboard/billing',
                     subObj: [
-                        { icon: AiFillProduct, title: 'Create Services & Products', link: '/dashboard/billing/servicesandproducts' },
+                        { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
                         // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
