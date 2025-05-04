@@ -1,9 +1,20 @@
 'use client';
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { BiLoaderAlt } from "react-icons/bi";
 import { IoAddCircle } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
@@ -109,6 +120,11 @@ const ServiceAndProducts = () => {
 
     const queryClient = useQueryClient();
 
+    // Form states
+    const [openAddItemForm, setOpenAddItemForm] = useState(false);
+    const [openAddMoreForm, setOpenAddMoreForm] = useState(false);
+    const [formMode, setFormMode] = useState('create');
+
     // Sort States
     const [activeTab, setActiveTab] = useState("all");
     const [sortBy, setSortBy] = useState('');
@@ -122,9 +138,6 @@ const ServiceAndProducts = () => {
     let limit = 15;
     const [currentPage, setCurrentPage] = useState(1);
 
-    const [openAddItemForm, setOpenAddItemForm] = useState(false);
-    const [openAddMoreForm, setOpenAddMoreForm] = useState(false);
-
     // Items states
 
     const [isAvailableOnline, setIsAvailableOnline] = useState(false);
@@ -136,6 +149,8 @@ const ServiceAndProducts = () => {
     const [currency, setCurrency] = useState('');
     const [taxRate, setTaxRate] = useState('');
 
+    const [itemId, setItemId] = useState('');
+
     // React Hook Form
     const {
         register,
@@ -143,9 +158,11 @@ const ServiceAndProducts = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
         setValue,
-        setError
+        setError,
+        control
     } = useForm();
 
+    // Add and delete items
     const handleAddItem = async (data) => {
         try {
             const { itemName, SKU, description, sellingPrice, costPrice, maxDiscount } = data;
@@ -166,8 +183,10 @@ const ServiceAndProducts = () => {
                 taxRate
             };
 
-            const response = await fetch('http://localhost:3000/api/accounting/serviceandproducts', {
-                method: "POST",
+            const url = formMode === 'create' ? 'http://localhost:3000/api/accounting/serviceandproducts' : `http://localhost:3000/api/accounting/serviceandproducts/${itemId}`
+
+            const response = await fetch(url, {
+                method: formMode === 'create' ? "POST" : "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -191,7 +210,6 @@ const ServiceAndProducts = () => {
         };
     };
 
-
     // Get all services and products from server
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
@@ -211,6 +229,27 @@ const ServiceAndProducts = () => {
 
     const { serviceAndProducts, totalPages } = data || {};
 
+    // Other states
+    const [selectedItems, setSelectedItems] = useState([]);
+
+    // Toggle a single item's selection
+    const toggleIndividualItemSelection = (itemId) => {
+        setSelectedItems((prev) =>
+            prev.includes(itemId)
+                ? prev.filter((id) => id !== itemId)
+                : [...prev, itemId]
+        );
+    };
+
+    // Select/Deselect all items
+    const handleSelectAllItems = () => {
+        if (selectedItems.length === serviceAndProducts?.length) {
+            setSelectedItems([]);
+        } else {
+            setSelectedItems(serviceAndProducts?.map((item) => item.itemId) || []);
+        }
+    };
+
     // Debounce Search Query
     useEffect(() => {
         const timerId = setTimeout(() => {
@@ -219,6 +258,84 @@ const ServiceAndProducts = () => {
 
         return () => clearTimeout(timerId);
     }, [searchQuery]);
+
+    // Get single Product or service
+    const [productOrService, setProductOrService] = useState(null);
+
+    const getSingleServiceOrProduct = async (itemId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts/${itemId}`);
+            const responseBody = await response.json();
+            const subCategory = responseBody.item.subCategory
+            const taxRate = responseBody.item.taxRate
+
+            setProductOrService(responseBody.item);
+            if (response.ok) {
+                setItemId(responseBody.item.itemId);
+                reset({
+                    itemType: responseBody.item.itemType,
+                    warehouse: responseBody.item.warehouse,
+                    itemName: responseBody.item.itemName,
+                    category: responseBody.item.category,
+                    subCategory: responseBody.item.subCategory,
+                    itemSKU: responseBody.item.SKU,
+                    itemDescription: responseBody.item.description,
+                    currency: responseBody.item.currency,
+                    sellingPrice: responseBody.item.sellingPrice,
+                    costPrice: responseBody.item.costPrice,
+                    taxRate: responseBody.item.taxRate,
+                    maxDiscount: responseBody.item.maxDiscount,
+                    itemStatus: responseBody.item.status,
+                    itemOnline: responseBody.item.availableOnline
+                });
+                setFormMode('edit');
+                setOpenAddItemForm(true);
+            };
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+        };
+    };
+
+    const deleteItems = async (itemId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts/${itemId}`, {
+                method: "DELETE",
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['servicesandproducts']);
+            };
+        } catch (error) {
+            console.log("Error: ", error.message);
+            toast.error(error.message);
+        };
+    };
+
+    const deleteSelectedItems = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ itemIds: selectedItems })
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['servicesandproducts']);
+                setSelectedItems([]);
+            } else {
+                toast.error(responseBody.message);
+                queryClient.invalidateQueries(['servicesandproducts']);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
 
     return (
         <div className="w-full mx-auto py-6 px-4">
@@ -255,17 +372,55 @@ const ServiceAndProducts = () => {
             </div>
 
             <div className="w-full">
-                <div className="w-full flex justify-between items-center">
-                    <h1 className="text-xl font-bold mt-3">Services & Products</h1>
-                    <Button
-                        className='rounded-sm'
-                        onClick={() => {
-                            setOpenAddItemForm(true);
-                        }
-                        }>
-                        <Plus className="mr-2 h-4 w-4" />
-                        Add New Item
-                    </Button>
+                <div className="w-full space-y-4 md:space-y-0 md:flex justify-between items-center">
+                    <div className="w-full flex justify-start items-center">
+                        <h1 className="text-xl font-bold mt-3">Services & Products</h1>
+                    </div>
+
+                    <div className="w-full flex items-center justify-end mx-4">
+                        {selectedItems.length === 0 ? (
+                            <></>
+                        ) : (
+                            <AlertDialog className='md:space-x-4'>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        variant="destructive"
+                                        disabled={selectedItems.length === 0}
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                        Delete Selected ({selectedItems.length})
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This action cannot be undone. This will permanently delete the assigned task
+                                            and remove data from servers.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction
+                                            className='bg-red-600 hover:bg-red-700'
+                                            onClick={() => deleteSelectedItems()}
+                                        >
+                                            Delete
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        )}
+                        <Button
+                            className='rounded-sm ml-4 md:space-x-4'
+                            onClick={() => {
+                                setOpenAddItemForm(true);
+                            }
+                            }>
+                            <Plus className="mr-2 h-4 w-4" />
+                            Add New Item
+                        </Button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4">
@@ -311,7 +466,10 @@ const ServiceAndProducts = () => {
                                     <thead>
                                         <tr className="border-b bg-muted/50">
                                             <th className="h-16 px-4 text-left font-medium">
-                                                <Checkbox id="terms" />
+                                                <Checkbox
+                                                    checked={serviceAndProducts?.length > 0 && selectedItems.length === serviceAndProducts.length}
+                                                    onCheckedChange={handleSelectAllItems}
+                                                />
                                             </th>
 
                                             <th className="h-16 px-4 text-left font-medium">
@@ -398,7 +556,10 @@ const ServiceAndProducts = () => {
                                         {serviceAndProducts.map((item) => (
                                             <tr key={item.itemId} className="border-b text-sm hover:bg-muted/50">
                                                 <td className="align-middle text-center font-medium">
-                                                    <Checkbox id="terms" />
+                                                    <Checkbox
+                                                        checked={selectedItems.includes(item.itemId)}
+                                                        onCheckedChange={() => toggleIndividualItemSelection(item.itemId)}
+                                                    />
                                                 </td>
                                                 <td className="align-middle md:text-center font-medium">{item.itemId}</td>
                                                 <td className="p-4 align-middle font-medium">{item.itemName}</td>
@@ -425,40 +586,31 @@ const ServiceAndProducts = () => {
                                                         {item.status}
                                                     </span>
                                                 </td>
-                                                <td className="p-4 align-middle text-center">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                                                                <MoreHorizontal className="h-4 w-4" />
+                                                <td className="flex items-center justify-end text-end">
+                                                    <Edit
+                                                        onClick={() => getSingleServiceOrProduct(item.itemId)}
+                                                        className="h-4 w-4" />
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button
+                                                                className='bg-transparent hover:bg-transparent hover:text-black text-gray-800'
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
                                                             </Button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end">
-                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem>
-                                                                <Edit className="mr-2 h-4 w-4" />
-                                                                Edit
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem>
-                                                                <Trash2 className="mr-2 h-4 w-4" />
-                                                                Delete
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuSeparator />
-                                                            <DropdownMenuItem>
-                                                                {item.active ? (
-                                                                    <>
-                                                                        <X className="mr-2 h-4 w-4" />
-                                                                        Deactivate
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <Check className="mr-2 h-4 w-4" />
-                                                                        Activate
-                                                                    </>
-                                                                )}
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    This action cannot be undone. This will permanently delete this item and remove your data from our servers.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => deleteItems(item.itemId)}>Continue</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
                                                 </td>
                                             </tr>
                                         ))}
@@ -662,18 +814,30 @@ const ServiceAndProducts = () => {
                                                     Add More
                                                 </Button>
                                             </div>
-                                            <Select onValueChange={(value) => setItemType(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Item Type" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='Product'>Product</SelectItem>
-                                                        <SelectItem value='Service'>Service</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="itemType"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setItemType(value)
+                                                            field.onChange(value)
+                                                        }}
+                                                    >
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Item Type" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                <SelectItem value='Product'>Product</SelectItem>
+                                                                <SelectItem value='Service'>Service</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
 
                                         {/* Warehouse */}
@@ -685,19 +849,31 @@ const ServiceAndProducts = () => {
                                                     Add More
                                                 </Button>
                                             </div>
-                                            <Select onValueChange={(value) => setWareHouse(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Warehouse" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='Warehouse One'>Warehouse One</SelectItem>
-                                                        <SelectItem value='Warehouse Two'>Warehouse Two</SelectItem>
-                                                        <SelectItem value='Warehouse Three'>Warehouse Three</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="warehouse"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setWareHouse(value)
+                                                            field.onChange(value)
+                                                        }}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Warehouse" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                <SelectItem value='Warehouse One'>Warehouse One</SelectItem>
+                                                                <SelectItem value='Warehouse Two'>Warehouse Two</SelectItem>
+                                                                <SelectItem value='Warehouse Three'>Warehouse Three</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
+
                                         </div>
 
                                         {/* Name */}
@@ -708,11 +884,18 @@ const ServiceAndProducts = () => {
                                                 </Label>
                                                 <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
-                                            <Input
-                                                id="itemName"
-                                                {...register('itemName', { required: 'Item name is required' })}
-                                                placeholder="Enter name"
-                                                className="w-full"
+                                            <Controller
+                                                name="itemName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Input
+                                                        id="itemName"
+                                                        {...field}
+                                                        {...register('itemName', { required: 'Item name is required' })}
+                                                        placeholder="Enter name"
+                                                        className="w-full"
+                                                    />
+                                                )}
                                             />
                                         </div>
 
@@ -725,19 +908,30 @@ const ServiceAndProducts = () => {
                                                     Add More
                                                 </Button>
                                             </div>
-                                            <Select onValueChange={(value) => setCategory(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Category" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        {categories.map((category, index) =>
-                                                            <SelectItem key={index} value={category}>{category}</SelectItem>
-                                                        )}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="category"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setCategory(value)
+                                                            field.onChange(value)
+                                                        }}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Category" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                {categories.map((category, index) =>
+                                                                    <SelectItem key={index} value={category}>{category}</SelectItem>
+                                                                )}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
 
                                         {/* Sub Category */}
@@ -749,19 +943,31 @@ const ServiceAndProducts = () => {
                                                     Add More
                                                 </Button>
                                             </div>
-                                            <Select onValueChange={(value) => setSubCategory(value)} disabled={!category}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Sub Category" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        {(subCategories[category] || []).map((subCat, index) => (
-                                                            <SelectItem key={index} value={subCat}>{subCat}</SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="subCategory"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setSubCategory(value)
+                                                            field.onChange(value)
+                                                        }}
+                                                        disabled={!category}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Sub Category" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                {(subCategories[category] || []).map((subCat, index) => (
+                                                                    <SelectItem key={index} value={subCat}>{subCat}</SelectItem>
+                                                                ))}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
 
                                         {/* SKU/Code */}
@@ -772,11 +978,18 @@ const ServiceAndProducts = () => {
                                                 </Label>
                                                 <div className="h-[4px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
-                                            <Input
-                                                id="itemSKU"
-                                                {...register('SKU')}
-                                                placeholder="Enter unique SKU"
-                                                className="w-full"
+                                            <Controller
+                                                name="itemSKU"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Input
+                                                        {...field}
+                                                        id="itemSKU"
+                                                        {...register('SKU')}
+                                                        placeholder="Enter unique SKU"
+                                                        className="w-full"
+                                                    />
+                                                )}
                                             />
                                         </div>
 
@@ -788,11 +1001,18 @@ const ServiceAndProducts = () => {
                                                 </Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
-                                            <textarea
-                                                id="itemDescription"
-                                                {...register('description', { required: 'Item description is required' })}
-                                                placeholder="Enter description"
-                                                className="flex w-full rounded-sm border focus:outline-none focus:border-blue-500 bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
+                                            <Controller
+                                                name="itemDescription"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <textarea
+                                                        id="itemDescription"
+                                                        {...field}
+                                                        {...register('description', { required: 'Item description is required' })}
+                                                        placeholder="Enter description"
+                                                        className="flex w-full rounded-sm border focus:outline-none focus:border-blue-500 bg-background px-3 py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 min-h-[100px]"
+                                                    />
+                                                )}
                                             />
                                         </div>
                                     </div>
@@ -808,39 +1028,57 @@ const ServiceAndProducts = () => {
                                                 <Label className="font-medium flex-1">Currency</Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
-                                            <Select onValueChange={(value) => setCurrency(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select Currency" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        {currencies.map((currency, index) =>
-                                                            <SelectItem key={index} value={`${currency.symbol}-${currency.name}`}>{currency.code}</SelectItem>
-                                                        )}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="currency"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setCurrency(value)
+                                                            field.onChange(value)
+                                                        }}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select Currency" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                {currencies.map((currency, index) =>
+                                                                    <SelectItem key={index} value={`${currency.symbol}-${currency.name}`}>{currency.code}</SelectItem>
+                                                                )}
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
 
                                         {/* Selling Price */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="itemPrice">
+                                                <Label className="font-medium flex-1" htmlFor="sellingPrice">
                                                     Selling Price <span className="text-red-500">*</span>
                                                 </Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
-                                                <Input
-                                                    id="itemPrice"
-                                                    {...register('sellingPrice', { required: 'Item selling price is required' })}
-                                                    className="pl-8 w-full"
-                                                    placeholder="0.00"
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
+                                                <Controller
+                                                    name="sellingPrice"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            id="sellingPrice"
+                                                            {...field}
+                                                            {...register('sellingPrice', { required: 'Item selling price is required' })}
+                                                            className="pl-8 w-full"
+                                                            placeholder="0.00"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
                                         </div>
@@ -848,21 +1086,28 @@ const ServiceAndProducts = () => {
                                         {/* Cost Price */}
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
-                                                <Label className="font-medium flex-1" htmlFor="itemCostPrice">
+                                                <Label className="font-medium flex-1" htmlFor="costPrice">
                                                     Cost Price
                                                 </Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">{currency.split('-')[0]}</span>
-                                                <Input
-                                                    id="itemCostPrice"
-                                                    {...register('costPrice')}
-                                                    className="pl-8 w-full"
-                                                    placeholder="0.00"
-                                                    type="number"
-                                                    step="0.01"
-                                                    min="0"
+                                                <Controller
+                                                    name="costPrice"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            id="costPrice"
+                                                            {...field}
+                                                            {...register('costPrice')}
+                                                            className="pl-8 w-full"
+                                                            placeholder="0.00"
+                                                            type="number"
+                                                            step="0.01"
+                                                            min="0"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
                                         </div>
@@ -873,25 +1118,36 @@ const ServiceAndProducts = () => {
                                                 <Label className="font-medium flex-1">Tax Rate</Label>
                                                 <div className="h-[32px]"></div> {/* Invisible spacer for alignment */}
                                             </div>
-                                            <Select onValueChange={(value) => setTaxRate(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Tax Rate" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select</SelectLabel>
-                                                        <SelectItem value='3'>3 %</SelectItem>
-                                                        <SelectItem value='5'>5 %</SelectItem>
-                                                        <SelectItem value='7'>7 %</SelectItem>
-                                                        <SelectItem value='9'>9 %</SelectItem>
-                                                        <SelectItem value='11'>11 %</SelectItem>
-                                                        <SelectItem value='13'>13 %</SelectItem>
-                                                        <SelectItem value='15'>15 %</SelectItem>
-                                                        <SelectItem value='17'>17 %</SelectItem>
-                                                        <SelectItem value='20'>20 %</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
+                                            <Controller
+                                                name="taxRate"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Select
+                                                        {...field}
+                                                        onValueChange={(value) => {
+                                                            setTaxRate(value)
+                                                            field.onChange(value)
+                                                        }}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Tax Rate" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Select</SelectLabel>
+                                                                <SelectItem value='3 %'>3 %</SelectItem>
+                                                                <SelectItem value='5 %'>5 %</SelectItem>
+                                                                <SelectItem value='7 %'>7 %</SelectItem>
+                                                                <SelectItem value='9 %'>9 %</SelectItem>
+                                                                <SelectItem value='11 %'>11 %</SelectItem>
+                                                                <SelectItem value='13 %' >13 %</SelectItem>
+                                                                <SelectItem value='15 %'>15 %</SelectItem>
+                                                                <SelectItem value='17 %'>17 %</SelectItem>
+                                                                <SelectItem value='20 %'>20 %</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
                                         </div>
 
                                         {/* Available Discount Percentage */}
@@ -904,15 +1160,22 @@ const ServiceAndProducts = () => {
                                             </div>
                                             <div className="relative">
                                                 <span className="absolute left-3 top-2.5 text-gray-500">%</span>
-                                                <Input
-                                                    id="maxDiscount"
-                                                    {...register('maxDiscount')}
-                                                    className="pl-8 w-full"
-                                                    placeholder="0.00"
-                                                    type="number"
-                                                    step="1"
-                                                    min="0"
-                                                    max="80"
+                                                <Controller
+                                                    name="maxDiscount"
+                                                    control={control}
+                                                    render={({ field }) => (
+                                                        <Input
+                                                            {...field}
+                                                            id="maxDiscount"
+                                                            {...register('maxDiscount')}
+                                                            className="pl-8 w-full"
+                                                            placeholder="0.00"
+                                                            type="number"
+                                                            step="1"
+                                                            min="0"
+                                                            max="80"
+                                                        />
+                                                    )}
                                                 />
                                             </div>
                                         </div>
@@ -924,19 +1187,33 @@ const ServiceAndProducts = () => {
                                     <h3 className="font-medium text-lg">Status</h3>
                                     <div className="flex flex-wrap items-center gap-4 pt-2">
                                         <div className="flex items-center space-x-2">
-                                            <Switch
-                                                id="itemActive"
-                                                checked={isActive}
-                                                onCheckedChange={(value) => setIsActive(value)}
+                                            <Controller
+                                                name="itemStatus"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        {...field}
+                                                        id="itemActive"
+                                                        checked={isActive}
+                                                        onCheckedChange={(value) => setIsActive(value)}
+                                                    />
+                                                )}
                                             />
                                             <Label htmlFor="itemActive">Active</Label>
                                         </div>
 
                                         <div className="flex items-center space-x-2">
-                                            <Switch
-                                                id="itemOnline"
-                                                checked={isAvailableOnline}
-                                                onCheckedChange={(value) => setIsAvailableOnline(value)}
+                                            <Controller
+                                                name="itemOnline"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Switch
+                                                        {...field}
+                                                        id="itemOnline"
+                                                        checked={isAvailableOnline}
+                                                        onCheckedChange={(value) => setIsAvailableOnline(value)}
+                                                    />
+                                                )}
                                             />
                                             <Label htmlFor="itemOnline">Available Online</Label>
                                         </div>
