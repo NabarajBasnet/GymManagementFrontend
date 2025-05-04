@@ -12,14 +12,13 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { BiLoaderAlt } from "react-icons/bi";
-import { IoAddCircle } from "react-icons/io5";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { Checkbox } from "@/components/ui/checkbox"
 import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
 import React, { useEffect, useState } from 'react';
-import { Check, Plus, Search, Filter, Trash2, Save, X, Edit, ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { Check, Plus, Search, Filter, Trash2, Save, X, Edit, ArrowUpDown } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -56,6 +55,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader/Loader";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const currencies = [
     {
@@ -119,6 +119,8 @@ const subCategories = {
 const ServiceAndProducts = () => {
 
     const queryClient = useQueryClient();
+    const { user } = useUser();
+    const loggedInUser = user ? user.user : null;
 
     // Form states
     const [openAddItemForm, setOpenAddItemForm] = useState(false);
@@ -247,7 +249,7 @@ const ServiceAndProducts = () => {
             setSelectedItems([]);
         } else {
             setSelectedItems(serviceAndProducts?.map((item) => item.itemId) || []);
-        }
+        };
     };
 
     // Debounce Search Query
@@ -411,15 +413,19 @@ const ServiceAndProducts = () => {
                                 </AlertDialogContent>
                             </AlertDialog>
                         )}
-                        <Button
-                            className='rounded-sm ml-4 md:space-x-4'
-                            onClick={() => {
-                                setOpenAddItemForm(true);
-                            }
-                            }>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Add New Item
-                        </Button>
+                        {loggedInUser?.role === 'Gym Admin' ? (
+                            <></>
+                        ) : (
+                            <Button
+                                className='rounded-sm ml-4 md:space-x-4'
+                                onClick={() => {
+                                    setOpenAddItemForm(true);
+                                }
+                                }>
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add New Item
+                            </Button>
+                        )}
                     </div>
                 </div>
 
@@ -466,10 +472,15 @@ const ServiceAndProducts = () => {
                                     <thead>
                                         <tr className="border-b bg-muted/50">
                                             <th className="h-16 px-4 text-left font-medium">
-                                                <Checkbox
-                                                    checked={serviceAndProducts?.length > 0 && selectedItems.length === serviceAndProducts.length}
-                                                    onCheckedChange={handleSelectAllItems}
-                                                />
+                                                {loggedInUser?.role === 'Gym Admin' ? (
+                                                    <>
+                                                    </>
+                                                ) : (
+                                                    <Checkbox
+                                                        checked={serviceAndProducts?.length > 0 && selectedItems.length === serviceAndProducts.length}
+                                                        onCheckedChange={handleSelectAllItems}
+                                                    />
+                                                )}
                                             </th>
 
                                             <th className="h-16 px-4 text-left font-medium">
@@ -549,17 +560,26 @@ const ServiceAndProducts = () => {
                                                         className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
                                                 </div>
                                             </th>
-                                            <th className="h-10 px-4 text-right font-medium">Actions</th>
+                                            {loggedInUser?.role === 'Gym Admin' ? (
+                                                <></>
+                                            ) : (
+                                                <th className="h-10 px-4 text-right font-medium">Actions</th>
+                                            )}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {serviceAndProducts.map((item) => (
                                             <tr key={item.itemId} className="border-b text-sm hover:bg-muted/50">
                                                 <td className="align-middle text-center font-medium">
-                                                    <Checkbox
-                                                        checked={selectedItems.includes(item.itemId)}
-                                                        onCheckedChange={() => toggleIndividualItemSelection(item.itemId)}
-                                                    />
+                                                    {loggedInUser?.role === 'Gym Admin' ? (
+                                                        <>
+                                                        </>
+                                                    ) : (
+                                                        <Checkbox
+                                                            checked={selectedItems.includes(item.itemId)}
+                                                            onCheckedChange={() => toggleIndividualItemSelection(item.itemId)}
+                                                        />
+                                                    )}
                                                 </td>
                                                 <td className="align-middle md:text-center font-medium">{item.itemId}</td>
                                                 <td className="p-4 align-middle font-medium">{item.itemName}</td>
@@ -586,32 +606,36 @@ const ServiceAndProducts = () => {
                                                         {item.status}
                                                     </span>
                                                 </td>
-                                                <td className="flex items-center justify-end text-end">
-                                                    <Edit
-                                                        onClick={() => getSingleServiceOrProduct(item.itemId)}
-                                                        className="h-4 w-4" />
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <Button
-                                                                className='bg-transparent hover:bg-transparent hover:text-black text-gray-800'
-                                                            >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </Button>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    This action cannot be undone. This will permanently delete this item and remove your data from our servers.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                <AlertDialogAction onClick={() => deleteItems(item.itemId)}>Continue</AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </td>
+                                                {loggedInUser?.role === 'Gym Admin' ? (
+                                                    <></>
+                                                ) : (
+                                                    <td className="flex items-center p-4 align-middle justify-end">
+                                                        <Edit
+                                                            onClick={() => getSingleServiceOrProduct(item.itemId)}
+                                                            className="h-4 w-4" />
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button
+                                                                    className='bg-transparent hover:bg-transparent hover:text-black text-gray-800'
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete this item and remove your data from our servers.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => deleteItems(item.itemId)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </td>
+                                                )}
                                             </tr>
                                         ))}
                                     </tbody>
@@ -1134,15 +1158,15 @@ const ServiceAndProducts = () => {
                                                         <SelectContent>
                                                             <SelectGroup>
                                                                 <SelectLabel>Select</SelectLabel>
-                                                                <SelectItem value='3 %'>3 %</SelectItem>
-                                                                <SelectItem value='5 %'>5 %</SelectItem>
-                                                                <SelectItem value='7 %'>7 %</SelectItem>
-                                                                <SelectItem value='9 %'>9 %</SelectItem>
-                                                                <SelectItem value='11 %'>11 %</SelectItem>
-                                                                <SelectItem value='13 %' >13 %</SelectItem>
-                                                                <SelectItem value='15 %'>15 %</SelectItem>
-                                                                <SelectItem value='17 %'>17 %</SelectItem>
-                                                                <SelectItem value='20 %'>20 %</SelectItem>
+                                                                <SelectItem value='3'>3 %</SelectItem>
+                                                                <SelectItem value='5'>5 %</SelectItem>
+                                                                <SelectItem value='7'>7 %</SelectItem>
+                                                                <SelectItem value='9'>9 %</SelectItem>
+                                                                <SelectItem value='11'>11 %</SelectItem>
+                                                                <SelectItem value='13' >13 %</SelectItem>
+                                                                <SelectItem value='15'>15 %</SelectItem>
+                                                                <SelectItem value='17'>17 %</SelectItem>
+                                                                <SelectItem value='20'>20 %</SelectItem>
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
