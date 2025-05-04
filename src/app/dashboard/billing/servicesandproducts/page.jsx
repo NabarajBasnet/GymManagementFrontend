@@ -809,10 +809,10 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Item Type</Label>
-                                                <Button variant="ghost" onClick={() => setOpenAddMoreForm(true)} size="sm" className="text-black p-0 h-auto hover:bg-transparent">
+                                                {/* <Button variant="ghost" onClick={() => setOpenAddMoreForm(true)} size="sm" className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                             <Controller
                                                 name="itemType"
@@ -844,10 +844,10 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Warehouse</Label>
-                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
+                                                {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                             <Controller
                                                 name="warehouse"
@@ -903,10 +903,10 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Category</Label>
-                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
+                                                {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                             <Controller
                                                 name="category"
@@ -938,10 +938,10 @@ const ServiceAndProducts = () => {
                                         <div className="space-y-2">
                                             <div className='flex items-center justify-between'>
                                                 <Label className="font-medium flex-1">Sub Category</Label>
-                                                <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
+                                                {/* <Button variant="ghost" size="sm" onClick={() => setOpenAddMoreForm(true)} className="text-black p-0 h-auto hover:bg-transparent">
                                                     <IoAddCircle className="mr-1" />
                                                     Add More
-                                                </Button>
+                                                </Button> */}
                                             </div>
                                             <Controller
                                                 name="subCategory"
