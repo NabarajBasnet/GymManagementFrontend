@@ -234,7 +234,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         formData.append("staffImage", staffImage);
 
         try {
-            const response = await fetch("http://88.198.112.156:3000/api/staffsmanagement/upload-image", {
+            const response = await fetch("http://localhost:3000/api/staffsmanagement/upload-image", {
                 method: "POST",
                 body: formData,
             });
@@ -326,7 +326,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             relationship
         };
         try {
-            const url = `http://88.198.112.156:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
+            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
 
             const method = "PATCH";
 
@@ -370,7 +370,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     return (
         <div className="w-full">
             <div className="fixed inset-0 bg-black bg-opacity-80 z-50"></div>
-            <div className="fixed inset-0 z-40 flex items-center justify-center">
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
                 <div className="w-full flex justify-center">
                     <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
                         <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
