@@ -227,9 +227,28 @@ const PaymentReceipts = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-4">
                                         <div className="space-y-1.5">
+                                            <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
+                                            <Input
+                                                type="text"
+                                                placeholder="REC-2023-001"
+                                                className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-1.5">
+                                            <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
+                                            <Input
+                                                type="date"
+                                                className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <div className="space-y-1.5">
                                             <Label className="text-sm font-medium text-gray-700">Customer</Label>
                                             <Select>
-                                                <SelectTrigger className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                                <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                                     <SelectValue placeholder="Select customer" />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-lg shadow-lg border border-gray-200">
@@ -246,7 +265,7 @@ const PaymentReceipts = () => {
                                         <div className="space-y-1.5">
                                             <Label className="text-sm font-medium text-gray-700">Issued By</Label>
                                             <Select>
-                                                <SelectTrigger className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                                <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
                                                     <SelectValue placeholder="Select staff" />
                                                 </SelectTrigger>
                                                 <SelectContent className="rounded-lg shadow-lg border border-gray-200">
@@ -261,24 +280,6 @@ const PaymentReceipts = () => {
                                         </div>
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
-                                            <Input
-                                                type="text"
-                                                placeholder="REC-2023-001"
-                                                className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
-                                            <Input
-                                                type="date"
-                                                className="h-10 text-sm rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
 
@@ -286,17 +287,17 @@ const PaymentReceipts = () => {
                             <div className="mb-8">
                                 <div className="flex justify-between items-center mb-4">
                                     <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Items & Services</h2>
-                                    <button
+                                    <Button
                                         type="button"
                                         onClick={addItem}
-                                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200 shadow-sm"
+                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200 shadow-sm"
                                     >
                                         <Plus className="w-4 h-4" />
                                         Add Item
-                                    </button>
+                                    </Button>
                                 </div>
 
-                                <div className="overflow-x-auto rounded-lg border border-gray-200">
+                                <div className="overflow-x-auto rounded-md border border-gray-200">
                                     <table className="min-w-full divide-y divide-gray-200">
                                         <thead className="bg-gray-50">
                                             <tr>
