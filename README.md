@@ -1,9 +1,9 @@
 # Gym Management Software
 
-Welcome to the **Gym Company Management Admin Dashboard**. This project is built with **Next.js**, **MongoDB**, and various libraries to handle authentication, authorization, CRUD operations, and other features needed for efficient gym management.
+Welcome to the **Gym Company Management Admin Dashboard**. This project is built with **Next.js**, **MongoDB**, **Node.js** and various libraries to handle authentication, authorization, CRUD operations, and other features needed for efficient gym management.
 
 ### Live Demo
-🔗 [Live Dashboard](https://nabarajdashboard.vercel.app/)
+🔗 [Live Dashboard](https://revivefitnesssystem.vercel.app/)
 
 ## Table of Contents
 
