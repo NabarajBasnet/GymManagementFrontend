@@ -76,17 +76,22 @@ const PaymentReceipts = () => {
     // Form states
     const [openReceiptForm, setOpenReceiptForm] = useState(false);
 
+    // Data states
+    const [paymentMethod, setPaymentMethod] = useState('');
+    const [paymentStatus, setPaymentStatus] = useState('');
+    const [memberId, setMemberId] = useState('');
+    const [staffId, setStaffId] = useState('');
+    console.log(paymentMethod, memberId, staffId);
+
     // Member search states
     const [memberSearchQuery, setMemberSearchQuery] = useState('');
     const [memberName, setMemberName] = useState('');
-    const [memberId, setMemberId] = useState('');
     const [renderMemberDropdown, setRenderMemberDropdown] = useState(false);
     const memberSearchRef = useRef(null);
 
     // Staff search states
     const [staffSearchQuery, setStaffSearchQuery] = useState('');
     const [staffName, setStaffName] = useState('');
-    const [staffId, setStaffId] = useState('');
     const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
     const staffSearchRef = useRef(null);
 
@@ -154,6 +159,43 @@ const PaymentReceipts = () => {
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
     };
+
+
+    // Post Receipt
+    const postReceipt = async (data) => {
+        try {
+            const {
+                receiptNo,
+                paymentDate,
+                referenceNo,
+                receivedAmount,
+                discountAmount,
+                totalAmount,
+                notes
+            } = data;
+
+            const finalData = {
+                receiptNo,
+                paymentDate,
+                memberId,
+                staffId,
+                paymentMethod,
+                paymentStatus,
+                referenceNo,
+                receivedAmount,
+                discountAmount,
+                dueAmount,
+                totalAmount,
+                notes
+            };
+
+            console.log('Final Data: ', finalData);
+
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -247,7 +289,7 @@ const PaymentReceipts = () => {
             {/* Form Section */}
             {openReceiptForm && (
                 <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form className="bg-white w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
+                    <form onSubmit={handleSubmit(postReceipt)} className="bg-white w-11/12 max-w-8xl h-[90vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
                         {/* Header */}
                         <div className="w-full flex justify-between p-6 items-center border-b border-gray-100">
                             <div>
@@ -273,17 +315,25 @@ const PaymentReceipts = () => {
                                         <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
                                         <Input
                                             type="text"
+                                            {...register('receiptNo', { required: 'Receipt no is required' })}
                                             placeholder="Receipt No"
                                             className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
+                                        {errors.receiptNo && (
+                                            <p className="text-xs font-semibold text-red-600">{`${errors.receiptNo.message}`}</p>
+                                        )}
                                     </div>
 
                                     <div className="space-y-1.5">
                                         <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
                                         <Input
                                             type="date"
+                                            {...register('paymentDate', { required: 'Receipt no is required' })}
                                             className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
+                                        {errors.paymentDate && (
+                                            <p className="text-xs font-semibold text-red-600">{`${errors.paymentDate.message}`}</p>
+                                        )}
                                     </div>
 
                                     {/* Member dropdown */}
@@ -427,18 +477,35 @@ const PaymentReceipts = () => {
 
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
-                                            <Select>
+                                            <Select onValueChange={(value) => setPaymentMethod(value)}>
                                                 <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
                                                     <SelectValue placeholder="Select payment method" />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectGroup>
                                                         <SelectLabel>Payment Methods</SelectLabel>
-                                                        <SelectItem value="cash">Cash</SelectItem>
-                                                        <SelectItem value="credit_card">Credit Card</SelectItem>
-                                                        <SelectItem value="debit_card">Debit Card</SelectItem>
-                                                        <SelectItem value="bank_transfer">E Banking</SelectItem>
+                                                        <SelectItem value="Cash">Cash</SelectItem>
+                                                        <SelectItem value="Credit Card">Credit Card</SelectItem>
+                                                        <SelectItem value="Debit Card">Debit Card</SelectItem>
+                                                        <SelectItem value="E Banking">E Banking</SelectItem>
                                                         <SelectItem value="Cheque">Cheque</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Payment Status</Label>
+                                            <Select onValueChange={(value) => setPaymentStatus(value)}>
+                                                <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+                                                    <SelectValue placeholder="Select payment method" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Payment Methods</SelectLabel>
+                                                        <SelectItem value="Paid">Paid</SelectItem>
+                                                        <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                                                        <SelectItem value="Pending">Pending</SelectItem>
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
@@ -448,6 +515,7 @@ const PaymentReceipts = () => {
                                             <Label className="text-sm font-medium text-gray-700 block">Reference No.</Label>
                                             <Input
                                                 type="text"
+                                                {...register('referenceNo')}
                                                 placeholder="Payment reference number"
                                                 className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                             />
@@ -462,6 +530,7 @@ const PaymentReceipts = () => {
                                             <Label className="text-sm font-medium text-gray-700 block">Received Amount</Label>
                                             <Input
                                                 type="number"
+                                                {...register('receivedAmount', { required: 'receivedAmount is required' })}
                                                 placeholder="0.00"
                                                 className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                             />
@@ -471,6 +540,17 @@ const PaymentReceipts = () => {
                                             <Label className="text-sm font-medium text-gray-700 block">Discount Amount</Label>
                                             <Input
                                                 type="number"
+                                                {...register('discountAmount')}
+                                                placeholder="0.00"
+                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Due Amount</Label>
+                                            <Input
+                                                type="number"
+                                                {...register('dueAmount')}
                                                 placeholder="0.00"
                                                 className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                             />
@@ -479,11 +559,12 @@ const PaymentReceipts = () => {
 
                                     {/* Notes Column */}
                                     <div className="space-y-4">
-                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Notes</h2>
+                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Total Amount & Notes</h2>
 
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium text-gray-700 block">Total Amount</Label>
                                             <Input
+                                                {...register('totalAmount', { required: 'Total amount is required' })}
                                                 type="number"
                                                 placeholder="0.00"
                                                 className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
@@ -493,7 +574,8 @@ const PaymentReceipts = () => {
                                         <div className="space-y-2">
                                             <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
                                             <textarea
-                                                rows={3}
+                                                {...register('notes')}
+                                                rows={1}
                                                 className="w-full p-2.5 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                                 placeholder="Any additional notes or comments..."
                                             />
