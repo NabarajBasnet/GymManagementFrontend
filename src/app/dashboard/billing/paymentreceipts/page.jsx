@@ -55,12 +55,12 @@ import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const PaymentReceipts = () => {
     const { user } = useUser();
     const loggedInUser = user ? user.user : null;
-    console.log('Logged in user: ', loggedInUser);
+
     // React Hook Form
     const {
         register,
@@ -71,6 +71,8 @@ const PaymentReceipts = () => {
         setError,
         control
     } = useForm();
+
+    const queryclient = useQueryClient();
 
     // Form states
     const [openReceiptForm, setOpenReceiptForm] = useState(false);
@@ -94,9 +96,20 @@ const PaymentReceipts = () => {
     const staffSearchRef = useRef(null);
 
     // Other states
-    const [searchQuery, setSearchQuery] = useState('');
     const [receiptData, setReceiptData] = useState(null);
     const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
+
+    // Pagination states
+    let limit = 1;
+    const [currentPage, setCurrentPage] = useState(1);
+
+    // Search Query
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
+    // Sorting states
+    const [sortBy, setSortBy] = useState('');
+    const [sortOrderDesc, setSortOrderDesc] = useState(true);
 
     // Get all members
     const getAllMembers = async () => {
@@ -581,6 +594,7 @@ const PaymentReceipts = () => {
             const responseBody = await response.json();
 
             if (response.ok && response.status === 200) {
+                queryclient.invalidateQueries(['paymentreceipts']);
                 setReceiptData(responseBody.receipt);
                 toast.success(responseBody.message);
                 reset();
@@ -603,6 +617,49 @@ const PaymentReceipts = () => {
             toast.error(error.message);
         };
     };
+
+
+    // Get all services and products from server
+    const getAllPaymentReceipts = async ({ queryKey }) => {
+        const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
+        try {
+            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data, isLoading } = useQuery({
+        queryFn: getAllPaymentReceipts,
+        queryKey: ['paymentreceipts', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
+    });
+
+    const { paymentreceipts, totalPages } = data || {};
+
+    // Debounce
+    useEffect(() => {
+        const timer = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
+
+    // Get Single Receipt Details
+    const getSingleReceiptDetails = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error)
+        };
+    };
+
+    const deleteReceipt = async (id) => {
+        try {
+
+        } catch (error) {
+            console.log("Error: ", error)
+        };
+    }
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -665,6 +722,8 @@ const PaymentReceipts = () => {
                     <div className="relative flex-1 min-w-[200px]">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                         <Input
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search receipts..."
                             className="pl-10 pr-4 py-2 h-10 rounded-md border-gray-300 focus-visible:ring-primary"
                         />
@@ -681,31 +740,228 @@ const PaymentReceipts = () => {
             </div>
 
             {/* Content Area */}
-            <div className="bg-white rounded-xl shadow-md border border-gray-200 p-6">
-                {/* Placeholder for table/data grid */}
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                    <div className="bg-gray-100 p-4 rounded-full mb-4">
-                        <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
+            <div className="w-full bg-white rounded-xl shadow-md border border-gray-200">
+                {/* Table Section */}
+                <div className="w-full">
+                    {Array.isArray(paymentreceipts) && paymentreceipts.length > 0 ? (
+                        <div className="w-full">
+                            <div className="overflow-x-auto">
+                                {isLoading ? (
+                                    <Loader />
+                                ) : (
+                                    <table className="text-sm w-full">
+                                        <thead>
+                                            <tr className="border-b bg-muted/50">
+                                                <th className="h-16 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Receipt No
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('paymentReceiptNo');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-16 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Payment Date
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('paymentDate');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Method
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('paymentMethod');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-right font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Received
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('receivedAmount');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-right font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Due
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('dueAmount');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-right font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Total
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('totalAmount');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Member
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Staff
+                                                    </div>
+                                                </th>
+                                                <th className="h-10 px-4 text-left font-medium">
+                                                    <div className="flex text-sm font-semibold items-center">
+                                                        Status
+                                                        <ArrowUpDown
+                                                            onClick={() => {
+                                                                setSortBy('paymentStatus');
+                                                                setSortOrderDesc(!sortOrderDesc);
+                                                            }}
+                                                            className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                                    </div>
+                                                </th>
+                                                {loggedInUser?.role !== 'Gym Admin' && (
+                                                    <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
+                                                )}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {paymentreceipts.map((receipt) => (
+                                                <tr key={receipt._id} className="border-b text-sm hover:bg-muted/50">
+                                                    <td className="p-4 align-middle font-medium">{receipt.paymentReceiptNo}</td>
+                                                    <td className="p-4 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
+                                                    <td className="p-4 align-middle">{receipt.paymentMethod}</td>
+                                                    <td className="p-4 align-middle text-right">${receipt.receivedAmount}</td>
+                                                    <td className="p-4 align-middle text-right">${receipt.dueAmount}</td>
+                                                    <td className="p-4 align-middle text-right">${receipt.totalAmount}</td>
+                                                    <td className="p-4 align-middle">{receipt.member?.name || 'N/A'}</td>
+                                                    <td className="p-4 align-middle">{receipt.staff?.name || 'N/A'}</td>
+                                                    <td className="p-4 align-middle">
+                                                        <span
+                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${receipt.paymentStatus === 'Paid'
+                                                                ? 'bg-green-100 text-green-800'
+                                                                : receipt.paymentStatus === 'Pending'
+                                                                    ? 'bg-red-100 text-red-800'
+                                                                    : 'bg-yellow-100 text-yellow-800'
+                                                                }`}
+                                                        >
+                                                            {receipt.paymentStatus}
+                                                        </span>
+                                                    </td>
+                                                    {loggedInUser?.role !== 'Gym Admin' && (
+                                                        <td className="flex items-center p-4 align-middle justify-end">
+                                                            <Edit
+                                                                onClick={() => getSingleReceiptDetails(receipt._id)}
+                                                                className="h-4 w-4 cursor-pointer hover:text-blue-600"
+                                                            />
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        className="hover:bg-transparent hover:text-red-600 text-gray-800"
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently delete this receipt.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction onClick={() => deleteReceipt(receipt._id)}>Continue</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm">
+                                <thead>
+                                    <tr className="border-b text-sm bg-muted/50">
+                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Receipt No</th>
+                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Payment Date</th>
+                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Method</th>
+                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Received</th>
+                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Due</th>
+                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Total</th>
+                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Member</th>
+                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Staff</th>
+                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Status</th>
+                                        {loggedInUser?.role !== 'Gym Admin' && (
+                                            <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
+                                        )}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colSpan={loggedInUser?.role === 'Gym Admin' ? 9 : 10} className="text-center py-6 text-sm text-muted-foreground">
+                                            <h3 className="text-lg font-medium text-gray-700 mb-1">No payment receipts yet</h3>
+                                            <p className="text-gray-500 mb-4 text-xs font-semibold w-full text-center align-center">Create your first payment receipt to get started</p>
+                                            <Button
+                                                onClick={() => setOpenReceiptForm(true)}
+                                                className="px-6">
+                                                <Plus className="h-4 w-4 mr-2" />
+                                                Create Receipt
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                    <div className="flex items-center justify-between border-t px-4 py-4">
+                        <div className="text-sm text-muted-foreground">
+                            Showing <strong>{paymentreceipts?.length}</strong> of <strong>{paymentreceipts?.length}</strong> receipts
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <div className="flex justify-center py-4">
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                    classNames={{
+                                        item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
+                                        active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
+                                        dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                                    }}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <h3 className="text-lg font-medium text-gray-700 mb-1">No payment receipts yet</h3>
-                    <p className="text-gray-500 mb-4 max-w-md">Create your first payment receipt to get started</p>
-                    <Button
-                        onClick={() => setOpenReceiptForm(true)}
-                        className="px-6">
-                        <Plus className="h-4 w-4 mr-2" />
-                        Create Receipt
-                    </Button>
-                </div>
-
-                {/* Pagination would go here */}
-                <div className="mt-6 flex justify-end">
-                    <Pagination
-                        currentPage={1}
-                        totalPages={1}
-                        onPageChange={() => { }}
-                    />
                 </div>
             </div>
 
@@ -717,7 +973,7 @@ const PaymentReceipts = () => {
                         <div className="w-full flex justify-between p-6 items-center border-b border-gray-100">
                             <div>
                                 <h1 className="text-2xl font-bold text-gray-900">Create New Receipt</h1>
-                                <p className="text-sm text-gray-500 mt-1">Generate professional receipts for your customers</p>
+                                <p className="text-sm text-gray-500 mt-1">Generate and print payment receipts</p>
                             </div>
                             <button
                                 onClick={() => setOpenReceiptForm(false)}
