@@ -185,7 +185,7 @@ const ServiceAndProducts = () => {
                 taxRate
             };
 
-            const url = formMode === 'create' ? 'http://localhost:3000/api/accounting/serviceandproducts' : `http://localhost:3000/api/accounting/serviceandproducts/${itemId}`
+            const url = formMode === 'create' ? 'http://88.198.112.156:3000/api/accounting/serviceandproducts' : `http://88.198.112.156:3000/api/accounting/serviceandproducts/${itemId}`
 
             const response = await fetch(url, {
                 method: formMode === 'create' ? "POST" : "PATCH",
@@ -216,7 +216,7 @@ const ServiceAndProducts = () => {
     const getAllServicesAndProducts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc, activeTab] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&activeTab=${activeTab}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -266,7 +266,7 @@ const ServiceAndProducts = () => {
 
     const getSingleServiceOrProduct = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts/${itemId}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts/${itemId}`);
             const responseBody = await response.json();
             const subCategory = responseBody.item.subCategory
             const taxRate = responseBody.item.taxRate
@@ -301,7 +301,7 @@ const ServiceAndProducts = () => {
 
     const deleteItems = async (itemId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts/${itemId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts/${itemId}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
@@ -317,7 +317,7 @@ const ServiceAndProducts = () => {
 
     const deleteSelectedItems = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/serviceandproducts`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"

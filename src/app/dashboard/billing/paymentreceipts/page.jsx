@@ -1,6 +1,7 @@
 'use client';
 
-import { FiSearch, FiCalendar } from "react-icons/fi";
+import { PiPrinterBold } from "react-icons/pi";
+import { FiSearch } from "react-icons/fi";
 import { useRef, useEffect, useState } from 'react';
 import {
     AlertDialog,
@@ -14,11 +15,9 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useForm, Controller } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
-import { IoIosInformationCircle } from "react-icons/io";
 import Pagination from '@/components/ui/CustomPagination';
-import { BiChevronDown, BiLoaderAlt } from "react-icons/bi";
-import { Check, Plus, Search, Filter, Trash2, Save, X, Edit, ArrowUpDown } from 'lucide-react';
+import { BiLoaderAlt } from "react-icons/bi";
+import { Plus, Search, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
 
 // Import shadcn components
 import {
@@ -38,7 +37,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -51,7 +49,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { Switch } from "@/components/ui/switch";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader/Loader";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
@@ -82,6 +79,8 @@ const PaymentReceipts = () => {
     const [paymentStatus, setPaymentStatus] = useState('');
     const [memberId, setMemberId] = useState('');
     const [staffId, setStaffId] = useState('');
+    const [assignedStaffName, setAssignedStaffName] = useState('');
+    const [assignedMemberName, setAssignedMemberName] = useState('');
 
     // Member search states
     const [memberSearchQuery, setMemberSearchQuery] = useState('');
@@ -100,7 +99,7 @@ const PaymentReceipts = () => {
     const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
 
     // Pagination states
-    let limit = 1;
+    let limit = 15;
     const [currentPage, setCurrentPage] = useState(1);
 
     // Search Query
@@ -114,7 +113,7 @@ const PaymentReceipts = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -133,7 +132,7 @@ const PaymentReceipts = () => {
     // Get all staffs
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -172,9 +171,6 @@ const PaymentReceipts = () => {
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
     };
-
-    const [assignedStaffName, setAssignedStaffName] = useState('');
-    const [assignedMemberName, setAssignedMemberName] = useState('');
 
     const printReceipt = (receiptData) => {
         // Create a new window
@@ -583,7 +579,7 @@ const PaymentReceipts = () => {
                 return
             };
 
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/paymentreceipts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -618,12 +614,11 @@ const PaymentReceipts = () => {
         };
     };
 
-
     // Get all services and products from server
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -647,7 +642,14 @@ const PaymentReceipts = () => {
     // Get Single Receipt Details
     const getSingleReceiptDetails = async (id) => {
         try {
-
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/paymentreceipts/${id}`);
+            const responseBody = await response.json();
+            if (response.ok && response.status === 200) {
+                toast.success(responseBody.message || '');
+                setAssignedMemberName(responseBody.paymentReceipt.customer.fullName || '');
+                setAssignedStaffName(responseBody.paymentReceipt.issuedBy.fullName || '');
+                printReceipt(responseBody.paymentReceipt);
+            }
         } catch (error) {
             console.log("Error: ", error)
         };
@@ -655,7 +657,16 @@ const PaymentReceipts = () => {
 
     const deleteReceipt = async (id) => {
         try {
-
+            const response = await fetch(`http://88.198.112.156:3000/api/accounting/paymentreceipts/${id}`, {
+                method: "DELETE",
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message || '');
+                queryclient.invalidateQueries(['paymentreceipts']);
+            } else {
+                toast.error(responseBody.message || '');
+            }
         } catch (error) {
             console.log("Error: ", error)
         };
@@ -847,15 +858,15 @@ const PaymentReceipts = () => {
                                         <tbody>
                                             {paymentreceipts.map((receipt) => (
                                                 <tr key={receipt._id} className="border-b text-sm hover:bg-muted/50">
-                                                    <td className="p-4 align-middle font-medium">{receipt.paymentReceiptNo}</td>
-                                                    <td className="p-4 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
-                                                    <td className="p-4 align-middle">{receipt.paymentMethod}</td>
-                                                    <td className="p-4 align-middle text-right">${receipt.receivedAmount}</td>
-                                                    <td className="p-4 align-middle text-right">${receipt.dueAmount}</td>
-                                                    <td className="p-4 align-middle text-right">${receipt.totalAmount}</td>
-                                                    <td className="p-4 align-middle">{receipt.member?.name || 'N/A'}</td>
-                                                    <td className="p-4 align-middle">{receipt.staff?.name || 'N/A'}</td>
-                                                    <td className="p-4 align-middle">
+                                                    <td className="p-3 align-middle font-medium">{receipt.paymentReceiptNo}</td>
+                                                    <td className="p-3 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
+                                                    <td className="p-3 align-middle text-start">{receipt.paymentMethod}</td>
+                                                    <td className="p-3 align-middle text-start">${receipt.receivedAmount}</td>
+                                                    <td className="p-3 align-middle text-start">${receipt.dueAmount}</td>
+                                                    <td className="p-3 align-middle text-start">${receipt.totalAmount}</td>
+                                                    <td className="p-3 align-middle">{receipt.member?.name || 'N/A'}</td>
+                                                    <td className="p-3 align-middle">{receipt.staff?.name || 'N/A'}</td>
+                                                    <td className="p-3 align-middle">
                                                         <span
                                                             className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${receipt.paymentStatus === 'Paid'
                                                                 ? 'bg-green-100 text-green-800'
@@ -869,7 +880,7 @@ const PaymentReceipts = () => {
                                                     </td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
                                                         <td className="flex items-center p-4 align-middle justify-end">
-                                                            <Edit
+                                                            <PiPrinterBold
                                                                 onClick={() => getSingleReceiptDetails(receipt._id)}
                                                                 className="h-4 w-4 cursor-pointer hover:text-blue-600"
                                                             />
