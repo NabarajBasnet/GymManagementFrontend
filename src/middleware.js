@@ -36,16 +36,16 @@ export const middleware = async (request) => {
     }
 
     // 🧿 STAFF LOGIC
-    if (!staff && path.startsWith('/MyProfile')) {
-      return NextResponse.redirect(new URL('/StaffLogin', request.url));
-    } else if (staff && path === '/StaffLogin') {
-      return NextResponse.redirect(new URL("/MyProfile", request.url));
-    }
+    // if (!staff && path.startsWith('/MyProfile')) {
+    //   return NextResponse.redirect(new URL('/StaffLogin', request.url));
+    // } else if (staff && path === '/StaffLogin') {
+    //   return NextResponse.redirect(new URL("/MyProfile", request.url));
+    // }
 
     // 🧿 ADMIN/USER LOGIC
-    if (!user && path.startsWith('/dashboard')) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+    // if (!user && path.startsWith('/dashboard')) {
+    //   return NextResponse.redirect(new URL('/login', request.url));
+    // }
 
     if (user && (path === '/login' || path === '/signup')) {
       return NextResponse.redirect(new URL('/dashboard', request.url));
