@@ -75,10 +75,6 @@ const PaymentReceipts = () => {
 
     // Form states
     const [openReceiptForm, setOpenReceiptForm] = useState(false);
-    const [query, setQuery] = useState('');
-    const [items, setItems] = useState([
-        { description: "", quantity: 1, unitPrice: 0, total: 0 },
-    ]);
 
     // Member search states
     const [memberSearchQuery, setMemberSearchQuery] = useState('');
@@ -93,12 +89,6 @@ const PaymentReceipts = () => {
     const [staffId, setStaffId] = useState('');
     const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
     const staffSearchRef = useRef(null);
-
-    // Services and Products search states
-    const [serviceProductSearchQuery, setServiceProductSearchQuery] = useState('');
-    const [renderServiceProductDropdown, setRenderServiceProductDropdown] = useState(false);
-    const [currentEditingItemIndex, setCurrentEditingItemIndex] = useState(null);
-    const serviceProductSearchRef = useRef(null);
 
     // Other states
     const [searchQuery, setSearchQuery] = useState('');
@@ -141,28 +131,6 @@ const PaymentReceipts = () => {
 
     const { staffs } = staffsData || {};
 
-    // Get all services and products
-    const getAllServicesAndProducts = async () => {
-        try {
-            const response = await fetch(
-                `http://localhost:3000/api/accounting/serviceandproducts`
-            );
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch services and products");
-        }
-    };
-
-    const { data: servicesProductsData, isLoading: servicesProductsLoading } = useQuery({
-        queryFn: getAllServicesAndProducts,
-        queryKey: ['servicesandproducts'],
-    });
-
-
-    const { serviceAndProducts } = servicesProductsData || {};
-
     // Handle click outside for all dropdowns
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -172,15 +140,12 @@ const PaymentReceipts = () => {
             if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
                 setRenderStaffDropdown(false);
             }
-            if (serviceProductSearchRef.current && !serviceProductSearchRef.current.contains(event.target)) {
-                setRenderServiceProductDropdown(false);
-            }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [memberSearchRef, staffSearchRef, serviceProductSearchRef]);
+    }, [memberSearchRef, staffSearchRef]);
 
     const handleMemberSearchFocus = () => {
         setRenderMemberDropdown(true);
@@ -188,45 +153,6 @@ const PaymentReceipts = () => {
 
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
-    };
-
-    const handleServiceProductSearchFocus = (index) => {
-        setCurrentEditingItemIndex(index);
-        setRenderServiceProductDropdown(true);
-    };
-
-    const handleChange = (index, field, value) => {
-        const updatedItems = [...items];
-        if (field === "quantity" || field === "unitPrice") {
-            value = Number(value);
-            updatedItems[index][field] = value;
-            updatedItems[index].total = updatedItems[index].quantity * updatedItems[index].unitPrice;
-        } else {
-            updatedItems[index][field] = value;
-        }
-        setItems(updatedItems);
-    };
-
-    const addItem = () => {
-        setItems([...items, { description: "", quantity: 1, unitPrice: 0, total: 0 }]);
-    };
-
-    const removeItem = (index) => {
-        const updatedItems = items.filter((_, i) => i !== index);
-        setItems(updatedItems);
-    };
-
-    const handleServiceProductSelect = (index, item) => {
-        const updatedItems = [...items];
-        updatedItems[index] = {
-            ...updatedItems[index],
-            description: item.itemName,
-            unitPrice: item.sellingPrice,
-            total: updatedItems[index].quantity * item.sellingPrice
-        };
-        setItems(updatedItems);
-        setRenderServiceProductDropdown(false);
-        setServiceProductSearchQuery("");
     };
 
     return (
