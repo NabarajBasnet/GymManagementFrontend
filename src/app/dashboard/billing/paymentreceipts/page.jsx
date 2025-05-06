@@ -2,7 +2,6 @@
 
 import { FiSearch, FiCalendar } from "react-icons/fi";
 import { useRef, useEffect, useState } from 'react';
-import { Combobox } from '@headlessui/react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -61,7 +60,7 @@ import { useQuery } from '@tanstack/react-query';
 const PaymentReceipts = () => {
     const { user } = useUser();
     const loggedInUser = user ? user.user : null;
-
+    console.log('Logged in user: ', loggedInUser);
     // React Hook Form
     const {
         register,
@@ -81,7 +80,6 @@ const PaymentReceipts = () => {
     const [paymentStatus, setPaymentStatus] = useState('');
     const [memberId, setMemberId] = useState('');
     const [staffId, setStaffId] = useState('');
-    console.log(paymentMethod, memberId, staffId);
 
     // Member search states
     const [memberSearchQuery, setMemberSearchQuery] = useState('');
@@ -97,6 +95,8 @@ const PaymentReceipts = () => {
 
     // Other states
     const [searchQuery, setSearchQuery] = useState('');
+    const [receiptData, setReceiptData] = useState(null);
+    const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
 
     // Get all members
     const getAllMembers = async () => {
@@ -160,22 +160,429 @@ const PaymentReceipts = () => {
         setRenderStaffDropdown(true);
     };
 
+    const printReceipt = (receiptData) => {
+        // Create a new window
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
 
-    // Post Receipt
+        // HTML template for the receipt
+        const receiptHTML = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Receipt ${receiptData.paymentReceiptNo}</title>
+            <style>
+                :root {
+                    --primary-color: #1e3a8a;
+                    --secondary-color: #3b82f6;
+                    --accent-color: #dbeafe;
+                    --text-color: #1f2937;
+                    --light-text: #6b7280;
+                    --border-color: #e5e7eb;
+                    --success-color: #10b981;
+                }
+                
+                * {
+                    box-sizing: border-box;
+                    margin: 0;
+                    padding: 0;
+                }
+                
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    line-height: 1.6;
+                    color: var(--text-color);
+                    background-color: #f9fafb;
+                    padding: 0;
+                    margin: 0;
+                }
+                
+                .print-button-container {
+                    position: sticky;
+                    top: 0;
+                    background-color: #fff;
+                    text-align: center;
+                    padding: 15px 0;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    z-index: 100;
+                }
+                
+                .print-button {
+                    background-color: var(--primary-color);
+                    color: white;
+                    border: none;
+                    padding: 12px 30px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+                
+                .print-button:hover {
+                    background-color: var(--secondary-color);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                
+                .receipt-container {
+                    max-width: 800px;
+                    margin: 20px auto 40px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 12px;
+                    background-color: white;
+                    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                    overflow: hidden;
+                }
+                
+                .receipt-header {
+                    background-color: var(--primary-color);
+                    color: white;
+                    padding: 25px;
+                    text-align: center;
+                    border-bottom: 5px solid var(--secondary-color);
+                }
+                
+                .receipt-header h1 {
+                    margin: 0;
+                    font-size: 28px;
+                    letter-spacing: 0.5px;
+                    font-weight: 600;
+                }
+                
+                .company-details {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 20px;
+                    padding: 20px 25px;
+                    background-color: var(--accent-color);
+                    border-bottom: 1px solid var(--border-color);
+                }
+                
+                .company-logo {
+                    text-align: center;
+                    font-size: 24px;
+                    font-weight: bold;
+                    color: var(--primary-color);
+                }
+                
+                .company-info p {
+                    margin: 5px 0;
+                    color: var(--text-color);
+                }
+                
+                .receipt-content {
+                    padding: 25px;
+                }
+                
+                .receipt-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 30px;
+                    margin-bottom: 30px;
+                }
+                
+                .receipt-section {
+                    margin-bottom: 25px;
+                }
+                
+                .section-title {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: var(--primary-color);
+                    margin-bottom: 10px;
+                    border-bottom: 2px solid var(--accent-color);
+                    padding-bottom: 5px;
+                }
+                
+                .detail-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px;
+                }
+                
+                .detail-row {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-bottom: 8px;
+                }
+                
+                .detail-label {
+                    font-weight: 500;
+                    color: var(--light-text);
+                }
+                
+                .detail-value {
+                    font-weight: 600;
+                    text-align: right;
+                }
+                
+                .payment-summary {
+                    background-color: #f8fafc;
+                    border: 1px solid var(--border-color);
+                    border-radius: 8px;
+                    padding: 20px;
+                    margin-top: 25px;
+                }
+                
+                .summary-row {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 8px 0;
+                    border-bottom: 1px dashed var(--border-color);
+                }
+                
+                .summary-row:last-child {
+                    border-bottom: none;
+                }
+                
+                .total-row {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 15px 0;
+                    margin-top: 15px;
+                    border-top: 2px solid var(--primary-color);
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                
+                .payment-status {
+                    background-color: var(--accent-color);
+                    color: var(--primary-color);
+                    padding: 8px 12px;
+                    border-radius: 20px;
+                    font-weight: 600;
+                    text-align: center;
+                    width: fit-content;
+                    margin-bottom: 20px;
+                }
+                
+                .payment-status.paid {
+                    background-color: #d1fae5;
+                    color: var(--success-color);
+                }
+                
+                .notes-section {
+                    margin-top: 30px;
+                    padding: 15px;
+                    background-color: #f9fafb;
+                    border-radius: 8px;
+                    border-left: 4px solid var(--secondary-color);
+                }
+                
+                .thank-you-message {
+                    margin-top: 30px;
+                    text-align: center;
+                    padding: 20px;
+                    background-color: var(--accent-color);
+                    border-radius: 8px;
+                }
+                
+                .thank-you-message h3 {
+                    color: var(--primary-color);
+                    margin-bottom: 10px;
+                }
+                
+                .thank-you-message p {
+                    margin-bottom: 10px;
+                }
+                
+                .receipt-footer {
+                    text-align: center;
+                    padding: 20px;
+                    background-color: var(--primary-color);
+                    color: white;
+                    font-size: 14px;
+                    margin-top: 30px;
+                }
+                
+                .barcode {
+                    text-align: center;
+                    margin: 20px 0;
+                    font-family: monospace;
+                    letter-spacing: 2px;
+                    font-size: 14px;
+                    color: var(--light-text);
+                }
+                
+                @media print {
+                    body {
+                        background-color: white;
+                        padding: 0;
+                    }
+                    
+                    .print-button-container {
+                        display: none;
+                    }
+                    
+                    .receipt-container {
+                        box-shadow: none;
+                        border: none;
+                        margin: 0;
+                        width: 100%;
+                    }
+                    
+                    .thank-you-message, 
+                    .receipt-footer {
+                        break-inside: avoid;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+            <div class="print-button-container no-print">
+                <button class="print-button" onclick="window.print()">
+                    Print Receipt
+                </button>
+            </div>
+            
+            <div class="receipt-container">
+                <div class="receipt-header">
+                    <h1>PAYMENT RECEIPT</h1>
+                </div>
+                
+                <div class="company-details">
+                    <div class="company-logo">
+                        ${loggedInUser?.firstName || ''}${loggedInUser?.lastName || ''}
+                    </div>
+                    <div class="company-info">
+                        <p><strong>${loggedInUser?.firstName || ''} ${loggedInUser?.lastName || ''}</strong></p>
+                        <p>${loggedInUser?.address || '123 Business Address'}, ${loggedInUser?.city || 'City'}, ${loggedInUser?.country || 'Country'}</p>
+                        <p>Email: ${loggedInUser?.email || 'email@example.com'}</p>
+                        <p>Phone: ${loggedInUser?.phoneNumber || '+1 234 567 890'}</p>
+                    </div>
+                </div>
+                
+                <div class="receipt-content">
+                    <div class="payment-status ${receiptData.paymentStatus.toLowerCase() === 'paid' ? 'paid' : ''}">
+                        ${receiptData.paymentStatus}
+                    </div>
+                    
+                    <div class="receipt-grid">
+                        <div class="receipt-section">
+                            <div class="section-title">Receipt Information</div>
+                            <div class="detail-grid">
+                                <div class="detail-row">
+                                    <span class="detail-label">Receipt No:</span>
+                                    <span class="detail-value">${receiptData.paymentReceiptNo}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Date:</span>
+                                    <span class="detail-value">${new Date(receiptData.paymentDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Time:</span>
+                                    <span class="detail-value">${new Date(receiptData.paymentDate).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit'
+        })}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Reference No:</span>
+                                    <span class="detail-value">${receiptData.referenceNo || 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="receipt-section">
+                            <div class="section-title">Customer Details</div>
+                            <div class="detail-grid">
+                                <div class="detail-row">
+                                    <span class="detail-label">Customer ID:</span>
+                                    <span class="detail-value">${receiptData.customer}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Issued By:</span>
+                                    <span class="detail-value">${receiptData.issuedBy}</span>
+                                </div>
+                                <div class="detail-row">
+                                    <span class="detail-label">Payment Method:</span>
+                                    <span class="detail-value">${receiptData.paymentMethod}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-summary">
+                        <div class="section-title">Payment Summary</div>
+                        <div class="summary-row">
+                            <span>Total Amount:</span>
+                            <span>$${receiptData.totalAmount}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Discount:</span>
+                            <span>$${receiptData.discountAmount}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Amount Received:</span>
+                            <span>$${receiptData.receivedAmount}</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Due Amount:</span>
+                            <span>$${receiptData.dueAmount}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="notes-section">
+                        <div class="section-title">Notes</div>
+                        <p>${receiptData.notes || 'No additional notes.'}</p>
+                    </div>
+                    
+                    <div class="barcode">
+                        | ||| || ${receiptData.paymentReceiptNo} ||| || |
+                    </div>
+                    
+                    <div class="thank-you-message">
+                        <h3>Thank You for Your Business, Customer #${receiptData.customer}!</h3>
+                        <p>We greatly appreciate your trust in our services. Your support enables us to continue providing the quality service you deserve.</p>
+                        <p>Should you have any questions about this receipt or our services, please don't hesitate to contact us.</p>
+                        <p>We look forward to serving you again in the future!</p>
+                    </div>
+                </div>
+                
+                <div class="receipt-footer">
+                    <p>This is an electronically generated receipt and does not require a signature.</p>
+                    <p>Generated on ${new Date(receiptData.createdAt).toLocaleString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })}</p>
+                    <p>&copy; ${new Date().getFullYear()} ${loggedInUser?.firstName || ''} ${loggedInUser?.lastName || ''} Services. All rights reserved.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
+
+        // Write the HTML to the new window
+        printWindow.document.open();
+        printWindow.document.write(receiptHTML);
+        printWindow.document.close();
+    };
+
     const postReceipt = async (data) => {
         try {
             const {
-                receiptNo,
+                paymentReceiptNo,
                 paymentDate,
                 referenceNo,
                 receivedAmount,
                 discountAmount,
+                dueAmount,
                 totalAmount,
                 notes
             } = data;
 
             const finalData = {
-                receiptNo,
+                paymentReceiptNo,
                 paymentDate,
                 memberId,
                 staffId,
@@ -189,13 +596,54 @@ const PaymentReceipts = () => {
                 notes
             };
 
-            console.log('Final Data: ', finalData);
+            if (!memberId) {
+                toast.error('Please select customer name');
+                return
+            }
 
+            if (!staffId) {
+                toast.error('Please select staff name');
+                return
+            };
+
+            if (!paymentMethod) {
+                toast.error('Please select payment method');
+                return
+            };
+
+            if (!paymentStatus) {
+                toast.error('Please select payment status');
+                return
+            };
+
+            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(finalData),
+            });
+
+            const responseBody = await response.json();
+            if (response.ok && response.status === 200) {
+                setReceiptData(responseBody.receipt);
+                toast.success(responseBody.message);
+                reset();
+                setOpenReceiptForm(false);
+                setMemberId('');
+                setStaffId('');
+                setMemberName('');
+                setStaffName('');
+                setPrintReceiptAlert(true);
+            } else {
+                toast.error(responseBody.message);
+            };
         } catch (error) {
             console.log("Error: ", error);
+            toast.error('Internal Server Error!');
+            toast.error(error.message);
         };
     };
-
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -229,6 +677,22 @@ const PaymentReceipts = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
             </div>
+
+            {/* Print alert dialog */}
+            <AlertDialog open={printReceiptAlert} onOpenChange={setPrintReceiptAlert}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Print Receipt?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Would you like to print the receipt now?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={() => setPrintReceiptAlert(false)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => printReceipt(receiptData)}>Print</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
 
             {/* Header Section */}
             <div className="flex flex-col md:flex-row bg-white p-3 rounded-md shadow-md justify-between items-start md:items-center mb-6 gap-4">
@@ -315,12 +779,12 @@ const PaymentReceipts = () => {
                                         <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
                                         <Input
                                             type="text"
-                                            {...register('receiptNo', { required: 'Receipt no is required' })}
+                                            {...register('paymentReceiptNo', { required: 'Receipt no is required' })}
                                             placeholder="Receipt No"
                                             className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         />
-                                        {errors.receiptNo && (
-                                            <p className="text-xs font-semibold text-red-600">{`${errors.receiptNo.message}`}</p>
+                                        {errors.paymentReceiptNo && (
+                                            <p className="text-xs font-semibold text-red-600">{`${errors.paymentReceiptNo.message}`}</p>
                                         )}
                                     </div>
 
