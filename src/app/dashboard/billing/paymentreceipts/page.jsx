@@ -341,356 +341,237 @@ const PaymentReceipts = () => {
                         <div className="flex-1 overflow-y-auto p-6">
                             {/* Step 1: Customer & Basic Info */}
                             <div className="mb-8">
-                                <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Customer Information</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-4">
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
-                                            <Input
-                                                type="text"
-                                                placeholder="Receipt No"
-                                                className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
-
-                                        <div className="space-y-1.5">
-                                            <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
-                                            <Input
-                                                type="date"
-                                                className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            />
-                                        </div>
+                                <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Basic Information</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                    <div className="space-y-1.5">
+                                        <Label className="text-sm font-medium text-gray-700">Receipt Number</Label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Receipt No"
+                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div>
-                                            <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Member</Label>
-                                            <div ref={memberSearchRef} className="relative">
-                                                <Controller
-                                                    name="memberName"
-                                                    control={control}
-                                                    render={({ field }) => (
-                                                        <div className="relative">
-                                                            <Input
-                                                                {...field}
-                                                                autoComplete="off"
-                                                                value={memberName || memberSearchQuery}
-                                                                onChange={(e) => {
-                                                                    setMemberSearchQuery(e.target.value);
-                                                                    field.onChange(e);
-                                                                    setMemberName('');
-                                                                }}
-                                                                onFocus={handleMemberSearchFocus}
-                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                                placeholder="Search members..."
-                                                            />
-                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                                <FiSearch className="h-5 w-5" />
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                />
-                                                {errors.memberName && (
-                                                    <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                        {errors.memberName.message}
-                                                    </p>
-                                                )}
-
-                                                {renderMemberDropdown && (
-                                                    <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                        {members?.length > 0 ? (
-                                                            members
-                                                                .filter((member) => {
-                                                                    return member.fullName
-                                                                        .toLowerCase()
-                                                                        .includes(memberSearchQuery.toLowerCase());
-                                                                })
-                                                                .map((member) => (
-                                                                    <div
-                                                                        onClick={() => {
-                                                                            setMemberName(member.fullName);
-                                                                            setMemberSearchQuery(member.fullName);
-                                                                            setMemberId(member._id);
-                                                                            setRenderMemberDropdown(false);
-                                                                        }}
-                                                                        className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                        key={member._id}
-                                                                    >
-                                                                        {member.fullName}
-                                                                    </div>
-                                                                ))
-                                                        ) : (
-                                                            <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-
-                                        <div>
-                                            <Label className="block text-sm font-medium mb-1.5 text-gray-700">Search Staff</Label>
-                                            <div ref={staffSearchRef} className="relative">
-                                                <Controller
-                                                    name="staffName"
-                                                    control={control}
-                                                    render={({ field }) => (
-                                                        <div className="relative">
-                                                            <Input
-                                                                {...field}
-                                                                autoComplete="off"
-                                                                value={staffName || staffSearchQuery}
-                                                                onChange={(e) => {
-                                                                    setStaffSearchQuery(e.target.value);
-                                                                    field.onChange(e);
-                                                                    setStaffName('');
-                                                                }}
-                                                                onFocus={handleStaffSearchFocus}
-                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
-                                                                placeholder="Search staff..."
-                                                            />
-                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                                <FiSearch className="h-5 w-5" />
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                />
-                                                {errors.staffName && (
-                                                    <p className="mt-1.5 text-sm font-medium text-red-600">
-                                                        {errors.staffName.message}
-                                                    </p>
-                                                )}
-
-                                                {renderStaffDropdown && (
-                                                    <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                        {staffs?.length > 0 ? (
-                                                            staffs
-                                                                .filter((staff) => {
-                                                                    return staff.fullName
-                                                                        .toLowerCase()
-                                                                        .includes(staffSearchQuery.toLowerCase());
-                                                                })
-                                                                .map((staff) => (
-                                                                    <div
-                                                                        onClick={() => {
-                                                                            setStaffName(staff.fullName);
-                                                                            setStaffSearchQuery(staff.fullName);
-                                                                            setStaffId(staff._id);
-                                                                            setRenderStaffDropdown(false);
-                                                                        }}
-                                                                        className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                        key={staff._id}
-                                                                    >
-                                                                        {staff.fullName}
-                                                                    </div>
-                                                                ))
-                                                        ) : (
-                                                            <div className="px-4 py-3 text-sm text-gray-500">No staff found</div>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
+                                    <div className="space-y-1.5">
+                                        <Label className="text-sm font-medium text-gray-700">Payment Date</Label>
+                                        <Input
+                                            type="date"
+                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        />
                                     </div>
-                                </div>
-                            </div>
 
-                            {/* Step 2: Items/Services */}
-                            <div className="mb-8">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Items & Services</h2>
-                                    <Button
-                                        type="button"
-                                        onClick={addItem}
-                                        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors duration-200 shadow-sm"
-                                    >
-                                        <Plus className="w-4 h-4" />
-                                        Add Item
-                                    </Button>
-                                </div>
+                                    {/* Member dropdown */}
+                                    <div className='space-y-1.5'>
+                                        <Label className="block text-sm font-medium text-gray-700">Search Member</Label>
+                                        <div ref={memberSearchRef} className="relative">
+                                            <Controller
+                                                name="memberName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <div className="relative">
+                                                        <Input
+                                                            {...field}
+                                                            autoComplete="off"
+                                                            value={memberName || memberSearchQuery}
+                                                            onChange={(e) => {
+                                                                setMemberSearchQuery(e.target.value);
+                                                                field.onChange(e);
+                                                                setMemberName('');
+                                                            }}
+                                                            onFocus={handleMemberSearchFocus}
+                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                            placeholder="Search members..."
+                                                        />
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                            <FiSearch className="h-5 w-5" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            />
+                                            {errors.memberName && (
+                                                <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                    {errors.memberName.message}
+                                                </p>
+                                            )}
 
-                                <div className="overflow-x-auto rounded-md border border-gray-200">
-                                    <table className="min-w-full divide-y divide-gray-200">
-                                        <thead className="bg-gray-50">
-                                            <tr>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item/Service</th>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">Qty</th>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Unit Price</th>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">Total</th>
-                                                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-16">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="bg-white divide-y divide-gray-200">
-                                            {items.map((item, index) => (
-                                                <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                                    <td className="px-4 py-3 z-50 whitespace-nowrap">
-                                                        <div ref={serviceProductSearchRef} className="relative">
-                                                            <Input
-                                                                autoComplete="off"
-                                                                value={item.description}
-                                                                onChange={(e) => {
-                                                                    handleChange(index, "description", e.target.value);
-                                                                    setServiceProductSearchQuery(e.target.value);
-                                                                }}
-                                                                onFocus={() => handleServiceProductSearchFocus(index)}
-                                                                className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 h-10"
-                                                                placeholder="Search services/products..."
-                                                            />
-                                                            {renderServiceProductDropdown && currentEditingItemIndex === index && (
-                                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                                    {servicesProductsLoading ? (
-                                                                        <div className="px-4 py-3 text-sm text-gray-500">Loading...</div>
-                                                                    ) : serviceAndProducts?.length > 0 ? (
-                                                                        serviceAndProducts
-                                                                            .filter((product) => {
-                                                                                return product.itemName
-                                                                                    .toLowerCase()
-                                                                                    .includes(serviceProductSearchQuery.toLowerCase()) ||
-                                                                                    (product.description && product.description
-                                                                                        .toLowerCase()
-                                                                                        .includes(serviceProductSearchQuery.toLowerCase()));
-                                                                            })
-                                                                            .map((product) => (
-                                                                                <div
-                                                                                    onClick={() => handleServiceProductSelect(index, product)}
-                                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                                    key={product._id || product.itemId}
-                                                                                >
-                                                                                    <div className="flex justify-between">
-                                                                                        <span>{product.itemName}</span>
-                                                                                        <span className="font-medium">${product.sellingPrice}</span>
-                                                                                    </div>
-                                                                                    {product.description && (
-                                                                                        <p className="text-xs text-gray-500 mt-1 truncate">{product.description}</p>
-                                                                                    )}
-                                                                                </div>
-                                                                            ))
-                                                                    ) : (
-                                                                        <div className="px-4 py-3 text-sm text-gray-500">No services/products found</div>
-                                                                    )}
+                                            {renderMemberDropdown && (
+                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                    {members?.length > 0 ? (
+                                                        members
+                                                            .filter((member) => {
+                                                                return member.fullName
+                                                                    .toLowerCase()
+                                                                    .includes(memberSearchQuery.toLowerCase());
+                                                            })
+                                                            .map((member) => (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setMemberName(member.fullName);
+                                                                        setMemberSearchQuery(member.fullName);
+                                                                        setMemberId(member._id);
+                                                                        setRenderMemberDropdown(false);
+                                                                    }}
+                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                    key={member._id}
+                                                                >
+                                                                    {member.fullName}
                                                                 </div>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            min="1"
-                                                            value={item.quantity}
-                                                            onChange={(e) => handleChange(index, "quantity", e.target.value)}
-                                                            className="w-full p-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                                            required
+                                                            ))
+                                                    ) : (
+                                                        <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* Staff Dropdown */}
+                                    <div className='space-y-1.5'>
+                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
+                                        <div ref={staffSearchRef} className="relative">
+                                            <Controller
+                                                name="staffName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <div className="relative">
+                                                        <Input
+                                                            {...field}
+                                                            autoComplete="off"
+                                                            value={staffName || staffSearchQuery}
+                                                            onChange={(e) => {
+                                                                setStaffSearchQuery(e.target.value);
+                                                                field.onChange(e);
+                                                                setStaffName('');
+                                                            }}
+                                                            onFocus={handleStaffSearchFocus}
+                                                            className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                            placeholder="Search staff..."
                                                         />
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap">
-                                                        <div className="relative">
-                                                            <input
-                                                                type="number"
-                                                                min="0"
-                                                                step="0.01"
-                                                                value={item.unitPrice}
-                                                                onChange={(e) => handleChange(index, "unitPrice", e.target.value)}
-                                                                className="w-full p-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pl-8"
-                                                                required
-                                                            />
-                                                            <span className="absolute left-2 top-2 text-gray-500 text-sm">$</span>
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                            <FiSearch className="h-5 w-5" />
                                                         </div>
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap">
-                                                        <input
-                                                            type="number"
-                                                            value={item.total}
-                                                            readOnly
-                                                            className="w-full p-2 text-sm rounded-md border border-gray-300 bg-gray-50 font-medium"
-                                                        />
-                                                    </td>
-                                                    <td className="px-4 py-3 whitespace-nowrap text-center">
-                                                        <button
-                                                            type="button"
-                                                            onClick={() => removeItem(index)}
-                                                            className="text-red-500 hover:text-red-700 p-1.5 rounded-md hover:bg-red-50 transition-colors duration-200"
-                                                            title="Remove item"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                                                    </div>
+                                                )}
+                                            />
+                                            {errors.staffName && (
+                                                <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                    {errors.staffName.message}
+                                                </p>
+                                            )}
+
+                                            {renderStaffDropdown && (
+                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                    {staffs?.length > 0 ? (
+                                                        staffs
+                                                            .filter((staff) => {
+                                                                return staff.fullName
+                                                                    .toLowerCase()
+                                                                    .includes(staffSearchQuery.toLowerCase());
+                                                            })
+                                                            .map((staff) => (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setStaffName(staff.fullName);
+                                                                        setStaffSearchQuery(staff.fullName);
+                                                                        setStaffId(staff._id);
+                                                                        setRenderStaffDropdown(false);
+                                                                    }}
+                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                    key={staff._id}
+                                                                >
+                                                                    {staff.fullName}
+                                                                </div>
+                                                            ))
+                                                    ) : (
+                                                        <div className="px-4 py-3 text-sm text-gray-500">No staff found</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Step 3: Payment Details */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div className="space-y-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Payment Method</h2>
+                            <div className="border-t border-gray-200 py-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {/* Payment Method Column */}
+                                    <div className="space-y-4">
+                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Payment Method</h2>
 
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Payment Method</Label>
-                                        <Select>
-                                            <SelectTrigger className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-                                                <SelectValue placeholder="Select payment method" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Payment Methods</SelectLabel>
-                                                    <SelectItem value="cash">Cash</SelectItem>
-                                                    <SelectItem value="credit_card">Credit Card</SelectItem>
-                                                    <SelectItem value="debit_card">Debit Card</SelectItem>
-                                                    <SelectItem value="bank_transfer">Bank Transfer</SelectItem>
-                                                    <SelectItem value="check">Check</SelectItem>
-                                                    <SelectItem value="mobile_payment">Mobile Payment</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Reference No.</Label>
-                                        <Input
-                                            type="text"
-                                            placeholder="Payment reference number"
-                                            className="h-10 text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Amount Summary</h2>
-
-                                    <div className="space-y-2">
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Subtotal</span>
-                                            <span className="text-sm font-medium">
-                                                ${items.reduce((sum, item) => sum + item.total, 0).toFixed(2)}
-                                            </span>
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
+                                            <Select>
+                                                <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+                                                    <SelectValue placeholder="Select payment method" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectGroup>
+                                                        <SelectLabel>Payment Methods</SelectLabel>
+                                                        <SelectItem value="cash">Cash</SelectItem>
+                                                        <SelectItem value="credit_card">Credit Card</SelectItem>
+                                                        <SelectItem value="debit_card">Debit Card</SelectItem>
+                                                        <SelectItem value="bank_transfer">E Banking</SelectItem>
+                                                        <SelectItem value="Cheque">Cheque</SelectItem>
+                                                    </SelectGroup>
+                                                </SelectContent>
+                                            </Select>
                                         </div>
-                                        <div className="flex justify-between">
-                                            <span className="text-sm text-gray-600">Tax (10%)</span>
-                                            <span className="text-sm font-medium">
-                                                <span className="text-sm font-medium">
-                                                    {(items.reduce((sum, item) => sum + item.total, 0) * 0.1).toFixed(2)}
-                                                </span>
-                                            </span>
-                                        </div>
-                                        <div className="flex justify-between border-t border-gray-200 pt-2">
-                                            <span className="text-sm font-semibold text-gray-700">Total Amount</span>
-                                            <span className="text-sm font-bold">
-                                                ${(items.reduce((sum, item) => sum + item.total, 0) * 1.1).toFixed(2)}
-                                            </span>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Reference No.</Label>
+                                            <Input
+                                                type="text"
+                                                placeholder="Payment reference number"
+                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            />
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="space-y-4">
-                                    <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2">Notes</h2>
-                                    <div className="space-y-1.5">
-                                        <Label className="text-sm font-medium text-gray-700">Additional Notes</Label>
-                                        <textarea
-                                            rows="3"
-                                            className="w-full p-2 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="Any additional notes or comments..."
-                                        ></textarea>
+                                    {/* Amount Summary Column */}
+                                    <div className="space-y-4">
+                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Amount Summary</h2>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Received Amount</Label>
+                                            <Input
+                                                type="number"
+                                                placeholder="0.00"
+                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Discount Amount</Label>
+                                            <Input
+                                                type="number"
+                                                placeholder="0.00"
+                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Notes Column */}
+                                    <div className="space-y-4">
+                                        <h2 className="text-lg font-semibold text-gray-800 pb-3 border-b border-gray-200">Notes</h2>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Total Amount</Label>
+                                            <Input
+                                                type="number"
+                                                placeholder="0.00"
+                                                className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
+                                            <textarea
+                                                rows={3}
+                                                className="w-full p-2.5 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                placeholder="Any additional notes or comments..."
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
