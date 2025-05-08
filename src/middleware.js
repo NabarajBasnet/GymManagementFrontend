@@ -7,7 +7,6 @@ export const middleware = async (request) => {
   const token = request.cookies.get('loginToken')?.value || '';
   const staffToken = request.cookies.get('staffLoginToken')?.value || '';
   const memberToken = request.cookies.get('memberLoginToken')?.value || '';
-  console.log('Token: ', token);
   let user = null;
   let staff = null;
   let member = null;

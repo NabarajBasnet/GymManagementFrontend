@@ -10,7 +10,7 @@ const LoggedInStaffProvider = ({ children }) => {
 
     const getLoggedInStaffDetails = async () => {
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/loggedin-staff`, {
+            const response = await fetch(`http://localhost:3000/api/loggedin-staff`, {
                 credentials: 'include',
             });
             if (response.ok) {

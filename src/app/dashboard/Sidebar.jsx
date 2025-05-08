@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-hot-toast';
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { motion } from 'framer-motion';
+import { TbListDetails } from "react-icons/tb";
 
 // Icons
 import { FaDumbbell } from "react-icons/fa6";
@@ -102,7 +103,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`https://gymmanagementbackend-o2l3.onrender.com/api/auth/logout`, {
+            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -263,6 +264,7 @@ const Sidebar = () => {
                     link: '/dashboard/billing',
                     subObj: [
                         { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
+                        { icon: TbListDetails, title: 'Billing Profile', link: '/dashboard/billing/billingprofile' },
                         { icon: IoReceiptSharp, title: 'Payment Receipts', link: '/dashboard/billing/paymentreceipts' },
                         { icon: FaMoneyBillAlt, title: 'Invoices (VAT Bill)', link: '/dashboard/billing/invoices' },
                         // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
