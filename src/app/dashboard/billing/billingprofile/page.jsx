@@ -27,26 +27,10 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card";
-import {
-    Form,
-    FormControl,
-    FormDescription,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage
-} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
-} from "@/components/ui/select";
 import {
     Breadcrumb,
     BreadcrumbEllipsis,
@@ -60,65 +44,71 @@ import { toast } from "react-hot-toast";
 import { Label } from "@/components/ui/label";
 
 export default function GymBillingProfileForm() {
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const form = useForm({
-        defaultValues: {
-            gymName: "",
-            gymCode: "",
-            panNumber: "",
-            vatRegistered: false,
-            irdNumber: "",
-            businessRegNo: "",
-            registeredDate: null,
-            ownerName: "",
-            address: "",
-            locationDistrict: "",
-            wardNo: "",
-            contactNumber: "",
-            email: "",
-            logoUrl: "",
-            signatureUrl: "",
-            bankDetails: "",
-            fiscalStartMonth: "Shrawan",
-            billPrefix: "",
-            printFooterNote: "",
-            customNotes: ""
-        }
-    });
+    // Vat registered
+    const [vatRegistered, setVatRegistered] = useState(false);
 
-    const { handleSubmit, formState: { errors } } = form;
+    const {
+        register,
+        reset,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        setError,
+    } = useForm();
 
     const onSubmit = async (data) => {
-        setIsSubmitting(true);
+        console.log('Data: ', data);
+        const {
+            gymName,
+            ownerName,
+            registrationDate,
+            fiscalMonth,
+            panNo,
+            irdNo,
+            businessResigtrationNo,
+
+            address,
+            district,
+            wardNo,
+            phoneNo,
+            email,
+
+            bankDetails,
+
+            footerNote,
+            additionalNote,
+        } = data;
+
+        const finalObject = {
+            gymName,
+            ownerName,
+            registrationDate,
+            fiscalMonth,
+
+            panNo,
+            vatRegistered,
+            irdNo,
+            businessResigtrationNo,
+
+            address,
+            district,
+            wardNo,
+            phoneNo,
+            email,
+
+            bankDetails,
+
+            footerNote,
+            additionalNote,
+        };
 
         try {
-            // Here you would typically send the data to your API
-            console.log("Form data:", data);
 
-            // Simulate API call with timeout
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            toast.success('Your gym billing profile has been successfully updated.')
         } catch (error) {
-            toast.error('There was an error updating your gym billing profile. Please try again.')
-            console.error("Error submitting form:", error);
+
         } finally {
-            setIsSubmitting(false);
         }
     };
-
-    const nepalDistricts = [
-        "Kathmandu", "Lalitpur", "Bhaktapur", "Kaski", "Chitwan",
-        "Morang", "Sunsari", "Jhapa", "Rupandehi", "Kavre",
-        "Dang", "Banke", "Makwanpur", "Parsa", "Kailali",
-        "Dhanusha", "Nawalparasi", "Siraha", "Palpa", "Bardiya"
-    ];
-
-    const nepaliMonths = [
-        "Baisakh", "Jestha", "Ashadh", "Shrawan", "Bhadra",
-        "Ashwin", "Kartik", "Mangsir", "Poush", "Magh",
-        "Falgun", "Chaitra"
-    ];
 
     return (
         <div className="w-full bg-gray-100 mx-auto py-6 px-4 md:px-6">
@@ -159,8 +149,8 @@ export default function GymBillingProfileForm() {
                 </p>
             </div>
 
-            <Form {...form}>
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div>
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Gym Information */}
                         <Card>
@@ -174,108 +164,52 @@ export default function GymBillingProfileForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="gymName"
-                                    rules={{ required: "Gym name is required" }}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Gym Name*</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter gym name" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Gym Name*</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('gymName', { required: 'Gym name is required' })}
+                                        placeholder='Enter gym name'
+                                    />
+                                    {errors.gymName && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.gymName.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="gymCode"
-                                    rules={{
-                                        required: "Gym code is required",
-                                        maxLength: { value: 4, message: "Maximum 4 characters" },
-                                        pattern: { value: /^[A-Z]*$/, message: "Only uppercase letters allowed" }
-                                    }}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Gym Code*</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    placeholder="e.g. RF"
-                                                    maxLength={4}
-                                                    {...field}
-                                                    onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                                                />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Max 4 uppercase characters (e.g., "NB", "RF")
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Owner Name</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('ownerName', { required: 'Gym owner name is required' })}
+                                        placeholder='Gym Owner Name'
+                                    />
+                                    {errors.ownerName && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.ownerName.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="ownerName"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Owner Name</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter owner name" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Registration Date*</Label>
+                                    <Input
+                                        {...register('registrationDate', { required: 'Business registration is required' })}
+                                        type='date'
+                                    />
+                                    {errors.registrationDate && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.registrationDate.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="registeredDate"
-                                    rules={{ required: "Registration date is required" }}
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel>Registration Date*</FormLabel>
-                                            <FormControl>
-                                                <Input
-                                                    type='date'
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Fiscal Start Month</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('fiscalMonth', { required: 'Fiscal month is required' })}
+                                        placeholder='Eg:- Shrawan, April'
+                                    />
+                                    {errors.fiscalMonth && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.fiscalMonth.message}`}</p>
                                     )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="fiscalStartMonth"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Fiscal Start Month</FormLabel>
-                                            <Select
-                                                defaultValue="Shrawan"
-                                                onValueChange={field.onChange}
-                                                value={field.value}
-                                            >
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select month" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {nepaliMonths.map((month) => (
-                                                        <SelectItem key={month} value={month}>
-                                                            {month}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormDescription>Fiscal year starting month</FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -291,86 +225,50 @@ export default function GymBillingProfileForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="panNumber"
-                                    rules={{ required: "PAN number is required" }}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>PAN Number*</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter PAN number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>PAN Number*</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('panNo', { required: 'PAN no is required' })}
+                                        placeholder='Enter PAN number'
+                                    />
+                                    {errors.panNo && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.panNo.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="vatRegistered"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-                                            <div className="space-y-0.5">
-                                                <FormLabel>VAT Registered</FormLabel>
-                                                <FormDescription>
-                                                    Toggle if your gym is registered for VAT
-                                                </FormDescription>
-                                            </div>
-                                            <FormControl>
-                                                <Switch
-                                                    checked={field.value}
-                                                    onCheckedChange={field.onChange}
-                                                />
-                                            </FormControl>
-                                        </FormItem>
-                                    )}
-                                />
+                                <div className='flex flex-col items-start justify-start space-y-2'>
+                                    <Label>VAT Registered</Label>
+                                    <Switch
+                                        checked={vatRegistered}
+                                        onCheckedChange={(value) => setVatRegistered(value)}
+                                    />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="irdNumber"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>IRD Number</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter IRD number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>IRD Number</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('irdNo', { required: 'IRD no is required' })}
+                                        placeholder='Enter IRD number'
+                                    />
+                                    {errors.irdNo && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.irdNo.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="businessRegNo"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Business Registration No.</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter business registration number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Business Registration No.</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('businessResigtrationNo', { required: 'Business registration no is required' })}
+                                        placeholder='Enter business registration number'
+                                    />
+                                    {errors.businessResigtrationNo && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.businessResigtrationNo.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="billPrefix"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Bill Prefix</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="e.g. GYM-" {...field} />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Optional prefix for invoice numbering
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
                             </CardContent>
                         </Card>
 
@@ -386,198 +284,70 @@ export default function GymBillingProfileForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="address"
-                                    rules={{ required: "Address is required" }}
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Address*</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Enter full address"
-                                                    className="min-h-24"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Address</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('address', { required: 'Business address no is required' })}
+                                        placeholder='Enter full address'
+                                    />
+                                    {errors.address && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.address.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="locationDistrict"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>District</FormLabel>
-                                            <Select onValueChange={field.onChange} value={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger>
-                                                        <SelectValue placeholder="Select district" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    {nepalDistricts.map((district) => (
-                                                        <SelectItem key={district} value={district}>
-                                                            {district}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Disctrict</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('district', { required: 'Business district no is required' })}
+                                        placeholder='Disctrict'
+                                    />
+                                    {errors.district && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.district.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="wardNo"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Ward No.</FormLabel>
-                                            <FormControl>
-                                                <Input placeholder="Enter ward number" {...field} />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Ward No.</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('wardNo', { required: 'Ward no is required' })}
+                                        placeholder='Enter ward number'
+                                    />
+                                    {errors.wardNo && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.wardNo.message}`}</p>
                                     )}
-                                />
+                                </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <FormField
-                                        control={form.control}
-                                        name="contactNumber"
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Contact Number</FormLabel>
-                                                <FormControl>
-                                                    <Input placeholder="Enter contact number" {...field} />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
+                                    <div>
+                                        <Label>Contact Number</Label>
+                                        <Input
+                                            type='text'
+                                            {...register('phoneNo', { required: 'Phone no is required' })}
+                                            placeholder='Enter contact number'
+                                        />
+                                        {errors.phoneNo && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.phoneNo.message}`}</p>
                                         )}
-                                    />
+                                    </div>
 
-                                    <FormField
-                                        control={form.control}
-                                        name="email"
-                                        rules={{
-                                            pattern: {
-                                                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                                message: "Invalid email address"
-                                            }
-                                        }}
-                                        render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Email</FormLabel>
-                                                <FormControl>
-                                                    <Input
-                                                        type="email"
-                                                        placeholder="Enter email address"
-                                                        {...field}
-                                                    />
-                                                </FormControl>
-                                                <FormMessage />
-                                            </FormItem>
+                                    <div>
+                                        <Label>Email</Label>
+                                        <Input
+                                            type='email'
+                                            {...register('email', { required: 'Email is required' })}
+                                            placeholder='Enter email address'
+                                        />
+                                        {errors.email && (
+                                            <p className="text-sm font-semibold text-red-600">{`${errors.email.message}`}</p>
                                         )}
-                                    />
+                                    </div>
+
                                 </div>
                             </CardContent>
                         </Card>
-
-                        {/* Branding & Media */}
-                        {/* <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center">
-                                    <Image className="mr-2 h-5 w-5" />
-                                    Branding & Media
-                                </CardTitle>
-                                <CardDescription>
-                                    Upload your gym logo and signature
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="logoUrl"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Logo</FormLabel>
-                                            <FormControl>
-                                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                    <Input
-                                                        id="logo"
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="cursor-pointer"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                // In a real app, you would upload this file and set the URL
-                                                                // For now, we'll use a placeholder or the existing value
-                                                                field.onChange(file.name); // In real app: uploaded URL
-                                                            }
-                                                        }}
-                                                    />
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Or enter logo URL:
-                                                    </p>
-                                                    <Input
-                                                        placeholder="https://example.com/logo.png"
-                                                        value={field.value}
-                                                        onChange={field.onChange}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormDescription>
-                                                Upload your gym logo for invoices and receipts
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-
-                                <FormField
-                                    control={form.control}
-                                    name="signatureUrl"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Signature</FormLabel>
-                                            <FormControl>
-                                                <div className="grid w-full max-w-sm items-center gap-1.5">
-                                                    <Input
-                                                        id="signature"
-                                                        type="file"
-                                                        accept="image/*"
-                                                        className="cursor-pointer"
-                                                        onChange={(e) => {
-                                                            const file = e.target.files?.[0];
-                                                            if (file) {
-                                                                // In a real app, you would upload this file and set the URL
-                                                                field.onChange(file.name); // In real app: uploaded URL
-                                                            }
-                                                        }}
-                                                    />
-                                                    <p className="text-sm text-muted-foreground">
-                                                        Or enter signature URL:
-                                                    </p>
-                                                    <Input
-                                                        placeholder="https://example.com/signature.png"
-                                                        value={field.value}
-                                                        onChange={field.onChange}
-                                                    />
-                                                </div>
-                                            </FormControl>
-                                            <FormDescription>
-                                                Upload your signature for invoices and official documents
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
-                                />
-                            </CardContent>
-                        </Card> */}
 
                         {/* Banking & Payment */}
                         <Card>
@@ -591,26 +361,17 @@ export default function GymBillingProfileForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <FormField
-                                    control={form.control}
-                                    name="bankDetails"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Bank Account Details</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Enter bank name, account number, branch, etc."
-                                                    className="min-h-32"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Include account number, bank name, branch and other payment information
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Back Account Details</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('bankDetails', { required: 'Enter bank details' })}
+                                        placeholder='Enter bank name, account number, branch,'
+                                    />
+                                    {errors.bankDetails && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.bankDetails.message}`}</p>
                                     )}
-                                />
+                                </div>
                             </CardContent>
                         </Card>
 
@@ -626,44 +387,29 @@ export default function GymBillingProfileForm() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <FormField
-                                    control={form.control}
-                                    name="printFooterNote"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Invoice Footer Note</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Enter text to appear at the bottom of invoices"
-                                                    className="min-h-24"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormDescription>
-                                                Text to appear at the bottom of all invoices and receipts
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Invoice Footer Note</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('footerNote', { required: 'Enter footer note' })}
+                                        placeholder='Enter text to appear at the bottom of invoice'
+                                    />
+                                    {errors.footerNote && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.footerNote.message}`}</p>
                                     )}
-                                />
+                                </div>
 
-                                <FormField
-                                    control={form.control}
-                                    name="customNotes"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Additional Notes</FormLabel>
-                                            <FormControl>
-                                                <Textarea
-                                                    placeholder="Any additional information or instructions"
-                                                    className="min-h-24"
-                                                    {...field}
-                                                />
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
+                                <div>
+                                    <Label>Additional Notes</Label>
+                                    <Input
+                                        type='text'
+                                        {...register('additionalNote')}
+                                        placeholder='Any additional information or instructions'
+                                    />
+                                    {errors.additionalNote && (
+                                        <p className="text-sm font-semibold text-red-600">{`${errors.additionalNote.message}`}</p>
                                     )}
-                                />
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
@@ -694,7 +440,7 @@ export default function GymBillingProfileForm() {
                         </div>
                     </div>
                 </form>
-            </Form>
+            </div>
         </div>
     );
 };
