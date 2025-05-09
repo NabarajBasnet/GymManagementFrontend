@@ -1032,7 +1032,7 @@ const PaymentInvoice = () => {
                         {/* Body */}
                         <div className="flex-1 overflow-y-auto p-6">
                             {/* Step 1: Customer & Basic Info */}
-                            <div className="mb-8">
+                            <div className="mb-4">
                                 <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Basic Information</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -1171,7 +1171,7 @@ const PaymentInvoice = () => {
 
                                 {/* Bill Date */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-1.5 my-4">
+                                    <div className="space-y-1.5 my-2">
                                         <Label className="text-sm font-medium text-gray-700">Bill Date</Label>
                                         <Input
                                             type="date"
@@ -1309,6 +1309,54 @@ const PaymentInvoice = () => {
                                 </table>
                             </div>
 
+                            {/* Step 3: Payment Details */}
+                            <div className=" mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    {/* Payment Method Column */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
+                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
+                                            <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
+                                                <SelectValue placeholder="Select payment method" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectGroup>
+                                                    <SelectLabel>Payment Methods</SelectLabel>
+                                                    <SelectItem value="Cash">Cash</SelectItem>
+                                                    <SelectItem value="Credit Card">Credit Card</SelectItem>
+                                                    <SelectItem value="Debit Card">Debit Card</SelectItem>
+                                                    <SelectItem value="E Banking">E Banking</SelectItem>
+                                                    <SelectItem value="Cheque">Cheque</SelectItem>
+                                                </SelectGroup>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Amount Summary Column */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700 block">Total Discount Amount</Label>
+                                        <Input
+                                            type="text"
+                                            {...register('discountAmount')}
+                                            placeholder="0.00"
+                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+
+                                    {/* Notes Column */}
+
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium text-gray-700 block">Total Discount Percentage</Label>
+                                        <Input
+                                            type="text"
+                                            {...register('discountPercentage')}
+                                            placeholder="0.00"
+                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="w-full bg-gray-700 rounded-lg p-4 my-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     {/* Left side - empty or could add icon/illustration */}
@@ -1339,64 +1387,16 @@ const PaymentInvoice = () => {
                                 </div>
                             </div>
 
-                            {/* Step 3: Payment Details */}
-                            <div className="border-t mt-4 border-gray-200 py-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                    {/* Payment Method Column */}
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Payment Method</Label>
-                                        <Select onValueChange={(value) => setPaymentMethod(value)}>
-                                            <SelectTrigger className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500">
-                                                <SelectValue placeholder="Select payment method" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectGroup>
-                                                    <SelectLabel>Payment Methods</SelectLabel>
-                                                    <SelectItem value="Cash">Cash</SelectItem>
-                                                    <SelectItem value="Credit Card">Credit Card</SelectItem>
-                                                    <SelectItem value="Debit Card">Debit Card</SelectItem>
-                                                    <SelectItem value="E Banking">E Banking</SelectItem>
-                                                    <SelectItem value="Cheque">Cheque</SelectItem>
-                                                </SelectGroup>
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-
-                                    {/* Amount Summary Column */}
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Discount Amount</Label>
-                                        <Input
-                                            type="text"
-                                            {...register('discountAmount')}
-                                            placeholder="0.00"
-                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                        />
-                                    </div>
-
-                                    {/* Notes Column */}
-
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Discount Percentage</Label>
-                                        <Input
-                                            type="text"
-                                            {...register('discountPercentage')}
-                                            placeholder="0.00"
-                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className='w-full border-t border-gray-300 mb-6 mt-10'></div>
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
-                                        <textarea
-                                            {...register('notes')}
-                                            rows={1}
-                                            className="w-full p-2.5 text-sm rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                            placeholder="Any additional notes or comments..."
-                                        />
-                                    </div>
+                            <div className='w-full border-t border-gray-300 mb-6 mt-10'></div>
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
+                                    <textarea
+                                        {...register('notes')}
+                                        rows={2}
+                                        className="w-full p-2.5 text-sm rounded-md border focus:outline-none border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        placeholder="Any additional notes or comments..."
+                                    />
                                 </div>
                             </div>
                         </div>
