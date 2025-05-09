@@ -98,6 +98,12 @@ const PaymentInvoice = () => {
     // Other states
     const [receiptData, setReceiptData] = useState(null);
     const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
+    const [itemSearchQuery, setItemSearchQuery] = useState('');
+    const [itemName, setItemName] = useState('');
+    const [itemId, setItemId] = useState('');
+    const [renderItemDropdown, setRenderItemDropdown] = useState(false);
+    const itemSearchRef = useRef(null);
+
 
     // Pagination states
     let limit = 15;
@@ -149,6 +155,26 @@ const PaymentInvoice = () => {
 
     const { staffs } = staffsData || {};
 
+
+    // Get all services and tasks
+    const getAllItems = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/accounting/serviceandproducts`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to fetch members");
+        }
+    };
+
+    const { data: itemsData, isLoading: itemLoading } = useQuery({
+        queryKey: ['items'],
+        queryFn: getAllItems
+    });
+
+    const { serviceAndProducts } = itemsData || {};
+
     // Handle click outside for all dropdowns
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -157,6 +183,9 @@ const PaymentInvoice = () => {
             }
             if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
                 setRenderStaffDropdown(false);
+            }
+            if (itemSearchRef.current && !itemSearchRef.current.contains(event.target)) {
+                setRenderItemDropdown(false);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -171,6 +200,10 @@ const PaymentInvoice = () => {
 
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
+    };
+
+    const handleItemSearchFocus = () => {
+        setRenderItemDropdown(true);
     };
 
     const printReceipt = (receiptData) => {
@@ -1063,7 +1096,7 @@ const PaymentInvoice = () => {
                                                                 </div>
                                                             ))
                                                     ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">No staff found</div>
+                                                        <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
                                                     )}
                                                 </div>
                                             )}
@@ -1071,7 +1104,6 @@ const PaymentInvoice = () => {
                                     </div>
 
                                     {/* Member dropdown */}
-                                    {/* Bill To */}
                                     <div className='space-y-1.5'>
                                         <Label className="block text-sm font-medium text-gray-700">Issued To</Label>
                                         <div ref={memberSearchRef} className="relative">
@@ -1129,7 +1161,7 @@ const PaymentInvoice = () => {
                                                                 </div>
                                                             ))
                                                     ) : (
-                                                        <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                                        <div className="px-4 py-3 text-sm text-gray-500">{membersLoading ? 'Loading...' : 'No members found'}</div>
                                                     )}
                                                 </div>
                                             )}
@@ -1157,18 +1189,19 @@ const PaymentInvoice = () => {
                             <div className='bg-white border rounded-lg'>
                                 <table className="w-full rounded-lg">
                                     <thead>
-                                        <tr className="border-b bg-gray-50 rounded-lg">
-                                            <th className="h-12 px-4 text-left font-medium text-sm w-2/5">Select Item</th>
-                                            <th className="h-12 px-4 text-left font-medium text-sm w-1/5">Quantity</th>
-                                            <th className="h-12 px-4 text-left font-medium text-sm w-1/5">Price</th>
-                                            <th className="h-12 px-4 text-left font-medium text-sm w-1/5">Total</th>
-                                            <th className="h-12 px-4 text-left font-medium text-sm w-1/5">Action</th>
+                                        <tr className="bg-gray-100">
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[30%]">Select Item</th>
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Quantity</th>
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Price</th>
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Discount</th>
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[15%]">Total</th>
+                                            <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[10%]">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr className="hover:bg-gray-50">
                                             <td className="p-4 align-middle">
-                                                <div ref={memberSearchRef} className="relative">
+                                                <div ref={itemSearchRef} className="relative">
                                                     <Controller
                                                         name="memberName"
                                                         control={control}
@@ -1177,15 +1210,15 @@ const PaymentInvoice = () => {
                                                                 <Input
                                                                     {...field}
                                                                     autoComplete="off"
-                                                                    value={memberName || memberSearchQuery}
+                                                                    value={itemName || itemSearchQuery}
                                                                     onChange={(e) => {
-                                                                        setMemberSearchQuery(e.target.value);
+                                                                        setItemSearchQuery(e.target.value);
                                                                         field.onChange(e);
-                                                                        setMemberName('');
+                                                                        setItemName('');
                                                                     }}
-                                                                    onFocus={handleMemberSearchFocus}
+                                                                    onFocus={handleItemSearchFocus}
                                                                     className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
-                                                                    placeholder="Search members..."
+                                                                    placeholder="Search items..."
                                                                 />
                                                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                                                     <FiSearch className="h-4 w-4" />
@@ -1193,37 +1226,37 @@ const PaymentInvoice = () => {
                                                             </div>
                                                         )}
                                                     />
-                                                    {errors.memberName && (
+                                                    {errors.itemName && (
                                                         <p className="mt-1 text-xs text-red-600">
-                                                            {errors.memberName.message}
+                                                            {errors.itemName.message}
                                                         </p>
                                                     )}
 
-                                                    {renderMemberDropdown && (
+                                                    {renderItemDropdown && (
                                                         <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                            {members?.length > 0 ? (
-                                                                members
-                                                                    .filter((member) => {
-                                                                        return member.fullName
+                                                            {serviceAndProducts?.length > 0 ? (
+                                                                serviceAndProducts
+                                                                    .filter((item) => {
+                                                                        return item.itemName
                                                                             .toLowerCase()
-                                                                            .includes(memberSearchQuery.toLowerCase());
+                                                                            .includes(itemSearchQuery.toLowerCase());
                                                                     })
-                                                                    .map((member) => (
+                                                                    .map((item) => (
                                                                         <div
                                                                             onClick={() => {
-                                                                                setMemberName(member.fullName);
-                                                                                setMemberSearchQuery(member.fullName);
-                                                                                setMemberId(member._id);
-                                                                                setRenderMemberDropdown(false);
+                                                                                setItemName(item.itemName);
+                                                                                setItemSearchQuery(item.itemName);
+                                                                                setItemId(item.itemId);
+                                                                                setRenderItemDropdown(false);
                                                                             }}
                                                                             className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                            key={member._id}
+                                                                            key={item.itemId}
                                                                         >
-                                                                            {member.fullName}
+                                                                            {item.itemName}
                                                                         </div>
                                                                     ))
                                                             ) : (
-                                                                <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
+                                                                <div className="px-4 py-2 text-sm text-gray-500">{itemLoading ? 'Loading...' : 'No items found'}</div>
                                                             )}
                                                         </div>
                                                     )}
@@ -1247,6 +1280,14 @@ const PaymentInvoice = () => {
                                             </td>
                                             <td className="p-4 align-middle">
                                                 <Input
+                                                    type="text"
+                                                    {...register('perItemDiscount')}
+                                                    placeholder="0.00"
+                                                    className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                />
+                                            </td>
+                                            <td className="p-4 align-middle">
+                                                <Input
                                                     type="number"
                                                     {...register('itemTotal')}
                                                     placeholder="0.00"
@@ -1255,6 +1296,7 @@ const PaymentInvoice = () => {
                                             </td>
                                             <td className="p-4 align-middle">
                                                 <Button
+                                                    type='button'
                                                     variant="ghost"
                                                     className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
                                                 >
