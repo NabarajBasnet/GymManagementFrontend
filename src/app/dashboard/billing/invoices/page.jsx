@@ -1249,10 +1249,10 @@ const PaymentInvoice = () => {
                                                                                 setItemId(item.itemId);
                                                                                 setRenderItemDropdown(false);
                                                                             }}
-                                                                            className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                            className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                                                             key={item.itemId}
                                                                         >
-                                                                            {item.itemName}
+                                                                            {item.itemName} ({item.currency.split('-')[0]} {item.sellingPrice})
                                                                         </div>
                                                                     ))
                                                             ) : (
