@@ -163,7 +163,7 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full flex justify-center bg-gray-50/50">
+    <div className="min-h-screen w-full flex justify-center bg-gray-100">
       <div className="w-full px-5 py-6">
         <div className="mb-8">
           <Breadcrumb>
@@ -196,7 +196,7 @@ const AdminDashboard = () => {
           </AlertDescription>
         </Alert>
 
-        <Card className="py-6 mb-8">
+        <Card className="py-6 shadow-md mb-8">
           <form className="flex justify-between px-4 md:justify-start flex-wrap gap-6">
             <div className="flex flex-col gap-2">
               <Label htmlFor="startDate" className="font-medium text-gray-700">
@@ -229,7 +229,7 @@ const AdminDashboard = () => {
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden border ${item.border}`}
+              className={`overflow-hidden shadow-sm border ${item.border}`}
             >
               <div className="p-6">
                 <div className="flex justify-between items-start">
