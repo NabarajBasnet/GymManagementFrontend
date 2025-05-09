@@ -38,6 +38,7 @@ const AdminDashboard = () => {
   const [data, setData] = React.useState(null);
   const [currentPage, setCurrentPage] = React.useState(1);
   const limit = 3;
+  const [numbersLoading, setNumberLoading] = React.useState(true);
 
   const [startDate, setStartDate] = React.useState(() => {
     let start = new Date();
@@ -55,6 +56,11 @@ const AdminDashboard = () => {
         `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
+
+      if (response.ok && response.status === 200) {
+        setNumberLoading(false);
+      };
+
       if (responseBody.redirect) {
         router.push(responseBody.redirect);
       }
@@ -103,7 +109,7 @@ const AdminDashboard = () => {
     {
       icon: FaUsers,
       text: "Total Membership",
-      value: totalMembers || 0,
+      value: `${numbersLoading ? '...' : totalMembers || 0}`,
       percentage: 1.1,
       trend: "up",
       color: 'text-blue-600',
@@ -113,7 +119,7 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renewals",
-      value: renewdMembersLength || 0,
+      value: `${numbersLoading ? '...' : renewdMembersLength || 0}`,
       percentage: -1.5,
       trend: "down",
       color: 'text-green-600',
@@ -123,7 +129,7 @@ const AdminDashboard = () => {
     {
       icon: RiUserShared2Fill,
       text: "New Admissions",
-      value: newAdmissionsLength || 0,
+      value: `${numbersLoading ? '...' : newAdmissionsLength || 0}`,
       percentage: 0.5,
       trend: "up",
       color: 'text-yellow-600',
@@ -133,7 +139,7 @@ const AdminDashboard = () => {
     {
       icon: GiBiceps,
       text: "Active Members",
-      value: totalActiveMembers || 0,
+      value: `${numbersLoading ? '...' : totalActiveMembers || 0}`,
       percentage: -0.2,
       trend: "down",
       color: 'text-green-600',
@@ -143,7 +149,7 @@ const AdminDashboard = () => {
     {
       icon: FaUsers,
       text: "Average Active",
-      value: averageActiveMembers || 0,
+      value: `${numbersLoading ? '...' : averageActiveMembers || 0}`,
       percentage: 3.9,
       trend: "up",
       color: 'text-blue-600',
@@ -153,7 +159,7 @@ const AdminDashboard = () => {
     {
       icon: PiUsersFourFill,
       text: "Inactive Members",
-      value: totalInactiveMembers || 0,
+      value: `${numbersLoading ? '...' : totalInactiveMembers || 0}`,
       percentage: -4.5,
       trend: "down",
       color: 'text-red-600',
