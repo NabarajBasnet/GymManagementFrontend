@@ -47,7 +47,7 @@ const BodyMeasurements = () => {
 
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.115.156:3000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -70,7 +70,7 @@ const BodyMeasurements = () => {
     const getBodyMeasurementDetails = async () => {
         setRenderMainContents(true);
         try {
-            const response = await fetch(`http://88.198.115.156:3000/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/member/bodymeasurements/${selectedMemberId}?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             if (response.ok) {
                 setRenderMainContents(true);
