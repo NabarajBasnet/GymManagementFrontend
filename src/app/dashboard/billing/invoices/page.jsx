@@ -30,14 +30,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -85,7 +77,7 @@ const PaymentInvoice = () => {
         total: 0,
     }]);
 
-    console.log('Item Details: ', itemDetails);
+    // console.log('Item Details: ', itemDetails);
 
     // Handle Add Item Line Fn
     const handleAddItemLine = () => {
@@ -96,12 +88,11 @@ const PaymentInvoice = () => {
             price: 0,
             discount: 0,
             total: 0,
-        })
+        });
         setItemDetails(prevItem);
 
-        const prevStates = [...renderItemDropdown];
-        prevStates.push(false);
-        setRenderItemDropdown(prevStates);
+        // Add a new dropdown state for the new item
+        setActiveDropdownIndex(-1);
     };
 
     // Data states
@@ -127,12 +118,7 @@ const PaymentInvoice = () => {
     // Other states
     const [receiptData, setReceiptData] = useState(null);
     const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
-    const [itemSearchQuery, setItemSearchQuery] = useState('');
-    const [itemName, setItemName] = useState('');
-    const [itemId, setItemId] = useState('');
-    const [renderItemDropdown, setRenderItemDropdown] = useState([false]);
     const itemSearchRef = useRef(null);
-    console.log('Render Item Dropdown: ', renderItemDropdown);
 
     // Pagination states
     let limit = 15;
@@ -203,6 +189,21 @@ const PaymentInvoice = () => {
 
     const { serviceAndProducts } = itemsData || {};
 
+    // Handle Remove Item Line
+    const handleRemoveItemLine = (index) => {
+        if (itemDetails.length > 1) {
+            const updatedItems = [...itemDetails];
+            updatedItems.splice(index, 1);
+            setItemDetails(updatedItems);
+        } else {
+            toast.error("At least one item is required");
+        };
+    };
+
+    // Item search states
+    const [activeDropdownIndex, setActiveDropdownIndex] = useState(-1);
+    const [itemSearchQueries, setItemSearchQueries] = useState(Array(itemDetails.length).fill(''));
+
     // Handle click outside for all dropdowns
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -213,14 +214,14 @@ const PaymentInvoice = () => {
                 setRenderStaffDropdown(false);
             }
             if (itemSearchRef.current && !itemSearchRef.current.contains(event.target)) {
-                setRenderItemDropdown([false]);
+                setActiveDropdownIndex(-1);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [memberSearchRef, staffSearchRef]);
+    }, [memberSearchRef, staffSearchRef, itemSearchRef]);
 
     const handleMemberSearchFocus = () => {
         setRenderMemberDropdown(true);
@@ -228,12 +229,6 @@ const PaymentInvoice = () => {
 
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
-    };
-    ;
-    const handleItemSearchFocus = (index) => {
-        console.log('Index: ', index);
-        const prevStates = [...renderItemDropdown];
-        setRenderItemDropdown(true);
     };
 
     const printReceipt = (receiptData) => {
@@ -595,6 +590,13 @@ const PaymentInvoice = () => {
         printWindow.document.close();
     };
 
+
+    // Invoice Data
+    const [subTotal, setSubTotal] = useState(0);
+    console.log('Sub Total: ', subTotal);
+    const [totalDiscount, setTotalDiscount] = useState(0);
+    const [calculatedTotal, setCalculatedTotal] = useState(0);
+
     const postReceipt = async (data) => {
         try {
             const {
@@ -735,6 +737,98 @@ const PaymentInvoice = () => {
             console.log("Error: ", error)
         };
     };
+
+    // Handle Item Selection
+    const handleItemSelection = (item, index) => {
+        const updatedItemDetails = [...itemDetails];
+        updatedItemDetails[index] = {
+            ...updatedItemDetails[index],
+            selectedItem: item,
+            price: parseFloat(item.sellingPrice) || 0,
+            total: (parseFloat(item.sellingPrice) || 0) * updatedItemDetails[index].quantity - updatedItemDetails[index].discount
+        };
+
+        setItemDetails(updatedItemDetails);
+
+        // Update the item search query for the specific index
+        const updatedQueries = [...itemSearchQueries];
+        updatedQueries[index] = item.itemName;
+        setItemSearchQueries(updatedQueries);
+
+        // Close the dropdown
+        setActiveDropdownIndex(-1);
+    };
+
+    // Handle quantity change
+    const handleQuantityChange = (e, index) => {
+        const quantity = parseInt(e.target.value) || 0;
+        const updatedItems = [...itemDetails];
+        const price = parseFloat(updatedItems[index].selectedItem?.sellingPrice) || 0;
+        const discount = parseFloat(updatedItems[index].discount) || 0;
+
+        updatedItems[index] = {
+            ...updatedItems[index],
+            quantity: quantity,
+            total: (quantity * price) - discount
+        };
+
+        setItemDetails(updatedItems);
+    };
+
+    // Handle discount change
+    const handleDiscountChange = (e, index) => {
+        const discount = parseFloat(e.target.value) || 0;
+        const updatedItems = [...itemDetails];
+        const quantity = updatedItems[index].quantity || 0;
+        const price = parseFloat(updatedItems[index].selectedItem?.sellingPrice) || 0;
+
+        updatedItems[index] = {
+            ...updatedItems[index],
+            discount: discount,
+            total: (quantity * price) - discount
+        };
+
+        setItemDetails(updatedItems);
+    };
+
+    // Handle item search
+    const handleItemSearch = (e, index) => {
+        const query = e.target.value;
+        const updatedQueries = [...itemSearchQueries];
+        updatedQueries[index] = query;
+        setItemSearchQueries(updatedQueries);
+    };
+
+    // Calculate totals
+    useEffect(() => {
+        const calculatedSubTotal = itemDetails.reduce((sum, item) => {
+            const price = parseFloat(item.selectedItem?.sellingPrice) || 0;
+            const quantity = item.quantity || 0;
+            return sum + (price * quantity);
+        }, 0).toFixed(2);
+
+        setSubTotal(calculatedSubTotal);
+    }, [itemDetails]); // Only run when itemDetails change
+
+    useEffect(() => {
+        // Calculate and set subtotal
+        const subTotal = itemDetails.reduce((sum, item) => {
+            const price = parseFloat(item.selectedItem?.sellingPrice) || 0;
+            const quantity = item.quantity || 0;
+            return sum + price * quantity;
+        }, 0);
+        setSubTotal(subTotal.toFixed(2));
+
+        // Calculate and set discount
+        const totalDiscount = itemDetails.reduce((sum, item) => {
+            return sum + (parseFloat(item.discount) || 0);
+        }, 0);
+        setTotalDiscount(totalDiscount.toFixed(2));
+
+        // Calculate and set grand total
+        const grandTotal = subTotal - totalDiscount;
+        setCalculatedTotal(grandTotal.toFixed(2));
+    }, [itemDetails]);
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -1228,70 +1322,50 @@ const PaymentInvoice = () => {
                                             <th className="h-12 px-4 text-left font-medium text-gray-700 text-sm w-[10%]">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody ref={itemSearchRef}>
                                         {itemDetails.map((item, index) => (
                                             <tr key={index} className="hover:bg-gray-50">
                                                 {/* Select Item */}
                                                 <td className="p-1 md:p-2 align-middle">
-                                                    <div ref={itemSearchRef} className="relative">
-                                                        <Controller
-                                                            name="itemName"
-                                                            control={control}
-                                                            render={({ field }) => (
-                                                                <div className="relative">
-                                                                    <Input
-                                                                        {...field}
-                                                                        autoComplete="off"
-                                                                        value={itemName || itemSearchQuery}
-                                                                        onChange={(e) => {
-                                                                            setItemSearchQuery(e.target.value);
-                                                                            field.onChange(e);
-                                                                            setItemName('');
-                                                                        }}
-                                                                        onFocus={() => handleItemSearchFocus(index)}
-                                                                        className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
-                                                                        placeholder="Search items..."
-                                                                    />
-                                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                                        <FiSearch className="h-4 w-4" />
-                                                                    </div>
-                                                                </div>
-                                                            )}
-                                                        />
-                                                        {errors.itemName && (
-                                                            <p className="mt-1 text-xs text-red-600">
-                                                                {errors.itemName.message}
-                                                            </p>
-                                                        )}
+                                                    <div className="relative">
+                                                        <div className="relative">
+                                                            <Input
+                                                                autoComplete="off"
+                                                                value={itemSearchQueries[index] || ''}
+                                                                onChange={(e) => handleItemSearch(e, index)}
+                                                                onFocus={() => setActiveDropdownIndex(index)}
+                                                                className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
+                                                                placeholder="Search items..."
+                                                            />
+                                                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                                <FiSearch className="h-4 w-4" />
+                                                            </div>
+                                                        </div>
 
-                                                        {renderItemDropdown[index] && (
+                                                        {activeDropdownIndex === index && (
                                                             <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                                {serviceAndProducts?.length > 0 ? (
+                                                                {itemLoading ? (
+                                                                    <div className="flex justify-center items-center py-4">
+                                                                        <BiLoaderAlt className="animate-spin h-5 w-5 text-blue-500" />
+                                                                    </div>
+                                                                ) : serviceAndProducts?.length > 0 ? (
                                                                     serviceAndProducts
-                                                                        .filter((item) => {
-                                                                            return item.itemName
+                                                                        .filter((prod) => {
+                                                                            return prod.itemName
                                                                                 .toLowerCase()
-                                                                                .includes(itemSearchQuery.toLowerCase());
+                                                                                .includes((itemSearchQueries[index] || '').toLowerCase());
                                                                         })
-                                                                        .map((item) => (
+                                                                        .map((prod) => (
                                                                             <div
-                                                                                onClick={() => {
-                                                                                    const updatedItemDetails = [...itemDetails];
-                                                                                    updatedItemDetails[index].selectedItem = item;
-                                                                                    setItemDetails(updatedItemDetails);
-                                                                                    setItemName(item.itemName);
-                                                                                    setItemSearchQuery(item.itemName);
-                                                                                    setItemId(item.itemId);
-                                                                                    setRenderItemDropdown([false]);
-                                                                                }}
+                                                                                onClick={() => handleItemSelection(prod, index)}
                                                                                 className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                                key={item.itemId}
+                                                                                key={prod.itemId}
                                                                             >
-                                                                                {item.itemName} ({item.currency.split('-')[0]} {item.sellingPrice})
+                                                                                {prod.itemName} ({prod.currency?.split('-')[0] || '$'} {prod.sellingPrice})
                                                                             </div>
                                                                         ))
                                                                 ) : (
-                                                                    <div className="px-4 py-2 text-sm text-gray-500">{itemLoading ? 'Loading...' : 'No items found'}</div>
+                                                                    <div className="px-4 py-2 text-sm text-gray-500">No items found</div>
                                                                 )}
                                                             </div>
                                                         )}
@@ -1301,19 +1375,10 @@ const PaymentInvoice = () => {
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="number"
-                                                        value={itemDetails[index].quantity}
-                                                        onChange={(e) => {
-                                                            const updated = [...itemDetails];
-                                                            const quantity = Number(e.target.value);
-                                                            const sellingPrice = Number(updated[index].selectedItem?.sellingPrice || 0);
-                                                            const discount = Number(updated[index].discount || 0);
-
-                                                            updated[index].quantity = quantity;
-                                                            updated[index].total = quantity * sellingPrice - discount;
-
-                                                            setItemDetails(updated);
-                                                        }}
-                                                        placeholder="0.00"
+                                                        min="1"
+                                                        value={item.quantity}
+                                                        onChange={(e) => handleQuantityChange(e, index)}
+                                                        placeholder="1"
                                                         className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                                     />
                                                 </td>
@@ -1321,28 +1386,19 @@ const PaymentInvoice = () => {
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="text"
-                                                        value={itemDetails[index].selectedItem.sellingPrice}
+                                                        value={item.selectedItem?.sellingPrice || '0.00'}
                                                         readOnly
                                                         placeholder="0.00"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 bg-gray-50"
                                                     />
                                                 </td>
                                                 {/* Discount */}
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="text"
-                                                        onChange={(e) => {
-                                                            const updatedItem = [...itemDetails];
-                                                            const discount = Number(e.target.value);
-
-                                                            const quantity = Number(updatedItem[index].quantity || 0);
-                                                            const sellingPrice = Number(updatedItem[index]?.selectedItem?.sellingPrice || 0);
-
-                                                            updatedItem[index].discount = discount;
-                                                            updatedItem[index].total = quantity * sellingPrice - discount;
-
-                                                            setItemDetails(updatedItem);
-                                                        }}
+                                                        min="0"
+                                                        value={item.discount || ''}
+                                                        onChange={(e) => handleDiscountChange(e, index)}
                                                         placeholder="0.00"
                                                         className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                                     />
@@ -1351,16 +1407,17 @@ const PaymentInvoice = () => {
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="text"
-                                                        value={itemDetails[index].total}
+                                                        value={item.total.toFixed(2) || '0.00'}
                                                         readOnly
                                                         placeholder="0.00"
-                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 bg-gray-50"
                                                     />
                                                 </td>
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Button
                                                         type='button'
                                                         variant="ghost"
+                                                        onClick={() => handleRemoveItemLine(index)}
                                                         className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
                                                     >
                                                         <IoIosRemoveCircleOutline className="text-red-600 h-5 w-5" />
@@ -1371,15 +1428,17 @@ const PaymentInvoice = () => {
                                         ))}
                                     </tbody>
                                 </table>
-                                <Button
-                                    onClick={() => handleAddItemLine()}
-                                    type='button'
-                                    variant="ghost"
-                                    className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
-                                >
-                                    <IoMdAddCircleOutline className="h-5 w-5" />
-                                    <span className="text-sm font-semibold">Add item line</span>
-                                </Button>
+                                <div className="p-2">
+                                    <Button
+                                        onClick={handleAddItemLine}
+                                        type='button'
+                                        variant="ghost"
+                                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
+                                    >
+                                        <IoMdAddCircleOutline className="h-5 w-5" />
+                                        <span className="text-sm font-semibold">Add item line</span>
+                                    </Button>
+                                </div>
                             </div>
 
                             {/* Step 3: Payment Details */}
@@ -1435,26 +1494,25 @@ const PaymentInvoice = () => {
                                     {/* Left side - empty or could add icon/illustration */}
                                     <div className="flex items-center justify-center">
                                         <div className="text-gray-400">
-                                            {/* Optional: Add an icon or illustration here */}
-                                            {/* <ReceiptIcon className="w-16 h-16" /> */}
+                                            <PiPrinterBold className="w-16 h-16" />
                                         </div>
                                     </div>
 
                                     {/* Right side - summary */}
                                     <div className="space-y-2">
-                                        <div className="flex justify-between items-center border-b border-gray-200 pb-1">
+                                        <div className="flex justify-between items-center border-b border-gray-600 pb-1">
                                             <span className="text-white text-sm font-medium">Sub Total:</span>
-                                            <span className="text-white text-sm font-semibold">$100.00</span>
+                                            <span className="text-white text-sm font-semibold">${subTotal}</span>
                                         </div>
 
-                                        <div className="flex justify-between items-center text-white border-b border-gray-200 pb-1">
+                                        <div className="flex justify-between items-center text-white border-b border-gray-600 pb-1">
                                             <span className="text-white text-sm font-medium">Discount:</span>
-                                            <span className="text-red-500 text-sm font-semibold">-$10.00</span>
+                                            <span className="text-red-400 text-sm font-semibold">-${totalDiscount}</span>
                                         </div>
 
                                         <div className="flex justify-between items-center pt-1">
                                             <span className="text-gray-100 text-sm font-bold text-lg">Total:</span>
-                                            <span className="text-gray-100 text-sm font-bold text-xl">$90.00</span>
+                                            <span className="text-gray-100 text-sm font-bold text-xl">${calculatedTotal}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1472,35 +1530,35 @@ const PaymentInvoice = () => {
                                     />
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Footer */}
-                        <div className="w-full flex justify-end bg-gray-50 gap-3 p-6 border-t border-gray-100">
-                            <Button
-                                type="button"
-                                onClick={() => setOpenInvoiceForm(false)}
-                                variant="outline"
-                                className="h-10 px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                className="h-10 px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <div className="flex items-center gap-2">
-                                        <BiLoaderAlt className="animate-spin h-4 w-4" />
-                                        Processing...
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2">
-                                        <Save className="h-4 w-4" />
-                                        Save Receipt
-                                    </div>
-                                )}
-                            </Button>
+                            {/* Footer */}
+                            <div className="w-full flex justify-end bg-gray-50 gap-3 p-6 border-t border-gray-100">
+                                <Button
+                                    type="button"
+                                    onClick={() => setOpenInvoiceForm(false)}
+                                    variant="outline"
+                                    className="h-10 px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    className="h-10 px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <div className="flex items-center gap-2">
+                                            <BiLoaderAlt className="animate-spin h-4 w-4" />
+                                            Processing...
+                                        </div>
+                                    ) : (
+                                        <div className="flex items-center gap-2">
+                                            <Save className="h-4 w-4" />
+                                            Save Receipt
+                                        </div>
+                                    )}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </div>
