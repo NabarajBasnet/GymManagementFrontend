@@ -82,7 +82,7 @@ const MemberBodyMeasurements = () => {
                 notes
             };
 
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}`, {
+            const response = await fetch(`http://88.198.115.156:3000/api/member/bodymeasurements/${memberId}`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -107,7 +107,7 @@ const MemberBodyMeasurements = () => {
     const getAllBodyMeasurements = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.115.156:3000/api/member/bodymeasurements/${memberId}?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -144,7 +144,7 @@ const MemberBodyMeasurements = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/member/bodymeasurements/${id}`, {
+            const response = await fetch(`http://88.198.115.156:3000/api/member/bodymeasurements/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'

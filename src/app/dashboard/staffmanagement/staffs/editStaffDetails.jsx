@@ -234,7 +234,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         formData.append("staffImage", staffImage);
 
         try {
-            const response = await fetch("http://localhost:3000/api/staffsmanagement/upload-image", {
+            const response = await fetch("http://88.198.115.156:3000/api/staffsmanagement/upload-image", {
                 method: "POST",
                 body: formData,
             });
@@ -326,7 +326,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
             relationship
         };
         try {
-            const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
+            const url = `http://88.198.115.156:3000/api/staffsmanagement/changedetails/${staff.staff._id}`
 
             const method = "PATCH";
 

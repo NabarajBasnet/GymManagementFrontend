@@ -99,7 +99,7 @@ const InactiveMembers = () => {
         const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+                `http://88.198.115.156:3000/api/members/inactivemembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;
@@ -138,7 +138,7 @@ const InactiveMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/send-qr`, {
+            const response = await fetch(`http://88.198.115.156:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -188,7 +188,7 @@ const InactiveMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://88.198.115.156:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"
