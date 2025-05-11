@@ -113,8 +113,8 @@ const PaymentInvoice = () => {
     const staffSearchRef = useRef(null);
 
     // Other states
-    const [receiptData, setReceiptData] = useState(null);
-    const [printReceiptAlert, setPrintReceiptAlert] = useState(false);
+    const [invoiceData, setInvoiceData] = useState(null);
+    const [printInvoiceAlert, setPrintInvoiceAlert] = useState(false);
     const itemSearchRef = useRef(null);
 
     // Pagination states
@@ -228,362 +228,552 @@ const PaymentInvoice = () => {
         setRenderStaffDropdown(true);
     };
 
-    const printReceipt = (receiptData) => {
-        // Create a new window
+    // Print Invoice
+    const printInvoice = (invoiceData) => {
+        const invoice = invoiceData.invoice;
         const printWindow = window.open('', '_blank', 'width=800,height=600');
 
-        // HTML template for the receipt
-        const receiptHTML = `
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Receipt ${receiptData.paymentReceiptNo}</title>
-            <style>
-                :root {
-                    --primary-color: #1e3a8a;
-                    --secondary-color: #3b82f6;
-                    --text-color: #1f2937;
-                    --light-text: #6b7280;
-                    --border-color: #e5e7eb;
-                    --success-color: #10b981;
-                }
-                
-                * {
-                    box-sizing: border-box;
-                    margin: 0;
-                    padding: 0;
-                }
-                
-                body {
-                    font-family: 'Helvetica Neue', Arial, sans-serif;
-                    line-height: 1.5;
-                    color: var(--text-color);
-                    background-color: white;
-                    padding: 0;
-                    margin: 0;
-                    font-size: 14px;
-                }
-                
-                .print-button-container {
-                    position: sticky;
-                    top: 0;
-                    background-color: #fff;
-                    text-align: center;
-                    padding: 10px 0;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    z-index: 100;
-                }
-                
-                .print-button {
-                    background-color: var(--primary-color);
-                    color: white;
-                    border: none;
-                    padding: 8px 20px;
-                    font-size: 14px;
-                    font-weight: 600;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    transition: all 0.2s ease;
-                }
-                
-                .print-button:hover {
-                    background-color: var(--secondary-color);
-                }
-                
-                .receipt-container {
-                    width: 210mm;
-                    min-height: 297mm;
-                    margin: 0 auto;
-                    padding: 10mm;
-                    background-color: white;
-                }
-                
-                .receipt-header {
-                    text-align: center;
-                    margin-bottom: 15px;
-                    padding-bottom: 10px;
-                    border-bottom: 2px solid var(--primary-color);
-                }
-                
-                .receipt-header h1 {
-                    font-size: 24px;
-                    color: var(--primary-color);
-                    margin-bottom: 5px;
-                    font-weight: 600;
-                }
-                
-                .company-details {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 15px;
-                    padding-bottom: 10px;
-                    border-bottom: 1px solid var(--border-color);
-                }
-                
-                .company-info {
-                    text-align: right;
-                }
-                
-                .company-info p {
-                    margin: 3px 0;
-                    font-size: 13px;
-                }
-                
-                .receipt-content {
-                    margin-top: 10px;
-                }
-                
-                .receipt-grid {
-                    display: grid;
-                    grid-template-columns: 1fr 1fr;
-                    gap: 20px;
-                    margin-bottom: 15px;
-                }
-                
-                .receipt-section {
-                    margin-bottom: 15px;
-                }
-                
-                .section-title {
-                    font-size: 15px;
-                    font-weight: 600;
-                    color: var(--primary-color);
-                    margin-bottom: 8px;
-                    padding-bottom: 3px;
-                    border-bottom: 1px solid var(--border-color);
-                }
-                
-                .detail-row {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 5px;
-                    font-size: 13px;
-                }
-                
-                .detail-label {
-                    color: var(--light-text);
-                }
-                
-                .detail-value {
-                    font-weight: 500;
-                }
-                
-                .payment-summary {
-                    margin-top: 20px;
-                    margin-bottom: 20px;
-                }
-                
-                .summary-row {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 6px 0;
-                    border-bottom: 1px solid var(--border-color);
-                    font-size: 13px;
-                }
-                
-                .total-row {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 8px 0;
-                    margin-top: 8px;
-                    font-weight: 600;
-                    font-size: 14px;
-                }
-                
-                .payment-status {
-                    display: inline-block;
-                    padding: 5px 10px;
-                    border-radius: 4px;
-                    font-weight: 600;
-                    font-size: 13px;
-                    margin-bottom: 15px;
-                    background-color: #f0f0f0;
-                }
-                
-                .payment-status.paid {
-                    background-color: #e6f7ee;
-                    color: var(--success-color);
-                }
-                
-                .notes-section {
-                    margin-top: 15px;
-                    padding: 10px;
-                    background-color: #f9f9f9;
-                    border-radius: 4px;
-                    font-size: 13px;
-                }
-                
-                .thank-you-message {
-                    margin-top: 20px;
-                    text-align: center;
-                    padding: 15px;
-                    font-size: 13px;
-                }
-                
-                .receipt-footer {
-                    text-align: center;
-                    margin-top: 30px;
-                    padding-top: 10px;
-                    border-top: 1px solid var(--border-color);
-                    font-size: 12px;
-                    color: var(--light-text);
-                }
-                
-                @media print {
-                    @page {
-                        size: A4;
-                        margin: 0;
-                    }
-                    
-                    body {
-                        padding: 0;
-                        margin: 0;
-                    }
-                    
-                    .print-button-container {
-                        display: none;
-                    }
-                    
-                    .receipt-container {
-                        box-shadow: none;
-                        border: none;
-                        margin: 0;
-                        padding: 10mm;
-                        width: 210mm;
-                        min-height: 297mm;
-                    }
-                }
-            </style>
-        </head>
-        <body>
-            <div class="print-button-container no-print">
-                <button class="print-button" onclick="window.print()">
-                    Print Receipt
-                </button>
+        // Format date and currency
+        const formatDate = (dateString) => {
+            const options = { year: 'numeric', month: 'short', day: 'numeric' };
+            return new Date(dateString).toLocaleDateString('en-US', options);
+        };
+
+        const formatCurrency = (amount) => {
+            return amount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+        };
+
+        // Calculate VAT amounts and totals
+        const itemsWithVat = invoice.itemDetails.map(item => {
+            const vatAmount = (item.total * item.selectedItem.taxRate) / 100;
+            return {
+                ...item,
+                vatAmount: vatAmount,
+                totalWithVat: item.total + vatAmount
+            };
+        });
+
+        const totalVatAmount = itemsWithVat.reduce((sum, item) => sum + item.vatAmount, 0);
+        const calculatedGrandTotal = invoice.subTotal + totalVatAmount;
+
+        // HTML template for the invoice
+        const invoiceHTML = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice ${invoice.billNo}</title>
+    <style>
+        :root {
+            --primary: #3a4f7a;
+            --primary-light: #4f709c;
+            --accent: #ff7b54;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #38a169;
+            --bg: #f8fafc;
+            --header-bg: #ffffff;
+            --footer-bg: #f1f5f9;
+            --table-header: #3a4f7a;
+            --table-row: #f8fafc;
+            --table-alt-row: #ffffff;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: white;
+            padding: 0;
+            margin: 0;
+            font-size: 14px;
+        }
+        
+        .print-button-container {
+            position: sticky;
+            top: 0;
+            background-color: var(--header-bg);
+            text-align: center;
+            padding: 10px 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        
+        .print-button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .print-button:hover {
+            background-color: var(--primary-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .invoice-container {
+            width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 0;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        
+        .invoice-header {
+            padding: 24px 40px;
+            background-color: var(--header-bg);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .invoice-title {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+        
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        
+        .company-brand {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .company-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .company-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        
+        .company-meta {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .invoice-meta {
+            text-align: right;
+        }
+        
+        .invoice-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        
+        .invoice-date {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+        
+        .company-details {
+            display: flex;
+            justify-content: space-between;
+            padding: 24px 40px;
+            border-bottom: 1px solid var(--border);
+            background-color: var(--bg);
+        }
+        
+        .detail-box {
+            flex: 1;
+            padding: 0 10px;
+        }
+        
+        .detail-title {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+            font-size: 16px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--primary);
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        
+        .detail-label {
+            color: var(--text-light);
+            min-width: 120px;
+        }
+        
+        .detail-value {
+            font-weight: 500;
+        }
+        
+        .invoice-content {
+            padding: 24px 40px;
+            flex: 1;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0 32px;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .items-table th {
+            background-color: var(--table-header);
+            color: white;
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 600;
+        }
+        
+        .items-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+        
+        .items-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .items-table tr:nth-child(odd) {
+            background-color: var(--table-row);
+        }
+        
+        .items-table tr:nth-child(even) {
+            background-color: var(--table-alt-row);
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        .item-name {
+            font-weight: 500;
+        }
+        
+        .item-description {
+            color: var(--text-light);
+            font-size: 13px;
+            margin-top: 6px;
+            line-height: 1.4;
+        }
+        
+        .summary-section {
+            margin-top: 24px;
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .summary-table {
+            width: 320px;
+            border-collapse: collapse;
+            font-size: 14px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .summary-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .summary-table .label {
+            font-weight: 600;
+            color: var(--text);
+            background-color: var(--bg);
+        }
+        
+        .summary-table .total-row {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--primary);
+            background-color: var(--bg);
+        }
+        
+        .notes-section {
+            margin-top: 32px;
+            padding: 20px;
+            background-color: var(--bg);
+            border-radius: 8px;
+            font-size: 14px;
+            border-left: 4px solid var(--accent);
+        }
+        
+        .notes-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: 15px;
+        }
+        
+        .invoice-footer {
+            padding: 24px 40px;
+            background-color: var(--footer-bg);
+            border-top: 1px solid var(--border);
+            margin-top: auto;
+        }
+        
+        .thank-you {
+            text-align: center;
+            margin-bottom: 16px;
+            font-size: 15px;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .footer-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .signature-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 48px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .signature-box {
+            width: 200px;
+            text-align: center;
+        }
+        
+        .signature-line {
+            border-top: 1px solid var(--border);
+            margin: 20px auto;
+            width: 80%;
+            padding-top: 12px;
+        }
+        
+        .signature-label {
+            font-size: 13px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        
+        .payment-status {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            background-color: var(--success);
+            color: white;
+            margin-top: 12px;
+        }
+        
+        @media print {
+            @page {
+                size: A4;
+                margin: 0;
+            }
+            
+            body {
+                padding: 0;
+                margin: 0;
+            }
+            
+            .print-button-container {
+                display: none;
+            }
+            
+            .invoice-container {
+                box-shadow: none;
+                border: none;
+                margin: 0;
+                padding: 0;
+                width: 210mm;
+                min-height: 297mm;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-button-container no-print">
+        <button class="print-button" onclick="window.print()">
+            Print Invoice
+        </button>
+    </div>
+    
+    <div class="invoice-container">
+        <header class="invoice-header">
+            <h1 class="invoice-title">TAX INVOICE</h1>
+            <div class="company-header">
+                <div class="company-brand">
+                    <div class="company-logo">${invoice.company.name.charAt(0)}</div>
+                    <div class="company-info">
+                        <div class="company-name">${invoice.company.name}</div>
+                        <div class="company-meta">PAN: ${invoice.company.pan} | VAT No: ${invoice.company.irdNo}</div>
+                    </div>
+                </div>
+                <div class="invoice-meta">
+                    <div class="invoice-number">Invoice #${invoice.billNo}</div>
+                    <div class="invoice-date">Date: ${formatDate(invoice.billDate)}</div>
+                    <div class="payment-status">PAID</div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="company-details">
+            <div class="detail-box">
+                <div class="detail-title">From</div>
+                <div class="detail-row">
+                    <span class="detail-label">Company:</span>
+                    <span class="detail-value">${invoice.company.name}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Code:</span>
+                    <span class="detail-value">${invoice.company.code}</span>
+                </div>
+            </div>
+            <div class="detail-box">
+                <div class="detail-title">Bill To</div>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span>
+                    <span class="detail-value">${invoice.issuedTo.fullName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">${invoice.issuedTo.contactNo}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">${invoice.issuedTo.email}</span>
+                </div>
+            </div>
+        </div>
+        
+        <main class="invoice-content">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th width="5%">S.N.</th>
+                        <th width="40%">Item Description</th>
+                        <th width="10%">Qty</th>
+                        <th width="12%">Unit Price</th>
+                        <th width="12%">Discount</th>
+                        <th width="10%">VAT %</th>
+                        <th width="11%">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemsWithVat.map((item, index) => `
+                    <tr>
+                        <td class="text-center">${index + 1}</td>
+                        <td>
+                            <div class="item-name">${item.selectedItem.itemName}</div>
+                        </td>
+                        <td class="text-center">${item.quantity}</td>
+                        <td class="text-right">${formatCurrency(item.price)}</td>
+                        <td class="text-right">${formatCurrency(item.discount)}</td>
+                        <td class="text-center">${item.selectedItem.taxRate}%</td>
+                        <td class="text-right">${formatCurrency(item.totalWithVat)}</td>
+                    </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            
+            <div class="summary-section">
+                <table class="summary-table">
+                    <tr>
+                        <td class="label">Subtotal:</td>
+                        <td class="text-right">${formatCurrency(invoice.subTotal)}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Total Discount:</td>
+                        <td class="text-right">-${invoice.totalDiscount}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">VAT Amount:</td>
+                        <td class="text-right">${formatCurrency(totalVatAmount)}</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td class="label">Grand Total:</td>
+                        <td class="text-right">${formatCurrency(calculatedGrandTotal - invoice.totalDiscount)}</td>
+                    </tr>
+                </table>
             </div>
             
-            <div class="receipt-container">
-                <div class="receipt-header">
-                    <h1>PAYMENT RECEIPT</h1>
-                    <div class="payment-status ${receiptData.paymentStatus.toLowerCase() === 'paid' ? 'paid' : ''}">
-                       Payment Status: ${receiptData.paymentStatus}
-                    </div>
-                </div>
-                
-                <div class="company-details">
-                    <div>
-                        <p><strong>${loggedInUser?.firstName || ''} ${loggedInUser?.lastName || ''}</strong></p>
-                        <p>${loggedInUser?.address || '123 Business Address'}</p>
-                        <p>${loggedInUser?.city || 'City'}, ${loggedInUser?.country || 'Country'}</p>
-                    </div>
-                    <div class="company-info">
-                        <p>Email: ${loggedInUser?.email || 'email@example.com'}</p>
-                        <p>Phone: ${loggedInUser?.phoneNumber || '+1 234 567 890'}</p>
-                        <p>Receipt: ${receiptData.paymentReceiptNo}</p>
-                    </div>
-                </div>
-                
-                <div class="receipt-content">
-                    <div class="receipt-grid">
-                        <div class="receipt-section">
-                            <div class="section-title">Payment Details</div>
-                            <div class="detail-row">
-                                <span class="detail-label">Date:</span>
-                                <span class="detail-value">${new Date(receiptData.paymentDate).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-        })}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Time:</span>
-                                <span class="detail-value">${new Date(receiptData.paymentDate).toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit'
-        })}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Reference No:</span>
-                                <span class="detail-value">${receiptData.referenceNo || 'N/A'}</span>
-                            </div>
-                        </div>
-                        
-                        <div class="receipt-section">
-                            <div class="section-title">Customer Details</div>
-                            <div class="detail-row">
-                                <span class="detail-label">Customer Name:</span>
-                                <span class="detail-value">${assignedMemberName}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Issued By:</span>
-                                <span class="detail-value">${assignedStaffName}</span>
-                            </div>
-                            <div class="detail-row">
-                                <span class="detail-label">Payment Method:</span>
-                                <span class="detail-value">${receiptData.paymentMethod}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-summary">
-                        <div class="section-title">Payment Summary</div>
-                        <div class="summary-row">
-                            <span>Total Amount:</span>
-                            <span>$${receiptData.totalAmount}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Discount:</span>
-                            <span>$${receiptData.discountAmount}</span>
-                        </div>
-                        <div class="summary-row">
-                            <span>Amount Received:</span>
-                            <span>$${receiptData.receivedAmount}</span>
-                        </div>
-                        <div class="total-row">
-                            <span>Due Amount:</span>
-                            <span>$${receiptData.dueAmount}</span>
-                        </div>
-                    </div>
-                    
-                    ${receiptData.notes ? `
-                    <div class="notes-section">
-                        <div class="section-title">Notes</div>
-                        <p>${receiptData.notes}</p>
-                    </div>
-                    ` : ''}
-                    
-                    <div class="thank-you-message">
-                        <h3>Thank You for Your Business, #${memberName}!</h3>
-                        <p>We greatly appreciate your trust in our services. Your support enables us to continue providing the quality service you deserve.</p>
-                        <p>Should you have any questions about this receipt or our services, please don't hesitate to contact us.</p>
-                        <p>We look forward to serving you again in the future!</p>
-                    </div>
-
-                    <div class="thank-you-message">
-                        <p>Thank you for your business. Please retain this receipt for your records.</p>
-                    </div>
-                </div>
-                
-                <div class="receipt-footer">
-                    <p>This is an electronically generated receipt and does not require a signature.</p>
-                    <p>Generated on ${new Date(receiptData.createdAt).toLocaleString('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        })}</p>
-                </div>
+            ${invoice.additionalNotes || invoice.footerNote ? `
+            <div class="notes-section">
+                <div class="notes-title"></div>
+                <p>${invoice.footerNote}</p>
             </div>
-        </body>
-        </html>
-        `;
+            ` : ''}
+        </main>
+        
+        <footer class="invoice-footer">
+            <div class="thank-you">Thank you for your business!</div>
+            <div class="footer-meta">
+                <div>Generated on ${formatDate(invoice.createdAt)}</div>
+                <div>This is computer generated invoice no signature required.</div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
+`;
 
         // Write the HTML to the new window
         printWindow.document.open();
-        printWindow.document.write(receiptHTML);
+        printWindow.document.write(invoiceHTML);
         printWindow.document.close();
     };
 
@@ -593,7 +783,7 @@ const PaymentInvoice = () => {
     const [discountPercentage, setDiscountPercentage] = useState(0);
     const [calculatedTotal, setCalculatedTotal] = useState(0);
 
-    const postReceipt = async (data) => {
+    const postInvoice = async (data) => {
 
         const { billDate, additionalNotes } = data;
         const finalData = {
@@ -641,6 +831,7 @@ const PaymentInvoice = () => {
                 setDiscountPercentage(0);
                 setCalculatedTotal(0);
                 setSubTotal(0);
+                queryclient.invalidateQueries(['salesinvoice']);
             } else {
                 toast.error(responseBody.message);
             };
@@ -679,14 +870,16 @@ const PaymentInvoice = () => {
     // Get Single Receipt Details
     const getSingleSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`);
+            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/${id}`);
             const responseBody = await response.json();
+
             if (response.ok && response.status === 200) {
                 toast.success(responseBody.message || '');
-                setAssignedMemberName(responseBody.paymentReceipt.customer.fullName || '');
-                setAssignedStaffName(responseBody.paymentReceipt.issuedBy.fullName || '');
-                printReceipt(responseBody.salesinvoice);
-            }
+                setAssignedMemberName(responseBody.invoice.issuedTo.fullName || '');
+                setAssignedStaffName(responseBody.invoice.issuedBy.fullName || '');
+                setInvoiceData(responseBody);
+                printInvoice(responseBody);
+            };
         } catch (error) {
             console.log("Error: ", error)
         };
@@ -694,13 +887,13 @@ const PaymentInvoice = () => {
 
     const deleteSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();
             if (response.ok) {
                 toast.success(responseBody.message || '');
-                queryclient.invalidateQueries(['paymentreceipts']);
+                queryclient.invalidateQueries(['salesinvoice']);
             } else {
                 toast.error(responseBody.message || '');
             }
@@ -819,7 +1012,7 @@ const PaymentInvoice = () => {
             </div>
 
             {/* Print alert dialog */}
-            <AlertDialog open={printReceiptAlert} onOpenChange={setPrintReceiptAlert}>
+            <AlertDialog open={printInvoiceAlert} onOpenChange={setPrintInvoiceAlert}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Print Invoice?</AlertDialogTitle>
@@ -828,8 +1021,8 @@ const PaymentInvoice = () => {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setPrintReceiptAlert(false)}>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => printReceipt(receiptData)}>Print</AlertDialogAction>
+                        <AlertDialogCancel onClick={() => setPrintInvoiceAlert(false)}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => printInvoice(invoiceData)}>Print</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
@@ -911,7 +1104,7 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-right font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Total Discount
+                                                        Discount
                                                         <ArrowUpDown
                                                             onClick={() => {
                                                                 setSortBy('totalGivenDiscountAmount');
@@ -922,7 +1115,7 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-right font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Discount Percentage
+                                                        Discount %
                                                         <ArrowUpDown
                                                             onClick={() => {
                                                                 setSortBy('totalDiscountPercentage');
@@ -940,16 +1133,6 @@ const PaymentInvoice = () => {
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Issued To
-                                                    </div>
-                                                </th>
-                                                <th className="h-10 px-4 text-left font-medium">
-                                                    <div className="flex text-sm font-semibold items-center">
-                                                        Issued By
                                                     </div>
                                                 </th>
                                                 <th className="h-10 px-4 text-left font-medium">
@@ -973,13 +1156,11 @@ const PaymentInvoice = () => {
                                                 <tr key={invoice._id} className="border-b text-sm hover:bg-muted/50">
                                                     <td className="p-3 align-middle font-medium">{invoice.billNo}</td>
                                                     <td className="p-3 align-middle">{new Date(invoice.billDate).toISOString().split('T')[0]}</td>
-                                                    <td className="p-3 align-middle text-start">{invoice.paymentMethod}</td>
-                                                    <td className="p-3 align-middle text-start">${invoice.totalGivenDiscountAmount}</td>
-                                                    <td className="p-3 align-middle text-start">${invoice.totalDiscountPercentage}</td>
-                                                    <td className="p-3 align-middle text-start">${invoice.grandTotal}</td>
-                                                    <td className="p-3 align-middle">{invoice.member?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">{invoice.staff?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle text-start">${invoice.fiscalYear}</td>
+                                                    <td className="p-3 align-middle text-center">{invoice.paymentMethod}</td>
+                                                    <td className="p-3 align-middle text-center">{invoice.totalGivenDiscountAmount}</td>
+                                                    <td className="p-3 align-middle text-center">{invoice.totalDiscountPercentage} %</td>
+                                                    <td className="p-3 align-middle text-center">{invoice.grandTotal}</td>
+                                                    <td className="p-3 align-middle text-start">{invoice.fiscalYear}</td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
                                                         <td className="flex items-center p-4 align-middle justify-end">
                                                             <PiPrinterBold
@@ -1081,7 +1262,7 @@ const PaymentInvoice = () => {
             {/* Form Section */}
             {openInvoiceForm && (
                 <div className="w-full flex justify-center items-center bg-black bg-opacity-70 backdrop-blur-sm fixed inset-0 z-50">
-                    <form onSubmit={handleSubmit(postReceipt)} className="bg-white w-11/12 md:w-9/12 max-w-8xl h-[95vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
+                    <form onSubmit={handleSubmit(postInvoice)} className="bg-white w-11/12 md:w-9/12 max-w-8xl h-[95vh] rounded-lg shadow-xl flex flex-col overflow-hidden">
                         {/* Header */}
                         <div className="w-full flex justify-between py-3 bg-gray-50 px-6 items-center border-b border-gray-100">
                             <div>
