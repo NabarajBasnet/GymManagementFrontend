@@ -71,7 +71,7 @@ const PaymentInvoice = () => {
     // Invoice Form Data
     const [itemDetails, setItemDetails] = useState([{
         selectedItem: {},
-        quantity: 1,
+        quantity: 0,
         price: 0,
         discount: 0,
         total: 0,
@@ -590,11 +590,10 @@ const PaymentInvoice = () => {
         printWindow.document.close();
     };
 
-
     // Invoice Data
     const [subTotal, setSubTotal] = useState(0);
-    console.log('Sub Total: ', subTotal);
-    const [totalDiscount, setTotalDiscount] = useState(0);
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [discountPercentage, setDiscountPercentage] = useState(0);
     const [calculatedTotal, setCalculatedTotal] = useState(0);
 
     const postReceipt = async (data) => {
@@ -801,34 +800,19 @@ const PaymentInvoice = () => {
 
     // Calculate totals
     useEffect(() => {
-        const calculatedSubTotal = itemDetails.reduce((sum, item) => {
-            const price = parseFloat(item.selectedItem?.sellingPrice) || 0;
-            const quantity = item.quantity || 0;
-            return sum + (price * quantity);
-        }, 0).toFixed(2);
-
-        setSubTotal(calculatedSubTotal);
-    }, [itemDetails]); // Only run when itemDetails change
-
-    useEffect(() => {
-        // Calculate and set subtotal
-        const subTotal = itemDetails.reduce((sum, item) => {
+        const totalBeforeDiscount = itemDetails.reduce((sum, item) => {
             const price = parseFloat(item.selectedItem?.sellingPrice) || 0;
             const quantity = item.quantity || 0;
             return sum + price * quantity;
         }, 0);
-        setSubTotal(subTotal.toFixed(2));
 
-        // Calculate and set discount
-        const totalDiscount = itemDetails.reduce((sum, item) => {
-            return sum + (parseFloat(item.discount) || 0);
-        }, 0);
-        setTotalDiscount(totalDiscount.toFixed(2));
+        const discountByPercent = (totalBeforeDiscount * discountPercentage) / 100;
+        const totalDiscount = discountAmount + discountByPercent;
 
-        // Calculate and set grand total
-        const grandTotal = subTotal - totalDiscount;
-        setCalculatedTotal(grandTotal.toFixed(2));
-    }, [itemDetails]);
+        setSubTotal(totalBeforeDiscount.toFixed(2));
+        setCalculatedTotal((totalBeforeDiscount - totalDiscount).toFixed(2));
+    }, [itemDetails, discountAmount, discountPercentage]);
+
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -1160,8 +1144,6 @@ const PaymentInvoice = () => {
                                 <h2 className="text-lg font-semibold text-gray-800 border-b border-gray-100 pb-2 mb-4">Basic Information</h2>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                                    {/* Bill From / User Details */}
-                                    {/* Staff Dropdown */}
                                     {/* Bill Issued By */}
                                     <div className='space-y-1.5'>
                                         <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
@@ -1375,10 +1357,10 @@ const PaymentInvoice = () => {
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="number"
-                                                        min="1"
+                                                        min="0"
                                                         value={item.quantity}
                                                         onChange={(e) => handleQuantityChange(e, index)}
-                                                        placeholder="1"
+                                                        placeholder="0"
                                                         className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
                                                     />
                                                 </td>
@@ -1465,54 +1447,56 @@ const PaymentInvoice = () => {
                                     </div>
 
                                     {/* Amount Summary Column */}
+                                    {/* Total Discount By Amount */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium text-gray-700 block">Total Discount Amount</Label>
                                         <Input
-                                            type="text"
-                                            {...register('discountAmount')}
+                                            type="number"
+                                            value={discountAmount}
+                                            onChange={(e) => setDiscountAmount(Number(e.target.value))}
                                             placeholder="0.00"
-                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            className="..."
                                         />
                                     </div>
 
-                                    {/* Notes Column */}
-
+                                    {/* Total Discount By Percentage */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium text-gray-700 block">Total Discount Percentage</Label>
                                         <Input
-                                            type="text"
-                                            {...register('discountPercentage')}
+                                            type="number"
+                                            value={discountPercentage}
+                                            onChange={(e) => setDiscountPercentage(Number(e.target.value))}
                                             placeholder="0.00"
-                                            className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                            className="..."
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="w-full bg-gray-700 rounded-lg p-4 my-4">
+                            <div className="w-full bg-indigo-500 rounded-lg p-4 my-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     {/* Left side - empty or could add icon/illustration */}
-                                    <div className="flex items-center justify-center">
+                                    <div className="flex items-center justify-start">
                                         <div className="text-gray-400">
-                                            <PiPrinterBold className="w-16 h-16" />
+                                            <PiPrinterBold className="text-white w-16 h-16" />
                                         </div>
                                     </div>
 
                                     {/* Right side - summary */}
                                     <div className="space-y-2">
-                                        <div className="flex justify-between items-center border-b border-gray-600 pb-1">
+                                        <div className="flex justify-between items-center border-b border-white pb-1">
                                             <span className="text-white text-sm font-medium">Sub Total:</span>
-                                            <span className="text-white text-sm font-semibold">${subTotal}</span>
+                                            <span className="text-white text-sm font-semibold">RS {subTotal}</span>
                                         </div>
 
-                                        <div className="flex justify-between items-center text-white border-b border-gray-600 pb-1">
+                                        <div className="flex justify-between items-center text-white border-b border-white pb-1">
                                             <span className="text-white text-sm font-medium">Discount:</span>
-                                            <span className="text-red-400 text-sm font-semibold">-${totalDiscount}</span>
+                                            <span className="text-white text-sm font-semibold">-RS {(Number(discountAmount) + (subTotal * discountPercentage / 100)).toFixed(2)}</span>
                                         </div>
 
                                         <div className="flex justify-between items-center pt-1">
-                                            <span className="text-gray-100 text-sm font-bold text-lg">Total:</span>
-                                            <span className="text-gray-100 text-sm font-bold text-xl">${calculatedTotal}</span>
+                                            <span className="text-gray-100 text-sm font-bold text-xl">Total:</span>
+                                            <span className="text-gray-100 text-sm font-bold text-xl">RS {calculatedTotal}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1523,7 +1507,7 @@ const PaymentInvoice = () => {
                                 <div className="space-y-2">
                                     <Label className="text-sm font-medium text-gray-700 block">Additional Notes</Label>
                                     <textarea
-                                        {...register('notes')}
+                                        {...register('additionalNotes')}
                                         rows={2}
                                         className="w-full p-2.5 text-sm rounded-md border focus:outline-none border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                         placeholder="Any additional notes or comments..."
