@@ -77,8 +77,6 @@ const PaymentInvoice = () => {
         total: 0,
     }]);
 
-    // console.log('Item Details: ', itemDetails);
-
     // Handle Add Item Line Fn
     const handleAddItemLine = () => {
         const prevItem = [...itemDetails];
@@ -97,7 +95,6 @@ const PaymentInvoice = () => {
 
     // Data states
     const [paymentMethod, setPaymentMethod] = useState('');
-    const [paymentStatus, setPaymentStatus] = useState('');
     const [memberId, setMemberId] = useState('');
     const [staffId, setStaffId] = useState('');
     const [assignedStaffName, setAssignedStaffName] = useState('');
@@ -655,10 +652,10 @@ const PaymentInvoice = () => {
     };
 
     // Get all services and products from server
-    const getAllPaymentReceipts = async ({ queryKey }) => {
+    const getAllInvoices = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -667,11 +664,11 @@ const PaymentInvoice = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryFn: getAllPaymentReceipts,
-        queryKey: ['paymentreceipts', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
+        queryFn: getAllInvoices,
+        queryKey: ['salesinvoice', currentPage, debouncedSearchQuery, sortBy, sortOrderDesc],
     });
 
-    const { paymentreceipts, totalPages } = data || {};
+    const { salesinvoice, totalPages } = data || {};
 
     // Debounce
     useEffect(() => {
@@ -680,7 +677,7 @@ const PaymentInvoice = () => {
     }, [searchQuery]);
 
     // Get Single Receipt Details
-    const getSingleReceiptDetails = async (id) => {
+    const getSingleSalesInvoice = async (id) => {
         try {
             const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`);
             const responseBody = await response.json();
@@ -688,14 +685,14 @@ const PaymentInvoice = () => {
                 toast.success(responseBody.message || '');
                 setAssignedMemberName(responseBody.paymentReceipt.customer.fullName || '');
                 setAssignedStaffName(responseBody.paymentReceipt.issuedBy.fullName || '');
-                printReceipt(responseBody.paymentReceipt);
+                printReceipt(responseBody.salesinvoice);
             }
         } catch (error) {
             console.log("Error: ", error)
         };
     };
 
-    const deleteReceipt = async (id) => {
+    const deleteSalesInvoice = async (id) => {
         try {
             const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts/${id}`, {
                 method: "DELETE",
@@ -870,7 +867,7 @@ const PaymentInvoice = () => {
             <div className="w-full bg-white rounded-xl shadow-md border border-gray-200">
                 {/* Table Section */}
                 <div className="w-full">
-                    {Array.isArray(paymentreceipts) && paymentreceipts.length > 0 ? (
+                    {Array.isArray(salesinvoice) && salesinvoice.length > 0 ? (
                         <div className="w-full">
                             <div className="overflow-x-auto">
                                 {isLoading ? (
@@ -881,10 +878,10 @@ const PaymentInvoice = () => {
                                             <tr className="border-b bg-muted/50">
                                                 <th className="h-16 px-4 text-left font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Receipt No
+                                                        Bill No
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentReceiptNo');
+                                                                setSortBy('billNo');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -892,10 +889,10 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-16 px-4 text-left font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Payment Date
+                                                        Bill Date
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentDate');
+                                                                setSortBy('billDate');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -914,10 +911,10 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-right font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Received
+                                                        Total Discount
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('receivedAmount');
+                                                                setSortBy('totalGivenDiscountAmount');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -925,10 +922,10 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-right font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Due
+                                                        Discount Percentage
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('dueAmount');
+                                                                setSortBy('totalDiscountPercentage');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -936,10 +933,10 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-right font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Total
+                                                        Grand Total
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('totalAmount');
+                                                                setSortBy('grandTotal');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -947,20 +944,20 @@ const PaymentInvoice = () => {
                                                 </th>
                                                 <th className="h-10 px-4 text-left font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Member
+                                                        Issued To
                                                     </div>
                                                 </th>
                                                 <th className="h-10 px-4 text-left font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Staff
+                                                        Issued By
                                                     </div>
                                                 </th>
                                                 <th className="h-10 px-4 text-left font-medium">
                                                     <div className="flex text-sm font-semibold items-center">
-                                                        Status
+                                                        Fiscal Year
                                                         <ArrowUpDown
                                                             onClick={() => {
-                                                                setSortBy('paymentStatus');
+                                                                setSortBy('fiscalYear');
                                                                 setSortOrderDesc(!sortOrderDesc);
                                                             }}
                                                             className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
@@ -972,32 +969,21 @@ const PaymentInvoice = () => {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {paymentreceipts.map((receipt) => (
-                                                <tr key={receipt._id} className="border-b text-sm hover:bg-muted/50">
-                                                    <td className="p-3 align-middle font-medium">{receipt.paymentReceiptNo}</td>
-                                                    <td className="p-3 align-middle">{new Date(receipt.paymentDate).toISOString().split('T')[0]}</td>
-                                                    <td className="p-3 align-middle text-start">{receipt.paymentMethod}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.receivedAmount}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.dueAmount}</td>
-                                                    <td className="p-3 align-middle text-start">${receipt.totalAmount}</td>
-                                                    <td className="p-3 align-middle">{receipt.member?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">{receipt.staff?.name || 'N/A'}</td>
-                                                    <td className="p-3 align-middle">
-                                                        <span
-                                                            className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${receipt.paymentStatus === 'Paid'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : receipt.paymentStatus === 'Pending'
-                                                                    ? 'bg-red-100 text-red-800'
-                                                                    : 'bg-yellow-100 text-yellow-800'
-                                                                }`}
-                                                        >
-                                                            {receipt.paymentStatus}
-                                                        </span>
-                                                    </td>
+                                            {salesinvoice.map((invoice) => (
+                                                <tr key={invoice._id} className="border-b text-sm hover:bg-muted/50">
+                                                    <td className="p-3 align-middle font-medium">{invoice.billNo}</td>
+                                                    <td className="p-3 align-middle">{new Date(invoice.billDate).toISOString().split('T')[0]}</td>
+                                                    <td className="p-3 align-middle text-start">{invoice.paymentMethod}</td>
+                                                    <td className="p-3 align-middle text-start">${invoice.totalGivenDiscountAmount}</td>
+                                                    <td className="p-3 align-middle text-start">${invoice.totalDiscountPercentage}</td>
+                                                    <td className="p-3 align-middle text-start">${invoice.grandTotal}</td>
+                                                    <td className="p-3 align-middle">{invoice.member?.name || 'N/A'}</td>
+                                                    <td className="p-3 align-middle">{invoice.staff?.name || 'N/A'}</td>
+                                                    <td className="p-3 align-middle text-start">${invoice.fiscalYear}</td>
                                                     {loggedInUser?.role !== 'Gym Admin' && (
                                                         <td className="flex items-center p-4 align-middle justify-end">
                                                             <PiPrinterBold
-                                                                onClick={() => getSingleReceiptDetails(receipt._id)}
+                                                                onClick={() => getSingleSalesInvoice(invoice._id)}
                                                                 className="h-4 w-4 cursor-pointer hover:text-blue-600"
                                                             />
                                                             <AlertDialog>
@@ -1018,7 +1004,7 @@ const PaymentInvoice = () => {
                                                                     </AlertDialogHeader>
                                                                     <AlertDialogFooter>
                                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => deleteReceipt(receipt._id)}>Continue</AlertDialogAction>
+                                                                        <AlertDialogAction onClick={() => deleteSalesInvoice(invoice._id)}>Continue</AlertDialogAction>
                                                                     </AlertDialogFooter>
                                                                 </AlertDialogContent>
                                                             </AlertDialog>
@@ -1069,7 +1055,7 @@ const PaymentInvoice = () => {
                     )}
                     <div className="flex items-center justify-between border-t px-4 py-4">
                         <div className="text-sm text-muted-foreground">
-                            Showing <strong>{paymentreceipts?.length}</strong> of <strong>{paymentreceipts?.length}</strong> receipts
+                            Showing <strong>{salesinvoice?.length}</strong> of <strong>{salesinvoice?.length}</strong> receipts
                         </div>
                         <div className="flex items-center space-x-2">
                             <div className="flex justify-center py-4">
