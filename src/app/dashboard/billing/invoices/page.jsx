@@ -79,13 +79,30 @@ const PaymentInvoice = () => {
     // Invoice Form Data
     const [itemDetails, setItemDetails] = useState([{
         selectedItem: {},
-        quantity: 0,
+        quantity: 1,
         price: 0,
         discount: 0,
         total: 0,
     }]);
 
     console.log('Item Details: ', itemDetails);
+
+    // Handle Add Item Line Fn
+    const handleAddItemLine = () => {
+        const prevItem = [...itemDetails];
+        prevItem.push({
+            selectedItem: {},
+            quantity: 1,
+            price: 0,
+            discount: 0,
+            total: 0,
+        })
+        setItemDetails(prevItem);
+
+        const prevStates = [...renderItemDropdown];
+        prevStates.push(false);
+        setRenderItemDropdown(prevStates);
+    };
 
     // Data states
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -113,8 +130,9 @@ const PaymentInvoice = () => {
     const [itemSearchQuery, setItemSearchQuery] = useState('');
     const [itemName, setItemName] = useState('');
     const [itemId, setItemId] = useState('');
-    const [renderItemDropdown, setRenderItemDropdown] = useState(false);
+    const [renderItemDropdown, setRenderItemDropdown] = useState([false]);
     const itemSearchRef = useRef(null);
+    console.log('Render Item Dropdown: ', renderItemDropdown);
 
     // Pagination states
     let limit = 15;
@@ -195,7 +213,7 @@ const PaymentInvoice = () => {
                 setRenderStaffDropdown(false);
             }
             if (itemSearchRef.current && !itemSearchRef.current.contains(event.target)) {
-                setRenderItemDropdown(false);
+                setRenderItemDropdown([false]);
             }
         };
         document.addEventListener("mousedown", handleClickOutside);
@@ -212,10 +230,11 @@ const PaymentInvoice = () => {
         setRenderStaffDropdown(true);
     };
     ;
-    const handleItemSearchFocus = () => {
+    const handleItemSearchFocus = (index) => {
+        console.log('Index: ', index);
+        const prevStates = [...renderItemDropdown];
         setRenderItemDropdown(true);
     };
-    ;
 
     const printReceipt = (receiptData) => {
         // Create a new window
@@ -1229,7 +1248,7 @@ const PaymentInvoice = () => {
                                                                             field.onChange(e);
                                                                             setItemName('');
                                                                         }}
-                                                                        onFocus={handleItemSearchFocus}
+                                                                        onFocus={() => handleItemSearchFocus(index)}
                                                                         className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
                                                                         placeholder="Search items..."
                                                                     />
@@ -1245,7 +1264,7 @@ const PaymentInvoice = () => {
                                                             </p>
                                                         )}
 
-                                                        {renderItemDropdown && (
+                                                        {renderItemDropdown[index] && (
                                                             <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
                                                                 {serviceAndProducts?.length > 0 ? (
                                                                     serviceAndProducts
@@ -1263,7 +1282,7 @@ const PaymentInvoice = () => {
                                                                                     setItemName(item.itemName);
                                                                                     setItemSearchQuery(item.itemName);
                                                                                     setItemId(item.itemId);
-                                                                                    setRenderItemDropdown(false);
+                                                                                    setRenderItemDropdown([false]);
                                                                                 }}
                                                                                 className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                                                                 key={item.itemId}
@@ -1282,6 +1301,7 @@ const PaymentInvoice = () => {
                                                 <td className="p-1 md:p-2 align-middle">
                                                     <Input
                                                         type="number"
+                                                        value={itemDetails[index].quantity}
                                                         onChange={(e) => {
                                                             const updated = [...itemDetails];
                                                             const quantity = Number(e.target.value);
@@ -1352,6 +1372,7 @@ const PaymentInvoice = () => {
                                     </tbody>
                                 </table>
                                 <Button
+                                    onClick={() => handleAddItemLine()}
                                     type='button'
                                     variant="ghost"
                                     className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
