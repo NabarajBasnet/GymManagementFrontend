@@ -1,6 +1,6 @@
 'use client';
 
-import { IoMdAddCircleOutline } from "react-icons/io";
+import { IoIosRemoveCircleOutline, IoMdAddCircleOutline } from "react-icons/io";
 import { PiPrinterBold } from "react-icons/pi";
 import { FiSearch } from "react-icons/fi";
 import { useRef, useEffect, useState } from 'react';
@@ -56,6 +56,7 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 
 const PaymentInvoice = () => {
+
     const { user } = useUser();
     const loggedInUser = user ? user.user : null;
 
@@ -74,6 +75,17 @@ const PaymentInvoice = () => {
 
     // Form states
     const [openInvoiceForm, setOpenInvoiceForm] = useState(false);
+
+    // Invoice Form Data
+    const [itemDetails, setItemDetails] = useState([{
+        selectedItem: {},
+        quantity: 0,
+        price: 0,
+        discount: 0,
+        total: 0,
+    }]);
+
+    console.log('Item Details: ', itemDetails);
 
     // Data states
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -103,7 +115,6 @@ const PaymentInvoice = () => {
     const [itemId, setItemId] = useState('');
     const [renderItemDropdown, setRenderItemDropdown] = useState(false);
     const itemSearchRef = useRef(null);
-
 
     // Pagination states
     let limit = 15;
@@ -155,7 +166,6 @@ const PaymentInvoice = () => {
 
     const { staffs } = staffsData || {};
 
-
     // Get all services and tasks
     const getAllItems = async () => {
         try {
@@ -201,10 +211,11 @@ const PaymentInvoice = () => {
     const handleStaffSearchFocus = () => {
         setRenderStaffDropdown(true);
     };
-
+    ;
     const handleItemSearchFocus = () => {
         setRenderItemDropdown(true);
     };
+    ;
 
     const printReceipt = (receiptData) => {
         // Create a new window
@@ -704,7 +715,7 @@ const PaymentInvoice = () => {
         } catch (error) {
             console.log("Error: ", error)
         };
-    }
+    };
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -758,7 +769,7 @@ const PaymentInvoice = () => {
             {/* Header Section */}
             <div className="flex flex-col md:flex-row bg-white p-3 rounded-md shadow-md justify-between items-start md:items-center mb-6 gap-4">
                 <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Invoice (VAT Bill)</h1>
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Sales Invoice</h1>
                     <p className="text-xs text-gray-500 font-semibold mt-1">Manage and view all payment invoices</p>
                 </div>
 
@@ -1199,114 +1210,155 @@ const PaymentInvoice = () => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr className="hover:bg-gray-50">
-                                            <td className="p-4 align-middle">
-                                                <div ref={itemSearchRef} className="relative">
-                                                    <Controller
-                                                        name="memberName"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <div className="relative">
-                                                                <Input
-                                                                    {...field}
-                                                                    autoComplete="off"
-                                                                    value={itemName || itemSearchQuery}
-                                                                    onChange={(e) => {
-                                                                        setItemSearchQuery(e.target.value);
-                                                                        field.onChange(e);
-                                                                        setItemName('');
-                                                                    }}
-                                                                    onFocus={handleItemSearchFocus}
-                                                                    className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
-                                                                    placeholder="Search items..."
-                                                                />
-                                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                                                    <FiSearch className="h-4 w-4" />
+                                        {itemDetails.map((item, index) => (
+                                            <tr key={index} className="hover:bg-gray-50">
+                                                {/* Select Item */}
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <div ref={itemSearchRef} className="relative">
+                                                        <Controller
+                                                            name="itemName"
+                                                            control={control}
+                                                            render={({ field }) => (
+                                                                <div className="relative">
+                                                                    <Input
+                                                                        {...field}
+                                                                        autoComplete="off"
+                                                                        value={itemName || itemSearchQuery}
+                                                                        onChange={(e) => {
+                                                                            setItemSearchQuery(e.target.value);
+                                                                            field.onChange(e);
+                                                                            setItemName('');
+                                                                        }}
+                                                                        onFocus={handleItemSearchFocus}
+                                                                        className="w-full rounded-md border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2 pl-10"
+                                                                        placeholder="Search items..."
+                                                                    />
+                                                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                                        <FiSearch className="h-4 w-4" />
+                                                                    </div>
                                                                 </div>
+                                                            )}
+                                                        />
+                                                        {errors.itemName && (
+                                                            <p className="mt-1 text-xs text-red-600">
+                                                                {errors.itemName.message}
+                                                            </p>
+                                                        )}
+
+                                                        {renderItemDropdown && (
+                                                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                                {serviceAndProducts?.length > 0 ? (
+                                                                    serviceAndProducts
+                                                                        .filter((item) => {
+                                                                            return item.itemName
+                                                                                .toLowerCase()
+                                                                                .includes(itemSearchQuery.toLowerCase());
+                                                                        })
+                                                                        .map((item) => (
+                                                                            <div
+                                                                                onClick={() => {
+                                                                                    const updatedItemDetails = [...itemDetails];
+                                                                                    updatedItemDetails[index].selectedItem = item;
+                                                                                    setItemDetails(updatedItemDetails);
+                                                                                    setItemName(item.itemName);
+                                                                                    setItemSearchQuery(item.itemName);
+                                                                                    setItemId(item.itemId);
+                                                                                    setRenderItemDropdown(false);
+                                                                                }}
+                                                                                className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                                key={item.itemId}
+                                                                            >
+                                                                                {item.itemName} ({item.currency.split('-')[0]} {item.sellingPrice})
+                                                                            </div>
+                                                                        ))
+                                                                ) : (
+                                                                    <div className="px-4 py-2 text-sm text-gray-500">{itemLoading ? 'Loading...' : 'No items found'}</div>
+                                                                )}
                                                             </div>
                                                         )}
-                                                    />
-                                                    {errors.itemName && (
-                                                        <p className="mt-1 text-xs text-red-600">
-                                                            {errors.itemName.message}
-                                                        </p>
-                                                    )}
+                                                    </div>
+                                                </td>
+                                                {/* Quantity */}
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <Input
+                                                        type="number"
+                                                        onChange={(e) => {
+                                                            const updated = [...itemDetails];
+                                                            const quantity = Number(e.target.value);
+                                                            const sellingPrice = Number(updated[index].selectedItem?.sellingPrice || 0);
+                                                            const discount = Number(updated[index].discount || 0);
 
-                                                    {renderItemDropdown && (
-                                                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                            {serviceAndProducts?.length > 0 ? (
-                                                                serviceAndProducts
-                                                                    .filter((item) => {
-                                                                        return item.itemName
-                                                                            .toLowerCase()
-                                                                            .includes(itemSearchQuery.toLowerCase());
-                                                                    })
-                                                                    .map((item) => (
-                                                                        <div
-                                                                            onClick={() => {
-                                                                                setItemName(item.itemName);
-                                                                                setItemSearchQuery(item.itemName);
-                                                                                setItemId(item.itemId);
-                                                                                setRenderItemDropdown(false);
-                                                                            }}
-                                                                            className="px-2 py-2 text-sm hover:border text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                                            key={item.itemId}
-                                                                        >
-                                                                            {item.itemName} ({item.currency.split('-')[0]} {item.sellingPrice})
-                                                                        </div>
-                                                                    ))
-                                                            ) : (
-                                                                <div className="px-4 py-2 text-sm text-gray-500">{itemLoading ? 'Loading...' : 'No items found'}</div>
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Input
-                                                    type="number"
-                                                    {...register('itemQuantity')}
-                                                    placeholder="0.00"
-                                                    className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                />
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Input
-                                                    type="number"
-                                                    {...register('itemPrice')}
-                                                    placeholder="0.00"
-                                                    className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                />
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Input
-                                                    type="text"
-                                                    {...register('perItemDiscount')}
-                                                    placeholder="0.00"
-                                                    className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                />
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Input
-                                                    type="number"
-                                                    {...register('itemTotal')}
-                                                    placeholder="0.00"
-                                                    className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
-                                                />
-                                            </td>
-                                            <td className="p-4 align-middle">
-                                                <Button
-                                                    type='button'
-                                                    variant="ghost"
-                                                    className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
-                                                >
-                                                    <span>Add</span>
-                                                    <IoMdAddCircleOutline className="h-5 w-5" />
-                                                </Button>
-                                            </td>
-                                        </tr>
+                                                            updated[index].quantity = quantity;
+                                                            updated[index].total = quantity * sellingPrice - discount;
+
+                                                            setItemDetails(updated);
+                                                        }}
+                                                        placeholder="0.00"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </td>
+                                                {/* Selling Price of an item */}
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <Input
+                                                        type="text"
+                                                        value={itemDetails[index].selectedItem.sellingPrice}
+                                                        readOnly
+                                                        placeholder="0.00"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </td>
+                                                {/* Discount */}
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <Input
+                                                        type="text"
+                                                        onChange={(e) => {
+                                                            const updatedItem = [...itemDetails];
+                                                            const discount = Number(e.target.value);
+
+                                                            const quantity = Number(updatedItem[index].quantity || 0);
+                                                            const sellingPrice = Number(updatedItem[index]?.selectedItem?.sellingPrice || 0);
+
+                                                            updatedItem[index].discount = discount;
+                                                            updatedItem[index].total = quantity * sellingPrice - discount;
+
+                                                            setItemDetails(updatedItem);
+                                                        }}
+                                                        placeholder="0.00"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </td>
+                                                {/* Total Price */}
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <Input
+                                                        type="text"
+                                                        value={itemDetails[index].total}
+                                                        readOnly
+                                                        placeholder="0.00"
+                                                        className="h-10 w-full text-sm rounded-md border-gray-300 focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </td>
+                                                <td className="p-1 md:p-2 align-middle">
+                                                    <Button
+                                                        type='button'
+                                                        variant="ghost"
+                                                        className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
+                                                    >
+                                                        <IoIosRemoveCircleOutline className="text-red-600 h-5 w-5" />
+                                                        <span className="text-red-600 text-sm font-semibold">remove</span>
+                                                    </Button>
+                                                </td>
+                                            </tr>
+                                        ))}
                                     </tbody>
                                 </table>
+                                <Button
+                                    type='button'
+                                    variant="ghost"
+                                    className="text-blue-600 hover:text-blue-800 hover:bg-blue-50 flex items-center gap-1"
+                                >
+                                    <IoMdAddCircleOutline className="h-5 w-5" />
+                                    <span className="text-sm font-semibold">Add item line</span>
+                                </Button>
                             </div>
 
                             {/* Step 3: Payment Details */}
