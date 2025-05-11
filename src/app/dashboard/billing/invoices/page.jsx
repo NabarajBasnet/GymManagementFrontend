@@ -597,55 +597,25 @@ const PaymentInvoice = () => {
     const [calculatedTotal, setCalculatedTotal] = useState(0);
 
     const postReceipt = async (data) => {
+
+        const { billDate, additionalNotes } = data;
+        const finalData = {
+            staffId,
+            memberId,
+            billDate,
+            itemDetails,
+            paymentMethod,
+            discountAmount,
+            discountPercentage,
+            subTotal,
+            calculatedTotal,
+            additionalNotes
+        };
+
         try {
-            const {
-                paymentReceiptNo,
-                paymentDate,
-                referenceNo,
-                receivedAmount,
-                discountAmount,
-                dueAmount,
-                totalAmount,
-                notes
-            } = data;
 
-            const finalData = {
-                paymentReceiptNo,
-                paymentDate,
-                memberId,
-                staffId,
-                paymentMethod,
-                paymentStatus,
-                referenceNo,
-                receivedAmount,
-                discountAmount,
-                dueAmount,
-                totalAmount,
-                notes
-            };
-
-            if (!memberId) {
-                toast.error('Please select customer name');
-                return
-            }
-
-            if (!staffId) {
-                toast.error('Please select staff name');
-                return
-            };
-
-            if (!paymentMethod) {
-                toast.error('Please select payment method');
-                return
-            };
-
-            if (!paymentStatus) {
-                toast.error('Please select payment status');
-                return
-            };
-
-            const response = await fetch(`http://localhost:3000/api/accounting/paymentreceipts`, {
-                method: 'POST',
+            const response = await fetch(`http://localhost:3000/api/accounting/invoicemanagement/`, {
+                method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -655,26 +625,31 @@ const PaymentInvoice = () => {
             const responseBody = await response.json();
 
             if (response.ok && response.status === 200) {
-                queryclient.invalidateQueries(['paymentreceipts']);
-                setReceiptData(responseBody.receipt);
                 toast.success(responseBody.message);
-                reset();
                 setOpenInvoiceForm(false);
-                setMemberId('');
+                reset();
+                setStaffName('');
                 setStaffId('');
                 setMemberName('');
-                setStaffName('');
-                setStaffSearchQuery('');
-                setMemberSearchQuery('');
-                setAssignedStaffName(responseBody.assignedStaffName);
-                setAssignedMemberName(responseBody.assignedMemberName);
-                setPrintReceiptAlert(true);
+                setMemberId('');
+                setItemDetails([{
+                    selectedItem: {},
+                    quantity: 0,
+                    price: 0,
+                    discount: 0,
+                    total: 0,
+                }]);
+                setPaymentMethod('');
+                setDiscountAmount(0);
+                setDiscountPercentage(0);
+                setCalculatedTotal(0);
+                setSubTotal(0);
             } else {
                 toast.error(responseBody.message);
             };
+
         } catch (error) {
             console.log("Error: ", error);
-            toast.error('Internal Server Error!');
             toast.error(error.message);
         };
     };
@@ -809,10 +784,9 @@ const PaymentInvoice = () => {
         const discountByPercent = (totalBeforeDiscount * discountPercentage) / 100;
         const totalDiscount = discountAmount + discountByPercent;
 
-        setSubTotal(totalBeforeDiscount.toFixed(2));
-        setCalculatedTotal((totalBeforeDiscount - totalDiscount).toFixed(2));
+        setSubTotal(Number(totalBeforeDiscount.toFixed(2)));
+        setCalculatedTotal(Number((totalBeforeDiscount - totalDiscount).toFixed(2)));
     }, [itemDetails, discountAmount, discountPercentage]);
-
 
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
@@ -1209,7 +1183,7 @@ const PaymentInvoice = () => {
                                         </div>
                                     </div>
 
-                                    {/* Member dropdown */}
+                                    {/* Issued To */}
                                     <div className='space-y-1.5'>
                                         <Label className="block text-sm font-medium text-gray-700">Issued To</Label>
                                         <div ref={memberSearchRef} className="relative">
@@ -1437,8 +1411,7 @@ const PaymentInvoice = () => {
                                                 <SelectGroup>
                                                     <SelectLabel>Payment Methods</SelectLabel>
                                                     <SelectItem value="Cash">Cash</SelectItem>
-                                                    <SelectItem value="Credit Card">Credit Card</SelectItem>
-                                                    <SelectItem value="Debit Card">Debit Card</SelectItem>
+                                                    <SelectItem value="Card">Card</SelectItem>
                                                     <SelectItem value="E Banking">E Banking</SelectItem>
                                                     <SelectItem value="Cheque">Cheque</SelectItem>
                                                 </SelectGroup>
@@ -1473,6 +1446,7 @@ const PaymentInvoice = () => {
                                 </div>
                             </div>
 
+                            {/* Render final calculations */}
                             <div className="w-full bg-indigo-500 rounded-lg p-4 my-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     {/* Left side - empty or could add icon/illustration */}
@@ -1502,6 +1476,7 @@ const PaymentInvoice = () => {
                                 </div>
                             </div>
 
+                            {/* Additiona notes and border */}
                             <div className='w-full border-t border-gray-300 mb-6 mt-10'></div>
                             <div className="space-y-4">
                                 <div className="space-y-2">
