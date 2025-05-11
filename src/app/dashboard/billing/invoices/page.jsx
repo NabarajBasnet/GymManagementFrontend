@@ -1220,13 +1220,13 @@ const PaymentInvoice = () => {
                                 <tbody>
                                     <tr>
                                         <td colSpan={loggedInUser?.role === 'Gym Admin' ? 9 : 10} className="text-center py-6 text-sm text-muted-foreground">
-                                            <h3 className="text-lg font-medium text-gray-700 mb-1">No payment receipts yet</h3>
+                                            <h3 className="text-lg font-medium text-gray-700 mb-1">No payment invoices yet</h3>
                                             <p className="text-gray-500 mb-4 text-xs font-semibold w-full text-center align-center">Create your first payment receipt to get started</p>
                                             <Button
-                                                onClick={() => setOpenReceiptForm(true)}
+                                                onClick={() => setOpenInvoiceForm(true)}
                                                 className="px-6">
                                                 <Plus className="h-4 w-4 mr-2" />
-                                                Create Receipt
+                                                New Invoice
                                             </Button>
                                         </td>
                                     </tr>
