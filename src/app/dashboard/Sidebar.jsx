@@ -268,7 +268,7 @@ const Sidebar = () => {
                         { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: TbListDetails, title: 'Billing Profile', link: '/dashboard/billing/billingprofile' },
                         { icon: IoReceiptSharp, title: 'Payment Receipt', link: '/dashboard/billing/paymentreceipts' },
-                        { icon: FaMoneyBillAlt, title: 'Sales Invoice', link: '/dashboard/billing/invoices' },
+                        { icon: FaMoneyBillAlt, title: 'Sales Invoice', link: '/dashboard/billing/salesinvoice' },
                         // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
                         // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
                     ]

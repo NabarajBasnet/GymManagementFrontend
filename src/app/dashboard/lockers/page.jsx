@@ -1,5 +1,6 @@
 'use client';
 
+import { MdAdd } from "react-icons/md";
 import { RiResetRightFill } from "react-icons/ri";
 import { MdError, MdClose, MdDone } from "react-icons/md";
 import Badge from '@mui/material/Badge';
@@ -349,8 +350,8 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full" onClick={() => setToast(false)}>
-            <div className='w-full p-6' onClick={() => setToast(false)}>
+        <div className="w-full bg-gray-100 py-7 px-4" onClick={() => setToast(false)}>
+            <div className='w-full bg-white p-6 rounded-md shadow-dm border' onClick={() => setToast(false)}>
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -374,13 +375,16 @@ const Lockers = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Lockers</h1>
+                <div className='w-full flex justify-between items-center'>
+                    <h1 className="text-xl font-bold mt-3">Lockers</h1>
+                    <Button className='rounded-md' disabled><MdAdd className='w-4 h-4' />Add Lockers</Button>
+                </div>
             </div>
 
             {toast && (
                 <>
                     <div
-                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                         onClick={() => setToast(false)}
                     ></div>
 
@@ -740,7 +744,7 @@ const Lockers = () => {
                 )
             }
 
-            <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+            <div className="min-h-screen">
                 {isLoading ? (
                     <>
                         <Loader />
@@ -748,8 +752,8 @@ const Lockers = () => {
                 ) : (
                     <div className="w-full">
                         {!isLoading && (
-                            <div className="max-w-full mx-4">
-                                <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
+                            <div className="max-w-full">
+                                <div className="bg-white rounded-xl mt-4 shadow-sm border p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
                                     <div className="flex-1">
                                         <Label className="text-sm font-semibold text-gray-600 mb-2 block">
                                             Locker Number
@@ -859,12 +863,12 @@ const Lockers = () => {
                                     </div>
                                 </div>
 
-                                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 md:gap-4 lg:gap-8">
+                                <div className="grid grid-cols-1 my-4 md:grid-cols-2 lg:grid-cols-3 md:gap-6">
                                     {Array.isArray(Lockers) && Lockers.length > 0 ? (
                                         Lockers.map((locker) => (
                                             <div
                                                 key={locker.lockerNumber}
-                                                className="bg-white rounded-xl my-4 overflow-hidden shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
+                                                className="bg-white rounded-xl overflow-hidden my-4 md:my-0 shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
                                             >
                                                 <div
                                                     className={`h-2 ${locker.status === 'Expired'
