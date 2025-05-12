@@ -1,7 +1,6 @@
 'use client';
 
 import { IoCloseSharp } from "react-icons/io5";
-import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQueryClient } from '@tanstack/react-query';
 import toast, { Toaster } from 'react-hot-toast';
 import { useForm, Controller } from "react-hook-form";
@@ -10,93 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React, { useEffect, useState } from 'react';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-
-const INITIAL_TASKS = [
-    {
-        id: 1,
-        title: 'Clean and Sanitize Gym Equipment',
-        description: 'Thoroughly clean all equipment in the weight room and cardio area',
-        assignedTo: 'John Doe',
-        status: 'In Progress',
-        priority: 'High',
-        category: 'Maintenance',
-        dueDate: '2024-03-25',
-        created: '2024-03-20',
-        comments: [
-            { id: 1, user: 'Sarah Manager', text: 'Focus on the cardio machines first', time: '2h ago' }
-        ]
-    },
-    {
-        id: 2,
-        title: 'Restock Protein Shakes',
-        description: 'Check and restock protein shakes in the nutrition bar',
-        assignedTo: 'Jane Smith',
-        status: 'Pending',
-        priority: 'Medium',
-        category: 'Inventory',
-        dueDate: '2024-03-23',
-        created: '2024-03-20',
-        comments: []
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    }
-];
 
 const CATEGORIES = [
     'Maintenance',
@@ -122,11 +35,8 @@ const EditTaskDetails = ({ task, id }) => {
 
     // States
     const [taskMode, setTaskMode] = useState(null);
-    const [taskAssignedTo, setTaskAssignedTo] = useState(null);
     const [isAddingTask, setIsAddingTask] = useState(false);
     const queryClient = useQueryClient();
-    const [deleteing, setDeleting] = useState(false);
-    const { user, loading } = useUser();
 
     // Form states
     const {
@@ -192,7 +102,7 @@ const EditTaskDetails = ({ task, id }) => {
 
     return (
         <div className="min-h-screen w-full bg-gray-50">
-            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-40 p-4">
+            <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
                 <form onSubmit={handleSubmit(editTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                     <div className="flex items-center justify-between mb-6">
                         <h2 className="text-2xl font-bold">Edit Task Details</h2>
