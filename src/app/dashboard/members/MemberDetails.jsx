@@ -483,7 +483,7 @@ const MemberDetails = ({ memberId }) => {
                 {toast && (
                     <>
                         <div
-                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                             onClick={() => setToast(false)}
                         ></div>
 

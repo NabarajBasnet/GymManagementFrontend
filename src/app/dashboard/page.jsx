@@ -1,6 +1,6 @@
 'use client';
 
-import { MdHome } from "react-icons/md";
+import { MdHome, MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";

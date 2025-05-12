@@ -1,5 +1,13 @@
 "use client";
 
+import { MdHome, MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { toast as notify } from 'react-hot-toast';
 import React from 'react';
 import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useQuery } from "@tanstack/react-query";
@@ -114,6 +122,32 @@ export function NewRadialChart() {
         },
     });
 
+    const copyToClipboard = (_id) => {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(_id)
+                .then(() => notify.success(`Member ID ${_id} copied to clipboard`))
+                .catch(() => notify.error("Failed to copy ID"));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = _id;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    notify.success(`Member ID ${_id} copied to clipboard`);
+                } else {
+                    throw new Error();
+                };
+            } catch (err) {
+                notify.error("Failed to copy ID");
+            };
+            document.body.removeChild(textArea);
+        };
+    };
+
     return (
         <div className="w-full border-none">
             <Card className="flex flex-col border-none">
@@ -193,14 +227,9 @@ export function NewRadialChart() {
                             <TableHead className='text-pink-600'>Member Id</TableHead>
                             <TableHead className='text-pink-600'>Full Name</TableHead>
                             <TableHead className='text-pink-600'>Duration</TableHead>
-                            <TableHead className='text-pink-600'>Option</TableHead>
                             <TableHead className='text-pink-600'>Renew</TableHead>
-                            <TableHead className='text-pink-600'>Type</TableHead>
-                            <TableHead className='text-pink-600'>Expire</TableHead>
                             <TableHead className='text-pink-600'>Contact No</TableHead>
-                            <TableHead className='text-pink-600'>Shift</TableHead>
                             <TableHead className='text-pink-600'>Status</TableHead>
-                            <TableHead className='text-pink-600'>Fee</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -212,17 +241,32 @@ export function NewRadialChart() {
                                             'text-red-500';
                                 return (
                                     <TableRow key={member._id} className={textColor}>
-                                        <TableCell><p>{member._id}</p></TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
+                                                <span className="truncate text-center font-mono text-xs">{member._id}</span>
+                                                <TooltipProvider>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <button
+                                                                className="text-gray-400 hover:text-blue-600 transition-colors p-1"
+                                                            >
+                                                                <MdContentCopy
+                                                                    onClick={() => copyToClipboard(member._id)}
+                                                                    size={14} />
+                                                            </button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <p>Copy ID</p>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            </div>
+                                        </TableCell>
                                         <TableCell>{member.fullName}</TableCell>
                                         <TableCell>{member.membershipDuration}</TableCell>
-                                        <TableCell>{member.membershipOption}</TableCell>
                                         <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                        <TableCell>{member.membershipType}</TableCell>
-                                        <TableCell>{new Date(member.membershipExpireDate).toISOString().split("T")[0]}</TableCell>
                                         <TableCell>{member.contactNo}</TableCell>
-                                        <TableCell>{member.membershipShift}</TableCell>
                                         <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
-                                        <TableCell>{member.paidAmmount}</TableCell>
                                     </TableRow>
                                 );
                             })
