@@ -201,7 +201,7 @@ const StaffAttendance = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100'>
+        <div className='w-full bg-gray-100 px-4 py-7'>
 
             {successfulAlert && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -340,7 +340,7 @@ const StaffAttendance = () => {
                 </div>
             )}
 
-            <div className='w-full p-4'>
+            <div className='w-full bg-white p-4 border rounded-md'>
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -364,10 +364,11 @@ const StaffAttendance = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
+
                 <div className='w-full md:flex items-center justify-between'>
-                    <h1 className="md:w-6/12 w-full text-xl font-bold mt-3">Staff Attendance</h1>
+                    <h1 className="md:w-6/12 w-full text-xl font-bold mt-2">Staff Attendance</h1>
                     <div className="md:w-6/12 w-full flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-between border bg-white border-gray-200 rounded-md items-center">
+                        <div className="w-full px-4 flex justify-between border bg-white border-gray-300 rounded-sm items-center">
                             <Search className="h-5 w-5 text-gray-400" />
                             <Input
                                 value={searchQuery}
@@ -380,12 +381,12 @@ const StaffAttendance = () => {
                 </div>
             </div>
 
-            <div className="w-full flex bg-white justify-center">
+            <div className="w-full flex bg-white mt-4 rounded-md border justify-center">
                 <div className="w-full mx-4">
                     <div className="w-full">
                         <form className="w-full md:flex justify-between items-center my-4">
                             <div className='w-full flex justify-start items-center p-2'>
-                                <div className='w-full flex border px-2 rounded-md items-center'>
+                                <div className='w-full flex border px-2 rounded-sm items-center'>
                                     <QrCode className='h-5 w-5 text-gray-400' />
                                     <Input
                                         placeholder='Scan qr code here'
@@ -403,9 +404,8 @@ const StaffAttendance = () => {
                             </div>
 
                             <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
-                                <Button type='submit' className='rounded-md bg-transparent border hover:bg-transparent text-black hover:text-gray-900 w-full flex items-center'>
-                                    <RefreshCw className='h-4 w-4 text-gray-900 mr-2' />
-                                    Refresh</Button>
+                                <Button type='submit' className='w-full flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'>
+                                    <RefreshCw className='h-4 w-4 hover:text-gray-800 text-gray-100 mr-2' />Refresh</Button>
                             </div>
                         </form>
 
@@ -416,12 +416,12 @@ const StaffAttendance = () => {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">STAFF ID</TableHead>
-                                            <TableHead>NAME</TableHead>
-                                            <TableHead>ROLE</TableHead>
-                                            <TableHead>CHECK IN</TableHead>
-                                            <TableHead>CHECK OUT</TableHead>
-                                            <TableHead>REMARK</TableHead>
+                                            <TableHead className="w-[100px]">Staff Id</TableHead>
+                                            <TableHead>Name</TableHead>
+                                            <TableHead>Role</TableHead>
+                                            <TableHead>Check In</TableHead>
+                                            <TableHead>Check Out</TableHead>
+                                            <TableHead>Remark</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>

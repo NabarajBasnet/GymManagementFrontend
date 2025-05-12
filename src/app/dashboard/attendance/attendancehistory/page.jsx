@@ -162,9 +162,10 @@ const AttendanceHistory = () => {
     const endEntry = Math.min(currentPage * limit, membershipType === 'Members' ? memberHistory ? memberHistory.length : 0 : staffHistory ? staffHistory.length : 0);
 
     return (
-        <div className='w-full'>
+        <div className='w-full bg-gray-100 px-4 py-7'>
+
             <div className='w-full'>
-                <div className='w-full p-6 pb-0'>
+                <div className='w-full bg-white p-4 border rounded-sm'>
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -193,8 +194,8 @@ const AttendanceHistory = () => {
 
                 {membershipType === 'Staffs' ? (
                     <div>
-                        <div className='w-full flex justify-center'>
-                            <div className='w-full bg-white rounded-md mx-4'>
+                        <div className='w-full flex my-4 justify-center'>
+                            <div className='w-full bg-white rounded-sm'>
                                 <div className="w-full p-4 space-y-4">
                                     <Alert className="bg-blue-50 border-blue-100">
                                         <InfoIcon className="h-4 w-4 text-blue-600" />
@@ -320,7 +321,7 @@ const AttendanceHistory = () => {
                                                 </div>
                                             </div>
                                         ) : (
-                                            <h1 className="text-center font-semibold animate-pulse text-sm">Loading...</h1>
+                                            <h1 className="text-center font-semibold animate-pulse text-sm"></h1>
                                         )}
                                     </>
                                 ) : (
@@ -378,7 +379,7 @@ const AttendanceHistory = () => {
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell colSpan="6" className="text-center text-sm font-semibold">Staff attendance not found.</TableCell>
+                                                        <TableCell colSpan="6" className="text-center text-sm font-semibold mb-4">Staff attendance not found.</TableCell>
                                                     </TableRow>
                                                 )}
                                             </TableBody>
@@ -391,14 +392,14 @@ const AttendanceHistory = () => {
                                         </Table>
                                     ) : (
                                         <div className="w-full flex justify-center">
-                                            <h1 className="text-sm font-semibold text-center">Staff attendance not found.</h1>
+                                            <h1 className="text-sm font-semibold text-center mb-4">Staff attendance not found.</h1>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         </div>
 
-                        <div className='border-t border-gray-600'>
+                        <div className='border-t border-gray-400'>
                             <div className="mt-4 px-4 md:flex justify-between items-center">
                                 <p className="font-medium text-center text-sm font-gray-700">
                                     Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
@@ -417,7 +418,7 @@ const AttendanceHistory = () => {
                 ) : (
                     <div className="w-full">
                         <div className='w-full flex justify-center'>
-                            <div className='w-full bg-white mx-4'>
+                            <div className='w-full my-4 rounded-sm bg-white'>
                                 <div className="w-full p-4 space-y-4">
                                     <Alert className="bg-blue-50 border-blue-100">
                                         <InfoIcon className="h-4 w-4 text-blue-600" />
@@ -565,13 +566,13 @@ const AttendanceHistory = () => {
                                         </Table>
                                     ) : (
                                         <div className="w-full flex justify-center">
-                                            <h1 className="text-sm font-semibold text-center">Member attendance not found.</h1>
+                                            <h1 className="text-sm font-semibold text-center mb-4">Member attendance not found.</h1>
                                         </div>
                                     )}
                                 </div>
                             </div>
                         </div>
-                        <div className='border-t border-gray-600'>
+                        <div className='border-t border-gray-400'>
                             <div className="mt-4 px-4 md:flex justify-between items-center">
                                 <p className="font-medium text-center text-sm font-gray-700">
                                     Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
