@@ -1,5 +1,6 @@
 'use client';
 
+import { TiHome } from "react-icons/ti";
 import { useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -388,11 +389,11 @@ const PaymentHistory = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full p-6 bg-white border-b shadow-sm sticky top-0 z-10">
+            <div className="w-full p-6 bg-gray-50 border-b shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600">Home</BreadcrumbLink>
+                            <TiHome className="w-4 h-4" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600">Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -414,12 +415,12 @@ const PaymentHistory = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className="font-medium text-gray-900">Payment History</BreadcrumbPage>
+                            <BreadcrumbPage className="font-medium text-blue-600">Payment History</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-4">
-                    <h1 className="text-2xl font-bold text-gray-900">Member Payment History</h1>
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-2">
+                    <h1 className="text-2xl font-bold text-gray-900">Payment History</h1>
                     <div className="flex space-x-2 mt-4 md:mt-0">
                         <TooltipProvider>
                             <Tooltip>

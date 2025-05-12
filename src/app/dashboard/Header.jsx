@@ -285,7 +285,7 @@ const Header = () => {
                 {
                     icon: MdPayments,
                     title: 'Payment History',
-                    link: '/dashboard/members/paymenthistory',
+                    link: '/dashboard/paymenthistory',
                 },
                 {
                     icon: MdAttachMoney,
