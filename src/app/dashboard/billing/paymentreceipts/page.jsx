@@ -675,7 +675,7 @@ const PaymentReceipts = () => {
     return (
         <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
             {/* Breadcrumb Navigation */}
-            <div className="mb-6">
+            <div className="bg-white p-4 rounded-md">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
@@ -703,6 +703,34 @@ const PaymentReceipts = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
+
+                {/* Header Section */}
+                <div className="flex flex-col mt-2 md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 className="text-xl md:text-2xl font-bold text-gray-800">Payment Receipts</h1>
+                    </div>
+
+                    <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3">
+                        {/* Search Bar */}
+                        <div className="relative flex-1 min-w-[200px]">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Input
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search receipts..."
+                                className="pl-10 pr-4 py-2 h-10 rounded-md border-gray-300 focus-visible:ring-primary"
+                            />
+                        </div>
+
+                        {/* New Receipt Button */}
+                        <Button
+                            onClick={() => setOpenReceiptForm(true)}
+                            className="h-10 px-4 rounded-md bg-primary hover:bg-primary/90">
+                            <Plus className="h-4 w-4 mr-2" />
+                            New Receipt
+                        </Button>
+                    </div>
+                </div>
             </div>
 
             {/* Print alert dialog */}
@@ -721,37 +749,8 @@ const PaymentReceipts = () => {
                 </AlertDialogContent>
             </AlertDialog>
 
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row bg-white p-3 rounded-md shadow-md justify-between items-start md:items-center mb-6 gap-4">
-                <div>
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Payment Receipts</h1>
-                    <p className="text-xs text-gray-500 font-semibold mt-1">Manage and view all payment receipts</p>
-                </div>
-
-                <div className="w-full md:w-auto flex flex-col-reverse md:flex-row gap-3">
-                    {/* Search Bar */}
-                    <div className="relative flex-1 min-w-[200px]">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                        <Input
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Search receipts..."
-                            className="pl-10 pr-4 py-2 h-10 rounded-md border-gray-300 focus-visible:ring-primary"
-                        />
-                    </div>
-
-                    {/* New Receipt Button */}
-                    <Button
-                        onClick={() => setOpenReceiptForm(true)}
-                        className="h-10 px-4 rounded-md bg-primary hover:bg-primary/90">
-                        <Plus className="h-4 w-4 mr-2" />
-                        New Receipt
-                    </Button>
-                </div>
-            </div>
-
             {/* Content Area */}
-            <div className="w-full bg-white rounded-xl shadow-md border border-gray-200">
+            <div className="w-full my-4 bg-white rounded-md shadow-md border border-gray-200">
                 {/* Table Section */}
                 <div className="w-full">
                     {Array.isArray(paymentreceipts) && paymentreceipts.length > 0 ? (
