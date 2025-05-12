@@ -338,8 +338,8 @@ export default function GymBillingProfileForm() {
                         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {/* Gym Information */}
-                                <Card className="border border-gray-100 shadow-sm">
-                                    <CardHeader className="bg-gray-50 border-b">
+                                <Card className="border border-gray-200 shadow-md">
+                                    <CardHeader className="bg-gray-100 border-b">
                                         <CardTitle className="flex items-center text-gray-900">
                                             <Building className="mr-2 h-5 w-5 text-blue-500" />
                                             Gym Information
@@ -403,8 +403,8 @@ export default function GymBillingProfileForm() {
                                 </Card>
 
                                 {/* Tax Information */}
-                                <Card className="border border-gray-100 shadow-sm">
-                                    <CardHeader className="bg-gray-50 border-b">
+                                <Card className="border border-gray-200 shadow-md">
+                                    <CardHeader className="bg-gray-100 border-b">
                                         <CardTitle className="flex items-center text-gray-900">
                                             <FileText className="mr-2 h-5 w-5 text-emerald-500" />
                                             Tax Information
@@ -465,8 +465,8 @@ export default function GymBillingProfileForm() {
                                 </Card>
 
                                 {/* Contact Information */}
-                                <Card className="border border-gray-100 shadow-sm">
-                                    <CardHeader className="bg-gray-50 border-b">
+                                <Card className="border border-gray-200 shadow-md">
+                                    <CardHeader className="bg-gray-100 border-b">
                                         <CardTitle className="flex items-center text-gray-900">
                                             <Phone className="mr-2 h-5 w-5 text-orange-500" />
                                             Contact Information
@@ -546,8 +546,8 @@ export default function GymBillingProfileForm() {
                                 </Card>
 
                                 {/* Banking & Payment */}
-                                <Card className="border border-gray-100 shadow-sm">
-                                    <CardHeader className="bg-gray-50 border-b">
+                                <Card className="border border-gray-200 shadow-md">
+                                    <CardHeader className="bg-gray-100 border-b">
                                         <CardTitle className="flex items-center text-gray-900">
                                             <CreditCard className="mr-2 h-5 w-5 text-purple-500" />
                                             Banking & Payment
@@ -573,8 +573,8 @@ export default function GymBillingProfileForm() {
                                 </Card>
 
                                 {/* Additional Settings */}
-                                <Card className="border border-gray-100 shadow-sm md:col-span-2">
-                                    <CardHeader className="bg-gray-50 border-b">
+                                <Card className="border border-gray-200 shadow-md md:col-span-2">
+                                    <CardHeader className="bg-gray-100 border-b">
                                         <CardTitle className="flex items-center text-gray-900">
                                             <FileStack className="mr-2 h-5 w-5 text-rose-500" />
                                             Additional Settings
@@ -614,7 +614,7 @@ export default function GymBillingProfileForm() {
                             </div>
 
                             {/* Submit Button - Sticky at bottom */}
-                            <div className="sticky bottom-0 bg-white pt-6 pb-6 shadow-md rounded-md z-10 border-t border-gray-100">
+                            <div className="sticky bottom-0 bg-white pt-6 pb-6 shadow-md rounded-md z-10 border-t border-gray-200">
                                 <div className="container mx-auto px-4 md:px-6">
                                     <div className="flex justify-end">
                                         <Button
