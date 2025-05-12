@@ -615,8 +615,8 @@ const StaffManagement = () => {
     };
 
     return (
-        <div className="w-full">
-            <div className='w-full'
+        <div className="w-full bg-gray-100 px-4 py-6">
+            <div className='w-full bg-white border rounded-md'
                 onClick={() => {
                     setToast(false);
                     setDeleting(false);
@@ -624,7 +624,7 @@ const StaffManagement = () => {
                     setShowShiftDetails(false);
                 }}>
 
-                <div className="p-6">
+                <div className="p-4">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -650,7 +650,7 @@ const StaffManagement = () => {
                     </Breadcrumb>
                 </div>
 
-                <div className="flex justify-between border-b border-gray-500 items-center p-4">
+                <div className="flex justify-between pb-4 px-4 items-center">
                     <h1 className="text-xl font-bold">Staff Management</h1>
                     <Button className='rounded-sm' onClick={() => {
                         reset();
@@ -658,7 +658,6 @@ const StaffManagement = () => {
                     }
                     }><RiUserAddFill className="h-6 w-6" />Add New Staff</Button>
                 </div>
-
             </div>
 
 
@@ -750,7 +749,7 @@ const StaffManagement = () => {
                 <EditStaffDetails staff={staffDetails} editStaff={editStaff} setEditStaff={setEditStaff} />
             )}
 
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 my-4 lg:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Staff</CardTitle>
@@ -790,7 +789,7 @@ const StaffManagement = () => {
             </div>
 
             <div className="w-full flex justify-center">
-                <div className="w-full border mx-4 rounded-lg">
+                <div className="w-full border bg-white rounded-lg">
                     <div className="w-full md:flex justify-between items-center px-4">
                         <div className="w-full md:w-6/12 flex py-2 md:py-0 items-center gap-3 rounded-lg">
                             <h1 className="text-sm font-semibold text-gray-700">Show</h1>
@@ -831,20 +830,20 @@ const StaffManagement = () => {
                                         <div className="w-full flex justify-center">
                                             <Table className='w-full overflow-x-auto px-4'>
                                                 <TableHeader>
-                                                    <TableRow className='bg-gray-200 text-black'>
-                                                        <TableHead>Avatar</TableHead>
-                                                        <TableHead>Name</TableHead>
-                                                        <TableHead className='text-center'>Contact</TableHead>
-                                                        <TableHead className='text-center'>Address</TableHead>
-                                                        <TableHead className='text-center'>No Of Shifts</TableHead>
-                                                        <TableHead className='text-center'>Shift Details</TableHead>
-                                                        <TableHead className='text-center'>Joined At</TableHead>
-                                                        <TableHead className='text-center'>Status</TableHead>
-                                                        <TableHead className='text-center'>Role</TableHead>
+                                                    <TableRow className='bg-gray-100 text-black'>
+                                                        <TableHead className='text-black'>Avatar</TableHead>
+                                                        <TableHead className='text-black'>Name</TableHead>
+                                                        <TableHead className='text-black text-center'>Contact</TableHead>
+                                                        <TableHead className='text-black text-center'>Address</TableHead>
+                                                        <TableHead className='text-black text-center'>No Of Shifts</TableHead>
+                                                        <TableHead className='text-black text-center'>Shift Details</TableHead>
+                                                        <TableHead className='text-black text-center'>Joined At</TableHead>
+                                                        <TableHead className='text-black text-center'>Status</TableHead>
+                                                        <TableHead className='text-black text-center'>Role</TableHead>
                                                         {user && user.user.role === 'Gym Admin' ? (
                                                             <></>
                                                         ) : (
-                                                            <TableHead className='text-center'>Action</TableHead>
+                                                            <TableHead className='text-black text-center'>Action</TableHead>
                                                         )}
                                                     </TableRow>
                                                 </TableHeader>
@@ -934,7 +933,7 @@ const StaffManagement = () => {
                                     )}
                                 </div>
 
-                                <div className='border-t border-gray-600'>
+                                <div className='border-t border-gray-300 rounded-b-md'>
                                     <div className="my-2 px-4 md:flex justify-between items-center">
                                         <p className="font-medium text-center text-sm font-gray-700">
                                             Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalStaffs}</span> entries
