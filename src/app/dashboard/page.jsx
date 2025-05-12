@@ -1,18 +1,7 @@
 'use client';
 
+import { MdHome } from "react-icons/md";
 import * as React from 'react';
-import {
-  Breadcrumb,
-  BreadcrumbEllipsis,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -169,33 +158,10 @@ const AdminDashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen w-full flex justify-center bg-gray-100">
-      <div className="w-full px-5 py-6">
-        <div className="mb-8">
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbLink href="/" className="text-gray-600 hover:text-gray-900">
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1">
-                    <BreadcrumbEllipsis className="h-4 w-4" />
-                  </DropdownMenuTrigger>
-                </DropdownMenu>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
-        </div>
+    <div className="min-h-screen w-full flex justify-center bg-gray-50">
+      <div className="w-full px-5 py-8">
 
-        <Alert className="bg-blue-50 border-blue-100">
+        <Alert className="bg-blue-100 border-blue-100">
           <InfoIcon className="h-4 w-4 text-blue-600" />
           <AlertDescription className="text-blue-700">
             Showing data from the beginning of the current month. Adjust dates below to view different periods.
@@ -235,7 +201,7 @@ const AdminDashboard = () => {
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden shadow-sm border ${item.border}`}
+              className={`overflow-hidden shadow-md border ${item.border}`}
             >
               <div className="p-6">
                 <div className="flex justify-between items-start">
