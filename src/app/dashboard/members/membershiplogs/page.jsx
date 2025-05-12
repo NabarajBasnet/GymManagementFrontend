@@ -203,11 +203,11 @@ const MembershipLogs = () => {
                                     <BreadcrumbEllipsis className="h-4 w-4" />
                                     <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="rounded-lg shadow-lg">
+                                {/* <DropdownMenuContent align="start" className="rounded-lg shadow-lg">
                                     <DropdownMenuItem className="hover:bg-gray-100">Documentation</DropdownMenuItem>
                                     <DropdownMenuItem className="hover:bg-gray-100">Themes</DropdownMenuItem>
                                     <DropdownMenuItem className="hover:bg-gray-100">GitHub</DropdownMenuItem>
-                                </DropdownMenuContent>
+                                </DropdownMenuContent> */}
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />

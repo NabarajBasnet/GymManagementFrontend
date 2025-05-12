@@ -1,5 +1,6 @@
 'use client'
 
+import { TiHome } from "react-icons/ti";
 import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
 import {
     DropdownMenu,
@@ -271,8 +272,8 @@ const InactiveMembers = () => {
     const endEntry = Math.min(currentPage * limit, totalInactiveMembers);
 
     return (
-        <div className="w-full">
-            <div className='w-full p-4' onClick={() => {
+        <div className="w-full bg-gray-100">
+            <div className='w-full px-4 pt-6 pb-3' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
             }
@@ -363,7 +364,7 @@ const InactiveMembers = () => {
                 {toast && (
                     <>
                         <div
-                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                             onClick={() => setToast(false)}
                         ></div>
 
@@ -450,11 +451,11 @@ const InactiveMembers = () => {
                     <></>
                 )}
 
-                <div className="bg-white shadow-sm rounded-lg flex items-center py-6 px-1 border">
+                <div className="bg-white shadow-sm rounded-sm border px-4 py-5">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                                <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -466,7 +467,7 @@ const InactiveMembers = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -474,8 +475,8 @@ const InactiveMembers = () => {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                </div>
                 <h1 className="text-xl font-bold mt-3">Inactive Members</h1>
+                </div>
             </div>
 
             <div className="mx-4 bg-white shadow-lg rounded-lg border">

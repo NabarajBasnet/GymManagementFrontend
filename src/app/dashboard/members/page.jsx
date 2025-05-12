@@ -1,5 +1,6 @@
 'use client';
 
+import { TiHome } from "react-icons/ti";
 import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
 import {
     DropdownMenu,
@@ -272,8 +273,8 @@ const AllMembers = () => {
     const endEntry = Math.min(currentPage * limit, totalMembers);
 
     return (
-        <div className="w-full">
-            <div className='w-full p-4' onClick={() => {
+        <div className="w-full bg-gray-100">
+            <div className='w-full px-4 pt-6 pb-3' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
             }
@@ -364,7 +365,7 @@ const AllMembers = () => {
                 {toast && (
                     <>
                         <div
-                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                             onClick={() => setToast(false)}
                         ></div>
 
@@ -451,11 +452,11 @@ const AllMembers = () => {
                     <></>
                 )}
 
-                <div className="bg-white shadow-sm rounded-lg flex items-center py-6 px-1 border">
+                <div className="bg-white shadow-sm rounded-sm flex items-center border px-4 py-5">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                                <TiHome className="w-4 h-4" /> <BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -467,7 +468,7 @@ const AllMembers = () => {
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/docs/components">Dashboard</BreadcrumbLink>
+                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -478,19 +479,11 @@ const AllMembers = () => {
                 </div>
             </div>
 
-            <div className="mx-4 bg-white shadow-sm rounded-lg mb-4">
+            <div className="bg-white mx-4 shadow-sm rounded-md">
                 <AllMembersAreaChart />
             </div>
 
-            {/* {renderNewMemberRegistration && (
-                <div className="fixed top-0 left-0 w-full h-95vh bg-black bg-opacity-50 flex items-start justify-center z-50">
-                    <div className="bg-white mt-10 p-6 flex justify-center items-center rounded-xl shadow-lg overflow-y-auto w-full">
-                        <NewMemberRegistrationForm />
-                    </div>
-                </div>
-            )} */}
-
-            <div className="mx-4 bg-white shadow-lg rounded-lg border">
+            <div className="mx-4 my-4 bg-white shadow-md mb-4 rounded-md border">
                 <div className="w-full flex p-4 justify-between items-center">
                     <h1 className="font-bold text-xl">Members List</h1>
                     <Button onClick={() => setRenderNewMemberRegistration(true)}> <IoMdPersonAdd />Add New Member</Button>
@@ -532,7 +525,7 @@ const AllMembers = () => {
                 {isLoading ? (
                     <Loader />
                 ) : (
-                    <div className="w-full bg-white">
+                    <div className="w-full mb-4 bg-white">
                         <div className="w-full flex justify-start">
                             <div className="w-full overflow-x-auto">
                                 <Table className='w-full overflow-x-auto'>

@@ -270,8 +270,8 @@ const PausedMembers = () => {
     const endEntry = Math.min(currentPage * limit, totalMembers);
 
     return (
-        <div className="w-full">
-            <div className='w-full p-4' onClick={() => {
+        <div className="w-full bg-gray-100">
+            <div className='w-full px-4 pt-6 pb-3' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
             }
@@ -291,7 +291,7 @@ const PausedMembers = () => {
                 {emailToast && (
                     <>
                         <div
-                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                             onClick={() => setToast(false)}
                         ></div>
 
@@ -449,7 +449,7 @@ const PausedMembers = () => {
                     <></>
                 )}
 
-                <div className="bg-white shadow-sm rounded-lg flex items-center py-6 px-1 border">
+                <div className="bg-white shadow-sm rounded-sm border px-4 py-5">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -473,8 +473,8 @@ const PausedMembers = () => {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                </div>
                 <h1 className="text-xl font-bold mt-3">Paused Members</h1>
+                </div>
             </div>
 
             <div className="mx-4 bg-white shadow-lg rounded-lg border">
