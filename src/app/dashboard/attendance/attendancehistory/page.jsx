@@ -1,18 +1,32 @@
 'use client';
 
-import { RiSearchLine } from "react-icons/ri";
-import { InfoIcon } from 'lucide-react';
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import Pagination from "@/components/ui/CustomPagination";
+import { useState, useEffect, useRef } from "react";
+import { Search, InfoIcon, CalendarIcon, ChevronDown, Clock, User, UserCheck } from "lucide-react";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Calendar } from "@/components/ui/calendar";
+import { usePagination } from "@/hooks/Pagination";
+
+// UI Components
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
+    Alert,
+    AlertDescription,
+} from "@/components/ui/alert";
+import {
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card";
 import {
     Table,
     TableBody,
@@ -23,9 +37,14 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import {
     Select,
     SelectContent,
@@ -35,24 +54,25 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect } from 'react';
 import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { useState, useRef } from "react";
-import { usePagination } from "@/hooks/Pagination";
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs";
+import Pagination from "@/components/ui/CustomPagination";
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
 
 const AttendanceHistory = () => {
-
+    // State variables
+    const [isLoading, setIsLoading] = useState(false);
     const [body, setBody] = useState(null);
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
@@ -66,72 +86,91 @@ const AttendanceHistory = () => {
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [staffHistory, setStaffHistory] = useState();
     const [memberHistory, setMemberHistory] = useState();
-    const [totalPages, setTotalPages] = useState();
+    const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = null;
+    const [persons, setPersons] = useState([]);
+    const limit = 10; // Set limit for pagination
+    const searchRef = useRef(null);
 
-    const [persons, setPersons] = useState(null);
-
+    // Fetch members data
     const fetchAllMembers = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
+            setIsLoading(false);
             return responseBody.members;
         } catch (error) {
             console.log("Error: ", error);
-        };
+            setIsLoading(false);
+        }
     };
 
+    // Fetch staff data
     const fetchAllStaffs = async () => {
         try {
+            setIsLoading(true);
             const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
+            setIsLoading(false);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        };
+            setIsLoading(false);
+        }
     };
 
+    // Effect to fetch data based on membership type
     useEffect(() => {
         if (membershipType === 'Staffs') {
             fetchAllStaffs();
         } else if (membershipType === 'Members') {
             fetchAllMembers();
-        }
-        else {
+        } else {
             setPersons([]);
-        };
+        }
     }, [membershipType]);
 
+    // Fetch attendance history
     const fetchAttendanceHistory = async () => {
+        if (!id) return;
+
         try {
+            setIsLoading(true);
             const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
             const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
+
             if (response.ok) {
                 setBody(responseBody);
-            };
+            }
+
             if (membershipType === 'Staffs') {
                 setStaffHistory(responseBody.data);
-                setTotalPages(responseBody.totalPages);
+                setTotalPages(responseBody.totalPages || 1);
             } else {
                 setMemberHistory(responseBody.data);
-                setTotalPages(responseBody.totalPages)
+                setTotalPages(responseBody.totalPages || 1);
             }
+            setIsLoading(false);
         } catch (error) {
             console.log("Error: ", error);
-        };
+            setIsLoading(false);
+        }
     };
 
+    // Effect to fetch attendance history when dependencies change
     useEffect(() => {
-        fetchAttendanceHistory();
+        if (id) {
+            fetchAttendanceHistory();
+        }
     }, [id, membershipType, startDate, endDate, currentPage]);
 
-    const searchRef = useRef(null);
-
+    // Handle click outside search dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -144,12 +183,9 @@ const AttendanceHistory = () => {
         };
     }, [searchRef]);
 
-    const handleSearchFocus = () => {
-        setRenderDropdown(true);
-    };
-
+    // Pagination setup
     const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
+        total: totalPages || 1,
         siblings: 1,
         boundaries: 1,
         page: currentPage,
@@ -158,438 +194,522 @@ const AttendanceHistory = () => {
         },
     });
 
+    // Calculate pagination details
     const startEntry = (currentPage - 1) * limit + 1;
-    const endEntry = Math.min(currentPage * limit, membershipType === 'Members' ? memberHistory ? memberHistory.length : 0 : staffHistory ? staffHistory.length : 0);
+    const totalEntries = membershipType === 'Members'
+        ? memberHistory?.length || 0
+        : staffHistory?.length || 0;
+    const endEntry = Math.min(currentPage * limit, totalEntries);
+
+    // Format date for display
+    const formatDateTime = (dateTime) => {
+        if (!dateTime) return '';
+        const date = new Date(dateTime);
+        return `${date.toLocaleDateString()} - ${date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        })}`;
+    };
 
     return (
-        <div className='w-full bg-gray-100 px-4 py-7'>
+        <div className="w-full min-h-screen bg-gray-50 px-4 py-6">
+            <Card className="shadow-sm mb-6">
+                <CardHeader className="pb-3">
+                    <div className="flex items-center pb-2">
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink href="/" className="text-blue-600 hover:text-blue-800">Home</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink className="text-blue-600 hover:text-blue-800">Attendance</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage>Attendance History</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+                    </div>
+                    <CardTitle className="text-2xl font-bold text-gray-800">Attendance History</CardTitle>
+                    <CardDescription className="text-gray-500">
+                        View and track attendance records for staff and members
+                    </CardDescription>
+                </CardHeader>
+            </Card>
 
-            <div className='w-full'>
-                <div className='w-full bg-white p-4 border rounded-sm'>
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink>Attendance</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Attendance History</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                    <h1 className="text-xl font-bold mt-3">Attendance History</h1>
-                </div>
+            <Tabs defaultValue="filters" className="w-full">
+                <TabsList className="mb-6 bg-white">
+                    <TabsTrigger value="filters" className="data-[state=active]:bg-blue-50">
+                        <div className="flex items-center">
+                            <Search className="mr-2 h-4 w-4" />
+                            Filters & Search
+                        </div>
+                    </TabsTrigger>
+                    <TabsTrigger value="results" className="data-[state=active]:bg-blue-50">
+                        <div className="flex items-center">
+                            <Clock className="mr-2 h-4 w-4" />
+                            Attendance Results
+                        </div>
+                    </TabsTrigger>
+                </TabsList>
 
-                {membershipType === 'Staffs' ? (
-                    <div>
-                        <div className='w-full flex my-4 justify-center'>
-                            <div className='w-full bg-white rounded-sm'>
-                                <div className="w-full p-4 space-y-4">
-                                    <Alert className="bg-blue-50 border-blue-100">
-                                        <InfoIcon className="h-4 w-4 text-blue-600" />
-                                        <AlertDescription className="text-blue-700">
-                                            Showing data from the beginning of the current month. Adjust dates below to view different periods.
-                                        </AlertDescription>
-                                    </Alert>
-                                    <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-                                        <div className="w-full">
-                                            <Label>From</Label>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal p-2 rounded-md border",
-                                                            !startDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
-                                                        {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-                                        <div className="w-full">
-                                            <Label>To</Label>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal p-2 rounded-md border",
-                                                            !endDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
-                                                        {endDate ? format(endDate, "PPP") : <span>End Date</span>}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-
-                                        <div className="w-full flex flex-col space-y-2">
-                                            <Label>Membership Type</Label>
-                                            <Select className="w-full" onValueChange={(value) => setMembershipType(value)}>
-                                                <SelectTrigger className="w-full rounded-md border p-2">
-                                                    <SelectValue placeholder="Membership Type" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select Type</SelectLabel>
-                                                        <SelectItem value="Staffs">Staffs</SelectItem>
-                                                        <SelectItem value="Members">Members</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="w-full">
-                                            <Label>Member Name</Label>
-                                            <div ref={searchRef} className="w-full flex justify-center">
-                                                <div className="relative w-full">
-                                                    <div className="w-full flex items-center rounded-md border">
-                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
-                                                        <Input
-                                                            value={searchQuery}
-                                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                                            onFocus={handleSearchFocus}
-                                                            className="w-full rounded-lg border-none outline-none"
-                                                            placeholder="Search members..."
-                                                        />
-                                                    </div>
-                                                    {renderDropdown && (
-                                                        <div className="w-full absolute bg-white shadow-2xl max-h-96 overflow-y-auto z-10">
-                                                            {persons?.filter((person) =>
-                                                                person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-                                                            ).map((person) => (
-                                                                <p
-                                                                    onClick={() => {
-                                                                        setSearchQuery(person.fullName);
-                                                                        setId(person._id);
-                                                                        setRenderDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                                    key={person._id}
-                                                                    value={person._id}
-                                                                >
-                                                                    {person.fullName}
-                                                                </p>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                <TabsContent value="filters">
+                    <Card className="shadow-sm">
+                        <CardHeader className="pb-2">
+                            <Alert className="bg-blue-50 border-blue-200 mb-4">
+                                <InfoIcon className="h-4 w-4 text-blue-600" />
+                                <AlertDescription className="text-blue-700 text-sm ml-2">
+                                    Showing data from the beginning of the current month. Adjust dates below to view different periods.
+                                </AlertDescription>
+                            </Alert>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {/* From Date */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="from-date" className="text-sm font-medium text-gray-700">From Date</Label>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                id="from-date"
+                                                variant="outline"
+                                                className={cn(
+                                                    "w-full justify-start text-left font-normal transition-all",
+                                                    !startDate && "text-gray-400"
+                                                )}
+                                            >
+                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                                                {startDate ? format(startDate, "PPP") : "Select start date"}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={startDate}
+                                                onSelect={setStartDate}
+                                                initialFocus
+                                                className="rounded-md border"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
                                 </div>
 
-                                {membershipType === 'Staffs' ? (
-                                    <>
-                                        {body ? (
-                                            <div className="w-full p-4 flex items-center justify-around bg-slate-200">
-                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
-                                                    <h1 className="text-sm font-semibold">Late Count: </h1>
-                                                    <span className="text-sm">{body ? body.totalLatePunchIns : 'Null'}</span>
-                                                </div>
+                                {/* To Date */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="to-date" className="text-sm font-medium text-gray-700">To Date</Label>
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <Button
+                                                id="to-date"
+                                                variant="outline"
+                                                className={cn(
+                                                    "w-full justify-start text-left font-normal transition-all",
+                                                    !endDate && "text-gray-400"
+                                                )}
+                                            >
+                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                                                {endDate ? format(endDate, "PPP") : "Select end date"}
+                                            </Button>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={endDate}
+                                                onSelect={setEndDate}
+                                                initialFocus
+                                                className="rounded-md border"
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                                </div>
 
-                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
-                                                    <h1 className="text-sm font-semibold">Deduction Days: </h1>
-                                                    <span className="text-sm">{body ? body.deductionDays : 'Null'}</span>
-                                                </div>
+                                {/* Membership Type */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="membership-type" className="text-sm font-medium text-gray-700">Membership Type</Label>
+                                    <Select value={membershipType} onValueChange={(value) => {
+                                        setMembershipType(value);
+                                        setId(''); // Reset selected person when changing type
+                                        setSearchQuery('');
+                                    }}>
+                                        <SelectTrigger id="membership-type" className="w-full">
+                                            <SelectValue placeholder="Select type" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Select Type</SelectLabel>
+                                                <SelectItem value="Members">Members</SelectItem>
+                                                <SelectItem value="Staffs">Staff</SelectItem>
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
 
-                                                <div className="w-full flex text-center space-x-2 items-center justify-center">
-                                                    <h1 className="text-sm font-semibold">Deduced Salary Rs: </h1>
-                                                    <span className="text-sm">{body ? Math.floor(body.salaryDeduction) : 'Null'}</span>
-                                                </div>
+                                {/* Search Person */}
+                                <div className="space-y-2" ref={searchRef}>
+                                    <Label htmlFor="person-search" className="text-sm font-medium text-gray-700">
+                                        {membershipType === 'Members' ? 'Member' : 'Staff'} Name
+                                    </Label>
+                                    <div className="relative">
+                                        <div className="flex items-center border rounded-md transition-all focus-within:ring-2 focus-within:ring-blue-200 focus-within:border-blue-400">
+                                            <Search className="h-4 w-4 ml-3 text-gray-400" />
+                                            <Input
+                                                id="person-search"
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                onFocus={() => setRenderDropdown(true)}
+                                                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                placeholder={`Search ${membershipType === 'Members' ? 'members' : 'staff'}...`}
+                                            />
+                                        </div>
+
+                                        {renderDropdown && (
+                                            <div className="absolute z-50 w-full mt-1 max-h-64 overflow-y-auto bg-white border rounded-md shadow-lg">
+                                                {isLoading ? (
+                                                    <div className="p-4 space-y-2">
+                                                        <Skeleton className="h-6 w-full" />
+                                                        <Skeleton className="h-6 w-full" />
+                                                        <Skeleton className="h-6 w-full" />
+                                                    </div>
+                                                ) : persons?.length > 0 ? (
+                                                    persons
+                                                        .filter((person) =>
+                                                            person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+                                                        )
+                                                        .map((person) => (
+                                                            <div
+                                                                key={person._id}
+                                                                onClick={() => {
+                                                                    setSearchQuery(person.fullName);
+                                                                    setId(person._id);
+                                                                    setRenderDropdown(false);
+                                                                }}
+                                                                className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                                                            >
+                                                                <User className="h-4 w-4 text-gray-500" />
+                                                                <span>{person.fullName}</span>
+                                                            </div>
+                                                        ))
+                                                ) : (
+                                                    <div className="p-4 text-center text-gray-500">
+                                                        No {membershipType.toLowerCase()} found
+                                                    </div>
+                                                )}
                                             </div>
-                                        ) : (
-                                            <h1 className="text-center font-semibold animate-pulse text-sm"></h1>
                                         )}
-                                    </>
-                                ) : (
-                                    <></>
-                                )}
+                                    </div>
+                                </div>
+                            </div>
 
-                                <div className="w-full">
-                                    {staffHistory ? (
+                            <Button
+                                className="mt-8 bg-blue-600 hover:bg-blue-700 text-white"
+                                onClick={() => {
+                                    if (id) fetchAttendanceHistory();
+                                }}
+                                disabled={!id}
+                            >
+                                <UserCheck className="mr-2 h-4 w-4" />
+                                View Attendance
+                            </Button>
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="results">
+                    {id ? (
+                        <Card className="shadow-sm">
+                            <CardHeader className="pb-2">
+                                <CardTitle className="text-xl font-medium">
+                                    {searchQuery ? `Attendance Record for ${searchQuery}` : 'Attendance Records'}
+                                </CardTitle>
+                                <CardDescription>
+                                    {startDate && endDate ? (
+                                        <span>Showing data from {format(startDate, "PP")} to {format(endDate, "PP")}</span>
+                                    ) : (
+                                        <span>Select date range to filter records</span>
+                                    )}
+                                </CardDescription>
+                            </CardHeader>
+
+                            {/* Summary Cards for Staff */}
+                            {membershipType === 'Staffs' && body && (
+                                <div className="px-6 py-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <Card className="bg-amber-50 border-amber-200">
+                                            <CardHeader className="py-3">
+                                                <CardTitle className="text-sm font-medium text-amber-800">Late Check-ins</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-2xl font-bold text-amber-900">{body.totalLatePunchIns || 0}</p>
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card className="bg-purple-50 border-purple-200">
+                                            <CardHeader className="py-3">
+                                                <CardTitle className="text-sm font-medium text-purple-800">Deduction Days</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-2xl font-bold text-purple-900">{body.deductionDays || 0}</p>
+                                            </CardContent>
+                                        </Card>
+
+                                        <Card className="bg-red-50 border-red-200">
+                                            <CardHeader className="py-3">
+                                                <CardTitle className="text-sm font-medium text-red-800">Salary Deducted</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-2xl font-bold text-red-900">₹ {body.salaryDeduction ? Math.floor(body.salaryDeduction) : 0}</p>
+                                            </CardContent>
+                                        </Card>
+                                    </div>
+                                </div>
+                            )}
+
+                            <CardContent>
+                                {isLoading ? (
+                                    <div className="space-y-4">
+                                        <Skeleton className="h-10 w-full" />
+                                        <Skeleton className="h-32 w-full" />
+                                        <Skeleton className="h-32 w-full" />
+                                    </div>
+                                ) : membershipType === 'Staffs' ? (
+                                    <div className="rounded-md border">
                                         <Table>
-                                            <TableHeader>
+                                            <TableHeader className="bg-gray-50">
                                                 <TableRow>
-                                                    <TableHead>Staff Id</TableHead>
-                                                    <TableHead>Full Name</TableHead>
-                                                    <TableHead>Role</TableHead>
-                                                    <TableHead>CheckIn</TableHead>
-                                                    <TableHead>CheckOut</TableHead>
-                                                    <TableHead>Remark</TableHead>
-                                                    <TableHead>Late Flag</TableHead>
+                                                    <TableHead className="font-medium">Staff ID</TableHead>
+                                                    <TableHead className="font-medium">Full Name</TableHead>
+                                                    <TableHead className="font-medium">Role</TableHead>
+                                                    <TableHead className="font-medium">Check In</TableHead>
+                                                    <TableHead className="font-medium">Check Out</TableHead>
+                                                    <TableHead className="font-medium">Status</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {staffHistory && staffHistory.length > 0 ? (
                                                     staffHistory.map((attendance) => (
-                                                        <TableRow key={attendance._id}>
+                                                        <TableRow key={attendance._id} className="hover:bg-gray-50">
                                                             <TableCell className="font-medium">{attendance.staffId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
                                                             <TableCell>{attendance.role}</TableCell>
-                                                            <TableCell className="text-sm">
-                                                                {attendance.checkIn ?
-                                                                    `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
-                                                                    new Date(attendance.checkIn).toLocaleTimeString('en-US', {
-                                                                        hour12: true,
-                                                                        hour: 'numeric',
-                                                                        minute: '2-digit',
-                                                                        second: '2-digit',
-                                                                        timeZone: 'UTC'
-                                                                    })
-                                                                    : ''}
+                                                            <TableCell>
+                                                                {attendance.checkIn ? (
+                                                                    <TooltipProvider>
+                                                                        <Tooltip>
+                                                                            <TooltipTrigger asChild>
+                                                                                <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
+                                                                                    {formatDateTime(attendance.checkIn)}
+                                                                                </span>
+                                                                            </TooltipTrigger>
+                                                                            <TooltipContent>
+                                                                                <p>
+                                                                                    {new Date(attendance.checkIn).toLocaleString('en-US', {
+                                                                                        weekday: 'long',
+                                                                                        year: 'numeric',
+                                                                                        month: 'long',
+                                                                                        day: 'numeric',
+                                                                                        hour: 'numeric',
+                                                                                        minute: '2-digit',
+                                                                                        second: '2-digit',
+                                                                                        hour12: true
+                                                                                    })}
+                                                                                </p>
+                                                                            </TooltipContent>
+                                                                        </Tooltip>
+                                                                    </TooltipProvider>
+                                                                ) : (
+                                                                    <span className="text-gray-400">--</span>
+                                                                )}
                                                             </TableCell>
-                                                            <TableCell className="text-sm">
-                                                                {attendance.checkOut ?
-                                                                    `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
-                                                                    new Date(attendance.checkOut).toLocaleTimeString('en-US', {
-                                                                        hour12: true,
-                                                                        hour: 'numeric',
-                                                                        minute: '2-digit',
-                                                                        second: '2-digit',
-                                                                        timeZone: 'UTC'
-                                                                    })
-                                                                    : ''}
+                                                            <TableCell>
+                                                                {attendance.checkOut ? (
+                                                                    <TooltipProvider>
+                                                                        <Tooltip>
+                                                                            <TooltipTrigger asChild>
+                                                                                <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
+                                                                                    {formatDateTime(attendance.checkOut)}
+                                                                                </span>
+                                                                            </TooltipTrigger>
+                                                                            <TooltipContent>
+                                                                                <p>
+                                                                                    {new Date(attendance.checkOut).toLocaleString('en-US', {
+                                                                                        weekday: 'long',
+                                                                                        year: 'numeric',
+                                                                                        month: 'long',
+                                                                                        day: 'numeric',
+                                                                                        hour: 'numeric',
+                                                                                        minute: '2-digit',
+                                                                                        second: '2-digit',
+                                                                                        hour12: true
+                                                                                    })}
+                                                                                </p>
+                                                                            </TooltipContent>
+                                                                        </Tooltip>
+                                                                    </TooltipProvider>
+                                                                ) : (
+                                                                    <span className="text-gray-400">--</span>
+                                                                )}
                                                             </TableCell>
-                                                            <TableCell>{attendance.remark}</TableCell>
-                                                            <TableCell>{attendance.remark === 'LatePunchIn' ? 'True' : 'False'}</TableCell>
+                                                            <TableCell>
+                                                                {attendance.remark === 'LatePunchIn' ? (
+                                                                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                                                                        Late
+                                                                    </Badge>
+                                                                ) : (
+                                                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                                                        On Time
+                                                                    </Badge>
+                                                                )}
+                                                            </TableCell>
                                                         </TableRow>
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell colSpan="6" className="text-center text-sm font-semibold mb-4">Staff attendance not found.</TableCell>
+                                                        <TableCell colSpan={6} className="h-24 text-center text-gray-500">
+                                                            No attendance records found
+                                                        </TableCell>
                                                     </TableRow>
                                                 )}
                                             </TableBody>
-                                            <TableFooter>
-                                                <TableRow>
-                                                    <TableCell >Total checked in time</TableCell>
-                                                    <TableCell className="text-left">{body ? body.totalStaffAttendance : ''}</TableCell>
-                                                </TableRow>
-                                            </TableFooter>
+                                            {staffHistory && staffHistory.length > 0 && (
+                                                <TableFooter>
+                                                    <TableRow className="bg-gray-50">
+                                                        <TableCell colSpan={2} className="font-medium">Total Check-in Time</TableCell>
+                                                        <TableCell colSpan={4}>{body ? body.totalStaffAttendance : '--'}</TableCell>
+                                                    </TableRow>
+                                                </TableFooter>
+                                            )}
                                         </Table>
-                                    ) : (
-                                        <div className="w-full flex justify-center">
-                                            <h1 className="text-sm font-semibold text-center mb-4">Staff attendance not found.</h1>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className='border-t border-gray-400'>
-                            <div className="mt-4 px-4 md:flex justify-between items-center">
-                                <p className="font-medium text-center text-sm font-gray-700">
-                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
-                                </p>
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="w-full">
-                        <div className='w-full flex justify-center'>
-                            <div className='w-full my-4 rounded-sm bg-white'>
-                                <div className="w-full p-4 space-y-4">
-                                    <Alert className="bg-blue-50 border-blue-100">
-                                        <InfoIcon className="h-4 w-4 text-blue-600" />
-                                        <AlertDescription className="text-blue-700">
-                                            Showing data from the beginning of the current month. Adjust dates below to view different periods.
-                                        </AlertDescription>
-                                    </Alert>
-                                    <div className="w-full flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
-                                        <div className="w-full">
-                                            <Label>From</Label>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal p-2 rounded-md border",
-                                                            !startDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
-                                                        {startDate ? format(startDate, "PPP") : <span>Start Date</span>}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar mode="single" selected={startDate} onSelect={setStartDate} initialFocus />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-                                        <div className="w-full">
-                                            <Label>To</Label>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant={"outline"}
-                                                        className={cn(
-                                                            "w-full justify-start text-left font-normal p-2 rounded-md border",
-                                                            !endDate && "text-muted-foreground"
-                                                        )}
-                                                    >
-                                                        <CalendarIcon className="mr-2 h-5 w-5 text-gray-400" />
-                                                        {endDate ? format(endDate, "PPP") : <span>End Date</span>}
-                                                    </Button>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0">
-                                                    <Calendar mode="single" selected={endDate} onSelect={setEndDate} initialFocus />
-                                                </PopoverContent>
-                                            </Popover>
-                                        </div>
-
-                                        <div className="w-full flex flex-col space-y-2">
-                                            <Label>Membership Type</Label>
-                                            <Select className="w-full" onValueChange={(value) => setMembershipType(value)}>
-                                                <SelectTrigger className="w-full rounded-md border p-2">
-                                                    <SelectValue placeholder="Membership Type" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectLabel>Select Type</SelectLabel>
-                                                        <SelectItem value="Staffs">Staffs</SelectItem>
-                                                        <SelectItem value="Members">Members</SelectItem>
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-
-                                        <div className="w-full">
-                                            <Label>Member Name</Label>
-                                            <div ref={searchRef} className="w-full flex justify-center">
-                                                <div className="relative w-full">
-                                                    <div className="w-full flex items-center border rounded-md" >
-                                                        <RiSearchLine className='h-5 w-5 ml-2 text-gray-400' />
-                                                        <Input
-                                                            value={searchQuery}
-                                                            onChange={(e) => setSearchQuery(e.target.value)}
-                                                            onFocus={handleSearchFocus}
-                                                            className="w-full rounded-lg border-none outline-none"
-                                                            placeholder="Search members..."
-                                                        />
-                                                    </div>
-                                                    {renderDropdown && (
-                                                        <div className="w-full absolute bg-white shadow-2xl max-h-96 overflow-y-auto z-10">
-                                                            {persons?.filter((person) =>
-                                                                person.fullName.toLowerCase().includes(searchQuery.toLowerCase())
-                                                            ).map((person) => (
-                                                                <p
-                                                                    onClick={() => {
-                                                                        setSearchQuery(person.fullName);
-                                                                        setId(person._id);
-                                                                        setRenderDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                                    key={person._id}
-                                                                    value={person._id}
-                                                                >
-                                                                    {person.fullName}
-                                                                </p>
-                                                            ))}
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
-                                </div>
-
-                                <div className="w-full">
-                                    {memberHistory ? (
+                                ) : (
+                                    <div className="rounded-md border">
                                         <Table>
-                                            <TableHeader>
+                                            <TableHeader className="bg-gray-50">
                                                 <TableRow>
-                                                    <TableHead>Member Id</TableHead>
-                                                    <TableHead>Full Name</TableHead>
-                                                    <TableHead>Membership Option</TableHead>
-                                                    <TableHead>Check In Time</TableHead>
+                                                    <TableHead className="font-medium">Member ID</TableHead>
+                                                    <TableHead className="font-medium">Full Name</TableHead>
+                                                    <TableHead className="font-medium">Membership Option</TableHead>
+                                                    <TableHead className="font-medium">Check In Date</TableHead>
+                                                    <TableHead className="font-medium">Check In Time</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {memberHistory && memberHistory.length > 0 ? (
                                                     memberHistory.map((attendance) => (
-                                                        <TableRow key={attendance._id}>
+                                                        <TableRow key={attendance._id} className="hover:bg-gray-50">
                                                             <TableCell className="font-medium">{attendance.memberId}</TableCell>
                                                             <TableCell>{attendance.fullName}</TableCell>
-                                                            <TableCell>{attendance.membershipOption}</TableCell>
+                                                            <TableCell className='text-start'>
+                                                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                                                                    {attendance.membershipOption}
+                                                                </Badge>
+                                                            </TableCell>
                                                             <TableCell>
-                                                                {new Date(attendance.checkInTime).toLocaleDateString()} -  {new Date(attendance.checkInTime).toLocaleTimeString('en-US', {
-                                                                    hour: 'numeric',
-                                                                    minute: 'numeric',
-                                                                    hour12: true
-                                                                })}
+                                                                <TooltipProvider>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
+                                                                                {formatDateTime(attendance.checkInTime).split('-')[0]}
+                                                                            </span>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent>
+                                                                            <p>
+                                                                                {new Date(attendance.checkInTime).toLocaleString('en-US', {
+                                                                                    weekday: 'long',
+                                                                                    year: 'numeric',
+                                                                                    month: 'long',
+                                                                                    day: 'numeric',
+                                                                                })}
+                                                                            </p>
+                                                                        </TooltipContent>
+                                                                    </Tooltip>
+                                                                </TooltipProvider>
+                                                            </TableCell>
+                                                            <TableCell>
+                                                                <TooltipProvider>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
+                                                                                {formatDateTime(attendance.checkInTime).split('-')[1]}
+                                                                            </span>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent>
+                                                                            <p>
+                                                                                {new Date(attendance.checkInTime).toLocaleString('en-US', {
+                                                                                    hour: 'numeric',
+                                                                                    minute: '2-digit',
+                                                                                    hour12: true
+                                                                                })}
+                                                                            </p>
+                                                                        </TooltipContent>
+                                                                    </Tooltip>
+                                                                </TooltipProvider>
                                                             </TableCell>
                                                         </TableRow>
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell colSpan="6" className="text-center text-sm font-semibold">Member attendance not found.</TableCell>
+                                                        <TableCell colSpan={4} className="h-24 text-center text-gray-500">
+                                                            No attendance records found
+                                                        </TableCell>
                                                     </TableRow>
                                                 )}
                                             </TableBody>
-                                            <TableFooter>
-                                                <TableRow>
-                                                    <TableCell className="text-left">Total checked in time</TableCell>
-                                                    <TableCell className="text-left">{memberHistory ? memberHistory.length : ''}</TableCell>
-                                                </TableRow>
-                                            </TableFooter>
+                                            {memberHistory && memberHistory.length > 0 && (
+                                                <TableFooter>
+                                                    <TableRow className="bg-gray-50">
+                                                        <TableCell colSpan={2} className="font-medium">Total Check-ins</TableCell>
+                                                        <TableCell colSpan={2}>{memberHistory ? memberHistory.length : '--'}</TableCell>
+                                                    </TableRow>
+                                                </TableFooter>
+                                            )}
                                         </Table>
-                                    ) : (
-                                        <div className="w-full flex justify-center">
-                                            <h1 className="text-sm font-semibold text-center mb-4">Member attendance not found.</h1>
-                                        </div>
-                                    )}
+                                    </div>
+                                )}
+                            </CardContent>
+
+                            {(staffHistory?.length > 0 || memberHistory?.length > 0) && (
+                                <CardFooter className="flex flex-col sm:flex-row justify-between items-center pt-6 pb-4 gap-4 border-t">
+                                    <div className="text-sm text-gray-500">
+                                        Showing <span className="font-medium">{startEntry}</span> to{" "}
+                                        <span className="font-medium">{endEntry}</span> of{" "}
+                                        <span className="font-medium">{totalEntries}</span> entries
+                                    </div>
+
+                                    <Pagination
+                                        total={totalPages}
+                                        page={currentPage}
+                                        onChange={setCurrentPage}
+                                        withEdges={true}
+                                        siblings={1}
+                                        boundaries={1}
+                                    />
+                                </CardFooter>
+                            )}
+                        </Card>
+                    ) : (
+                        <Card className="shadow-sm">
+                            <div className="flex flex-col items-center justify-center py-12">
+                                <div className="rounded-full bg-blue-50 p-3 mb-4">
+                                    <User className="h-6 w-6 text-blue-600" />
                                 </div>
-                            </div>
-                        </div>
-                        <div className='border-t border-gray-400'>
-                            <div className="mt-4 px-4 md:flex justify-between items-center">
-                                <p className="font-medium text-center text-sm font-gray-700">
-                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{membershipType === 'Staffs' ? staffHistory ? staffHistory.length : 0 : memberHistory ? memberHistory.length : 0}</span> entries
+                                <h3 className="text-lg font-medium text-gray-900 mb-1">No Person Selected</h3>
+                                <p className="text-gray-500 text-center max-w-md mb-6">
+                                    Please select a {membershipType === 'Staffs' ? 'staff member' : 'member'} from the search to view their attendance history.
                                 </p>
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                />
+                                <Button
+                                    variant="outline"
+                                    onClick={() => document.querySelector('[value="filters"]').click()}
+                                >
+                                    Go to Search
+                                </Button>
                             </div>
-                        </div>
-                    </div>
-                )}
-            </div>
+                        </Card>
+                    )}
+                </TabsContent>
+            </Tabs>
         </div>
     );
 };
