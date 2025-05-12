@@ -1,5 +1,6 @@
 'use client';
 
+import { TiHome } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import { LuLoaderCircle } from "react-icons/lu";
 import { FiUsers } from "react-icons/fi";
@@ -215,13 +216,13 @@ const Users = () => {
     };
 
     return (
-        <div className="w-full">
-            <div className="w-full px-4">
-                <div className="w-full p-4">
+        <div className="w-full bg-gray-100 px-4 py-6">
+            <div className="w-full">
+                <div className="w-full p-4 mb-4 bg-white border shadow-sm rounded-md">
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                                <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -241,7 +242,7 @@ const Users = () => {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                    <h1 className="text-2xl font-bold py-4">Users</h1>
+                    <h1 className="text-xl font-bold my-1">User Management</h1>
                 </div>
 
                 {isDeleting ? (
@@ -482,7 +483,7 @@ const Users = () => {
                     ) : null
                 }
 
-                <div className="w-full space-y-6">
+                <div className="w-full space-y-4">
                     {/* Controls Section */}
                     <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
@@ -567,8 +568,8 @@ const Users = () => {
                                                                 <div className="text-sm font-medium text-gray-900">
                                                                     {user.firstName} {user.lastName}
                                                                 </div>
-                                                                <div className="text-sm text-gray-500">
-                                                                    ID: {user._id.substring(0, 6)}...
+                                                                <div className="text-xs font-medium text-gray-500">
+                                                                    ID: {user._id}
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -598,7 +599,7 @@ const Users = () => {
                                                         </span>
                                                     </TableCell>
                                                     <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                        <div className="flex justify-end space-x-3">
+                                                        <div className="flex justify-end">
                                                             <button
                                                                 onClick={() => fetchSingleUser(user._id)}
                                                                 className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
@@ -654,7 +655,7 @@ const Users = () => {
                             </div>
 
                             {/* Pagination Section */}
-                            <div className="bg-gray-50 px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-lg">
+                            <div className="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-lg">
                                 <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                                     <div>
                                         <p className="text-sm text-gray-700">
