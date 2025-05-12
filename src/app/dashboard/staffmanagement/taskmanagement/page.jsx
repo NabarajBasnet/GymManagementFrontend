@@ -1,5 +1,6 @@
 'use client';
 
+import { TiHome } from "react-icons/ti";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import { usePagination } from "@/hooks/Pagination.js";
 import { Checkbox } from "@/components/ui/checkbox"
@@ -408,14 +409,14 @@ const StaffTaskManagement = () => {
     };
 
     return (
-        <div className="min-h-screen w-full bg-gray-50">
-            <div className="w-full px-4 sm:px-6 py-6">
+        <div className="w-full bg-gray-100">
+            <div className="w-full px-4 py-7">
                 {/* Header Section */}
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                <div className="flex flex-col bg-white p-4 border rounded-md sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <Breadcrumb className="w-full sm:w-auto overflow-x-auto">
                         <BreadcrumbList className="flex-nowrap">
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                                <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
@@ -541,8 +542,8 @@ const StaffTaskManagement = () => {
                         {isLoading ? (
                             <Loader />
                         ) : (
-                            <Table>
-                                <TableHeader className="bg-gray-50">
+                            <Table className='bg-white border'>
+                                <TableHeader className="bg-white">
                                     <TableRow>
                                         <TableHead>
                                             <Checkbox
@@ -703,7 +704,7 @@ const StaffTaskManagement = () => {
                             </Table>
                         )}
 
-                        <div className='border-t border-gray-600'>
+                        <div className='border-t border-gray-300'>
                             <div className="my-2 px-4 md:flex justify-between items-center">
                                 <p className="font-medium text-center text-sm font-gray-700">
                                     Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalTasks}</span> entries
