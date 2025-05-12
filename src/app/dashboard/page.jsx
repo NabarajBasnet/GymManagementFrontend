@@ -39,7 +39,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
 
@@ -59,7 +59,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/averageactivemembers');
+      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
