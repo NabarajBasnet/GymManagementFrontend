@@ -30,14 +30,6 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -340,96 +332,93 @@ const ServiceAndProducts = () => {
     };
 
     return (
-        <div className="w-full mx-auto py-6 px-4">
-            <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div className='w-full'>
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink>Dashboard</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink>Billing</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Services & Products</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                </div>
-            </div>
-
+        <div className="w-full mx-auto bg-gray-50 py-6 px-4">
             <div className="w-full">
-                <div className="w-full space-y-4 md:space-y-0 md:flex justify-between items-center">
-                    <div className="w-full flex justify-start items-center">
-                        <h1 className="text-xl font-bold mt-3">Services & Products</h1>
+
+                <div className="w-full bg-white space-y-4 p-4 border rounded-md md:space-y-0 flex justify-between items-end">
+                    <div className="w-full">
+                        <Breadcrumb>
+                            <BreadcrumbList>
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink className='font-medium text-xs' href="/">Home</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink className='font-medium text-xs'>Dashboard</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbLink className='font-medium text-xs'>Billing</BreadcrumbLink>
+                                </BreadcrumbItem>
+                                <BreadcrumbSeparator />
+                                <BreadcrumbItem>
+                                    <BreadcrumbPage className='font-medium text-xs'>Services & Products</BreadcrumbPage>
+                                </BreadcrumbItem>
+                            </BreadcrumbList>
+                        </Breadcrumb>
+
+                        <div className="w-full flex items-center justify-between">
+                            <div className="w-full flex justify-start items-center">
+                                <h1 className="text-xl font-bold mt-3">Services & Products</h1>
+                            </div>
+
+                            <div className="w-full flex items-center justify-end space-x-4">
+                                {selectedItems.length === 0 ? (
+                                    <></>
+                                ) : (
+                                    <AlertDialog className='md:space-x-4'>
+                                        <AlertDialogTrigger asChild>
+                                            <Button
+                                                className='rounded-sm'
+                                                variant="destructive"
+                                                disabled={selectedItems.length === 0}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                                Delete Selected ({selectedItems.length})
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete the assigned task
+                                                    and remove data from servers.
+                                                </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    className='bg-red-600 hover:bg-red-700'
+                                                    onClick={() => deleteSelectedItems()}
+                                                >
+                                                    Delete
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+                                )}
+                                {loggedInUser?.role === 'Gym Admin' ? (
+                                    <></>
+                                ) : (
+                                    <Button
+                                        className='rounded-sm md:space-x-4'
+                                        onClick={() => {
+                                            setOpenAddItemForm(true);
+                                        }
+                                        }>
+                                        <Plus className="mr-2 h-4 w-4" />
+                                        Add New Item
+                                    </Button>
+                                )}
+                            </div>
+                        </div>
                     </div>
 
-                    <div className="w-full flex items-center justify-end mx-4">
-                        {selectedItems.length === 0 ? (
-                            <></>
-                        ) : (
-                            <AlertDialog className='md:space-x-4'>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        variant="destructive"
-                                        disabled={selectedItems.length === 0}
-                                    >
-                                        <Trash2 className="h-4 w-4" />
-                                        Delete Selected ({selectedItems.length})
-                                    </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete the assigned task
-                                            and remove data from servers.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                            className='bg-red-600 hover:bg-red-700'
-                                            onClick={() => deleteSelectedItems()}
-                                        >
-                                            Delete
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        )}
-                        {loggedInUser?.role === 'Gym Admin' ? (
-                            <></>
-                        ) : (
-                            <Button
-                                className='rounded-sm ml-4 md:space-x-4'
-                                onClick={() => {
-                                    setOpenAddItemForm(true);
-                                }
-                                }>
-                                <Plus className="mr-2 h-4 w-4" />
-                                Add New Item
-                            </Button>
-                        )}
-                    </div>
+
+
                 </div>
 
-                <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4">
+                <div className="flex flex-col md:flex-row md:items-center my-4 border px-1 py-3 rounded-sm justify-between gap-4 bg-white">
                     <Tabs
                         defaultValue="all"
                         value={activeTab}
@@ -461,7 +450,7 @@ const ServiceAndProducts = () => {
             </div>
 
             {/* Table Section */}
-            <div className="w-full rounded-lg border shadow">
+            <div className="w-full bg-white rounded-lg border shadow">
                 {Array.isArray(serviceAndProducts) && serviceAndProducts.length > 0 ? (
                     <div className="w-full">
                         <div className="overflow-x-auto">
@@ -470,7 +459,7 @@ const ServiceAndProducts = () => {
                             ) : (
                                 <table className="text-sm w-full">
                                     <thead>
-                                        <tr className="border-b bg-muted/50">
+                                        <tr className="border-b bg-gray-100">
                                             <th className="h-16 px-4 text-left font-medium">
                                                 {loggedInUser?.role === 'Gym Admin' ? (
                                                     <>
@@ -642,12 +631,12 @@ const ServiceAndProducts = () => {
                                 </table>
                             )}
                         </div>
-                        <div className="flex items-center justify-between border-t px-4 py-4">
+                        <div className="flex items-center justify-between px-4 py-2">
                             <div className="text-sm text-muted-foreground">
                                 Showing <strong>{serviceAndProducts ? serviceAndProducts.length : ''}</strong> of <strong>{serviceAndProducts ? serviceAndProducts.length : ''}</strong> items
                             </div>
                             <div className="flex items-center space-x-2">
-                                <div className="flex justify-center py-4">
+                                <div className="flex justify-center py-2">
                                     <Pagination
                                         total={totalPages || 1}
                                         page={currentPage || 1}
@@ -729,12 +718,12 @@ const ServiceAndProducts = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="flex items-center justify-between border-t px-4 py-4">
+                        <div className="flex items-center justify-between border-t border-gray-300 px-4 py-2">
                             <div className="text-sm text-muted-foreground">
                                 Showing <strong>{data ? data.length : ''}</strong> of <strong>{data ? data.length : ''}</strong> items
                             </div>
                             <div className="flex items-center space-x-2">
-                                <div className="flex justify-center py-4">
+                                <div className="flex justify-center py-2">
                                     <Pagination
                                         total={1}
                                         page={1}
