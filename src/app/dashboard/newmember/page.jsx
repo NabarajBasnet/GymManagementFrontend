@@ -1,5 +1,6 @@
 'use client'
 
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast as notify } from 'react-hot-toast';
 import '../../globals.css';
 import { MdDone, MdError, MdClose } from "react-icons/md";
@@ -471,11 +472,11 @@ const NewMemberRegistrationForm = () => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full p-1" onClick={() => {
+        <div className="w-full bg-gray-100 px-4 py-8" onClick={() => {
             setToast(false);
             setSignUpAlert(false);
         }}>
-            <div className='w-full p-6' onClick={() => {
+            <div className='w-full bg-white border p-4 rounded-md' onClick={() => {
                 setToast(false);
                 setSignUpAlert(false);
             }}>
@@ -508,7 +509,7 @@ const NewMemberRegistrationForm = () => {
             {signUpAlert && (
                 <>
                     <div
-                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
+                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
                         onClick={() => setSignUpAlert(false)}
                     ></div>
 
@@ -574,98 +575,11 @@ const NewMemberRegistrationForm = () => {
                     </div>
                 </>
             )}
-            {/* 
-            <div className="flex justify-between items-center bg-blue-600 py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
-                <h1 className="mx-4 text-white font-semibold">Profile Details</h1>
-                <TooltipProvider>
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <IoIosInformationCircleOutline className="text-white mx-4 cursor-pointer h-5 w-5" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Click here to view members profile details.</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </TooltipProvider>
-            </div> */}
-
-            {renderProfileDetails && (
-                <div className=" bg-gray-50">
-                    <div className="max-w-full mx-4">
-                        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
-                            <div className="grid md:grid-cols-3 gap-6 p-6">
-                                {/* Image Upload Section */}
-                                <div className="space-y-4">
-                                    <div className="bg-white rounded-lg overflow-hidden">
-                                        <div className="space-y-4">
-                                            <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
-
-                                            {imagePreview ? (
-                                                <div className="relative group">
-                                                    <img
-                                                        src={imagePreview}
-                                                        alt="Preview"
-                                                        className="w-full h-64 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                                                    />
-                                                    <button
-                                                        onClick={removeImage}
-                                                        className="absolute top-3 right-3 p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-110"
-                                                        aria-label="Remove image"
-                                                    >
-                                                        <X size={20} />
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-8 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
-                                                    <div className="flex flex-col items-center justify-center space-y-3">
-                                                        <div className="p-3 bg-blue-50 rounded-full">
-                                                            <ImagePlus className="w-8 h-8 text-blue-500" />
-                                                        </div>
-                                                        <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                                                        <p className="text-sm font-medium text-gray-700">This feature will available soon.</p>
-                                                        <p className="text-xs text-gray-500">PNG, JPG up to 2MB</p>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            <input
-                                                type="file"
-                                                id="imageInput"
-                                                accept="image/*"
-                                                onChange={handleImageChange}
-                                                className="hidden"
-                                            />
-
-                                            {imagePreview ? (
-                                                <Button
-                                                    onClick={uploadMemberImage}
-                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    {imageUloading ? "Uploading..." : "Upload Image"}
-                                                </Button>
-                                            ) : (
-                                                <label
-                                                    htmlFor="imageInput"
-                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Select Image
-                                                </label>
-                                            )}
-
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
 
             <div className="w-full flex justify-center">
                 <div className="w-full">
-                    <div className="w-full px-4">
-                        <form onSubmit={handleSubmit(onRegisterMember)} className="w-full">
+                    <div className="w-full rounded-md">
+                        <form onSubmit={handleSubmit(onRegisterMember)} className="w-full rounded-md bg-white">
                             <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
                                 <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>
                             </div>
@@ -812,7 +726,7 @@ const NewMemberRegistrationForm = () => {
                                                 )}
                                             </div>
 
-                                            <div>
+                                            {/* <div>
                                                 <Label>Status</Label>
                                                 <Select onValueChange={(value) => {
                                                     setStatus(value);
@@ -834,6 +748,35 @@ const NewMemberRegistrationForm = () => {
                                                 </Select>
                                                 {errors.status && (
                                                     <p className="text-sm font-semibold text-red-600">{`${errors.status.message}`}</p>
+                                                )}
+                                            </div> */}
+
+                                            <div className=''>
+                                                <Label>Status</Label>
+                                                <RadioGroup
+                                                    value={status}
+                                                    onValueChange={(value) => {
+                                                        setStatus(value)
+                                                        if (value) {
+                                                            clearErrors("status")
+                                                        }
+                                                    }}
+                                                    className="flex items-center border p-3 rounded-md space-x-2"
+                                                >
+                                                    <div className="flex items-center space-x-2">
+                                                        <RadioGroupItem value="Active" id="status-active" className="text-green-600" />
+                                                        <Label htmlFor="status-active">Active</Label>
+                                                    </div>
+                                                    <div className="flex items-center space-x-2">
+                                                        <RadioGroupItem value="Inactive" id="status-inactive" className="text-red-600" />
+                                                        <Label htmlFor="status-inactive">Inactive</Label>
+                                                    </div>
+                                                </RadioGroup>
+
+                                                {errors.status && (
+                                                    <p className="text-sm font-semibold text-red-600">
+                                                        {errors.status.message}
+                                                    </p>
                                                 )}
                                             </div>
 
@@ -1265,6 +1208,7 @@ const NewMemberRegistrationForm = () => {
                                 )
                             }
 
+                            <div className="border-t border-gray-200"></div>
                             <div className="flex items-center space-x-2 p-2">
                                 <Button type='submit' className='rounded-md'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
                             </div>

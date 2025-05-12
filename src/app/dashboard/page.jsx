@@ -1,6 +1,5 @@
 'use client';
 
-import { MdHome, MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,8 +17,6 @@ import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
 import { NewRadialChart } from "@/components/Charts/newRadialChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
-import { usePagination } from "@/hooks/Pagination";
-import Pagination from "@/components/ui/CustomPagination";
 
 const AdminDashboard = () => {
   const router = useRouter();
@@ -85,14 +82,6 @@ const AdminDashboard = () => {
     renewdMembersLength,
     newAdmissionsLength,
   } = data || {};
-
-  const { range, setPage, active } = usePagination({
-    total: totalPages || 1,
-    siblings: 1,
-    boundaries: 1,
-    page: currentPage,
-    onChange: (page) => setCurrentPage(page),
-  });
 
   const gridContents = [
     {

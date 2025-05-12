@@ -42,57 +42,7 @@ const Loader = () => {
 
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-blue-600 p-4">
-            <div className="relative w-full max-w-2xl">
-                {/* Network nodes */}
-                <div className="flex justify-between mb-8">
-                    {['Database', 'Server', 'Processor', 'Client'].map((label, i) => (
-                        <div key={label} className="flex flex-col items-center">
-                            <div className={`p-4 rounded-full mb-2 transition-all duration-300 ${activeNode === i ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30' : 'bg-gray-100 border border-gray-200'}`}>
-                                {i === 0 ? <FiDatabase size={24} /> :
-                                    i === 1 ? <FiServer size={24} /> :
-                                        i === 2 ? <FiCpu size={24} /> :
-                                            <FiWifi size={24} />}
-                            </div>
-                            <span className="text-xs text-gray-600">{label}</span>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Connection line */}
-                <div className="absolute top-12 left-0 right-0 h-1 bg-gray-200 z-0">
-                    <div
-                        className="h-full bg-blue-500 transition-all duration-300"
-                        style={{ width: `${progress}%` }}
-                    ></div>
-
-                    {/* Data packets */}
-                    {dataPackets.map(packet => (
-                        <div
-                            key={packet.id}
-                            className="absolute top-0 w-2 h-2 bg-blue-400 rounded-full animate-pulse"
-                            style={{ left: `${packet.x}%` }}
-                        ></div>
-                    ))}
-                </div>
-
-                {/* Binary code rain */}
-                <div className="absolute inset-0 overflow-hidden opacity-10">
-                    {Array.from({ length: 20 }).map((_, i) => (
-                        <div
-                            key={i}
-                            className="absolute text-blue-400 text-xs"
-                            style={{
-                                left: `${Math.random() * 100}%`,
-                                top: `${Math.random() * 100}%`,
-                                animation: `fall ${Math.random() * 2 + 1}s linear infinite`,
-                                animationDelay: `${Math.random() * 2}s`
-                            }}
-                        >
-                            {Math.random() > 0.5 ? '1' : '0'}
-                        </div>
-                    ))}
-                </div>
-            </div>
+          
 
             {/* Progress info */}
             <div className="mt-16 w-full max-w-md">

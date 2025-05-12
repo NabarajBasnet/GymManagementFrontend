@@ -445,7 +445,7 @@ const MemberAttendance = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Check-in Card */}
                     <Card className="overflow-hidden bg-white shadow-md border-0">
-                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-700 text-white p-6">
+                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-600 text-white p-6">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center space-x-2">
                                     <User className="h-5 w-5" />
@@ -583,7 +583,7 @@ const MemberAttendance = () => {
 
                     {/* Attendance History Card */}
                     <Card className="overflow-hidden bg-white shadow-md border-0">
-                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-700 text-white p-6">
+                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-600 text-white p-6">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center space-x-2">
                                     <Calendar className="h-5 w-5" />
@@ -628,17 +628,16 @@ const MemberAttendance = () => {
                                             <TableRow className="bg-gray-50">
                                                 <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Member</TableHead>
                                                 <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Membership</TableHead>
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3 text-right">Check-in</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Check-in</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Expiration</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance) => (
                                                 <TableRow key={attendance._id} className="hover:bg-gray-50 transition-colors border-t border-gray-200">
-                                                    <TableCell className="py-3">
-                                                        <div className="flex flex-col">
-                                                            <span className="font-medium text-slate-900">{attendance.fullName}</span>
-                                                            <span className="text-xs text-slate-500">ID: {attendance.memberId}</span>
-                                                        </div>
+                                                    <TableCell className="py-3 flex flex-col space-y-1">
+                                                        <span className="text-indigo-600 font-semibold">{attendance.fullName}</span>
+                                                        <span className="text-xs font-semibold">{attendance.memberId}</span>
                                                     </TableCell>
                                                     <TableCell className="py-3">
                                                         <Badge className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded">
@@ -650,6 +649,14 @@ const MemberAttendance = () => {
                                                             <div className="flex items-center text-slate-500 text-xs mt-0.5">
                                                                 <Timer className="h-3 w-3 mr-1" />
                                                                 {formatTime(attendance.checkInTime)}
+                                                            </div>
+                                                        </div>
+                                                    </TableCell>
+                                                    <TableCell className="py-3 text-center">
+                                                        <div className="flex flex-col items-end">
+                                                            <div className="flex items-center text-slate-500 text-xs mt-0.5">
+                                                                <Timer className="h-3 w-3 mr-1" />
+                                                                {formatTime(attendance.expiration)}
                                                             </div>
                                                         </div>
                                                     </TableCell>

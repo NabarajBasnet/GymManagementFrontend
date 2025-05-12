@@ -1,5 +1,6 @@
 'use client';
 
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaChevronUp } from "react-icons/fa";
 import {
     Tooltip,
@@ -477,9 +478,8 @@ const MemberDetails = ({ memberId }) => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full p-1 bg-gray-50">
-            <div className='w-full p-6' onClick={() => setToast(false)}>
-
+        <div className="w-full bg-gray-100 px-4 py-8">
+            <div className='w-full' onClick={() => setToast(false)}>
                 {toast && (
                     <>
                         <div
@@ -541,8 +541,7 @@ const MemberDetails = ({ memberId }) => {
                         </div>
                     </>
                 )}
-
-                <div className='w-full'>
+                <div className='w-full bg-white p-4 rounded-md border'>
                     <Breadcrumb>
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -574,7 +573,7 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             </div>
 
-            <div className="w-full px-4 flex justify-center">
+            <div className="w-full mt-4 flex justify-center">
                 <div className="flex justify-between items-center bg-blue-50 border rounded-md py-2 w-full cursor-pointer" onClick={() => setRenderProfileDetails(!renderProfileDetails)}>
                     <h1 className="mx-4 text-blue-600 font-semibold">Profile Details</h1>
                     <TooltipProvider>
@@ -594,179 +593,116 @@ const MemberDetails = ({ memberId }) => {
             </div>
 
             {renderProfileDetails && (
-                <div className=" bg-gray-50">
-                    <div className="max-w-full px-6">
-                        <div className="bg-white mt-4 rounded-xl shadow-xl overflow-hidden">
-                            <div className="md:flex items-center justify-between px-4 py-2">
-                                {/* Image Upload Section */}
-                                {/* <div className="space-y-2">
-                                    <div className="bg-white rounded-lg overflow-hidden">
-                                        <div className="space-y-1">
-                                            <h2 className="text-2xl font-bold text-gray-800">Member Profile</h2>
+                <div className="bg-white rounded-md shadow-sm overflow-hidden p-4 md:p-6">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-8">
+                        {/* QR Code Section */}
+                        <div className="flex flex-col items-center space-y-4 p-4 bg-gray-50 rounded-xl border border-gray-200 w-full md:w-auto">
+                            <h2 className="text-xl font-bold text-gray-800">Membership QR</h2>
+                            <div className="p-3 bg-white rounded-lg border border-gray-300 hover:shadow-md transition-shadow duration-300">
+                                <img
+                                    src={qrCode}
+                                    alt="Membership QR Code"
+                                    className="w-40 h-40"
+                                />
+                            </div>
+                        </div>
 
-                                            {imagePreview ? (
-                                                <div className="relative group">
-                                                    <img
-                                                        src={imagePreview}
-                                                        alt="Preview"
-                                                        className="w-full h-40 object-cover rounded-lg transition-transform duration-300 group-hover:scale-[1.02]"
-                                                    />
-                                                    <button
-                                                        onClick={removeImage}
-                                                        className="absolute top-3 right-3 p-2 bg-red-500/90 text-white rounded-full hover:bg-red-600 transition-all duration-300 transform hover:scale-110"
-                                                        aria-label="Remove image"
-                                                    >
-                                                        <X size={20} />
-                                                    </button>
-                                                </div>
-                                            ) : (
-                                                <div className="border-2 border-dashed border-gray-200 rounded-lg p-4 transition-colors duration-300 hover:border-blue-400 cursor-pointer">
-                                                    <div className="flex flex-col items-center justify-center space-y-3">
-                                                        <div className="p-3 bg-blue-50 rounded-full">
-                                                            <ImagePlus className="w-8 h-8 text-blue-500" />
-                                                        </div>
-                                                        <p className="text-sm font-medium text-gray-700">Click to upload or drag and drop</p>
-                                                        <p className="text-xs text-gray-500">PNG, JPG up to 2MB</p>
-                                                    </div>
-                                                </div>
-                                            )}
+                        {/* Membership Controls & Info */}
+                        <div className="flex-1 space-y-4">
+                            <h2 className="text-xl font-bold text-gray-800">Membership Status</h2>
 
-                                            <input
-                                                type="file"
-                                                id="imageInput"
-                                                accept="image/*"
-                                                onChange={handleImageChange}
-                                                className="hidden"
-                                            />
+                            <div className="flex flex-col sm:flex-row gap-3">
+                                <Button
+                                    disabled
+                                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-sm hover:shadow-md disabled:opacity-50"
+                                >
+                                    Start
+                                </Button>
 
-                                            {imagePreview ? (
-                                                <Button
-                                                    onClick={uploadMemberImage}
-                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    {imageUloading ? "Uploading..." : "Upload Image"}
-                                                </Button>
-                                            ) : (
-                                                <label
-                                                    htmlFor="imageInput"
-                                                    className="block w-full text-center py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-lg hover:from-blue-700 hover:to-blue-800 cursor-pointer transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Select Image
-                                                </label>
-                                            )}
-
-
-                                        </div>
-                                    </div>
-                                </div> */}
-
-                                {/* QR Code Section */}
-                                <div className="flex flex-col items-center justify-center space-y-4">
-                                    <h2 className="text-2xl font-bold text-gray-800">Membership QR</h2>
-                                    <div className="p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
-                                        <img
-                                            src={qrCode}
-                                            alt="Membership QR Code"
-                                            className="w-40 h-40 rounded-lg"
-                                        />
-                                    </div>
-                                </div>
-
-                                {/* Membership Controls & Info */}
-                                <div className="space-y-2">
-                                    <h2 className="text-2xl font-bold text-gray-800">Membership Status</h2>
-
-                                    <div className="flex gap-4">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
                                         <Button
-                                            disabled
-                                            className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg disabled:opacity-50"
+                                            variant="destructive"
+                                            className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 font-medium shadow-sm hover:shadow-md"
                                         >
-                                            Start
+                                            Hold
                                         </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent className="max-w-md p-6 rounded-xl">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle className="text-xl font-bold">Confirm Membership Hold</AlertDialogTitle>
+                                            <AlertDialogDescription className="space-y-4 mt-2">
+                                                <div className="bg-red-50 border border-red-200 rounded-lg p-3">
+                                                    <p className="text-red-600 font-medium text-sm">Note: Stop/Start Date will be set to today by default</p>
+                                                </div>
+                                                <p className="text-gray-600 text-sm">To override the default Stop Date, please select a date below:</p>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant="outline"
+                                                            className="w-full flex items-center justify-between text-left p-3 border rounded-lg hover:border-blue-400 transition-colors duration-300"
+                                                        >
+                                                            <CalendarIcon className="h-4 w-4 text-blue-500" />
+                                                            <span className="ml-2 text-sm">
+                                                                {membershipHoldDate ? format(membershipHoldDate, "PPP") : "Select Hold Date"}
+                                                            </span>
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0 border rounded-lg shadow-lg">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={membershipHoldDate}
+                                                            onSelect={setMembershipHoldDate}
+                                                            initialFocus
+                                                            className="rounded-lg"
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter className="flex justify-end gap-3 mt-4">
+                                            <AlertDialogCancel className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 text-sm">
+                                                Cancel
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={() => holdMembership()}
+                                                className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+                                            >
+                                                Confirm Hold
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
 
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button
-                                                    variant="destructive"
-                                                    className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-lg hover:from-red-700 hover:to-red-800 transition-all duration-300 font-medium shadow-md hover:shadow-lg"
-                                                >
-                                                    Hold
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent className="max-w-lg p-6 rounded-xl shadow-xl">
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle className="text-2xl font-bold">Confirm Membership Hold</AlertDialogTitle>
-                                                    <AlertDialogDescription className="space-y-4">
-                                                        <div className="bg-red-50 border border-red-100 rounded-lg p-4 mt-4">
-                                                            <p className="text-red-600 font-semibold">Note: Stop/Start Date will be set to today by default</p>
-                                                        </div>
-                                                        <p className="text-gray-600">To override the default Stop Date, please select a date below:</p>
-                                                        <Popover>
-                                                            <PopoverTrigger asChild>
-                                                                <Button
-                                                                    variant="outline"
-                                                                    className="w-full flex items-center justify-between text-left p-4 border rounded-lg hover:border-blue-400 transition-colors duration-300"
-                                                                >
-                                                                    <CalendarIcon className="text-blue-500" />
-                                                                    <span>{membershipHoldDate ? format(membershipHoldDate, "PPP") : "Select Hold Date"}</span>
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0">
-                                                                <Calendar
-                                                                    mode="single"
-                                                                    selected={membershipHoldDate}
-                                                                    onSelect={setMembershipHoldDate}
-                                                                    initialFocus
-                                                                />
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter className="flex justify-end gap-3 mt-6">
-                                                    <AlertDialogCancel className="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300">
-                                                        Cancel
-                                                    </AlertDialogCancel>
-                                                    <AlertDialogAction
-                                                        onClick={() => holdMembership()}
-                                                        className="px-6 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-md hover:shadow-lg"
-                                                    >
-                                                        Confirm Hold
-                                                    </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    </div>
-
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl border border-blue-200">
-                                            <p className="text-sm text-blue-600 font-medium mb-1">Hold Date</p>
-                                            <p className="text-lg font-semibold text-gray-800">
-                                                {data && data.member && data.member.membershipHoldDate
-                                                    ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0]
-                                                    : 'N/A'}
-                                            </p>
-                                        </div>
-                                        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl border border-purple-200">
-                                            <p className="text-sm text-purple-600 font-medium mb-1">Paused Days</p>
-                                            <p className="text-lg font-semibold text-gray-800">
-                                                {data ? member.pausedDays : ''}
-                                            </p>
-                                        </div>
-                                        <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-xl border border-green-200">
-                                            <p className="text-sm text-green-600 font-medium mb-1">Remaining Days</p>
-                                            <p className="text-lg font-semibold text-gray-800">
-                                                {data ? member.remainingDaysOfMembership : ''}
-                                            </p>
-                                        </div>
-                                        <div className="bg-gradient-to-br from-amber-50 to-amber-100 p-4 rounded-xl border border-amber-200">
-                                            <p className="text-sm text-amber-600 font-medium mb-1">Resumed Date</p>
-                                            <p className="text-lg font-semibold text-gray-800">
-                                                {data && data.member && data.member.resumedDate
-                                                    ? new Date(data.member.resumedDate).toISOString().split("T")[0]
-                                                    : 'N/A'}
-                                            </p>
-                                        </div>
-                                    </div>
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                                    <p className="text-xs text-blue-600 font-medium mb-1">Hold Date</p>
+                                    <p className="text-base font-semibold text-gray-800">
+                                        {data?.member?.membershipHoldDate
+                                            ? new Date(data.member.membershipHoldDate).toISOString().split("T")[0]
+                                            : 'N/A'}
+                                    </p>
+                                </div>
+                                <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                                    <p className="text-xs text-purple-600 font-medium mb-1">Paused Days</p>
+                                    <p className="text-base font-semibold text-gray-800">
+                                        {data ? member.pausedDays : ''}
+                                    </p>
+                                </div>
+                                <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                                    <p className="text-xs text-green-600 font-medium mb-1">Remaining Days</p>
+                                    <p className="text-base font-semibold text-gray-800">
+                                        {data ? member.remainingDaysOfMembership : ''}
+                                    </p>
+                                </div>
+                                <div className="bg-amber-50 p-3 rounded-lg border border-amber-200">
+                                    <p className="text-xs text-amber-600 font-medium mb-1">Resumed Date</p>
+                                    <p className="text-base font-semibold text-gray-800">
+                                        {data?.member?.resumedDate
+                                            ? new Date(data.member.resumedDate).toISOString().split("T")[0]
+                                            : 'N/A'}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -774,15 +710,15 @@ const MemberDetails = ({ memberId }) => {
                 </div>
             )}
 
-            <div className="w-full flex justify-center">
+            <div className="w-full flex mt-2 justify-center">
                 <div className="w-full">
                     <div className="w-full">
                         {
                             data && (
-                                <div className="w-full px-4">
+                                <div className="w-full">
                                     {
                                         data ? (
-                                            <form className="w-full" onSubmit={handleSubmit(updateMemberDetails)}>
+                                            <form className="w-full bg-white mt-2 rounded-md" onSubmit={handleSubmit(updateMemberDetails)}>
                                                 <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
                                                     <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>
                                                 </div>
@@ -1247,6 +1183,7 @@ const MemberDetails = ({ memberId }) => {
                                                     )
                                                 }
 
+                                                <div className="border-t border-gray-200"></div>
                                                 <div className="flex items-center space-x-2 p-2">
                                                     <Button type='submit' className='rounded-md'>{isSubmitting ? 'Submitting...' : 'Submit'}</Button>
                                                 </div>
