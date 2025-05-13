@@ -441,7 +441,7 @@ const MemberAttendance = () => {
             </div>
 
             {/* Main Content */}
-            <div className="container mx-auto p-6">
+            <div className="container mx-auto p-4">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Check-in Card */}
                     <Card className="overflow-hidden bg-white shadow-md border-0">
@@ -678,18 +678,16 @@ const MemberAttendance = () => {
                             )}
 
                             {/* Pagination */}
-                            {totalPages > 1 && (
-                                <div className="mt-6">
-                                    <Pagination
-                                        range={range}
-                                        active={active}
-                                        setPage={setPage}
-                                        totalPages={totalPages}
-                                        currentPage={currentPage}
-                                        setCurrentPage={setCurrentPage}
-                                    />
-                                </div>
-                            )}
+                            <div className="mt-6">
+                                <Pagination
+                                    total={totalPages || 0}
+                                    page={currentPage || 0}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
                 </div>
