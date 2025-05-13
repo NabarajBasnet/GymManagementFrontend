@@ -1201,16 +1201,84 @@ const PaymentInvoice = () => {
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b text-sm bg-muted/50">
-                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Receipt No</th>
-                                        <th className="h-16 px-4 text-left text-sm font-semibold font-medium">Payment Date</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Method</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Received</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Due</th>
-                                        <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Total</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Member</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Staff</th>
-                                        <th className="h-10 px-4 text-left text-sm font-semibold font-medium">Status</th>
+                                    <tr className="border-b bg-muted/50">
+                                        <th className="h-16 px-4 text-left font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Bill No
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('billNo');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-16 px-4 text-left font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Bill Date
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('billDate');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-10 px-4 text-left font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Method
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('paymentMethod');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-10 px-4 text-right font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Discount
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('totalGivenDiscountAmount');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-10 px-4 text-right font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Discount %
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('totalDiscountPercentage');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-10 px-4 text-right font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Grand Total
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('grandTotal');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
+                                        <th className="h-10 px-4 text-left font-medium">
+                                            <div className="flex text-sm font-semibold items-center">
+                                                Fiscal Year
+                                                <ArrowUpDown
+                                                    onClick={() => {
+                                                        setSortBy('fiscalYear');
+                                                        setSortOrderDesc(!sortOrderDesc);
+                                                    }}
+                                                    className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500" />
+                                            </div>
+                                        </th>
                                         {loggedInUser?.role !== 'Gym Admin' && (
                                             <th className="h-10 px-4 text-right text-sm font-semibold font-medium">Actions</th>
                                         )}
