@@ -1,5 +1,6 @@
 "use client";
 
+import { BiLoaderCircle } from "react-icons/bi";
 import { TiHome } from "react-icons/ti";
 import { usePagination } from "@/hooks/Pagination";
 import Pagination from "@/components/ui/CustomPagination";
@@ -143,7 +144,7 @@ const BodyMeasurements = () => {
     };
 
     return (
-        <div className="body-measurement-tracker bg-gray-100 w-full px-4 py-6">
+        <div className="body-measurement-tracker min-h-screen bg-gray-100 w-full px-4 py-6">
 
             <div className="bg-white rounded-sm mb-3 shadow-sm flex items-center py-6 px-1 border">
                 <Breadcrumb>
@@ -235,30 +236,35 @@ const BodyMeasurements = () => {
 
                                     {renderDropdown && (
                                         <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                            {members?.length > 0 ? (
-                                                members
-                                                    .filter((member) => {
-                                                        return member.fullName
-                                                            .toLowerCase()
-                                                            .includes(searchQuery.toLowerCase());
-                                                    })
-                                                    .map((member) => (
-                                                        <div
-                                                            onClick={() => {
-                                                                setSearchQuery(member.fullName);
-                                                                setRenderDropdown(false);
-                                                                setSelectedMemberId(member._id);
-                                                            }}
-                                                            className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                            key={member._id}
-                                                            value={member._id}
-                                                        >
-                                                            {member.fullName}
-                                                        </div>
-                                                    ))
+                                            {isLoading ? (
+                                                <div className="flex justify-center py-4">
+                                                    <BiLoaderCircle className="h-6 w-6 text-blue-600 animate-spin" />
+                                                </div>
                                             ) : (
-                                                <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
-                                            )}
+                                                members?.length > 0 ? (
+                                                    members
+                                                        .filter((member) => {
+                                                            return member.fullName
+                                                                .toLowerCase()
+                                                                .includes(searchQuery.toLowerCase());
+                                                        })
+                                                        .map((member) => (
+                                                            <div
+                                                                onClick={() => {
+                                                                    setSearchQuery(member.fullName);
+                                                                    setRenderDropdown(false);
+                                                                    setSelectedMemberId(member._id);
+                                                                }}
+                                                                className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                key={member._id}
+                                                                value={member._id}
+                                                            >
+                                                                {member.fullName}
+                                                            </div>
+                                                        ))
+                                                ) : (
+                                                    <div className="px-4 py-2 text-sm text-gray-500">No members found</div>
+                                                ))}
                                         </div>
                                     )}
                                 </div>

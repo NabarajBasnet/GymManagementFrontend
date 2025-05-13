@@ -1,10 +1,10 @@
 'use client';
 
+import { BiLoaderCircle } from "react-icons/bi";
 import { useRef, useState, useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import { BiLoaderCircle } from "react-icons/bi";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import { FiSearch, FiCalendar } from "react-icons/fi";
 import {
@@ -190,7 +190,7 @@ const MembershipLogs = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full p-6 bg-white border-b shadow-sm sticky top-0 z-10">
+            <div className="w-full bg-gray-50 p-6 border-b shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>
@@ -203,11 +203,6 @@ const MembershipLogs = () => {
                                     <BreadcrumbEllipsis className="h-4 w-4" />
                                     <span className="sr-only">Toggle menu</span>
                                 </DropdownMenuTrigger>
-                                {/* <DropdownMenuContent align="start" className="rounded-lg shadow-lg">
-                                    <DropdownMenuItem className="hover:bg-gray-100">Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem className="hover:bg-gray-100">Themes</DropdownMenuItem>
-                                    <DropdownMenuItem className="hover:bg-gray-100">GitHub</DropdownMenuItem>
-                                </DropdownMenuContent> */}
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
@@ -226,9 +221,9 @@ const MembershipLogs = () => {
             </div>
 
             {/* Main Content */}
-            <div className="max-w-[1400px] mx-auto p-4 md:p-6">
+            <div className="w-full mx-auto p-4">
                 {/* Search and Filter Form */}
-                <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {/* Member Search */}
                         <div>
@@ -265,30 +260,36 @@ const MembershipLogs = () => {
 
                                 {renderDropdown && (
                                     <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                        {members?.length > 0 ? (
-                                            members
-                                                .filter((member) => {
-                                                    return member.fullName
-                                                        .toLowerCase()
-                                                        .includes(searchQuery.toLowerCase());
-                                                })
-                                                .map((member) => (
-                                                    <div
-                                                        onClick={() => {
-                                                            setMemberName(member.fullName);
-                                                            setSearchQuery(member.fullName);
-                                                            setMemberId(member._id);
-                                                            setRenderDropdown(false);
-                                                        }}
-                                                        className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                                        key={member._id}
-                                                        value={member._id}
-                                                    >
-                                                        {member.fullName}
-                                                    </div>
-                                                ))
+                                        {isLoading ? (
+                                            <div className="flex justify-center py-4">
+                                                <BiLoaderCircle className="h-6 w-6 text-blue-600 animate-spin" />
+                                            </div>
                                         ) : (
-                                            <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                            members?.length > 0 ? (
+                                                members
+                                                    .filter((member) => {
+                                                        return member.fullName
+                                                            .toLowerCase()
+                                                            .includes(searchQuery.toLowerCase());
+                                                    })
+                                                    .map((member) => (
+                                                        <div
+                                                            onClick={() => {
+                                                                setMemberName(member.fullName);
+                                                                setSearchQuery(member.fullName);
+                                                                setMemberId(member._id);
+                                                                setRenderDropdown(false);
+                                                            }}
+                                                            className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                            key={member._id}
+                                                            value={member._id}
+                                                        >
+                                                            {member.fullName}
+                                                        </div>
+                                                    ))
+                                            ) : (
+                                                <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                            )
                                         )}
                                     </div>
                                 )}
@@ -507,7 +508,7 @@ const MembershipLogs = () => {
                     )}
                 </div>
             </div>
-            <div className="flex bg-white mx-6 mb-6 shadow-md rounded-md px-4 justify-end py-4">
+            <div className="flex bg-white mx-4 mb-6 shadow-md rounded-md px-4 justify-end py-4">
                 <Pagination
                     total={totalPages || 1}
                     page={currentPage || 1}
