@@ -428,11 +428,11 @@ const MemberAttendance = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex justify-between items-center">
-                    <h1 className="text-2xl font-bold text-slate-900">Member Attendance</h1>
+                    <h1 className="text-2xl md:text-lg font-bold text-slate-900">Member Attendance</h1>
                     <Button
                         variant="outline"
                         onClick={reloadPage}
-                        className="flex items-center gap-2 text-slate-700"
+                        className='flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'
                     >
                         <RefreshCw className="h-4 w-4" />
                         Refresh
