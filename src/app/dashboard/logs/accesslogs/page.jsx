@@ -47,7 +47,7 @@ const LearnAggregation = () => {
     const getAccessLogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/accesslogs?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`);
+            const response = await fetch(`http://localhost:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             console.log('Res body: ', resBody);
             return resBody;
@@ -58,16 +58,16 @@ const LearnAggregation = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['accesslogs', startDate, endDate, currentPage, limit],
+        queryKey: ['accesslogs', currentPage, startDate, endDate,],
         queryFn: getAccessLogs
     });
 
-    const { accessLogs } = data || {};
+    const { accessLogs, totalPages } = data || {};
 
     console.log('Data: ', data);
 
     return (
-        <div className="w-full px-4 py-6">
+        <div className="w-full bg-gray-100 px-4 py-6">
 
             {/* Breadcrumb menu */}
             <div className='w-full bg-white p-6 rounded-md shadow-sm border'>
@@ -138,8 +138,8 @@ const LearnAggregation = () => {
                         {Array.isArray(accessLogs) && accessLogs.length >= 1 ? (
                             <div>
                                 {accessLogs.map((log) => (
-                                    <div key={log._id} className='overflow-x-auto rounded-sm border p-4 shadow-sm'>
-                                        <h1>{log.logMessage}</h1>
+                                    <div key={log._id} className='overflow-x-auto my-2 bg-white rounded-sm border p-4 shadow-sm'>
+                                        <p className="text-xs font-medium">{log.logMessage}</p>
                                     </div>
                                 ))}
                             </div>
@@ -151,20 +151,17 @@ const LearnAggregation = () => {
                     </div>
                 )}
 
-                {!isLoading && accessLogs.length >= limit && (
-                    <Pagination
-                        total={1}
-                        page={currentPage || 1}
-                        onChange={setCurrentPage}
-                        withEdges={true}
-                        siblings={1}
-                        boundaries={1}
-                        classNames={{
-                            item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
-                            active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
-                            dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                        }}
-                    />
+                {!isLoading && accessLogs.length >= 1 && (
+                    <div className="w-full flex bg-white p-4 justify-end my-4">
+                        <Pagination
+                            total={totalPages}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
                 )}
             </div>
         </div>
