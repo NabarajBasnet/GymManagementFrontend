@@ -227,30 +227,25 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="border shadow-lg">
-            <h3 className="text-lg font-semibold p-2 text-gray-800">Monthly Membership Activity</h3>
             <BarChartMultiple />
           </Card>
 
           <Card className="border shadow-lg">
-            <h3 className="text-lg font-semibold p-2 text-gray-800">Monthly New Members</h3>
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="border shadow-lg">
-            {/* <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Renewls</h3> */}
             <RenewRadialChart />
           </Card>
 
           <Card className="border shadow-lg">
-            {/* <h3 className="text-lg font-semibold p-2 text-gray-800">New Members</h3> */}
             <NewRadialChart />
           </Card>
         </div>
 
         <Card className="border shadow-lg">
-          <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Traffic</h3>
           <BarChartInterActive />
         </Card>
       </div>

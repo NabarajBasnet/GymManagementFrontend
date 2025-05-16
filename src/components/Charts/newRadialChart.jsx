@@ -40,7 +40,7 @@ import {
 
 const chartData = [
     { name: "Target", value: 200, fill: "#db2777" },
-    { name: "Completed", value: 75, fill: "#fbcfe8" },
+    { name: "Completed", value: 75, fill: "#FF69B4" },
 ];
 
 export function NewRadialChart() {
