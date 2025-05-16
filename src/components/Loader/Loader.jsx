@@ -42,7 +42,7 @@ const Loader = () => {
 
     return (
         <div className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-blue-600 p-4">
-          
+
 
             {/* Progress info */}
             <div className="mt-16 w-full max-w-md">
@@ -57,7 +57,7 @@ const Loader = () => {
                     ></div>
                 </div>
                 <div className="mt-4 text-center text-gray-600 text-sm">
-                    {progress < 30 && 'Connecting to quantum database...'}
+                    {progress < 30 && 'Connecting to database...'}
                     {progress >= 30 && progress < 60 && 'Decrypting data packets...'}
                     {progress >= 60 && progress < 90 && 'Verifying data integrity...'}
                     {progress >= 90 && 'Finalizing transfer...'}

@@ -96,7 +96,7 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
@@ -111,7 +111,7 @@ const AttendanceHistory = () => {
     const fetchAllStaffs = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             setIsLoading(false);
@@ -139,8 +139,8 @@ const AttendanceHistory = () => {
 
         try {
             setIsLoading(true);
-            const staffsAttendanceURL = `http://88.198.112.156:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://88.198.112.156:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
 
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();
@@ -505,16 +505,16 @@ const AttendanceHistory = () => {
                                                                             </TooltipTrigger>
                                                                             <TooltipContent>
                                                                                 <p>
-                                                                                    {new Date(attendance.checkIn).toLocaleString('en-US', {
-                                                                                        weekday: 'long',
-                                                                                        year: 'numeric',
-                                                                                        month: 'long',
-                                                                                        day: 'numeric',
-                                                                                        hour: 'numeric',
-                                                                                        minute: '2-digit',
-                                                                                        second: '2-digit',
-                                                                                        hour12: true
-                                                                                    })}
+                                                                                    {attendance.checkIn ?
+                                                                                        `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
+                                                                                        new Date(attendance.checkIn).toLocaleTimeString('en-US', {
+                                                                                            hour12: true,
+                                                                                            hour: 'numeric',
+                                                                                            minute: '2-digit',
+                                                                                            second: '2-digit',
+                                                                                            timeZone: 'UTC'
+                                                                                        })
+                                                                                        : ''}
                                                                                 </p>
                                                                             </TooltipContent>
                                                                         </Tooltip>
@@ -534,16 +534,16 @@ const AttendanceHistory = () => {
                                                                             </TooltipTrigger>
                                                                             <TooltipContent>
                                                                                 <p>
-                                                                                    {new Date(attendance.checkOut).toLocaleString('en-US', {
-                                                                                        weekday: 'long',
-                                                                                        year: 'numeric',
-                                                                                        month: 'long',
-                                                                                        day: 'numeric',
-                                                                                        hour: 'numeric',
-                                                                                        minute: '2-digit',
-                                                                                        second: '2-digit',
-                                                                                        hour12: true
-                                                                                    })}
+                                                                                    {attendance.checkOut ?
+                                                                                        `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
+                                                                                        new Date(attendance.checkOut).toLocaleTimeString('en-US', {
+                                                                                            hour12: true,
+                                                                                            hour: 'numeric',
+                                                                                            minute: '2-digit',
+                                                                                            second: '2-digit',
+                                                                                            timeZone: 'UTC'
+                                                                                        })
+                                                                                        : ''}
                                                                                 </p>
                                                                             </TooltipContent>
                                                                         </Tooltip>
