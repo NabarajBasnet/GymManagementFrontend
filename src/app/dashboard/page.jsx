@@ -19,6 +19,7 @@ import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 
 const AdminDashboard = () => {
+
   const router = useRouter();
   const [averageActiveMembers, setAverageActiveMembers] = React.useState(null);
   const [data, setData] = React.useState(null);
@@ -32,9 +33,11 @@ const AdminDashboard = () => {
     return start.toISOString().split("T")[0];
   });
 
-  const [endDate, setEndDate] = React.useState(() =>
-    new Date().toISOString().split("T")[0]
-  );
+  const [endDate, setEndDate] = React.useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().split("T")[0];
+  });
 
   const getTotalMembers = async () => {
     try {
@@ -236,12 +239,12 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="border shadow-lg">
-            <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Renewls</h3>
+            {/* <h3 className="text-lg font-semibold p-2 text-gray-800">Membership Renewls</h3> */}
             <RenewRadialChart />
           </Card>
 
           <Card className="border shadow-lg">
-            <h3 className="text-lg font-semibold p-2 text-gray-800">New Members</h3>
+            {/* <h3 className="text-lg font-semibold p-2 text-gray-800">New Members</h3> */}
             <NewRadialChart />
           </Card>
         </div>

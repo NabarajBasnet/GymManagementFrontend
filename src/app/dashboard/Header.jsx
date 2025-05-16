@@ -355,15 +355,11 @@ const Header = () => {
                     title: 'Logs',
                     link: '/dashboard/logs',
                     subObj: [
-                        { icon: FaBoxOpen, title: 'Access Logs', link: '/dashboard/logs/accesslogs' },
+                        { icon: FaBoxOpen, title: 'Request Logs', link: '/dashboard/logs/accesslogs' },
                         { icon: FaBoxOpen, title: 'Error Logs', link: '/dashboard/logs/errorlogs' },
-                        { icon: FaBoxOpen, title: 'Application Logs', link: '/dashboard/logs/applicationlogs' },
                         { icon: FaBoxOpen, title: 'Auth Logs', link: '/dashboard/logs/authlogs' },
                         { icon: FaBoxOpen, title: 'Audit Logs', link: '/dashboard/logs/auditlogs' },
-                        { icon: FaBoxOpen, title: 'System Logs', link: '/dashboard/logs/systemlogs' },
                         { icon: FaBoxOpen, title: 'Debug Logs', link: '/dashboard/logs/debuglogs' },
-                        { icon: FaBoxOpen, title: 'Notification Logs', link: '/dashboard/logs/notificationlogs' },
-                        { icon: FaBoxOpen, title: 'Notification Logs', link: '/dashboard/logs/notificationlogs' },
                     ]
                 },
             ]

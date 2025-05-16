@@ -1,6 +1,6 @@
 "use client";
 
-import { MdHome, MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
+import { MdContentCopy } from "react-icons/md";
 import { toast as notify } from 'react-hot-toast'
 import {
     Tooltip,
@@ -8,15 +8,12 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useUser } from '@/components/Providers/LoggedInUserProvider.jsx';
 import { useState } from "react";
 import Pagination from "../ui/CustomPagination";
 import { useRouter } from "next/navigation";
-import { usePagination } from "@/hooks/Pagination";
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -31,6 +28,7 @@ import {
     PolarRadiusAxis,
     RadialBar,
     RadialBarChart,
+    ResponsiveContainer,
 } from "recharts";
 
 import {
@@ -41,26 +39,14 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+
 const chartData = [
-    { browser: "safari", visitors: 200, fill: "#10b981" },
+    { name: "Target", value: 200, fill: "#10b981" },
+    { name: "Completed", value: 150, fill: "#d1fae5" },
 ];
 
-const chartConfig = {
-    visitors: {
-        label: "Visitors",
-    },
-    safari: {
-        label: "Safari",
-        color: "#10b981",
-    },
-};
-
 export function RenewRadialChart() {
-
     const router = useRouter();
-    const { user, loading } = useUser();
-
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
     const [data, setData] = useState(null);
@@ -71,7 +57,11 @@ export function RenewRadialChart() {
         return start;
     });
 
-    const [endDate, setEndDate] = useState(() => new Date());
+    const [endDate, setEndDate] = useState(() => {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        return date.toISOString().split('T')[0];
+    });
 
     const getTotalMembers = async () => {
         try {
@@ -96,29 +86,10 @@ export function RenewRadialChart() {
     }, [startDate, endDate, currentPage]);
 
     const {
-        members,
-        totalMembers,
-        totalPages,
-        inactiveMembers,
-        totalActiveMembers,
-        totalInactiveMembers,
-        dailyAverageActiveMembers,
         renewdMembers,
         renewdMembersLength,
-        newAdmissions,
-        newAdmissionsLength,
         totalRenewdMembersPages
     } = data || {};
-
-    const { range, setPage, active } = usePagination({
-        total: totalRenewdMembersPages ? totalRenewdMembersPages : 0,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
 
     const copyToClipboard = (_id) => {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
@@ -151,65 +122,48 @@ export function RenewRadialChart() {
             <Card className="flex flex-col border-none">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
-                    <CardDescription>January - June 2024</CardDescription>
+                    <CardDescription className='text-xs font-medium'>January - June 2024</CardDescription>
                 </CardHeader>
 
-                <div>
-                    <CardContent className="flex-1 pb-0">
-                        <ChartContainer
-                            config={chartConfig}
-                            className="mx-4 aspect-square max-h-[250px]"
-                        >
+                <CardContent className="flex pb-0">
+                    <div className="w-full h-[300px]">
+                        <ResponsiveContainer width="100%" height="100%">
                             <RadialBarChart
                                 data={chartData}
-                                startAngle={0}
-                                endAngle={250}
-                                innerRadius={80}
-                                outerRadius={110}
+                                startAngle={180}
+                                endAngle={-180}
+                                innerRadius="50%"
+                                outerRadius="90%"
                             >
                                 <PolarGrid
                                     gridType="circle"
                                     radialLines={false}
-                                    stroke="none"
-                                    className="first:fill-muted last:fill-background"
-                                    polarRadius={[86, 74]}
                                 />
-                                <RadialBar dataKey="visitors" background cornerRadius={10} />
-                                <PolarRadiusAxis tick={false} tickLine={false} axisLine={false}>
-                                    <Label
-                                        content={({ viewBox }) => {
-                                            if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                                                return (
-                                                    <text
-                                                        x={viewBox.cx}
-                                                        y={viewBox.cy}
-                                                        textAnchor="middle"
-                                                        dominantBaseline="middle"
-                                                    >
-                                                        <tspan
-                                                            x={viewBox.cx}
-                                                            y={viewBox.cy}
-                                                            className="fill-emerald-600 text-2xl font-bold"
-                                                        >
-                                                            {chartData[0].visitors.toLocaleString()} Of {chartData[0].visitors.toLocaleString()}
-                                                        </tspan>
-                                                        <tspan
-                                                            x={viewBox.cx}
-                                                            y={(viewBox.cy || 0) + 24}
-                                                            className="fill-muted-foreground"
-                                                        >
-                                                            Renews
-                                                        </tspan>
-                                                    </text>
-                                                )
-                                            }
-                                        }}
-                                    />
-                                </PolarRadiusAxis>
+                                <PolarRadiusAxis
+                                    angle={30}
+                                    domain={[0, 200]}
+                                    tick={false}
+                                    axisLine={false}
+                                />
+                                <RadialBar
+                                    dataKey="value"
+                                    cornerRadius={10}
+                                    background
+                                    animationDuration={1500}
+                                />
+                                <text
+                                    x="50%"
+                                    y="50%"
+                                    textAnchor="middle"
+                                    dominantBaseline="middle"
+                                    className="text-lg font-bold fill-emerald-600"
+                                >
+                                    {chartData[1].value} / {chartData[0].value}
+                                </text>
                             </RadialBarChart>
-                        </ChartContainer>
-                    </CardContent>
-                </div>
+                        </ResponsiveContainer>
+                    </div>
+                </CardContent>
                 <CardFooter className="flex-col gap-2 text-sm">
                     <div className="flex items-center gap-2 font-medium text-emerald-600 leading-none">
                         New admission target reached 5.2% this month <TrendingUp className="h-4 w-4" />
@@ -220,16 +174,16 @@ export function RenewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div>
+            <div className="mt-6 overflow-x-auto">
                 <Table className='min-w-full'>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className='text-pink-600'>Member Id</TableHead>
-                            <TableHead className='text-emerald-600'>Full Name</TableHead>
-                            <TableHead className='text-emerald-600'>Duration</TableHead>
-                            <TableHead className='text-emerald-600'>Renew</TableHead>
-                            <TableHead className='text-emerald-600'>Contact No</TableHead>
-                            <TableHead className='text-emerald-600'>Status</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Member Id</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Full Name</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Duration</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Renew</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Contact No</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
@@ -243,7 +197,7 @@ export function RenewRadialChart() {
                                     <TableRow key={member._id} className={textColor}>
                                         <TableCell>
                                             <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
-                                                <span className="truncate text-center font-mono text-xs">{member._id}</span>
+                                                <span className="truncate text-center font-medium text-xs">{member._id}</span>
                                                 <TooltipProvider>
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
@@ -262,17 +216,17 @@ export function RenewRadialChart() {
                                                 </TooltipProvider>
                                             </div>
                                         </TableCell>
-                                        <TableCell>{member.fullName}</TableCell>
-                                        <TableCell>{member.membershipDuration}</TableCell>
-                                        <TableCell>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
-                                        <TableCell>{member.contactNo}</TableCell>
-                                        <TableCell>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell className='text-xs font-medium'>{member.fullName}</TableCell>
+                                        <TableCell className='text-xs font-medium'>{member.membershipDuration}</TableCell>
+                                        <TableCell className='text-xs font-medium'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell className='text-xs font-medium'>{member.contactNo}</TableCell>
+                                        <TableCell className='text-xs font-medium'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
                                     </TableRow>
                                 );
                             })
                         ) : (
                             <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
-                                <TableCell colSpan={3} className="text-center">
+                                <TableCell colSpan={6} className="text-center">
                                     No members found.
                                 </TableCell>
                             </TableRow>
@@ -280,8 +234,8 @@ export function RenewRadialChart() {
                     </TableBody>
                     <TableFooter>
                         <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
-                            <TableCell className="text-left">Total Renewd Members</TableCell>
-                            <TableCell className="text-left">{renewdMembersLength}</TableCell>
+                            <TableCell colSpan={5} className="text-left text-xs font-medium">Total Renewd Members</TableCell>
+                            <TableCell className="text-right">{renewdMembersLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
@@ -298,4 +252,4 @@ export function RenewRadialChart() {
             </div>
         </div>
     )
-};
+}

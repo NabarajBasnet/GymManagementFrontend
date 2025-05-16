@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RefreshCw } from "lucide-react";
 import Pagination from "@/components/ui/CustomPagination";
 import {
     DropdownMenu,
@@ -19,14 +18,13 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/Loader/Loader";
 
-const LearnAggregation = () => {
+const RequestLogs = () => {
 
     // Pagination states
     let limit = 20;
@@ -63,8 +61,6 @@ const LearnAggregation = () => {
     });
 
     const { accessLogs, totalPages } = data || {};
-
-    console.log('Data: ', data);
 
     return (
         <div className="w-full bg-gray-100 px-4 py-6">
@@ -104,35 +100,35 @@ const LearnAggregation = () => {
             </div>
 
             {/* Filters */}
-            <Card className='my-4'>
-                <CardHeader>
-                    <CardTitle className="text-lg">Filters</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="space-y-2">
-                            <Label>Start Date</Label>
-                            <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} type="date" />
+            {!isLoading && accessLogs.length >= 1 && (
+                <Card className='my-4'>
+                    <CardHeader>
+                        <CardTitle className="text-lg">Filters</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <div className="space-y-2">
+                                <Label>Start Date</Label>
+                                <Input value={startDate} onChange={(e) => setStartDate(e.target.value)} type="date" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>End Date</Label>
+                                <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} type="date" />
+                            </div>
+                            <div className="flex items-end">
+                                <Button variant="outline" onClick={() => { const start = new Date(); start.setDate(1); setStartDate(start.toISOString().split("T")[0]); setEndDate(formatDate(new Date())); setCurrentPage(1); }} className="w-full" > Reset </Button>
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                            <Label>End Date</Label>
-                            <Input value={endDate} onChange={(e) => setEndDate(e.target.value)} type="date" />
-                        </div>
-                        <div className="flex items-end">
-                            <Button onClick={() => refetch()} className="w-full" > Apply Filters </Button>
-                        </div>
-                        <div className="flex items-end">
-                            <Button variant="outline" onClick={() => { const start = new Date(); start.setDate(1); setStartDate(start.toISOString().split("T")[0]); setEndDate(formatDate(new Date())); setCurrentPage(1); }} className="w-full" > Reset </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
+                    </CardContent>
+                </Card>
+            )}
 
             {/* Content Menu */}
             <div>
                 {isLoading ? (
-                    <Loader />
+                    <div className="my-4">
+                        <Loader />
+                    </div>
                 ) : (
                     <div>
                         {Array.isArray(accessLogs) && accessLogs.length >= 1 ? (
@@ -144,15 +140,15 @@ const LearnAggregation = () => {
                                 ))}
                             </div>
                         ) : (
-                            <div className="border p-4 rounded-sm shadow-sm">
-                                <p>Logs are not recorded</p>
+                            <div className="w-full my-4 border bg-white p-4 rounded-sm shadow-sm">
+                                <p className="text-sm font-medium text-center">Logs are not recorded</p>
                             </div>
                         )}
                     </div>
                 )}
 
                 {!isLoading && accessLogs.length >= 1 && (
-                    <div className="w-full flex bg-white p-4 justify-end my-4">
+                    <div className="w-full flex bg-white rounded-sm p-4 justify-end my-4">
                         <Pagination
                             total={totalPages}
                             page={currentPage || 1}
@@ -168,4 +164,4 @@ const LearnAggregation = () => {
     );
 }
 
-export default LearnAggregation;
+export default RequestLogs;
