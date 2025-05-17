@@ -47,7 +47,6 @@ const RequestLogs = () => {
         try {
             const response = await fetch(`http://88.198.112.156:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
-            console.log('Res body: ', resBody);
             return resBody;
 
         } catch (error) {
@@ -135,7 +134,7 @@ const RequestLogs = () => {
                             <div>
                                 {accessLogs.map((log) => (
                                     <div key={log._id} className='overflow-x-auto my-2 bg-white rounded-sm border p-4 shadow-sm'>
-                                        {/* <p className="text-xs font-medium">{log.logMessage}</p> */}
+                                        <p className="text-xs font-medium">{log.logMessage}</p>
                                     </div>
                                 ))}
                             </div>
