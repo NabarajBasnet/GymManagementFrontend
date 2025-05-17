@@ -359,7 +359,6 @@ const Header = () => {
                         { icon: FaBoxOpen, title: 'Error Logs', link: '/dashboard/logs/errorlogs' },
                         { icon: FaBoxOpen, title: 'Auth Logs', link: '/dashboard/logs/authlogs' },
                         { icon: FaBoxOpen, title: 'Audit Logs', link: '/dashboard/logs/auditlogs' },
-                        { icon: FaBoxOpen, title: 'Debug Logs', link: '/dashboard/logs/debuglogs' },
                     ]
                 },
             ]
