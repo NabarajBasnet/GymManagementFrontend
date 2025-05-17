@@ -42,10 +42,10 @@ const ErrorLogs = () => {
 
     const [endDate, setEndDate] = useState(formatDate(new Date()));
 
-    const getAccessLogs = async ({ queryKey }) => {
+    const geterrorlogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/errorlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             console.log('Res body: ', resBody);
             return resBody;
@@ -56,11 +56,11 @@ const ErrorLogs = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['accesslogs', currentPage, startDate, endDate,],
-        queryFn: getAccessLogs
+        queryKey: ['errorlogs', currentPage, startDate, endDate,],
+        queryFn: geterrorlogs
     });
 
-    const { accessLogs, totalPages } = data || {};
+    const { errorlogs, totalPages } = data || {};
 
     return (
         <div className="w-full bg-gray-100 px-4 py-6">
@@ -100,7 +100,7 @@ const ErrorLogs = () => {
             </div>
 
             {/* Filters */}
-            {!isLoading && accessLogs.length >= 1 && (
+            {!isLoading && errorlogs.length >= 1 && (
                 <Card className='my-4'>
                     <CardHeader>
                         <CardTitle className="text-lg">Filters</CardTitle>
@@ -131,17 +131,50 @@ const ErrorLogs = () => {
                     </div>
                 ) : (
                     <div>
-                        {Array.isArray(accessLogs) && accessLogs.length >= 1 ? (
-                            <div>
-                                {accessLogs.map((log) => (
+                        {Array.isArray(errorlogs) && errorlogs.length >= 1 ? (
+                            <div className="space-y-4">
+                                {errorlogs.map((log) => (
                                     <div key={log._id} className='overflow-x-auto my-2 bg-white rounded-sm border p-4 shadow-sm'>
-                                        <p className="text-xs font-medium">{log.logMessage}</p>
+                                        <div className="flex flex-col gap-2">
+                                            {/* Error details header */}
+                                            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+                                                <div>
+                                                    <p className="text-sm font-medium">
+                                                        {log.route} [{log.method}] - Status: {log.statusCode}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {new Date(log.timestamp || log.createdAt).toLocaleString()}
+                                                    </p>
+                                                </div>
+                                                {log.user && (
+                                                    <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
+                                                        User ID: {log.user.toString()}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Error message */}
+                                            <div className="mt-2">
+                                                <p className="text-sm font-semibold text-red-600">Error:</p>
+                                                <p className="text-sm">{log.message}</p>
+                                            </div>
+
+                                            {/* Stack trace (collapsible) */}
+                                            {log.stack && (
+                                                <details className="mt-2">
+                                                    <summary className="text-sm font-semibold cursor-pointer">Stack Trace</summary>
+                                                    <pre className="text-xs bg-gray-100 p-2 mt-1 rounded overflow-x-auto">
+                                                        {log.stack}
+                                                    </pre>
+                                                </details>
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="w-full my-4 border bg-white p-4 rounded-sm shadow-sm">
-                                <p className="text-sm font-medium text-center">Logs are not recorded</p>
+                                <p className="text-sm font-medium text-center">No error logs found for the selected period</p>
                             </div>
                         )}
                     </div>
