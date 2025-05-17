@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/Loader/Loader";
 
-const RequestLogs = () => {
+const ErrorLogs = () => {
 
     // Pagination states
     let limit = 20;
@@ -90,12 +90,12 @@ const RequestLogs = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Access Logs</BreadcrumbPage>
+                            <BreadcrumbPage>Error Logs</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className="text-xl font-bold mt-3">Access Logs</h1>
+                    <h1 className="text-xl font-bold mt-3">Error Logs</h1>
                 </div>
             </div>
 
@@ -147,21 +147,19 @@ const RequestLogs = () => {
                     </div>
                 )}
 
-                {!isLoading && accessLogs.length >= 1 && (
-                    <div className="w-full flex bg-white rounded-sm p-4 justify-end my-4">
-                        <Pagination
-                            total={totalPages}
-                            page={currentPage || 1}
-                            onChange={setCurrentPage}
-                            withEdges={true}
-                            siblings={1}
-                            boundaries={1}
-                        />
-                    </div>
-                )}
+                <div className="w-full flex bg-white rounded-sm p-4 justify-center md:justify-end my-4">
+                    <Pagination
+                        total={totalPages}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                    />
+                </div>
             </div>
         </div>
     );
 }
 
-export default RequestLogs;
+export default ErrorLogs;

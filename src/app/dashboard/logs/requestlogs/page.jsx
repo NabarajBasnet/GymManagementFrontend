@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Loader from "@/components/Loader/Loader";
 
-const AuditLogs = () => {
+const RequestLogs = () => {
 
     // Pagination states
     let limit = 20;
@@ -40,17 +40,14 @@ const AuditLogs = () => {
         return start.toISOString().split("T")[0];
     });
 
-    const [endDate, setEndDate] = useState(() => {
-        const end = new Date();
-        end.setDate(end.getDate() + 1);
-        return end.toISOString().split('T')[0]
-    });
+    const [endDate, setEndDate] = useState(formatDate(new Date()));
 
-    const getAuditLogs = async ({ queryKey }) => {
+    const getAccessLogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/auditlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
+            console.log('Res body: ', resBody);
             return resBody;
 
         } catch (error) {
@@ -59,11 +56,11 @@ const AuditLogs = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['auditlogs', currentPage, startDate, endDate,],
-        queryFn: getAuditLogs
+        queryKey: ['accesslogs', currentPage, startDate, endDate,],
+        queryFn: getAccessLogs
     });
 
-    const { auditlogs, totalPages } = data || {};
+    const { accessLogs, totalPages } = data || {};
 
     return (
         <div className="w-full bg-gray-100 px-4 py-6">
@@ -93,17 +90,17 @@ const AuditLogs = () => {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Audit Logs</BreadcrumbPage>
+                            <BreadcrumbPage>Request Logs</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className="text-xl font-bold mt-3">Audit Logs</h1>
+                    <h1 className="text-xl font-bold mt-3">Request Logs</h1>
                 </div>
             </div>
 
             {/* Filters */}
-            {!isLoading && auditlogs.length >= 1 && (
+            {!isLoading && accessLogs.length >= 1 && (
                 <Card className='my-4'>
                     <CardHeader>
                         <CardTitle className="text-lg">Filters</CardTitle>
@@ -134,42 +131,17 @@ const AuditLogs = () => {
                     </div>
                 ) : (
                     <div>
-                        {Array.isArray(auditlogs) && auditlogs.length >= 1 ? (
-                            <div className="space-y-4">
-                                {auditlogs.map((log) => (
+                        {Array.isArray(accessLogs) && accessLogs.length >= 1 ? (
+                            <div>
+                                {accessLogs.map((log) => (
                                     <div key={log._id} className='overflow-x-auto my-2 bg-white rounded-sm border p-4 shadow-sm'>
-                                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-                                            <div>
-                                                <p className="text-sm font-medium">
-                                                    {log.who.user?.firstName} {log.who.user?.lastName} ({log.who.user?.email})
-                                                </p>
-                                                <p className="text-xs text-gray-500">
-                                                    {new Date(log.when).toLocaleString()}
-                                                </p>
-                                            </div>
-                                            <div className="flex flex-col items-end">
-                                                <span className="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-medium rounded">
-                                                    {log.what}
-                                                </span>
-                                                {log.to && (
-                                                    <p className="text-xs text-gray-500 mt-1">
-                                                        {log.to.status && `Status: ${log.to.status}`}
-                                                        {log.to.membershipHoldDate && ` | Hold until: ${log.to.membershipHoldDate}`}
-                                                    </p>
-                                                )}
-                                            </div>
-                                        </div>
-                                        <div className="mt-2">
-                                            <p className="text-xs text-gray-500">
-                                                From: {log.fromWhere.split('||')[0].trim()} | {log.fromWhere.split('||')[1].trim()}
-                                            </p>
-                                        </div>
+                                        {/* <p className="text-xs font-medium">{log.logMessage}</p> */}
                                     </div>
                                 ))}
                             </div>
                         ) : (
                             <div className="w-full my-4 border bg-white p-4 rounded-sm shadow-sm">
-                                <p className="text-sm font-medium text-center">No audit logs found for the selected period</p>
+                                <p className="text-sm font-medium text-center">Logs are not recorded</p>
                             </div>
                         )}
                     </div>
@@ -190,4 +162,4 @@ const AuditLogs = () => {
     );
 }
 
-export default AuditLogs;
+export default RequestLogs;

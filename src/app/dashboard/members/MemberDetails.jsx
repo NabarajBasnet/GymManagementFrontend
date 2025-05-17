@@ -1,6 +1,5 @@
 'use client';
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { FaChevronUp } from "react-icons/fa";
 import {
     Tooltip,
@@ -9,7 +8,6 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import React from 'react';
-import { ImagePlus, X } from 'lucide-react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,14 +19,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -53,6 +43,7 @@ import { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
 
 const MemberDetails = ({ memberId }) => {
+
     const [imagePreview, setImagePreview] = useState(null);
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
@@ -65,20 +56,10 @@ const MemberDetails = ({ memberId }) => {
         }
     };
 
-    const removeImage = () => {
-        setImagePreview(null);
-    };
-
     // For rendering states
-    const [renderPaymentHistory, setRenderPaymentHistory] = useState(false);
+
     const [currentActionTaker, setCurrentActionTaker] = useState('');
-    const [selectedPayment, setSelectedPayment] = useState(null);
-    const [renderSnapshot, setRenderSnapshot] = useState(false);
-    const [selectedSnapshot, setSelectedSnapshot] = useState(null);
-    const [activeSnapshotLog, setActiveSnapshotLog] = useState(null);
     const [renderPersonalInformationForm, setRenderPersonalInformationForm] = useState(true);
-    const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
-    const [renderMembershipLogs, setRenderMembershipLogs] = useState(false);
     const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
     const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
     const [renderProfileDetails, setRenderProfileDetails] = useState(false);
@@ -299,60 +280,6 @@ const MemberDetails = ({ memberId }) => {
     }, [membershipOption, membershipType, membershipRenewDate, membershipDuration]);
 
     // Functions
-    // Upload member image
-    const [imageUloading, setImageUploading] = useState(false);
-    const uploadMemberImage = async () => {
-        setImageUploading(true);
-        try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
-                method: "PATCH",
-                headers: {
-                    'Content-Type': "application/json"
-                },
-                body: JSON.stringify(imagePreview)
-            })
-            const responseBody = await response.json();
-            if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
-                setResponseType(responseResultType[1]);
-                setImageUploading(false);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-            }
-            else {
-                if (response.status === 200) {
-                    setImageUploading(false);
-                    setImagePreview(null);
-                    setResponseType(responseResultType[0]);
-                    setToast(true);
-                    setTimeout(() => {
-                        setToast(false)
-                    }, 10000);
-                    setSuccessMessage({
-                        icon: MdError,
-                        message: responseBody.message || 'Unauthorized action'
-                    })
-                }
-            }
-        } catch (error) {
-            console.log('Error: ', error);
-            setImageUploading(false);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: error.message || error
-            });
-        };
-    };
 
     // Update member details
     const updateMemberDetails = async (data) => {
@@ -407,7 +334,7 @@ const MemberDetails = ({ memberId }) => {
     // Hold membership
     const holdMembership = async () => {
 
-        const membershipHoldData = { membershipHoldDate, status: 'OnHold', actionTaker: currentActionTaker };
+        const membershipHoldData = { membershipHoldDate, status: 'OnHold', actionTaker: currentActionTaker, toId: memberId };
 
         try {
             const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
@@ -636,7 +563,12 @@ const MemberDetails = ({ memberId }) => {
                                                     <p className="text-red-600 font-medium text-sm">Note: Stop/Start Date will be set to today by default</p>
                                                 </div>
                                                 <p className="text-gray-600 text-sm">To override the default Stop Date, please select a date below:</p>
-                                                <Popover>
+                                                <Input
+                                                    type='date'
+                                                    value={membershipHoldDate}
+                                                    onChange={(e) => setMembershipHoldDate(new Date(e.target.value).toISOString().split('T')[0])}
+                                                />
+                                                {/* <Popover>
                                                     <PopoverTrigger asChild>
                                                         <Button
                                                             variant="outline"
@@ -657,7 +589,7 @@ const MemberDetails = ({ memberId }) => {
                                                             className="rounded-lg"
                                                         />
                                                     </PopoverContent>
-                                                </Popover>
+                                                </Popover> */}
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter className="flex justify-end gap-3 mt-4">
