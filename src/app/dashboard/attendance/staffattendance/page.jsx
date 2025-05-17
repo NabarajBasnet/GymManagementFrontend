@@ -59,7 +59,7 @@ const StaffAttendance = () => {
 
     const checkIfStaffCheckedIn = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/checkedin`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -78,7 +78,7 @@ const StaffAttendance = () => {
 
     const checkInStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -112,7 +112,7 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/check-out-staff`, {
+            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -142,7 +142,7 @@ const StaffAttendance = () => {
     const fetchAllTemporaryStaffAttendances = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
+            const response = await fetch(`http://localhost:3000/api/validate-staff/temporary-staffattendance-history?page=${page}&limit=${limit}&searchQuery=${searchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -441,7 +441,7 @@ const StaffAttendance = () => {
                                                                 second: '2-digit',
                                                                 timeZone: 'UTC'
                                                             })
-                                                            : ''}
+                                                        : ''}
                                                     </TableCell>
                                                     <TableCell className="text-sm">
                                                         {attendance.checkOut ?
@@ -453,7 +453,7 @@ const StaffAttendance = () => {
                                                                 second: '2-digit',
                                                                 timeZone: 'UTC'
                                                             })
-                                                            : ''}
+                                                        : ''}
                                                     </TableCell>
                                                     <TableCell className="text-sm">{attendance.remark}</TableCell>
                                                 </TableRow>
