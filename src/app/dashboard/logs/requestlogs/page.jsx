@@ -45,7 +45,7 @@ const RequestLogs = () => {
     const getAccessLogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://localhost:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/accesslogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             console.log('Res body: ', resBody);
             return resBody;
