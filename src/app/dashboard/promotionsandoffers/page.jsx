@@ -1,5 +1,7 @@
 'use client';
 
+import { FiPause, FiCopy } from "react-icons/fi";
+import { BiEdit } from "react-icons/bi";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { MdHome } from "react-icons/md";
 import { useState, useEffect } from "react";
@@ -65,7 +67,7 @@ import {
     FaSpinner,
 } from 'react-icons/fa';
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { MdError, MdClose, MdDone } from "react-icons/md";
+import { MdError, MdClose, MdDone, MdDelete, MdEdit, MdPhoneEnabled, Md10K } from "react-icons/md";
 import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, ChevronRight, Plus, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
 import toast from "react-hot-toast";
 
@@ -490,10 +492,10 @@ const PromotionsAndOfferManagement = () => {
             )}
 
             <div className="p-4 md:p-6">
-                <Tabs defaultValue="account" className="w-full mx-auto">
-                    <TabsList className="grid w-80 grid-cols-2">
-                        <TabsTrigger value="cards">Cards</TabsTrigger>
-                        <TabsTrigger value="table">Table</TabsTrigger>
+                <Tabs defaultValue="cards" className="w-full mx-auto">
+                    <TabsList className="grid my-4 bg-gray-800 w-full md:w-80 rounded-full grid-cols-2">
+                        <TabsTrigger className='text-gray-50 rounded-full' value="cards">Cards</TabsTrigger>
+                        <TabsTrigger className='text-gray-50 rounded-full' value="table">Table</TabsTrigger>
                     </TabsList>
                     <TabsContent value="cards">
                         <div>
@@ -502,24 +504,27 @@ const PromotionsAndOfferManagement = () => {
                             ) : (
                                 <div className="">
                                     {Array.isArray(offers) && offers.length > 0 ? (
-                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {offers.map((offer) => (
-                                                <div key={offer._id} className="border border-gray-200 rounded-lg shadow-sm p-6 bg-white relative">
-                                                    {/* Card Header */}
+                                                <div
+                                                    key={offer._id}
+                                                    className="border border-gray-100 rounded-xl shadow-sm p-5 bg-white hover:shadow-md transition-shadow duration-200 flex flex-col"
+                                                >
+                                                    {/* Card Header with Status */}
                                                     <div className="flex justify-between items-start mb-4">
-                                                        <h3 className="text-lg font-semibold text-gray-800">{offer.title}</h3>
-                                                        <span className={`px-2 py-1 rounded text-xs font-bold ${offer.isActive === "on"
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-gray-100 text-gray-800"
+                                                        <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">{offer.title}</h3>
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${offer.isActive === "on"
+                                                            ? "bg-green-50 text-green-700"
+                                                            : "bg-gray-50 text-gray-600"
                                                             }`}>
                                                             {offer.isActive === "on" ? "Active" : "Inactive"}
                                                         </span>
                                                     </div>
 
                                                     {/* Discount Badge */}
-                                                    <div className={`inline-block px-3 py-1 mb-4 rounded-md font-bold ${offer.discountValueIsPercentage
-                                                        ? "bg-red-500 text-white"
-                                                        : "bg-blue-500 text-white"
+                                                    <div className={`w-fit px-4 py-2 mb-5 rounded-lg font-bold text-sm ${offer.discountValueIsPercentage
+                                                        ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
+                                                        : "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                                         }`}>
                                                         {offer.discountValueIsPercentage
                                                             ? `${offer.discountValue}% OFF`
@@ -527,49 +532,83 @@ const PromotionsAndOfferManagement = () => {
                                                     </div>
 
                                                     {/* Description */}
-                                                    <p className="text-gray-600 mb-4">{offer.description}</p>
+                                                    <p className="text-gray-600 text-sm mb-6 line-clamp-3">{offer.description}</p>
 
                                                     {/* Details Grid */}
-                                                    <div className="space-y-2 mb-6">
+                                                    <div className="space-y-3 mb-6">
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-500">Promo Code:</span>
-                                                            <span className="font-medium">{offer.promoCode}</span>
+                                                            <span className="text-gray-500 font-medium">Promo Code:</span>
+                                                            <span className="font-semibold text-gray-800 bg-gray-50 px-2 py-1 rounded">{offer.promoCode}</span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-500">Valid:</span>
-                                                            <span>
-                                                                {new Date(offer.startDate).toLocaleDateString()} - {new Date(offer.endDate).toLocaleDateString()}
+                                                            <span className="text-gray-500 font-medium">Valid:</span>
+                                                            <span className="text-gray-800">
+                                                                {new Date(offer.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(offer.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                                             </span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-500">Min. Purchase:</span>
-                                                            <span>${offer.minimumPurchase}</span>
+                                                            <span className="text-gray-500 font-medium">Min. Purchase:</span>
+                                                            <span className="text-gray-800">${offer.minimumPurchase}</span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-500">Usage:</span>
-                                                            <span>{offer.timesUsed}/{offer.usageLimit} used</span>
+                                                            <span className="text-gray-500 font-medium">Usage:</span>
+                                                            <span className="text-gray-800">
+                                                                <span className={offer.timesUsed >= offer.usageLimit ? "text-red-500" : "text-green-600"}>
+                                                                    {offer.timesUsed}
+                                                                </span> / {offer.usageLimit} used
+                                                            </span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
-                                                            <span className="text-gray-500">Eligible For:</span>
-                                                            <span className="text-right">
+                                                            <span className="text-gray-500 font-medium">Eligible For:</span>
+                                                            <span className="text-right text-gray-800">
                                                                 {offer.selectedAudiences.map(aud => aud.replace(/_/g, ' ')).join(', ')}
                                                             </span>
                                                         </div>
                                                     </div>
 
-                                                    {/* Apply Button */}
-                                                    <button className="w-full py-2 px-4 bg-green-600 hover:bg-green-700 text-white font-medium rounded-md transition duration-200">
-                                                        Apply Offer
-                                                    </button>
+                                                    {/* Action Buttons */}
+                                                    <div className="mt-auto pt-4 flex justify-between items-center border-t border-gray-100">
+                                                        <button className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                                                            <BiEdit className="mr-2" size={16} />
+                                                            Edit
+                                                        </button>
+                                                        <div className="flex space-x-2">
+                                                            <button className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800 transition-colors border border-red-200 rounded-lg hover:bg-red-50">
+                                                                Disable
+                                                            </button>
+                                                            <button className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+                                                                <MdDelete className="mr-2" size={16} />
+                                                                Delete
+                                                            </button>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="text-center py-10">
-                                            <h3 className="text-xl font-medium text-gray-600 mb-2">No promotions and offers recorded</h3>
-                                            <p className="text-gray-500">Check back later for exciting deals!</p>
+                                        <div className="text-center py-16">
+                                            <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-xl font-medium text-gray-800 mb-2">No promotions available</h3>
+                                            <p className="text-gray-500 max-w-md mx-auto">Create your first promotion to attract more customers and boost sales.</p>
+                                            <button className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                                Create Promotion
+                                            </button>
                                         </div>
                                     )}
+                                    <div className="w-full flex justify-center my-4 lg:justify-end">
+                                        <Pagination
+                                            total={totalPages}
+                                            page={currentPage || 1}
+                                            onChange={setCurrentPage}
+                                            withEdges={true}
+                                            siblings={1}
+                                            boundaries={1}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -581,82 +620,151 @@ const PromotionsAndOfferManagement = () => {
                             ) : (
                                 <div className="">
                                     {Array.isArray(offers) && offers.length > 0 ? (
-                                        <div className="overflow-x-auto">
-                                            <table className="min-w-full divide-y divide-gray-200">
-                                                <thead className="bg-gray-50">
-                                                    <tr>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Promo Code</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valid Dates</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                                        <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody className="bg-white divide-y divide-gray-200">
-                                                    {offers.map((offer) => (
-                                                        <tr key={offer._id}>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="font-medium text-gray-900">{offer.title}</div>
-                                                                <p className="text-sm text-gray-500 h-full max-w-80">{offer.description}</p>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${offer.discountValueIsPercentage ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
-                                                                    }`}>
-                                                                    {offer.discountValueIsPercentage
-                                                                        ? `${offer.discountValue}% OFF`
-                                                                        : `$${offer.discountValue} OFF`}
-                                                                </span>
-                                                                <div className="text-sm text-gray-500">Min: ${offer.minimumPurchase}</div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
-                                                                {offer.promoCode}
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <div className="text-sm text-gray-900">
-                                                                    {new Date(offer.startDate).toLocaleDateString()}
-                                                                </div>
-                                                                <div className="text-sm text-gray-500">
-                                                                    to {new Date(offer.endDate).toLocaleDateString()}
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap">
-                                                                <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${offer.isActive === "on" ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                                                                    }`}>
-                                                                    {offer.isActive === "on" ? 'Active' : 'Inactive'}
-                                                                </span>
-                                                                <div className="text-sm text-gray-500">
-                                                                    Used: {offer.timesUsed}/{offer.usageLimit}
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                                                <button className="text-indigo-600 hover:text-indigo-900 mr-3">Edit</button>
-                                                                <button className="text-red-600 hover:text-red-900">Delete</button>
-                                                            </td>
+                                        <div className="overflow-hidden rounded-lg border border-gray-200 shadow-sm">
+                                            <div className="overflow-x-auto">
+                                                <table className="min-w-full divide-y divide-gray-200">
+                                                    <thead className="bg-gray-50">
+                                                        <tr>
+                                                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">Offer Details</th>
+                                                            <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Discount</th>
+                                                            <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Validity</th>
+                                                            <th scope="col" className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                                            <th scope="col" className="px-4 py-3 text-end text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                                         </tr>
-                                                    ))}
-                                                </tbody>
-                                            </table>
+                                                    </thead>
+                                                    <tbody className="bg-white divide-y divide-gray-200">
+                                                        {offers.map((offer) => (
+                                                            <tr key={offer._id} className="hover:bg-gray-50 transition-colors duration-150">
+                                                                {/* Offer Details - Left aligned */}
+                                                                <td className="px-4 py-4 max-w-[200px] 2xl:max-w-[300px] text-left">
+                                                                    <div className="flex items-start">
+                                                                        <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white font-bold mr-3">
+                                                                            {offer.discountValueIsPercentage ? `${offer.discountValue}%` : `$${offer.discountValue}`}
+                                                                        </div>
+                                                                        <div className="min-w-0">
+                                                                            <div className="text-sm font-medium text-gray-900 truncate">{offer.title}</div>
+                                                                            <div
+                                                                                className="text-sm text-gray-500 truncate hover:whitespace-normal hover:overflow-visible hover:bg-white hover:z-10 hover:absolute hover:max-w-[300px] hover:shadow-md hover:px-2 hover:py-1 hover:border hover:border-gray-200 hover:rounded"
+                                                                                title={offer.description}
+                                                                            >
+                                                                                {offer.description}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                {/* Discount Info - Left aligned */}
+                                                                <td className="px-4 py-4 whitespace-nowrap text-left">
+                                                                    <div className="space-y-1">
+                                                                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${offer.discountValueIsPercentage
+                                                                            ? 'bg-red-100 text-red-800'
+                                                                            : 'bg-blue-100 text-blue-800'
+                                                                            }`}>
+                                                                            {offer.discountValueIsPercentage
+                                                                                ? `${offer.discountValue}% OFF`
+                                                                                : `$${offer.discountValue} OFF`}
+                                                                        </span>
+                                                                        <div className="text-xs text-gray-500">Code: {offer.promoCode}</div>
+                                                                        <div className="text-xs text-gray-500">Min: ${offer.minimumPurchase}</div>
+                                                                    </div>
+                                                                </td>
+
+                                                                {/* Validity - Center aligned */}
+                                                                <td className="px-4 py-4 whitespace-nowrap text-center">
+                                                                    <div className="text-sm text-gray-900 space-y-1 mx-auto">
+                                                                        <div>
+                                                                            <span className="font-medium">From:</span> {new Date(offer.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                                        </div>
+                                                                        <div>
+                                                                            <span className="font-medium">To:</span> {new Date(offer.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                                        </div>
+                                                                        <div className="text-xs text-gray-500 truncate max-w-[120px] mx-auto">
+                                                                            {offer.selectedAudiences.map(aud => aud.replace(/_/g, ' ')).join(', ')}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                {/* Status - Center aligned */}
+                                                                <td className="px-4 py-4 whitespace-nowrap text-center">
+                                                                    <div className="space-y-1 mx-auto">
+                                                                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${offer.isActive === "on"
+                                                                            ? 'bg-green-100 text-green-800'
+                                                                            : 'bg-gray-100 text-gray-800'
+                                                                            }`}>
+                                                                            {offer.isActive === "on" ? 'Active' : 'Inactive'}
+                                                                        </span>
+                                                                        <div className="text-xs text-gray-500">
+                                                                            Used: <span className={offer.timesUsed >= offer.usageLimit ? "text-red-500" : "text-green-600"}>
+                                                                                {offer.timesUsed}
+                                                                            </span> / {offer.usageLimit}
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+
+                                                                {/* Actions - Right aligned */}
+                                                                <td className="px-4 py-4 whitespace-nowrap text-end">
+                                                                    <div className="flex justify-end items-center space-x-3">
+                                                                        <button
+                                                                            className="text-gray-600 hover:text-gray-900 flex items-center"
+                                                                            title="Edit"
+                                                                        >
+                                                                            <BiEdit className="mr-1" size={16} />
+                                                                        </button>
+                                                                        <button
+                                                                            className={`flex items-center ${offer.isActive === "on"
+                                                                                ? "text-yellow-600 hover:text-yellow-900"
+                                                                                : "text-green-600 hover:text-green-900"
+                                                                                }`}
+                                                                            title={offer.isActive === "on" ? "Disable" : "Enable"}
+                                                                        >
+                                                                            {offer.isActive === "on" ? (
+                                                                                <FiPause className="mr-1" size={16} />
+                                                                            ) : (
+                                                                                <FiPlay className="mr-1" size={16} />
+                                                                            )}
+                                                                        </button>
+                                                                        <button
+                                                                            className="text-red-600 hover:text-red-900 flex items-center"
+                                                                            title="Delete"
+                                                                        >
+                                                                            <MdDelete className="mr-1" size={16} />
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ))}
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
                                     ) : (
-                                        <div className="text-center py-10">
-                                            <h3 className="text-xl font-medium text-gray-600 mb-2">No promotions and offers recorded</h3>
-                                            <p className="text-gray-500">Check back later for exciting deals!</p>
+                                        <div className="text-center py-16">
+                                            <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+                                                <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                                                </svg>
+                                            </div>
+                                            <h3 className="text-xl font-medium text-gray-800 mb-2">No promotions available</h3>
+                                            <p className="text-gray-500 max-w-md mx-auto">Create your first promotion to attract more customers and boost sales.</p>
+                                            <button className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                                Create Promotion
+                                            </button>
                                         </div>
                                     )}
+                                    <div className="w-full flex justify-center my-4 lg:justify-end">
+                                        <Pagination
+                                            total={totalPages}
+                                            page={currentPage || 1}
+                                            onChange={setCurrentPage}
+                                            withEdges={true}
+                                            siblings={1}
+                                            boundaries={1}
+                                        />
+                                    </div>
                                 </div>
                             )}
                         </div>
                     </TabsContent>
-
-                    <Pagination
-                        total={totalPages}
-                        page={currentPage || 1}
-                        onChange={setCurrentPage}
-                        withEdges={true}
-                        siblings={1}
-                        boundaries={1}
-                    />
                 </Tabs>
             </div>
         </div>
