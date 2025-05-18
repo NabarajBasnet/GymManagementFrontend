@@ -486,27 +486,27 @@ const MemberBodyMeasurements = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
-                            <p className="text-sm text-gray-500">
-                                Showing <span className="font-medium">{startEntry}</span> to <span className="font-medium">{endEntry}</span> of{' '}
-                                <span className="font-medium">{totalBodyMeasurements}</span> results
-                            </p>
-
-                            <div>
-                                <Pagination
-                                    total={totalPages || 1}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                    className="flex items-center space-x-1"
-                                />
-                            </div>
-                        </div>
                     </div>
                 )
             }
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+                <p className="text-sm text-gray-500">
+                    Showing <span className="font-medium">{startEntry}</span> to <span className="font-medium">{endEntry}</span> of{' '}
+                    <span className="font-medium">{totalBodyMeasurements}</span> results
+                </p>
+
+                <div>
+                    <Pagination
+                        total={totalPages || 1}
+                        page={currentPage || 1}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                        className="flex items-center space-x-1"
+                    />
+                </div>
+            </div>
         </>
     );
 
