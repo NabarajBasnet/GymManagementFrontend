@@ -102,7 +102,7 @@ const OfferShowcase = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
             {/* Hero Section */}
-            <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white">
+            <div className="bg-[radial-gradient(circle,_rgba(168,162,158,1)_0%,_rgba(75,85,99,1)_60%,_rgba(55,65,81,1)_100%)] text-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
                     <div className="text-center">
                         <div className="flex justify-center items-center space-x-2 mb-4">
