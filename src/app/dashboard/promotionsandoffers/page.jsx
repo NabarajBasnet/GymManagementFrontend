@@ -78,7 +78,7 @@ import {
     FaSpinner,
 } from 'react-icons/fa';
 import { IoMdInformationCircleOutline } from "react-icons/io";
-import { MdError, MdClose, MdDone, MdDelete, MdEdit, MdPhoneEnabled, Md10K } from "react-icons/md";
+import { MdError, MdClose, MdDone, MdDelete } from "react-icons/md";
 import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, ChevronRight, Plus, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
 import toast from "react-hot-toast";
 
@@ -90,7 +90,8 @@ const PromotionsAndOfferManagement = () => {
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
-
+    const [submitMode, setSubmitMode] = useState(null);
+    console.log("Submit Mode: ", submitMode);
 
     // React hook form
     const {
@@ -124,6 +125,7 @@ const PromotionsAndOfferManagement = () => {
     const [offerType, setSelectedOfferType] = useState('');
     const [discountValueIsPercentage, setDiscountValueIsPercentage] = useState(false);
     const [selectedAudiences, setSelectedAudiences] = useState([]);
+    const baseURL = `http://localhost:3000/api/promotionsandoffers`;
 
     const onFormSubmit = async (data) => {
 
@@ -155,8 +157,8 @@ const PromotionsAndOfferManagement = () => {
         };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/promotionsandoffers`, {
-                method: "POST",
+            const response = await fetch(`${baseURL}`, {
+                method: submitMode === 'edit' ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -177,8 +179,34 @@ const PromotionsAndOfferManagement = () => {
                 toast.error(responseBody.message);
             };
 
+            if (response.ok && response.status === 200 && submitMode === 'edit') {
+                console.log("Response body: ", responseBody);
+                // reset({
+                //     title:responseBody.
+                // })
+            }
+
         } catch (error) {
             console.log("Error: ", error);
+            toast.error(error.message);
+        };
+    };
+
+    console.log('Form mode: ', submitMode);
+
+    const getSingleOfferDetails = async (id) => {
+        setOpenNewForm(true);
+        try {
+            const response = await fetch(`${baseURL}/${id}`);
+            const responseBody = await response.json();
+
+            if (response.ok && submitMode === 'edit') {
+                //
+            };
+            console.log("Respone Body: ", responseBody);
+
+        } catch (error) {
+            console.log("Error: ", error)
             toast.error(error.message);
         };
     };
@@ -298,7 +326,10 @@ const PromotionsAndOfferManagement = () => {
                             <h1 className='text-lg font-medium'>Create New Promotions & Offers</h1>
                             <button
                                 type="button"
-                                onClick={() => setOpenNewForm(false)}
+                                onClick={() => {
+                                    setOpenNewForm(false)
+                                    setSubmitMode(null);
+                                }}
                                 className="text-gray-500 hover:text-gray-700"
                             >
                                 <IoMdClose className="h-5 w-5" />
@@ -523,26 +554,47 @@ const PromotionsAndOfferManagement = () => {
                         <div className="w-full flex justify-end bg-gray-50 gap-3 p-4 md:p-6 border-t border-gray-100">
                             <Button
                                 type="button"
-                                onClick={() => setOpenNewForm(false)}
+                                onClick={() => {
+                                    setSubmitMode(null);
+                                    setOpenNewForm(false);
+                                }}
                                 variant="outline"
                                 className="h-10 px-4 md:px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
                             >
                                 Cancel
                             </Button>
-                            <Button
-                                type="submit"
-                                className="h-10 px-4 md:px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
-                                disabled={isSubmitting}
-                            >
-                                {isSubmitting ? (
-                                    <div className="flex items-center gap-2">
-                                        <FaSpinner className="animate-spin h-4 w-4" />
-                                        Saving...
-                                    </div>
-                                ) : (
-                                    'Save Promotion'
-                                )}
-                            </Button>
+
+                            {submitMode === 'edit' ? (
+                                <Button
+                                    type="button"
+                                    className="h-10 px-4 md:px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <div className="flex items-center gap-2">
+                                            <FaSpinner className="animate-spin h-4 w-4" />
+                                            Editing...
+                                        </div>
+                                    ) : (
+                                        'Edit Promotion'
+                                    )}
+                                </Button>
+                            ) : (
+                                <Button
+                                    type="submit"
+                                    className="h-10 px-4 md:px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
+                                    disabled={isSubmitting}
+                                >
+                                    {isSubmitting ? (
+                                        <div className="flex items-center gap-2">
+                                            <FaSpinner className="animate-spin h-4 w-4" />
+                                            Saving...
+                                        </div>
+                                    ) : (
+                                        'Save Promotion'
+                                    )}
+                                </Button>
+                            )}
                         </div>
                     </form>
                 </div>
@@ -552,7 +604,7 @@ const PromotionsAndOfferManagement = () => {
 
                 <div className="w-full flex bg-white py-6 px-2 rounded-sm border flex-col md:flex-row gap-4 items-center">
                     {/* Search Input */}
-                    <div className="border bg-white flex items-center rounded-full px-4 flex-1 max-w-full">
+                    <div className="border bg-white flex items-center rounded-full px-4 flex-1 w-full">
                         <Search className="h-4 w-4 mr-2" />
                         <Input
                             className='outline-none border-none focus:outline-none focus:border-none w-full'
@@ -685,7 +737,12 @@ const PromotionsAndOfferManagement = () => {
 
                                                     {/* Action Buttons */}
                                                     <div className="mt-auto pt-4 flex justify-between items-center border-t border-gray-100">
-                                                        <button className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                                                        <button
+                                                            onClick={() => {
+                                                                setSubmitMode('edit');
+                                                                getSingleOfferDetails(offer._id);
+                                                            }}
+                                                            className="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
                                                             <BiEdit className="mr-2" size={16} />
                                                             Edit
                                                         </button>
@@ -842,6 +899,10 @@ const PromotionsAndOfferManagement = () => {
                                                                 <td className="px-4 py-4 whitespace-nowrap text-end">
                                                                     <div className="flex justify-end items-center space-x-3">
                                                                         <button
+                                                                            onClick={() => {
+                                                                                setSubmitMode('edit');
+                                                                                getSingleOfferDetails(offer._id);
+                                                                            }}
                                                                             className="text-gray-600 hover:text-gray-900 flex items-center"
                                                                             title="Edit"
                                                                         >
