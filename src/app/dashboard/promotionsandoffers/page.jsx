@@ -59,6 +59,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Icons
 import {
@@ -76,7 +87,7 @@ const PromotionsAndOfferManagement = () => {
     const [openNewForm, setOpenNewForm] = useState(false);
     const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 10;
+    const limit = 6;
 
     // React hook form
     const {
@@ -87,12 +98,12 @@ const PromotionsAndOfferManagement = () => {
     } = useForm();
 
     const audienceOptions = [
-        { id: 'new_joiners', label: 'New Joiners' },
-        { id: 'expired_members', label: 'Expired Members' },
-        { id: 'all_members', label: 'All Members' },
-        { id: 'students', label: 'Students' },
-        { id: 'seniors', label: 'Seniors' },
-        { id: 'corporate', label: 'Corporate' },
+        { id: 'New Joiners', label: 'New Joiners' },
+        { id: 'Expired Members', label: 'Expired Members' },
+        { id: 'All Members', label: 'All Members' },
+        { id: 'Students', label: 'Students' },
+        { id: 'Seniors', label: 'Seniors' },
+        { id: 'Corporate', label: 'Corporate' },
     ];
 
     const offerTypes = [
@@ -182,7 +193,6 @@ const PromotionsAndOfferManagement = () => {
         try {
             const response = await fetch(`http://localhost:3000/api/promotionsandoffers?page=${page}&limit=${limit}`);
             const responseBody = await response.json();
-            console.log('Response Body: ', responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error.message);
@@ -196,7 +206,52 @@ const PromotionsAndOfferManagement = () => {
     });
 
     const { offers, totalPages } = data || {}
-    console.log('offers: ', offers);
+
+    const deleteOffer = async (id) => {
+        console.log('Id: ', id);
+        try {
+            const response = await fetch(`http://localhost:3000/api/promotionsandoffers/${id}`, {
+                method: "DELETE"
+            });
+
+            const responseBody = await response.json();
+            if (response.ok && response.status === 200) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['promotionsandoffers']);
+            } else {
+                toast.error(responseBody.message);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message);
+        };
+    };
+
+    const copyPromoCodeToClipboard = (promoCode) => {
+        if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
+            navigator.clipboard.writeText(promoCode)
+                .then(() => toast.success(`Promo code ${promoCode} copied to clipboard`))
+                .catch(() => toast.error("Failed to copy promo code"));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = promoCode;
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    toast.success(`Promo code ${promoCode} copied to clipboard`);
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                toast.error("Failed to copy code");
+            }
+            document.body.removeChild(textArea);
+        }
+    };
 
     return (
         <div className='w-full bg-slate-50 min-h-screen'>
@@ -508,14 +563,14 @@ const PromotionsAndOfferManagement = () => {
                                             {offers.map((offer) => (
                                                 <div
                                                     key={offer._id}
-                                                    className="border border-gray-100 rounded-xl shadow-sm p-5 bg-white hover:shadow-md transition-shadow duration-200 flex flex-col"
+                                                    className="rounded-xl shadow-md p-5 bg-white hover:shadow-lg border transition-shadow duration-200 flex flex-col"
                                                 >
                                                     {/* Card Header with Status */}
                                                     <div className="flex justify-between items-start mb-4">
                                                         <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">{offer.title}</h3>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${offer.isActive === "on"
-                                                            ? "bg-green-50 text-green-700"
-                                                            : "bg-gray-50 text-gray-600"
+                                                        <span className={`px-4 py-2 rounded-full text-xs font-semibold ${offer.isActive === "on"
+                                                            ? "bg-green-100 text-green-700"
+                                                            : "bg-gray-100 text-gray-600"
                                                             }`}>
                                                             {offer.isActive === "on" ? "Active" : "Inactive"}
                                                         </span>
@@ -532,13 +587,16 @@ const PromotionsAndOfferManagement = () => {
                                                     </div>
 
                                                     {/* Description */}
-                                                    <p className="text-gray-600 text-sm mb-6 line-clamp-3">{offer.description}</p>
+                                                    <p className="text-gray-600 text-sm font-medium mb-6 line-clamp-3">{offer.description}</p>
 
                                                     {/* Details Grid */}
                                                     <div className="space-y-3 mb-6">
                                                         <div className="flex justify-between text-sm">
                                                             <span className="text-gray-500 font-medium">Promo Code:</span>
-                                                            <span className="font-semibold text-gray-800 bg-gray-50 px-2 py-1 rounded">{offer.promoCode}</span>
+                                                            <span className="font-semibold flex items-center text-gray-800 bg-gray-50 px-2 py-1 rounded">
+                                                                {offer.promoCode}
+                                                                <FiCopy onClick={() => copyPromoCodeToClipboard(offer.promoCode)} className="mx-2 cursor-pointer" />
+                                                            </span>
                                                         </div>
                                                         <div className="flex justify-between text-sm">
                                                             <span className="text-gray-500 font-medium">Valid:</span>
@@ -576,10 +634,27 @@ const PromotionsAndOfferManagement = () => {
                                                             <button className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800 transition-colors border border-red-200 rounded-lg hover:bg-red-50">
                                                                 Disable
                                                             </button>
-                                                            <button className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
-                                                                <MdDelete className="mr-2" size={16} />
-                                                                Delete
-                                                            </button>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <button className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
+                                                                        <MdDelete className="mr-2" size={16} />
+                                                                        Delete
+                                                                    </button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This action cannot be undone. This will permanently delete your
+                                                                            this document and remove data from our servers.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction onClick={() => deleteOffer(offer._id)}>Continue</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -594,23 +669,23 @@ const PromotionsAndOfferManagement = () => {
                                             </div>
                                             <h3 className="text-xl font-medium text-gray-800 mb-2">No promotions available</h3>
                                             <p className="text-gray-500 max-w-md mx-auto">Create your first promotion to attract more customers and boost sales.</p>
-                                            <button className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                            <button onClick={() => setOpenNewForm(true)} className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                                                 Create Promotion
                                             </button>
                                         </div>
                                     )}
-                                    <div className="w-full flex justify-center my-4 lg:justify-end">
-                                        <Pagination
-                                            total={totalPages}
-                                            page={currentPage || 1}
-                                            onChange={setCurrentPage}
-                                            withEdges={true}
-                                            siblings={1}
-                                            boundaries={1}
-                                        />
-                                    </div>
                                 </div>
                             )}
+                        </div>
+                        <div className="w-full flex justify-center my-4 lg:justify-end">
+                            <Pagination
+                                total={totalPages}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
                         </div>
                     </TabsContent>
                     <TabsContent value="table">
@@ -664,7 +739,10 @@ const PromotionsAndOfferManagement = () => {
                                                                                 ? `${offer.discountValue}% OFF`
                                                                                 : `$${offer.discountValue} OFF`}
                                                                         </span>
-                                                                        <div className="text-xs text-gray-500">Code: {offer.promoCode}</div>
+                                                                        <div className="text-xs flex items-center text-gray-500">
+                                                                            <span>Code: {offer.promoCode}</span>
+                                                                            <FiCopy onClick={() => copyPromoCodeToClipboard(offer.promoCode)} className="mx-2 cursor-pointer" />
+                                                                        </div>
                                                                         <div className="text-xs text-gray-500">Min: ${offer.minimumPurchase}</div>
                                                                     </div>
                                                                 </td>
@@ -723,12 +801,29 @@ const PromotionsAndOfferManagement = () => {
                                                                                 <FiPlay className="mr-1" size={16} />
                                                                             )}
                                                                         </button>
-                                                                        <button
-                                                                            className="text-red-600 hover:text-red-900 flex items-center"
-                                                                            title="Delete"
-                                                                        >
-                                                                            <MdDelete className="mr-1" size={16} />
-                                                                        </button>
+                                                                        <AlertDialog>
+                                                                            <AlertDialogTrigger asChild>
+                                                                                <button
+                                                                                    className="text-red-600 hover:text-red-900 flex items-center"
+                                                                                    title="Delete"
+                                                                                >
+                                                                                    <MdDelete className="mr-1" size={16} />
+                                                                                </button>
+                                                                            </AlertDialogTrigger>
+                                                                            <AlertDialogContent>
+                                                                                <AlertDialogHeader>
+                                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                                    <AlertDialogDescription>
+                                                                                        This action cannot be undone. This will permanently delete your
+                                                                                        this document and remove data from our servers.
+                                                                                    </AlertDialogDescription>
+                                                                                </AlertDialogHeader>
+                                                                                <AlertDialogFooter>
+                                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                                    <AlertDialogAction onClick={() => deleteOffer(offer._id)}>Continue</AlertDialogAction>
+                                                                                </AlertDialogFooter>
+                                                                            </AlertDialogContent>
+                                                                        </AlertDialog>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -746,23 +841,23 @@ const PromotionsAndOfferManagement = () => {
                                             </div>
                                             <h3 className="text-xl font-medium text-gray-800 mb-2">No promotions available</h3>
                                             <p className="text-gray-500 max-w-md mx-auto">Create your first promotion to attract more customers and boost sales.</p>
-                                            <button className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+                                            <button onClick={() => setOpenNewForm(true)} className="mt-6 px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
                                                 Create Promotion
                                             </button>
                                         </div>
                                     )}
-                                    <div className="w-full flex justify-center my-4 lg:justify-end">
-                                        <Pagination
-                                            total={totalPages}
-                                            page={currentPage || 1}
-                                            onChange={setCurrentPage}
-                                            withEdges={true}
-                                            siblings={1}
-                                            boundaries={1}
-                                        />
-                                    </div>
                                 </div>
                             )}
+                        </div>
+                        <div className="w-full flex justify-center my-4 lg:justify-end">
+                            <Pagination
+                                total={totalPages}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
                         </div>
                     </TabsContent>
                 </Tabs>
