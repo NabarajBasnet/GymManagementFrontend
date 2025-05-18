@@ -88,6 +88,9 @@ const PromotionsAndOfferManagement = () => {
     const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
+    const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+
 
     // React hook form
     const {
@@ -208,7 +211,6 @@ const PromotionsAndOfferManagement = () => {
     const { offers, totalPages } = data || {}
 
     const deleteOffer = async (id) => {
-        console.log('Id: ', id);
         try {
             const response = await fetch(`http://localhost:3000/api/promotionsandoffers/${id}`, {
                 method: "DELETE"
@@ -546,7 +548,64 @@ const PromotionsAndOfferManagement = () => {
                 </div>
             )}
 
-            <div className="p-4 md:p-6">
+            <div className="p-4">
+
+                <div className="w-full flex bg-white py-6 px-2 rounded-sm border flex-col md:flex-row gap-4 items-center">
+                    {/* Search Input */}
+                    <div className="border bg-white flex items-center rounded-full px-4 flex-1 max-w-full">
+                        <Search className="h-4 w-4 mr-2" />
+                        <Input
+                            className='outline-none border-none focus:outline-none focus:border-none w-full'
+                            placeholder="Search..."
+                        />
+                    </div>
+
+                    {/* Filter Selects */}
+                    <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
+                        <Select>
+                            <SelectTrigger className="w-full rounded-lg">
+                                <SelectValue placeholder="Category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Categories</SelectLabel>
+                                    <SelectItem value="apple">Apple</SelectItem>
+                                    <SelectItem value="banana">Banana</SelectItem>
+                                    <SelectItem value="blueberry">Blueberry</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                        <Select>
+                            <SelectTrigger className="w-full rounded-lg">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Status</SelectLabel>
+                                    <SelectItem value="active">Active</SelectItem>
+                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                    <SelectItem value="pending">Pending</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+
+                        <Select>
+                            <SelectTrigger className="w-full rounded-lg">
+                                <SelectValue placeholder="Date" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectGroup>
+                                    <SelectLabel>Date Range</SelectLabel>
+                                    <SelectItem value="today">Today</SelectItem>
+                                    <SelectItem value="week">This Week</SelectItem>
+                                    <SelectItem value="month">This Month</SelectItem>
+                                </SelectGroup>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+
                 <Tabs defaultValue="cards" className="w-full mx-auto">
                     <TabsList className="grid my-4 bg-gray-800 w-full md:w-80 rounded-full grid-cols-2">
                         <TabsTrigger className='text-gray-50 rounded-full' value="cards">Cards</TabsTrigger>
@@ -577,7 +636,7 @@ const PromotionsAndOfferManagement = () => {
                                                     </div>
 
                                                     {/* Discount Badge */}
-                                                    <div className={`w-fit px-4 py-2 mb-5 rounded-lg font-bold text-sm ${offer.discountValueIsPercentage
+                                                    <div className={`w-fit px-4 py-2 mb-5 rounded-full font-bold text-sm ${offer.discountValueIsPercentage
                                                         ? "bg-gradient-to-r from-red-500 to-red-600 text-white"
                                                         : "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                                                         }`}>

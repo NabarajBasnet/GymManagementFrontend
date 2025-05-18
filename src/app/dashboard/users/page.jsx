@@ -111,16 +111,6 @@ const Users = () => {
 
     const { users, totalUsers, totalPages } = allUsers || {};
 
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
-
     useEffect(() => {
         fetchAllUsers();
     }, [limit]);
@@ -216,7 +206,7 @@ const Users = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 px-4 py-6">
+        <div className="w-full bg-gray-100 px-4 flex justify-center py-6">
             <div className="w-full">
                 <div className="w-full p-4 mb-4 bg-white border shadow-sm rounded-md">
                     <Breadcrumb>
@@ -559,7 +549,7 @@ const Users = () => {
                                         {Array.isArray(users) && users.length > 0 ? (
                                             users.map((user) => (
                                                 <TableRow key={user._id} className="hover:bg-gray-50">
-                                                    <TableCell className="px-6 py-4 whitespace-nowrap">
+                                                    <TableCell className="px-3 py-4 whitespace-nowrap">
                                                         <div className="flex items-center">
                                                             <div className="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-medium">
                                                                 {user.firstName.charAt(0)}{user.lastName.charAt(0)}
