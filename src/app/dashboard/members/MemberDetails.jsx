@@ -44,18 +44,6 @@ import Loader from "@/components/Loader/Loader";
 
 const MemberDetails = ({ memberId }) => {
 
-    const [imagePreview, setImagePreview] = useState(null);
-    const handleImageChange = (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
     // For rendering states
 
     const [currentActionTaker, setCurrentActionTaker] = useState('');
@@ -293,6 +281,7 @@ const MemberDetails = ({ memberId }) => {
                 body: JSON.stringify(data)
             })
             const responseBody = await response.json();
+            console.log("Res Body: ", responseBody);
             if (response.status === 400 || response.status === 402 || response.status === 404 || response.status === 500) {
                 setResponseType(responseResultType[1]);
                 setToast(true);
