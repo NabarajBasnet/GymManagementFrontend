@@ -27,10 +27,8 @@ import {
 import { QrCode, RefreshCw, Search, User, Calendar, Timer, Info, AlertCircle, CheckCircle, ChevronRight, Plus, Trash2, Save, X, ArrowUpDown } from 'lucide-react';
 import toast from "react-hot-toast";
 
-const PromotionsAndOfferManagement = () => {
+const OfferShowcase = () => {
 
-    const [openNewForm, setOpenNewForm] = useState(false);
-    const queryClient = useQueryClient();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 6;
     const [searchQuery, setSearchQuery] = useState('');
@@ -38,18 +36,6 @@ const PromotionsAndOfferManagement = () => {
     const [submitMode, setSubmitMode] = useState(null);
     console.log("Submit Mode: ", submitMode);
 
-    // React hook form
-    const {
-        register,
-        formState: { isSubmitting, errors },
-        reset,
-        handleSubmit
-    } = useForm();
-
-    // Form Data States
-    const [offerType, setSelectedOfferType] = useState('');
-    const [discountValueIsPercentage, setDiscountValueIsPercentage] = useState(false);
-    const [selectedAudiences, setSelectedAudiences] = useState([]);
     const baseURL = `http://localhost:3000/api/promotionsandoffers/`;
 
     const getAllOffers = async ({ queryKey }) => {
@@ -262,7 +248,7 @@ const PromotionsAndOfferManagement = () => {
                                             </svg>
                                         </div>
                                         <h3 className="text-xl font-medium text-gray-800 mb-2">No promotions available</h3>
-                                        <p className="text-gray-500 max-w-md mx-auto">Create your first promotion to attract more customers and boost sales.</p>
+                                        <p className="text-gray-500 max-w-md mx-auto">When offers are available you will be notified by notifications and offers will render here.</p>
                                     </div>
                                 )}
                             </div>
@@ -284,4 +270,4 @@ const PromotionsAndOfferManagement = () => {
     )
 }
 
-export default PromotionsAndOfferManagement;
+export default OfferShowcase;
