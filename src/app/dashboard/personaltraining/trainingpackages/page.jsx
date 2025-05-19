@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { FiCopy, FiTrash2, FiEdit, FiPlus, FiX, FiCheck, FiInfo } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiCheck, FiInfo } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -21,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList } from "@/components/ui/breadcrumb";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,24 +48,11 @@ import {
 const CreatePersonalTrainingPackages = () => {
   // State for packages
   const [packages, setPackages] = useState([
-    {
-      id: 1,
-      name: "Starter Pack",
-      sessions: 10,
-      price: 300,
-      duration: 30,
-      description: "Perfect for beginners starting their fitness journey",
-      active: true
-    },
-    {
-      id: 2,
-      name: "Pro Pack",
-      sessions: 20,
-      price: 550,
-      duration: 60,
-      description: "For those committed to serious transformation",
-      active: true
-    }
+    { id: 1, name: "Starter Pack", sessions: 10, price: 300, duration: 30, status: "active", description: "Perfect for beginners" },
+    { id: 2, name: "Pro Pack", sessions: 20, price: 550, duration: 60, status: "active", description: "For serious transformation" },
+    { id: 3, name: "Elite Pack", sessions: 30, price: 750, duration: 90, status: "inactive", description: "VIP training experience" },
+    { id: 4, name: "Basic Pack", sessions: 5, price: 200, duration: 15, status: "active", description: "Short-term trial package" },
+    { id: 5, name: "Advanced Pack", sessions: 15, price: 450, duration: 45, status: "active", description: "Intermediate level training" },
   ]);
 
   // State for form
@@ -76,12 +63,32 @@ const CreatePersonalTrainingPackages = () => {
     sessions: "",
     price: "",
     duration: "",
-    description: "",
-    active: true
+    status: "active",
+    description: ""
   });
   const [showForm, setShowForm] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [packageToDelete, setPackageToDelete] = useState(null);
+
+  // State for filtering and pagination
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const packagesPerPage = 4;
+
+  // Filter packages
+  const filteredPackages = packages.filter(pkg => {
+    const matchesSearch = pkg.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         pkg.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === "all" || pkg.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  // Pagination logic
+  const indexOfLastPackage = currentPage * packagesPerPage;
+  const indexOfFirstPackage = indexOfLastPackage - packagesPerPage;
+  const currentPackages = filteredPackages.slice(indexOfFirstPackage, indexOfLastPackage);
+  const totalPages = Math.ceil(filteredPackages.length / packagesPerPage);
 
   // Form handlers
   const handleInputChange = (e) => {
@@ -92,19 +99,17 @@ const CreatePersonalTrainingPackages = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!currentPackage.name || !currentPackage.sessions || !currentPackage.price) {
+    if (!currentPackage.name || !currentPackage.sessions || !currentPackage.price || !currentPackage.duration) {
       toast.error("Please fill in all required fields");
       return;
     }
 
     if (isEditing) {
-      // Update existing package
       setPackages(packages.map(pkg => 
         pkg.id === currentPackage.id ? currentPackage : pkg
       ));
       toast.success("Package updated successfully");
     } else {
-      // Add new package
       const newId = packages.length > 0 ? Math.max(...packages.map(pkg => pkg.id)) + 1 : 1;
       setPackages([...packages, { ...currentPackage, id: newId }]);
       toast.success("Package created successfully");
@@ -120,8 +125,8 @@ const CreatePersonalTrainingPackages = () => {
       sessions: "",
       price: "",
       duration: "",
-      description: "",
-      active: true
+      status: "active",
+      description: ""
     });
     setIsEditing(false);
     setShowForm(false);
@@ -142,17 +147,18 @@ const CreatePersonalTrainingPackages = () => {
     setPackages(packages.filter(pkg => pkg.id !== packageToDelete));
     toast.success("Package deleted successfully");
     setShowDeleteDialog(false);
+    setCurrentPage(1); // Reset to first page after deletion
   };
 
   const toggleStatus = (id) => {
     setPackages(packages.map(pkg => 
-      pkg.id === id ? { ...pkg, active: !pkg.active } : pkg
+      pkg.id === id ? { ...pkg, status: pkg.status === "active" ? "inactive" : "active" } : pkg
     ));
   };
 
   return (
     <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
-      {/* Breadcrumb and Header */}
+      {/* Breadcrumb with arrows */}
       <div className='w-full mb-6'>
         <Breadcrumb className="mb-4">
           <BreadcrumbList>
@@ -160,12 +166,21 @@ const CreatePersonalTrainingPackages = () => {
               <MdHome className='w-4 h-4' />
               <BreadcrumbLink href="/" className="ml-2">Home</BreadcrumbLink>
             </BreadcrumbItem>
+            <BreadcrumbSeparator>
+              <FiChevronRight className="h-4 w-4" />
+            </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink>Dashboard</BreadcrumbLink>
             </BreadcrumbItem>
+            <BreadcrumbSeparator>
+              <FiChevronRight className="h-4 w-4" />
+            </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink>Personal Training</BreadcrumbLink>
             </BreadcrumbItem>
+            <BreadcrumbSeparator>
+              <FiChevronRight className="h-4 w-4" />
+            </BreadcrumbSeparator>
             <BreadcrumbItem>
               <BreadcrumbLink className="font-semibold">Packages</BreadcrumbLink>
             </BreadcrumbItem>
@@ -184,10 +199,62 @@ const CreatePersonalTrainingPackages = () => {
         </div>
       </div>
 
+      {/* Filter Section */}
+      <Card className="mb-6">
+        <CardContent className="p-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="search">Search</Label>
+              <Input
+                id="search"
+                placeholder="Search by name or description..."
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
+            </div>
+            <div>
+              <Label htmlFor="status">Status</Label>
+              <Select
+                value={statusFilter}
+                onValueChange={(value) => {
+                  setStatusFilter(value);
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex items-end">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setSearchTerm("");
+                  setStatusFilter("all");
+                  setCurrentPage(1);
+                }}
+                className="w-full"
+              >
+                Reset Filters
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Package Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 lg:px-28 px-16 z-50">
-          <Card className="w-full max-w-full">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-16 lg:px-32 z-50">
+          <Card className="w-full">
             <CardHeader>
               <CardTitle className="flex justify-between items-center">
                 {isEditing ? "Edit Package" : "Create New Package"}
@@ -220,6 +287,7 @@ const CreatePersonalTrainingPackages = () => {
                       value={currentPackage.sessions}
                       onChange={handleInputChange}
                       placeholder="e.g., 12"
+                      min="1"
                       required
                     />
                   </div>
@@ -232,6 +300,7 @@ const CreatePersonalTrainingPackages = () => {
                       value={currentPackage.duration}
                       onChange={handleInputChange}
                       placeholder="e.g., 30"
+                      min="1"
                       required
                     />
                   </div>
@@ -246,6 +315,8 @@ const CreatePersonalTrainingPackages = () => {
                     value={currentPackage.price}
                     onChange={handleInputChange}
                     placeholder="e.g., 299"
+                    min="0"
+                    step="0.01"
                     required
                   />
                 </div>
@@ -262,16 +333,21 @@ const CreatePersonalTrainingPackages = () => {
                   />
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <input
-                    id="active"
-                    name="active"
-                    type="checkbox"
-                    checked={currentPackage.active}
-                    onChange={(e) => setCurrentPackage({...currentPackage, active: e.target.checked})}
-                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <Label htmlFor="active">Active (available for purchase)</Label>
+                <div>
+                  <Label htmlFor="status">Status</Label>
+                  <Select
+                    name="status"
+                    value={currentPackage.status}
+                    onValueChange={(value) => setCurrentPackage({...currentPackage, status: value})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
                 
                 <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
@@ -293,18 +369,31 @@ const CreatePersonalTrainingPackages = () => {
         <CardHeader>
           <CardTitle>Current Packages</CardTitle>
           <p className="text-sm text-gray-600">
-            Manage all personal training packages offered at your gym
+            Showing {filteredPackages.length} package{filteredPackages.length !== 1 ? 's' : ''}
           </p>
         </CardHeader>
         <CardContent>
-          {packages.length === 0 ? (
+          {currentPackages.length === 0 ? (
             <div className="text-center py-8">
               <FiInfo className="mx-auto h-12 w-12 text-gray-400" />
-              <h3 className="mt-2 text-sm font-medium text-gray-900">No packages yet</h3>
+              <h3 className="mt-2 text-sm font-medium text-gray-900">No packages found</h3>
               <p className="mt-1 text-sm text-gray-500">
-                Get started by creating a new personal training package.
+                {filteredPackages.length === 0 
+                  ? "Try adjusting your search or filter criteria"
+                  : "No packages on this page"}
               </p>
               <div className="mt-6">
+                <Button
+                  onClick={() => {
+                    setSearchTerm("");
+                    setStatusFilter("all");
+                    setCurrentPage(1);
+                  }}
+                  variant="outline"
+                  className="mr-2"
+                >
+                  Reset Filters
+                </Button>
                 <Button
                   onClick={() => setShowForm(true)}
                   className="bg-blue-600 hover:bg-blue-700"
@@ -315,62 +404,91 @@ const CreatePersonalTrainingPackages = () => {
               </div>
             </div>
           ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Package Name</TableHead>
-                  <TableHead>Sessions</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Price</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {packages.map((pkg) => (
-                  <TableRow key={pkg.id}>
-                    <TableCell className="font-medium">
-                      {pkg.name}
-                      {pkg.description && (
-                        <p className="text-sm text-gray-500 mt-1">{pkg.description}</p>
-                      )}
-                    </TableCell>
-                    <TableCell>{pkg.sessions}</TableCell>
-                    <TableCell>{pkg.duration} days</TableCell>
-                    <TableCell>${pkg.price}</TableCell>
-                    <TableCell>
-                      <Badge variant={pkg.active ? "default" : "secondary"}>
-                        {pkg.active ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => toggleStatus(pkg.id)}
-                      >
-                        {pkg.active ? <FiX className="h-4 w-4" /> : <FiCheck className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(pkg)}
-                      >
-                        <FiEdit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => confirmDelete(pkg.id)}
-                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                      >
-                        <FiTrash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Package Name</TableHead>
+                      <TableHead>Sessions</TableHead>
+                      <TableHead>Duration</TableHead>
+                      <TableHead>Price</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {currentPackages.map((pkg) => (
+                      <TableRow key={pkg.id}>
+                        <TableCell className="font-medium">
+                          {pkg.name}
+                          {pkg.description && (
+                            <p className="text-sm text-gray-500 mt-1">{pkg.description}</p>
+                          )}
+                        </TableCell>
+                        <TableCell>{pkg.sessions}</TableCell>
+                        <TableCell>{pkg.duration} days</TableCell>
+                        <TableCell>${pkg.price.toFixed(2)}</TableCell>
+                        <TableCell>
+                          <Badge variant={pkg.status === "active" ? "default" : "secondary"}>
+                            {pkg.status === "active" ? "Active" : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => toggleStatus(pkg.id)}
+                          >
+                            {pkg.status === "active" ? <FiX className="h-4 w-4" /> : <FiCheck className="h-4 w-4" />}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEdit(pkg)}
+                          >
+                            <FiEdit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => confirmDelete(pkg.id)}
+                            className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                          >
+                            <FiTrash2 className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-between mt-4">
+                  <div className="text-sm text-gray-500">
+                    Page {currentPage} of {totalPages}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
