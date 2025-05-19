@@ -86,7 +86,13 @@ const CreatePersonalTrainingPackages = () => {
     const [packageStatus, setPackageStatus] = useState('');
 
     const resetForm = () => {
-        reset();
+        reset({
+            packagename: '',
+            sessions: '',
+            duration: '',
+            price: '',
+            description: ''
+        });
         setIsEditing(false);
         setShowForm(false);
         setPackageStatus('');
@@ -178,7 +184,7 @@ const CreatePersonalTrainingPackages = () => {
         };
        };
 
-       const toggleStatus = async(id) => {
+    const toggleStatus = async(id) => {
         try {
             const response = await fetch(`http://localhost:3000/api/personaltraining/packages/toggle/${id}`, {
                 method: "PATCH",
@@ -199,7 +205,7 @@ const CreatePersonalTrainingPackages = () => {
             toast.error(error.message);
             throw error;
         };
-       };  
+    };  
 
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -297,7 +303,7 @@ const CreatePersonalTrainingPackages = () => {
                         <CardHeader>
                             <CardTitle className="flex justify-between items-center">
                                 {isEditing ? "Edit Package" : "Create New Package"}
-                                <button onClick={resetForm} className="text-gray-500 hover:text-gray-700">
+                                <button onClick={()=>resetForm()} className="text-gray-500 hover:text-gray-700">
                                     <FiX className="h-5 w-5" />
                                 </button>
                             </CardTitle>
@@ -369,7 +375,7 @@ const CreatePersonalTrainingPackages = () => {
                                         onValueChange={(value) => setPackageStatus(value)}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder={`${packageStatus} || 'Select Status'}`} />
+                                            <SelectValue placeholder={`${packageStatus?packageStatus:'Select Status'}`} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="Active">Active</SelectItem>
@@ -379,7 +385,7 @@ const CreatePersonalTrainingPackages = () => {
                                 </div>
                                 
                                 <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
-                                    <Button variant="outline" onClick={resetForm}>
+                                    <Button variant="outline" onClick={()=>resetForm()}>
                                         Cancel
                                     </Button>
                                     <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
