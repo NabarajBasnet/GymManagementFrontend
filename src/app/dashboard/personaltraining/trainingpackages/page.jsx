@@ -1,5 +1,6 @@
 'use client';
 
+import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
@@ -281,6 +282,7 @@ const CreatePersonalTrainingPackages = () => {
                                     setCurrentPage(1);
                                 }}
                             >
+                                <CiUndo className="h-5 w-5 mr-2" />
                                 Reset Filters
                             </Button>
                         </div>
