@@ -332,7 +332,7 @@ const ServiceAndProducts = () => {
     };
 
     return (
-        <div className="w-full mx-auto bg-gray-50 py-6 px-4">
+        <div className="w-full mx-auto bg-gray-50 min-h-screen py-6 px-4">
             <div className="w-full">
 
                 <div className="w-full bg-white space-y-4 p-4 border rounded-md md:space-y-0 flex justify-between items-end">

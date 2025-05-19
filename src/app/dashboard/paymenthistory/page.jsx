@@ -462,7 +462,7 @@ const PaymentHistory = () => {
             </div>
 
             {/* Main Content */}
-            <div className="max-w-[1400px] mx-auto p-4 md:p-6">
+            <div className="w-full mx-auto p-4 md:p-6">
                 {/* Search and Filters */}
                 <Card className="mb-6">
                     <CardHeader className="pb-3">

@@ -979,7 +979,7 @@ const PaymentInvoice = () => {
     }, [itemDetails, discountAmount, discountPercentage]);
 
     return (
-        <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
+        <div className="w-full py-6 bg-gray-100 px-4  min-h-screen mx-auto">
             {/* Breadcrumb Navigation */}
             <div className="bg-white p-4 rounded-md border shadow-sm">
                 <Breadcrumb>
@@ -1198,7 +1198,7 @@ const PaymentInvoice = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto min-h-screen flex">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b bg-muted/50">

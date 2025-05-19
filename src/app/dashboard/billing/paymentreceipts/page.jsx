@@ -665,7 +665,7 @@ const PaymentReceipts = () => {
     }
 
     return (
-        <div className="w-full py-6 bg-gray-100 px-4 max-w-7xl mx-auto">
+        <div className="w-full py-6 bg-gray-100 min-h-screen px-4 mx-auto">
             {/* Breadcrumb Navigation */}
             <div className="bg-white p-4 rounded-md">
                 <Breadcrumb>
@@ -907,7 +907,7 @@ const PaymentReceipts = () => {
                             </div>
                         </div>
                     ) : (
-                        <div className="overflow-x-auto">
+                        <div className="overflow-x-auto min-h-screen flex">
                             <table className="w-full text-sm">
                                 <thead>
                                     <tr className="border-b text-sm bg-muted/50">

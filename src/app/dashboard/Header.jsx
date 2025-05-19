@@ -322,7 +322,22 @@ const Header = () => {
                     title: 'Personal Training',
                     link: '/dashboard/personaltraining',
                     subObj: [
-                        { icon: FaDumbbell, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' }
+                        { icon: FaDumbbell, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' },
+                        { icon: FaDumbbell, title: 'Training Packages', link: '/dashboard/personaltraining/trainingpackages' },
+                        { icon: FaDumbbell, title: 'Training Sessions', link: '/dashboard/personaltraining/trainingsessions' },
+                        // { icon: FaDumbbell, title: 'Training Logs', link: '/dashboard/personaltraining/traininglogs' },
+                        // { icon: FaDumbbell, title: 'Training History', link: '/dashboard/personaltraining/traininghistory' },
+                        // { icon: FaDumbbell, title: 'Training Feedback', link: '/dashboard/personaltraining/trainingfeedback' },
+                        // { icon: FaDumbbell, title: 'Training Reports', link: '/dashboard/personaltraining/trainingreports' },
+                        // { icon: FaDumbbell, title: 'Training Settings', link: '/dashboard/personaltraining/trainingsettings' },
+                        // { icon: FaDumbbell, title: 'Training Analytics', link: '/dashboard/personaltraining/traininganalytics' },
+                        // { icon: FaDumbbell, title: 'Training Calendar', link: '/dashboard/personaltraining/trainingcalendar' },
+                        // { icon: FaDumbbell, title: 'Training Goals', link: '/dashboard/personaltraining/traininggoals' },
+                        // { icon: FaDumbbell, title: 'Training Progress', link: '/dashboard/personaltraining/trainingprogress' },
+                        // { icon: FaDumbbell, title: 'Training Tips', link: '/dashboard/personaltraining/trainingtips' },
+                        // { icon: FaDumbbell, title: 'Training Resources', link: '/dashboard/personaltraining/trainingresources' },
+                        // { icon: FaDumbbell, title: 'Training FAQs', link: '/dashboard/personaltraining/trainingfaqs' },
+                        // { icon: FaDumbbell, title: 'Training Certificates', link: '/dashboard/personaltraining/trainingcertificates' },
                     ]
                 },
                 {

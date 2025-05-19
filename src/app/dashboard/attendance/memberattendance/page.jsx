@@ -445,8 +445,8 @@ const MemberAttendance = () => {
             </div>
 
             {/* Main Content */}
-            <div className="container mx-auto p-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="w-full mx-auto p-4">
+                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Check-in Card */}
                     <Card className="overflow-hidden bg-white shadow-md border-0">
                         <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-600 text-white p-6">
