@@ -1,6 +1,6 @@
 'use client';
 
-import { FiPause,FiPlay, FiCopy } from "react-icons/fi";
+import { FiPause,FiPlay, FiCopy, FiShare2 } from "react-icons/fi";
 import { BiEdit } from "react-icons/bi";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { MdHome } from "react-icons/md";
@@ -338,6 +338,27 @@ const PromotionsAndOfferManagement = () => {
         }
     }, [openNewForm]);
 
+    // Share offer
+    const handleShareOffer = (offer) => {
+        // Create shareable content
+        const shareText = `Check out this amazing offer: ${offer.title} - ${offer.discountValue}% OFF! Use code ${offer.promoCode}`;
+        const shareUrl = `${window.location.origin}/offers/${offer._id}`; // Assuming you have a route for individual offers
+        
+        // Check if Web Share API is available (mobile devices)
+        if (navigator.share) {
+          navigator.share({
+            title: offer.title,
+            text: shareText,
+            url: shareUrl,
+          })
+          .catch(err => console.log('Error sharing:', err));
+        } else {
+          // Fallback for desktop or browsers without Web Share API
+          setShareModalOpen(true);
+          setCurrentOffer(offer);
+        }
+      };
+      
     return (
         <div className='w-full bg-slate-50 min-h-screen'>
             {/* Breadcrumb and Header */}
@@ -733,19 +754,19 @@ const PromotionsAndOfferManagement = () => {
                                                     <div className="flex justify-between items-start mb-4">
                                                         <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">{offer.title}</h3>
                                                         <span
-  className={`px-4 py-2 rounded-full text-xs font-semibold ${
-    {
-      Active: "bg-green-100 text-green-700",
-      Inactive: "bg-gray-100 text-gray-600",
-      Pending: "bg-yellow-100 text-yellow-700",
-      Expired: "bg-red-100 text-red-700",
-      Upcoming: "bg-blue-100 text-blue-700",
-      All: "bg-purple-100 text-purple-700",
-    }[offer.offerStatus] || "bg-gray-100 text-gray-600" 
-  }`}
->
-  {offer.offerStatus}
-</span>
+                                                            className={`px-4 py-2 rounded-full text-xs font-semibold ${
+                                                                {
+                                                                Active: "bg-green-100 text-green-700",
+                                                                Inactive: "bg-gray-100 text-gray-600",
+                                                                Pending: "bg-yellow-100 text-yellow-700",
+                                                                Expired: "bg-red-100 text-red-700",
+                                                                Upcoming: "bg-blue-100 text-blue-700",
+                                                                All: "bg-purple-100 text-purple-700",
+                                                                }[offer.offerStatus] || "bg-gray-100 text-gray-600" 
+                                                            }`}
+                                                            >
+                                                            {offer.offerStatus}
+                                                        </span>
                                                     </div>
 
                                                     {/* Discount Badge */}
@@ -808,9 +829,13 @@ const PromotionsAndOfferManagement = () => {
                                                             Edit
                                                         </button>
                                                         <div className="flex space-x-2">
-                                                            <button className="px-3 py-1.5 text-sm font-medium text-red-600 hover:text-red-800 transition-colors border border-red-200 rounded-lg hover:bg-red-50">
-                                                                Disable
-                                                            </button>
+                                                            <Button 
+                                                                className="bg-transparent text-gray-600 hover:bg-transparent hover:text-gray-900 border"
+                                                                onClick={() => handleShareOffer(offer)}
+                                                                >
+                                                                <FiShare2/>
+                                                                Share
+                                                            </Button>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
                                                                     <button className="flex items-center px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors border border-gray-200 rounded-lg hover:bg-gray-50">
@@ -978,17 +1003,10 @@ const PromotionsAndOfferManagement = () => {
                                                                             <BiEdit className="mr-1" size={16} />
                                                                         </button>
                                                                         <button
-                                                                            className={`flex items-center ${offer.isActive === "on"
-                                                                                ? "text-yellow-600 hover:text-yellow-900"
-                                                                                : "text-green-600 hover:text-green-900"
-                                                                                }`}
-                                                                            title={offer.isActive === "on" ? "Disable" : "Enable"}
+                                                                            className="text-gray-600 hover:text-gray-900 flex items-center"
+                                                                            title="Share"
                                                                         >
-                                                                            {offer.isActive === "on" ? (
-                                                                                <FiPause className="mr-1" size={16} />
-                                                                            ) : (
-                                                                                <FiPlay className="mr-1" size={16} />
-                                                                            )}
+                                                                            <FiShare2 className="mr-1" size={16} />
                                                                         </button>
                                                                         <AlertDialog>
                                                                             <AlertDialogTrigger asChild>
