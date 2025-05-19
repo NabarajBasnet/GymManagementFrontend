@@ -322,9 +322,8 @@ const Header = () => {
                     title: 'Personal Training',
                     link: '/dashboard/personaltraining',
                     subObj: [
-                        { icon: FaDumbbell, title: 'Book Personal Training', link: '/dashboard/personaltraining/booktraining' },
                         { icon: FaDumbbell, title: 'Training Packages', link: '/dashboard/personaltraining/trainingpackages' },
-                        { icon: FaDumbbell, title: 'Training Sessions', link: '/dashboard/personaltraining/trainingsessions' },
+                        { icon: FaDumbbell, title: 'Book Training', link: '/dashboard/personaltraining/booktraining' },
                         // { icon: FaDumbbell, title: 'Training Logs', link: '/dashboard/personaltraining/traininglogs' },
                         // { icon: FaDumbbell, title: 'Training History', link: '/dashboard/personaltraining/traininghistory' },
                         // { icon: FaDumbbell, title: 'Training Feedback', link: '/dashboard/personaltraining/trainingfeedback' },
