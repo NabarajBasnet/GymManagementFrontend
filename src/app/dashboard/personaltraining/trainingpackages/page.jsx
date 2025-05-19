@@ -54,6 +54,7 @@ const CreatePersonalTrainingPackages = () => {
 
     // Query
     const queryClient = useQueryClient();
+
     // React Hook Form
     const {
          register,
@@ -62,9 +63,14 @@ const CreatePersonalTrainingPackages = () => {
          reset  
         } = useForm();
 
+        // Pagination, filters and search
+        const [currentPage, setCurrentPage] = useState(1);
+        const limit = 10;
+        const [search, setSearch] = useState('');
+        const [status, setStatus] = useState('');
+
     // Form States and handlers
     const [showForm, setShowForm] = useState(false);
-    const [currentPage, setCurrentPage] = useState(1);
     const [packageStatus, setPackageStatus] = useState('');
 
     const resetForm = () => {
@@ -100,9 +106,10 @@ const CreatePersonalTrainingPackages = () => {
     }
     };
 
-    const getPackages = async() => {
+    const getPackages = async({queryKey}) => {
+        const [, currentPage] = queryKey;
      try {
-        const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
+        const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}`);
         const responseBody = await response.json();
         return responseBody;
      } catch (error) {
@@ -112,11 +119,11 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     const {data, isLoading, isError} = useQuery({
-        queryKey: ['packages'],
+        queryKey: ['packages',currentPage],
         queryFn: getPackages
     });
 
-    const {packages = [], totalPages = 1} = data || {};
+    const {packages , totalPages ,totalPackages} = data || {};
 
     // State for form
     const [isEditing, setIsEditing] = useState(false);
@@ -474,20 +481,19 @@ const CreatePersonalTrainingPackages = () => {
                                     </TableBody>
                                 </Table>
                             </div>
-
-                            {/* Pagination */}
-                            <div className="w-full flex justify-center my-4 lg:justify-end">
-                                <Pagination
-                                    total={totalPages}
-                                    page={currentPage || 1}
-                                    onChange={setCurrentPage}
-                                    withEdges={true}
-                                    siblings={1}
-                                    boundaries={1}
-                                />
-                            </div>
                         </>
                     )}
+                       {/* Pagination */}
+                       <div className="w-full flex justify-center my-4 lg:justify-end">
+                            <Pagination
+                                total={totalPages}
+                                page={currentPage}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
+                        </div>
                 </CardContent>
             </Card>
         </div>
