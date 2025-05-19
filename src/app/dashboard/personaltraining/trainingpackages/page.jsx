@@ -157,6 +157,29 @@ const CreatePersonalTrainingPackages = () => {
         };
        };
 
+       const toggleStatus = async(id) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/toggle/${id}`, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const responseBody = await response.json();
+            if(response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['packages']);
+            } else {
+                toast.error(responseBody.message);
+            }   
+
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+            throw error;
+        };
+       };  
+
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
             {/* Breadcrumb with arrows */}
@@ -409,6 +432,7 @@ const CreatePersonalTrainingPackages = () => {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
+                                                        onClick={() => toggleStatus(pkg._id)}
                                                     >
                                                         {pkg.packageStatus === "Active" ? <FiX className="h-4 w-4" /> : <FiCheck className="h-4 w-4" />}
                                                     </Button>
