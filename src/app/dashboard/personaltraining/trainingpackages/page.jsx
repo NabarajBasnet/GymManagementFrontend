@@ -135,6 +135,28 @@ const CreatePersonalTrainingPackages = () => {
         });
     };
 
+    const deletePackage = async(id) => {
+        try {
+           const response = await fetch(`http://localhost:3000/api/personaltraining/packages/${id}`,{
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            }
+           });
+           const responseBody = await response.json();
+           if(response.ok) {
+            toast.success(responseBody.message);
+            queryClient.invalidateQueries(['packages']);
+        } else {
+            toast.error(responseBody.message);
+        }
+        } catch (error) {
+           console.log(error);
+           toast.error(error.message);
+           throw error;
+        };
+       };
+
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
             {/* Breadcrumb with arrows */}
@@ -379,7 +401,7 @@ const CreatePersonalTrainingPackages = () => {
                                                 <TableCell>{pkg.duration} days</TableCell>
                                                 <TableCell>${pkg.price.toFixed(2)}</TableCell>
                                                 <TableCell>
-                                                    <Badge variant={pkg.packageStatus === "Active" ? "default" : "secondary"}>
+                                                    <Badge variant={pkg.packageStatus === "Active" ? "green" : "destructive"}>
                                                         {pkg.packageStatus}
                                                     </Badge>
                                                 </TableCell>
@@ -412,13 +434,12 @@ const CreatePersonalTrainingPackages = () => {
                                                     <AlertDialogHeader>
                                                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                                     <AlertDialogDescription>
-                                                        This action cannot be undone. This will permanently delete your
-                                                        account and remove your data from our servers.
+                                                    This action cannot be undone. This will permanently delete your package.
                                                     </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction >Continue</AlertDialogAction>
+                                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => deletePackage(pkg._id)}>Continue</AlertDialogAction>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
                                                 </AlertDialog>
