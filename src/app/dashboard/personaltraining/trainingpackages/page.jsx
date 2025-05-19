@@ -52,6 +52,8 @@ import Pagination from "@/components/ui/CustomPagination";
 
 const CreatePersonalTrainingPackages = () => {
 
+    const [packageId, setPackageId] = useState('');
+
     // Query
     const queryClient = useQueryClient();
 
@@ -78,7 +80,7 @@ const CreatePersonalTrainingPackages = () => {
     }, [search]);
 
     
-            // Form States and handlers
+    // Form States and handlers
     const [showForm, setShowForm] = useState(false);
     const [packageStatus, setPackageStatus] = useState('');
 
@@ -93,12 +95,13 @@ const CreatePersonalTrainingPackages = () => {
     const {packagename, sessions, duration, price, description} = data;
     const packageData = {packagename, sessions, duration, price, description, packageStatus};
     try {
-        const response = await fetch('http://localhost:3000/api/personaltraining/packages', {
-            method:"POST",
+        const baseURL = 'http://localhost:3000/api/personaltraining/packages';
+        const response = await fetch(isEditing ? `${baseURL}/${packageId}` : baseURL, {
+            method: isEditing ? "PATCH" : "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(packageData)
+            body: JSON.stringify(packageData),
         });
         const responseBody = await response.json();         
         if(response.ok) {
@@ -141,6 +144,7 @@ const CreatePersonalTrainingPackages = () => {
     const handleEdit = (pkg) => {
         setIsEditing(true);
         setShowForm(true);
+        setPackageId(pkg._id);
         setPackageStatus(pkg.packageStatus);
         reset({
             packagename: pkg.packagename,
