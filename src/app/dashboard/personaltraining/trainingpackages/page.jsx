@@ -2,7 +2,7 @@
 
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiCheck, FiInfo } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
@@ -68,8 +68,17 @@ const CreatePersonalTrainingPackages = () => {
         const limit = 10;
         const [search, setSearch] = useState('');
         const [status, setStatus] = useState('');
+        const [debouncedSearch, setDebouncedSearch] = useState('');
 
-    // Form States and handlers
+    useEffect(() => {
+        const delayInputTimeoutId = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 300);
+        return () => clearTimeout(delayInputTimeoutId);
+    }, [search]);
+
+    
+            // Form States and handlers
     const [showForm, setShowForm] = useState(false);
     const [packageStatus, setPackageStatus] = useState('');
 
@@ -109,7 +118,7 @@ const CreatePersonalTrainingPackages = () => {
     const getPackages = async({queryKey}) => {
         const [, currentPage] = queryKey;
      try {
-        const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}`);
+        const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
         const responseBody = await response.json();
         return responseBody;
      } catch (error) {
@@ -119,7 +128,7 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     const {data, isLoading, isError} = useQuery({
-        queryKey: ['packages',currentPage],
+        queryKey: ['packages',currentPage, debouncedSearch, status],
         queryFn: getPackages
     });
 
@@ -237,20 +246,24 @@ const CreatePersonalTrainingPackages = () => {
                         <div>
                             <Label htmlFor="search">Search</Label>
                             <Input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 id="search"
                                 placeholder="Search by name or description..."
                             />
                         </div>
                         <div>
                             <Label htmlFor="status">Status</Label>
-                            <Select>
+                            <Select
+                                onValueChange={(value) => setStatus(value)}
+                            >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Filter by status" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="all">All Statuses</SelectItem>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
@@ -258,6 +271,11 @@ const CreatePersonalTrainingPackages = () => {
                             <Button 
                                 variant="outline" 
                                 className="w-full"
+                                onClick={() => {
+                                    setSearch('');
+                                    setStatus('');
+                                    setCurrentPage(1);
+                                }}
                             >
                                 Reset Filters
                             </Button>
