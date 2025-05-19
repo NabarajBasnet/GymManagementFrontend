@@ -228,7 +228,7 @@ const PromotionsAndOfferManagement = () => {
     const getAllOffers = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/promotionsandoffers?page=${page}&limit=${limit}`);
+            const response = await fetch(`${baseURL}/?page=${page}&limit=${limit}&search=${debouncedSearchQuery}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -238,11 +238,20 @@ const PromotionsAndOfferManagement = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['promotionsandoffers', currentPage],
+        queryKey: ['promotionsandoffers', currentPage, debouncedSearchQuery],
         queryFn: getAllOffers,
     });
 
     const { offers, totalPages } = data || {}
+
+    // Debounce search query
+    useEffect(()=>{
+        const delayTimeout = setTimeout(()=>{
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        return ()=>clearTimeout(delayTimeout);
+    }, [searchQuery]);
+
 
     const deleteOffer = async (id) => {
         try {
@@ -645,6 +654,8 @@ const PromotionsAndOfferManagement = () => {
                     <div className="border bg-white flex items-center rounded-full px-4 flex-1 w-full">
                         <Search className="h-4 w-4 mr-2" />
                         <Input
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
                             className='outline-none border-none focus:outline-none focus:border-none w-full'
                             placeholder="Search..."
                         />
