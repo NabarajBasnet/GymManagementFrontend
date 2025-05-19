@@ -1,6 +1,6 @@
 'use client';
 
-import { FiPause, FiCopy } from "react-icons/fi";
+import { FiPause,FiPlay, FiCopy } from "react-icons/fi";
 import { BiEdit } from "react-icons/bi";
 import { IoMdAdd, IoMdClose } from "react-icons/io";
 import { MdHome } from "react-icons/md";
@@ -111,18 +111,19 @@ const PromotionsAndOfferManagement = () => {
     ];
 
     const offerTypes = [
-        { value: 'newyear', label: 'New Year' },
-        { value: 'discount', label: 'Discount' },
-        { value: 'referral', label: 'Referral' },
-        { value: 'seasonal', label: 'Seasonal' },
-        { value: 'festival', label: 'Festival' },
-        { value: 'loyalty', label: 'Loyalty' },
-        { value: 'membership', label: 'Membership' },
-        { value: 'other', label: 'Other' },
+        { value: 'New Year', label: 'New Year' },
+        { value: 'Discount', label: 'Discount' },
+        { value: 'Referral', label: 'Referral' },
+        { value: 'Seasonal', label: 'Seasonal' },
+        { value: 'Festival', label: 'Festival' },
+        { value: 'Loyalty', label: 'Loyalty' },
+        { value: 'Membership', label: 'Membership' },
+        { value: 'Other', label: 'Other' },
     ];
 
     // Form Data States
     const [offerType, setSelectedOfferType] = useState('');
+    const [offerStatus, setSelectedOfferStatus] = useState('');
     const [discountValueIsPercentage, setDiscountValueIsPercentage] = useState(false);
     const [selectedAudiences, setSelectedAudiences] = useState([]);
     const baseURL = `http://localhost:3000/api/promotionsandoffers`;
@@ -137,7 +138,6 @@ const PromotionsAndOfferManagement = () => {
             promoCode,
             usageLimit,
             minimumPurchase,
-            isActive
         } = data;
 
         const finalDataObject = {
@@ -152,9 +152,9 @@ const PromotionsAndOfferManagement = () => {
             promoCode,
             usageLimit,
             minimumPurchase,
-            isActive: isActive ? "on" : "off" // Convert boolean to string
+            offerStatus 
         };
-
+        
         try {
             const url = submitMode === 'edit' 
                 ? `${baseURL}/${editingOfferId}`
@@ -203,13 +203,13 @@ const PromotionsAndOfferManagement = () => {
                     promoCode: offer.promoCode,
                     usageLimit: offer.usageLimit,
                     minimumPurchase: offer.minimumPurchase,
-                    isActive: offer.isActive === "on"
                 });
                 
                 // Set other states
                 setSelectedOfferType(offer.offerType);
                 setDiscountValueIsPercentage(offer.discountValueIsPercentage);
                 setSelectedAudiences(offer.selectedAudiences);
+                setSelectedOfferStatus(offer.offerStatus);
             }
         } catch (error) {
             console.log("Error: ", error);
@@ -309,13 +309,13 @@ const PromotionsAndOfferManagement = () => {
             promoCode: '',
             usageLimit: '',
             minimumPurchase: '',
-            isActive: true
         });
         
         // Reset all other states
         setSelectedOfferType('');
         setDiscountValueIsPercentage(false);
         setSelectedAudiences([]);
+        setSelectedOfferStatus('');
         setSubmitMode(null);
         setEditingOfferId(null);
         setOpenNewForm(false);
@@ -432,7 +432,7 @@ const PromotionsAndOfferManagement = () => {
                                 <Label htmlFor="offerType">Offer Type*</Label>
                                 <Select onValueChange={(value) => setSelectedOfferType(value)}>
                                     <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select offer type" />
+                                        <SelectValue placeholder={offerType || "Offer Type"} />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -549,6 +549,26 @@ const PromotionsAndOfferManagement = () => {
                                 )}
                             </div>
 
+                                    {/* Offer Status */}
+                            <div className="flex items-center space-x-3">
+                                <Select value={offerStatus} onValueChange={(value) => setSelectedOfferStatus(value)}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder={offerStatus || "Offer Status"} />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                        <SelectLabel>Status</SelectLabel>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                    <SelectItem value="Pending">Pending</SelectItem>
+                                    <SelectItem value="Expired">Expired</SelectItem>
+                                    <SelectItem value="Upcoming">Upcoming</SelectItem>
+                                    <SelectItem value="All">All</SelectItem>
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
                             {/* Usage Limit */}
                             <div className="space-y-2">
                                 <Label htmlFor="usageLimit">Usage Limit (Optional)</Label>
@@ -589,15 +609,6 @@ const PromotionsAndOfferManagement = () => {
                                 )}
                             </div>
 
-                            {/* Active Status */}
-                            <div className="flex items-center space-x-2">
-                                <Checkbox
-                                    id="isActive"
-                                    defaultChecked
-                                    {...register('isActive')}
-                                />
-                                <Label htmlFor="isActive">Active Promotion</Label>
-                            </div>
                         </div>
 
                         {/* Footer */}
@@ -651,7 +662,7 @@ const PromotionsAndOfferManagement = () => {
 
                 <div className="w-full flex bg-white py-6 px-2 rounded-sm border flex-col md:flex-row gap-4 items-center">
                     {/* Search Input */}
-                    <div className="border bg-white flex items-center rounded-full px-4 flex-1 w-full">
+                    <div className="border bg-white flex items-center rounded-md px-4 w-full">
                         <Search className="h-4 w-4 mr-2" />
                         <Input
                         value={searchQuery}
@@ -664,43 +675,33 @@ const PromotionsAndOfferManagement = () => {
                     {/* Filter Selects */}
                     <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
                         <Select>
-                            <SelectTrigger className="w-full rounded-lg">
-                                <SelectValue placeholder="Category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    <SelectLabel>Categories</SelectLabel>
-                                    <SelectItem value="apple">Apple</SelectItem>
-                                    <SelectItem value="banana">Banana</SelectItem>
-                                    <SelectItem value="blueberry">Blueberry</SelectItem>
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-
-                        <Select>
-                            <SelectTrigger className="w-full rounded-lg">
+                            <SelectTrigger className="min-w-[100px] rounded-md">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Status</SelectLabel>
-                                    <SelectItem value="active">Active</SelectItem>
-                                    <SelectItem value="inactive">Inactive</SelectItem>
-                                    <SelectItem value="pending">Pending</SelectItem>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                    <SelectItem value="Pending">Pending</SelectItem>
+                                    <SelectItem value="Expired">Expired</SelectItem>
+                                    <SelectItem value="Upcoming">Upcoming</SelectItem>
+                                    <SelectItem value="All">All</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
 
                         <Select>
-                            <SelectTrigger className="w-full rounded-lg">
+                            <SelectTrigger className="min-w-[100px] rounded-md">
                                 <SelectValue placeholder="Date" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectGroup>
                                     <SelectLabel>Date Range</SelectLabel>
-                                    <SelectItem value="today">Today</SelectItem>
-                                    <SelectItem value="week">This Week</SelectItem>
-                                    <SelectItem value="month">This Month</SelectItem>
+                                    <SelectItem value="Today">Today</SelectItem>
+                                    <SelectItem value="This Week">This Week</SelectItem>
+                                    <SelectItem value="This Month">This Month</SelectItem>
+                                    <SelectItem value="All Time">All Time</SelectItem>
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
@@ -728,12 +729,20 @@ const PromotionsAndOfferManagement = () => {
                                                     {/* Card Header with Status */}
                                                     <div className="flex justify-between items-start mb-4">
                                                         <h3 className="text-xl font-semibold text-gray-900 line-clamp-2">{offer.title}</h3>
-                                                        <span className={`px-4 py-2 rounded-full text-xs font-semibold ${offer.isActive === "on"
-                                                            ? "bg-green-100 text-green-700"
-                                                            : "bg-gray-100 text-gray-600"
-                                                            }`}>
-                                                            {offer.isActive === "on" ? "Active" : "Inactive"}
-                                                        </span>
+                                                        <span
+  className={`px-4 py-2 rounded-full text-xs font-semibold ${
+    {
+      Active: "bg-green-100 text-green-700",
+      Inactive: "bg-gray-100 text-gray-600",
+      Pending: "bg-yellow-100 text-yellow-700",
+      Expired: "bg-red-100 text-red-700",
+      Upcoming: "bg-blue-100 text-blue-700",
+      All: "bg-purple-100 text-purple-700",
+    }[offer.offerStatus] || "bg-gray-100 text-gray-600" 
+  }`}
+>
+  {offer.offerStatus}
+</span>
                                                     </div>
 
                                                     {/* Discount Badge */}
@@ -930,12 +939,20 @@ const PromotionsAndOfferManagement = () => {
                                                                 {/* Status - Center aligned */}
                                                                 <td className="px-4 py-4 whitespace-nowrap text-center">
                                                                     <div className="space-y-1 mx-auto">
-                                                                        <span className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${offer.isActive === "on"
-                                                                            ? 'bg-green-100 text-green-800'
-                                                                            : 'bg-gray-100 text-gray-800'
-                                                                            }`}>
-                                                                            {offer.isActive === "on" ? 'Active' : 'Inactive'}
-                                                                        </span>
+                                                                        <span
+                                                                            className={`px-4 py-2 rounded-full text-xs font-semibold ${
+                                                                                {
+                                                                                Active: "bg-green-100 text-green-700",
+                                                                                Inactive: "bg-gray-100 text-gray-600",
+                                                                                Pending: "bg-yellow-100 text-yellow-700",
+                                                                                Expired: "bg-red-100 text-red-700",
+                                                                                Upcoming: "bg-blue-100 text-blue-700",
+                                                                                All: "bg-purple-100 text-purple-700",
+                                                                                }[offer.offerStatus] || "bg-gray-100 text-gray-600" 
+                                                                            }`}
+                                                                            >
+                                                                            {offer.offerStatus}
+                                                                            </span>
                                                                         <div className="text-xs text-gray-500">
                                                                             Used: <span className={offer.timesUsed >= offer.usageLimit ? "text-red-500" : "text-green-600"}>
                                                                                 {offer.timesUsed}
