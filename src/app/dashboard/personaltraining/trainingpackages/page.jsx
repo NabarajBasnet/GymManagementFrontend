@@ -453,7 +453,7 @@ const CreatePersonalTrainingPackages = () => {
                                                 </TableCell>
                                                 <TableCell>{pkg.sessions}</TableCell>
                                                 <TableCell>{pkg.duration} days</TableCell>
-                                                <TableCell>${pkg.price.toFixed(2)}</TableCell>
+                                                <TableCell>$ {pkg.price.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={pkg.packageStatus === "Active" ? "green" : "destructive"}>
                                                         {pkg.packageStatus}
