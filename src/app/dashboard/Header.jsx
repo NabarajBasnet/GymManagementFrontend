@@ -188,6 +188,7 @@ const Header = () => {
             })
         };
     };
+    
     // Categorized sidebar content for mobile view
     const sidebarContent = [
         // Dashboard

@@ -91,7 +91,7 @@ const PromotionsAndOfferManagement = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [submitMode, setSubmitMode] = useState(null);
-    console.log("Submit Mode: ", submitMode);
+    const [editingOfferId, setEditingOfferId] = useState(null);
 
     // React hook form
     const {
@@ -128,7 +128,6 @@ const PromotionsAndOfferManagement = () => {
     const baseURL = `http://localhost:3000/api/promotionsandoffers`;
 
     const onFormSubmit = async (data) => {
-
         const {
             title,
             description,
@@ -153,11 +152,15 @@ const PromotionsAndOfferManagement = () => {
             promoCode,
             usageLimit,
             minimumPurchase,
-            isActive
+            isActive: isActive ? "on" : "off" // Convert boolean to string
         };
 
         try {
-            const response = await fetch(`${baseURL}`, {
+            const url = submitMode === 'edit' 
+                ? `${baseURL}/${editingOfferId}`
+                : baseURL;
+            
+            const response = await fetch(url, {
                 method: submitMode === 'edit' ? 'PATCH' : 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -167,48 +170,51 @@ const PromotionsAndOfferManagement = () => {
 
             const responseBody = await response.json();
 
-            if (response.ok && response.status === 200) {
-                setOpenNewForm(false);
-                reset();
-                setSelectedOfferType('');
-                setDiscountValueIsPercentage(false);
-                setSelectedAudiences([]);
+            if (response.ok) {
+                handleCloseForm(); // Use the new close handler
                 toast.success(responseBody.message);
                 queryClient.invalidateQueries(['promotionsandoffers']);
             } else {
                 toast.error(responseBody.message);
-            };
-
-            if (response.ok && response.status === 200 && submitMode === 'edit') {
-                console.log("Response body: ", responseBody);
-                // reset({
-                //     title:responseBody.
-                // })
             }
-
         } catch (error) {
             console.log("Error: ", error);
             toast.error(error.message);
-        };
+        }
     };
 
-    console.log('Form mode: ', submitMode);
-
     const getSingleOfferDetails = async (id) => {
+        setSubmitMode('edit');
+        setEditingOfferId(id);
         setOpenNewForm(true);
         try {
             const response = await fetch(`${baseURL}/${id}`);
             const responseBody = await response.json();
-
-            if (response.ok && submitMode === 'edit') {
-                //
-            };
-            console.log("Respone Body: ", responseBody);
-
+            
+            if (response.ok) {
+                const offer = responseBody.offer;
+                // Reset form with the fetched data
+                reset({
+                    title: offer.title,
+                    description: offer.description,
+                    discountValue: offer.discountValue,
+                    startDate: new Date(offer.startDate).toISOString().split('T')[0],
+                    endDate: new Date(offer.endDate).toISOString().split('T')[0],
+                    promoCode: offer.promoCode,
+                    usageLimit: offer.usageLimit,
+                    minimumPurchase: offer.minimumPurchase,
+                    isActive: offer.isActive === "on"
+                });
+                
+                // Set other states
+                setSelectedOfferType(offer.offerType);
+                setDiscountValueIsPercentage(offer.discountValueIsPercentage);
+                setSelectedAudiences(offer.selectedAudiences);
+            }
         } catch (error) {
-            console.log("Error: ", error)
+            console.log("Error: ", error);
             toast.error(error.message);
-        };
+        }
     };
 
     const handleCheckboxChange = (id) => {
@@ -283,6 +289,42 @@ const PromotionsAndOfferManagement = () => {
         }
     };
 
+    const handleCloseForm = () => {
+        // Reset all form states
+        reset({
+            title: '',
+            description: '',
+            discountValue: '',
+            startDate: '',
+            endDate: '',
+            promoCode: '',
+            usageLimit: '',
+            minimumPurchase: '',
+            isActive: true
+        });
+        
+        // Reset all other states
+        setSelectedOfferType('');
+        setDiscountValueIsPercentage(false);
+        setSelectedAudiences([]);
+        setSubmitMode(null);
+        setEditingOfferId(null);
+        setOpenNewForm(false);
+    };
+
+    const handleOpenNewForm = () => {
+        // First close and reset any existing form
+        handleCloseForm();
+        // Then open a fresh form
+        setOpenNewForm(true);
+    };
+
+    useEffect(() => {
+        if (!openNewForm) {
+            handleCloseForm();
+        }
+    }, [openNewForm]);
+
     return (
         <div className='w-full bg-slate-50 min-h-screen'>
             {/* Breadcrumb and Header */}
@@ -310,7 +352,7 @@ const PromotionsAndOfferManagement = () => {
                     <Button
                         variant="outline"
                         className='flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'
-                        onClick={() => setOpenNewForm(true)}
+                        onClick={handleOpenNewForm}
                     >
                         <IoMdAdd className="h-4 w-4 mr-2" />
                         Create Offers
@@ -323,13 +365,12 @@ const PromotionsAndOfferManagement = () => {
                     <form onSubmit={handleSubmit(onFormSubmit)} className="bg-white w-full max-w-6xl h-[90vh] md:h-[95vh] rounded-md shadow-xl flex flex-col overflow-hidden">
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 md:p-5 border-b">
-                            <h1 className='text-lg font-medium'>Create New Promotions & Offers</h1>
+                            <h1 className='text-lg font-medium'>
+                                {submitMode === 'edit' ? 'Edit Promotion' : 'Create New Promotion'}
+                            </h1>
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setOpenNewForm(false)
-                                    setSubmitMode(null);
-                                }}
+                                onClick={handleCloseForm}
                                 className="text-gray-500 hover:text-gray-700"
                             >
                                 <IoMdClose className="h-5 w-5" />
@@ -554,10 +595,7 @@ const PromotionsAndOfferManagement = () => {
                         <div className="w-full flex justify-end bg-gray-50 gap-3 p-4 md:p-6 border-t border-gray-100">
                             <Button
                                 type="button"
-                                onClick={() => {
-                                    setSubmitMode(null);
-                                    setOpenNewForm(false);
-                                }}
+                                onClick={handleCloseForm}
                                 variant="outline"
                                 className="h-10 px-4 md:px-6 rounded-md border-gray-300 text-gray-700 hover:bg-gray-50"
                             >
@@ -566,17 +604,17 @@ const PromotionsAndOfferManagement = () => {
 
                             {submitMode === 'edit' ? (
                                 <Button
-                                    type="button"
+                                    type="submit"
                                     className="h-10 px-4 md:px-6 rounded-md bg-primary hover:bg-primary/90 text-white"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? (
                                         <div className="flex items-center gap-2">
                                             <FaSpinner className="animate-spin h-4 w-4" />
-                                            Editing...
+                                            Updating...
                                         </div>
                                     ) : (
-                                        'Edit Promotion'
+                                        'Update Promotion'
                                     )}
                                 </Button>
                             ) : (

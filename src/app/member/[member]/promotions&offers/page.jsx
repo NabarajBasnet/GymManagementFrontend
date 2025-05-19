@@ -112,7 +112,7 @@ const OfferShowcase = () => {
                             </h1>
                             <Sparkles className="h-8 w-8 text-yellow-300" />
                         </div>
-                        <p className="text-xl md:text-2xl text-indigo-100 max-w-3xl mx-auto">
+                        <p className="text-sm md:text-lg text-indigo-100 max-w-3xl mx-auto">
                             Discover amazing deals and unlock incredible savings on our premium services
                         </p>
                         <div className="mt-8 flex justify-center">
@@ -127,7 +127,7 @@ const OfferShowcase = () => {
             </div>
 
             {/* Search and Filter Section */}
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
+            <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-10">
                 <div className="bg-white rounded-2xl shadow-xl border border-gray-200 p-6">
                     <div className="flex flex-col md:flex-row gap-4 items-center">
                         <div className="flex-1 relative">
@@ -349,16 +349,16 @@ const OfferShowcase = () => {
                     <h2 className="text-3xl md:text-4xl font-bold mb-4">
                         Don't Miss Out on Future Offers!
                     </h2>
-                    <p className="text-xl text-indigo-200 mb-8">
+                    <p className="text-md font-medium text-indigo-200 mb-8">
                         Subscribe to our newsletter and be the first to know about new deals and exclusive offers.
                     </p>
                     <div className="flex flex-col sm:flex-row max-w-md mx-auto gap-4">
                         <input
                             type="email"
                             placeholder="Enter your email"
-                            className="flex-1 px-6 py-3 rounded-xl text-gray-900 border-0 focus:ring-2 focus:ring-yellow-400"
+                            className="flex-1 px-6 py-3 rounded-md text-gray-900 border-0 focus:ring-2 focus:ring-yellow-400"
                         />
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-semibold px-8 py-3 rounded-xl transition-colors">
+                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-8 py-3 rounded-md transition-colors">
                             Subscribe
                         </button>
                     </div>
