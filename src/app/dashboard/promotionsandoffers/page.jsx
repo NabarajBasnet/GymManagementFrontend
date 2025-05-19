@@ -832,6 +832,7 @@ const PromotionsAndOfferManagement = () => {
                                                             <Button 
                                                                 className="bg-transparent text-gray-600 hover:bg-transparent hover:text-gray-900 border"
                                                                 onClick={() => handleShareOffer(offer)}
+                                                                title="Share"
                                                                 >
                                                                 <FiShare2/>
                                                                 Share
@@ -1005,6 +1006,7 @@ const PromotionsAndOfferManagement = () => {
                                                                         <button
                                                                             className="text-gray-600 hover:text-gray-900 flex items-center"
                                                                             title="Share"
+                                                                            onClick={() => handleShareOffer(offer)}
                                                                         >
                                                                             <FiShare2 className="mr-1" size={16} />
                                                                         </button>
