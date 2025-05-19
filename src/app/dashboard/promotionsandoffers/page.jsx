@@ -93,6 +93,10 @@ const PromotionsAndOfferManagement = () => {
     const [submitMode, setSubmitMode] = useState(null);
     const [editingOfferId, setEditingOfferId] = useState(null);
 
+    // Filter States
+    const [selectedFilterOfferStatus, setSelectedFilterOfferStatus] = useState('');
+    const [selectedFilterOfferDateRange, setSelectedFilterOfferDateRange] = useState(''); 
+
     // React hook form
     const {
         register,
@@ -228,7 +232,7 @@ const PromotionsAndOfferManagement = () => {
     const getAllOffers = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`${baseURL}/?page=${page}&limit=${limit}&search=${debouncedSearchQuery}`);
+            const response = await fetch(`${baseURL}/?page=${page}&limit=${limit}&search=${debouncedSearchQuery}&offerStatus=${selectedFilterOfferStatus}&offerDateRange=${selectedFilterOfferDateRange}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -238,7 +242,7 @@ const PromotionsAndOfferManagement = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['promotionsandoffers', currentPage, debouncedSearchQuery],
+        queryKey: ['promotionsandoffers', currentPage, debouncedSearchQuery, selectedFilterOfferStatus, selectedFilterOfferDateRange],
         queryFn: getAllOffers,
     });
 
@@ -659,7 +663,6 @@ const PromotionsAndOfferManagement = () => {
             )}
 
             <div className="p-4">
-
                 <div className="w-full flex bg-white py-6 px-2 rounded-sm border flex-col md:flex-row gap-4 items-center">
                     {/* Search Input */}
                     <div className="border bg-white flex items-center rounded-md px-4 w-full">
@@ -674,7 +677,7 @@ const PromotionsAndOfferManagement = () => {
 
                     {/* Filter Selects */}
                     <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto">
-                        <Select>
+                        <Select onValueChange={(value) => setSelectedFilterOfferStatus(value)}>
                             <SelectTrigger className="min-w-[100px] rounded-md">
                                 <SelectValue placeholder="Status" />
                             </SelectTrigger>
@@ -691,7 +694,7 @@ const PromotionsAndOfferManagement = () => {
                             </SelectContent>
                         </Select>
 
-                        <Select>
+                        <Select onValueChange={(value) => setSelectedFilterOfferDateRange(value)}>
                             <SelectTrigger className="min-w-[100px] rounded-md">
                                 <SelectValue placeholder="Date" />
                             </SelectTrigger>
