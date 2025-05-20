@@ -666,7 +666,7 @@ const Header = () => {
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
                         <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors cursor-pointer">
-                            <SettingsIcon size={20} className="text-blue-600 animate-spin duration-[0.1] transition-all" />
+                        <SettingsIcon size={20} className="text-blue-600 animate-spin duration-[10ms] transition-all" />
                         </div>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="max-w-2xl">
