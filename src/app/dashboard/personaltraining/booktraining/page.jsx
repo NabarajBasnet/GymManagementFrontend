@@ -1,5 +1,7 @@
 'use client';
 
+import { CalendarDays } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -226,82 +228,161 @@ const PersonalTrainingBooking = () => {
                 <Card>
                   <CardHeader>
                     <CardTitle className="text-2xl font-bold">All Bookings</CardTitle>
-                    <CardDescription className="text-sm text-gray-500 font-medium">
-                    View and manage all your personal training bookings. You can filter, sort and search through your bookings.
+                    <CardDescription className="text-xs text-gray-500 font-medium">
+                      Showing 10 training sessions out of 20 total training sessions
                     </CardDescription>
                   </CardHeader>
                   
                   {/* Table Section */}
                   <CardContent className="space-y-2">
-                  <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Trainer Name</TableHead>
-                                            <TableHead>Client Name</TableHead>
-                                            <TableHead>Package</TableHead>
-                                            <TableHead>Start Date</TableHead>
-                                            <TableHead>End Date</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead>Total Amount</TableHead>
-                                            <TableHead>Branch</TableHead>
-                                            <TableHead>Payment Status</TableHead>
-                                            <TableHead className="text-center">Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                            <TableRow>
-                                                <TableCell>Ronie Colemon</TableCell>
-                                                <TableCell>John Doe</TableCell>
-                                                <TableCell>1 Month</TableCell>
-                                                <TableCell>2025-01-01</TableCell>
-                                                <TableCell>2025-01-31</TableCell>
-                                                <TableCell>Active</TableCell>
-                                                <TableCell>$ 5000</TableCell>
-                                                <TableCell>Branch 1</TableCell>
-                                                <TableCell>
-                                                    <Badge>Full Paid</Badge>
-                                                </TableCell>
-                                                <TableCell className="text-right space-x-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                    >
-                                                        <FiEdit className="h-4 w-4" />
-                                                    </Button>
-
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                        <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                                                    >
-                                                        <FiTrash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete your package.
-                                                    </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700">Continue</AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                                </AlertDialog>
-
-                                                </TableCell>
-                                            </TableRow>
-                                    </TableBody>
-                                </Table>
+                    <div className="overflow-x-auto rounded-lg border">
+                    <Table>
+                      <TableHeader className="bg-gray-50">
+                        <TableRow className="whitespace-nowrap">
+                          {/* Trainer Name */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Trainer Name
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
                             </div>
+                          </TableHead>
+
+                          {/* Client Name */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Client Name
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Package */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Package
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Start Date */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Start Date
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* End Date */}
+                          <TableHead className="py-3 cursor-pointe">
+                            <div className="flex items-center gap-1">
+                              End Date
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Status */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Status
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Total Amount */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Total Amount
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Branch */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Branch
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Payment Status */}
+                          <TableHead className="py-3 cursor-pointer">
+                            <div className="flex items-center gap-1">
+                              Payment Status
+                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                            </div>
+                          </TableHead>
+
+                          {/* Actions */}
+                          <TableHead className="py-3 text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+  
+                      <TableBody>
+                        <TableRow>
+                          <TableCell className="py-3">Ronie Colemon</TableCell>
+                          <TableCell className="py-3">John Doe</TableCell>
+                          <TableCell className="py-3">1 Month</TableCell>
+                          <TableCell className="py-3">2025-01-01</TableCell>
+                          <TableCell className="py-3">2025-01-31</TableCell>
+                          <TableCell className="py-3">
+                            <Badge variant="outline" className="border-green-200 text-green-800 bg-green-50">
+                              Active
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center py-3">$5000</TableCell>
+                          <TableCell className="py-3">Branch 1</TableCell>
+                          <TableCell className="py-3">
+                            <Badge className="bg-green-100 text-center text-green-800">Full Paid</Badge>
+                          </TableCell>
+                          <TableCell className="py-3 text-right space-x-1">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                              <FiEdit className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                >
+                                  <FiTrash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete your package.
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogAction className="bg-red-600 hover:bg-red-700">
+                                    Continue
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                    </div>
                   </CardContent>
                   <CardFooter>
-                    <Button>Save changes</Button>
+                    <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
+                      <p className="text-sm text-gray-600">
+                        Showing <span className="font-medium">10</span> of <span className="font-medium">20</span> training sessions
+                      </p>
+                      <Pagination
+                        total={2}
+                        page={currentPage}
+                        onChange={setCurrentPage}
+                        withEdges={true}
+                        siblings={1}
+                        boundaries={1}
+                        className="justify-center sm:justify-end"
+                      />
+                    </div>
                   </CardFooter>
                 </Card>
               </TabsContent>
