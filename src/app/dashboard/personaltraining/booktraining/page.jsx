@@ -176,28 +176,136 @@ const PersonalTrainingBooking = () => {
               </TabsList>
 
               <TabsContent value="View Bookings">
+
+                {/* Filter Section */}
+                <Card className="my-2">
+                    <CardContent className="p-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <Label htmlFor="search">Search</Label>
+                                <Input
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    id="search"
+                                    placeholder="Search here..."
+                                />
+                            </div>
+                            <div>
+                                <Label htmlFor="status">Status</Label>
+                                <Select
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Filter by status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Inactive">Inactive</SelectItem>
+                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                        <SelectItem value="Completed">Completed</SelectItem>
+                                        <SelectItem value="Pending">Pending</SelectItem>
+                                        <SelectItem value="Refunded">Refunded</SelectItem>
+                                        <SelectItem value="Failed">Failed</SelectItem>
+                                        <SelectItem value="Expired">Expired</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="flex items-end">
+                                <Button 
+                                    variant="outline" 
+                                    className="w-full"
+                                >
+                                    <CiUndo className="h-5 w-5 mr-2" />
+                                    Reset Filters
+                                </Button>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+
                 <Card>
                   <CardHeader>
-                    <CardTitle>All Bookings</CardTitle>
-                    <CardDescription>
-                      Make changes to your account here. Click save when you're done.
+                    <CardTitle className="text-2xl font-bold">All Bookings</CardTitle>
+                    <CardDescription className="text-sm text-gray-500 font-medium">
+                    View and manage all your personal training bookings. You can filter, sort and search through your bookings.
                     </CardDescription>
                   </CardHeader>
+                  
+                  {/* Table Section */}
                   <CardContent className="space-y-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="name">Name</Label>
-                      <Input id="name" defaultValue="Pedro Duarte" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="username">Username</Label>
-                      <Input id="username" defaultValue="@peduarte" />
-                    </div>
+                  <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Trainer Name</TableHead>
+                                            <TableHead>Client Name</TableHead>
+                                            <TableHead>Package</TableHead>
+                                            <TableHead>Start Date</TableHead>
+                                            <TableHead>End Date</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead>Total Amount</TableHead>
+                                            <TableHead>Branch</TableHead>
+                                            <TableHead>Payment Status</TableHead>
+                                            <TableHead className="text-center">Actions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                            <TableRow>
+                                                <TableCell>Ronie Colemon</TableCell>
+                                                <TableCell>John Doe</TableCell>
+                                                <TableCell>1 Month</TableCell>
+                                                <TableCell>2025-01-01</TableCell>
+                                                <TableCell>2025-01-31</TableCell>
+                                                <TableCell>Active</TableCell>
+                                                <TableCell>$ 5000</TableCell>
+                                                <TableCell>Branch 1</TableCell>
+                                                <TableCell>
+                                                    <Badge>Full Paid</Badge>
+                                                </TableCell>
+                                                <TableCell className="text-right space-x-2">
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                    >
+                                                        <FiEdit className="h-4 w-4" />
+                                                    </Button>
+
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                        <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                                                    >
+                                                        <FiTrash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                    This action cannot be undone. This will permanently delete your package.
+                                                    </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700">Continue</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                                </AlertDialog>
+
+                                                </TableCell>
+                                            </TableRow>
+                                    </TableBody>
+                                </Table>
+                            </div>
                   </CardContent>
                   <CardFooter>
                     <Button>Save changes</Button>
                   </CardFooter>
                 </Card>
               </TabsContent>
+
               <TabsContent value="password">
                 <Card>
                   <CardHeader>
@@ -222,52 +330,6 @@ const PersonalTrainingBooking = () => {
                 </Card>
               </TabsContent>
             </Tabs>
-
-            {/* Filter Section */}
-            <Card className="mb-4">
-                <CardContent className="p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <Label htmlFor="search">Search</Label>
-                            <Input
-                                value={search}
-                                onChange={(e) => setSearch(e.target.value)}
-                                id="search"
-                                placeholder="Search by name or description..."
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="status">Status</Label>
-                            <Select
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Filter by status" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="Active">Active</SelectItem>
-                                    <SelectItem value="Inactive">Inactive</SelectItem>
-                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                                    <SelectItem value="Completed">Completed</SelectItem>
-                                    <SelectItem value="Pending">Pending</SelectItem>
-                                    <SelectItem value="Refunded">Refunded</SelectItem>
-                                    <SelectItem value="Failed">Failed</SelectItem>
-                                    <SelectItem value="Expired">Expired</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="flex items-end">
-                            <Button 
-                                variant="outline" 
-                                className="w-full"
-                            >
-                                <CiUndo className="h-5 w-5 mr-2" />
-                                Reset Filters
-                            </Button>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
 
             {/* Booking Modal */}
             {openBookingModal && (
