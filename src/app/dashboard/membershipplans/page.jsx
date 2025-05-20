@@ -1,157 +1,120 @@
-import React from 'react';
-import { Card } from "@/components/ui/card";
-import Badge from '@mui/material/Badge';
-import { Dumbbell, Clock, Users, Key, Zap } from 'lucide-react';
+'use client';
 
-const MembershipPlans = () => {
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-full mx-4">
-        {/* Header Section */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-            Membership <span className="text-blue-600">Plans</span>
-          </h1>
-        </div>
+import { CiUndo } from "react-icons/ci";
+import Loader from "@/components/Loader/Loader";
+import { FaList } from "react-icons/fa6";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiCheck, FiInfo, FiEye } from "react-icons/fi";
+import { MdHome } from "react-icons/md";
+import toast from "react-hot-toast";
 
-        {/* Admission Fee Card */}
-        <Card className="mb-16 overflow-hidden bg-gradient-to-r from-yellow-400 to-amber-500">
-          <div className="px-8 py-12 text-center">
-            <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30 transition-colors">
-              New Members
-            </Badge>
-            <h2 className="text-3xl font-bold text-white mb-2">
-              Admission Fee
-            </h2>
-            <div className="flex items-center justify-center gap-2 text-white/90">
-              <Key className="h-5 w-5" />
-              <p className="text-4xl font-bold">NPR 1,000</p>
-            </div>
-          </div>
-        </Card>
+// UI Components
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardFooter
+} from "@/components/ui/card";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useForm } from "react-hook-form";
+import Pagination from "@/components/ui/CustomPagination";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+const MembershipPlanManagement = () => {
 
-        {/* Membership Sections */}
-        <div className="space-y-16">
-          <MembershipSection
-            icon={<Dumbbell className="h-6 w-6" />}
-            title="Regular Membership"
-            subtitle="Full access to gym facilities"
-            data={[
-              { plan: 'GYM', rates: [4000, 10500, 18000, 30000] },
-              { plan: 'GYM & CARDIO', rates: [5000, 12000, 21000, 36000] },
-            ]}
-            gradient="from-blue-600 to-blue-800"
-          />
 
-          <MembershipSection
-            icon={<Clock className="h-6 w-6" />}
-            title="Daytime Membership"
-            subtitle="Access between 10 AM - 4 PM"
-            data={[
-              { plan: 'GYM', rates: [3000, 7500, 12000, 18000] },
-              { plan: 'GYM & CARDIO', rates: [4000, 10500, 18000, 30000] },
-            ]}
-            gradient="from-purple-600 to-purple-800"
-          />
+    return (
+        <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
+            {/* Breadcrumb with arrows */}
+            <div className='w-full mb-4'>
+                <Breadcrumb className="mb-4">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <MdHome className='w-4 h-4' />
+                            <BreadcrumbLink href="/" className="ml-2 font-semibold">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="font-semibold">Membership Plan Management</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
-          <MembershipSection
-            icon={<Users className="h-6 w-6" />}
-            title="Personal Training"
-            subtitle="One-on-one training sessions"
-            data={[
-              { plan: 'Rates', rates: [2500, 15000, 20000, 25000] },
-            ]}
-            headers={['1 Session', '12 Sessions', '16 Sessions', '20 Sessions']}
-            gradient="from-green-600 to-green-800"
-          />
-
-          <MembershipSection
-            icon={<Key className="h-6 w-6" />}
-            title="Locker Service"
-            subtitle="Secure storage for your belongings"
-            data={[
-              { plan: 'Rates', rates: [500, 1200, 1800, 2500] },
-            ]}
-            gradient="from-orange-600 to-orange-800"
-          />
-        </div>
-
-        {/* Day Pass Card */}
-        <Card className="mt-16 overflow-hidden">
-          <div className="px-8 py-12 text-center bg-gradient-to-r from-cyan-500 to-blue-500">
-            <Badge className="mb-4 bg-white/20 text-white hover:bg-white/30">
-              Try Us Out
-            </Badge>
-            <h2 className="text-3xl font-bold text-white mb-4">
-              One Day Pass
-            </h2>
-            <div className="flex items-center justify-center gap-2 text-white">
-              <Zap className="h-5 w-5" />
-              <p className="text-4xl font-bold">NPR 500</p>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-const MembershipSection = ({
-  title,
-  subtitle,
-  data,
-  headers = ['1 Month', '3 Month', '6 Month', '1 Year'],
-  gradient,
-  icon
-}) => {
-  return (
-    <Card className="overflow-hidden shadow-lg">
-      {/* Section Header */}
-      <div className={`bg-gradient-to-r ${gradient} px-8 py-6 text-white`}>
-        <div className="flex items-center gap-3 mb-2">
-          {icon}
-          <h3 className="text-2xl font-bold">{title}</h3>
-        </div>
-        <p className="text-white/80">{subtitle}</p>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <div className="min-w-full">
-          {/* Table Header */}
-          <div className="grid grid-cols-5 text-center bg-gray-50 border-b">
-            <div className="py-4 px-6"></div>
-            {headers.map((header, idx) => (
-              <div key={idx} className="py-4 px-6 font-semibold text-gray-700">
-                {header}
-              </div>
-            ))}
-          </div>
-
-          {/* Table Content */}
-          {data.map((item, idx) => (
-            <div
-              key={idx}
-              className="grid grid-cols-5 text-center border-b last:border-0 hover:bg-gray-50 transition-colors"
-            >
-              <div className="py-4 px-6">
-                <Badge variant="outline" className="bg-white">
-                  {item.plan}
-                </Badge>
-              </div>
-              {item.rates.map((rate, rateIdx) => (
-                <div key={rateIdx} className="py-4 px-6">
-                  <span className="font-semibold text-gray-900">
-                    NPR {rate.toLocaleString()}
-                  </span>
+                <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-4 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+                    <div>
+                        <h1 className="text-xl font-bold mb-2">Membership Plans Management</h1>
+                        <p className="text-xs text-gray-500 font-medium">
+                            Create and manage your gym membership plans.
+                        </p>
+                    </div>
+                    <Button className="rounded-sm">
+                        <FiPlus className="h-4 w-4 mr-2" />
+                        Create Package
+                    </Button>
                 </div>
-              ))}
+
+
             </div>
-          ))}
+
+            {/* Tabs */}
+            <Tabs defaultValue="Current Plans">
+                <TabsList>
+                    <TabsTrigger value="View Plans"> <FiEye className="w-4 h-4 mr-2" /> View Plans</TabsTrigger>
+                    <TabsTrigger value="Current Plans"> <FaList className="w-4 h-4 mr-2" /> Current Plans</TabsTrigger>
+                    <TabsTrigger value="Create Plans"> <FiPlus className="w-4 h-4 mr-2" /> Create Plans</TabsTrigger>
+                </TabsList> 
+                <TabsContent value="View Plans">  
+                <h1>View Plans</h1>
+                </TabsContent>
+                <TabsContent value="Current Plans">  
+                <h1>Current Plans</h1>
+                </TabsContent>
+                <TabsContent value="Create Plans">
+                  <h1>Membership Types</h1>
+                </TabsContent>
+            </Tabs>
         </div>
-      </div>
-    </Card>
-  );
+    );
 };
 
-export default MembershipPlans;
+export default MembershipPlanManagement;
