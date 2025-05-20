@@ -94,7 +94,7 @@ const PersonalTrainingBooking = () => {
   const [memberId, setMemberId] = useState('');
   const [trainerId, setTrainerId] = useState('');
   const [branchId, setBranchId] = useState('');
-  const [status, setPackageStatus] = useState('Active');
+  const [status, setPackageStatus] = useState('');
   const [paidAmount, setPaidAmount] = useState('');
   const [discount, setDiscount] = useState('');
   const [totalAmount, setTotalAmount] = useState('');
@@ -299,13 +299,11 @@ const PersonalTrainingBooking = () => {
   });
   const { packages = [] } = packagesData || {};
 
-
-
   // Get all personal training bookings
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
-    const [,page] = queryKey;
+    const [, page, status, paymentStatus] = queryKey;
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -316,7 +314,7 @@ const PersonalTrainingBooking = () => {
   };
 
   const { data: personalTrainingBookingsData, isLoading: personalTrainingBookingsLoading } = useQuery({
-    queryKey: ['personalTrainingBookings', currentPage],
+    queryKey: ['personalTrainingBookings', currentPage, status, paymentStatus],
     queryFn: getAllPersonalTrainingBookings
   });
   const { personalTrainings = [], totalPersonalTrainings, totalPages } = personalTrainingBookingsData || {};
@@ -337,6 +335,50 @@ const PersonalTrainingBooking = () => {
     } catch (error) {
       console.log("Error: ", error);
       toast.error("Failed to delete personal training booking");
+    }
+  };
+
+  // Add this function near the top of the component
+  const getPaymentStatusColor = (status) => {
+    switch (status) {
+      case 'Full Paid':
+        return 'bg-green-100 text-green-800';
+      case 'Partial Paid':
+        return 'bg-blue-100 text-blue-800';
+      case 'Unpaid':
+        return 'bg-red-100 text-red-800';
+      case 'Refunded':
+        return 'bg-purple-100 text-purple-800';
+      case 'Pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'Failed':
+        return 'bg-red-100 text-red-800';
+      case 'Expired':
+        return 'bg-gray-100 text-gray-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  // Add this function near the top of the component, after getPaymentStatusColor
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Active':
+        return 'border-green-200 text-green-800 bg-green-50';
+      case 'Inactive':
+        return 'border-gray-200 text-gray-800 bg-gray-50';
+      case 'Cancelled':
+        return 'border-red-200 text-red-800 bg-red-50';
+      case 'Completed':
+        return 'border-blue-200 text-blue-800 bg-blue-50';
+      case 'Pending':
+        return 'border-yellow-200 text-yellow-800 bg-yellow-50';
+      case 'Refunded':
+        return 'border-purple-200 text-purple-800 bg-purple-50';
+      case 'Expired':
+        return 'border-gray-200 text-gray-800 bg-gray-50';
+      default:
+        return 'border-gray-200 text-gray-800 bg-gray-50';
     }
   };
 
@@ -425,7 +467,7 @@ const PersonalTrainingBooking = () => {
           {/* Filter Section */}
           <Card className="my-2">
             <CardContent className="p-4">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
                   <Label htmlFor="search">Search</Label>
                   <Input
@@ -437,9 +479,8 @@ const PersonalTrainingBooking = () => {
                 </div>
                 <div>
                   <Label htmlFor="status">Status</Label>
-                  <Select
-                  >
-                    <SelectTrigger>
+                  <Select onValueChange={(value) => setPackageStatus(value)}>
+                    <SelectTrigger className="rounded-md">
                       <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -455,10 +496,35 @@ const PersonalTrainingBooking = () => {
                     </SelectContent>
                   </Select>
                 </div>
+                <div>
+                  <Label htmlFor="paymentStatus">Payment Status</Label>
+                  <Select onValueChange={(value) => setPaymentStatus(value)}>
+                    <SelectTrigger className="rounded-md">
+                      <SelectValue placeholder="Filter by payment status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Full Paid">Full Paid</SelectItem>
+                      <SelectItem value="Unpaid">Unpaid</SelectItem>
+                      <SelectItem value="Partially Paid">Partially Paid</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                      <SelectItem value="Refunded">Refunded</SelectItem>
+                      <SelectItem value="Failed">Failed</SelectItem>
+                      <SelectItem value="Expired">Expired</SelectItem>
+                      <SelectItem value="Cancelled">Cancelled</SelectItem>
+                      <SelectItem value="Completed">Completed</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex items-end">
                   <Button
                     variant="outline"
                     className="w-full"
+                    onClick={() => {
+                      setSearch('');
+                      setPackageStatus('');
+                      setPaymentStatus('');
+                    }}
                   >
                     <CiUndo className="h-5 w-5 mr-2" />
                     Reset Filters
@@ -573,14 +639,14 @@ const PersonalTrainingBooking = () => {
                               <TableCell className="py-3">{new Date(personalTraining.startDate).toISOString().split('T')[0]}</TableCell>
                               <TableCell className="py-3">{new Date(personalTraining.endDate).toISOString().split('T')[0]}</TableCell>
                               <TableCell className="py-3">
-                                <Badge variant="outline" className="border-green-200 text-green-800 bg-green-50">
+                                <Badge variant="outline" className={getStatusColor(personalTraining.status)}>
                                   {personalTraining.status}
                                 </Badge>
                               </TableCell>
                               <TableCell className="text-center py-3">${personalTraining.totalAmount}</TableCell>
                               <TableCell className="py-3">{personalTraining.branchId}</TableCell>
                               <TableCell className="py-3">
-                                <Badge className="bg-green-100 text-center text-green-800">
+                                <Badge className={`${getPaymentStatusColor(personalTraining.paymentStatus)} text-center hover:bg-transparent`}>
                                   {personalTraining.paymentStatus}
                                 </Badge>
                               </TableCell>
@@ -602,7 +668,7 @@ const PersonalTrainingBooking = () => {
                                     <AlertDialogHeader>
                                       <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                       <AlertDialogDescription>
-                                        This action cannot be undone. This will permanently delete your package.
+                                        This action cannot be undone. This will permanently delete your training session.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
