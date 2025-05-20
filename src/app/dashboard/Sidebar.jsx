@@ -15,9 +15,6 @@ import { TbListDetails } from "react-icons/tb";
 // Icons
 import { FaDumbbell } from "react-icons/fa6";
 import {
-    RiCustomerService2Fill,
-} from 'react-icons/ri';
-import {
     BiSolidUserCheck,
 } from 'react-icons/bi';
 import {
@@ -103,7 +100,7 @@ const Sidebar = () => {
     const logoutUser = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`http://localhost:3000/api/auth/logout`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/auth/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': "application/json"
@@ -277,6 +274,8 @@ const Sidebar = () => {
                     icon: FaTags,
                     title: 'Promotions & Offers',
                     link: '/dashboard/promotionsandoffers',
+                    badge: 'New',
+                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500',
                 },
             ]
         },
@@ -293,6 +292,8 @@ const Sidebar = () => {
                     icon: GiBiceps,
                     title: 'Personal Training',
                     link: '/dashboard/personaltraining',
+                    badge: 'New',
+                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500',
                     subObj: [
                         { icon: FaDumbbell, title: 'Training Packages', link: '/dashboard/personaltraining/trainingpackages' },
                         { icon: FaDumbbell, title: 'Book Training', link: '/dashboard/personaltraining/booktraining' },

@@ -71,7 +71,6 @@ const PersonalTrainingBooking = () => {
   // Custom Hooks
   const {user} = useUser();
   const loggedInUser = user?.user;
-  console.log(loggedInUser);
 
   // React Hook Form
   const {
@@ -134,7 +133,7 @@ const PersonalTrainingBooking = () => {
   // Update the getTrainingDetails function
   const getTrainingDetails = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`);
       const { personalTraining } = await response.json();
       
       if (response.ok && personalTraining) {
@@ -205,8 +204,8 @@ const PersonalTrainingBooking = () => {
 
     try {
       const url = isEditMode 
-        ? `http://localhost:3000/api/personaltraining/${editId}`
-        : 'http://localhost:3000/api/personaltraining';
+        ? `http://88.198.112.156:3000/api/personaltraining/${editId}`
+        : 'http://88.198.112.156:3000/api/personaltraining';
       
       const method = isEditMode ? 'PATCH' : 'POST';
 
@@ -354,7 +353,7 @@ const PersonalTrainingBooking = () => {
   // Get all staffs
   const getAllTrainers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+      const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -373,7 +372,7 @@ const PersonalTrainingBooking = () => {
   // Get all members
   const getAllMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/members`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -392,7 +391,7 @@ const PersonalTrainingBooking = () => {
   // Get all packages
   const getAllPackages = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -428,7 +427,7 @@ const PersonalTrainingBooking = () => {
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
     const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -447,7 +446,7 @@ const PersonalTrainingBooking = () => {
   // Delete personal training booking
   const deletePersonalTrainingBooking = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
         method: 'DELETE'
       });
       const responseBody = await response.json();
@@ -557,7 +556,7 @@ const PersonalTrainingBooking = () => {
 
       {/* Tabs */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-7 border border-gray-300 overflow-y-hidden">
+        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-6 border border-gray-300 overflow-y-hidden">
           <TabsTrigger value="View Bookings" className="whitespace-nowrap">
             <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
             <span className="hidden md:inline">View Bookings</span>
@@ -565,10 +564,6 @@ const PersonalTrainingBooking = () => {
           <TabsTrigger value="Register Training" className="whitespace-nowrap">
             <FiPlus className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Register Training</span>
-          </TabsTrigger>
-          <TabsTrigger value="Billing" className="whitespace-nowrap">
-            <FiCreditCard className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Billing</span>
           </TabsTrigger>
           <TabsTrigger value="Reports" className="whitespace-nowrap">
             <FiBarChart className="h-4 w-4 lg:mr-2" />
@@ -1306,12 +1301,6 @@ const PersonalTrainingBooking = () => {
                 </form>
               </CardContent>
             </Card>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="Billing">
-          <div className="p-4">
-            <h2>Billing Content</h2>
           </div>
         </TabsContent>
 
