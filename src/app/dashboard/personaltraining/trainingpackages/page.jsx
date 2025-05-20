@@ -210,24 +210,24 @@ const CreatePersonalTrainingPackages = () => {
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
             {/* Breadcrumb with arrows */}
-            <div className='w-full mb-6'>
+            <div className='w-full mb-4'>
                 <Breadcrumb className="mb-4">
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <MdHome className='w-4 h-4' />
-                            <BreadcrumbLink href="/" className="ml-2">Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/" className="ml-2 font-semibold">Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator>
                             <FiChevronRight className="h-4 w-4" />
                         </BreadcrumbSeparator>
                         <BreadcrumbItem>
-                            <BreadcrumbLink>Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator>
                             <FiChevronRight className="h-4 w-4" />
                         </BreadcrumbSeparator>
                         <BreadcrumbItem>
-                            <BreadcrumbLink>Personal Training</BreadcrumbLink>
+                            <BreadcrumbLink className="font-semibold">Personal Training</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator>
                             <FiChevronRight className="h-4 w-4" />
@@ -238,20 +238,25 @@ const CreatePersonalTrainingPackages = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
                 
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                    <h1 className="text-2xl font-bold">Personal Training Packages</h1>
+                <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-6 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold">Personal Training Packages</h1>
+                        <p className="text-sm text-gray-500">
+                            Create and manage your personal training packages.
+                    </p>
+                    </div>
                     <Button 
                         onClick={() => setShowForm(true)}
                         className="rounded-sm"
                     >
                         <FiPlus className="h-4 w-4 mr-2" />
-                        Create Package
-                    </Button>
+                            Create Package
+                        </Button>
                 </div>
             </div>
 
             {/* Filter Section */}
-            <Card className="mb-6">
+            <Card className="mb-4">
                 <CardContent className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
