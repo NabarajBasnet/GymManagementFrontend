@@ -270,6 +270,34 @@ const MembershipPlanManagement = () => {
                                         </div>
                                     </div>
 
+                                    <div className="space-y-2">
+                                        <Label>Services Included</Label>
+                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                            {[
+                                                'Gym',
+                                                'Gym & Cardio',
+                                                'Cardio',
+                                                'Group Classes',
+                                                'Personal Training',
+                                                'Swimming',
+                                                'Sauna',
+                                                'Online Classes',
+                                                'Locker'
+                                            ].map((service) => (
+                                                <div key={service} className="flex items-center space-x-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        id={service}
+                                                        {...register("servicesIncluded")}
+                                                        value={service}
+                                                        className="w-5 h-5 rounded border-gray-300"
+                                                    />
+                                                    <Label htmlFor={service} className="text-base">{service}</Label>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
                                     {/* Time Restrictions */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">

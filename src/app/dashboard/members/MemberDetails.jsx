@@ -273,7 +273,7 @@ const MemberDetails = ({ memberId }) => {
     const updateMemberDetails = async (data) => {
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': "application/json"
@@ -326,7 +326,7 @@ const MemberDetails = ({ memberId }) => {
         const membershipHoldData = { membershipHoldDate, status: 'OnHold', actionTaker: currentActionTaker, toId: memberId };
 
         try {
-            const response = await fetch(`http://localhost:3000/api/members/hold-membership/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/members/hold-membership/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'
@@ -375,7 +375,7 @@ const MemberDetails = ({ memberId }) => {
 
     const getAactionTakers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {

@@ -102,7 +102,7 @@ const CreatePersonalTrainingPackages = () => {
         const { packagename, sessions, duration, price, description } = data;
         const packageData = { packagename, sessions, duration, price, description, packageStatus };
         try {
-            const baseURL = 'http://localhost:3000/api/personaltraining/packages';
+            const baseURL = 'http://88.198.112.156:3000/api/personaltraining/packages';
             const response = await fetch(isEditing ? `${baseURL}/${packageId}` : baseURL, {
                 method: isEditing ? "PATCH" : "POST",
                 headers: {
@@ -128,7 +128,7 @@ const CreatePersonalTrainingPackages = () => {
     const getPackages = async ({ queryKey }) => {
         const [, currentPage] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -164,7 +164,7 @@ const CreatePersonalTrainingPackages = () => {
 
     const deletePackage = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json'
@@ -186,7 +186,7 @@ const CreatePersonalTrainingPackages = () => {
 
     const toggleStatus = async (id) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/toggle/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages/toggle/${id}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'

@@ -69,7 +69,7 @@ const PersonalTrainingBooking = () => {
   const ref = useRef(null);
 
   // Custom Hooks
-  const {user} = useUser();
+  const { user } = useUser();
   const loggedInUser = user?.user;
 
   // React Hook Form
@@ -111,7 +111,7 @@ const PersonalTrainingBooking = () => {
   const [editId, setEditId] = useState(null);
 
   // Calculate total amount when price or discount changes
-  
+
   useEffect(() => {
     if (!isEditMode) {
       const total = packagePrice - (Number(discount) || 0);
@@ -133,9 +133,9 @@ const PersonalTrainingBooking = () => {
   // Update the getTrainingDetails function
   const getTrainingDetails = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`);
       const { personalTraining } = await response.json();
-      
+
       if (response.ok && personalTraining) {
         // Populate form with fetched data
         setSelectedPackage(personalTraining.packageId);
@@ -155,7 +155,7 @@ const PersonalTrainingBooking = () => {
         setPaymentStatus(personalTraining.paymentStatus);
         setMemberName(personalTraining.memberId.fullName);
         setStaffName(personalTraining.trainerId.fullName);
-        setPackageName(personalTraining.packageId.packagename);
+        setPackageName(personalTraining?.packageId?.packagename || '');
 
         // Set form values using react-hook-form
         reset({
@@ -203,10 +203,10 @@ const PersonalTrainingBooking = () => {
     }
 
     try {
-      const url = isEditMode 
-        ? `http://localhost:3000/api/personaltraining/${editId}`
-        : 'http://localhost:3000/api/personaltraining';
-      
+      const url = isEditMode
+        ? `http://88.198.112.156:3000/api/personaltraining/${editId}`
+        : 'http://88.198.112.156:3000/api/personaltraining';
+
       const method = isEditMode ? 'PATCH' : 'POST';
 
       const response = await fetch(url, {
@@ -216,13 +216,13 @@ const PersonalTrainingBooking = () => {
         },
         body: JSON.stringify(finalData)
       });
-      
+
       const responseBody = await response.json();
-      
+
       if (response.ok) {
         queryClient.invalidateQueries({ queryKey: ['personalTrainingBookings'] });
         toast.success(responseBody.message);
-        
+
         // Reset form and states
         reset();
         setSelectedPackage(null);
@@ -247,11 +247,11 @@ const PersonalTrainingBooking = () => {
         setMemberId('');
         setTrainerId('');
         setBranchId('');
-        
+
         // Reset edit mode
         setIsEditMode(false);
         setEditId(null);
-        
+
         // Switch back to View Bookings tab
         setTabValue('View Bookings');
       } else {
@@ -353,7 +353,7 @@ const PersonalTrainingBooking = () => {
   // Get all staffs
   const getAllTrainers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+      const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -372,7 +372,7 @@ const PersonalTrainingBooking = () => {
   // Get all members
   const getAllMembers = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/members`);
+      const response = await fetch(`http://88.198.112.156:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -391,7 +391,7 @@ const PersonalTrainingBooking = () => {
   // Get all packages
   const getAllPackages = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -415,19 +415,19 @@ const PersonalTrainingBooking = () => {
   const [sortOrderDesc, setSortOrderDesc] = useState(true);
 
 
-  useEffect(()=>{
-    const searchTrainingTimerId = setTimeout(()=>{
+  useEffect(() => {
+    const searchTrainingTimerId = setTimeout(() => {
       setDebouncedSearchTraining(serachTraining);
-    },300);
-    return ()=>clearTimeout(searchTrainingTimerId);
-  },[serachTraining]);
+    }, 300);
+    return () => clearTimeout(searchTrainingTimerId);
+  }, [serachTraining]);
 
 
   // Get all personal training bookings
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
     const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -446,7 +446,7 @@ const PersonalTrainingBooking = () => {
   // Delete personal training booking
   const deletePersonalTrainingBooking = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
+      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
         method: 'DELETE'
       });
       const responseBody = await response.json();
@@ -677,7 +677,7 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Trainer Name
-                                <ArrowUpDown 
+                                <ArrowUpDown
                                   onClick={() => {
                                     setSortBy('trainerName');
                                     setSortOrderDesc(!sortOrderDesc);
@@ -690,7 +690,7 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Client Name
-                                <ArrowUpDown 
+                                <ArrowUpDown
                                   onClick={() => {
                                     setSortBy('clientName');
                                     setSortOrderDesc(!sortOrderDesc);
@@ -755,7 +755,7 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Total Amount
-                                <ArrowUpDown 
+                                <ArrowUpDown
                                   onClick={() => {
                                     setSortBy('totalAmount');
                                     setSortOrderDesc(!sortOrderDesc);
@@ -768,7 +768,7 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Branch
-                                <ArrowUpDown 
+                                <ArrowUpDown
                                   onClick={() => {
                                     setSortBy('branch');
                                     setSortOrderDesc(!sortOrderDesc);
@@ -781,7 +781,7 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Payment Status
-                                <ArrowUpDown 
+                                <ArrowUpDown
                                   onClick={() => {
                                     setSortBy('paymentStatus');
                                     setSortOrderDesc(!sortOrderDesc);
@@ -800,7 +800,7 @@ const PersonalTrainingBooking = () => {
                             <TableRow key={personalTraining._id}>
                               <TableCell className="py-3">{personalTraining.trainerId.fullName}</TableCell>
                               <TableCell className="py-3">{personalTraining.memberId.fullName}</TableCell>
-                              <TableCell className="py-3">{personalTraining.packageId.packagename}</TableCell>
+                              <TableCell className="py-3">{personalTraining?.packageId?.packagename}</TableCell>
                               <TableCell className="py-3">{new Date(personalTraining.startDate).toISOString().split('T')[0]}</TableCell>
                               <TableCell className="py-3">{new Date(personalTraining.endDate).toISOString().split('T')[0]}</TableCell>
                               <TableCell className="py-3">
@@ -816,7 +816,7 @@ const PersonalTrainingBooking = () => {
                                 </Badge>
                               </TableCell>
                               <TableCell className="py-3 text-right space-x-1">
-                                <Button 
+                                <Button
                                   onClick={() => handleEditTraining(personalTraining._id)}
                                   variant="ghost" size="sm" className="h-8 w-8 p-0">
                                   <FiEdit className="h-4 w-4" />
@@ -1214,11 +1214,11 @@ const PersonalTrainingBooking = () => {
                     </div>
                     <div>
                       <Label htmlFor="discount">Discount Amount</Label>
-                      <Input 
-                        id="discount" 
-                        {...register("discount")} 
-                        placeholder='Discount amount' 
-                        className="p-6" 
+                      <Input
+                        id="discount"
+                        {...register("discount")}
+                        placeholder='Discount amount'
+                        className="p-6"
                         type="number" />
                     </div>
                   </div>
@@ -1226,11 +1226,11 @@ const PersonalTrainingBooking = () => {
                   <div className='grid grid-cols-2 gap-4'>
                     <div>
                       <Label htmlFor="totalAmount">Total Amount</Label>
-                      <Input 
+                      <Input
                         id="totalAmount"
                         {...register("totalAmount", { required: "Total Amount is required" })}
                         placeholder='Total amount'
-                        className="p-6" 
+                        className="p-6"
                         type="number" />
                     </div>
                     <div>
@@ -1282,19 +1282,19 @@ const PersonalTrainingBooking = () => {
 
                   {/* Add reset button in the form */}
                   <div className="flex justify-end gap-2">
-                    <Button 
-                      type="button" 
-                      variant="outline" 
+                    <Button
+                      type="button"
+                      variant="outline"
                       onClick={handleResetForm}
                       className="bg-gray-100 hover:bg-gray-200 rounded-md p-6"
                     >
                       Reset
                     </Button>
-                    <Button 
-                      type="submit" 
+                    <Button
+                      type="submit"
                       className="bg-blue-600 hover:bg-blue-700 rounded-md p-6"
                     >
-                      {isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} 
+                      {isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />}
                       {isSubmitting ? 'Submitting...' : isEditMode ? 'Update Training' : 'Submit & Save'}
                     </Button>
                   </div>
