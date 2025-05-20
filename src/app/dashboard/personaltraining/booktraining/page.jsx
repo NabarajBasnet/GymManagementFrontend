@@ -101,6 +101,10 @@ const PersonalTrainingBooking = () => {
   const [sendPaymentInfo, setSendPaymentInfo] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState('');
 
+  // Add new state for edit mode
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
+
   // Calculate total amount when price or discount changes
   
   useEffect(() => {
@@ -119,7 +123,58 @@ const PersonalTrainingBooking = () => {
     }
   }, [startDate, selectedPackage, isEndDateAuto]);
 
-  // Book Training Function
+  // Update the getTrainingDetails function
+  const getTrainingDetails = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
+      const { personalTraining } = await response.json();
+      
+      if (response.ok && personalTraining) {
+        // Populate form with fetched data
+        setSelectedPackage(personalTraining.packageId);
+        setPackagePrice(personalTraining.packageId.price);
+        setPackageId(personalTraining.packageId._id);
+        setMemberId(personalTraining.memberId._id);
+        setTrainerId(personalTraining.trainerId._id);
+        setBranchId(personalTraining.branchId);
+        setPackageStatus(personalTraining.status);
+        setStartDate(new Date(personalTraining.startDate).toISOString().split('T')[0]);
+        setEndDate(new Date(personalTraining.endDate).toISOString().split('T')[0]);
+        setPaidAmount(personalTraining.paidAmount);
+        setDiscount(personalTraining.discount);
+        setTotalAmount(personalTraining.totalAmount);
+        setSendEmailNotification(personalTraining.sendEmailNotification);
+        setSendPaymentInfo(personalTraining.sendPaymentInfo);
+        setPaymentStatus(personalTraining.paymentStatus);
+        setMemberName(personalTraining.memberId.fullName);
+        setStaffName(personalTraining.trainerId.fullName);
+        setPackageName(personalTraining.packageId.packagename);
+
+        // Set form values using react-hook-form
+        reset({
+          paidAmount: personalTraining.paidAmount,
+          discount: personalTraining.discount,
+          registerBy: personalTraining.registerBy
+        });
+
+        setIsEditMode(true);
+        setEditId(id);
+      } else {
+        toast.error("Failed to fetch training details");
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("Failed to fetch training details");
+    }
+  };
+
+  // Modify the handleEditTraining function
+  const handleEditTraining = (id) => {
+    getTrainingDetails(id);
+    setTabValue('Register Training');
+  };
+
+  // Modify the onSubmit function to handle both create and update
   const onSubmit = async (data) => {
     const { paidAmount, discount, registerBy } = data;
 
@@ -132,26 +187,36 @@ const PersonalTrainingBooking = () => {
       status,
       startDate,
       endDate,
-      paidAmount,
-      discount,
-      totalAmount,
+      paidAmount: Number(paidAmount),
+      discount: Number(discount),
+      totalAmount: Number(totalAmount),
       registerBy,
       branchId,
       paymentStatus
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining`, {
-        method: 'POST',
+      const url = isEditMode 
+        ? `http://localhost:3000/api/personaltraining/${editId}`
+        : 'http://localhost:3000/api/personaltraining';
+      
+      const method = isEditMode ? 'PATCH' : 'POST';
+
+      const response = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(finalData)
       });
+      
       const responseBody = await response.json();
+      
       if (response.ok) {
         queryClient.invalidateQueries({ queryKey: ['personalTrainingBookings'] });
         toast.success(responseBody.message);
+        
+        // Reset form and states
         reset();
         setSelectedPackage(null);
         setPackagePrice(0);
@@ -166,8 +231,8 @@ const PersonalTrainingBooking = () => {
         setSendEmailNotification(false);
         setSendPaymentInfo(false);
         setBranchId('');
-        setStartDate('');
-        setEndDate('');
+        setStartDate(new Date().toISOString().split('T')[0]);
+        setEndDate(new Date().toISOString().split('T')[0]);
         setPaidAmount('');
         setDiscount('');
         setTotalAmount('');
@@ -175,6 +240,13 @@ const PersonalTrainingBooking = () => {
         setMemberId('');
         setTrainerId('');
         setBranchId('');
+        
+        // Reset edit mode
+        setIsEditMode(false);
+        setEditId(null);
+        
+        // Switch back to View Bookings tab
+        setTabValue('View Bookings');
       } else {
         toast.error(responseBody.message);
       }
@@ -182,7 +254,36 @@ const PersonalTrainingBooking = () => {
       console.log(error);
       toast.error(error.message);
     }
-  }
+  };
+
+  // Add reset form function
+  const handleResetForm = () => {
+    reset();
+    setSelectedPackage(null);
+    setPackagePrice(0);
+    setMemberName('');
+    setStaffName('');
+    setPackageName('');
+    setMemberSearchQuery('');
+    setStaffSearchQuery('');
+    setPackageSearchQuery('');
+    setPaymentStatus('');
+    setPackageStatus('');
+    setSendEmailNotification(false);
+    setSendPaymentInfo(false);
+    setBranchId('');
+    setStartDate(new Date().toISOString().split('T')[0]);
+    setEndDate(new Date().toISOString().split('T')[0]);
+    setPaidAmount('');
+    setDiscount('');
+    setTotalAmount('');
+    setPackageId('');
+    setMemberId('');
+    setTrainerId('');
+    setBranchId('');
+    setIsEditMode(false);
+    setEditId(null);
+  };
 
   // Debounce package search
   useEffect(() => {
@@ -396,19 +497,6 @@ const PersonalTrainingBooking = () => {
       default:
         return 'border-none text-gray-800 bg-transparent';
     }
-  };
-
-
-  // Handle edit training
-  const handleEditTraining = (id) => {
-    console.log(id);
-    setTabValue('Register Training');
-    try{
-      
-    }catch(error){
-      console.log("Error: ", error);
-      toast.error("Failed to edit training");
-    };
   };
 
   return (
@@ -794,9 +882,9 @@ const PersonalTrainingBooking = () => {
             <Card className="rounded-xl w-full lg:w-3/12">
               <CardHeader>
                 <div className='flex justify-between items-center'>
-                  <p className='text-lg font-bold'></p>
+                  <p className='text-lg font-bold'>{isEditMode ? 'Edit Training' : 'New Training'}</p>
                   <Badge className={getStatusColor(status)}>
-                    {status}
+                    {status || 'New'}
                   </Badge>
                 </div>
               </CardHeader>
@@ -813,7 +901,7 @@ const PersonalTrainingBooking = () => {
                     </div>
                     <Switch
                       checked={sendEmailNotification}
-                      onCheckedChange={setSendEmailNotification}
+                      onCheckedChange={(checked) => setSendEmailNotification(checked)}
                       className="bg-green-600 text-green-600"
                     />
                   </div>
@@ -827,7 +915,7 @@ const PersonalTrainingBooking = () => {
                     </div>
                     <Switch
                       checked={sendPaymentInfo}
-                      onCheckedChange={setSendPaymentInfo}
+                      onCheckedChange={(checked) => setSendPaymentInfo(checked)}
                       className="bg-green-600 text-green-600"
                     />
                   </div>
@@ -1181,9 +1269,23 @@ const PersonalTrainingBooking = () => {
                     </div>
                   </div>
 
-                  {/* Submit Button */}
-                  <div className="flex justify-end">
-                    <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6">{isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} {isSubmitting ? 'Submitting...' : 'Submit & Save'}</Button>
+                  {/* Add reset button in the form */}
+                  <div className="flex justify-end gap-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      onClick={handleResetForm}
+                      className="bg-gray-100 hover:bg-gray-200 rounded-md p-6"
+                    >
+                      Reset
+                    </Button>
+                    <Button 
+                      type="submit" 
+                      className="bg-blue-600 hover:bg-blue-700 rounded-md p-6"
+                    >
+                      {isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} 
+                      {isSubmitting ? 'Submitting...' : isEditMode ? 'Update Training' : 'Submit & Save'}
+                    </Button>
                   </div>
                 </form>
               </CardContent>
