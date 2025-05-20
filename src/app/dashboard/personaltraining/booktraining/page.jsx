@@ -394,7 +394,7 @@ const PersonalTrainingBooking = () => {
       case 'Expired':
         return 'border-gray-200 text-gray-800 bg-gray-50';
       default:
-        return 'border-gray-200 text-gray-800 bg-gray-50';
+        return 'border-none text-gray-800 bg-transparent';
     }
   };
 
@@ -727,7 +727,7 @@ const PersonalTrainingBooking = () => {
                               <TableCell className="py-3 text-right space-x-1">
                                 <Button 
                                   onClick={() => handleEditTraining(personalTraining._id)}
-                                variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                  variant="ghost" size="sm" className="h-8 w-8 p-0">
                                   <FiEdit className="h-4 w-4" />
                                 </Button>
                                 <AlertDialog>
@@ -795,8 +795,8 @@ const PersonalTrainingBooking = () => {
               <CardHeader>
                 <div className='flex justify-between items-center'>
                   <p className='text-lg font-bold'></p>
-                  <Badge variant="outline" className="border-green-200 text-green-800 bg-green-200">
-                    Active
+                  <Badge className={getStatusColor(status)}>
+                    {status}
                   </Badge>
                 </div>
               </CardHeader>
