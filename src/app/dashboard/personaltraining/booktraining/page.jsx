@@ -111,6 +111,12 @@ const PersonalTrainingBooking = () => {
        const [staffName, setStaffName] = useState('');
        const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
        const staffSearchRef = useRef(null);
+
+      //  Package search states
+      const [packageSearchQuery, setPackageSearchQuery] = useState('');
+      const [packageName, setPackageName] = useState('');
+      const [renderPackageDropdown, setRenderPackageDropdown] = useState(false);
+      const packageSearchRef = useRef(null);
     
     // Handle click outside for all dropdowns
         useEffect(() => {
@@ -121,12 +127,15 @@ const PersonalTrainingBooking = () => {
               if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
                   setRenderStaffDropdown(false);
               }
+              if (packageSearchRef.current && !packageSearchRef.current.contains(event.target)) {
+                  setRenderPackageDropdown(false);
+              }
           };
           document.addEventListener("mousedown", handleClickOutside);
           return () => {
               document.removeEventListener("mousedown", handleClickOutside);
           };
-      }, [memberSearchRef, staffSearchRef]);
+      }, [memberSearchRef, staffSearchRef, packageSearchRef]);
 
       const handleMemberSearchFocus = () => {
           setRenderMemberDropdown(true);
@@ -136,6 +145,9 @@ const PersonalTrainingBooking = () => {
           setRenderStaffDropdown(true);
       };
 
+      const handlePackageSearchFocus = () => {
+          setRenderPackageDropdown(true);
+      };
 
     // Get all staffs
     const getAllTrainers = async () => {
@@ -661,20 +673,67 @@ const PersonalTrainingBooking = () => {
                         {/* Second Row */}
                         <div className='grid grid-cols-2 gap-4'>
                           <div>
-                            <Label htmlFor="phone">Package</Label>
-                            <Select>
-                                    <SelectTrigger className="rounded-md p-6">
-                                        <SelectValue placeholder="Select Package" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="1 Month">1 Month</SelectItem>
-                                      <SelectItem value="2 Months">2 Months</SelectItem>
-                                      <SelectItem value="3 Months">3 Months</SelectItem>
-                                      <SelectItem value="4 Months">4 Months</SelectItem>
-                                      <SelectItem value="5 Months">5 Months</SelectItem>
-                                      <SelectItem value="6 Months">6 Months</SelectItem>
-                                    </SelectContent>
-                                </Select>
+                            <div className='space-y-1.5'>
+                                          <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Package</Label>
+                                          <div ref={packageSearchRef} className="relative">
+                                              <Controller
+                                                  name="packageName"
+                                                  control={control}
+                                                  render={({ field }) => (
+                                                      <div className="relative">
+                                                          <Input
+                                                              {...field}
+                                                              autoComplete="off"
+                                                              value={packageName || packageSearchQuery}
+                                                              onChange={(e) => {
+                                                                  setPackageSearchQuery(e.target.value);
+                                                                  field.onChange(e);
+                                                                  setPackageName('');
+                                                              }}
+                                                              onFocus={handlePackageSearchFocus}
+                                                              className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                                              placeholder="Search package..."
+                                                          />
+                                                          <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                              <FiSearch className="h-5 w-5" />
+                                                          </div>
+                                                      </div>
+                                                  )}
+                                              />
+                                              {errors.packageName && (
+                                                  <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                      {errors.packageName.message}
+                                                  </p>
+                                              )}
+
+                                              {renderPackageDropdown && (
+                                                  <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                      {packages?.length > 0 ? (
+                                                          packages
+                                                              .filter((pkg) => {
+                                                                  return pkg.packagename && pkg.packagename.toLowerCase().includes(packageSearchQuery.toLowerCase());
+                                                              })
+                                                              .map((pkg) => (
+                                                                  <div
+                                                                      onClick={() => {
+                                                                          setPackageName(pkg.packagename);
+                                                                          setPackageSearchQuery(pkg.packagename);
+                                                                          setPackageId(pkg._id);
+                                                                          setRenderPackageDropdown(false);
+                                                                      }}
+                                                                      className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                      key={pkg._id}
+                                                                  >
+                                                                      {pkg.packagename}
+                                                                  </div>
+                                                              ))
+                                                      ) : (
+                                                          <div className="px-4 py-3 text-sm text-gray-500">{packagesLoading ? 'Loading...' : 'No packages found'}</div>
+                                                      )}
+                                                  </div>
+                                              )}
+                                          </div>
+                            </div>
                           </div>
                           <div>
                             <Label htmlFor="address">Status</Label>
