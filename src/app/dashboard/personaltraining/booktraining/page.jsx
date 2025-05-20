@@ -1,825 +1,378 @@
-// PersonalTrainingManager.js
-"use client";
-import { useState, useEffect, useCallback } from 'react';
-import { format, addMonths, subMonths, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, parse, addDays } from 'date-fns';
+'use client';
 
-export default function PersonalTrainingManager() {
-  // State management
-  const [view, setView] = useState('calendar'); // calendar, list, form, details
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState(new Date());
-  const [selectedSession, setSelectedSession] = useState(null);
-  const [selectedTrainer, setSelectedTrainer] = useState(null);
-  const [selectedClient, setSelectedClient] = useState(null);
-  const [sessions, setSessions] = useState([]);
-  const [trainers, setTrainers] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [packages, setPackages] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [formData, setFormData] = useState({
-    title: '',
-    clientId: '',
-    trainerId: '',
-    packageId: '',
-    date: format(new Date(), 'yyyy-MM-dd'),
-    startTime: '09:00',
-    duration: 60,
-    notes: '',
-    status: 'scheduled'
-  });
+import { CiUndo } from "react-icons/ci";
+import Loader from "@/components/Loader/Loader";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
+import { FiChevronRight, FiTrash2, FiEdit, FiEye, FiPlus, FiX, FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell } from "react-icons/fi";
+import { MdHome } from "react-icons/md";
+import toast from "react-hot-toast";
 
-  // Fetch data when component mounts
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        // Replace with your actual API endpoints
-        const [sessionsData, trainersData, clientsData, packagesData] = await Promise.all([
-          fetch('/api/sessions').then(res => res.json()),
-          fetch('/api/trainers').then(res => res.json()),
-          fetch('/api/clients').then(res => res.json()),
-          fetch('/api/packages').then(res => res.json())
-        ]);
-        
-        setSessions(sessionsData || []);
-        setTrainers(trainersData || []);
-        setClients(clientsData || []);
-        setPackages(packagesData || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Handle error state here if needed
-      } finally {
-        setIsLoading(false);
-      }
-    };
+// UI Components
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+  CardDescription
+} from "@/components/ui/card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogTrigger ,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useForm } from "react-hook-form";
+import Pagination from "@/components/ui/CustomPagination";
 
-    fetchData();
-  }, []);
+const PersonalTrainingBooking = () => {
 
-  // Get sessions for selected day
-  const dailySessions = useCallback(() => {
-    return sessions.filter(session => 
-      isSameDay(new Date(session.date), selectedDay)
-    ).sort((a, b) => a.startTime.localeCompare(b.startTime));
-  }, [sessions, selectedDay]);
+    // Query
+    const queryClient = useQueryClient();
 
-  // Calendar navigation
-  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
-  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
+    // React Hook Form
+    const {
+         register,
+         handleSubmit,
+         formState: {errors, isSubmitting},
+         reset  
+        } = useForm();
 
-  // Date helpers
-  const getWeekDays = () => {
-    const start = startOfWeek(currentDate);
-    const end = endOfWeek(currentDate);
-    return eachDayOfInterval({ start, end });
-  };
+        // Pagination, filters and search
+        const [currentPage, setCurrentPage] = useState(1);
+        const limit = 10;
+        const [search, setSearch] = useState('');
+        const [status, setStatus] = useState('');
+        const [debouncedSearch, setDebouncedSearch] = useState('');
 
-  // Form handlers
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
+        // Form Handlers
+        const [openBookingModal, setOpenBookingModal] = useState(false);
+        const [openEditBookingModal, setOpenEditBookingModal] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    
-    try {
-      const formattedData = {
-        ...formData,
-        date: formData.date,
-        duration: parseInt(formData.duration),
-        clientId: parseInt(formData.clientId),
-        trainerId: parseInt(formData.trainerId),
-        packageId: formData.packageId ? parseInt(formData.packageId) : null
-      };
+        // Book Training Function
+        const onSubmit = (data) => {
+            console.log(data);
+        }
 
-      const method = selectedSession ? 'PUT' : 'POST';
-      const url = selectedSession 
-        ? `/api/sessions/${selectedSession.id}` 
-        : '/api/sessions';
+    // Debounce search
+    useEffect(() => {
+        const delayInputTimeoutId = setTimeout(() => {
+            setDebouncedSearch(search);
+        }, 300);
+        return () => clearTimeout(delayInputTimeoutId);
+    }, [search]);
 
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formattedData)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to save session');
-      }
-
-      const savedSession = await response.json();
-      
-      if (selectedSession) {
-        setSessions(sessions.map(s => s.id === savedSession.id ? savedSession : s));
-      } else {
-        setSessions([...sessions, savedSession]);
-      }
-
-      // Reset form and return to calendar view
-      setFormData({
-        title: '',
-        clientId: '',
-        trainerId: '',
-        packageId: '',
-        date: format(new Date(), 'yyyy-MM-dd'),
-        startTime: '09:00',
-        duration: 60,
-        notes: '',
-        status: 'scheduled'
-      });
-      setSelectedSession(null);
-      setView('calendar');
-    } catch (error) {
-      console.error("Error saving session:", error);
-      // Handle error state if needed
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleEditSession = (session) => {
-    setSelectedSession(session);
-    setFormData({
-      title: session.title,
-      clientId: session.clientId.toString(),
-      trainerId: session.trainerId.toString(),
-      packageId: session.packageId ? session.packageId.toString() : '',
-      date: session.date,
-      startTime: session.startTime,
-      duration: session.duration.toString(),
-      notes: session.notes || '',
-      status: session.status
-    });
-    setView('form');
-  };
-
-  const handleDeleteSession = async (sessionId) => {
-    if (!confirm('Are you sure you want to delete this session?')) return;
-    
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/sessions/${sessionId}`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete session');
-      }
-
-      setSessions(sessions.filter(s => s.id !== sessionId));
-      setView('calendar');
-    } catch (error) {
-      console.error("Error deleting session:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCancelSession = async (sessionId) => {
-    if (!confirm('Are you sure you want to cancel this session?')) return;
-    
-    setIsLoading(true);
-    try {
-      const session = sessions.find(s => s.id === sessionId);
-      const updatedSession = { ...session, status: 'cancelled' };
-      
-      const response = await fetch(`/api/sessions/${sessionId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updatedSession)
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to cancel session');
-      }
-
-      const savedSession = await response.json();
-      setSessions(sessions.map(s => s.id === savedSession.id ? savedSession : s));
-    } catch (error) {
-      console.error("Error cancelling session:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Get client and trainer details
-  const getClientName = (clientId) => {
-    const client = clients.find(c => c.id === clientId);
-    return client ? `${client.firstName} ${client.lastName}` : 'Unknown Client';
-  };
-
-  const getTrainerName = (trainerId) => {
-    const trainer = trainers.find(t => t.id === trainerId);
-    return trainer ? `${trainer.firstName} ${trainer.lastName}` : 'Unknown Trainer';
-  };
-
-  // Get package details
-  const getPackageName = (packageId) => {
-    const pkg = packages.find(p => p.id === packageId);
-    return pkg ? pkg.name : 'No Package';
-  };
-
-  // Calculate time slots
-  const getTimeSlots = () => {
-    const slots = [];
-    for (let i = 5; i < 22; i++) {
-      for (let j = 0; j < 60; j += 30) {
-        slots.push(`${i.toString().padStart(2, '0')}:${j.toString().padStart(2, '0')}`);
-      }
-    }
-    return slots;
-  };
-
-  // Filter sessions for list view
-  const getFilteredSessions = () => {
-    let filtered = [...sessions];
-    
-    if (selectedTrainer) {
-      filtered = filtered.filter(s => s.trainerId === selectedTrainer);
-    }
-    
-    if (selectedClient) {
-      filtered = filtered.filter(s => s.clientId === selectedClient);
-    }
-    
-    return filtered.sort((a, b) => {
-      // Sort by date first
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
-      if (dateA < dateB) return -1;
-      if (dateA > dateB) return 1;
-      
-      // Then by start time
-      return a.startTime.localeCompare(b.startTime);
-    });
-  };
-
-  // Calendar grid days
-  const getDaysInMonth = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    
-    // Get the first day of the week of the month
-    const startDate = startOfWeek(firstDay);
-    
-    // Get the last day of the week of the last day of the month
-    const endDate = endOfWeek(lastDay);
-
-    // Return array of dates
-    return eachDayOfInterval({ start: startDate, end: endDate });
-  };
-
-  // Check if day has sessions
-  const dayHasSessions = (day) => {
-    return sessions.some(session => 
-      isSameDay(new Date(session.date), day)
-    );
-  };
-
-  const renderCalendarView = () => {
-    const days = getDaysInMonth();
-    const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    
-    return (
-      <div className="calendar-container">
-        <div className="calendar-header flex justify-between items-center mb-4">
-          <button onClick={prevMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
-            &lt; Prev
-          </button>
-          <h2 className="text-xl font-bold">{format(currentDate, 'MMMM yyyy')}</h2>
-          <button onClick={nextMonth} className="p-2 bg-gray-200 rounded hover:bg-gray-300">
-            Next &gt;
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-7 gap-1">
-          {weekDays.map(day => (
-            <div key={day} className="text-center font-semibold py-2 bg-gray-100">
-              {day}
-            </div>
-          ))}
-          
-          {days.map((day, i) => {
-            const isCurrentMonth = day.getMonth() === currentDate.getMonth();
-            const isToday = isSameDay(day, new Date());
-            const isSelected = isSameDay(day, selectedDay);
-            const hasSessions = dayHasSessions(day);
-            
-            return (
-              <div 
-                key={i}
-                className={`
-                  min-h-24 p-2 border border-gray-200 cursor-pointer
-                  ${!isCurrentMonth ? 'bg-gray-50 text-gray-400' : ''}
-                  ${isToday ? 'bg-blue-50' : ''}
-                  ${isSelected ? 'bg-blue-100 border-blue-500' : ''}
-                  ${hasSessions ? 'font-semibold' : ''}
-                `}
-                onClick={() => {
-                  setSelectedDay(day);
-                  setView('details');
-                }}
-              >
-                <div className="flex justify-between">
-                  <span>{format(day, 'd')}</span>
-                  {hasSessions && (
-                    <span className="inline-flex items-center justify-center w-6 h-6 bg-blue-500 text-white rounded-full text-xs">
-                      {sessions.filter(s => isSameDay(new Date(s.date), day)).length}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-4 flex justify-end space-x-2">
-          <button
-            onClick={() => setView('list')}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            List View
-          </button>
-          <button
-            onClick={() => {
-              setSelectedSession(null);
-              setFormData({
-                ...formData,
-                date: format(selectedDay, 'yyyy-MM-dd')
-              });
-              setView('form');
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            New Session
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderDayDetailView = () => {
-    const sessions = dailySessions();
-    return (
-      <div className="day-detail">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">{format(selectedDay, 'EEEE, MMMM d, yyyy')}</h2>
-          <button
-            onClick={() => setView('calendar')}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Back to Calendar
-          </button>
-        </div>
-        
-        {sessions.length === 0 ? (
-          <div className="text-center py-8 bg-gray-50 rounded">
-            <p className="text-gray-500">No sessions scheduled for this day.</p>
-            <button
-              onClick={() => {
-                setSelectedSession(null);
-                setFormData({
-                  ...formData,
-                  date: format(selectedDay, 'yyyy-MM-dd')
-                });
-                setView('form');
-              }}
-              className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-            >
-              Add Session
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {sessions.map(session => (
-              <div key={session.id} className="bg-white p-4 rounded-lg shadow border-l-4 border-blue-500">
-                <div className="flex justify-between">
-                  <h3 className="font-bold text-lg">{session.title}</h3>
-                  <span className={`px-2 py-1 rounded text-sm ${
-                    session.status === 'completed' ? 'bg-green-100 text-green-800' :
-                    session.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                    'bg-yellow-100 text-yellow-800'
-                  }`}>
-                    {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-                  </span>
-                </div>
+     return (
+        <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
+            {/* Breadcrumb with arrows */}
+            <div className='w-full mb-4'>
+                <Breadcrumb className="mb-4">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <MdHome className='w-4 h-4' />
+                            <BreadcrumbLink href="/" className="ml-2 font-semibold">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="font-semibold">Personal Training</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="font-semibold">Booking</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
                 
-                <div className="mt-2 grid grid-cols-2 gap-2">
-                  <div>
-                    <p className="text-sm text-gray-500">Time</p>
-                    <p>{session.startTime} ({session.duration} min)</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Client</p>
-                    <p>{getClientName(session.clientId)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Trainer</p>
-                    <p>{getTrainerName(session.trainerId)}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Package</p>
-                    <p>{session.packageId ? getPackageName(session.packageId) : 'No Package'}</p>
-                  </div>
-                </div>
-                
-                {session.notes && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500">Notes</p>
-                    <p className="text-sm">{session.notes}</p>
-                  </div>
-                )}
-                
-                <div className="mt-4 flex justify-end space-x-2">
-                  {session.status === 'scheduled' && (
-                    <>
-                      <button
-                        onClick={() => handleCancelSession(session.id)}
-                        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => handleEditSession(session)}
-                        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-                      >
-                        Edit
-                      </button>
-                    </>
-                  )}
-                  {session.status === 'cancelled' && (
-                    <button
-                      onClick={() => handleDeleteSession(session.id)}
-                      className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-6 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+                    <div>
+                        <h1 className="text-2xl font-bold">Personal Training Bookings</h1>
+                        <p className="text-sm text-gray-500">
+                            Register and manage your personal training bookings.
+                    </p>
+                    </div>
+                    <Button 
+                      className="rounded-sm"
                     >
-                      Delete
-                    </button>
-                  )}
+                        <FiPlus className="h-4 w-4 mr-2" />
+                            Book Training
+                        </Button>
                 </div>
+            </div>
+
+            {/* Tabs */}
+            <Tabs defaultValue="View Bookings" className="w-full">
+              <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-7">
+                <TabsTrigger value="View Bookings" className="whitespace-nowrap">
+                  <span className="hidden sm:inline">View Bookings</span>
+                  <span className="sm:hidden"><FiEye className="h-4 w-4" /></span>
+                </TabsTrigger>
+                <TabsTrigger value="Register Training" className="whitespace-nowrap">
+                  <FiPlus className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Register Training</span>
+                </TabsTrigger>
+                <TabsTrigger value="Billing" className="whitespace-nowrap">
+                  <FiCreditCard className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Billing</span>
+                </TabsTrigger>
+                <TabsTrigger value="Reports" className="whitespace-nowrap">
+                  <FiBarChart className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Reports</span>
+                </TabsTrigger>
+                <TabsTrigger value="Settings" className="whitespace-nowrap">
+                  <FiSettings className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Settings</span>
+                </TabsTrigger>
+                <TabsTrigger value="Notifications" className="whitespace-nowrap">
+                  <FiBell className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Notifications</span>
+                </TabsTrigger>
+                <TabsTrigger value="Support" className="whitespace-nowrap">
+                  <FiHelpCircle className="h-4 w-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Support</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="View Bookings">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>All Bookings</CardTitle>
+                    <CardDescription>
+                      Make changes to your account here. Click save when you're done.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="space-y-1">
+                      <Label htmlFor="name">Name</Label>
+                      <Input id="name" defaultValue="Pedro Duarte" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="username">Username</Label>
+                      <Input id="username" defaultValue="@peduarte" />
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button>Save changes</Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+              <TabsContent value="password">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Password</CardTitle>
+                    <CardDescription>
+                      Change your password here. After saving, you'll be logged out.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="space-y-1">
+                      <Label htmlFor="current">Current password</Label>
+                      <Input id="current" type="password" />
+                    </div>
+                    <div className="space-y-1">
+                      <Label htmlFor="new">New password</Label>
+                      <Input id="new" type="password" />
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button>Save password</Button>
+                  </CardFooter>
+                </Card>
+              </TabsContent>
+            </Tabs>
+
+            {/* Filter Section */}
+            <Card className="mb-4">
+                <CardContent className="p-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <Label htmlFor="search">Search</Label>
+                            <Input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                id="search"
+                                placeholder="Search by name or description..."
+                            />
+                        </div>
+                        <div>
+                            <Label htmlFor="status">Status</Label>
+                            <Select
+                            >
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Filter by status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">All Status</SelectItem>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                    <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                    <SelectItem value="Completed">Completed</SelectItem>
+                                    <SelectItem value="Pending">Pending</SelectItem>
+                                    <SelectItem value="Refunded">Refunded</SelectItem>
+                                    <SelectItem value="Failed">Failed</SelectItem>
+                                    <SelectItem value="Expired">Expired</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex items-end">
+                            <Button 
+                                variant="outline" 
+                                className="w-full"
+                            >
+                                <CiUndo className="h-5 w-5 mr-2" />
+                                Reset Filters
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {/* Booking Modal */}
+            {openBookingModal && (
+                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-16 lg:px-32 z-50">
+                  <Card className="w-full">
+                      <CardHeader>
+                          <CardTitle className="flex justify-between items-center">
+                              {isEditing ? "Edit Package" : "Create New Package"}
+                              <button onClick={()=>setOpenBookingModal(false)} className="text-gray-500 hover:text-gray-700">
+                                  <FiX className="h-5 w-5" />
+                              </button>
+                          </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                              <div>
+                                  <Label htmlFor="packagename">Package Name *</Label>
+                                  <Input
+                                      id="packagename"
+                                      {...register("packagename", {required: true})}
+                                      placeholder="e.g., Premium Package"
+                                      required
+                                  />
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4">
+                                  <div>
+                                      <Label htmlFor="sessions">Number of Sessions *</Label>
+                                      <Input
+                                          id="sessions"
+                                          type="number"
+                                          {...register("sessions", {required: true})}
+                                          placeholder="e.g., 12"
+                                          min="1"
+                                          required
+                                      />
+                                  </div>
+                                  <div>
+                                      <Label htmlFor="duration">Duration (days) *</Label>
+                                      <Input
+                                          id="duration"
+                                          type="number"
+                                          {...register("duration", {required: true})}
+                                          placeholder="e.g., 30"
+                                          min="1"
+                                          required
+                                      />
+                                  </div>
+                              </div>
+                              
+                              <div>
+                                  <Label htmlFor="price">Price ($) *</Label>
+                                  <Input
+                                      id="price"
+                                      type="number"
+                                      {...register("price", {required: true})}
+                                      placeholder="e.g., 299"
+                                      min="0"
+                                      step="0.01"
+                                      required
+                                  />
+                              </div>
+                              
+                              <div>
+                                  <Label htmlFor="description">Description</Label>
+                                  <Textarea
+                                      id="description"
+                                      {...register("description")}
+                                      placeholder="Describe the package benefits..."
+                                      rows={3}
+                                  />
+                              </div>
+                              
+                              <div>
+                                  <Label htmlFor="status">Status</Label>
+                                  <Select
+                                      value={packageStatus}
+                                      onValueChange={(value) => setPackageStatus(value)}
+                                  >
+                                      <SelectTrigger>
+                                          <SelectValue placeholder={`${packageStatus?packageStatus:'Select Status'}`} />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                          <SelectItem value="Active">Active</SelectItem>
+                                          <SelectItem value="Inactive">Inactive</SelectItem>
+                                      </SelectContent>
+                                  </Select>
+                              </div>
+                              
+                              <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
+                                  <Button variant="outline" onClick={()=>resetForm()}>
+                                      Cancel
+                                  </Button>
+                                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+                                      {isSubmitting ? "Submitting..." : (isEditing ? "Update Package" : "Create Package")}
+                                  </Button>
+                              </CardFooter>
+                          </form>
+                      </CardContent>
+                  </Card>
               </div>
-            ))}
-            
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={() => {
-                  setSelectedSession(null);
-                  setFormData({
-                    ...formData,
-                    date: format(selectedDay, 'yyyy-MM-dd')
-                  });
-                  setView('form');
-                }}
-                className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              >
-                Add Session
-              </button>
-            </div>
-          </div>
-        )}
-      </div>
+            )}
+
+        </div>
     );
-  };
+};
 
-  const renderListView = () => {
-    const filteredSessions = getFilteredSessions();
-
-    return (
-      <div className="list-view">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">All Sessions</h2>
-          <button
-            onClick={() => setView('calendar')}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Back to Calendar
-          </button>
-        </div>
-        
-        <div className="mb-4 flex flex-wrap gap-4">
-          <div className="w-64">
-            <label className="block mb-1 text-sm">Filter by Trainer</label>
-            <select
-              value={selectedTrainer || ''}
-              onChange={(e) => setSelectedTrainer(e.target.value === '' ? null : parseInt(e.target.value))}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">All Trainers</option>
-              {trainers.map(trainer => (
-                <option key={trainer.id} value={trainer.id}>
-                  {trainer.firstName} {trainer.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="w-64">
-            <label className="block mb-1 text-sm">Filter by Client</label>
-            <select
-              value={selectedClient || ''}
-              onChange={(e) => setSelectedClient(e.target.value === '' ? null : parseInt(e.target.value))}
-              className="w-full p-2 border rounded"
-            >
-              <option value="">All Clients</option>
-              {clients.map(client => (
-                <option key={client.id} value={client.id}>
-                  {client.firstName} {client.lastName}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        
-        {filteredSessions.length === 0 ? (
-          <div className="text-center py-8 bg-gray-50 rounded">
-            <p className="text-gray-500">No sessions found with the current filters.</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full bg-white">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4 text-left">Date</th>
-                  <th className="py-2 px-4 text-left">Time</th>
-                  <th className="py-2 px-4 text-left">Title</th>
-                  <th className="py-2 px-4 text-left">Client</th>
-                  <th className="py-2 px-4 text-left">Trainer</th>
-                  <th className="py-2 px-4 text-left">Status</th>
-                  <th className="py-2 px-4 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredSessions.map(session => (
-                  <tr key={session.id} className="border-t">
-                    <td className="py-2 px-4">{format(new Date(session.date), 'MMM d, yyyy')}</td>
-                    <td className="py-2 px-4">{session.startTime}</td>
-                    <td className="py-2 px-4">{session.title}</td>
-                    <td className="py-2 px-4">{getClientName(session.clientId)}</td>
-                    <td className="py-2 px-4">{getTrainerName(session.trainerId)}</td>
-                    <td className="py-2 px-4">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        session.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        session.status === 'cancelled' ? 'bg-red-100 text-red-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-                      </span>
-                    </td>
-                    <td className="py-2 px-4">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => {
-                            setSelectedDay(new Date(session.date));
-                            setView('details');
-                          }}
-                          className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 text-xs"
-                        >
-                          View
-                        </button>
-                        {session.status === 'scheduled' && (
-                          <>
-                            <button
-                              onClick={() => handleEditSession(session)}
-                              className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleCancelSession(session.id)}
-                              className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-xs"
-                            >
-                              Cancel
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        
-        <div className="flex justify-end mt-4">
-          <button
-            onClick={() => {
-              setSelectedSession(null);
-              setFormData({
-                ...formData,
-                date: format(new Date(), 'yyyy-MM-dd')
-              });
-              setView('form');
-            }}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            New Session
-          </button>
-        </div>
-      </div>
-    );
-  };
-
-  const renderFormView = () => {
-    return (
-      <div className="form-view">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">
-            {selectedSession ? 'Edit Session' : 'Create New Session'}
-          </h2>
-          <button
-            onClick={() => setView(selectedSession ? 'details' : 'calendar')}
-            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-          >
-            Cancel
-          </button>
-        </div>
-        
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1">Title</label>
-              <input
-                type="text"
-                name="title"
-                value={formData.title}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-                placeholder="Session Title"
-              />
-            </div>
-            
-            <div>
-              <label className="block mb-1">Date</label>
-              <input
-                type="date"
-                name="date"
-                value={formData.date}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              />
-            </div>
-            
-            <div>
-              <label className="block mb-1">Start Time</label>
-              <select
-                name="startTime"
-                value={formData.startTime}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              >
-                {getTimeSlots().map((time) => (
-                  <option key={time} value={time}>{time}</option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-1">Duration (minutes)</label>
-              <select
-                name="duration"
-                value={formData.duration}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              >
-                <option value="30">30 minutes</option>
-                <option value="45">45 minutes</option>
-                <option value="60">60 minutes</option>
-                <option value="90">90 minutes</option>
-                <option value="120">120 minutes</option>
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-1">Client</label>
-              <select
-                name="clientId"
-                value={formData.clientId}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              >
-                <option value="">Select Client</option>
-                {clients.map(client => (
-                  <option key={client.id} value={client.id}>
-                    {client.firstName} {client.lastName}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-1">Trainer</label>
-              <select
-                name="trainerId"
-                value={formData.trainerId}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              >
-                <option value="">Select Trainer</option>
-                {trainers.map(trainer => (
-                  <option key={trainer.id} value={trainer.id}>
-                    {trainer.firstName} {trainer.lastName}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-1">Package (Optional)</label>
-              <select
-                name="packageId"
-                value={formData.packageId}
-                onChange={handleInputChange}
-                className="w-full p-2 border rounded"
-              >
-                <option value="">No Package</option>
-                {packages.map(pkg => (
-                  <option key={pkg.id} value={pkg.id}>
-                    {pkg.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div>
-              <label className="block mb-1">Status</label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                required
-                className="w-full p-2 border rounded"
-              >
-                <option value="scheduled">Scheduled</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </div>
-          </div>
-          
-          <div className="mt-4">
-            <label className="block mb-1">Notes</label>
-            <textarea
-              name="notes"
-              value={formData.notes}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-              rows="4"
-              placeholder="Session notes, client goals, exercises, etc."
-            />
-          </div>
-          
-          <div className="mt-6 flex justify-end space-x-2">
-            <button
-              type="button"
-              onClick={() => setView(selectedSession ? 'details' : 'calendar')}
-              className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Saving...' : (selectedSession ? 'Update Session' : 'Create Session')}
-            </button>
-          </div>
-        </form>
-      </div>
-    );
-  };
-
-  // Loading state
-  if (isLoading && (sessions.length === 0 || trainers.length === 0 || clients.length === 0)) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-blue-500 border-t-transparent"></div>
-          <p className="mt-2">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Render component based on current view
-  return (
-    <div className="personal-training-manager">
-      <h1 className="text-2xl font-bold mb-6">Personal Training Session Management</h1>
-      
-      {view === 'calendar' && renderCalendarView()}
-      {view === 'details' && renderDayDetailView()}
-      {view === 'list' && renderListView()}
-      {view === 'form' && renderFormView()}
-    </div>
-  );
-}
+export default PersonalTrainingBooking;
