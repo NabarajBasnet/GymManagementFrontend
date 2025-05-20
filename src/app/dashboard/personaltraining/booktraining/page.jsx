@@ -299,11 +299,25 @@ const PersonalTrainingBooking = () => {
   });
   const { packages = [] } = packagesData || {};
 
+
+
+  // Debounce search trainings
+  const [serachTraining, setSearchTraining] = useState('');
+  const [debouncedSearchTraining, setDebouncedSearchTraining] = useState('');
+
+  useEffect(()=>{
+    const searchTrainingTimerId = setTimeout(()=>{
+      setDebouncedSearchTraining(serachTraining);
+    },300);
+    return ()=>clearTimeout(searchTrainingTimerId);
+  },[serachTraining]);
+
+
   // Get all personal training bookings
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
-    const [, page, status, paymentStatus] = queryKey;
+    const [, page, status, paymentStatus, search] = queryKey;
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -314,7 +328,7 @@ const PersonalTrainingBooking = () => {
   };
 
   const { data: personalTrainingBookingsData, isLoading: personalTrainingBookingsLoading } = useQuery({
-    queryKey: ['personalTrainingBookings', currentPage, status, paymentStatus],
+    queryKey: ['personalTrainingBookings', currentPage, status, paymentStatus, debouncedSearchTraining],
     queryFn: getAllPersonalTrainingBookings
   });
   const { personalTrainings = [], totalPersonalTrainings, totalPages } = personalTrainingBookingsData || {};
@@ -471,8 +485,8 @@ const PersonalTrainingBooking = () => {
                 <div>
                   <Label htmlFor="search">Search</Label>
                   <Input
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    value={serachTraining}
+                    onChange={(e) => setSearchTraining(e.target.value)}
                     id="search"
                     placeholder="Search here..."
                   />
