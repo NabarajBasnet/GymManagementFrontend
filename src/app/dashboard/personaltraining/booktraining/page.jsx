@@ -6,7 +6,7 @@ import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
-import { FiChevronRight, FiTrash2, FiEdit, FiEye,FiSearch, FiPlus, FiX,FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiEye,FiSearch, FiPlus, FiX,FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave, FiRefreshCw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -61,6 +61,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm, Controller } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
+import { ContactlessOutlined } from '@mui/icons-material';
 
 const PersonalTrainingBooking = () => {
 
@@ -85,6 +86,24 @@ const PersonalTrainingBooking = () => {
         const [search, setSearch] = useState('');
         const [status, setStatus] = useState('');
         const [debouncedSearch, setDebouncedSearch] = useState('');
+
+        // Form States and data
+        const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
+        const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
+        const [isEndDateAuto, setIsEndDateAuto] = useState(true);
+        
+        // Auto adjust end date
+        const [selectedPackage, setSelectedPackage] = useState(null);
+        const [packageId, setPackageId] = useState('');
+
+        useEffect(() => {
+            if (startDate && selectedPackage?.duration && isEndDateAuto) {
+                const start = new Date(startDate);
+                const end = new Date(start);
+                end.setDate(end.getDate() + selectedPackage.duration);
+                setEndDate(end.toISOString().split('T')[0]);
+            }
+        }, [startDate, selectedPackage, isEndDateAuto]);
 
         // Book Training Function
         const onSubmit = (data) => {
@@ -601,7 +620,7 @@ const PersonalTrainingBooking = () => {
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
+                          </div>
                           </div>
                           <div>
                           <div className='space-y-1.5'>
@@ -666,13 +685,12 @@ const PersonalTrainingBooking = () => {
                                                 </div>
                                             )}
                                         </div>
-                                    </div>
+                          </div>
                           </div>
                         </div>
 
                         {/* Second Row */}
                         <div className='grid grid-cols-2 gap-4'>
-                          <div>
                             <div className='space-y-1.5'>
                                           <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Package</Label>
                                           <div ref={packageSearchRef} className="relative">
@@ -716,6 +734,7 @@ const PersonalTrainingBooking = () => {
                                                               .map((pkg) => (
                                                                   <div
                                                                       onClick={() => {
+                                                                          setSelectedPackage(pkg);
                                                                           setPackageName(pkg.packagename);
                                                                           setPackageSearchQuery(pkg.packagename);
                                                                           setPackageId(pkg._id);
@@ -734,7 +753,7 @@ const PersonalTrainingBooking = () => {
                                               )}
                                           </div>
                             </div>
-                          </div>
+                         
                           <div>
                             <Label htmlFor="address">Status</Label>
                             <Select>
@@ -760,11 +779,47 @@ const PersonalTrainingBooking = () => {
                         <div className='grid grid-cols-2 gap-4'>
                           <div>
                             <Label htmlFor="startDate">Start Date</Label>
-                            <Input id="startDate" className="p-6" type="date" />
+                            <Input
+                              value={startDate}
+                              onChange={(e) => setStartDate(e.target.value)}
+                              id="startDate" 
+                              className="p-6" 
+                              type="date" 
+                            />
                           </div>
                           <div>
                             <Label htmlFor="endDate">End Date</Label>
-                            <Input id="endDate" className="p-6" type="date" />
+                            <div className="flex items-center gap-2">
+                              <Input 
+                                value={endDate}
+                                onChange={(e) => {
+                                  setEndDate(e.target.value);
+                                  setIsEndDateAuto(false);
+                                }}
+                                id="endDate" 
+                                className="p-6" 
+                                type="date" 
+                              />
+                              {!isEndDateAuto && (
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setIsEndDateAuto(true);
+                                    if (startDate && selectedPackage?.duration) {
+                                      const start = new Date(startDate);
+                                      const end = new Date(start);
+                                      end.setDate(end.getDate() + selectedPackage.duration);
+                                      setEndDate(end.toISOString().split('T')[0]);
+                                    }
+                                  }}
+                                  className="h-10"
+                                >
+                                  <FiRefreshCw className="h-4 w-4" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
                         </div>
 
