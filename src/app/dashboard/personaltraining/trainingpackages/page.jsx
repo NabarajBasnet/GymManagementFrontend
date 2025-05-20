@@ -408,7 +408,7 @@ const CreatePersonalTrainingPackages = () => {
                 <CardHeader>
                     <CardTitle>Current Packages</CardTitle>
                     <p className="text-xs font-medium text-gray-600">
-                        Create and manage you personal training packages.
+                        This table shows all the packages that are currently available.
                     </p>
                 </CardHeader>
                 <CardContent>
@@ -519,7 +519,10 @@ const CreatePersonalTrainingPackages = () => {
                         </>
                     )}
                        {/* Pagination */}
-                       <div className="w-full flex justify-center my-4 lg:justify-end">
+                       <div className="w-full md:flex justify-center my-4 lg:justify-between">
+                       <p className="text-xs font-medium text-gray-600">
+                        Showing {packages?.length || 0} packages out of {totalPackages || 0}
+                    </p>
                             <Pagination
                                 total={totalPages}
                                 page={currentPage}
