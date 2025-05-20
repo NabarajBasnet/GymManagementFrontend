@@ -8,51 +8,16 @@ import { useState, useEffect, useRef } from "react";
 import { FiChevronRight, FiTrash2, FiEdit, FiLoader, FiEye, FiSearch, FiPlus, FiX, FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave, FiRefreshCw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useForm, Controller } from "react-hook-form";
-import Pagination from "@/components/ui/CustomPagination";
-import { useUser } from '@/components/Providers/LoggedInUserProvider';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+
+// UI Components
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
+  CardFooter,
+  CardDescription
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
 import {
   Table,
   TableBody,
@@ -61,17 +26,39 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Button } from '@/components/ui/button';
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge";
 import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogTrigger,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useForm, Controller } from "react-hook-form";
+import Pagination from "@/components/ui/CustomPagination";
+import { useUser } from '@/components/Providers/LoggedInUserProvider';
 
 const PersonalTrainingBooking = () => {
 
@@ -84,6 +71,7 @@ const PersonalTrainingBooking = () => {
   // Custom Hooks
   const {user} = useUser();
   const loggedInUser = user?.user;
+  console.log(loggedInUser);
 
   // React Hook Form
   const {
@@ -91,8 +79,7 @@ const PersonalTrainingBooking = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    control,
-    setValue
+    control
   } = useForm();
 
   // Pagination, filters and search
@@ -124,24 +111,14 @@ const PersonalTrainingBooking = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // Billing states
-  const [searchBilling, setSearchBilling] = useState('');
-  const [billingStatus, setBillingStatus] = useState('');
-  const [billingPaymentStatus, setBillingPaymentStatus] = useState('');
-  const [showCreateBillingModal, setShowCreateBillingModal] = useState(false);
-  const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
-  const [selectedBilling, setSelectedBilling] = useState(null);
-  const [isLoadingBillings, setIsLoadingBillings] = useState(false);
-  const [billings, setBillings] = useState([]);
-  const [totalBillings, setTotalBillings] = useState(0);
-  const [billingTotalPages, setBillingTotalPages] = useState(1);
-
   // Calculate total amount when price or discount changes
   
   useEffect(() => {
-    const total = packagePrice - (Number(discount) || 0);
-    setTotalAmount(total);
-  }, [packagePrice, discount]);
+    if (!isEditMode) {
+      const total = packagePrice - (Number(discount) || 0);
+      setTotalAmount(total);
+    }
+  }, [packagePrice, discount, isEditMode]);
 
   // Auto adjust end date
   useEffect(() => {
@@ -207,7 +184,7 @@ const PersonalTrainingBooking = () => {
 
   // Modify the onSubmit function to handle both create and update
   const onSubmit = async (data) => {
-    const { paidAmount, discount, registerBy } = data;
+    const { paidAmount, discount, totalAmount, registerBy } = data;
 
     const finalData = {
       sendEmailNotification,
@@ -529,182 +506,6 @@ const PersonalTrainingBooking = () => {
         return 'border-none text-gray-800 bg-transparent';
     }
   };
-
-  // Get all billings
-  const getAllBillings = async () => {
-    try {
-      setIsLoadingBillings(true);
-      const response = await fetch(
-        `http://localhost:3000/api/personaltraining/billing?page=${currentPage}&limit=${limit}&status=${billingStatus}&paymentStatus=${billingPaymentStatus}&search=${searchBilling}`
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setBillings(data.billings);
-        setTotalBillings(data.totalBillings);
-        setBillingTotalPages(data.totalPages);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching billings:', error);
-      toast.error('Failed to fetch billings');
-    } finally {
-      setIsLoadingBillings(false);
-    }
-  };
-
-  // Create new billing
-  const handleCreateBilling = async (formData) => {
-    try {
-      const response = await fetch('http://localhost:3000/api/personaltraining/billing', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          personalTrainingId: formData.personalTrainingId,
-          dueDate: formData.dueDate,
-          paymentMethod: formData.paymentMethod,
-          status: formData.status,
-          tax: Number(formData.tax) || 0,
-          discount: Number(formData.discount) || 0,
-          notes: formData.notes
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.message);
-        setShowCreateBillingModal(false);
-        setSelectedBilling(null);
-        reset(); // Reset form
-        getAllBillings(); // Refresh billing list
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error creating billing:', error);
-      toast.error('Failed to create billing');
-    }
-  };
-
-  // Update billing
-  const handleUpdateBilling = async (id, formData) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/billing/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          dueDate: formData.dueDate,
-          paymentMethod: formData.paymentMethod,
-          status: formData.status,
-          tax: Number(formData.tax) || 0,
-          discount: Number(formData.discount) || 0,
-          notes: formData.notes
-        }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.message);
-        setShowCreateBillingModal(false);
-        setSelectedBilling(null);
-        reset(); // Reset form
-        getAllBillings(); // Refresh billing list
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error updating billing:', error);
-      toast.error('Failed to update billing');
-    }
-  };
-
-  // Add payment
-  const handleAddPayment = async (id, paymentData) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/billing/${id}/payment`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(paymentData),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.message);
-        setShowAddPaymentModal(false);
-        getAllBillings();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error adding payment:', error);
-      toast.error('Failed to add payment');
-    }
-  };
-
-  // Delete billing
-  const handleDeleteBilling = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/billing/${id}`, {
-        method: 'DELETE',
-      });
-      const data = await response.json();
-      if (response.ok) {
-        toast.success(data.message);
-        getAllBillings();
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error deleting billing:', error);
-      toast.error('Failed to delete billing');
-    }
-  };
-
-  // View billing details
-  const handleViewBilling = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/billing/${id}`);
-      const data = await response.json();
-      if (response.ok) {
-        setSelectedBilling(data.billing);
-        setShowCreateBillingModal(true);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching billing details:', error);
-      toast.error('Failed to fetch billing details');
-    }
-  };
-
-  // Edit billing
-  const handleEditBilling = async (id) => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/billing/${id}`);
-      const data = await response.json();
-      if (response.ok) {
-        setSelectedBilling(data.billing);
-        setShowCreateBillingModal(true);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.error('Error fetching billing details:', error);
-      toast.error('Failed to fetch billing details');
-    }
-  };
-
-  // Fetch billings when filters change
-  useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      getAllBillings();
-    }, 300);
-
-    return () => clearTimeout(debounceTimer);
-  }, [currentPage, billingStatus, billingPaymentStatus, searchBilling]);
 
   return (
     <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -1414,22 +1215,28 @@ const PersonalTrainingBooking = () => {
                         {...register("paidAmount", { required: "Paid Amount is required" })}
                         placeholder='Paid amount'
                         className="p-6"
-                        type="text" />
+                        type="number" />
                     </div>
                     <div>
                       <Label htmlFor="discount">Discount Amount</Label>
-                      <Input id="discount" {...register("discount")} placeholder='Discount amount' className="p-6" type="text" />
+                      <Input 
+                        id="discount" 
+                        {...register("discount")} 
+                        placeholder='Discount amount' 
+                        className="p-6" 
+                        type="number" />
                     </div>
                   </div>
 
                   <div className='grid grid-cols-2 gap-4'>
                     <div>
                       <Label htmlFor="totalAmount">Total Amount</Label>
-                      <Input id="totalAmount"
-                        value={packagePrice - (Number(discount) || 0)}
+                      <Input 
+                        id="totalAmount"
+                        {...register("totalAmount", { required: "Total Amount is required" })}
                         placeholder='Total amount'
-                        readOnly
-                        className="p-6" type="text" />
+                        className="p-6" 
+                        type="number" />
                     </div>
                     <div>
                       <Label htmlFor="user">Register By</Label>
@@ -1503,211 +1310,8 @@ const PersonalTrainingBooking = () => {
         </TabsContent>
 
         <TabsContent value="Billing">
-          <div className="space-y-4">
-            {/* Filter Section */}
-            <Card className="my-2">
-              <CardContent className="p-4">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <div>
-                    <Label htmlFor="search">Search</Label>
-                    <Input
-                      value={searchBilling}
-                      onChange={(e) => setSearchBilling(e.target.value)}
-                      id="search"
-                      placeholder="Search by invoice number, client..."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="status">Status</Label>
-                    <Select onValueChange={(value) => setBillingStatus(value)}>
-                      <SelectTrigger className="rounded-md">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="Active">Active</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="paymentStatus">Payment Status</Label>
-                    <Select onValueChange={(value) => setBillingPaymentStatus(value)}>
-                      <SelectTrigger className="rounded-md">
-                        <SelectValue placeholder="Filter by payment status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Partial">Partial</SelectItem>
-                        <SelectItem value="Paid">Paid</SelectItem>
-                        <SelectItem value="Overdue">Overdue</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-end">
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => {
-                        setSearchBilling('');
-                        setBillingStatus('');
-                        setBillingPaymentStatus('');
-                      }}
-                    >
-                      <CiUndo className="h-5 w-5 mr-2" />
-                      Reset Filters
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Billing List */}
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle className="text-2xl font-bold">All Billings</CardTitle>
-                    <CardDescription className="text-xs text-gray-500 font-medium">
-                      Showing {billings?.length} billings out of {totalBillings} total billings
-                    </CardDescription>
-                  </div>
-                  <Button
-                    onClick={() => setShowCreateBillingModal(true)}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    <FiPlus className="h-4 w-4 mr-2" />
-                    Create Invoice
-                  </Button>
-                </div>
-              </CardHeader>
-
-              <CardContent>
-                <div className="overflow-x-auto rounded-lg border">
-                  {isLoadingBillings ? (
-                    <Loader />
-                  ) : (
-                    <>
-                      {Array.isArray(billings) && billings.length > 0 ? (
-                        <Table>
-                          <TableHeader className="bg-gray-50">
-                            <TableRow>
-                              <TableHead>Invoice Number</TableHead>
-                              <TableHead>Client</TableHead>
-                              <TableHead>Trainer</TableHead>
-                              <TableHead>Amount</TableHead>
-                              <TableHead>Due Date</TableHead>
-                              <TableHead>Status</TableHead>
-                              <TableHead>Payment Status</TableHead>
-                              <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {billings.map((billing) => (
-                              <TableRow key={billing._id}>
-                                <TableCell>{billing.invoiceNumber}</TableCell>
-                                <TableCell>{billing.personalTrainingId.memberId.fullName}</TableCell>
-                                <TableCell>{billing.personalTrainingId.trainerId.fullName}</TableCell>
-                                <TableCell>${billing.totalAmount}</TableCell>
-                                <TableCell>{new Date(billing.dueDate).toLocaleDateString()}</TableCell>
-                                <TableCell>
-                                  <Badge variant="outline" className={getStatusColor(billing.status)}>
-                                    {billing.status}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell>
-                                  <Badge className={getPaymentStatusColor(billing.paymentStatus)}>
-                                    {billing.paymentStatus}
-                                  </Badge>
-                                </TableCell>
-                                <TableCell className="text-right space-x-1">
-                                  <Button
-                                    onClick={() => handleViewBilling(billing._id)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <FiEye className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    onClick={() => handleEditBilling(billing._id)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0"
-                                  >
-                                    <FiEdit className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    onClick={() => handleAddPayment(billing._id)}
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0 text-green-600"
-                                  >
-                                    <FiCreditCard className="h-4 w-4" />
-                                  </Button>
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
-                                      >
-                                        <FiTrash2 className="h-4 w-4" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          This action cannot be undone. This will permanently delete the billing record.
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() => handleDeleteBilling(billing._id)}
-                                          className="bg-red-600 hover:bg-red-700"
-                                        >
-                                          Continue
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      ) : (
-                        <div className="flex justify-center items-center h-full py-8">
-                          <p className="text-gray-500 text-sm font-medium">No billings found</p>
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter>
-                <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
-                  <p className="text-sm text-gray-600">
-                    Showing <span className="font-medium">{billings?.length}</span> of{' '}
-                    <span className="font-medium">{totalBillings}</span> billings
-                  </p>
-                  <Pagination
-                    total={billingTotalPages}
-                    page={currentPage}
-                    onChange={setCurrentPage}
-                    withEdges={true}
-                    siblings={1}
-                    boundaries={1}
-                    className="justify-center sm:justify-end"
-                  />
-                </div>
-              </CardFooter>
-            </Card>
+          <div className="p-4">
+            <h2>Billing Content</h2>
           </div>
         </TabsContent>
 
@@ -1735,215 +1339,6 @@ const PersonalTrainingBooking = () => {
           </div>
         </TabsContent>
       </Tabs>
-
-      {/* Create/Edit Billing Modal */}
-      <Dialog open={showCreateBillingModal} onOpenChange={(open) => {
-        if (!open) {
-          setSelectedBilling(null);
-          reset();
-        }
-        setShowCreateBillingModal(open);
-      }}>
-        <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>{selectedBilling ? 'Edit Billing' : 'Create New Billing'}</DialogTitle>
-            <DialogDescription>
-              {selectedBilling ? 'Update the billing information below.' : 'Fill in the billing information below.'}
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit((data) => {
-            if (selectedBilling) {
-              handleUpdateBilling(selectedBilling._id, data);
-            } else {
-              handleCreateBilling(data);
-            }
-          })}>
-            <div className="grid grid-cols-2 gap-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="personalTrainingId">Select Training</Label>
-                <Select
-                  name="personalTrainingId"
-                  onValueChange={(value) => setValue('personalTrainingId', value)}
-                  defaultValue={selectedBilling?.personalTrainingId?._id}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select training" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {personalTrainings.map((training) => (
-                      <SelectItem key={training._id} value={training._id}>
-                        {training.memberId.fullName} - {training.packageId.packagename}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="dueDate">Due Date</Label>
-                <Input
-                  type="date"
-                  id="dueDate"
-                  {...register('dueDate', { required: 'Due date is required' })}
-                  defaultValue={selectedBilling?.dueDate?.split('T')[0]}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="paymentMethod">Payment Method</Label>
-                <Select
-                  name="paymentMethod"
-                  onValueChange={(value) => setValue('paymentMethod', value)}
-                  defaultValue={selectedBilling?.paymentMethod}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select payment method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Cash">Cash</SelectItem>
-                    <SelectItem value="Credit Card">Credit Card</SelectItem>
-                    <SelectItem value="Debit Card">Debit Card</SelectItem>
-                    <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
-                    <SelectItem value="Online Payment">Online Payment</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select
-                  name="status"
-                  onValueChange={(value) => setValue('status', value)}
-                  defaultValue={selectedBilling?.status}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Active">Active</SelectItem>
-                    <SelectItem value="Cancelled">Cancelled</SelectItem>
-                    <SelectItem value="Completed">Completed</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="tax">Tax (%)</Label>
-                <Input
-                  type="number"
-                  id="tax"
-                  {...register('tax', { required: 'Tax is required' })}
-                  defaultValue={selectedBilling?.tax || 0}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="discount">Discount</Label>
-                <Input
-                  type="number"
-                  id="discount"
-                  {...register('discount', { required: 'Discount is required' })}
-                  defaultValue={selectedBilling?.discount || 0}
-                />
-              </div>
-
-              <div className="col-span-2 space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  {...register('notes')}
-                  defaultValue={selectedBilling?.notes}
-                  placeholder="Add any additional notes here..."
-                />
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => {
-                setShowCreateBillingModal(false);
-                setSelectedBilling(null);
-                reset();
-              }}>
-                Cancel
-              </Button>
-              <Button type="submit">
-                {selectedBilling ? 'Update Billing' : 'Create Billing'}
-              </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-
-      {/* Add Payment Modal */}
-      <Dialog open={showAddPaymentModal} onOpenChange={setShowAddPaymentModal}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Add Payment</DialogTitle>
-            <DialogDescription>
-              Add a new payment for the selected billing.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit((data) => {
-            handleAddPayment(selectedBilling._id, data);
-          })}>
-            <div className="space-y-4 py-4">
-              <div className="space-y-2">
-                <Label htmlFor="amount">Amount</Label>
-                <Input
-                  type="number"
-                  id="amount"
-                  {...register('amount', { required: 'Amount is required' })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="paymentMethod">Payment Method</Label>
-                <Select
-                  name="paymentMethod"
-                  onValueChange={(value) => setValue('paymentMethod', value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select payment method" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Cash">Cash</SelectItem>
-                    <SelectItem value="Credit Card">Credit Card</SelectItem>
-                    <SelectItem value="Debit Card">Debit Card</SelectItem>
-                    <SelectItem value="Bank Transfer">Bank Transfer</SelectItem>
-                    <SelectItem value="Online Payment">Online Payment</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="transactionId">Transaction ID</Label>
-                <Input
-                  type="text"
-                  id="transactionId"
-                  {...register('transactionId')}
-                  placeholder="Enter transaction ID (optional)"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  {...register('notes')}
-                  placeholder="Add any payment notes here..."
-                />
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={() => setShowAddPaymentModal(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Add Payment</Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
 
     </div>
   );
