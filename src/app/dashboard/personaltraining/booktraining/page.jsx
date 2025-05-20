@@ -1,12 +1,11 @@
 'use client';
 
-import { CalendarDays } from 'lucide-react';
 import { ArrowUpDown } from 'lucide-react';
 import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect, useRef } from "react";
-import { FiChevronRight, FiTrash2, FiEdit, FiEye,FiSearch, FiPlus, FiX,FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave, FiRefreshCw } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit,FiLoader, FiEye,FiSearch, FiPlus, FiX,FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave, FiRefreshCw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -28,12 +27,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {Switch} from "@/components/ui/switch";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -61,7 +58,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm, Controller } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
-import { ContactlessOutlined } from '@mui/icons-material';
 
 const PersonalTrainingBooking = () => {
 
@@ -94,20 +90,98 @@ const PersonalTrainingBooking = () => {
         
         // Auto adjust end date
         const [selectedPackage, setSelectedPackage] = useState(null);
+        const [packagePrice, setPackagePrice] = useState(0);
         const [packageId, setPackageId] = useState('');
+        const [memberId, setMemberId] = useState('');
+        const [trainerId, setTrainerId] = useState('');
+        const [branchId, setBranchId] = useState('');
+        const [packageStatus, setPackageStatus] = useState('Active');
+        const [paidAmount, setPaidAmount] = useState('');
+        const [discount, setDiscount] = useState('');
+        const [totalAmount, setTotalAmount] = useState('');
+        const [sendEmailNotification, setSendEmailNotification] = useState(false);
+        const [sendPaymentInfo, setSendPaymentInfo] = useState(false);
+        const [paymentStatus, setPaymentStatus] = useState('');
 
+        // Calculate total amount when price or discount changes
+        useEffect(() => {
+            const total = packagePrice - (Number(discount) || 0);
+            setTotalAmount(total);
+        }, [packagePrice, discount]);
+
+        // Auto adjust end date
         useEffect(() => {
             if (startDate && selectedPackage?.duration && isEndDateAuto) {
                 const start = new Date(startDate);
                 const end = new Date(start);
                 end.setDate(end.getDate() + selectedPackage.duration);
                 setEndDate(end.toISOString().split('T')[0]);
+                setPackagePrice(selectedPackage.price);
             }
         }, [startDate, selectedPackage, isEndDateAuto]);
 
         // Book Training Function
-        const onSubmit = (data) => {
-            console.log(data);
+        const onSubmit = async(data) => {
+          const {paidAmount, discount, registerBy} = data;
+
+          const finalData = {
+            sendEmailNotification,
+            sendPaymentInfo,
+            trainerId,
+            memberId,
+            packageId,
+            packageStatus,
+            startDate,
+            endDate,
+            paidAmount,
+            discount,
+            totalAmount,
+            registerBy,
+            branchId,
+            paymentStatus
+          }
+
+          try {
+            const response = await fetch(`http://localhost:3000/api/personaltraining`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(finalData)
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+              toast.success(responseBody.message);
+              reset();
+              setSelectedPackage(null);
+              setPackagePrice(0);
+              setMemberName('');
+              setStaffName('');
+              setPackageName('');
+              setMemberSearchQuery('');
+              setStaffSearchQuery('');
+              setPackageSearchQuery('');
+              setPaymentStatus('');
+              setPackageStatus('');
+              setSendEmailNotification(false);
+              setSendPaymentInfo(false);
+              setBranchId('');
+              setStartDate('');
+              setEndDate('');
+              setPaidAmount('');
+              setDiscount('');
+              setTotalAmount('');
+              setPackageId('');
+              setMemberId('');
+              setTrainerId('');
+              setBranchId('');
+            } else {
+              toast.error(responseBody.message);
+            }
+          } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+          }
         }
 
     // Debounce search
@@ -177,17 +251,18 @@ const PersonalTrainingBooking = () => {
       } catch (error) {
           console.log("Error: ", error);
           toast.error("Failed to fetch staffs");
+          return { staffs: [] };
       }
-  };
+    };
 
-  const { data: trainersData, isLoading: trainersLoading } = useQuery({
-      queryKey: ['trainers'],
-      queryFn: getAllTrainers
-  });
-  const { staffs } = trainersData || {};
+    const { data: trainersData, isLoading: staffsLoading } = useQuery({
+        queryKey: ['trainers'],
+        queryFn: getAllTrainers
+    });
+    const { staffs = [] } = trainersData || {};
 
-     // Get all members
-     const getAllMembers = async () => {
+    // Get all members
+    const getAllMembers = async () => {
       try {
           const response = await fetch(`http://localhost:3000/api/members`);
           const responseBody = await response.json();
@@ -195,32 +270,58 @@ const PersonalTrainingBooking = () => {
       } catch (error) {
           console.log("Error: ", error);
           toast.error("Failed to fetch members");
+          return { members: [] };
       }
-  };
+    };
 
-  const { data: membersData, isLoading: membersLoading } = useQuery({
-      queryKey: ['members'],
-      queryFn: getAllMembers
-  });
-  const { members } = membersData || {};
+    const { data: membersData, isLoading: membersLoading } = useQuery({
+        queryKey: ['members'],
+        queryFn: getAllMembers
+    });
+    const { members = [] } = membersData || {};
 
-  // Get all packages
-  const getAllPackages = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
-      const responseBody = await response.json();
-      return responseBody;  
-    } catch (error) {
-      console.log("Error: ", error);
-      toast.error("Failed to fetch packages");
-    }
-  };
+    // Get all packages
+    const getAllPackages = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
+        const responseBody = await response.json();
+        return responseBody;  
+      } catch (error) {
+        console.log("Error: ", error);
+        toast.error("Failed to fetch packages");
+        return { packages: [] };
+      }
+    };
 
-  const { data: packagesData, isLoading: packagesLoading } = useQuery({
-    queryKey: ['packages'],
-    queryFn: getAllPackages
-  });
-  const { packages } = packagesData || {};
+    const { data: packagesData, isLoading: packagesLoading } = useQuery({
+      queryKey: ['packages'],
+      queryFn: getAllPackages
+    });
+    const { packages = [] } = packagesData || {};
+
+
+
+    // Get all personal training bookings
+    const getAllPersonalTrainingBookings = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/personaltraining`);
+        const responseBody = await response.json();
+        return responseBody;
+      } catch (error) {
+        console.log("Error: ", error);
+        toast.error("Failed to fetch personal training bookings");
+        return { personalTrainingBookings: [] };
+      }
+    };
+    
+    const { data: personalTrainingBookingsData, isLoading: personalTrainingBookingsLoading } = useQuery({
+      queryKey: ['personalTrainingBookings'],
+      queryFn: getAllPersonalTrainingBookings
+    });
+    const { personalTrainings = [] } = personalTrainingBookingsData || {};
+
+    console.log(personalTrainings);  
+
 
      return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -533,7 +634,11 @@ const PersonalTrainingBooking = () => {
                             <h1 className='text-lg font-bold'>Email Notification</h1>
                             <p className='text-xs font-medium text-gray-500'>Send email notifications to the client when a training session is booked.</p>
                           </div>
-                          <Switch className="bg-green-600 text-green-600" />
+                          <Switch 
+                          checked={sendEmailNotification}
+                          onCheckedChange={setSendEmailNotification}
+                          className="bg-green-600 text-green-600" 
+                          />
                         </div>
                       </div>
 
@@ -543,7 +648,11 @@ const PersonalTrainingBooking = () => {
                             <h1 className='text-lg font-bold'>Send Payment Information</h1>
                             <p className='text-xs font-medium text-gray-500'>Send payment information to the client when a training session is booked.</p>
                           </div>
-                          <Switch className="bg-green-600 text-green-600" />
+                          <Switch 
+                          checked={sendPaymentInfo}
+                          onCheckedChange={setSendPaymentInfo}
+                          className="bg-green-600 text-green-600" 
+                          />
                         </div>
                       </div>
                   </CardContent>
@@ -553,13 +662,13 @@ const PersonalTrainingBooking = () => {
 
                 <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
                   <CardContent className="space-y-2">
-                      <form className="px-2 space-y-4 py-6">
+                      <form onSubmit={handleSubmit(onSubmit)} className="px-2 space-y-4 py-6">
 
                       {/* First Row */}
                         <div className='grid grid-cols-2 gap-4'>
                           <div>
                           <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
+                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Trainer</Label>
                                         <div ref={staffSearchRef} className="relative">
                                             <Controller
                                                 name="staffName"
@@ -605,7 +714,7 @@ const PersonalTrainingBooking = () => {
                                                                     onClick={() => {
                                                                         setStaffName(staff.fullName);
                                                                         setStaffSearchQuery(staff.fullName);
-                                                                        setStaffId(staff._id);
+                                                                        setTrainerId(staff._id);
                                                                         setRenderStaffDropdown(false);
                                                                     }}
                                                                     className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
@@ -622,12 +731,11 @@ const PersonalTrainingBooking = () => {
                                         </div>
                           </div>
                           </div>
-                          <div>
                           <div className='space-y-1.5'>
-                                        <Label className="block text-sm font-medium text-gray-700">Issued To</Label>
-                                        <div ref={memberSearchRef} className="relative">
-                                            <Controller
-                                                name="memberName"
+                              <Label className="block text-sm font-medium text-gray-700">Select Member</Label>
+                                <div ref={memberSearchRef} className="relative">
+                                 <Controller
+                                  name="memberName"
                                                 control={control}
                                                 render={({ field }) => (
                                                     <div className="relative">
@@ -648,8 +756,8 @@ const PersonalTrainingBooking = () => {
                                                             <FiSearch className="h-5 w-5" />
                                                         </div>
                                                     </div>
-                                                )}
-                                            />
+                                  )}
+                                  />
                                             {errors.memberName && (
                                                 <p className="mt-1.5 text-sm font-medium text-red-600">
                                                     {errors.memberName.message}
@@ -685,7 +793,6 @@ const PersonalTrainingBooking = () => {
                                                 </div>
                                             )}
                                         </div>
-                          </div>
                           </div>
                         </div>
 
@@ -726,7 +833,9 @@ const PersonalTrainingBooking = () => {
 
                                               {renderPackageDropdown && (
                                                   <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                                      {packages?.length > 0 ? (
+                                                      {packagesLoading ? (
+                                                          <div className="px-4 py-3 text-sm text-gray-500">Loading packages...</div>
+                                                      ) : packages.length > 0 ? (
                                                           packages
                                                               .filter((pkg) => {
                                                                   return pkg.packagename && pkg.packagename.toLowerCase().includes(packageSearchQuery.toLowerCase());
@@ -743,11 +852,11 @@ const PersonalTrainingBooking = () => {
                                                                       className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                                                       key={pkg._id}
                                                                   >
-                                                                      {pkg.packagename}
+                                                                      {pkg.packagename} - ${pkg.price}
                                                                   </div>
                                                               ))
                                                       ) : (
-                                                          <div className="px-4 py-3 text-sm text-gray-500">{packagesLoading ? 'Loading...' : 'No packages found'}</div>
+                                                          <div className="px-4 py-3 text-sm text-gray-500">No packages found</div>
                                                       )}
                                                   </div>
                                               )}
@@ -756,12 +865,11 @@ const PersonalTrainingBooking = () => {
                          
                           <div>
                             <Label htmlFor="address">Status</Label>
-                            <Select>
+                            <Select onValueChange={(value) => setPackageStatus(value)}>
                                     <SelectTrigger className="rounded-md p-6">
                                         <SelectValue placeholder="Filter by status" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
                                         <SelectItem value="Active">Active</SelectItem>
                                         <SelectItem value="Inactive">Inactive</SelectItem>
                                         <SelectItem value="Cancelled">Cancelled</SelectItem>
@@ -827,19 +935,44 @@ const PersonalTrainingBooking = () => {
                         <div className='grid grid-cols-2 gap-4'>
                           <div>
                             <Label htmlFor="paidAmount">Paid Amount</Label>
-                            <Input id="paidAmount" className="p-6" type="text" />
+                            <Input 
+                            id="paidAmount"
+                             {...register("paidAmount", { required: "Paid Amount is required" })} 
+                             placeholder='Paid amount'
+                             className="p-6" 
+                            type="text" />
                           </div>
                           <div>
                             <Label htmlFor="discount">Discount Amount</Label>
-                            <Input id="discount" className="p-6" type="text" />
+                            <Input id="discount" {...register("discount")} placeholder='Discount amount' className="p-6" type="text" />
                           </div>
                         </div>
 
-                        {/* Fifth Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor="totalAmount">Total Amount</Label>
+                            <Input id="totalAmount" 
+                            value={packagePrice - (Number(discount) || 0)}
+                            placeholder='Total amount'
+                            readOnly
+                            className="p-6" type="text" />
+                          </div>
+                          <div>
+                            <Label htmlFor="user">Register By</Label>
+                            <Input 
+                            id="user" 
+                            className="p-6"
+                            {...register("registerBy", { required: "Register By is required" })}
+                            placeholder='Your name'
+                            type="text" />
+                          </div>
+                        </div>
+
+                        {/* Sixth Row */}
                         <div className='grid grid-cols-2 gap-4'>
                           <div>
                             <Label htmlFor="branch">Branch</Label>
-                            <Select>
+                            <Select onValueChange={(value) => setBranchId(value)}>
                               <SelectTrigger className="rounded-md p-6">
                                 <SelectValue placeholder="Select Branch" />
                               </SelectTrigger>
@@ -853,7 +986,7 @@ const PersonalTrainingBooking = () => {
                           </div>
                           <div>
                             <Label htmlFor="paymentStatus">Payment Status</Label>
-                            <Select>
+                            <Select onValueChange={(value) => setPaymentStatus(value)}>
                               <SelectTrigger className="rounded-md p-6">
                                 <SelectValue placeholder="Select Payment Status" />
                               </SelectTrigger>
@@ -861,6 +994,7 @@ const PersonalTrainingBooking = () => {
                                 <SelectItem value="all">All Payment Status</SelectItem>
                                 <SelectItem value="Full Paid">Full Paid</SelectItem>
                                 <SelectItem value="Partial Paid">Partial Paid</SelectItem>
+                                <SelectItem value="Pending">Pending</SelectItem>
                                 <SelectItem value="Unpaid">Unpaid</SelectItem>
                                 <SelectItem value="Refunded">Refunded</SelectItem>
                                 <SelectItem value="Failed">Failed</SelectItem>
@@ -872,7 +1006,7 @@ const PersonalTrainingBooking = () => {
                         
                         {/* Submit Button */}
                         <div className="flex justify-end">
-                          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6"><FiSave/> Submit & Save</Button>
+                          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6">{isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} {isSubmitting ? 'Submitting...' : 'Submit & Save'}</Button>
                         </div>
                       </form>
                   </CardContent>
