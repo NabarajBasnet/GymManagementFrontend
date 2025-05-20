@@ -83,11 +83,10 @@ const PersonalTrainingBooking = () => {
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
   // Form States and data
+  const [tabValue, setTabValue] = useState('View Bookings');
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [isEndDateAuto, setIsEndDateAuto] = useState(true);
-
-  // Auto adjust end date
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [packagePrice, setPackagePrice] = useState(0);
   const [packageId, setPackageId] = useState('');
@@ -103,6 +102,7 @@ const PersonalTrainingBooking = () => {
   const [paymentStatus, setPaymentStatus] = useState('');
 
   // Calculate total amount when price or discount changes
+  
   useEffect(() => {
     const total = packagePrice - (Number(discount) || 0);
     setTotalAmount(total);
@@ -299,14 +299,12 @@ const PersonalTrainingBooking = () => {
   });
   const { packages = [] } = packagesData || {};
 
-
-
   // Debounce search trainings
   const [serachTraining, setSearchTraining] = useState('');
   const [debouncedSearchTraining, setDebouncedSearchTraining] = useState('');
-      // Sorting States
-      const [sortBy, setSortBy] = useState('');
-      const [sortOrderDesc, setSortOrderDesc] = useState(true);
+  // Sorting States
+  const [sortBy, setSortBy] = useState('');
+  const [sortOrderDesc, setSortOrderDesc] = useState(true);
 
 
   useEffect(()=>{
@@ -400,6 +398,19 @@ const PersonalTrainingBooking = () => {
     }
   };
 
+
+  // Handle edit training
+  const handleEditTraining = (id) => {
+    console.log(id);
+    setTabValue('Register Training');
+    try{
+      
+    }catch(error){
+      console.log("Error: ", error);
+      toast.error("Failed to edit training");
+    };
+  };
+
   return (
     <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
       {/* Breadcrumb with arrows */}
@@ -440,6 +451,7 @@ const PersonalTrainingBooking = () => {
           </div>
           <Button
             className="rounded-sm"
+            onClick={() => setTabValue('Register Training')}
           >
             <FiPlus className="h-4 w-4 mr-2" />
             Book Training
@@ -448,8 +460,8 @@ const PersonalTrainingBooking = () => {
       </div>
 
       {/* Tabs */}
-      <Tabs defaultValue="View Bookings" className="w-full">
-        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-7">
+      <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
+        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-7 border border-gray-300 overflow-y-hidden">
           <TabsTrigger value="View Bookings" className="whitespace-nowrap">
             <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
             <span className="hidden md:inline">View Bookings</span>
@@ -481,7 +493,6 @@ const PersonalTrainingBooking = () => {
         </TabsList>
 
         <TabsContent value="View Bookings">
-
           {/* Filter Section */}
           <Card className="my-2">
             <CardContent className="p-4">
@@ -556,7 +567,7 @@ const PersonalTrainingBooking = () => {
             <CardHeader>
               <CardTitle className="text-2xl font-bold">All Bookings</CardTitle>
               <CardDescription className="text-xs text-gray-500 font-medium">
-                Showing 10 training sessions out of 20 total training sessions
+                Showing {personalTrainings?.length} training sessions out of {totalPersonalTrainings} total training sessions
               </CardDescription>
             </CardHeader>
 
@@ -714,7 +725,9 @@ const PersonalTrainingBooking = () => {
                                 </Badge>
                               </TableCell>
                               <TableCell className="py-3 text-right space-x-1">
-                                <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                <Button 
+                                  onClick={() => handleEditTraining(personalTraining._id)}
+                                variant="ghost" size="sm" className="h-8 w-8 p-0">
                                   <FiEdit className="h-4 w-4" />
                                 </Button>
                                 <AlertDialog>
@@ -760,7 +773,7 @@ const PersonalTrainingBooking = () => {
             <CardFooter>
               <div className="w-full flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p className="text-sm text-gray-600">
-                  Showing <span className="font-medium">{personalTrainings?.length}</span> of <span className="font-medium">{totalPersonalTrainings?.totalPersonalTrainings}</span> training sessions
+                  Showing <span className="font-medium">{personalTrainings?.length}</span> of <span className="font-medium">{totalPersonalTrainings}</span> training sessions
                 </p>
                 <Pagination
                   total={totalPages}
@@ -776,80 +789,145 @@ const PersonalTrainingBooking = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="Register Training" className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2  gap-4">
-          <Card className="rounded-xl w-full lg:w-3/12">
-            <CardHeader>
-              <div className='flex justify-between items-center'>
-                <p className='text-lg font-bold'></p>
-                <Badge variant="outline" className="border-green-200 text-green-800 bg-green-200">
-                  Active
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className='flex flex-col gap-4 justify-center items-center'>
-              <div className='flex justify-center items-center'>
-                <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>NB</h1>
-              </div>
-
-              <div className='flex flex-col mt-4 gap-2'>
-                <div className='flex items-center gap-2'>
-                  <div>
-                    <h1 className='text-lg font-bold'>Email Notification</h1>
-                    <p className='text-xs font-medium text-gray-500'>Send email notifications to the client when a training session is booked.</p>
-                  </div>
-                  <Switch
-                    checked={sendEmailNotification}
-                    onCheckedChange={setSendEmailNotification}
-                    className="bg-green-600 text-green-600"
-                  />
+        <TabsContent value="Register Training">
+          <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
+            <Card className="rounded-xl w-full lg:w-3/12">
+              <CardHeader>
+                <div className='flex justify-between items-center'>
+                  <p className='text-lg font-bold'></p>
+                  <Badge variant="outline" className="border-green-200 text-green-800 bg-green-200">
+                    Active
+                  </Badge>
                 </div>
-              </div>
-
-              <div className='flex flex-col mt-4 gap-2'>
-                <div className='flex items-center gap-2'>
-                  <div>
-                    <h1 className='text-lg font-bold'>Send Payment Information</h1>
-                    <p className='text-xs font-medium text-gray-500'>Send payment information to the client when a training session is booked.</p>
-                  </div>
-                  <Switch
-                    checked={sendPaymentInfo}
-                    onCheckedChange={setSendPaymentInfo}
-                    className="bg-green-600 text-green-600"
-                  />
+              </CardHeader>
+              <CardContent className='flex flex-col gap-4 justify-center items-center'>
+                <div className='flex justify-center items-center'>
+                  <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>NB</h1>
                 </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-            </CardFooter>
-          </Card>
 
-          <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
-            <CardContent className="space-y-2">
-              <form onSubmit={handleSubmit(onSubmit)} className="px-2 space-y-4 py-6">
+                <div className='flex flex-col mt-4 gap-2'>
+                  <div className='flex items-center gap-2'>
+                    <div>
+                      <h1 className='text-lg font-bold'>Email Notification</h1>
+                      <p className='text-xs font-medium text-gray-500'>Send email notifications to the client when a training session is booked.</p>
+                    </div>
+                    <Switch
+                      checked={sendEmailNotification}
+                      onCheckedChange={setSendEmailNotification}
+                      className="bg-green-600 text-green-600"
+                    />
+                  </div>
+                </div>
 
-                {/* First Row */}
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
+                <div className='flex flex-col mt-4 gap-2'>
+                  <div className='flex items-center gap-2'>
+                    <div>
+                      <h1 className='text-lg font-bold'>Send Payment Information</h1>
+                      <p className='text-xs font-medium text-gray-500'>Send payment information to the client when a training session is booked.</p>
+                    </div>
+                    <Switch
+                      checked={sendPaymentInfo}
+                      onCheckedChange={setSendPaymentInfo}
+                      className="bg-green-600 text-green-600"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter>
+              </CardFooter>
+            </Card>
+
+            <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
+              <CardContent className="space-y-2">
+                <form onSubmit={handleSubmit(onSubmit)} className="px-2 space-y-4 py-6">
+
+                  {/* First Row */}
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <div className='space-y-1.5'>
+                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Trainer</Label>
+                        <div ref={staffSearchRef} className="relative">
+                          <Controller
+                            name="staffName"
+                            control={control}
+                            render={({ field }) => (
+                              <div className="relative">
+                                <Input
+                                  {...field}
+                                  autoComplete="off"
+                                  value={staffName || staffSearchQuery}
+                                  onChange={(e) => {
+                                    setStaffSearchQuery(e.target.value);
+                                    field.onChange(e);
+                                    setStaffName('');
+                                  }}
+                                  onFocus={handleStaffSearchFocus}
+                                  className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                  placeholder="Search staff..."
+                                />
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                  <FiSearch className="h-5 w-5" />
+                                </div>
+                              </div>
+                            )}
+                          />
+                          {errors.staffName && (
+                            <p className="mt-1.5 text-sm font-medium text-red-600">
+                              {errors.staffName.message}
+                            </p>
+                          )}
+
+                          {renderStaffDropdown && (
+                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                              {staffs?.length > 0 ? (
+                                staffs
+                                  .filter((staff) => {
+                                    return staff.fullName
+                                      .toLowerCase()
+                                      .includes(staffSearchQuery.toLowerCase());
+                                  })
+                                  .map((staff) => (
+                                    <div
+                                      onClick={() => {
+                                        setStaffName(staff.fullName);
+                                        setStaffSearchQuery(staff.fullName);
+                                        setTrainerId(staff._id);
+                                        setRenderStaffDropdown(false);
+                                      }}
+                                      className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                      key={staff._id}
+                                    >
+                                      {staff.fullName}
+                                    </div>
+                                  ))
+                              ) : (
+                                <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                     <div className='space-y-1.5'>
-                      <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Trainer</Label>
-                      <div ref={staffSearchRef} className="relative">
+                      <Label className="block text-sm font-medium text-gray-700">Select Member</Label>
+                      <div ref={memberSearchRef} className="relative">
                         <Controller
-                          name="staffName"
+                          name="memberName"
                           control={control}
                           render={({ field }) => (
                             <div className="relative">
                               <Input
                                 {...field}
                                 autoComplete="off"
-                                value={staffName || staffSearchQuery}
+                                value={memberName || memberSearchQuery}
                                 onChange={(e) => {
-                                  setStaffSearchQuery(e.target.value);
+                                  setMemberSearchQuery(e.target.value);
                                   field.onChange(e);
-                                  setStaffName('');
+                                  setMemberName('');
                                 }}
-                                onFocus={handleStaffSearchFocus}
-                                className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
-                                placeholder="Search staff..."
+                                onFocus={handleMemberSearchFocus}
+                                className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
+                                placeholder="Search members..."
                               />
                               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                                 <FiSearch className="h-5 w-5" />
@@ -857,323 +935,290 @@ const PersonalTrainingBooking = () => {
                             </div>
                           )}
                         />
-                        {errors.staffName && (
+                        {errors.memberName && (
                           <p className="mt-1.5 text-sm font-medium text-red-600">
-                            {errors.staffName.message}
+                            {errors.memberName.message}
                           </p>
                         )}
 
-                        {renderStaffDropdown && (
+                        {renderMemberDropdown && (
                           <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                            {staffs?.length > 0 ? (
-                              staffs
-                                .filter((staff) => {
-                                  return staff.fullName
+                            {members?.length > 0 ? (
+                              members
+                                .filter((member) => {
+                                  return member.fullName
                                     .toLowerCase()
-                                    .includes(staffSearchQuery.toLowerCase());
+                                    .includes(memberSearchQuery.toLowerCase());
                                 })
-                                .map((staff) => (
+                                .map((member) => (
                                   <div
                                     onClick={() => {
-                                      setStaffName(staff.fullName);
-                                      setStaffSearchQuery(staff.fullName);
-                                      setTrainerId(staff._id);
-                                      setRenderStaffDropdown(false);
+                                      setMemberName(member.fullName);
+                                      setMemberSearchQuery(member.fullName);
+                                      setMemberId(member._id);
+                                      setRenderMemberDropdown(false);
                                     }}
                                     className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                    key={staff._id}
+                                    key={member._id}
                                   >
-                                    {staff.fullName}
+                                    {member.fullName}
                                   </div>
                                 ))
                             ) : (
-                              <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
+                              <div className="px-4 py-3 text-sm text-gray-500">{membersLoading ? 'Loading...' : 'No members found'}</div>
                             )}
                           </div>
                         )}
                       </div>
                     </div>
                   </div>
-                  <div className='space-y-1.5'>
-                    <Label className="block text-sm font-medium text-gray-700">Select Member</Label>
-                    <div ref={memberSearchRef} className="relative">
-                      <Controller
-                        name="memberName"
-                        control={control}
-                        render={({ field }) => (
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              autoComplete="off"
-                              value={memberName || memberSearchQuery}
-                              onChange={(e) => {
-                                setMemberSearchQuery(e.target.value);
-                                field.onChange(e);
-                                setMemberName('');
-                              }}
-                              onFocus={handleMemberSearchFocus}
-                              className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
-                              placeholder="Search members..."
-                            />
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                              <FiSearch className="h-5 w-5" />
+
+                  {/* Second Row */}
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div className='space-y-1.5'>
+                      <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Package</Label>
+                      <div ref={packageSearchRef} className="relative">
+                        <Controller
+                          name="packageName"
+                          control={control}
+                          render={({ field }) => (
+                            <div className="relative">
+                              <Input
+                                {...field}
+                                autoComplete="off"
+                                value={packageName || packageSearchQuery}
+                                onChange={(e) => {
+                                  setPackageSearchQuery(e.target.value);
+                                  field.onChange(e);
+                                  setPackageName('');
+                                }}
+                                onFocus={handlePackageSearchFocus}
+                                className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                placeholder="Search package..."
+                              />
+                              <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                <FiSearch className="h-5 w-5" />
+                              </div>
                             </div>
+                          )}
+                        />
+                        {errors.packageName && (
+                          <p className="mt-1.5 text-sm font-medium text-red-600">
+                            {errors.packageName.message}
+                          </p>
+                        )}
+
+                        {renderPackageDropdown && (
+                          <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                            {packagesLoading ? (
+                              <div className="px-4 py-3 text-sm text-gray-500">Loading packages...</div>
+                            ) : packages.length > 0 ? (
+                              packages
+                                .filter((pkg) => {
+                                  return pkg.packagename && pkg.packagename.toLowerCase().includes(packageSearchQuery.toLowerCase());
+                                })
+                                .map((pkg) => (
+                                  <div
+                                    onClick={() => {
+                                      setSelectedPackage(pkg);
+                                      setPackageName(pkg.packagename);
+                                      setPackageSearchQuery(pkg.packagename);
+                                      setPackageId(pkg._id);
+                                      setRenderPackageDropdown(false);
+                                    }}
+                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                    key={pkg._id}
+                                  >
+                                    {pkg.packagename} - ${pkg.price}
+                                  </div>
+                                ))
+                            ) : (
+                              <div className="px-4 py-3 text-sm text-gray-500">No packages found</div>
+                            )}
                           </div>
                         )}
-                      />
-                      {errors.memberName && (
-                        <p className="mt-1.5 text-sm font-medium text-red-600">
-                          {errors.memberName.message}
-                        </p>
-                      )}
-
-                      {renderMemberDropdown && (
-                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                          {members?.length > 0 ? (
-                            members
-                              .filter((member) => {
-                                return member.fullName
-                                  .toLowerCase()
-                                  .includes(memberSearchQuery.toLowerCase());
-                              })
-                              .map((member) => (
-                                <div
-                                  onClick={() => {
-                                    setMemberName(member.fullName);
-                                    setMemberSearchQuery(member.fullName);
-                                    setMemberId(member._id);
-                                    setRenderMemberDropdown(false);
-                                  }}
-                                  className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                  key={member._id}
-                                >
-                                  {member.fullName}
-                                </div>
-                              ))
-                          ) : (
-                            <div className="px-4 py-3 text-sm text-gray-500">{membersLoading ? 'Loading...' : 'No members found'}</div>
-                          )}
-                        </div>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Second Row */}
-                <div className='grid grid-cols-2 gap-4'>
-                  <div className='space-y-1.5'>
-                    <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Package</Label>
-                    <div ref={packageSearchRef} className="relative">
-                      <Controller
-                        name="packageName"
-                        control={control}
-                        render={({ field }) => (
-                          <div className="relative">
-                            <Input
-                              {...field}
-                              autoComplete="off"
-                              value={packageName || packageSearchQuery}
-                              onChange={(e) => {
-                                setPackageSearchQuery(e.target.value);
-                                field.onChange(e);
-                                setPackageName('');
-                              }}
-                              onFocus={handlePackageSearchFocus}
-                              className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
-                              placeholder="Search package..."
-                            />
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                              <FiSearch className="h-5 w-5" />
-                            </div>
-                          </div>
-                        )}
-                      />
-                      {errors.packageName && (
-                        <p className="mt-1.5 text-sm font-medium text-red-600">
-                          {errors.packageName.message}
-                        </p>
-                      )}
-
-                      {renderPackageDropdown && (
-                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                          {packagesLoading ? (
-                            <div className="px-4 py-3 text-sm text-gray-500">Loading packages...</div>
-                          ) : packages.length > 0 ? (
-                            packages
-                              .filter((pkg) => {
-                                return pkg.packagename && pkg.packagename.toLowerCase().includes(packageSearchQuery.toLowerCase());
-                              })
-                              .map((pkg) => (
-                                <div
-                                  onClick={() => {
-                                    setSelectedPackage(pkg);
-                                    setPackageName(pkg.packagename);
-                                    setPackageSearchQuery(pkg.packagename);
-                                    setPackageId(pkg._id);
-                                    setRenderPackageDropdown(false);
-                                  }}
-                                  className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
-                                  key={pkg._id}
-                                >
-                                  {pkg.packagename} - ${pkg.price}
-                                </div>
-                              ))
-                          ) : (
-                            <div className="px-4 py-3 text-sm text-gray-500">No packages found</div>
-                          )}
-                        </div>
-                      )}
+                    <div>
+                      <Label htmlFor="address">Status</Label>
+                      <Select onValueChange={(value) => setPackageStatus(value)}>
+                        <SelectTrigger className="rounded-md p-6">
+                          <SelectValue placeholder="Filter by status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Active">Active</SelectItem>
+                          <SelectItem value="Inactive">Inactive</SelectItem>
+                          <SelectItem value="Cancelled">Cancelled</SelectItem>
+                          <SelectItem value="Completed">Completed</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Refunded">Refunded</SelectItem>
+                          <SelectItem value="Failed">Failed</SelectItem>
+                          <SelectItem value="Expired">Expired</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
-                  <div>
-                    <Label htmlFor="address">Status</Label>
-                    <Select onValueChange={(value) => setPackageStatus(value)}>
-                      <SelectTrigger className="rounded-md p-6">
-                        <SelectValue placeholder="Filter by status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Active">Active</SelectItem>
-                        <SelectItem value="Inactive">Inactive</SelectItem>
-                        <SelectItem value="Cancelled">Cancelled</SelectItem>
-                        <SelectItem value="Completed">Completed</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Refunded">Refunded</SelectItem>
-                        <SelectItem value="Failed">Failed</SelectItem>
-                        <SelectItem value="Expired">Expired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Third Row */}
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label htmlFor="startDate">Start Date</Label>
-                    <Input
-                      value={startDate}
-                      onChange={(e) => setStartDate(e.target.value)}
-                      id="startDate"
-                      className="p-6"
-                      type="date"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="endDate">End Date</Label>
-                    <div className="flex items-center gap-2">
+                  {/* Third Row */}
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor="startDate">Start Date</Label>
                       <Input
-                        value={endDate}
-                        onChange={(e) => {
-                          setEndDate(e.target.value);
-                          setIsEndDateAuto(false);
-                        }}
-                        id="endDate"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        id="startDate"
                         className="p-6"
                         type="date"
                       />
-                      {!isEndDateAuto && (
-                        <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setIsEndDateAuto(true);
-                            if (startDate && selectedPackage?.duration) {
-                              const start = new Date(startDate);
-                              const end = new Date(start);
-                              end.setDate(end.getDate() + selectedPackage.duration);
-                              setEndDate(end.toISOString().split('T')[0]);
-                            }
+                    </div>
+                    <div>
+                      <Label htmlFor="endDate">End Date</Label>
+                      <div className="flex items-center gap-2">
+                        <Input
+                          value={endDate}
+                          onChange={(e) => {
+                            setEndDate(e.target.value);
+                            setIsEndDateAuto(false);
                           }}
-                          className="h-10"
-                        >
-                          <FiRefreshCw className="h-4 w-4" />
-                        </Button>
-                      )}
+                          id="endDate"
+                          className="p-6"
+                          type="date"
+                        />
+                        {!isEndDateAuto && (
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setIsEndDateAuto(true);
+                              if (startDate && selectedPackage?.duration) {
+                                const start = new Date(startDate);
+                                const end = new Date(start);
+                                end.setDate(end.getDate() + selectedPackage.duration);
+                                setEndDate(end.toISOString().split('T')[0]);
+                              }
+                            }}
+                            className="h-10"
+                          >
+                            <FiRefreshCw className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Fourth Row */}
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label htmlFor="paidAmount">Paid Amount</Label>
-                    <Input
-                      id="paidAmount"
-                      {...register("paidAmount", { required: "Paid Amount is required" })}
-                      placeholder='Paid amount'
-                      className="p-6"
-                      type="text" />
+                  {/* Fourth Row */}
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor="paidAmount">Paid Amount</Label>
+                      <Input
+                        id="paidAmount"
+                        {...register("paidAmount", { required: "Paid Amount is required" })}
+                        placeholder='Paid amount'
+                        className="p-6"
+                        type="text" />
+                    </div>
+                    <div>
+                      <Label htmlFor="discount">Discount Amount</Label>
+                      <Input id="discount" {...register("discount")} placeholder='Discount amount' className="p-6" type="text" />
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="discount">Discount Amount</Label>
-                    <Input id="discount" {...register("discount")} placeholder='Discount amount' className="p-6" type="text" />
-                  </div>
-                </div>
 
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label htmlFor="totalAmount">Total Amount</Label>
-                    <Input id="totalAmount"
-                      value={packagePrice - (Number(discount) || 0)}
-                      placeholder='Total amount'
-                      readOnly
-                      className="p-6" type="text" />
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor="totalAmount">Total Amount</Label>
+                      <Input id="totalAmount"
+                        value={packagePrice - (Number(discount) || 0)}
+                        placeholder='Total amount'
+                        readOnly
+                        className="p-6" type="text" />
+                    </div>
+                    <div>
+                      <Label htmlFor="user">Register By</Label>
+                      <Input
+                        id="user"
+                        className="p-6"
+                        {...register("registerBy", { required: "Register By is required" })}
+                        placeholder='Your name'
+                        type="text" />
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="user">Register By</Label>
-                    <Input
-                      id="user"
-                      className="p-6"
-                      {...register("registerBy", { required: "Register By is required" })}
-                      placeholder='Your name'
-                      type="text" />
-                  </div>
-                </div>
 
-                {/* Sixth Row */}
-                <div className='grid grid-cols-2 gap-4'>
-                  <div>
-                    <Label htmlFor="branch">Branch</Label>
-                    <Select onValueChange={(value) => setBranchId(value)}>
-                      <SelectTrigger className="rounded-md p-6">
-                        <SelectValue placeholder="Select Branch" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Branch</SelectItem>
-                        <SelectItem value="Branch One">Branch One</SelectItem>
-                        <SelectItem value="Branch Two">Branch Two</SelectItem>
-                        <SelectItem value="Branch Three">Branch Three</SelectItem>
-                      </SelectContent>
-                    </Select>
+                  {/* Sixth Row */}
+                  <div className='grid grid-cols-2 gap-4'>
+                    <div>
+                      <Label htmlFor="branch">Branch</Label>
+                      <Select onValueChange={(value) => setBranchId(value)}>
+                        <SelectTrigger className="rounded-md p-6">
+                          <SelectValue placeholder="Select Branch" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Branch</SelectItem>
+                          <SelectItem value="Branch One">Branch One</SelectItem>
+                          <SelectItem value="Branch Two">Branch Two</SelectItem>
+                          <SelectItem value="Branch Three">Branch Three</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="paymentStatus">Payment Status</Label>
+                      <Select onValueChange={(value) => setPaymentStatus(value)}>
+                        <SelectTrigger className="rounded-md p-6">
+                          <SelectValue placeholder="Select Payment Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Payment Status</SelectItem>
+                          <SelectItem value="Full Paid">Full Paid</SelectItem>
+                          <SelectItem value="Partial Paid">Partial Paid</SelectItem>
+                          <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Unpaid">Unpaid</SelectItem>
+                          <SelectItem value="Refunded">Refunded</SelectItem>
+                          <SelectItem value="Failed">Failed</SelectItem>
+                          <SelectItem value="Expired">Expired</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor="paymentStatus">Payment Status</Label>
-                    <Select onValueChange={(value) => setPaymentStatus(value)}>
-                      <SelectTrigger className="rounded-md p-6">
-                        <SelectValue placeholder="Select Payment Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All Payment Status</SelectItem>
-                        <SelectItem value="Full Paid">Full Paid</SelectItem>
-                        <SelectItem value="Partial Paid">Partial Paid</SelectItem>
-                        <SelectItem value="Pending">Pending</SelectItem>
-                        <SelectItem value="Unpaid">Unpaid</SelectItem>
-                        <SelectItem value="Refunded">Refunded</SelectItem>
-                        <SelectItem value="Failed">Failed</SelectItem>
-                        <SelectItem value="Expired">Expired</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
 
-                {/* Submit Button */}
-                <div className="flex justify-end">
-                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6">{isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} {isSubmitting ? 'Submitting...' : 'Submit & Save'}</Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
+                  {/* Submit Button */}
+                  <div className="flex justify-end">
+                    <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6">{isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />} {isSubmitting ? 'Submitting...' : 'Submit & Save'}</Button>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Billing">
+          <div className="p-4">
+            <h2>Billing Content</h2>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Reports">
+          <div className="p-4">
+            <h2>Reports Content</h2>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Settings">
+          <div className="p-4">
+            <h2>Settings Content</h2>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Notifications">
+          <div className="p-4">
+            <h2>Notifications Content</h2>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="Support">
+          <div className="p-4">
+            <h2>Support Content</h2>
+          </div>
         </TabsContent>
       </Tabs>
 
