@@ -304,6 +304,10 @@ const PersonalTrainingBooking = () => {
   // Debounce search trainings
   const [serachTraining, setSearchTraining] = useState('');
   const [debouncedSearchTraining, setDebouncedSearchTraining] = useState('');
+      // Sorting States
+      const [sortBy, setSortBy] = useState('');
+      const [sortOrderDesc, setSortOrderDesc] = useState(true);
+
 
   useEffect(()=>{
     const searchTrainingTimerId = setTimeout(()=>{
@@ -315,9 +319,9 @@ const PersonalTrainingBooking = () => {
 
   // Get all personal training bookings
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
-    const [, page, status, paymentStatus, search] = queryKey;
+    const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -328,7 +332,7 @@ const PersonalTrainingBooking = () => {
   };
 
   const { data: personalTrainingBookingsData, isLoading: personalTrainingBookingsLoading } = useQuery({
-    queryKey: ['personalTrainingBookings', currentPage, status, paymentStatus, debouncedSearchTraining],
+    queryKey: ['personalTrainingBookings', currentPage, status, paymentStatus, debouncedSearchTraining, sortBy, sortOrderDesc],
     queryFn: getAllPersonalTrainingBookings
   });
   const { personalTrainings = [], totalPersonalTrainings, totalPages } = personalTrainingBookingsData || {};
@@ -571,7 +575,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Trainer Name
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown 
+                                  onClick={() => {
+                                    setSortBy('trainerName');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -579,7 +588,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Client Name
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown 
+                                  onClick={() => {
+                                    setSortBy('clientName');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -587,7 +601,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Package
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown
+                                  onClick={() => {
+                                    setSortBy('package');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -595,7 +614,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Start Date
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown
+                                  onClick={() => {
+                                    setSortBy('startDate');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -603,7 +627,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointe">
                               <div className="flex items-center gap-1">
                                 End Date
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown
+                                  onClick={() => {
+                                    setSortBy('endDate');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -611,7 +640,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Status
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown
+                                  onClick={() => {
+                                    setSortBy('status');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -619,7 +653,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Total Amount
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown 
+                                  onClick={() => {
+                                    setSortBy('totalAmount');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -627,7 +666,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Branch
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown 
+                                  onClick={() => {
+                                    setSortBy('branch');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
@@ -635,7 +679,12 @@ const PersonalTrainingBooking = () => {
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
                                 Payment Status
-                                <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                <ArrowUpDown 
+                                  onClick={() => {
+                                    setSortBy('paymentStatus');
+                                    setSortOrderDesc(!sortOrderDesc);
+                                  }}
+                                  className="w-4 h-4 flex-shrink-0" />
                               </div>
                             </TableHead>
 
