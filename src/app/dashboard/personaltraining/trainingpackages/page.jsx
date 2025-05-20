@@ -10,19 +10,19 @@ import toast from "react-hot-toast";
 
 // UI Components
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardFooter
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+    CardFooter
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
 } from "@/components/ui/table";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
@@ -30,23 +30,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogTrigger ,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogTrigger,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useForm } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
@@ -60,18 +60,18 @@ const CreatePersonalTrainingPackages = () => {
 
     // React Hook Form
     const {
-         register,
-         handleSubmit,
-         formState: {errors, isSubmitting},
-         reset  
-        } = useForm();
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        reset
+    } = useForm();
 
-        // Pagination, filters and search
-        const [currentPage, setCurrentPage] = useState(1);
-        const limit = 10;
-        const [search, setSearch] = useState('');
-        const [status, setStatus] = useState('');
-        const [debouncedSearch, setDebouncedSearch] = useState('');
+    // Pagination, filters and search
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 10;
+    const [search, setSearch] = useState('');
+    const [status, setStatus] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
 
     useEffect(() => {
         const delayInputTimeoutId = setTimeout(() => {
@@ -80,7 +80,7 @@ const CreatePersonalTrainingPackages = () => {
         return () => clearTimeout(delayInputTimeoutId);
     }, [search]);
 
-    
+
     // Form States and handlers
     const [showForm, setShowForm] = useState(false);
     const [packageStatus, setPackageStatus] = useState('');
@@ -96,53 +96,53 @@ const CreatePersonalTrainingPackages = () => {
         setIsEditing(false);
         setShowForm(false);
         setPackageStatus('');
-      };
+    };
 
-    const onSubmit = async(data) => {
-    const {packagename, sessions, duration, price, description} = data;
-    const packageData = {packagename, sessions, duration, price, description, packageStatus};
-    try {
-        const baseURL = 'http://localhost:3000/api/personaltraining/packages';
-        const response = await fetch(isEditing ? `${baseURL}/${packageId}` : baseURL, {
-            method: isEditing ? "PATCH" : "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(packageData),
-        });
-        const responseBody = await response.json();         
-        if(response.ok) {
-            toast.success(responseBody.message);
-            setShowForm(false);
-            resetForm();
-            queryClient.invalidateQueries(['packages']);
-        } else {
-            toast.error(responseBody.message);
+    const onSubmit = async (data) => {
+        const { packagename, sessions, duration, price, description } = data;
+        const packageData = { packagename, sessions, duration, price, description, packageStatus };
+        try {
+            const baseURL = 'http://localhost:3000/api/personaltraining/packages';
+            const response = await fetch(isEditing ? `${baseURL}/${packageId}` : baseURL, {
+                method: isEditing ? "PATCH" : "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(packageData),
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                setShowForm(false);
+                resetForm();
+                queryClient.invalidateQueries(['packages']);
+            } else {
+                toast.error(responseBody.message);
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("An error occurred while creating the package");
         }
-    } catch (error) {
-        console.log(error);
-        toast.error("An error occurred while creating the package");
-    }
     };
 
-    const getPackages = async({queryKey}) => {
+    const getPackages = async ({ queryKey }) => {
         const [, currentPage] = queryKey;
-     try {
-        const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
-        const responseBody = await response.json();
-        return responseBody;
-     } catch (error) {
-        console.log(error);
-        throw error;
-     };
+        try {
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages?page=${currentPage}&limit=${limit}&page=${currentPage}&limit=${limit}&search=${debouncedSearch}&status=${status}`);
+            const responseBody = await response.json();
+            return responseBody;
+        } catch (error) {
+            console.log(error);
+            throw error;
+        };
     };
 
-    const {data, isLoading, isError} = useQuery({
-        queryKey: ['packages',currentPage, debouncedSearch, status],
+    const { data, isLoading, isError } = useQuery({
+        queryKey: ['packages', currentPage, debouncedSearch, status],
         queryFn: getPackages
     });
 
-    const {packages , totalPages ,totalPackages} = data || {};
+    const { packages, totalPages, totalPackages } = data || {};
 
     // State for form
     const [isEditing, setIsEditing] = useState(false);
@@ -162,29 +162,29 @@ const CreatePersonalTrainingPackages = () => {
         });
     };
 
-    const deletePackage = async(id) => {
+    const deletePackage = async (id) => {
         try {
-           const response = await fetch(`http://localhost:3000/api/personaltraining/packages/${id}`,{
-            method: "DELETE",
-            headers: {
-                'Content-Type': 'application/json'
+            const response = await fetch(`http://localhost:3000/api/personaltraining/packages/${id}`, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['packages']);
+            } else {
+                toast.error(responseBody.message);
             }
-           });
-           const responseBody = await response.json();
-           if(response.ok) {
-            toast.success(responseBody.message);
-            queryClient.invalidateQueries(['packages']);
-        } else {
-            toast.error(responseBody.message);
-        }
         } catch (error) {
-           console.log(error);
-           toast.error(error.message);
-           throw error;
+            console.log(error);
+            toast.error(error.message);
+            throw error;
         };
-       };
+    };
 
-    const toggleStatus = async(id) => {
+    const toggleStatus = async (id) => {
         try {
             const response = await fetch(`http://localhost:3000/api/personaltraining/packages/toggle/${id}`, {
                 method: "PATCH",
@@ -193,19 +193,19 @@ const CreatePersonalTrainingPackages = () => {
                 }
             });
             const responseBody = await response.json();
-            if(response.ok) {
+            if (response.ok) {
                 toast.success(responseBody.message);
                 queryClient.invalidateQueries(['packages']);
             } else {
                 toast.error(responseBody.message);
-            }   
+            }
 
         } catch (error) {
             console.log(error);
             toast.error(error.message);
             throw error;
         };
-    };  
+    };
 
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -237,21 +237,21 @@ const CreatePersonalTrainingPackages = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                
+
                 <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-6 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
                     <div>
                         <h1 className="text-2xl font-bold">Personal Training Packages</h1>
                         <p className="text-sm text-gray-500">
                             Create and manage your personal training packages.
-                    </p>
+                        </p>
                     </div>
-                    <Button 
+                    <Button
                         onClick={() => setShowForm(true)}
                         className="rounded-sm"
                     >
                         <FiPlus className="h-4 w-4 mr-2" />
-                            Create Package
-                        </Button>
+                        Create Package
+                    </Button>
                 </div>
             </div>
 
@@ -284,8 +284,8 @@ const CreatePersonalTrainingPackages = () => {
                             </Select>
                         </div>
                         <div className="flex items-end">
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 className="w-full"
                                 onClick={() => {
                                     setSearch('');
@@ -308,7 +308,7 @@ const CreatePersonalTrainingPackages = () => {
                         <CardHeader>
                             <CardTitle className="flex justify-between items-center">
                                 {isEditing ? "Edit Package" : "Create New Package"}
-                                <button onClick={()=>resetForm()} className="text-gray-500 hover:text-gray-700">
+                                <button onClick={() => resetForm()} className="text-gray-500 hover:text-gray-700">
                                     <FiX className="h-5 w-5" />
                                 </button>
                             </CardTitle>
@@ -319,19 +319,19 @@ const CreatePersonalTrainingPackages = () => {
                                     <Label htmlFor="packagename">Package Name *</Label>
                                     <Input
                                         id="packagename"
-                                        {...register("packagename", {required: true})}
+                                        {...register("packagename", { required: true })}
                                         placeholder="e.g., Premium Package"
                                         required
                                     />
                                 </div>
-                                
+
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label htmlFor="sessions">Number of Sessions *</Label>
                                         <Input
                                             id="sessions"
                                             type="number"
-                                            {...register("sessions", {required: true})}
+                                            {...register("sessions", { required: true })}
                                             placeholder="e.g., 12"
                                             min="1"
                                             required
@@ -342,27 +342,27 @@ const CreatePersonalTrainingPackages = () => {
                                         <Input
                                             id="duration"
                                             type="number"
-                                            {...register("duration", {required: true})}
+                                            {...register("duration", { required: true })}
                                             placeholder="e.g., 30"
                                             min="1"
                                             required
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor="price">Price ($) *</Label>
                                     <Input
                                         id="price"
                                         type="number"
-                                        {...register("price", {required: true})}
+                                        {...register("price", { required: true })}
                                         placeholder="e.g., 299"
                                         min="0"
                                         step="0.01"
                                         required
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor="description">Description</Label>
                                     <Textarea
@@ -372,7 +372,7 @@ const CreatePersonalTrainingPackages = () => {
                                         rows={3}
                                     />
                                 </div>
-                                
+
                                 <div>
                                     <Label htmlFor="status">Status</Label>
                                     <Select
@@ -380,7 +380,7 @@ const CreatePersonalTrainingPackages = () => {
                                         onValueChange={(value) => setPackageStatus(value)}
                                     >
                                         <SelectTrigger>
-                                            <SelectValue placeholder={`${packageStatus?packageStatus:'Select Status'}`} />
+                                            <SelectValue placeholder={`${packageStatus ? packageStatus : 'Select Status'}`} />
                                         </SelectTrigger>
                                         <SelectContent>
                                             <SelectItem value="Active">Active</SelectItem>
@@ -388,9 +388,9 @@ const CreatePersonalTrainingPackages = () => {
                                         </SelectContent>
                                     </Select>
                                 </div>
-                                
+
                                 <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
-                                    <Button variant="outline" onClick={()=>resetForm()}>
+                                    <Button variant="outline" onClick={() => resetForm()}>
                                         Cancel
                                     </Button>
                                     <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
@@ -488,27 +488,27 @@ const CreatePersonalTrainingPackages = () => {
 
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
-                                                        <Button
-                                                        variant="outline"
-                                                        size="sm"
-                                                        className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                                                    >
-                                                        <FiTrash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                    This action cannot be undone. This will permanently delete your package.
-                                                    </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => deletePackage(pkg._id)}>Continue</AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                                </AlertDialog>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="text-red-600 hover:text-red-800 hover:bg-red-50"
+                                                            >
+                                                                <FiTrash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    This action cannot be undone. This will permanently delete your package.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => deletePackage(pkg._id)}>Continue</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
 
                                                 </TableCell>
                                             </TableRow>
@@ -518,20 +518,20 @@ const CreatePersonalTrainingPackages = () => {
                             </div>
                         </>
                     )}
-                       {/* Pagination */}
-                       <div className="w-full md:flex justify-center my-4 lg:justify-between">
-                       <p className="text-xs font-medium text-gray-600">
-                        Showing {packages?.length || 0} packages out of {totalPackages || 0}
-                    </p>
-                            <Pagination
-                                total={totalPages}
-                                page={currentPage}
-                                onChange={setCurrentPage}
-                                withEdges={true}
-                                siblings={1}
-                                boundaries={1}
-                            />
-                        </div>
+                    {/* Pagination */}
+                    <div className="w-full md:flex justify-center my-4 lg:justify-between">
+                        <p className="text-xs font-medium text-gray-600">
+                            Showing {packages?.length || 0} packages out of {totalPackages || 0}
+                        </p>
+                        <Pagination
+                            total={totalPages}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
                 </CardContent>
             </Card>
         </div>
