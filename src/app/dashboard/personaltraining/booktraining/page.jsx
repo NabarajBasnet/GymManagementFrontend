@@ -5,8 +5,8 @@ import { ArrowUpDown } from 'lucide-react';
 import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
-import { FiChevronRight, FiTrash2, FiEdit, FiEye, FiPlus, FiX, FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell } from "react-icons/fi";
+import { useState, useEffect, useRef } from "react";
+import { FiChevronRight, FiTrash2, FiEdit, FiEye,FiSearch, FiPlus, FiX,FiCheck, FiInfo, FiHelpCircle, FiCreditCard, FiBarChart, FiSettings, FiBell, FiSave } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -59,7 +59,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
 
 const PersonalTrainingBooking = () => {
@@ -67,12 +67,16 @@ const PersonalTrainingBooking = () => {
     // Query
     const queryClient = useQueryClient();
 
+    // React hooks
+    const ref = useRef(null);
+
     // React Hook Form
     const {
          register,
          handleSubmit,
          formState: {errors, isSubmitting},
-         reset  
+         reset,
+         control
         } = useForm();
 
         // Pagination, filters and search
@@ -81,10 +85,6 @@ const PersonalTrainingBooking = () => {
         const [search, setSearch] = useState('');
         const [status, setStatus] = useState('');
         const [debouncedSearch, setDebouncedSearch] = useState('');
-
-        // Form Handlers
-        const [openBookingModal, setOpenBookingModal] = useState(false);
-        const [openEditBookingModal, setOpenEditBookingModal] = useState(false);
 
         // Book Training Function
         const onSubmit = (data) => {
@@ -98,6 +98,98 @@ const PersonalTrainingBooking = () => {
         }, 300);
         return () => clearTimeout(delayInputTimeoutId);
     }, [search]);
+
+    // Search states
+       // Member search states
+       const [memberSearchQuery, setMemberSearchQuery] = useState('');
+       const [memberName, setMemberName] = useState('');
+       const [renderMemberDropdown, setRenderMemberDropdown] = useState(false);
+       const memberSearchRef = useRef(null);
+   
+       // Staff search states
+       const [staffSearchQuery, setStaffSearchQuery] = useState('');
+       const [staffName, setStaffName] = useState('');
+       const [renderStaffDropdown, setRenderStaffDropdown] = useState(false);
+       const staffSearchRef = useRef(null);
+    
+    // Handle click outside for all dropdowns
+        useEffect(() => {
+          const handleClickOutside = (event) => {
+              if (memberSearchRef.current && !memberSearchRef.current.contains(event.target)) {
+                  setRenderMemberDropdown(false);
+              }
+              if (staffSearchRef.current && !staffSearchRef.current.contains(event.target)) {
+                  setRenderStaffDropdown(false);
+              }
+          };
+          document.addEventListener("mousedown", handleClickOutside);
+          return () => {
+              document.removeEventListener("mousedown", handleClickOutside);
+          };
+      }, [memberSearchRef, staffSearchRef]);
+
+      const handleMemberSearchFocus = () => {
+          setRenderMemberDropdown(true);
+      };
+
+      const handleStaffSearchFocus = () => {
+          setRenderStaffDropdown(true);
+      };
+
+
+    // Get all staffs
+    const getAllTrainers = async () => {
+      try {
+          const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+          const responseBody = await response.json();
+          return responseBody;
+      } catch (error) {
+          console.log("Error: ", error);
+          toast.error("Failed to fetch staffs");
+      }
+  };
+
+  const { data: trainersData, isLoading: trainersLoading } = useQuery({
+      queryKey: ['trainers'],
+      queryFn: getAllTrainers
+  });
+  const { staffs } = trainersData || {};
+
+     // Get all members
+     const getAllMembers = async () => {
+      try {
+          const response = await fetch(`http://localhost:3000/api/members`);
+          const responseBody = await response.json();
+          return responseBody;
+      } catch (error) {
+          console.log("Error: ", error);
+          toast.error("Failed to fetch members");
+      }
+  };
+
+  const { data: membersData, isLoading: membersLoading } = useQuery({
+      queryKey: ['members'],
+      queryFn: getAllMembers
+  });
+  const { members } = membersData || {};
+
+  // Get all packages
+  const getAllPackages = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
+      const responseBody = await response.json();
+      return responseBody;  
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error("Failed to fetch packages");
+    }
+  };
+
+  const { data: packagesData, isLoading: packagesLoading } = useQuery({
+    queryKey: ['packages'],
+    queryFn: getAllPackages
+  });
+  const { packages } = packagesData || {};
 
      return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -406,142 +498,273 @@ const PersonalTrainingBooking = () => {
 
                       <div className='flex flex-col mt-4 gap-2'>
                         <div className='flex items-center gap-2'>
-                          <Label>Status</Label>
+                          <div>
+                            <h1 className='text-lg font-bold'>Email Notification</h1>
+                            <p className='text-xs font-medium text-gray-500'>Send email notifications to the client when a training session is booked.</p>
+                          </div>
                           <Switch className="bg-green-600 text-green-600" />
                         </div>
-                        <p>John Doe</p>
+                      </div>
+
+                      <div className='flex flex-col mt-4 gap-2'>
+                        <div className='flex items-center gap-2'>
+                          <div>
+                            <h1 className='text-lg font-bold'>Send Payment Information</h1>
+                            <p className='text-xs font-medium text-gray-500'>Send payment information to the client when a training session is booked.</p>
+                          </div>
+                          <Switch className="bg-green-600 text-green-600" />
+                        </div>
                       </div>
                   </CardContent>
                   <CardFooter>
-                    <Button>Save password</Button>
                   </CardFooter>
                 </Card>
 
                 <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
-                  <CardHeader>
-                    <CardTitle>Password</CardTitle>
-                    <CardDescription>
-                      Change your password here. After saving, you'll be logged out.
-                    </CardDescription>
-                  </CardHeader>
                   <CardContent className="space-y-2">
-                    <div className="space-y-1">
-                      <Label htmlFor="current">Current password</Label>
-                      <Input id="current" type="password" />
-                    </div>
-                    <div className="space-y-1">
-                      <Label htmlFor="new">New password</Label>
-                      <Input id="new" type="password" />
-                    </div>
+                      <form className="px-2 space-y-4 py-6">
+
+                      {/* First Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                          <div className='space-y-1.5'>
+                                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Issued By</Label>
+                                        <div ref={staffSearchRef} className="relative">
+                                            <Controller
+                                                name="staffName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <div className="relative">
+                                                        <Input
+                                                            {...field}
+                                                            autoComplete="off"
+                                                            value={staffName || staffSearchQuery}
+                                                            onChange={(e) => {
+                                                                setStaffSearchQuery(e.target.value);
+                                                                field.onChange(e);
+                                                                setStaffName('');
+                                                            }}
+                                                            onFocus={handleStaffSearchFocus}
+                                                            className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                                            placeholder="Search staff..."
+                                                        />
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                            <FiSearch className="h-5 w-5" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            />
+                                            {errors.staffName && (
+                                                <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                    {errors.staffName.message}
+                                                </p>
+                                            )}
+
+                                            {renderStaffDropdown && (
+                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                    {staffs?.length > 0 ? (
+                                                        staffs
+                                                            .filter((staff) => {
+                                                                return staff.fullName
+                                                                    .toLowerCase()
+                                                                    .includes(staffSearchQuery.toLowerCase());
+                                                            })
+                                                            .map((staff) => (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setStaffName(staff.fullName);
+                                                                        setStaffSearchQuery(staff.fullName);
+                                                                        setStaffId(staff._id);
+                                                                        setRenderStaffDropdown(false);
+                                                                    }}
+                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                    key={staff._id}
+                                                                >
+                                                                    {staff.fullName}
+                                                                </div>
+                                                            ))
+                                                    ) : (
+                                                        <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                          </div>
+                          <div>
+                          <div className='space-y-1.5'>
+                                        <Label className="block text-sm font-medium text-gray-700">Issued To</Label>
+                                        <div ref={memberSearchRef} className="relative">
+                                            <Controller
+                                                name="memberName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <div className="relative">
+                                                        <Input
+                                                            {...field}
+                                                            autoComplete="off"
+                                                            value={memberName || memberSearchQuery}
+                                                            onChange={(e) => {
+                                                                setMemberSearchQuery(e.target.value);
+                                                                field.onChange(e);
+                                                                setMemberName('');
+                                                            }}
+                                                            onFocus={handleMemberSearchFocus}
+                                                            className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
+                                                            placeholder="Search members..."
+                                                        />
+                                                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                            <FiSearch className="h-5 w-5" />
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            />
+                                            {errors.memberName && (
+                                                <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                    {errors.memberName.message}
+                                                </p>
+                                            )}
+
+                                            {renderMemberDropdown && (
+                                                <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                    {members?.length > 0 ? (
+                                                        members
+                                                            .filter((member) => {
+                                                                return member.fullName
+                                                                    .toLowerCase()
+                                                                    .includes(memberSearchQuery.toLowerCase());
+                                                            })
+                                                            .map((member) => (
+                                                                <div
+                                                                    onClick={() => {
+                                                                        setMemberName(member.fullName);
+                                                                        setMemberSearchQuery(member.fullName);
+                                                                        setMemberId(member._id);
+                                                                        setRenderMemberDropdown(false);
+                                                                    }}
+                                                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                    key={member._id}
+                                                                >
+                                                                    {member.fullName}
+                                                                </div>
+                                                            ))
+                                                    ) : (
+                                                        <div className="px-4 py-3 text-sm text-gray-500">{membersLoading ? 'Loading...' : 'No members found'}</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                          </div>
+                        </div>
+
+                        {/* Second Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor="phone">Package</Label>
+                            <Select>
+                                    <SelectTrigger className="rounded-md p-6">
+                                        <SelectValue placeholder="Select Package" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="1 Month">1 Month</SelectItem>
+                                      <SelectItem value="2 Months">2 Months</SelectItem>
+                                      <SelectItem value="3 Months">3 Months</SelectItem>
+                                      <SelectItem value="4 Months">4 Months</SelectItem>
+                                      <SelectItem value="5 Months">5 Months</SelectItem>
+                                      <SelectItem value="6 Months">6 Months</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                          </div>
+                          <div>
+                            <Label htmlFor="address">Status</Label>
+                            <Select>
+                                    <SelectTrigger className="rounded-md p-6">
+                                        <SelectValue placeholder="Filter by status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="all">All Status</SelectItem>
+                                        <SelectItem value="Active">Active</SelectItem>
+                                        <SelectItem value="Inactive">Inactive</SelectItem>
+                                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                                        <SelectItem value="Completed">Completed</SelectItem>
+                                        <SelectItem value="Pending">Pending</SelectItem>
+                                        <SelectItem value="Refunded">Refunded</SelectItem>
+                                        <SelectItem value="Failed">Failed</SelectItem>
+                                        <SelectItem value="Expired">Expired</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                          </div>
+                        </div>
+
+                        {/* Third Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor="startDate">Start Date</Label>
+                            <Input id="startDate" className="p-6" type="date" />
+                          </div>
+                          <div>
+                            <Label htmlFor="endDate">End Date</Label>
+                            <Input id="endDate" className="p-6" type="date" />
+                          </div>
+                        </div>
+
+                        {/* Fourth Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor="paidAmount">Paid Amount</Label>
+                            <Input id="paidAmount" className="p-6" type="text" />
+                          </div>
+                          <div>
+                            <Label htmlFor="discount">Discount Amount</Label>
+                            <Input id="discount" className="p-6" type="text" />
+                          </div>
+                        </div>
+
+                        {/* Fifth Row */}
+                        <div className='grid grid-cols-2 gap-4'>
+                          <div>
+                            <Label htmlFor="branch">Branch</Label>
+                            <Select>
+                              <SelectTrigger className="rounded-md p-6">
+                                <SelectValue placeholder="Select Branch" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Branch</SelectItem>
+                                <SelectItem value="Branch One">Branch One</SelectItem>
+                                <SelectItem value="Branch Two">Branch Two</SelectItem>
+                                <SelectItem value="Branch Three">Branch Three</SelectItem>
+                              </SelectContent>
+                            </Select> 
+                          </div>
+                          <div>
+                            <Label htmlFor="paymentStatus">Payment Status</Label>
+                            <Select>
+                              <SelectTrigger className="rounded-md p-6">
+                                <SelectValue placeholder="Select Payment Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Payment Status</SelectItem>
+                                <SelectItem value="Full Paid">Full Paid</SelectItem>
+                                <SelectItem value="Partial Paid">Partial Paid</SelectItem>
+                                <SelectItem value="Unpaid">Unpaid</SelectItem>
+                                <SelectItem value="Refunded">Refunded</SelectItem>
+                                <SelectItem value="Failed">Failed</SelectItem>
+                                <SelectItem value="Expired">Expired</SelectItem>
+                              </SelectContent>
+                            </Select> 
+                          </div>
+                        </div>
+                        
+                        {/* Submit Button */}
+                        <div className="flex justify-end">
+                          <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-md p-6"><FiSave/> Submit & Save</Button>
+                        </div>
+                      </form>
                   </CardContent>
-                  <CardFooter>
-                    <Button>Save password</Button>
-                  </CardFooter>
                 </Card>
               </TabsContent>
             </Tabs>
-
-            {/* Booking Modal */}
-            {openBookingModal && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-16 lg:px-32 z-50">
-                  <Card className="w-full">
-                      <CardHeader>
-                          <CardTitle className="flex justify-between items-center">
-                              {isEditing ? "Edit Package" : "Create New Package"}
-                              <button onClick={()=>setOpenBookingModal(false)} className="text-gray-500 hover:text-gray-700">
-                                  <FiX className="h-5 w-5" />
-                              </button>
-                          </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                              <div>
-                                  <Label htmlFor="packagename">Package Name *</Label>
-                                  <Input
-                                      id="packagename"
-                                      {...register("packagename", {required: true})}
-                                      placeholder="e.g., Premium Package"
-                                      required
-                                  />
-                              </div>
-                              
-                              <div className="grid grid-cols-2 gap-4">
-                                  <div>
-                                      <Label htmlFor="sessions">Number of Sessions *</Label>
-                                      <Input
-                                          id="sessions"
-                                          type="number"
-                                          {...register("sessions", {required: true})}
-                                          placeholder="e.g., 12"
-                                          min="1"
-                                          required
-                                      />
-                                  </div>
-                                  <div>
-                                      <Label htmlFor="duration">Duration (days) *</Label>
-                                      <Input
-                                          id="duration"
-                                          type="number"
-                                          {...register("duration", {required: true})}
-                                          placeholder="e.g., 30"
-                                          min="1"
-                                          required
-                                      />
-                                  </div>
-                              </div>
-                              
-                              <div>
-                                  <Label htmlFor="price">Price ($) *</Label>
-                                  <Input
-                                      id="price"
-                                      type="number"
-                                      {...register("price", {required: true})}
-                                      placeholder="e.g., 299"
-                                      min="0"
-                                      step="0.01"
-                                      required
-                                  />
-                              </div>
-                              
-                              <div>
-                                  <Label htmlFor="description">Description</Label>
-                                  <Textarea
-                                      id="description"
-                                      {...register("description")}
-                                      placeholder="Describe the package benefits..."
-                                      rows={3}
-                                  />
-                              </div>
-                              
-                              <div>
-                                  <Label htmlFor="status">Status</Label>
-                                  <Select
-                                      value={packageStatus}
-                                      onValueChange={(value) => setPackageStatus(value)}
-                                  >
-                                      <SelectTrigger>
-                                          <SelectValue placeholder={`${packageStatus?packageStatus:'Select Status'}`} />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                          <SelectItem value="Active">Active</SelectItem>
-                                          <SelectItem value="Inactive">Inactive</SelectItem>
-                                      </SelectContent>
-                                  </Select>
-                              </div>
-                              
-                              <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
-                                  <Button variant="outline" onClick={()=>resetForm()}>
-                                      Cancel
-                                  </Button>
-                                  <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
-                                      {isSubmitting ? "Submitting..." : (isEditing ? "Update Package" : "Create Package")}
-                                  </Button>
-                              </CardFooter>
-                          </form>
-                      </CardContent>
-                  </Card>
-              </div>
-            )}
 
         </div>
     );
