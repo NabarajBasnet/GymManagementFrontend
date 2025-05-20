@@ -254,32 +254,32 @@ const PersonalTrainingBooking = () => {
             <Tabs defaultValue="View Bookings" className="w-full">
               <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-7">
                 <TabsTrigger value="View Bookings" className="whitespace-nowrap">
-                  <span className="hidden sm:inline">View Bookings</span>
-                  <span className="sm:hidden"><FiEye className="h-4 w-4" /></span>
+                <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
+                  <span className="hidden md:inline">View Bookings</span>
                 </TabsTrigger>
                 <TabsTrigger value="Register Training" className="whitespace-nowrap">
-                  <FiPlus className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Register Training</span>
+                  <FiPlus className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Register Training</span>
                 </TabsTrigger>
                 <TabsTrigger value="Billing" className="whitespace-nowrap">
-                  <FiCreditCard className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Billing</span>
+                  <FiCreditCard className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Billing</span>
                 </TabsTrigger>
                 <TabsTrigger value="Reports" className="whitespace-nowrap">
-                  <FiBarChart className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Reports</span>
+                  <FiBarChart className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Reports</span>
                 </TabsTrigger>
                 <TabsTrigger value="Settings" className="whitespace-nowrap">
-                  <FiSettings className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Settings</span>
+                  <FiSettings className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Settings</span>
                 </TabsTrigger>
                 <TabsTrigger value="Notifications" className="whitespace-nowrap">
-                  <FiBell className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Notifications</span>
+                  <FiBell className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Notifications</span>
                 </TabsTrigger>
                 <TabsTrigger value="Support" className="whitespace-nowrap">
-                  <FiHelpCircle className="h-4 w-4 sm:mr-2" />
-                  <span className="hidden sm:inline">Support</span>
+                  <FiHelpCircle className="h-4 w-4 lg:mr-2" />
+                  <span className="hidden md:inline">Support</span>
                 </TabsTrigger>
               </TabsList>
 
