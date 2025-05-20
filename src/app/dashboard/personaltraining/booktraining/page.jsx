@@ -27,6 +27,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {Switch} from "@/components/ui/switch";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -387,8 +389,35 @@ const PersonalTrainingBooking = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="password">
-                <Card>
+              <TabsContent value="Register Training" className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2  gap-4">
+                <Card className="rounded-xl w-full lg:w-3/12">
+                  <CardHeader>
+                    <div className='flex justify-between items-center'>
+                      <p className='text-lg font-bold'></p>
+                      <Badge variant="outline" className="border-green-200 text-green-800 bg-green-200">
+                        Active
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className='flex flex-col gap-4 justify-center items-center'> 
+                      <div className='flex justify-center items-center'>
+                        <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>NB</h1>
+                      </div>
+
+                      <div className='flex flex-col mt-4 gap-2'>
+                        <div className='flex items-center gap-2'>
+                          <Label>Status</Label>
+                          <Switch className="bg-green-600 text-green-600" />
+                        </div>
+                        <p>John Doe</p>
+                      </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button>Save password</Button>
+                  </CardFooter>
+                </Card>
+
+                <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
                   <CardHeader>
                     <CardTitle>Password</CardTitle>
                     <CardDescription>
