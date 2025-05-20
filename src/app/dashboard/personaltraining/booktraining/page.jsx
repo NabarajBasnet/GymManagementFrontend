@@ -80,7 +80,6 @@ const PersonalTrainingBooking = () => {
         const [currentPage, setCurrentPage] = useState(1);
         const limit = 10;
         const [search, setSearch] = useState('');
-        const [status, setStatus] = useState('');
         const [debouncedSearch, setDebouncedSearch] = useState('');
 
         // Form States and data
@@ -95,7 +94,7 @@ const PersonalTrainingBooking = () => {
         const [memberId, setMemberId] = useState('');
         const [trainerId, setTrainerId] = useState('');
         const [branchId, setBranchId] = useState('');
-        const [packageStatus, setPackageStatus] = useState('Active');
+        const [status, setPackageStatus] = useState('Active');
         const [paidAmount, setPaidAmount] = useState('');
         const [discount, setDiscount] = useState('');
         const [totalAmount, setTotalAmount] = useState('');
@@ -130,7 +129,7 @@ const PersonalTrainingBooking = () => {
             trainerId,
             memberId,
             packageId,
-            packageStatus,
+            status,
             startDate,
             endDate,
             paidAmount,
@@ -151,6 +150,7 @@ const PersonalTrainingBooking = () => {
             });
             const responseBody = await response.json();
             if (response.ok) {
+              queryClient.invalidateQueries({ queryKey: ['personalTrainingBookings'] });
               toast.success(responseBody.message);
               reset();
               setSelectedPackage(null);
@@ -184,7 +184,7 @@ const PersonalTrainingBooking = () => {
           }
         }
 
-    // Debounce search
+    // Debounce package search
     useEffect(() => {
         const delayInputTimeoutId = setTimeout(() => {
             setDebouncedSearch(search);
@@ -320,8 +320,24 @@ const PersonalTrainingBooking = () => {
     });
     const { personalTrainings = [] } = personalTrainingBookingsData || {};
 
-    console.log(personalTrainings);  
-
+    // Delete personal training booking
+    const deletePersonalTrainingBooking = async (id) => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
+          method: 'DELETE'
+        });
+        const responseBody = await response.json();
+        if (response.ok) {
+          toast.success(responseBody.message);
+          queryClient.invalidateQueries({ queryKey: ['personalTrainingBookings'] });
+        } else {
+          toast.error(responseBody.message);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+        toast.error("Failed to delete personal training booking");
+      }
+    };
 
      return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -462,136 +478,153 @@ const PersonalTrainingBooking = () => {
                   {/* Table Section */}
                   <CardContent className="space-y-2">
                     <div className="overflow-x-auto rounded-lg border">
-                    <Table>
-                      <TableHeader className="bg-gray-50">
-                        <TableRow className="whitespace-nowrap">
-                          {/* Trainer Name */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Trainer Name
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Client Name */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Client Name
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Package */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Package
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Start Date */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Start Date
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* End Date */}
-                          <TableHead className="py-3 cursor-pointe">
-                            <div className="flex items-center gap-1">
-                              End Date
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Status */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Status
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Total Amount */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Total Amount
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Branch */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Branch
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Payment Status */}
-                          <TableHead className="py-3 cursor-pointer">
-                            <div className="flex items-center gap-1">
-                              Payment Status
-                              <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
-                            </div>
-                          </TableHead>
-
-                          {/* Actions */}
-                          <TableHead className="py-3 text-right">Actions</TableHead>
-                        </TableRow>
-                      </TableHeader>
-  
-                      <TableBody>
-                        <TableRow>
-                          <TableCell className="py-3">Ronie Colemon</TableCell>
-                          <TableCell className="py-3">John Doe</TableCell>
-                          <TableCell className="py-3">1 Month</TableCell>
-                          <TableCell className="py-3">2025-01-01</TableCell>
-                          <TableCell className="py-3">2025-01-31</TableCell>
-                          <TableCell className="py-3">
-                            <Badge variant="outline" className="border-green-200 text-green-800 bg-green-50">
-                              Active
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-center py-3">$5000</TableCell>
-                          <TableCell className="py-3">Branch 1</TableCell>
-                          <TableCell className="py-3">
-                            <Badge className="bg-green-100 text-center text-green-800">Full Paid</Badge>
-                          </TableCell>
-                          <TableCell className="py-3 text-right space-x-1">
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                              <FiEdit className="h-4 w-4" />
-                            </Button>
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
-                                <Button 
-                                  variant="ghost" 
-                                  size="sm" 
-                                  className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
-                                >
-                                  <FiTrash2 className="h-4 w-4" />
-                                </Button>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent>
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                  <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your package.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                  <AlertDialogAction className="bg-red-600 hover:bg-red-700">
-                                    Continue
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    </Table>
+                      {personalTrainingBookingsLoading?(
+                        <Loader/>
+                      ):(
+                        <>
+                        {Array.isArray(personalTrainings) && personalTrainings.length > 0 ? (
+                            <Table>
+                            <TableHeader className="bg-gray-50">
+                              <TableRow className="whitespace-nowrap">
+                                {/* Trainer Name */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Trainer Name
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Client Name */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Client Name
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Package */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Package
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Start Date */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Start Date
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* End Date */}
+                                <TableHead className="py-3 cursor-pointe">
+                                  <div className="flex items-center gap-1">
+                                    End Date
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Status */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Status
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Total Amount */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Total Amount
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Branch */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Branch
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Payment Status */}
+                                <TableHead className="py-3 cursor-pointer">
+                                  <div className="flex items-center gap-1">
+                                    Payment Status
+                                    <ArrowUpDown className="w-4 h-4 flex-shrink-0" />
+                                  </div>
+                                </TableHead>
+      
+                                {/* Actions */}
+                                <TableHead className="py-3 text-right">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+        
+                            <TableBody>
+                              {personalTrainings.map((personalTraining) => (
+                                <TableRow key={personalTraining._id}>
+                                  <TableCell className="py-3">{personalTraining.trainerId.fullName}</TableCell>
+                                  <TableCell className="py-3">{personalTraining.memberId.fullName}</TableCell>
+                                  <TableCell className="py-3">{personalTraining.packageId.packagename}</TableCell>
+                                <TableCell className="py-3">{new Date(personalTraining.startDate).toISOString().split('T')[0]}</TableCell>
+                                <TableCell className="py-3">{new Date(personalTraining.endDate).toISOString().split('T')[0]}</TableCell>
+                                <TableCell className="py-3">
+                                  <Badge variant="outline" className="border-green-200 text-green-800 bg-green-50">
+                                    {personalTraining.status}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="text-center py-3">${personalTraining.totalAmount}</TableCell>
+                                <TableCell className="py-3">{personalTraining.branchId}</TableCell>
+                                <TableCell className="py-3">
+                                  <Badge className="bg-green-100 text-center text-green-800">
+                                    {personalTraining.paymentStatus}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell className="py-3 text-right space-x-1">
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                    <FiEdit className="h-4 w-4" />
+                                  </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                      >
+                                        <FiTrash2 className="h-4 w-4" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          This action cannot be undone. This will permanently delete your package.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => deletePersonalTrainingBooking(personalTraining._id)} className="bg-red-600 hover:bg-red-700">
+                                          Continue
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                            </TableBody>
+                          </Table>
+                        ):(
+                          <div className="flex justify-center items-center h-full py-8">
+                            <p className="text-gray-500 text-sm font-medium">No personal training bookings found</p>
+                          </div>
+                        )}
+                        </>
+                      )}
+                   
                     </div>
                   </CardContent>
                   <CardFooter>
