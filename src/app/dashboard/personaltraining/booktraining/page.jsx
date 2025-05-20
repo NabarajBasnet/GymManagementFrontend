@@ -58,6 +58,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm, Controller } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
+import { useUser } from '@/components/Providers/LoggedInUserProvider';
 
 const PersonalTrainingBooking = () => {
 
@@ -66,6 +67,11 @@ const PersonalTrainingBooking = () => {
 
   // React hooks
   const ref = useRef(null);
+
+  // Custom Hooks
+  const {user} = useUser();
+  const loggedInUser = user?.user;
+  console.log(loggedInUser);
 
   // React Hook Form
   const {
@@ -890,7 +896,9 @@ const PersonalTrainingBooking = () => {
               </CardHeader>
               <CardContent className='flex flex-col gap-4 justify-center items-center'>
                 <div className='flex justify-center items-center'>
-                  <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>NB</h1>
+                  <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>
+                    {loggedInUser ? `${loggedInUser.firstName.charAt(0)}${loggedInUser.lastName.charAt(0)}`.toUpperCase() : ''}
+                  </h1>
                 </div>
 
                 <div className='flex flex-col mt-4 gap-2'>
