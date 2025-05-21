@@ -488,19 +488,19 @@ const PersonalTrainingBooking = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'Active':
-        return 'border-green-200 text-green-800 bg-green-50';
+        return 'border-green-200 text-green-800 bg-green-200 px-4 py-1';
       case 'Inactive':
-        return 'border-gray-200 text-gray-800 bg-gray-50';
+        return 'border-gray-200 text-gray-800 bg-gray-200 px-4 py-1';
       case 'Cancelled':
-        return 'border-red-200 text-red-800 bg-red-50';
+        return 'border-red-200 text-red-800 bg-red-200 px-4 py-1';
       case 'Completed':
-        return 'border-blue-200 text-blue-800 bg-blue-50';
+        return 'border-blue-200 text-blue-800 bg-blue-200 px-4 py-1';
       case 'Pending':
-        return 'border-yellow-200 text-yellow-800 bg-yellow-50';
+        return 'border-yellow-200 text-yellow-800 bg-yellow-200 px-4 py-1';
       case 'Refunded':
-        return 'border-purple-200 text-purple-800 bg-purple-50';
+        return 'border-purple-200 text-purple-800 bg-purple-200 px-4 py-1';
       case 'Expired':
-        return 'border-gray-200 text-gray-800 bg-gray-50';
+        return 'border-gray-200 text-gray-800 bg-gray-200 px-4 py-1';
       default:
         return 'border-none text-gray-800 bg-transparent';
     }
