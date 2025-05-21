@@ -454,7 +454,7 @@ const Sidebar = () => {
                                                                     <TooltipTrigger asChild>
                                                                         <Link
                                                                             href={subItem.link}
-                                                                            className={`group flex items-center px-4 py-2 text-sm transition-all duration-200 rounded-xl
+                                                                            className={`group flex items-center px-3 py-1 text-sm font-medium transition-all duration-200 rounded-xl
                                                                                     ${isActive(subItem.link)
                                                                                     ? 'text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/60 dark:bg-indigo-900/10'
                                                                                     : 'text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800/40'
@@ -464,7 +464,7 @@ const Sidebar = () => {
                                                                                 <subItem.icon className={`w-4 h-4 ${isActive(subItem.link) ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'}`} />
                                                                             </div>
                                                                             {!sidebarMinimized && (
-                                                                                <span className="ml-3 text-sm tracking-tight">{subItem.title}</span>
+                                                                                <span className="ml-3 text-xs font-medium tracking-tight">{subItem.title}</span>
                                                                             )}
                                                                             {subItem.badge && !sidebarMinimized && (
                                                                                 <Badge className={`ml-2 text-[9px] py-0 h-5 text-white ${subItem.badgeColor}`}>

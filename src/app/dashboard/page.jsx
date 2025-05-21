@@ -1,10 +1,10 @@
 'use client';
 
+import { Button } from "@/components/ui/button";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { InfoIcon, TrendingDown, TrendingUp } from 'lucide-react';
 import { MdAutorenew } from "react-icons/md";
 import { GiBiceps } from "react-icons/gi";
@@ -17,9 +17,13 @@ import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
 import { NewRadialChart } from "@/components/Charts/newRadialChart";
 import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const AdminDashboard = () => {
 
+  const {user} = useUser();
+  const loggedInUser = user?.user;
+  
   const router = useRouter();
   const [averageActiveMembers, setAverageActiveMembers] = React.useState(null);
   const [data, setData] = React.useState(null);
@@ -149,58 +153,187 @@ const AdminDashboard = () => {
     },
   ];
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+  
+
   return (
     <div className="min-h-screen w-full flex justify-center bg-gray-50">
-      <div className="w-full px-5 py-8">
+      <div className="w-full px-5 py-7">
 
-        <Alert className="bg-blue-100 border-blue-100">
-          <InfoIcon className="h-4 w-4 text-blue-600" />
-          <AlertDescription className="text-blue-700">
-            Showing data from the beginning of the current month. Adjust dates below to view different periods.
-          </AlertDescription>
-        </Alert>
-
-        <Card className="py-6 shadow-md mb-8">
-          <form className="flex justify-between px-4 md:justify-start flex-wrap gap-6">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="startDate" className="font-medium text-gray-700">
-                From
-              </Label>
-              <Input
-                id="startDate"
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="cursor-pointer"
-              />
+      {/* Welcome Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
+        {/* Welcome Card */}
+        <Card className="lg:col-span-8 relative overflow-hidden rounded-2xl shadow-md group">
+          <div className="absolute inset-0 bg-gradient-to-br from-indigo-800 via-purple-800/90 to-transparent z-10"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
+          <div className="relative z-20 p-6">
+            <div className="flex flex-col gap-6">
+              <div className="space-y-3 flex flex-col justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-8 bg-blue-400 rounded-full"></div>
+                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                    {getGreeting()}, {loggedInUser?.firstName}! 👋
+                  </h1>
+                </div>
+                <p className="text-white/80 text-md font-medium max-w-2xl leading-relaxed">
+                Track member activities, manage memberships, and analyze business metrics. Stay on top of your gym's operations and make data-driven decisions to drive success.
+                </p>
+              </div>
+              <div className="flex gap-4">
+                <Button
+                  onClick={() => router.push('/dashboard')}
+                  className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300">
+                  View Progress
+                </Button>
+              </div>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="endDate" className="font-medium text-gray-700">
-                To
-              </Label>
-              <Input
-                id="endDate"
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="cursor-pointer"
-              />
-            </div>
-          </form>
+          </div>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {/* Quick Stats Card */}
+        <Card className="lg:col-span-4 relative rounded-2xl shadow-md overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/95 via-purple-700/95 to-indigo-800/95 z-10"></div>
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-15"></div>
+          <div className="relative z-20 p-3">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                  <h3 className="text-xl font-semibold text-white tracking-tight">Performance Overview</h3>
+                </div>
+                <div className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                  <MdAutorenew className="text-2xl text-white" />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+
+                <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                  <div className="space-y-1">
+                    <p className="text-sm text-white/70 font-medium">Active Members</p>
+                    <p className="text-2xl font-bold text-white tracking-tight">{totalActiveMembers || 0}</p>
+                    <p className="text-xs text-blue-400">↑ 8% this week</p>
+                  </div>
+                  <div className="p-3 bg-blue-500/20 rounded-lg">
+                    <FaUsers className="text-blue-400" />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                  <div className="space-y-1">
+                    <p className="text-sm text-white/70 font-medium">New Members</p>
+                    <p className="text-2xl font-bold text-white tracking-tight">{newAdmissionsLength || 0}</p>
+                    <p className="text-xs text-yellow-400">↑ 15% this month</p>
+                  </div>
+                  <div className="p-3 bg-yellow-500/20 rounded-lg">
+                    <RiUserShared2Fill className="text-yellow-400" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Card>
+      </div>
+
+        <Card className="py-2 rounded-2xl shadow-sm mb-4 border border-gray-100">
+          <div className="px-4 py-2">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-50 rounded-lg">
+                  <InfoIcon className="h-5 w-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-900">Date Range Filter</h3>
+                  <p className="text-sm text-gray-500">Select a custom date range to view specific data</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                  <span className="text-sm text-gray-600">Current Month</span>
+                </div>
+                <div className="h-4 w-px bg-gray-200"></div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                  <span className="text-sm text-gray-600">Custom Range</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+              <form className="flex flex-col md:flex-row items-start md:items-end gap-4">
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">
+                    Start Date
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="h-10 pl-3 pr-3 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-center w-8 h-10">
+                  <div className="h-px w-full bg-gray-200"></div>
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <Label htmlFor="endDate" className="text-sm font-medium text-gray-700">
+                    End Date
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="h-10 pl-3 pr-3 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    className="h-10 px-4 border-gray-200 hover:bg-gray-50"
+                    onClick={() => {
+                      let start = new Date();
+                      start.setDate(1);
+                      setStartDate(start.toISOString().split("T")[0]);
+                      const end = new Date();
+                      end.setDate(end.getDate() + 1);
+                      setEndDate(end.toISOString().split("T")[0]);
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </Card>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden shadow-md border ${item.border}`}
-            >
-              <div className="p-6">
+              className={`overflow-hidden rounded-2xl shadow-md border ${item.border}`}>
+              <div className="p-6 py-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-500">{item.text}</p>
                     <div className="flex items-baseline">
-                      <h3 className={`text-3xl font-bold ${item.color}`}>
+                      <h3 className={`text-4xl pt-6 pb-2 text-streamline font-bold ${item.color}`}>
                         {item.value.toLocaleString()}
                       </h3>
                       <span className={`ml-2 text-sm font-medium ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'
