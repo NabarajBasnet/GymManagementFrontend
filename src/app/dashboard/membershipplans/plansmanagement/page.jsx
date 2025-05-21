@@ -6,7 +6,7 @@ import Loader from "@/components/Loader/Loader";
 import { FaList } from "react-icons/fa6";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave,FiCheck, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave, FiCheck, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -88,7 +88,7 @@ const MembershipPlanManagement = () => {
     const resetForm = () => {
         // Reset form fields
         reset();
-        
+
         // Reset all state variables
         setAvailableToAllBranches(false);
         setAvailableToClients(false);
@@ -100,7 +100,7 @@ const MembershipPlanManagement = () => {
         setCurrency("NPR");
     };
 
-    const onSubmit = async(data) => {
+    const onSubmit = async (data) => {
         const {
             name,
             description,
@@ -141,10 +141,10 @@ const MembershipPlanManagement = () => {
         };
 
         try {
-            const url = isEditMode 
-                ? `http://localhost:3000/api/membershipplans/${editingPlan._id}`
-                : "http://localhost:3000/api/membershipplans";
-            
+            const url = isEditMode
+                ? `http://88.198.112.156:3000/api/membershipplans/${editingPlan._id}`
+                : "http://88.198.112.156:3000/api/membershipplans";
+
             const method = isEditMode ? "PUT" : "POST";
 
             const response = await fetch(url, {
@@ -156,7 +156,7 @@ const MembershipPlanManagement = () => {
             });
 
             const responseBody = await response.json();
-            if(responseBody.success || responseBody._id){
+            if (responseBody.success || responseBody._id) {
                 toast.success(isEditMode ? "Membership plan updated successfully" : "Membership plan created successfully");
                 resetForm();
                 setTabValue('Current Plans');
@@ -166,7 +166,7 @@ const MembershipPlanManagement = () => {
             } else {
                 toast.error(responseBody.message || `Error ${isEditMode ? 'updating' : 'creating'} membership plan`);
             }
-        } catch(error) {
+        } catch (error) {
             console.error(error);
             toast.error(`Error ${isEditMode ? 'updating' : 'creating'} membership plan`);
         }
@@ -177,7 +177,7 @@ const MembershipPlanManagement = () => {
         setIsEditMode(true);
         setEditingPlan(plan);
         setTabValue('Create Plans');
-        
+
         // Set form values
         reset({
             name: plan.name,
@@ -224,39 +224,39 @@ const MembershipPlanManagement = () => {
     }, [searchQuery]);
 
     // Get All Membership Plans
-    const getAllMembershipPlans = async ({queryKey}) => {
-        const [,page,searchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency ]= queryKey;
-        try{
-            const response = await fetch(`http://localhost:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
+    const getAllMembershipPlans = async ({ queryKey }) => {
+        const [, page, searchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency] = queryKey;
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
             const data = await response.json();
             return data;
-        } catch(error){
+        } catch (error) {
             console.error(error);
             throw error;
         };
     };
 
     const { data, isLoading, error } = useQuery({
-        queryKey: ["membershipPlans",currentPage,debouncedSearchQuery,filterByPaymentType,filterByStatus,filterByAccessType,filterByShift,filterByCurrency],
+        queryKey: ["membershipPlans", currentPage, debouncedSearchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency],
         queryFn: getAllMembershipPlans
     });
 
     const { membershipPlans, totalPages, totalDocuments } = data || {};
 
 
-    const deleteMembershipPlan = async(id) => {
-        try{
-            const response = await fetch(`http://localhost:3000/api/membershipplans/${id}`, {
+    const deleteMembershipPlan = async (id) => {
+        try {
+            const response = await fetch(`http://88.198.112.156:3000/api/membershipplans/${id}`, {
                 method: "DELETE"
             });
             const responseBody = await response.json();
-            if(response.ok){
+            if (response.ok) {
                 toast.success(responseBody.message);
                 queryClient.invalidateQueries({ queryKey: ["membershipPlans"] });
             } else {
                 toast.error(responseBody.message || "Error deleting membership plan");
-            }   
-        } catch(error){
+            }
+        } catch (error) {
             console.error(error);
             toast.error("Error deleting membership plan");
         }
@@ -304,12 +304,12 @@ const MembershipPlanManagement = () => {
             </div>
 
             <Tabs value={tabValue} onValueChange={setTabValue}>
-                <TabsList className="mb-2 border rounded-sm border-gray-300"> 
+                <TabsList className="mb-2 border rounded-sm border-gray-300">
                     <TabsTrigger value="Current Plans"> <FaList className="w-4 h-4 mr-2" /> Current Plans</TabsTrigger>
                     <TabsTrigger value="Create Plans"> <FiPlus className="w-4 h-4 mr-2" /> Create Plans</TabsTrigger>
-                </TabsList> 
+                </TabsList>
 
-                <TabsContent value="Current Plans">  
+                <TabsContent value="Current Plans">
                     <div className="space-y-4">
                         {/* Filter Card */}
                         <Card className="rounded-xl shadow-md border border-gray-100">
@@ -350,7 +350,7 @@ const MembershipPlanManagement = () => {
 
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium">Payment Type</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setFilterByPaymentType(value)}
                                         >
                                             <SelectTrigger className="h-9 rounded-md">
@@ -368,7 +368,7 @@ const MembershipPlanManagement = () => {
                                     {/* Status Filter */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium">Status</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setFilterByStatus(value)}
                                         >
                                             <SelectTrigger className="h-9 rounded-md">
@@ -385,7 +385,7 @@ const MembershipPlanManagement = () => {
                                     {/* Access Type Filter */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium">Access Type</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setFilterByAccessType(value)}
                                         >
                                             <SelectTrigger className="h-9 rounded-md">
@@ -411,7 +411,7 @@ const MembershipPlanManagement = () => {
                                     {/* Shift Filter */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium">Shift</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setFilterByShift(value)}
                                         >
                                             <SelectTrigger className="h-9 rounded-md">
@@ -430,7 +430,7 @@ const MembershipPlanManagement = () => {
                                     {/* Currency Filter */}
                                     <div className="space-y-2">
                                         <Label className="text-sm font-medium">Currency</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setFilterByCurrency(value)}
                                         >
                                             <SelectTrigger className="h-9 rounded-md">
@@ -465,7 +465,7 @@ const MembershipPlanManagement = () => {
                                                         <h3 className="text-base font-semibold line-clamp-1">{plan.name}</h3>
                                                         <p className="text-xs text-gray-400 line-clamp-2 mt-1">{plan.description}</p>
                                                     </div>
-                                                    <Badge 
+                                                    <Badge
                                                         variant={plan.isActive ? "success" : "destructive"}
                                                         className="text-xs"
                                                     >
@@ -554,26 +554,26 @@ const MembershipPlanManagement = () => {
                                                 </Button>
 
                                                 <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                <Button variant="destructive" size="sm" className="h-8 text-xs">
-                                                    <FiTrash2 className="w-3 h-3 mr-1" />
-                                                    Delete
-                                                </Button>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="destructive" size="sm" className="h-8 text-xs">
+                                                            <FiTrash2 className="w-3 h-3 mr-1" />
+                                                            Delete
+                                                        </Button>
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot be undone. This will permanently delete your
-                                                            membership plan.
-                                                        </AlertDialogDescription>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot be undone. This will permanently delete your
+                                                                membership plan.
+                                                            </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => deleteMembershipPlan(plan._id)} className="bg-red-500 text-white">Continue</AlertDialogAction>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => deleteMembershipPlan(plan._id)} className="bg-red-500 text-white">Continue</AlertDialogAction>
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>
-                                                    </AlertDialog>
+                                                </AlertDialog>
                                             </CardFooter>
                                         </Card>
                                     ))
@@ -721,7 +721,7 @@ const MembershipPlanManagement = () => {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="paymentType">Payment Type</Label>
-                                            <Select 
+                                            <Select
                                                 onValueChange={(value) => setMembershipPaymentType(value)}
                                                 value={membershipPaymentType}
                                             >
@@ -742,7 +742,7 @@ const MembershipPlanManagement = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="accessType">Access Type</Label>
-                                            <Select 
+                                            <Select
                                                 onValueChange={(value) => setMembershipAccessType(value)}
                                                 value={membershipAccessType}
                                             >
@@ -768,7 +768,7 @@ const MembershipPlanManagement = () => {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="shift">Shift</Label>
-                                            <Select 
+                                            <Select
                                                 onValueChange={(value) => setMembershipShift(value)}
                                                 value={membershipShift}
                                             >
@@ -843,7 +843,7 @@ const MembershipPlanManagement = () => {
                                     {/* Target Audience */}
                                     <div className="space-y-2">
                                         <Label htmlFor="targetAudience">Target Audience</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setTargetAudience(value)}
                                             value={targetAudience}
                                         >
@@ -886,7 +886,7 @@ const MembershipPlanManagement = () => {
                                     {/* Add Currency Selection */}
                                     <div className="space-y-2">
                                         <Label htmlFor="currency">Currency</Label>
-                                        <Select 
+                                        <Select
                                             onValueChange={(value) => setCurrency(value)}
                                             value={currency}
                                             defaultValue="NPR"
@@ -919,7 +919,7 @@ const MembershipPlanManagement = () => {
                                             {isEditMode ? 'Cancel' : 'Reset'}
                                         </Button>
                                         <Button type="submit" disabled={isSubmitting}>
-                                            {isSubmitting ? <FiLoader className="w-4 h-4 mr-2 animate-spin" />: <FiSave className="w-4 h-4 mr-2" />}
+                                            {isSubmitting ? <FiLoader className="w-4 h-4 mr-2 animate-spin" /> : <FiSave className="w-4 h-4 mr-2" />}
                                             {isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Plan" : "Create Plan")}
                                         </Button>
                                     </div>

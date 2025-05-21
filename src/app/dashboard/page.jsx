@@ -21,9 +21,9 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const AdminDashboard = () => {
 
-  const {user} = useUser();
+  const { user } = useUser();
   const loggedInUser = user?.user;
-  
+
   const router = useRouter();
   const [averageActiveMembers, setAverageActiveMembers] = React.useState(null);
   const [data, setData] = React.useState(null);
@@ -46,7 +46,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://88.198.112.156:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
 
@@ -66,7 +66,7 @@ const AdminDashboard = () => {
 
   const getAverageActiveMembers = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/averageactivemembers');
+      const response = await fetch('http://88.198.112.156:3000/api/averageactivemembers');
       const responseBody = await response.json();
       if (response.ok) {
         setAverageActiveMembers(responseBody.averageActiveMembers);
@@ -159,88 +159,88 @@ const AdminDashboard = () => {
     if (hour < 18) return 'Good Afternoon';
     return 'Good Evening';
   };
-  
+
 
   return (
     <div className="min-h-screen w-full flex justify-center bg-gray-50">
       <div className="w-full px-5 py-7">
 
-      {/* Welcome Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
-        {/* Welcome Card */}
-        <Card className="lg:col-span-8 relative overflow-hidden rounded-2xl shadow-md group">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/90 to-transparent z-10"></div>
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
-          <div className="relative z-20 p-6">
-            <div className="flex flex-col gap-6">
-              <div className="space-y-3 flex flex-col justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-8 bg-blue-400 rounded-full"></div>
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                    {getGreeting()}, {loggedInUser?.firstName}! 👋
-                  </h1>
-                </div>
-                <p className="text-white/80 text-md font-medium max-w-2xl leading-relaxed">
-                Track member activities, manage memberships, and analyze business metrics. Stay on top of your gym's operations and make data-driven decisions to drive success.
-                </p>
-              </div>
-              <div className="flex gap-4">
-                <Button
-                  onClick={() => router.push('/dashboard')}
-                  className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300">
-                  View Progress
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Quick Stats Card */}
-        <Card className="lg:col-span-4 relative rounded-2xl shadow-md overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/70 to-neutral-800/95 z-10"></div>
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-15"></div>
-          <div className="relative z-20 p-3">
-            <div className="space-y-1">
-              <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                  <h3 className="text-xl font-semibold text-white tracking-tight">Performance Overview</h3>
-                </div>
-                <div className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer">
-                  <MdAutorenew className="text-2xl text-white" />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-
-                <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
-                  <div className="space-y-1">
-                    <p className="text-sm text-white/70 font-medium">Active Members</p>
-                    <p className="text-2xl font-bold text-white tracking-tight">{totalActiveMembers || 0}</p>
-                    <p className="text-xs text-blue-400">↑ 8% this week</p>
+        {/* Welcome Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
+          {/* Welcome Card */}
+          <Card className="lg:col-span-8 relative overflow-hidden rounded-2xl shadow-md group">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/90 to-transparent z-10"></div>
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
+            <div className="relative z-20 p-6">
+              <div className="flex flex-col gap-6">
+                <div className="space-y-3 flex flex-col justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-8 bg-blue-400 rounded-full"></div>
+                    <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
+                      {getGreeting()}, {loggedInUser?.firstName}! 👋
+                    </h1>
                   </div>
-                  <div className="p-3 bg-blue-500/20 rounded-lg">
-                    <FaUsers className="text-blue-400" />
-                  </div>
+                  <p className="text-white/80 text-md font-medium max-w-2xl leading-relaxed">
+                    Track member activities, manage memberships, and analyze business metrics. Stay on top of your gym's operations and make data-driven decisions to drive success.
+                  </p>
                 </div>
-
-                <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
-                  <div className="space-y-1">
-                    <p className="text-sm text-white/70 font-medium">New Members</p>
-                    <p className="text-2xl font-bold text-white tracking-tight">{newAdmissionsLength || 0}</p>
-                    <p className="text-xs text-yellow-400">↑ 15% this month</p>
-                  </div>
-                  <div className="p-3 bg-yellow-500/20 rounded-lg">
-                    <RiUserShared2Fill className="text-yellow-400" />
-                  </div>
+                <div className="flex gap-8 mt-16">
+                  <Button
+                    onClick={() => router.push('/dashboard')}
+                    className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300">
+                    View Progress
+                  </Button>
                 </div>
               </div>
             </div>
-          </div>
-        </Card>
-      </div>
+          </Card>
+
+          {/* Quick Stats Card */}
+          <Card className="lg:col-span-4 relative rounded-2xl shadow-md overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/70 to-neutral-800/95 z-10"></div>
+            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-15"></div>
+            <div className="relative z-20 p-3">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-semibold text-white tracking-tight">Performance Overview</h3>
+                  </div>
+                  <div className="p-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer">
+                    <MdAutorenew className="text-2xl text-white" />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+
+                  <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                    <div className="space-y-1">
+                      <p className="text-sm text-white/70 font-medium">Active Members</p>
+                      <p className="text-2xl font-bold text-white tracking-tight">{totalActiveMembers || 0}</p>
+                      <p className="text-xs text-blue-400">↑ 8% this week</p>
+                    </div>
+                    <div className="p-3 bg-blue-500/20 rounded-lg">
+                      <FaUsers className="text-blue-400" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                    <div className="space-y-1">
+                      <p className="text-sm text-white/70 font-medium">New Members</p>
+                      <p className="text-2xl font-bold text-white tracking-tight">{newAdmissionsLength || 0}</p>
+                      <p className="text-xs text-yellow-400">↑ 15% this month</p>
+                    </div>
+                    <div className="p-3 bg-yellow-500/20 rounded-lg">
+                      <RiUserShared2Fill className="text-yellow-400" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </div>
 
         <Card className="py-2 rounded-2xl shadow-sm mb-4 border border-gray-100">
-          <div className="px-4 py-2">
+          <div className="px-3 py-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-blue-50 rounded-lg">
@@ -265,7 +265,7 @@ const AdminDashboard = () => {
               </div>
             </div>
 
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+            <div className="mt-2 rounded-lg">
               <form className="flex flex-col md:flex-row items-start md:items-end gap-4">
                 <div className="flex-1 space-y-2">
                   <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">
@@ -302,7 +302,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="flex gap-2">
-                  <Button 
+                  <Button
                     type="button"
                     variant="outline"
                     className="h-10 px-4 border-gray-200 hover:bg-gray-50"
@@ -328,7 +328,7 @@ const AdminDashboard = () => {
             <Card
               key={item.text}
               className={`overflow-hidden rounded-2xl shadow-md border ${item.border}`}>
-              <div className="p-6 py-6">
+              <div className="p-5 py-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
                     <p className="text-sm font-medium text-gray-500">{item.text}</p>

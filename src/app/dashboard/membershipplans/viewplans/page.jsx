@@ -18,20 +18,20 @@ import { useEffect, useState } from "react";
 
 const ViewPlans = () => {
 
-    const [searchQuery, setSearchQuery] = useState('');
-    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
 
-    useEffect(()=>{
-        const timerId = setTimeout(()=>{
-            setDebouncedSearchQuery(searchQuery);
-        },300);
+  useEffect(() => {
+    const timerId = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300);
 
-        return ()=>clearTimeout(timerId);
-    },[searchQuery]);
+    return () => clearTimeout(timerId);
+  }, [searchQuery]);
 
   const getAllMembershipPlans = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/membershipplans?search=${debouncedSearchQuery}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/membershipplans?search=${debouncedSearchQuery}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -83,27 +83,27 @@ const ViewPlans = () => {
 
         {/* Page Header */}
         <div className="mb-12 w-full flex items-center justify-between bg-white p-4 rounded-lg shadow-md">
-            <div className="w-full lg:w-6/12">
-                <h1 className="text-4xl font-bold text-gray-900 mb-3">
-                    Membership <span className="text-blue-600">Plans</span>
-                </h1>
-                <p className="text-gray-500 text-sm font-medium">
-                    Discover our carefully crafted membership options designed to match your fitness goals and lifestyle
-                </p>
-            </div>
+          <div className="w-full lg:w-6/12">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">
+              Membership <span className="text-blue-600">Plans</span>
+            </h1>
+            <p className="text-gray-500 text-sm font-medium">
+              Discover our carefully crafted membership options designed to match your fitness goals and lifestyle
+            </p>
+          </div>
 
-            <div className="w-full lg:w-6/12 border-b">
-                <Input
-                    value={searchQuery}
-                    onChange={(e)=>setSearchQuery(e.target.value)}
-                    placeholder="Search by name"
-                    className="w-full border-none bg-transparent"
-                />
-            </div>
+          <div className="w-full lg:w-6/12 border-b">
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by name"
+              className="w-full border-none bg-transparent"
+            />
+          </div>
         </div>
 
         {/* Plans Display */}
-        
+
         <div className="space-y-16">
           {categorizedPlans && Object.entries(categorizedPlans).map(([type, plans]) => (
             <section key={type} className="relative">
@@ -123,7 +123,7 @@ const ViewPlans = () => {
                     <CardContent className="p-6">
                       <div className="flex justify-between items-start mb-4">
                         <h3 className="text-xl font-bold text-gray-900">{plan.name}</h3>
-                        <Badge 
+                        <Badge
                           className={`${plan.isActive ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'} font-medium`}
                         >
                           {plan.isActive ? 'Active' : 'Inactive'}
