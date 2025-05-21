@@ -1,11 +1,12 @@
 'use client';
 
+import Pagination from "@/components/ui/CustomPagination.jsx";
 import { CiUndo } from "react-icons/ci";
 import Loader from "@/components/Loader/Loader";
 import { FaList } from "react-icons/fa6";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave,FiCheck, FiInfo, FiEye, FiLoader } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave,FiCheck, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -51,13 +52,14 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useForm } from "react-hook-form";
-import Pagination from "@/components/ui/CustomPagination";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const MembershipPlanManagement = () => {
 
     // React Hook Form
     const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
+
+    const [tabValue, setTabValue] = useState('Current Plans');
 
     // Form Data
     const [availableToAllBranches, setAvailableToAllBranches] = useState(false);
@@ -68,6 +70,15 @@ const MembershipPlanManagement = () => {
     const [targetAudience, setTargetAudience] = useState("General");
     const [planStatus, setPlanStatus] = useState(true);
     const [currency, setCurrency] = useState("NPR");
+
+    // Add filter states
+    const [filters, setFilters] = useState({
+        paymentType: "all",
+        status: "all",
+        accessType: "all",
+        shift: "all",
+        currency: "all"
+    });
 
     // Add resetForm function
     const resetForm = () => {
@@ -147,25 +158,48 @@ const MembershipPlanManagement = () => {
         }
     };
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 6;
+
+    // Filter and search plans
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
+    const [filterByPaymentType, setFilterByPaymentType] = useState("");
+    const [filterByStatus, setFilterByStatus] = useState("");
+    const [filterByAccessType, setFilterByAccessType] = useState("");
+    const [filterByShift, setFilterByShift] = useState("");
+    const [filterByCurrency, setFilterByCurrency] = useState("");
+
+    // Debounce search query
+    useEffect(() => {
+        const delayInputTimeoutId = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 400);
+        return () => clearTimeout(delayInputTimeoutId);
+    }, [searchQuery]);
+
     // Get All Membership Plans
     const getAllMembershipPlans = async ({queryKey}) => {
+        const [,page,searchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency ]= queryKey;
+        console.log(queryKey)
         try{
-            const response = await fetch("http://localhost:3000/api/membershipplans");
+            const response = await fetch(`http://localhost:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
             const data = await response.json();
-            console.log(data);
             return data;
         } catch(error){
             console.error(error);
             throw error;
-        }
-    }   
+        };
+    };
 
-    const { data: membershipPlans, isLoading, error } = useQuery({
-        queryKey: ["membershipPlans"],
+    const { data, isLoading, error } = useQuery({
+        queryKey: ["membershipPlans",currentPage,debouncedSearchQuery,filterByPaymentType,filterByStatus,filterByAccessType,filterByShift,filterByCurrency],
         queryFn: getAllMembershipPlans
     });
 
-    console.log(membershipPlans);
+    const { membershipPlans, totalPages, totalDocuments } = data || {};
 
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -206,8 +240,7 @@ const MembershipPlanManagement = () => {
                 </div>
             </div>
 
-            {/* Tabs */}
-            <Tabs defaultValue="Create Plans">
+            <Tabs value={tabValue} onValueChange={setTabValue}>
                 <TabsList className="mb-2 border rounded-sm border-gray-300"> 
                     <TabsTrigger value="View Plans"> <FiEye className="w-4 h-4 mr-2" /> View Plans</TabsTrigger>
                     <TabsTrigger value="Current Plans"> <FaList className="w-4 h-4 mr-2" /> Current Plans</TabsTrigger>
@@ -219,19 +252,289 @@ const MembershipPlanManagement = () => {
                 </TabsContent>
 
                 <TabsContent value="Current Plans">  
-                    <Card className="rounded-xl w-full shadow-md">
-                        <CardHeader>
-                            <div className='flex justify-between items-center'>
-                                <p className='text-md font-bold'>Current Available Plans</p>
-                            </div>
-                        </CardHeader>
-                        <CardContent className='flex flex-col gap-4 justify-center items-center'>
-                               
-                        </CardContent>
-                    </Card>
+                    <div className="space-y-4">
+                        {/* Filter Card */}
+                        <Card className="rounded-xl shadow-md border border-gray-100">
+                            <CardHeader className="pb-3">
+                                <div className="flex items-center gap-2 justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <FiFilter className="w-5 h-5 text-gray-500" />
+                                        <h3 className="text-lg font-bold">Search and Filter Plans</h3>
+                                    </div>
+
+                                    <Button variant="destructive" className="text-xs"
+                                        onClick={() => {
+                                            setSearchQuery("");
+                                            setFilterByPaymentType("");
+                                            setFilterByStatus("");
+                                            setFilterByAccessType("");
+                                            setFilterByShift("");
+                                            setFilterByCurrency("");
+                                        }}
+                                    >
+                                        <FiRefreshCcw className="w-4 h-4 mr-2" />
+                                        Reset
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                                    {/* Payment Type Filter */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Search</Label>
+                                        <Input
+                                            value={searchQuery}
+                                            onChange={(e) => setSearchQuery(e.target.value)}
+                                            type="text"
+                                            placeholder="Search by name"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Payment Type</Label>
+                                        <Select 
+                                            onValueChange={(value) => setFilterByPaymentType(value)}
+                                        >
+                                            <SelectTrigger className="h-9 rounded-md">
+                                                <SelectValue placeholder="All Types" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Types</SelectItem>
+                                                <SelectItem value="Prepaid">Prepaid</SelectItem>
+                                                <SelectItem value="Recurring">Recurring</SelectItem>
+                                                <SelectItem value="Installment">Installment</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Status Filter */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Status</Label>
+                                        <Select 
+                                            onValueChange={(value) => setFilterByStatus(value)}
+                                        >
+                                            <SelectTrigger className="h-9 rounded-md">
+                                                <SelectValue placeholder="All Status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Status</SelectItem>
+                                                <SelectItem value="Active">Active</SelectItem>
+                                                <SelectItem value="Inactive">Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Access Type Filter */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Access Type</Label>
+                                        <Select 
+                                            onValueChange={(value) => setFilterByAccessType(value)}
+                                        >
+                                            <SelectTrigger className="h-9 rounded-md">
+                                                <SelectValue placeholder="All Access" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Access</SelectItem>
+                                                <SelectItem value="General">General</SelectItem>
+                                                <SelectItem value="Gym & Cardio">Gym & Cardio</SelectItem>
+                                                <SelectItem value="Cardio">Cardio</SelectItem>
+                                                <SelectItem value="All Access">All Access</SelectItem>
+                                                <SelectItem value="Time Based">Time Based</SelectItem>
+                                                <SelectItem value="Location Based">Location Based</SelectItem>
+                                                <SelectItem value="Group Classes">Group Classes</SelectItem>
+                                                <SelectItem value="Zumba">Zumba</SelectItem>
+                                                <SelectItem value="Swimming">Swimming</SelectItem>
+                                                <SelectItem value="Sauna">Sauna</SelectItem>
+                                                <SelectItem value="Online Classes">Online Classes</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Shift Filter */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Shift</Label>
+                                        <Select 
+                                            onValueChange={(value) => setFilterByShift(value)}
+                                        >
+                                            <SelectTrigger className="h-9 rounded-md">
+                                                <SelectValue placeholder="All Shifts" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Shifts</SelectItem>
+                                                <SelectItem value="Morning">Morning</SelectItem>
+                                                <SelectItem value="Daytime">Daytime</SelectItem>
+                                                <SelectItem value="Evening">Evening</SelectItem>
+                                                <SelectItem value="Flexible">Flexible</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* Currency Filter */}
+                                    <div className="space-y-2">
+                                        <Label className="text-sm font-medium">Currency</Label>
+                                        <Select 
+                                            onValueChange={(value) => setFilterByCurrency(value)}
+                                        >
+                                            <SelectTrigger className="h-9 rounded-md">
+                                                <SelectValue placeholder="All Currencies" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="all">All Currencies</SelectItem>
+                                                <SelectItem value="NPR">NPR</SelectItem>
+                                                <SelectItem value="USD">USD</SelectItem>
+                                                <SelectItem value="EUR">EUR</SelectItem>
+                                                <SelectItem value="INR">INR</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {/* Plans Grid */}
+                        <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {isLoading ? (
+                                <div className="col-span-full flex justify-center py-8">
+                                    <Loader />
+                                </div>
+                            ) : (
+                                Array.isArray(membershipPlans) && membershipPlans.length > 0 ? (
+                                    membershipPlans.map((plan) => (
+                                        <Card key={plan._id} className="relative overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-200 group">
+                                            <CardHeader className="pb-2">
+                                                <div className="flex justify-between items-start gap-2">
+                                                    <div>
+                                                        <h3 className="text-base font-semibold line-clamp-1">{plan.name}</h3>
+                                                        <p className="text-xs text-gray-400 line-clamp-2 mt-1">{plan.description}</p>
+                                                    </div>
+                                                    <Badge 
+                                                        variant={plan.isActive ? "success" : "destructive"}
+                                                        className="text-xs"
+                                                    >
+                                                        {plan.isActive ? "Active" : "Inactive"}
+                                                    </Badge>
+                                                </div>
+                                            </CardHeader>
+                                            <CardContent className="space-y-2.5">
+                                                {/* Price Details */}
+                                                <div className="flex justify-between border items-center bg-gray-50 p-2 rounded-md">
+                                                    <span className="text-xs font-medium text-gray-600">Price</span>
+                                                    <span className="font-semibold text-sm">
+                                                        {plan.priceDetails.amount} {plan.priceDetails.currency}
+                                                    </span>
+                                                </div>
+
+                                                {/* Duration */}
+                                                <div className="flex justify-between items-center text-sm">
+                                                    <span className="text-gray-600">Duration</span>
+                                                    <span className="font-medium">{plan.duration} days</span>
+                                                </div>
+
+                                                {/* Access Details */}
+                                                <div className="space-y-1">
+                                                    <div className="flex justify-between items-center text-sm">
+                                                        <span className="text-gray-600">Access</span>
+                                                        <span className="font-medium">{plan.accessDetails.type}</span>
+                                                    </div>
+                                                    {plan.accessDetails.timeRestrictions && (
+                                                        <div className="flex justify-between items-center text-xs text-gray-500">
+                                                            <span>Time</span>
+                                                            <span>
+                                                                {plan.accessDetails.timeRestrictions.startTime} - {plan.accessDetails.timeRestrictions.endTime}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Services */}
+                                                <div>
+                                                    <span className="text-xs font-medium text-gray-600">Services</span>
+                                                    <div className="flex flex-wrap gap-1 mt-1">
+                                                        {plan.servicesIncluded.map((service, index) => (
+                                                            <Badge key={index} variant="secondary" className="text-[10px] py-0">
+                                                                {service}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                {/* Additional Details */}
+                                                <div className="grid grid-cols-2 gap-2 text-xs">
+                                                    <div>
+                                                        <span className="text-gray-600">Payment</span>
+                                                        <p className="font-medium">{plan.membershipPaymentType}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Shift</span>
+                                                        <p className="font-medium">{plan.membershipShift}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Target</span>
+                                                        <p className="font-medium">{plan.targetAudience}</p>
+                                                    </div>
+                                                    <div>
+                                                        <span className="text-gray-600">Available</span>
+                                                        <p className="font-medium">{plan.availableToClients ? "To Clients" : "Internal"}</p>
+                                                    </div>
+                                                </div>
+
+                                                {/* Tags */}
+                                                {plan.customTags && plan.customTags.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1 mt-1">
+                                                        {plan.customTags.map((tag, index) => (
+                                                            <Badge key={index} variant="outline" className="text-[10px] py-0">
+                                                                {tag}
+                                                            </Badge>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </CardContent>
+                                            <CardFooter className="flex justify-end gap-2 pt-2 border-t border-gray-200">
+                                                <Button variant="outline" size="sm" className="h-8 text-xs">
+                                                    <FiEdit className="w-3 h-3 mr-1" />
+                                                    Edit
+                                                </Button>
+                                                <Button variant="destructive" size="sm" className="h-8 text-xs">
+                                                    <FiTrash2 className="w-3 h-3 mr-1" />
+                                                    Delete
+                                                </Button>
+                                            </CardFooter>
+                                        </Card>
+                                    ))
+                                ) : (
+                                    <Card className="col-span-full">
+                                        <CardHeader>
+                                            <CardTitle>
+                                                <p className="text-gray-500 text-sm text-center py-8">No plans found</p>
+                                            </CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="flex justify-center">
+                                            <Button
+                                                onClick={() => setTabValue('Create Plans')}
+                                            >
+                                                <FiPlus className="w-4 h-4 mr-2" />
+                                                Create Plan
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                )
+                            )}
+                        </div>
+
+                        {/* Pagination */}
+                        <div className="w-full flex justify-center lg:justify-end items-center">
+                            <Pagination
+                                total={totalPages}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
+                        </div>
+                    </div>
                 </TabsContent>
 
-                {/* Create plans tab */}
                 <TabsContent value="Create Plans">
                     <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
                         {/* Left Card - Settings */}
