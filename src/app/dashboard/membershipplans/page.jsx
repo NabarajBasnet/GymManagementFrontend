@@ -183,7 +183,6 @@ const MembershipPlanManagement = () => {
     // Get All Membership Plans
     const getAllMembershipPlans = async ({queryKey}) => {
         const [,page,searchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency ]= queryKey;
-        console.log(queryKey)
         try{
             const response = await fetch(`http://localhost:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
             const data = await response.json();
@@ -400,7 +399,7 @@ const MembershipPlanManagement = () => {
                             ) : (
                                 Array.isArray(membershipPlans) && membershipPlans.length > 0 ? (
                                     membershipPlans.map((plan) => (
-                                        <Card key={plan._id} className="relative overflow-hidden hover:shadow-2xl transition-all duration-300 border border-gray-200 group">
+                                        <Card key={plan._id} className="relative overflow-hidden hover:shadow-lg cursor-pointer transition-all duration-300 border border-gray-200 group">
                                             <CardHeader className="pb-2">
                                                 <div className="flex justify-between items-start gap-2">
                                                     <div>
@@ -522,7 +521,8 @@ const MembershipPlanManagement = () => {
                         </div>
 
                         {/* Pagination */}
-                        <div className="w-full flex justify-center lg:justify-end items-center">
+                        <div className="w-full lg:flex justify-center lg:justify-between items-center">
+                            <p className="text-xs font-medium text-gray-500">Showing {totalDocuments} membership out of {totalDocuments} pages</p>
                             <Pagination
                                 total={totalPages}
                                 page={currentPage || 1}
