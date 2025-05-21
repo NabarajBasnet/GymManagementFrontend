@@ -133,7 +133,7 @@ const PersonalTrainingBooking = () => {
   // Update the getTrainingDetails function
   const getTrainingDetails = async (id) => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`);
       const { personalTraining } = await response.json();
 
       if (response.ok && personalTraining) {
@@ -204,8 +204,8 @@ const PersonalTrainingBooking = () => {
 
     try {
       const url = isEditMode
-        ? `http://88.198.112.156:3000/api/personaltraining/${editId}`
-        : 'http://88.198.112.156:3000/api/personaltraining';
+        ? `http://localhost:3000/api/personaltraining/${editId}`
+        : 'http://localhost:3000/api/personaltraining';
 
       const method = isEditMode ? 'PATCH' : 'POST';
 
@@ -353,7 +353,7 @@ const PersonalTrainingBooking = () => {
   // Get all staffs
   const getAllTrainers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
+      const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -372,7 +372,7 @@ const PersonalTrainingBooking = () => {
   // Get all members
   const getAllMembers = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/members`);
+      const response = await fetch(`http://localhost:3000/api/members`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -391,7 +391,7 @@ const PersonalTrainingBooking = () => {
   // Get all packages
   const getAllPackages = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/packages`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining/packages`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -427,7 +427,7 @@ const PersonalTrainingBooking = () => {
   const getAllPersonalTrainingBookings = async ({ queryKey }) => {
     const [, page, status, paymentStatus, search, sortBy, sortOrderDesc] = queryKey;
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+      const response = await fetch(`http://localhost:3000/api/personaltraining?page=${page}&limit=${limit}&status=${status}&paymentStatus=${paymentStatus}&search=${search}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
@@ -446,7 +446,7 @@ const PersonalTrainingBooking = () => {
   // Delete personal training booking
   const deletePersonalTrainingBooking = async (id) => {
     try {
-      const response = await fetch(`http://88.198.112.156:3000/api/personaltraining/${id}`, {
+      const response = await fetch(`http://localhost:3000/api/personaltraining/${id}`, {
         method: 'DELETE'
       });
       const responseBody = await response.json();
@@ -1137,7 +1137,7 @@ const PersonalTrainingBooking = () => {
                       <Label htmlFor="address">Status</Label>
                       <Select onValueChange={(value) => setPackageStatus(value)}>
                         <SelectTrigger className="rounded-md p-6">
-                          <SelectValue placeholder="Filter by status" />
+                          <SelectValue placeholder="Select Status" />
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Active">Active</SelectItem>
@@ -1146,7 +1146,6 @@ const PersonalTrainingBooking = () => {
                           <SelectItem value="Completed">Completed</SelectItem>
                           <SelectItem value="Pending">Pending</SelectItem>
                           <SelectItem value="Refunded">Refunded</SelectItem>
-                          <SelectItem value="Failed">Failed</SelectItem>
                           <SelectItem value="Expired">Expired</SelectItem>
                         </SelectContent>
                       </Select>
