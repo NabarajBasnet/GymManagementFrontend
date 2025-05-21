@@ -206,6 +206,10 @@ const Sidebar = () => {
                     icon: FaMoneyCheckAlt,
                     title: 'Membership Plans',
                     link: '/dashboard/membershipplans',
+                    subObj: [
+                        { icon: FaMoneyCheckAlt, title: 'Plans Management', link: '/dashboard/membershipplans/plansmanagement' },
+                        { icon: FaMoneyCheckAlt, title: 'View Plans', link: '/dashboard/membershipplans/viewplans' },
+                    ]
                 },
                 {
                     icon: LuLogs,
@@ -241,7 +245,7 @@ const Sidebar = () => {
                     link: '/dashboard/staffmanagement',
                     subObj: [
                         { icon: IoPeopleSharp, title: 'Staffs', link: '/dashboard/staffmanagement/staffs' },
-                        { icon: FcParallelTasks, title: 'Task Management', link: '/dashboard/staffmanagement/taskmanagement', badge: 'New', badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500' },
+                        { icon: FcParallelTasks, title: 'Task Management', link: '/dashboard/staffmanagement/taskmanagement', },
                     ]
                 },
             ]
@@ -259,8 +263,6 @@ const Sidebar = () => {
                     icon: MdAttachMoney,
                     title: 'Billing',
                     link: '/dashboard/billing',
-                    badge: 'New',
-                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500',
                     subObj: [
                         { icon: AiFillProduct, title: 'Services & Products', link: '/dashboard/billing/servicesandproducts' },
                         { icon: TbListDetails, title: 'Billing Profile', link: '/dashboard/billing/billingprofile' },
@@ -274,8 +276,6 @@ const Sidebar = () => {
                     icon: FaTags,
                     title: 'Promotions & Offers',
                     link: '/dashboard/promotionsandoffers',
-                    badge: 'New',
-                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500',
                 },
             ]
         },
@@ -292,8 +292,6 @@ const Sidebar = () => {
                     icon: GiBiceps,
                     title: 'Personal Training',
                     link: '/dashboard/personaltraining',
-                    badge: 'New',
-                    badgeColor: 'bg-gradient-to-r from-emerald-500 to-teal-500',
                     subObj: [
                         { icon: FaDumbbell, title: 'Training Packages', link: '/dashboard/personaltraining/trainingpackages' },
                         { icon: FaDumbbell, title: 'Book Training', link: '/dashboard/personaltraining/booktraining' },

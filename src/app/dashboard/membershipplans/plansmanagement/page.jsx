@@ -294,7 +294,9 @@ const MembershipPlanManagement = () => {
                             Create and manage your gym membership plans.
                         </p>
                     </div>
-                    <Button className="rounded-sm">
+                    <Button className="rounded-sm"
+                        onClick={() => setTabValue('Create Plans')}
+                    >
                         <FiPlus className="h-4 w-4 mr-2" />
                         Create Package
                     </Button>
@@ -303,14 +305,9 @@ const MembershipPlanManagement = () => {
 
             <Tabs value={tabValue} onValueChange={setTabValue}>
                 <TabsList className="mb-2 border rounded-sm border-gray-300"> 
-                    <TabsTrigger value="View Plans"> <FiEye className="w-4 h-4 mr-2" /> View Plans</TabsTrigger>
                     <TabsTrigger value="Current Plans"> <FaList className="w-4 h-4 mr-2" /> Current Plans</TabsTrigger>
                     <TabsTrigger value="Create Plans"> <FiPlus className="w-4 h-4 mr-2" /> Create Plans</TabsTrigger>
                 </TabsList> 
-
-                <TabsContent value="View Plans">  
-                    <h1>View Plans</h1>
-                </TabsContent>
 
                 <TabsContent value="Current Plans">  
                     <div className="space-y-4">
@@ -602,7 +599,7 @@ const MembershipPlanManagement = () => {
 
                         {/* Pagination */}
                         <div className="w-full lg:flex justify-center lg:justify-between items-center">
-                            <p className="text-xs font-medium text-gray-500">Showing {totalDocuments} membership out of {totalDocuments} pages</p>
+                            <p className="text-xs font-medium text-gray-500 text-center md:text-left my-3 lg:my-0">Showing {totalDocuments} membership out of {totalDocuments} pages</p>
                             <Pagination
                                 total={totalPages}
                                 page={currentPage || 1}

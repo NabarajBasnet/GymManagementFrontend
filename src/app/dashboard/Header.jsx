@@ -241,6 +241,10 @@ const Header = () => {
                     icon: FaMoneyCheckAlt,
                     title: 'Membership Plans',
                     link: '/dashboard/membershipplans',
+                    subObj: [
+                        { icon: FaMoneyCheckAlt, title: 'Plans Management', link: '/dashboard/membershipplans/plansmanagement' },
+                        { icon: FaMoneyCheckAlt, title: 'View Plans', link: '/dashboard/membershipplans/viewplans' },
+                    ]
                 },
                 {
                     icon: LuLogs,
