@@ -60,6 +60,10 @@ const MembershipPlanManagement = () => {
     const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm();
 
     const [tabValue, setTabValue] = useState('Current Plans');
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [editingPlan, setEditingPlan] = useState(null);
+
+    const queryClient = useQueryClient();
 
     // Form Data
     const [availableToAllBranches, setAvailableToAllBranches] = useState(false);
@@ -137,8 +141,14 @@ const MembershipPlanManagement = () => {
         };
 
         try {
-            const response = await fetch("http://localhost:3000/api/membershipplans", {
-                method: "POST",
+            const url = isEditMode 
+                ? `http://localhost:3000/api/membershipplans/${editingPlan._id}`
+                : "http://localhost:3000/api/membershipplans";
+            
+            const method = isEditMode ? "PUT" : "POST";
+
+            const response = await fetch(url, {
+                method,
                 body: JSON.stringify(finalObj),
                 headers: {
                     "Content-Type": "application/json"
@@ -146,16 +156,49 @@ const MembershipPlanManagement = () => {
             });
 
             const responseBody = await response.json();
-            if(responseBody.success){
-                toast.success("Membership plan created successfully");
-                resetForm(); // Use the new resetForm function instead of just reset()
+            if(responseBody.success || responseBody._id){
+                toast.success(isEditMode ? "Membership plan updated successfully" : "Membership plan created successfully");
+                resetForm();
+                setTabValue('Current Plans');
+                setIsEditMode(false);
+                setEditingPlan(null);
+                queryClient.invalidateQueries({ queryKey: ["membershipPlans"] });
             } else {
-                toast.error(responseBody.message || "Error creating membership plan");
+                toast.error(responseBody.message || `Error ${isEditMode ? 'updating' : 'creating'} membership plan`);
             }
         } catch(error) {
             console.error(error);
-            toast.error("Error creating membership plan");
+            toast.error(`Error ${isEditMode ? 'updating' : 'creating'} membership plan`);
         }
+    };
+
+    // Add function to handle edit button click
+    const handleEditClick = (plan) => {
+        setIsEditMode(true);
+        setEditingPlan(plan);
+        setTabValue('Create Plans');
+        
+        // Set form values
+        reset({
+            name: plan.name,
+            description: plan.description,
+            duration: plan.duration,
+            price: plan.priceDetails.amount,
+            startTime: plan.accessDetails.timeRestrictions?.startTime || '',
+            endTime: plan.accessDetails.timeRestrictions?.endTime || '',
+            servicesIncluded: plan.servicesIncluded,
+            customTags: plan.customTags?.join(', ') || ''
+        });
+
+        // Set state values
+        setAvailableToAllBranches(plan.availableForAllBranches);
+        setAvailableToClients(plan.availableToClients);
+        setMembershipPaymentType(plan.membershipPaymentType);
+        setMembershipAccessType(plan.accessDetails.type);
+        setMembershipShift(plan.membershipShift);
+        setTargetAudience(plan.targetAudience);
+        setPlanStatus(plan.isActive);
+        setCurrency(plan.priceDetails.currency);
     };
 
     // Pagination
@@ -199,6 +242,25 @@ const MembershipPlanManagement = () => {
     });
 
     const { membershipPlans, totalPages, totalDocuments } = data || {};
+
+
+    const deleteMembershipPlan = async(id) => {
+        try{
+            const response = await fetch(`http://localhost:3000/api/membershipplans/${id}`, {
+                method: "DELETE"
+            });
+            const responseBody = await response.json();
+            if(response.ok){
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries({ queryKey: ["membershipPlans"] });
+            } else {
+                toast.error(responseBody.message || "Error deleting membership plan");
+            }   
+        } catch(error){
+            console.error(error);
+            toast.error("Error deleting membership plan");
+        }
+    }
 
     return (
         <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
@@ -489,14 +551,32 @@ const MembershipPlanManagement = () => {
                                                 )}
                                             </CardContent>
                                             <CardFooter className="flex justify-end gap-2 pt-2 border-t border-gray-200">
-                                                <Button variant="outline" size="sm" className="h-8 text-xs">
+                                                <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => handleEditClick(plan)}>
                                                     <FiEdit className="w-3 h-3 mr-1" />
                                                     Edit
                                                 </Button>
+
+                                                <AlertDialog>
+                                                <AlertDialogTrigger asChild>
                                                 <Button variant="destructive" size="sm" className="h-8 text-xs">
                                                     <FiTrash2 className="w-3 h-3 mr-1" />
                                                     Delete
                                                 </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete your
+                                                            membership plan.
+                                                        </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => deleteMembershipPlan(plan._id)} className="bg-red-500 text-white">Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                    </AlertDialog>
                                             </CardFooter>
                                         </Card>
                                     ))
@@ -585,7 +665,7 @@ const MembershipPlanManagement = () => {
                         <Card className="rounded-xl w-full lg:w-9/12 shadow-md">
                             <CardHeader>
                                 <div className='flex justify-between items-center'>
-                                    <p className='text-lg font-bold'>New Membership Plan Form</p>
+                                    <p className='text-lg font-bold'>{isEditMode ? 'Edit Membership Plan' : 'New Membership Plan Form'}</p>
                                 </div>
                             </CardHeader>
                             <CardContent>
@@ -644,9 +724,12 @@ const MembershipPlanManagement = () => {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="paymentType">Payment Type</Label>
-                                            <Select onValueChange={(value) => setMembershipPaymentType(value)}>
+                                            <Select 
+                                                onValueChange={(value) => setMembershipPaymentType(value)}
+                                                value={membershipPaymentType}
+                                            >
                                                 <SelectTrigger className="py-6 rounded-md">
-                                                    <SelectValue placeholder="Select payment type" />
+                                                    <SelectValue placeholder={membershipPaymentType || "Select payment type"} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Prepaid">Prepaid</SelectItem>
@@ -662,9 +745,12 @@ const MembershipPlanManagement = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="accessType">Access Type</Label>
-                                            <Select onValueChange={(value) => setMembershipAccessType(value)}>
+                                            <Select 
+                                                onValueChange={(value) => setMembershipAccessType(value)}
+                                                value={membershipAccessType}
+                                            >
                                                 <SelectTrigger className="py-6 rounded-md">
-                                                    <SelectValue placeholder="Select access type" />
+                                                    <SelectValue placeholder={membershipAccessType || "Select access type"} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="General">General</SelectItem>
@@ -685,9 +771,12 @@ const MembershipPlanManagement = () => {
 
                                         <div className="space-y-2">
                                             <Label htmlFor="shift">Shift</Label>
-                                            <Select onValueChange={(value) => setMembershipShift(value)}>
+                                            <Select 
+                                                onValueChange={(value) => setMembershipShift(value)}
+                                                value={membershipShift}
+                                            >
                                                 <SelectTrigger className="py-6 rounded-md">
-                                                    <SelectValue placeholder="Select shift" />
+                                                    <SelectValue placeholder={membershipShift || "Select shift"} />
                                                 </SelectTrigger>
                                                 <SelectContent>
                                                     <SelectItem value="Flexible">Flexible</SelectItem>
@@ -757,9 +846,12 @@ const MembershipPlanManagement = () => {
                                     {/* Target Audience */}
                                     <div className="space-y-2">
                                         <Label htmlFor="targetAudience">Target Audience</Label>
-                                        <Select onValueChange={(value) => setTargetAudience(value)}>
+                                        <Select 
+                                            onValueChange={(value) => setTargetAudience(value)}
+                                            value={targetAudience}
+                                        >
                                             <SelectTrigger className="py-6 rounded-md">
-                                                <SelectValue placeholder="Select target audience" />
+                                                <SelectValue placeholder={targetAudience || "Select target audience"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="General">General</SelectItem>
@@ -799,10 +891,11 @@ const MembershipPlanManagement = () => {
                                         <Label htmlFor="currency">Currency</Label>
                                         <Select 
                                             onValueChange={(value) => setCurrency(value)}
+                                            value={currency}
                                             defaultValue="NPR"
                                         >
                                             <SelectTrigger className="py-6 rounded-md">
-                                                <SelectValue placeholder="Select currency" />
+                                                <SelectValue placeholder={currency || "Select currency"} />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="NPR">NPR</SelectItem>
@@ -817,13 +910,20 @@ const MembershipPlanManagement = () => {
                                         <Button
                                             type="button"
                                             variant="outline"
-                                            onClick={resetForm}
+                                            onClick={() => {
+                                                resetForm();
+                                                if (isEditMode) {
+                                                    setIsEditMode(false);
+                                                    setEditingPlan(null);
+                                                    setTabValue('Current Plans');
+                                                }
+                                            }}
                                         >
-                                            Reset
+                                            {isEditMode ? 'Cancel' : 'Reset'}
                                         </Button>
                                         <Button type="submit" disabled={isSubmitting}>
                                             {isSubmitting ? <FiLoader className="w-4 h-4 mr-2 animate-spin" />: <FiSave className="w-4 h-4 mr-2" />}
-                                            {isSubmitting ? "Creating..." : "Create Plan"}
+                                            {isSubmitting ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Plan" : "Create Plan")}
                                         </Button>
                                     </div>
                                 </form>
