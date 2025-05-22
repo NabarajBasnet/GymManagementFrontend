@@ -1,5 +1,6 @@
 'use client';
 
+import { TiEye } from "react-icons/ti";
 import {
     Tooltip,
     TooltipTrigger,
@@ -436,6 +437,7 @@ const ScheduleManagement = () => {
                                                 <TableHead>Start Time</TableHead>
                                                 <TableHead>End Time</TableHead>
                                                 <TableHead>Capacity</TableHead>
+                                                <TableHead>Members</TableHead>
                                                 <TableHead className="text-right">Actions</TableHead>
                                             </TableRow>
                                         </TableHeader>
@@ -540,6 +542,12 @@ const ScheduleManagement = () => {
                                                                 classItem.capacity
                                                             )}
                                                         </TableCell>
+                                                        <TableCell className="flex items-center gap-2">
+                                                            <Button variant="outline" size="sm">
+                                                                <TiEye/>
+                                                            </Button>
+                                                            <p>View</p>
+                                                        </TableCell>
                                                         <TableCell>
                                                             <div className="flex items-center justify-end gap-2">
                                                                 {editingId === classItem.id ? (
@@ -603,6 +611,22 @@ const ScheduleManagement = () => {
                                 </div>
                             </CardContent>
                         </Card>
+
+                        <div className='my-2'>
+                            <div className="mt-4 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm font-gray-700">
+                                    Showing <span className="font-semibold text-sm font-gray-700">{1}</span> to <span className="font-semibold text-sm font-gray-700">{2}</span> of <span className="font-semibold">{20}</span> entries
+                                </p>
+                                <Pagination
+                                    total={1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>

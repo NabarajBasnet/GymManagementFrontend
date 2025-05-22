@@ -1,5 +1,6 @@
 'use client';
 
+import { AiOutlineSchedule } from "react-icons/ai";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -59,7 +60,7 @@ const MemberHeader = ({ activeTab }) => {
         { id: 'payments', icon: <FaMoneyBillWaveAlt size={20} />, label: "Payments" },
         { id: 'feedback', icon: <Star size={20} />, label: "Feedback" },
         { id: 'promotions&offers', icon: <FaTag size={20} />, label: "Promotions & Offers" },
-        { id: 'customersupport', icon: <RiCustomerServiceFill size={20} />, label: "Customer Support" },
+        { id: 'classbooking', icon: <AiOutlineSchedule size={20} />, label: "Class Booking" },
         { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
