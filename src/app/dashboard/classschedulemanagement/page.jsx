@@ -74,7 +74,7 @@ const ScheduleManagement = () => {
     const [activeTab, setActiveTab] = useState("view");
     const [isEditing, setIsEditing] = useState(false);
     const [editingScheduleId, setEditingScheduleId] = useState(null);
-const queryClient = useQueryClient();
+    const queryClient = useQueryClient();
 
     const ref = useRef(null);
 
@@ -250,6 +250,25 @@ const queryClient = useQueryClient();
             hour12: true
         });
     };
+
+    const deleteSchedule = async (scheduleId) => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/schedules/${scheduleId}`, {
+                method: 'DELETE',
+            });
+
+            const responseBody = await response.json();
+            if (response.ok) {
+                toast.success(responseBody.message);
+                queryClient.invalidateQueries(['schedules']);
+            } else {
+                toast.error(responseBody.message);
+            }
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error("Failed to delete schedule");
+        }
+    }
 
     return (
         <div className='w-full bg-gray-100 flex justify-center min-h-screen p-4 md:p-6'>
@@ -587,7 +606,7 @@ const queryClient = useQueryClient();
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
                                                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction onClick={() => handleDelete(schedule._id)}>
+                                                                            <AlertDialogAction onClick={() => deleteSchedule(schedule._id)}>
                                                                                 Continue
                                                                             </AlertDialogAction>
                                                                         </AlertDialogFooter>
