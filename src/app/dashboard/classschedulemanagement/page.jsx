@@ -70,7 +70,7 @@ import Loader from "@/components/Loader/Loader";
 
 const ScheduleManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(6);
     const [activeTab, setActiveTab] = useState("view");
     const [isEditing, setIsEditing] = useState(false);
     const [editingScheduleId, setEditingScheduleId] = useState(null);
@@ -222,7 +222,7 @@ const ScheduleManagement = () => {
     // Get all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/schedules`);
+            const response = await fetch(`http://localhost:3000/api/schedules?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -232,11 +232,14 @@ const ScheduleManagement = () => {
     };
 
     const { data: schedulesData, isLoading: schedulesLoading } = useQuery({
-        queryKey: ['schedules'],
+        queryKey: ['schedules', currentPage],
         queryFn: getAllSchedules
     });
 
-    const { schedules } = schedulesData || {};
+    const { schedules, totalPages } = schedulesData || {};
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = startEntry + schedules?.length - 1;
+    console.log(schedules);
 
     // Format datetime for display
     const formatDateTime = (dateTimeString) => {
@@ -535,7 +538,7 @@ const ScheduleManagement = () => {
                                 <CardHeader>
                                     <CardTitle>Scheduled Classes</CardTitle>
                                     <CardDescription>
-                                        Total: {schedules.length} classes
+                                        Total: <span className="font-semibold">{schedules?.length}</span> classes
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
@@ -627,14 +630,13 @@ const ScheduleManagement = () => {
                             </div>
                         )}
 
-                        {Array.isArray(schedules) && schedules.length > 0 && (
                             <div className='my-2'>
                                 <div className="mt-4 px-4 md:flex justify-between items-center">
                                     <p className="font-medium text-center text-sm text-gray-700">
-                                        Showing <span className="font-semibold">{1}</span> to <span className="font-semibold">{schedules.length}</span> of <span className="font-semibold">{schedules.length}</span> entries
+                                        Showing <span className="font-semibold">{startEntry}</span> to <span className="font-semibold">{endEntry}</span> of <span className="font-semibold">{schedules?.length}</span> entries
                                     </p>
                                     <Pagination
-                                        total={Math.ceil(schedules.length / limit)}
+                                        total={totalPages}
                                         page={currentPage}
                                         onChange={setCurrentPage}
                                         withEdges={true}
@@ -643,7 +645,6 @@ const ScheduleManagement = () => {
                                     />
                                 </div>
                             </div>
-                        )}
                     </TabsContent>
                 </Tabs>
             </div>
