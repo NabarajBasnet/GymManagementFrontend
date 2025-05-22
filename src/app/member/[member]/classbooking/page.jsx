@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FiCalendar, FiClock, FiUsers, FiMapPin, FiLoader, FiSearch } from 'react-icons/fi';
 import { MdFitnessCenter } from 'react-icons/md';
@@ -40,15 +40,25 @@ import { useMember } from '@/components/Providers/LoggedInMemberProvider';
 const ClassBooking = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
     const {member}  = useMember();
     const loggedInMember = member?.loggedInMember;
 
     const queryClient = useQueryClient();
 
+    // Debounce serach query
+    useEffect(() => {
+        const debounceTimer = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300);
+        return () => clearTimeout(debounceTimer);
+    }, [searchQuery]);
+
     // Fetch all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/schedules`);
+            const response = await fetch(`http://localhost:3000/api/schedules?search=${debouncedSearchQuery}&category=${selectedCategory}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -58,7 +68,7 @@ const ClassBooking = () => {
     };
 
     const { data: schedulesData, isLoading } = useQuery({
-        queryKey: ['schedules'],
+        queryKey: ['schedules', debouncedSearchQuery, selectedCategory],
         queryFn: getAllSchedules
     });
 
@@ -184,7 +194,7 @@ const ClassBooking = () => {
                                 className="pl-12 h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl"
                             />
                         </div>
-                        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                        <Select onValueChange={(value) => setSelectedCategory(value)}>
                             <SelectTrigger className="w-full lg:w-[200px] h-12 border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl">
                                 <SelectValue placeholder="Select Category" />
                             </SelectTrigger>
