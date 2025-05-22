@@ -1,6 +1,11 @@
 'use client';
 
-
+import {
+    Tooltip,
+    TooltipTrigger,
+    TooltipContent,
+    TooltipProvider
+  } from "@/components/ui/tooltip";
 import { MdSafetyCheck } from "react-icons/md";
 import { MdStarBorderPurple500 } from "react-icons/md";
 import { FaAddressCard } from "react-icons/fa";
@@ -329,8 +334,19 @@ const AdminFeedBackManagement = () => {
                                                             <span className="truncate">{feedback.category}</span>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="lg:min-w-[200px]">
-                                                        <span className="truncate block">{feedback.subject}</span>
+                                                    <TableCell className="lg:min-w-[200px] max-w-[120px]">
+                                                    <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                <span className="truncate block whitespace-nowrap cursor-default">
+                                                                    {feedback.subject}
+                                                                </span>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="top">
+                                                                {feedback.subject}
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                     </TableCell>
                                                     <TableCell className="lg:min-w-[150px]">
                                                         {feedback.isAnonymous ? (
