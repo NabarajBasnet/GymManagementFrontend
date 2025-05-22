@@ -47,7 +47,7 @@ const ClassBooking = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 6;
+    const limit = 3;
 
     const {member}  = useMember();
     const loggedInMember = member?.loggedInMember;
