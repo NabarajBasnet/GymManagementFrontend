@@ -31,7 +31,7 @@ const ViewPlans = () => {
 
   const getAllMembershipPlans = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/membershipplans?search=${debouncedSearchQuery}`);
+      const response = await fetch(`http://88.198.112.156:3000/api/membershipplans?search=${debouncedSearchQuery}`);
       const data = await response.json();
       return data;
     } catch (error) {

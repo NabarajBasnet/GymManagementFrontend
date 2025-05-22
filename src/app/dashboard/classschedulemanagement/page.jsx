@@ -1,28 +1,14 @@
 'use client';
 
 import { TiEye } from "react-icons/ti";
-import {
-    Tooltip,
-    TooltipTrigger,
-    TooltipContent,
-    TooltipProvider
-} from "@/components/ui/tooltip";
-import { MdSafetyCheck } from "react-icons/md";
-import { MdStarBorderPurple500 } from "react-icons/md";
-import { FaAddressCard } from "react-icons/fa";
-import { GiBiceps } from "react-icons/gi";
-import { FaDumbbell } from "react-icons/fa";
-import { RiCustomerService2Line } from "react-icons/ri";
-import { HiMiniUsers } from "react-icons/hi2";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave, FiCheck, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw, FiSearch } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader,  FiRefreshCcw, FiSearch } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
 
 // UI Components
-import { Switch } from "@/components/ui/switch";
 import {
     Card,
     CardContent,
@@ -43,7 +29,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
     Select,
     SelectContent,
@@ -119,8 +104,8 @@ const ScheduleManagement = () => {
 
         try {
             const url = isEditing 
-                ? `http://localhost:3000/api/schedules/${editingScheduleId}`
-                : 'http://localhost:3000/api/schedules';
+                ? `http://88.198.112.156:3000/api/schedules/${editingScheduleId}`
+                : 'http://88.198.112.156:3000/api/schedules';
             
             const method = isEditing ? 'PUT' : 'POST';
 
@@ -189,7 +174,7 @@ const ScheduleManagement = () => {
     // Get all staffs
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3000/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -230,7 +215,7 @@ const ScheduleManagement = () => {
     // Get all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/schedules?page=${currentPage}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:3000/api/schedules?page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -263,7 +248,7 @@ const ScheduleManagement = () => {
 
     const deleteSchedule = async (scheduleId) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/schedules/${scheduleId}`, {
+            const response = await fetch(`http://88.198.112.156:3000/api/schedules/${scheduleId}`, {
                 method: 'DELETE',
             });
 

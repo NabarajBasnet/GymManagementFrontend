@@ -93,7 +93,7 @@ const MemberFeedbackForm = () => {
     console.log('Data ready for backend:', submissionData);
     
     try {
-      const response = await fetch('http://localhost:3000/api/feedbacks', {
+      const response = await fetch('http://88.198.112.156:3000/api/feedbacks', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
