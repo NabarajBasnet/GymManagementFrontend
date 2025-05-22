@@ -7,6 +7,7 @@ import { MdFitnessCenter } from 'react-icons/md';
 import toast from 'react-hot-toast';
 
 // UI Components
+import Pagination from '@/components/ui/CustomPagination';
 import {
     Card,
     CardContent,
@@ -38,9 +39,15 @@ import {
 import { useMember } from '@/components/Providers/LoggedInMemberProvider';
 
 const ClassBooking = () => {
+
+    // Search and Filter
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 6;
 
     const {member}  = useMember();
     const loggedInMember = member?.loggedInMember;
@@ -58,7 +65,7 @@ const ClassBooking = () => {
     // Fetch all schedules
     const getAllSchedules = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/schedules?search=${debouncedSearchQuery}&category=${selectedCategory}`);
+            const response = await fetch(`http://localhost:3000/api/schedules?search=${debouncedSearchQuery}&category=${selectedCategory}&page=${currentPage}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -68,11 +75,14 @@ const ClassBooking = () => {
     };
 
     const { data: schedulesData, isLoading } = useQuery({
-        queryKey: ['schedules', debouncedSearchQuery, selectedCategory],
+        queryKey: ['schedules', debouncedSearchQuery, selectedCategory, currentPage],
         queryFn: getAllSchedules
     });
 
-    const { schedules } = schedulesData || {};
+    const { schedules ,totalPages, totalSchedules } = schedulesData || {};
+
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = startEntry + (schedules?.length || 0) - 1;
 
     // Format datetime for display
     const formatDateTime = (dateTimeString) => {
@@ -398,6 +408,22 @@ const ClassBooking = () => {
                         </p>
                     </div>
                 )}
+
+                <div className='my-2'>
+                    <div className="mt-4 px-4 md:flex justify-between items-center">
+                        <p className="font-medium text-center text-sm font-gray-700">
+                            Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalSchedules?totalSchedules:0}</span> entries
+                        </p>
+                        <Pagination
+                            total={totalPages}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );
