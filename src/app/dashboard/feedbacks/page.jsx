@@ -386,7 +386,7 @@ const AdminFeedBackManagement = () => {
                                                                 value={feedback.status}
                                                                 onValueChange={(value) => handleStatusUpdate(feedback._id, value)}
                                                             >
-                                                                <SelectTrigger className="w-28">
+                                                                <SelectTrigger className="w-28 rounded-sm">
                                                                     <SelectValue placeholder="Update Status" />
                                                                 </SelectTrigger>
                                                                 <SelectContent>
