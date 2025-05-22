@@ -313,8 +313,8 @@ const Sidebar = () => {
                 },
                 {
                     icon: AiOutlineSchedule,
-                    title: 'Schedule',
-                    link: '/dashboard/schedulemanagement',
+                    title: 'Class Schedules',
+                    link: '/dashboard/classschedulemanagement',
                 },
             ]
         },

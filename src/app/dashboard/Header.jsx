@@ -345,8 +345,8 @@ const Header = () => {
                 },
                 {
                     icon: AiOutlineSchedule,
-                    title: 'Schedule Management',
-                    link: '/dashboard/schedulemanagement',
+                    title: 'Class Schedules',
+                    link: '/dashboard/classschedulemanagement',
                 },
             ]
         },
