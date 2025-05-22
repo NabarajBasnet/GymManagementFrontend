@@ -67,6 +67,14 @@ import { useForm, Controller } from "react-hook-form";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import Loader from "@/components/Loader/Loader";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 
 const ScheduleManagement = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -239,7 +247,6 @@ const ScheduleManagement = () => {
     const { schedules, totalPages } = schedulesData || {};
     const startEntry = (currentPage - 1) * limit + 1;
     const endEntry = startEntry + schedules?.length - 1;
-    console.log(schedules);
 
     // Format datetime for display
     const formatDateTime = (dateTimeString) => {
@@ -577,10 +584,45 @@ const ScheduleManagement = () => {
                                                             </Badge>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                                                <TiEye className="h-4 w-4" />
-                                                                <span>{schedule.members?.length || 0}</span>
-                                                            </Button>
+                                                            <Dialog>
+                                                                <DialogTrigger asChild>
+                                                                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                                                        <TiEye className="h-4 w-4" />
+                                                                        <span>{schedule.members?.length || 0}</span>
+                                                                    </Button>
+                                                                </DialogTrigger>
+                                                                <DialogContent className="sm:max-w-[425px]">
+                                                                    <DialogHeader>
+                                                                        <DialogTitle>Class Members</DialogTitle>
+                                                                        <DialogDescription>
+                                                                            List of members enrolled in {schedule.className}
+                                                                        </DialogDescription>
+                                                                    </DialogHeader>
+                                                                    <div className="py-4">
+                                                                        {schedule.members && schedule.members.length > 0 ? (
+                                                                            <div className="space-y-2">
+                                                                                {schedule.members.map((member, index) => (
+                                                                                    <div key={member._id} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+                                                                                        <div className="flex items-center gap-2">
+                                                                                            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                                                                                <span className="text-blue-600 font-medium">
+                                                                                                    {member.fullName.charAt(0)}
+                                                                                                </span>
+                                                                                            </div>
+                                                                                            <span className="font-medium">{member.fullName}</span>
+                                                                                        </div>
+                                                                                        <Badge variant="outline">
+                                                                                            {schedule.memberBookings[index]?.status || 'Booked'}
+                                                                                        </Badge>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        ) : (
+                                                                            <p className="text-center text-gray-500">No members enrolled yet</p>
+                                                                        )}
+                                                                    </div>
+                                                                </DialogContent>
+                                                            </Dialog>
                                                         </TableCell>
                                                         <TableCell>
                                                             <div className="flex items-center justify-end gap-2">
