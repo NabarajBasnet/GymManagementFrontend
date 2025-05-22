@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { FiCalendar, FiClock, FiUsers, FiMapPin, FiLoader, FiSearch } from 'react-icons/fi';
 import { MdFitnessCenter } from 'react-icons/md';
 import toast from 'react-hot-toast';
@@ -35,10 +35,15 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import { useMember } from '@/components/Providers/LoggedInMemberProvider';
 
 const ClassBooking = () => {
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [searchQuery, setSearchQuery] = useState('');
+    const {member}  = useMember();
+    const loggedInMember = member?.loggedInMember;
+
+    const queryClient = useQueryClient();
 
     // Fetch all schedules
     const getAllSchedules = async () => {
@@ -98,26 +103,37 @@ const ClassBooking = () => {
         return matchesCategory && matchesSearch;
     });
 
+    // States for booking
+    const [isBooking, setIsBooking] = useState(false);
+
     // Handle class booking
     const handleBookClass = async (scheduleId) => {
+        setIsBooking(true);
         try {
             const response = await fetch(`http://localhost:3000/api/schedules/${scheduleId}/book`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
+                body: JSON.stringify({
+                    member: loggedInMember?._id,
+                }),
             });
 
             const responseBody = await response.json();
             
             if (response.ok) {
+                queryClient.invalidateQueries({ queryKey: ['schedules'] });
                 toast.success(responseBody.message);
+                setIsBooking(false);
             } else {
                 toast.error(responseBody.message);
+                setIsBooking(false);
             }
         } catch (error) {
             console.log("Error: ", error);
             toast.error("Failed to book class");
+            setIsBooking(false);
         }
     };
 
@@ -343,7 +359,6 @@ const ClassBooking = () => {
                                                 <DialogFooter className="gap-3">
                                                     <Button 
                                                         variant="outline" 
-                                                        onClick={() => document.querySelector('dialog').close()}
                                                         className="flex-1 h-11 rounded-xl border-gray-300 hover:bg-gray-50"
                                                     >
                                                         Cancel
@@ -352,7 +367,7 @@ const ClassBooking = () => {
                                                         onClick={() => handleBookClass(schedule._id)}
                                                         className="flex-1 h-11 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold"
                                                     >
-                                                        Confirm Booking
+                                                        {isBooking ? <FiLoader className="animate-spin" /> : 'Confirm Booking'}
                                                     </Button>
                                                 </DialogFooter>
                                             </DialogContent>
