@@ -224,7 +224,7 @@ const AdminFeedBackManagement = () => {
                 {/* Filters */}
                 <Card className="mb-6">
                     <CardContent className="p-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
                                 <Label>Search</Label>
                                 <Input
@@ -266,6 +266,15 @@ const AdminFeedBackManagement = () => {
                                         <SelectItem value="Other">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
+                            </div>
+                            <div className="flex items-center justify-end">
+                            <Button onClick={() => {
+                                setSearchQuery("");
+                                setSelectedStatus("");
+                                setSelectedCategory("");
+                                setLimit(10);
+                                setCurrentPage(1);
+                            }}>Reset Filters</Button>
                             </div>
                         </div>
                     </CardContent>
