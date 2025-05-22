@@ -1,30 +1,39 @@
 'use client'
 
-import React, { useState } from 'react';
+import toast from 'react-hot-toast';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 import { Star, Send, User, Shield, MessageSquare, Building2, Users, Wrench, Dumbbell, Sparkles, AlertTriangle, Phone, Mail, Globe, Smartphone } from 'lucide-react';
+import { useMember } from '@/components/Providers/LoggedInMemberProvider';
 
 const MemberFeedbackForm = () => {
-  const [formData, setFormData] = useState({
-    category: '',
-    subject: '',
-    message: '',
-    rating: 0,
-    detailedRatings: {
-      cleanliness: 0,
-      equipment: 0,
-      staff: 0,
-      value: 0
-    },
-    staffDetails: {
-      staffName: '',
-      interactionType: ''
-    },
-    isAnonymous: false,
-    source: 'Website'
-  });
 
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+    const {member} = useMember();
+    const loggedInmember = member.loggedInMember
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm({
+    defaultValues: {
+      category: '',
+      subject: '',
+      rating: 0,
+      detailedRatings: {
+        cleanliness: 0,
+        equipment: 0,
+        staff: 0,
+        value: 0
+      },
+      message: '',
+      source: '',
+      isAnonymous: false
+    }
+  });
 
   const categories = [
     { value: 'Equipment', icon: Wrench, label: 'Equipment' },
@@ -52,111 +61,13 @@ const MemberFeedbackForm = () => {
     'Other'
   ];
 
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: ''
-      }));
-    }
-  };
+  const selectedCategory = watch('category');
+  const formValues = watch();
 
-  const handleNestedInputChange = (parent, field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [parent]: {
-        ...prev[parent],
-        [field]: value
-      }
-    }));
-  };
-
-  const handleStarRating = (field, rating, isDetailed = false) => {
-    if (isDetailed) {
-      handleNestedInputChange('detailedRatings', field, rating);
-    } else {
-      handleInputChange(field, rating);
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-
-    if (!formData.category) {
-      newErrors.category = 'Please select a feedback category';
-    }
-
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Subject is required';
-    }
-
-    if (!formData.message.trim()) {
-      newErrors.message = 'Message is required';
-    }
-
-    if (formData.message.trim().length < 10) {
-      newErrors.message = 'Message must be at least 10 characters long';
-    }
-
-    if (formData.category === 'Staff' && !formData.staffDetails.staffName.trim()) {
-      newErrors.staffName = 'Staff name is required for staff feedback';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-
-    setIsSubmitting(true);
-    
-    try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Reset form
-      setFormData({
-        category: '',
-        subject: '',
-        message: '',
-        rating: 0,
-        detailedRatings: {
-          cleanliness: 0,
-          equipment: 0,
-          staff: 0,
-          value: 0
-        },
-        staffDetails: {
-          staffName: '',
-          interactionType: ''
-        },
-        isAnonymous: false,
-        source: 'Website'
-      });
-      
-      alert('Thank you for your feedback! We appreciate your input and will review it shortly.');
-    } catch (error) {
-      alert('There was an error submitting your feedback. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const StarRating = ({ rating, onRatingChange, size = 20 }) => {
+  const StarRating = ({ name, rating, onRatingChange, size = 20, maxStars = 5 }) => {
     return (
       <div className="flex space-x-1">
-        {[1, 2, 3, 4, 5].map((star) => (
+        {Array.from({ length: maxStars }, (_, i) => i + 1).map((star) => (
           <Star
             key={star}
             size={size}
@@ -172,23 +83,37 @@ const MemberFeedbackForm = () => {
     );
   };
 
-  const OverallStarRating = ({ rating, onRatingChange }) => {
-    return (
-      <div className="flex space-x-1">
-        {[1, 2, 3, 4, 5, 6].map((star) => (
-          <Star
-            key={star}
-            size={24}
-            className={`cursor-pointer transition-colors duration-200 ${
-              star <= rating
-                ? 'text-yellow-400 fill-yellow-400'
-                : 'text-gray-300 hover:text-yellow-300'
-            }`}
-            onClick={() => onRatingChange(star)}
-          />
-        ))}
-      </div>
-    );
+  const onSubmit = async (data) => {
+    // Prepare data for backend
+    const submissionData = {
+      ...data,
+      memberId: loggedInmember?._id,
+    };
+
+    console.log('Data ready for backend:', submissionData);
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/feedbacks', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submissionData),
+      });
+    
+      const responseBody = await response.json();
+
+      if (response.ok) {
+      toast.success(responseBody.message);
+      reset();
+      }else{
+        toast.error(responseBody.message);
+      }
+
+    } catch (error) {
+      console.error('Submission error:', error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -198,7 +123,7 @@ const MemberFeedbackForm = () => {
         <p className="text-blue-100">Help us improve your experience by sharing your thoughts and suggestions</p>
       </div>
 
-      <div onSubmit={handleSubmit} className="bg-gray-50 p-6 rounded-b-lg shadow-lg">
+      <form onSubmit={handleSubmit(onSubmit)} className="bg-gray-50 p-6 rounded-b-lg shadow-lg">
         {/* Category Selection */}
         <div className="mb-6">
           <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -209,9 +134,9 @@ const MemberFeedbackForm = () => {
               <button
                 key={value}
                 type="button"
-                onClick={() => handleInputChange('category', value)}
+                onClick={() => setValue('category', value, { shouldValidate: true })}
                 className={`p-3 rounded-lg border-2 transition-all duration-200 flex flex-col items-center space-y-2 ${
-                  formData.category === value
+                  selectedCategory === value
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 bg-white hover:border-gray-300 text-gray-600'
                 }`}
@@ -221,7 +146,11 @@ const MemberFeedbackForm = () => {
               </button>
             ))}
           </div>
-          {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
+          <input
+            type="hidden"
+            {...register('category', { required: 'Please select a category' })}
+          />
+          {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category.message}</p>}
         </div>
 
         {/* Subject */}
@@ -230,13 +159,18 @@ const MemberFeedbackForm = () => {
             Subject *
           </label>
           <input
+            {...register('subject', { 
+              required: 'Subject is required',
+              minLength: {
+                value: 3,
+                message: 'Subject must be at least 3 characters'
+              }
+            })}
             type="text"
-            value={formData.subject}
-            onChange={(e) => handleInputChange('subject', e.target.value)}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="Brief summary of your feedback"
           />
-          {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject}</p>}
+          {errors.subject && <p className="text-red-500 text-sm mt-1">{errors.subject.message}</p>}
         </div>
 
         {/* Overall Rating */}
@@ -245,12 +179,15 @@ const MemberFeedbackForm = () => {
             Overall Rating
           </label>
           <div className="flex items-center space-x-3">
-            <OverallStarRating
-              rating={formData.rating}
-              onRatingChange={(rating) => handleStarRating('rating', rating)}
+            <StarRating
+              name="rating"
+              rating={formValues.rating}
+              onRatingChange={(rating) => setValue('rating', rating)}
+              size={24}
+              maxStars={6}
             />
             <span className="text-sm text-gray-600">
-              {formData.rating > 0 ? `${formData.rating}/6` : 'No rating'}
+              {formValues.rating > 0 ? `${formValues.rating}/6` : 'No rating'}
             </span>
           </div>
         </div>
@@ -261,13 +198,16 @@ const MemberFeedbackForm = () => {
             Detailed Ratings
           </label>
           <div className="grid md:grid-cols-2 gap-4">
-            {Object.entries(formData.detailedRatings).map(([key, value]) => (
+            {Object.entries(formValues.detailedRatings).map(([key, value]) => (
               <div key={key} className="flex items-center justify-between p-3 bg-white rounded-lg border">
                 <span className="text-sm font-medium text-gray-700 capitalize">{key}</span>
                 <div className="flex items-center space-x-2">
                   <StarRating
+                    name={`detailedRatings.${key}`}
                     rating={value}
-                    onRatingChange={(rating) => handleStarRating(key, rating, true)}
+                    onRatingChange={(rating) => 
+                      setValue(`detailedRatings.${key}`, rating)
+                    }
                   />
                   <span className="text-xs text-gray-500 w-8">
                     {value > 0 ? `${value}/5` : ''}
@@ -279,7 +219,7 @@ const MemberFeedbackForm = () => {
         </div>
 
         {/* Staff Details (conditional) */}
-        {formData.category === 'Staff' && (
+        {selectedCategory === 'Staff' && (
           <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
             <h3 className="text-sm font-semibold text-blue-800 mb-3">Staff Details</h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -288,21 +228,23 @@ const MemberFeedbackForm = () => {
                   Staff Name *
                 </label>
                 <input
+                  {...register('staffDetails.staffName', {
+                    required: selectedCategory === 'Staff' ? 'Staff name is required' : false
+                  })}
                   type="text"
-                  value={formData.staffDetails.staffName}
-                  onChange={(e) => handleNestedInputChange('staffDetails', 'staffName', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter staff member's name"
                 />
-                {errors.staffName && <p className="text-red-500 text-sm mt-1">{errors.staffName}</p>}
+                {errors.staffDetails?.staffName && (
+                  <p className="text-red-500 text-sm mt-1">{errors.staffDetails.staffName.message}</p>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Interaction Type
                 </label>
                 <select
-                  value={formData.staffDetails.interactionType}
-                  onChange={(e) => handleNestedInputChange('staffDetails', 'interactionType', e.target.value)}
+                  {...register('staffDetails.interactionType')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="">Select interaction type</option>
@@ -321,16 +263,21 @@ const MemberFeedbackForm = () => {
             Your Message *
           </label>
           <textarea
-            value={formData.message}
-            onChange={(e) => handleInputChange('message', e.target.value)}
+            {...register('message', {
+              required: 'Message is required',
+              minLength: {
+                value: 10,
+                message: 'Message must be at least 10 characters'
+              }
+            })}
             rows={5}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-vertical"
             placeholder="Please provide detailed feedback about your experience..."
           />
           <div className="flex justify-between items-center mt-1">
-            {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
+            {errors.message && <p className="text-red-500 text-sm">{errors.message.message}</p>}
             <p className="text-sm text-gray-500 ml-auto">
-              {formData.message.length} characters (minimum 10)
+              {formValues.message.length} characters (minimum 10)
             </p>
           </div>
         </div>
@@ -345,9 +292,9 @@ const MemberFeedbackForm = () => {
               <button
                 key={value}
                 type="button"
-                onClick={() => handleInputChange('source', value)}
+                onClick={() => setValue('source', value)}
                 className={`flex items-center space-x-2 px-3 py-2 rounded-lg border transition-all duration-200 ${
-                  formData.source === value
+                  formValues.source === value
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 bg-white hover:border-gray-300 text-gray-600'
                 }`}
@@ -357,6 +304,10 @@ const MemberFeedbackForm = () => {
               </button>
             ))}
           </div>
+          <input
+            type="hidden"
+            {...register('source')}
+          />
         </div>
 
         {/* Anonymous Option */}
@@ -364,8 +315,7 @@ const MemberFeedbackForm = () => {
           <label className="flex items-center space-x-3 cursor-pointer">
             <input
               type="checkbox"
-              checked={formData.isAnonymous}
-              onChange={(e) => handleInputChange('isAnonymous', e.target.checked)}
+              {...register('isAnonymous')}
               className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <span className="text-sm font-medium text-gray-700">
@@ -392,7 +342,7 @@ const MemberFeedbackForm = () => {
             <span>{isSubmitting ? 'Submitting...' : 'Submit Feedback'}</span>
           </button>
         </div>
-      </div>
+      </form>
     </div>
   );
 };
