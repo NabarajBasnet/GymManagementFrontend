@@ -130,7 +130,7 @@ const PromotionsAndOfferManagement = () => {
     const [offerStatus, setSelectedOfferStatus] = useState('');
     const [discountValueIsPercentage, setDiscountValueIsPercentage] = useState(false);
     const [selectedAudiences, setSelectedAudiences] = useState([]);
-    const baseURL = `http://88.198.112.156:3000/api/promotionsandoffers`;
+    const baseURL = `http://localhost:3000/api/promotionsandoffers`;
 
     const onFormSubmit = async (data) => {
         const {
@@ -259,7 +259,7 @@ const PromotionsAndOfferManagement = () => {
 
     const deleteOffer = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/promotionsandoffers/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/promotionsandoffers/${id}`, {
                 method: "DELETE"
             });
 
