@@ -10,18 +10,17 @@ import { Button } from '@/components/ui/button';
 import {
     CheckCircle2,
     X,
-    AtSign,
     User,
-    Phone,
     Lock,
-    MapPin,
-    Calendar,
     ChevronRight,
     Github,
     Linkedin
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function RootSignUpPage() {
+
+    const router = useRouter();
     const {
         register,
         reset,
@@ -34,7 +33,6 @@ export default function RootSignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            console.log(data);
             const response = await fetch('http://localhost:3000/api/rootuser/register', {
                 method: 'POST',
                 headers: {
@@ -47,6 +45,7 @@ export default function RootSignUpPage() {
             if (response.ok) {
                 toast.success('Account created successfully!');
                 reset();
+                router.push('/root/login');
             } else {
                 toast.error(responseBody.message || 'Failed to create account');
             }
@@ -101,7 +100,7 @@ export default function RootSignUpPage() {
 
                             <div className="pt-3 text-xs">
                                 <p>Already have an account?</p>
-                                <Link href="/login" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
+                                <Link href="/root/login" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
                                     Sign in to your account <ChevronRight className="ml-1 w-3 h-3" />
                                 </Link>
                             </div>

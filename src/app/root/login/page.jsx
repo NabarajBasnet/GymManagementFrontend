@@ -21,7 +21,7 @@ import {
   Linkedin
 } from 'lucide-react';
 
-export function RootLoginForm({ className, ...props }) {
+const RootLoginForm = ({ className, ...props })=> {
   const router = useRouter();
   const {
     register,
@@ -33,7 +33,7 @@ export function RootLoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://localhost:3000/api/rootuser/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -43,143 +43,66 @@ export function RootLoginForm({ className, ...props }) {
       });
 
       const responseBody = await response.json();
-      if (response.status === 404) {
-        setError(
-          "email", {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
+      console.log('Response Body: ', responseBody);
 
-      if (response.status === 403) {
-        setError(
-          "password", {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
-
-      if (response.status === 400) {
-        setError(
-          ["password", "email"], {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
-
-      if (response.status === 200) {
+      if(response.ok){
         toast.success(responseBody.message || 'Login successful!');
+        router.push(responseBody.redirectUrl);
         reset();
-        router.push('/dashboard');
       } else {
         toast.error(responseBody.message);
       }
-
     } catch (error) {
       toast.error('An unexpected error occurred. Please try again.');
       console.log('Error: ', error);
     };
   };
 
-  const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder, rightElement }) => (
-    <div className="space-y-1">
-      <div className="flex items-center">
-        <Label
-          htmlFor={name}
-          className="text-sm font-medium text-gray-700 block"
-        >
-          {label}
-        </Label>
-        {rightElement && rightElement}
-      </div>
-
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          {icon}
-        </div>
-
-        <Input
-          id={name}
-          type={type}
-          className={`pl-10 w-full transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
-          placeholder={placeholder}
-          {...register(name, validation)}
-        />
-
-        {error && (
-          <motion.div
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <X className="h-5 w-5 text-red-500" />
-          </motion.div>
-        )}
-      </div>
-      
-      {error && (
-        <motion.p
-          className="text-sm font-medium text-red-500 mt-1"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {error.message}
-        </motion.p>
-      )}
-    </div>
-  );
-
   return (
-    <div className="w-full flex items-center justify-center md:p-4">
-
+    <div className="min-h-screen w-full flex items-center justify-center p-4">
       <motion.div
-        className="w-full rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
+        className="w-full max-w-6xl rounded-2xl overflow-hidden bg-white shadow-xl"
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col lg:flex-row min-h-[600px]">
           {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 text-white">
+          <div className="lg:w-5/12 flex relative flex-col items-center justify-center p-8 bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
             <motion.div
-              className="text-center"
+              className="text-center max-w-sm"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.8 }}
             >
               <motion.div
-                className="md:mb-8 mb-1 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
+                className="md:mb-8 mb-4 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20"
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.25)' }}
               >
                 <User className="w-8 h-8 text-white" />
               </motion.div>
 
               <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
-              <p className="text-white/80 md:mb-8">Log in to access your dashboard.</p>
+              <p className="text-white/90 md:mb-8 text-lg">Log in to access your dashboard.</p>
 
               <div className="hidden md:flex flex-col space-y-4 mb-8">
                 <div className="flex items-center space-x-3 text-sm">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
                   <span>Secure account access</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
                   <span>Personalized dashboard</span>
                 </div>
                 <div className="flex items-center space-x-3 text-sm">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                  <CheckCircle2 className="w-5 h-5 text-emerald-300" />
                   <span>Seamless user experience</span>
                 </div>
               </div>
 
               <div className="pt-4 text-sm">
                 <p>Don't have an account?</p>
-                <Link href="/signup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
+                <Link href="/root/signup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
                   Create a new account <ChevronRight className="ml-1 w-4 h-4" />
                 </Link>
               </div>
@@ -187,50 +110,55 @@ export function RootLoginForm({ className, ...props }) {
           </div>
 
           {/* Right side - Form */}
-          <div className="lg:w-7/12 p-8 bg-white/95">
-            <div className="w-full md:mx-auto">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
-                <p className="text-gray-600">Fill in your credentials to access your account</p>
+          <div className="lg:w-7/12 p-8 md:p-12 bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl bg-gradient-to-br from-gray-800 via-stone-600 to-neutral-800 text-white">
+            <div className="w-full max-w-md mx-auto">
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-white">Sign In</h2>
+                <p className="text-gray-100 mt-2 font-medium text-sm">Fill in your credentials to access your account</p>
               </div>
 
-              <form onSubmit={handleSubmit(onLoginUser)} className="space-y-4">
-                <FormField
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  icon={<AtSign className="text-gray-400" />}
-                  validation={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Please enter a valid email"
-                    }
-                  }}
-                  error={errors.email}
-                  placeholder="john.doe@example.com"
-                />
+              <form onSubmit={handleSubmit(onLoginUser)} className="space-y-6">
+                  <div>
+                      <Label>Email</Label>
+                      <Input
+                        className="text-black"
+                        type="email"
+                        placeholder="Eg: john.doe@example.com"
+                        {...register('email', {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Please enter a valid email"
+                          }
+                        })}
+                      />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">
+                          {errors.email.message}
+                        </p>
+                      )}
+                    </div>
 
-                <FormField
-                  label="Password"
-                  name="password"
-                  type="password"
-                  icon={<Lock className="text-gray-400" />}
-                  validation={{
-                    required: "Password is required"
-                  }}
-                  error={errors.password}
-                  placeholder="Enter your password"
-                  rightElement={
-                    <a href="#" className="ml-auto text-sm text-blue-600 hover:underline">
-                      Forgot password?
-                    </a>
-                  }
-                />
+                    <div>
+                  <Label>Password</Label>
+                  <Input
+                    className="text-black"
+                    type="password"
+                    placeholder="Enter your password"
+                    {...register('password', {
+                      required: "Password is required",
+                    })}
+                  />
+                  {errors.password && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
 
                 <Button
                   type="submit"
-                  className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
+                  className="w-full py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center shadow-md hover:shadow-lg"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
@@ -245,41 +173,22 @@ export function RootLoginForm({ className, ...props }) {
                     <span>Sign In</span>
                   )}
                 </Button>
-
-                {/* <div className="relative text-center text-sm mt-4">
-                  <span className="relative z-10 bg-white/95 px-4 text-gray-500">
-                    Or continue with
-                  </span>
-                  <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div> */}
-
-                {/* <div className="grid grid-cols-3 gap-4">
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
-                    <FaApple className="text-xl" />
-                  </Button>
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
-                    <FaGoogle className="text-xl" />
-                  </Button>
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
-                    <FaMeta className="text-xl" />
-                  </Button>
-                </div> */}
               </form>
 
-              <div className="mt-6 text-center">
-                <p className="text-xs text-gray-500">
+              <div className="mt-8 text-center">
+                <p className="text-sm font-medium text-gray-100">
                   By signing in, you agree to our{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
+                  <a href="#" className="text-blue-500 hover:underline">Terms of Service</a>{' '}
                   and{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+                  <a href="#" className="text-blue-500 hover:underline">Privacy Policy</a>.
                 </p>
 
-                <div className="mt-6 flex items-center justify-center space-x-4">
-                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
-                    <Github className="h-5 w-5" />
+                <div className="mt-6 flex items-center justify-center space-x-6">
+                  <a href="#" className="text-gray-400 hover:text-blue-500 transition-colors">
+                    <Github className="h-6 w-6" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
-                    <Linkedin className="h-5 w-5" />
+                  <a href="#" className="text-gray-400 hover:text-blue-500 transition-colors">
+                    <Linkedin className="h-6 w-6" />
                   </a>
                 </div>
               </div>
@@ -290,3 +199,5 @@ export function RootLoginForm({ className, ...props }) {
     </div>
   );
 }
+
+export default RootLoginForm;
