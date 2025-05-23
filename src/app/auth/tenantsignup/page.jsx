@@ -49,17 +49,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 export default function SignUpPage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [passwordStrength, setPasswordStrength] = useState(0);
-    const totalSteps = 4;
+    const totalSteps = 3;
 
     const {
         register,
         reset,
         handleSubmit,
         watch,
-        formState: { isSubmitting, errors }
-    } = useForm();
+        trigger,
+        formState: { isSubmitting, errors, isValid }
+    } = useForm({
+        mode: "onChange"
+    });
 
     const watchPassword = watch('password', '');
+    const watchFields = watch();
 
     const calculatePasswordStrength = (password) => {
         let strength = 0;
@@ -84,8 +88,36 @@ export default function SignUpPage() {
         return "Strong";
     };
 
+    const validateStep = async () => {
+        let fieldsToValidate = [];
+        
+        switch(currentStep) {
+            case 1:
+                fieldsToValidate = ['organizationName', 'ownerName', 'email', 'phone', 'address'];
+                break;
+            case 2:
+                fieldsToValidate = ['password', 'confirmPassword'];
+                break;
+        }
+
+        const result = await trigger(fieldsToValidate);
+        return result;
+    };
+
+    const nextStep = async () => {
+        const isValid = await validateStep();
+        if (isValid) {
+            setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+        }
+    };
+
+    const prevStep = () => {
+        setCurrentStep((prev) => Math.max(prev - 1, 1));
+    };
+
     const onSignUp = async (data) => {
         try {
+            console.log('Form Data:', data);
             const response = await fetch('http://localhost:3000/api/tenant/signup', {
                 method: 'POST',
                 headers: {
@@ -107,75 +139,57 @@ export default function SignUpPage() {
         }
     };
 
-    const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder, options }) => (
-        <div className="space-y-1">
-            <Label
-                htmlFor={name}
-                className="text-sm font-medium text-gray-700 block"
-            >
-                {label}
-            </Label>
+    const timezones = [
+        { name: "UTC", offset: 0 },
+        { name: "America/New_York", offset: -5 },   // Eastern Time
+        { name: "America/Los_Angeles", offset: -8 },// Pacific Time
+        { name: "Europe/London", offset: 0 },       // GMT
+        { name: "Europe/Paris", offset: 1 },        // CET
+        { name: "Asia/Kolkata", offset: 5.5 },      // IST
+        { name: "Asia/Tokyo", offset: 9 },          // JST
+        { name: "Australia/Sydney", offset: 10 },   // AEST
+        { name: "Asia/Kathmandu", offset: 5.45 },   // NPT
+        { name: "America/Sao_Paulo", offset: -3 },
+        { name: "Africa/Johannesburg", offset: 2 },
+        { name: "Asia/Dubai", offset: 4 },
+      ];      
 
-            <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    {icon}
-                </div>
+    const languages = [
+        { name: "English", code: "en" },
+        { name: "Spanish", code: "es" },
+        { name: "French", code: "fr" },
+        { name: "German", code: "de" },
+      ];
 
-                {options ? (
-                    <Select {...register(name, validation)}>
-                        <SelectTrigger className="pl-10 w-full">
-                            <SelectValue placeholder={placeholder} />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {options.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                ) : (
-                    <Input
-                        id={name}
-                        type={type}
-                        className={`pl-10 w-full transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
-                        placeholder={placeholder}
-                        {...register(name, validation)}
-                    />
-                )}
-
-                {error && (
-                    <motion.div
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <X className="h-5 w-5 text-red-500" />
-                    </motion.div>
-                )}
-            </div>
-
-            {error && (
-                <motion.p
-                    className="text-sm font-medium text-red-500 mt-1"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    {error.message}
-                </motion.p>
-            )}
-        </div>
-    );
-
-    const nextStep = () => {
-        setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
-    };
-
-    const prevStep = () => {
-        setCurrentStep((prev) => Math.max(prev - 1, 1));
-    };
+    const currencies = [
+        { name: "USD", code: "USD" , symbol: "$"},
+        { name: "EUR", code: "EUR" , symbol: "€"},
+        { name: "NPR", code: "NPR" , symbol: "₨"},
+        { name: "GBP", code: "GBP" , symbol: "£"},
+        { name: "INR", code: "INR" , symbol: "₹"},
+        { name: "AUD", code: "AUD" , symbol: "A$"},
+        { name: "CAD", code: "CAD" , symbol: "C$"},
+        { name: "NZD", code: "NZD" , symbol: "NZ$"},
+        { name: "RUB", code: "RUB" , symbol: "₽"},
+        { name: "CNY", code: "CNY" , symbol: "¥"},
+        { name: "JPY", code: "JPY" , symbol: "¥"},
+        { name: "KRW", code: "KRW" , symbol: "₩"},
+        { name: "MXN", code: "MXN" , symbol: "₱"},
+        { name: "BRL", code: "BRL" , symbol: "R$"},
+        { name: "ARS", code: "ARS" , symbol: "ARS"},
+        { name: "CHF", code: "CHF" , symbol: "CHF"},
+        { name: "HKD", code: "HKD" , symbol: "HK$"},
+        { name: "SGD", code: "SGD" , symbol: "SGD"},
+        { name: "SEK", code: "SEK" , symbol: "SEK"},
+        { name: "NOK", code: "NOK" , symbol: "NOK"},
+        { name: "RSD", code: "RSD" , symbol: "RSD"},
+        { name: "ZAR", code: "ZAR" , symbol: "ZAR"},
+        { name: "BDT", code: "BDT" , symbol: "BDT"},
+        { name: "PKR", code: "PKR" , symbol: "PKR"},
+        { name: "KES", code: "KES" , symbol: "KES"},
+        { name: "ZMW", code: "ZMW" , symbol: "ZMW"},
+        
+      ];
 
     return (
         <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 p-4">
@@ -225,7 +239,7 @@ export default function SignUpPage() {
                                                 </div>
                                             ))}
                                         </div>
-                                        <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+                                        <Progress value={(currentStep / totalSteps) * 100} className="h-2 bg-white" />
                                     </div>
 
                                     <div className="hidden md:flex flex-col space-y-4 mb-8">
@@ -265,70 +279,133 @@ export default function SignUpPage() {
                                             >
                                                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Basic Information</h2>
                                                 
-                                                <FormField
-                                                    label="Organization Name"
-                                                    name="organizationName"
-                                                    icon={<Building2 className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Organization name is required"
-                                                    }}
-                                                    error={errors.organizationName}
-                                                    placeholder="Your Gym Name"
-                                                />
+                                                <div>
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Organization Name
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Building2 className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="text"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="Your Company Name"
+                                                            {...register('organizationName', {
+                                                                required: "Organization name is required"
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.organizationName && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.organizationName.message}
+                                                        </p>
+                                                    )}
+                                                </div>
 
-                                                <FormField
-                                                    label="Owner Name"
-                                                    name="ownerName"
-                                                    icon={<User className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Owner name is required"
-                                                    }}
-                                                    error={errors.ownerName}
-                                                    placeholder="John Doe"
-                                                />
+                                                <div>
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Owner Name
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <User className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="text"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="John Doe"
+                                                            {...register('ownerName', {
+                                                                required: "Owner name is required"
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.ownerName && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.ownerName.message}
+                                                        </p>
+                                                    )}
+                                                </div>
 
-                                                <FormField
-                                                    label="Email Address"
-                                                    name="email"
-                                                    type="email"
-                                                    icon={<AtSign className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Email is required",
-                                                        pattern: {
-                                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                                            message: "Please enter a valid email"
-                                                        }
-                                                    }}
-                                                    error={errors.email}
-                                                    placeholder="john.doe@example.com"
-                                                />
+                                                <div>
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Email Address
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <AtSign className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="email"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="john.doe@example.com"
+                                                            {...register('email', {
+                                                                required: "Email is required",
+                                                                pattern: {
+                                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                                    message: "Please enter a valid email"
+                                                                }
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.email && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.email.message}
+                                                        </p>
+                                                    )}
+                                                </div>
 
-                                                <FormField
-                                                    label="Phone Number"
-                                                    name="phone"
-                                                    type="tel"
-                                                    icon={<Phone className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Phone number is required",
-                                                        pattern: {
-                                                            value: /^[0-9+\-\s()]{10,15}$/,
-                                                            message: "Please enter a valid phone number"
-                                                        }
-                                                    }}
-                                                    error={errors.phone}
-                                                    placeholder="+1 (555) 000-0000"
-                                                />
+                                                <div>
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Phone Number
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Phone className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="tel"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="+1 (555) 000-0000"
+                                                            {...register('phone', {
+                                                                required: "Phone number is required",
+                                                                pattern: {
+                                                                    value: /^[0-9+\-\s()]{10,15}$/,
+                                                                    message: "Please enter a valid phone number"
+                                                                }
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.phone && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.phone.message}
+                                                        </p>
+                                                    )}
+                                                </div>
 
-                                                <FormField
-                                                    label="Address"
-                                                    name="address"
-                                                    icon={<MapPin className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Address is required"
-                                                    }}
-                                                    error={errors.address}
-                                                    placeholder="123 Main St, City, Country"
-                                                />
+                                                <div>
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Address
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <MapPin className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="text"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="123 Main St, City, Country"
+                                                            {...register('address', {
+                                                                required: "Address is required"
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.address && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.address.message}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </motion.div>
                                         )}
 
@@ -355,6 +432,10 @@ export default function SignUpPage() {
                                                             placeholder="Create a password"
                                                             {...register('password', {
                                                                 required: "Password is required",
+                                                                minLength: {
+                                                                    value: 8,
+                                                                    message: "Password must be at least 8 characters"
+                                                                },
                                                                 onChange: (e) => setPasswordStrength(calculatePasswordStrength(e.target.value))
                                                             })}
                                                         />
@@ -377,85 +458,36 @@ export default function SignUpPage() {
                                                     )}
                                                 </div>
 
-                                                <FormField
-                                                    label="Confirm Password"
-                                                    name="confirmPassword"
-                                                    type="password"
-                                                    icon={<Lock className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Please confirm your password",
-                                                        validate: value =>
-                                                            value === watchPassword || "Passwords do not match"
-                                                    }}
-                                                    error={errors.confirmPassword}
-                                                    placeholder="Confirm your password"
-                                                />
+                                                <div className="space-y-2">
+                                                    <Label className="text-sm font-medium text-gray-700 block">
+                                                        Confirm Password
+                                                    </Label>
+                                                    <div className="relative">
+                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                            <Lock className="h-5 w-5 text-gray-400" />
+                                                        </div>
+                                                        <Input
+                                                            type="password"
+                                                            className="pl-10 w-full transition-all duration-200"
+                                                            placeholder="Confirm your password"
+                                                            {...register('confirmPassword', {
+                                                                required: "Please confirm your password",
+                                                                validate: value =>
+                                                                    value === watchPassword || "Passwords do not match"
+                                                            })}
+                                                        />
+                                                    </div>
+                                                    {errors.confirmPassword && (
+                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                            <X className="w-4 h-4 mr-1" /> {errors.confirmPassword.message}
+                                                        </p>
+                                                    )}
+                                                </div>
                                             </motion.div>
                                         )}
 
-                                        {/* Step 3: Subscription Details */}
+                                        {/* Step 3: Preferences */}
                                         {currentStep === 3 && (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                            >
-                                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Subscription Details</h2>
-
-                                                <FormField
-                                                    label="Subscription Start Date"
-                                                    name="tenantSubscriptionStartDate"
-                                                    type="date"
-                                                    icon={<Calendar className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Start date is required"
-                                                    }}
-                                                    error={errors.tenantSubscriptionStartDate}
-                                                />
-
-                                                <FormField
-                                                    label="Subscription End Date"
-                                                    name="tenantSubscriptionEndDate"
-                                                    type="date"
-                                                    icon={<Calendar className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "End date is required"
-                                                    }}
-                                                    error={errors.tenantSubscriptionEndDate}
-                                                />
-
-                                                <FormField
-                                                    label="Payment Amount"
-                                                    name="tenantSubscriptionPaymentAmount"
-                                                    type="number"
-                                                    icon={<DollarSign className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Payment amount is required"
-                                                    }}
-                                                    error={errors.tenantSubscriptionPaymentAmount}
-                                                    placeholder="Enter amount"
-                                                />
-
-                                                <FormField
-                                                    label="Payment Method"
-                                                    name="tenantSubscriptionPaymentMethod"
-                                                    icon={<CreditCard className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Payment method is required"
-                                                    }}
-                                                    error={errors.tenantSubscriptionPaymentMethod}
-                                                    placeholder="Select payment method"
-                                                    options={[
-                                                        { value: 'credit_card', label: 'Credit Card' },
-                                                        { value: 'debit_card', label: 'Debit Card' },
-                                                        { value: 'bank_transfer', label: 'Bank Transfer' }
-                                                    ]}
-                                                />
-                                            </motion.div>
-                                        )}
-
-                                        {/* Step 4: Preferences */}
-                                        {currentStep === 4 && (
                                             <motion.div
                                                 initial={{ opacity: 0, x: 20 }}
                                                 animate={{ opacity: 1, x: 0 }}
@@ -463,54 +495,59 @@ export default function SignUpPage() {
                                             >
                                                 <h2 className="text-2xl font-bold text-gray-800 mb-6">Preferences</h2>
 
-                                                <FormField
-                                                    label="Timezone"
-                                                    name="tenantTimezone"
-                                                    icon={<Clock className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Timezone is required"
-                                                    }}
-                                                    error={errors.tenantTimezone}
-                                                    placeholder="Select timezone"
-                                                    options={[
-                                                        { value: 'UTC', label: 'UTC' },
-                                                        { value: 'EST', label: 'Eastern Time' },
-                                                        { value: 'PST', label: 'Pacific Time' },
-                                                        { value: 'GMT', label: 'Greenwich Mean Time' }
-                                                    ]}
-                                                />
+                                                <div>
+                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
+                                                        <Clock className="h-5 w-5 text-gray-400 mr-2" /> <p>Timezone</p>
+                                                    </div>
+                                                    <Select {...register('tenantTimezone')}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select timezone" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {timezones.map((timezone) => (
+                                                                <SelectItem key={timezone.name} value={timezone.name}>
+                                                                    {timezone.name} ({timezone.offset} hours)
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
 
-                                                <FormField
-                                                    label="Language"
-                                                    name="tenantLanguage"
-                                                    icon={<Languages className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Language is required"
-                                                    }}
-                                                    error={errors.tenantLanguage}
-                                                    placeholder="Select language"
-                                                    options={[
-                                                        { value: 'en', label: 'English' },
-                                                        { value: 'es', label: 'Spanish' },
-                                                        { value: 'fr', label: 'French' }
-                                                    ]}
-                                                />
+                                                <div className="my-4">
+                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
+                                                        <Globe className="h-5 w-5 text-gray-400 mr-2" /> <p>Language</p>
+                                                    </div>
+                                                        <Select {...register('tenantLanguage')}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select language" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {languages.map((language) => (
+                                                                <SelectItem key={language.code} value={language.code}>
+                                                                    {language.name}
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
 
-                                                <FormField
-                                                    label="Currency"
-                                                    name="tenantCurrency"
-                                                    icon={<DollarSign className="text-gray-400" />}
-                                                    validation={{
-                                                        required: "Currency is required"
-                                                    }}
-                                                    error={errors.tenantCurrency}
-                                                    placeholder="Select currency"
-                                                    options={[
-                                                        { value: 'USD', label: 'US Dollar' },
-                                                        { value: 'EUR', label: 'Euro' },
-                                                        { value: 'GBP', label: 'British Pound' }
-                                                    ]}
-                                                />
+                                                <div>
+                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
+                                                        <DollarSign className="h-5 w-5 text-gray-400 mr-2" /> <p>Currency</p>
+                                                    </div>
+                                                    <Select {...register('tenantCurrency')}>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select currency" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {currencies.map((currency) => (
+                                                                <SelectItem key={currency.code} value={currency.code}>
+                                                                    {currency.name} ({currency.symbol})
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                </div>
                                             </motion.div>
                                         )}
 
