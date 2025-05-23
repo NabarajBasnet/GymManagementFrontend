@@ -53,14 +53,8 @@ const RootUserHeader = ({ activeTab }) => {
     const {rootUser,loading} = useRootUser();
 
     const navItems = [
-        { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
-        { id: 'chat', icon: <MessageSquare size={20} />, label: "Chat" },
-        { id: 'membershipdetails', icon: <MdCardMembership size={20} />, label: "Membership Details" },
-        { id: 'measurements', icon: <LineChart size={20} />, label: "Measurements" },
-        { id: 'payments', icon: <FaMoneyBillWaveAlt size={20} />, label: "Payments" },
-        { id: 'feedback', icon: <Star size={20} />, label: "Feedback" },
-        { id: 'promotions&offers', icon: <FaTag size={20} />, label: "Promotions & Offers" },
-        { id: 'classbooking', icon: <AiOutlineSchedule size={20} />, label: "Class Booking" },
+        { id: 'tenantmanagement', icon: <QrCode size={20} />, label: "Tenant Management" },
+        { id: 'subsriptionmanagement', icon: <MessageSquare size={20} />, label: "Subscription Management" },
         { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
