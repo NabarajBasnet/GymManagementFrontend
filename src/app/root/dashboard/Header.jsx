@@ -51,8 +51,6 @@ const RootUserHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
     const {rootUser,loading} = useRootUser();
-    console.log('Root user header: ', rootUser);
-    console.log('Root user header loading: ', loading);
 
     const navItems = [
         { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
