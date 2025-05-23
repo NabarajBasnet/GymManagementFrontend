@@ -1,30 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useForm } from 'react-hook-form';
 import {
     CheckCircle2,
     X,
@@ -33,37 +16,89 @@ import {
     Phone,
     Lock,
     MapPin,
-    Calendar,
-    ChevronRight,
-    Github,
-    Linkedin,
     Building2,
     Globe,
-    CreditCard,
     Clock,
-    Languages,
-    DollarSign
+    DollarSign,
+    ChevronRight,
+    ChevronLeft,
+    Loader2
 } from 'lucide-react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export default function SignUpPage() {
     const [currentStep, setCurrentStep] = useState(1);
     const [passwordStrength, setPasswordStrength] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isValidating, setIsValidating] = useState(false);
     const totalSteps = 3;
 
     const {
         register,
-        reset,
         handleSubmit,
         watch,
         trigger,
-        formState: { isSubmitting, errors, isValid }
+        formState: { errors }
     } = useForm({
-        mode: "onChange"
+        mode: "onChange",
+        defaultValues: {
+            tenantTimezone: 'UTC',
+            tenantLanguage: 'en',
+            tenantCurrency: 'USD'
+        }
     });
 
     const watchPassword = watch('password', '');
-    const watchFields = watch();
+
+    const timezones = [
+        { name: "UTC", offset: 0 },
+        { name: "Kathmandu", offset: 5.45 },
+        { name: "America/New_York", offset: -5 },
+        { name: "America/Los_Angeles", offset: -8 },
+        { name: "Europe/London", offset: 0 },
+        { name: "Europe/Paris", offset: 1 },
+        { name: "Asia/Kolkata", offset: 5.5 },
+        { name: "Asia/Tokyo", offset: 9 },
+        { name: "Australia/Sydney", offset: 10 },
+        { name: "Asia/Dubai", offset: 4 },
+        { name: "Asia/Shanghai", offset: 8 },
+        { name: "Asia/Hong_Kong", offset: 8 },
+        { name: "Asia/Singapore", offset: 8 },
+        { name: "Asia/Bangkok", offset: 7 },
+        { name: "Asia/Jakarta", offset: 7 },
+    ];
+
+    const languages = [
+        { name: "English", code: "en" },
+        { name: "Spanish", code: "es" },
+        { name: "French", code: "fr" },
+        { name: "German", code: "de" },
+        { name: "Italian", code: "it" },
+        { name: "Portuguese", code: "pt" },
+        { name: "Russian", code: "ru" },
+        { name: "Arabic", code: "ar" },
+        { name: "Chinese", code: "zh" },
+    ];
+
+    const currencies = [
+        { name: "USD", code: "USD", symbol: "$" },
+        { name: "EUR", code: "EUR", symbol: "€" },
+        { name: "NPR", code: "NPR", symbol: "₨" },
+        { name: "GBP", code: "GBP", symbol: "£" },
+        { name: "JPY", code: "JPY", symbol: "¥" },
+        { name: "INR", code: "INR", symbol: "₹" },
+        { name: "AUD", code: "AUD", symbol: "A$" },
+        { name: "CAD", code: "CAD", symbol: "C$" },
+        { name: "NZD", code: "NZD", symbol: "NZ$" },
+        { name: "SGD", code: "SGD", symbol: "S$" },
+        { name: "HKD", code: "HKD", symbol: "HK$" },
+        { name: "RMB", code: "CNY", symbol: "¥" },
+        { name: "RUB", code: "RUB", symbol: "₽" },
+        { name: "AED", code: "AED", symbol: "د.إ" },
+        { name: "SAR", code: "SAR", symbol: "ر.س" },
+        { name: "QAR", code: "QAR", symbol: "ر.ق" },
+        { name: "KRW", code: "KRW", symbol: "₩" },
+        { name: "MXN", code: "MXN", symbol: "$" },
+    ];
 
     const calculatePasswordStrength = (password) => {
         let strength = 0;
@@ -88,10 +123,10 @@ export default function SignUpPage() {
         return "Strong";
     };
 
-    const validateStep = async () => {
+    const validateStep = async (step) => {
         let fieldsToValidate = [];
         
-        switch(currentStep) {
+        switch(step) {
             case 1:
                 fieldsToValidate = ['organizationName', 'ownerName', 'email', 'phone', 'address'];
                 break;
@@ -105,511 +140,538 @@ export default function SignUpPage() {
     };
 
     const nextStep = async () => {
-        const isValid = await validateStep();
+        setIsValidating(true);
+        const isValid = await validateStep(currentStep);
+        setIsValidating(false);
+        
         if (isValid) {
-            setCurrentStep((prev) => Math.min(prev + 1, totalSteps));
+            setCurrentStep(prev => Math.min(prev + 1, totalSteps));
         }
     };
 
     const prevStep = () => {
-        setCurrentStep((prev) => Math.max(prev - 1, 1));
+        setCurrentStep(prev => Math.max(prev - 1, 1));
     };
 
-    const onSignUp = async (data) => {
+    const onSubmit = async (data) => {
+        console.log('Form Data:', data);
+        setIsSubmitting(true);
         try {
-            console.log('Form Data:', data);
+            // Only send required fields to the backend
+            const submitData = {
+                organizationName: data.organizationName,
+                ownerName: data.ownerName,
+                email: data.email,
+                phone: data.phone,
+                address: data.address,
+                password: data.password,
+                tenantTimezone: data.tenantTimezone,
+                tenantLanguage: data.tenantLanguage,
+                tenantCurrency: data.tenantCurrency
+            };
+
             const response = await fetch('http://localhost:3000/api/tenant/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify(data),
+                body: JSON.stringify(submitData),
             });
-            const responseBody = await response.json();
+
+            const responseData = await response.json();
             if (response.ok) {
-                toast.success('Account created successfully!');
-                reset();
+                toast.success(responseData.message);
+                // Reset form or redirect
             } else {
-                toast.error(responseBody.message || 'Failed to create account');
+                toast.error(responseData.message || 'Failed to create account');
             }
         } catch (error) {
-            toast.error('An unexpected error occurred. Please try again.');
-            console.log("Error: ", error);
+            console.error(error);
+            toast.error(error.message || 'An error occurred. Please try again.');
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
-    const timezones = [
-        { name: "UTC", offset: 0 },
-        { name: "America/New_York", offset: -5 },   // Eastern Time
-        { name: "America/Los_Angeles", offset: -8 },// Pacific Time
-        { name: "Europe/London", offset: 0 },       // GMT
-        { name: "Europe/Paris", offset: 1 },        // CET
-        { name: "Asia/Kolkata", offset: 5.5 },      // IST
-        { name: "Asia/Tokyo", offset: 9 },          // JST
-        { name: "Australia/Sydney", offset: 10 },   // AEST
-        { name: "Asia/Kathmandu", offset: 5.45 },   // NPT
-        { name: "America/Sao_Paulo", offset: -3 },
-        { name: "Africa/Johannesburg", offset: 2 },
-        { name: "Asia/Dubai", offset: 4 },
-      ];      
-
-    const languages = [
-        { name: "English", code: "en" },
-        { name: "Spanish", code: "es" },
-        { name: "French", code: "fr" },
-        { name: "German", code: "de" },
-      ];
-
-    const currencies = [
-        { name: "USD", code: "USD" , symbol: "$"},
-        { name: "EUR", code: "EUR" , symbol: "€"},
-        { name: "NPR", code: "NPR" , symbol: "₨"},
-        { name: "GBP", code: "GBP" , symbol: "£"},
-        { name: "INR", code: "INR" , symbol: "₹"},
-        { name: "AUD", code: "AUD" , symbol: "A$"},
-        { name: "CAD", code: "CAD" , symbol: "C$"},
-        { name: "NZD", code: "NZD" , symbol: "NZ$"},
-        { name: "RUB", code: "RUB" , symbol: "₽"},
-        { name: "CNY", code: "CNY" , symbol: "¥"},
-        { name: "JPY", code: "JPY" , symbol: "¥"},
-        { name: "KRW", code: "KRW" , symbol: "₩"},
-        { name: "MXN", code: "MXN" , symbol: "₱"},
-        { name: "BRL", code: "BRL" , symbol: "R$"},
-        { name: "ARS", code: "ARS" , symbol: "ARS"},
-        { name: "CHF", code: "CHF" , symbol: "CHF"},
-        { name: "HKD", code: "HKD" , symbol: "HK$"},
-        { name: "SGD", code: "SGD" , symbol: "SGD"},
-        { name: "SEK", code: "SEK" , symbol: "SEK"},
-        { name: "NOK", code: "NOK" , symbol: "NOK"},
-        { name: "RSD", code: "RSD" , symbol: "RSD"},
-        { name: "ZAR", code: "ZAR" , symbol: "ZAR"},
-        { name: "BDT", code: "BDT" , symbol: "BDT"},
-        { name: "PKR", code: "PKR" , symbol: "PKR"},
-        { name: "KES", code: "KES" , symbol: "KES"},
-        { name: "ZMW", code: "ZMW" , symbol: "ZMW"},
-        
-      ];
-
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 p-4">
-            <div className="w-full max-w-6xl">
-                <Card className="border-0 bg-transparent shadow-none">
-                    <motion.div
-                        className="w-full rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                    >
-                        <div className="flex flex-col lg:flex-row max-h-screen overflow-auto">
-                            {/* Left side - Progress and Info */}
-                            <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-8 text-white bg-gradient-to-br from-purple-600/50 to-indigo-600/50">
-                                <motion.div
-                                    className="text-center w-full"
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.3, duration: 0.8 }}
-                                >
-                                    <motion.div
-                                        className="md:mb-8 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm"
-                                        whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.25)' }}
-                                    >
-                                        <Building2 className="w-10 h-10 text-white" />
-                                    </motion.div>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
+            <div className="w-full max-w-7xl">
+                <Card className="overflow-hidden border-0 shadow-2xl bg-white/10 backdrop-blur-xl">
+                    <div className="flex flex-col lg:flex-row min-h-[700px]">
+                        {/* Left Panel - Progress & Info */}
+                        <div className="lg:w-2/5 bg-gradient-to-br from-purple-600/30 to-blue-600/30 p-8 text-white relative overflow-hidden">
+                            {/* Background Pattern */}
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent"></div>
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32"></div>
+                            <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full translate-y-48 -translate-x-48"></div>
+                            
+                            <div className="relative z-10">
+                                {/* Logo */}
+                                <div className="flex items-center mb-8">
+                                    <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+                                        <Building2 className="w-6 h-6" />
+                                    </div>
+                                    <div className="ml-3">
+                                        <h1 className="text-xl font-bold">Create Your Account</h1>
+                                        <p className="text-sm text-white/80">Fit Loft</p>
+                                    </div>
+                                </div>
 
-                                    <h1 className="text-3xl font-bold mb-4">Create Your Gym Account</h1>
-                                    <p className="text-white/90 md:mb-8 text-base">Set up your gym management system in minutes</p>
-
-                                    {/* Progress Steps */}
-                                    <div className="w-full max-w-md mx-auto mb-8">
-                                        <div className="flex justify-between mb-2">
-                                            {[...Array(totalSteps)].map((_, index) => (
+                                {/* Progress Steps */}
+                                <div className="mb-8">
+                                    <div className="flex items-center justify-between mb-4">
+                                        {[1, 2, 3].map((step) => (
+                                            <div key={step} className="flex items-center">
                                                 <div
-                                                    key={index}
-                                                    className={cn(
-                                                        "w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium",
-                                                        currentStep > index + 1
-                                                            ? "bg-green-500 text-white"
-                                                            : currentStep === index + 1
-                                                            ? "bg-white text-purple-600"
-                                                            : "bg-white/20 text-white"
-                                                    )}
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                                                        currentStep > step
+                                                            ? "bg-green-500 text-white shadow-lg"
+                                                            : currentStep === step
+                                                            ? "bg-white text-purple-600 shadow-lg scale-110"
+                                                            : "bg-white/20 text-white/60"
+                                                    }`}
                                                 >
-                                                    {index + 1}
-                                                </div>
-                                            ))}
-                                        </div>
-                                        <Progress value={(currentStep / totalSteps) * 100} className="h-2 bg-white" />
-                                    </div>
-
-                                    <div className="hidden md:flex flex-col space-y-4 mb-8">
-                                        <div className="flex items-center space-x-3 text-sm">
-                                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                            <span>Complete gym profile setup</span>
-                                        </div>
-                                        <div className="flex items-center space-x-3 text-sm">
-                                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                            <span>Configure subscription details</span>
-                                        </div>
-                                        <div className="flex items-center space-x-3 text-sm">
-                                            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                                            <span>Set up payment information</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 text-sm">
-                                        <p>Already have an account?</p>
-                                        <Link href="/login" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
-                                            Sign in to your account <ChevronRight className="ml-1 w-4 h-4" />
-                                        </Link>
-                                    </div>
-                                </motion.div>
-                            </div>
-
-                            {/* Right side - Form */}
-                            <div className="lg:w-7/12 p-8 bg-white/95 overflow-y-auto max-h-screen">
-                                <div className="w-full mx-auto max-w-xl">
-                                    <form onSubmit={handleSubmit(onSignUp)} className="space-y-4">
-                                        {/* Step 1: Basic Information */}
-                                        {currentStep === 1 && (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                            >
-                                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Basic Information</h2>
-                                                
-                                                <div>
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Organization Name
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <Building2 className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="text"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="Your Company Name"
-                                                            {...register('organizationName', {
-                                                                required: "Organization name is required"
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.organizationName && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.organizationName.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Owner Name
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <User className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="text"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="John Doe"
-                                                            {...register('ownerName', {
-                                                                required: "Owner name is required"
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.ownerName && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.ownerName.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Email Address
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <AtSign className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="email"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="john.doe@example.com"
-                                                            {...register('email', {
-                                                                required: "Email is required",
-                                                                pattern: {
-                                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                                                    message: "Please enter a valid email"
-                                                                }
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.email && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.email.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Phone Number
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <Phone className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="tel"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="+1 (555) 000-0000"
-                                                            {...register('phone', {
-                                                                required: "Phone number is required",
-                                                                pattern: {
-                                                                    value: /^[0-9+\-\s()]{10,15}$/,
-                                                                    message: "Please enter a valid phone number"
-                                                                }
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.phone && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.phone.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Address
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <MapPin className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="text"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="123 Main St, City, Country"
-                                                            {...register('address', {
-                                                                required: "Address is required"
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.address && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.address.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {/* Step 2: Account Security */}
-                                        {currentStep === 2 && (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                            >
-                                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Account Security</h2>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Password
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <Lock className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="password"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="Create a password"
-                                                            {...register('password', {
-                                                                required: "Password is required",
-                                                                minLength: {
-                                                                    value: 8,
-                                                                    message: "Password must be at least 8 characters"
-                                                                },
-                                                                onChange: (e) => setPasswordStrength(calculatePasswordStrength(e.target.value))
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {watchPassword && (
-                                                        <div className="space-y-2">
-                                                            <Progress 
-                                                                value={passwordStrength} 
-                                                                className={cn("h-1", getPasswordStrengthColor(passwordStrength))}
-                                                            />
-                                                            <p className="text-xs text-gray-500">
-                                                                Password strength: {getPasswordStrengthText(passwordStrength)}
-                                                            </p>
-                                                        </div>
-                                                    )}
-                                                    {errors.password && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.password.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-sm font-medium text-gray-700 block">
-                                                        Confirm Password
-                                                    </Label>
-                                                    <div className="relative">
-                                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                                            <Lock className="h-5 w-5 text-gray-400" />
-                                                        </div>
-                                                        <Input
-                                                            type="password"
-                                                            className="pl-10 w-full transition-all duration-200"
-                                                            placeholder="Confirm your password"
-                                                            {...register('confirmPassword', {
-                                                                required: "Please confirm your password",
-                                                                validate: value =>
-                                                                    value === watchPassword || "Passwords do not match"
-                                                            })}
-                                                        />
-                                                    </div>
-                                                    {errors.confirmPassword && (
-                                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                                                            <X className="w-4 h-4 mr-1" /> {errors.confirmPassword.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {/* Step 3: Preferences */}
-                                        {currentStep === 3 && (
-                                            <motion.div
-                                                initial={{ opacity: 0, x: 20 }}
-                                                animate={{ opacity: 1, x: 0 }}
-                                                exit={{ opacity: 0, x: -20 }}
-                                            >
-                                                <h2 className="text-2xl font-bold text-gray-800 mb-6">Preferences</h2>
-
-                                                <div>
-                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
-                                                        <Clock className="h-5 w-5 text-gray-400 mr-2" /> <p>Timezone</p>
-                                                    </div>
-                                                    <Select {...register('tenantTimezone')}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select timezone" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {timezones.map((timezone) => (
-                                                                <SelectItem key={timezone.name} value={timezone.name}>
-                                                                    {timezone.name} ({timezone.offset} hours)
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-
-                                                <div className="my-4">
-                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
-                                                        <Globe className="h-5 w-5 text-gray-400 mr-2" /> <p>Language</p>
-                                                    </div>
-                                                        <Select {...register('tenantLanguage')}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select language" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {languages.map((language) => (
-                                                                <SelectItem key={language.code} value={language.code}>
-                                                                    {language.name}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-
-                                                <div>
-                                                    <div className="text-sm font-medium flex items-center text-gray-700 block">
-                                                        <DollarSign className="h-5 w-5 text-gray-400 mr-2" /> <p>Currency</p>
-                                                    </div>
-                                                    <Select {...register('tenantCurrency')}>
-                                                        <SelectTrigger>
-                                                            <SelectValue placeholder="Select currency" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {currencies.map((currency) => (
-                                                                <SelectItem key={currency.code} value={currency.code}>
-                                                                    {currency.name} ({currency.symbol})
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                </div>
-                                            </motion.div>
-                                        )}
-
-                                        {/* Navigation Buttons */}
-                                        <div className="flex justify-between mt-8">
-                                            {currentStep > 1 && (
-                                                <Button
-                                                    type="button"
-                                                    variant="outline"
-                                                    onClick={prevStep}
-                                                    className="px-6"
-                                                >
-                                                    Previous
-                                                </Button>
-                                            )}
-                                            
-                                            {currentStep < totalSteps ? (
-                                                <Button
-                                                    type="button"
-                                                    onClick={nextStep}
-                                                    className="ml-auto px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                                                >
-                                                    Next Step
-                                                </Button>
-                                            ) : (
-                                                <Button
-                                                    type="submit"
-                                                    className="ml-auto px-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
-                                                    disabled={isSubmitting}
-                                                >
-                                                    {isSubmitting ? (
-                                                        <span className="flex items-center">
-                                                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                            </svg>
-                                                            Creating Account...
-                                                        </span>
+                                                    {currentStep > step ? (
+                                                        <CheckCircle2 className="w-5 h-5" />
                                                     ) : (
-                                                        <span>Create Account</span>
+                                                        step
                                                     )}
-                                                </Button>
-                                            )}
-                                        </div>
-                                    </form>
+                                                </div>
+                                                {step < 3 && (
+                                                    <div className={`w-16 h-1 mx-2 rounded transition-all duration-300 ${
+                                                        currentStep > step ? "bg-green-500" : "bg-white/20"
+                                                    }`}></div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <Progress 
+                                        value={(currentStep / totalSteps) * 100} 
+                                        className="h-2 bg-white/20"
+                                    />
+                                </div>
 
-                                    <div className="mt-6 text-center">
-                                        <p className="text-xs text-gray-500">
-                                            By signing up, you agree to our{' '}
-                                            <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
-                                            and{' '}
-                                            <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+                                {/* Step Info */}
+                                <div className="space-y-6">
+                                    <div>
+                                        <h2 className="text-2xl font-bold mb-2">
+                                            {currentStep === 1 && "Basic Information"}
+                                            {currentStep === 2 && "Account Security"}
+                                            {currentStep === 3 && "Preferences"}
+                                        </h2>
+                                        <p className="text-white/80">
+                                            {currentStep === 1 && "Tell us about your gym and contact details"}
+                                            {currentStep === 2 && "Create a secure password for your account"}
+                                            {currentStep === 3 && "Set up your regional preferences"}
                                         </p>
                                     </div>
+
+                                    {/* Features List */}
+                                    <div className="space-y-3">
+                                        <div className="flex items-center space-x-3">
+                                            <CheckCircle2 className="w-5 h-5 text-green-400" />
+                                            <span className="text-sm">Complete gym management system</span>
+                                        </div>
+                                        <div className="flex items-center space-x-3">
+                                            <CheckCircle2 className="w-5 h-5 text-green-400" />
+                                            <span className="text-sm">Member tracking & billing</span>
+                                        </div>
+                                        <div className="flex items-center space-x-3">
+                                            <CheckCircle2 className="w-5 h-5 text-green-400" />
+                                            <span className="text-sm">Equipment & class scheduling</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Sign In Link */}
+                                <div className="mt-8 pt-6 border-t border-white/20">
+                                    <p className="text-sm text-white/80">Already have an account?</p>
+                                    <button className="text-white font-medium hover:underline flex items-center mt-1">
+                                        Sign in here <ChevronRight className="w-4 h-4 ml-1" />
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                    </motion.div>
+
+                        {/* Right Panel - Form */}
+                        <div className="lg:w-3/5 bg-white p-8 lg:p-12">
+                            <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto">
+                                {/* Step 1: Basic Information */}
+                                {currentStep === 1 && (
+                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Organization Name
+                                            </Label>
+                                            <div className="relative">
+                                                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="Your Gym Name"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('organizationName', {
+                                                        required: "Organization name is required"
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.organizationName && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.organizationName.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Owner Name
+                                            </Label>
+                                            <div className="relative">
+                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="John Doe"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('ownerName', {
+                                                        required: "Owner name is required"
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.ownerName && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.ownerName.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Email Address
+                                            </Label>
+                                            <div className="relative">
+                                                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="email"
+                                                    placeholder="john@example.com"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('email', {
+                                                        required: "Email is required",
+                                                        pattern: {
+                                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                            message: "Please enter a valid email"
+                                                        }
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.email && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.email.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Phone Number
+                                            </Label>
+                                            <div className="relative">
+                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="tel"
+                                                    placeholder="+1 (555) 000-0000"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('phone', {
+                                                        required: "Phone number is required",
+                                                        pattern: {
+                                                            value: /^[0-9+\-\s()]{10,15}$/,
+                                                            message: "Please enter a valid phone number"
+                                                        }
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.phone && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.phone.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Address
+                                            </Label>
+                                            <div className="relative">
+                                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="123 Main St, City, Country"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('address', {
+                                                        required: "Address is required"
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.address && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.address.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Step 2: Account Security */}
+                                {currentStep === 2 && (
+                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Password
+                                            </Label>
+                                            <div className="relative">
+                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="password"
+                                                    placeholder="Create a strong password"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('password', {
+                                                        required: "Password is required",
+                                                        minLength: {
+                                                            value: 8,
+                                                            message: "Password must be at least 8 characters"
+                                                        },
+                                                        onChange: (e) => setPasswordStrength(calculatePasswordStrength(e.target.value))
+                                                    })}
+                                                />
+                                            </div>
+                                            {watchPassword && (
+                                                <div className="mt-3 space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs text-gray-500">Password strength:</span>
+                                                        <span className={`text-xs font-medium ${
+                                                            passwordStrength <= 25 ? 'text-red-500' :
+                                                            passwordStrength <= 50 ? 'text-orange-500' :
+                                                            passwordStrength <= 75 ? 'text-yellow-500' : 'text-green-500'
+                                                        }`}>
+                                                            {getPasswordStrengthText(passwordStrength)}
+                                                        </span>
+                                                    </div>
+                                                    <div className="w-full bg-gray-200 rounded-full h-2">
+                                                        <div 
+                                                            className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor(passwordStrength)}`}
+                                                            style={{ width: `${passwordStrength}%` }}
+                                                        ></div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            {errors.password && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.password.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Confirm Password
+                                            </Label>
+                                            <div className="relative">
+                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="password"
+                                                    placeholder="Confirm your password"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('confirmPassword', {
+                                                        required: "Please confirm your password",
+                                                        validate: value =>
+                                                            value === watchPassword || "Passwords do not match"
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.confirmPassword && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.confirmPassword.message}
+                                                </p>
+                                            )}
+                                        </div>
+
+                                        {/* Password Requirements */}
+                                        <div className="bg-gray-50 rounded-lg p-4">
+                                            <h4 className="text-sm font-medium text-gray-700 mb-2">Password must contain:</h4>
+                                            <ul className="space-y-1 text-xs text-gray-600">
+                                                <li className="flex items-center">
+                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${watchPassword.length >= 8 ? 'text-green-500' : 'text-gray-300'}`} />
+                                                    At least 8 characters
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[A-Z]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                    One uppercase letter
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                    One number
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[^A-Za-z0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                    One special character
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Step 3: Preferences */}
+                                {currentStep === 3 && (
+                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                                                Timezone
+                                            </Label>
+                                            <Select 
+                                                onValueChange={(value) => {
+                                                    const event = { target: { value } };
+                                                    register('tenantTimezone').onChange(event);
+                                                }}
+                                                defaultValue={watch('tenantTimezone')}
+                                            >
+                                                <SelectTrigger className="h-12">
+                                                    <SelectValue placeholder="Select timezone" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {timezones.map((timezone) => (
+                                                        <SelectItem key={timezone.name} value={timezone.name}>
+                                                            {timezone.name} (UTC{timezone.offset >= 0 ? '+' : ''}{timezone.offset})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <Globe className="w-4 h-4 mr-2 text-gray-400" />
+                                                Language
+                                            </Label>
+                                            <Select 
+                                                onValueChange={(value) => {
+                                                    const event = { target: { value } };
+                                                    register('tenantLanguage').onChange(event);
+                                                }}
+                                                defaultValue={watch('tenantLanguage')}
+                                            >
+                                                <SelectTrigger className="h-12">
+                                                    <SelectValue placeholder="Select language" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {languages.map((language) => (
+                                                        <SelectItem key={language.code} value={language.code}>
+                                                            {language.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
+                                                Currency
+                                            </Label>
+                                            <Select 
+                                                onValueChange={(value) => {
+                                                    const event = { target: { value } };
+                                                    register('tenantCurrency').onChange(event);
+                                                }}
+                                                defaultValue={watch('tenantCurrency')}
+                                            >
+                                                <SelectTrigger className="h-12">
+                                                    <SelectValue placeholder="Select currency" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {currencies.map((currency) => (
+                                                        <SelectItem key={currency.code} value={currency.code}>
+                                                            {currency.name} ({currency.symbol})
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+
+                                        {/* Summary */}
+                                        <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                                            <h4 className="text-sm font-medium text-purple-800 mb-2">Setup Summary</h4>
+                                            <div className="space-y-1 text-xs text-purple-700">
+                                                <p><strong>Organization:</strong> {watch('organizationName')}</p>
+                                                <p><strong>Owner:</strong> {watch('ownerName')}</p>
+                                                <p><strong>Email:</strong> {watch('email')}</p>
+                                                <p><strong>Currency:</strong> {currencies.find(c => c.code === watch('tenantCurrency'))?.name}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Navigation Buttons */}
+                                    {/* Navigation Buttons */}
+                                    <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                                    {currentStep > 1 ? (
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            onClick={prevStep}
+                                            className="px-6 h-12"
+                                            disabled={isValidating || isSubmitting}
+                                        >
+                                            <ChevronLeft className="w-4 h-4 mr-2" />
+                                            Previous
+                                        </Button>
+                                    ) : (
+                                        <div></div>
+                                    )}
+                                        
+                                        {currentStep < totalSteps ? (
+                                            <Button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    nextStep();
+                                                }}
+                                                className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
+                                                disabled={isValidating || isSubmitting}
+                                            >
+                                                {isValidating ? (
+                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        Next <ChevronRight className="w-4 h-4 ml-2" />
+                                                    </>
+                                                )}
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                type="submit"
+                                                className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
+                                                disabled={isSubmitting}
+                                            >
+                                                {isSubmitting ? (
+                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                ) : (
+                                                    "Create Account"
+                                                )}
+                                            </Button>
+                                        )}
+                                    </div>
+                            </form>
+                        </div>
+                    </div>
                 </Card>
             </div>
         </div>
     );
 }
-
-
