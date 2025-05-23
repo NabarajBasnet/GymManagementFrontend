@@ -1,5 +1,6 @@
 'use client';
 
+import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from '@/components/ui/input';
@@ -164,6 +165,7 @@ export default function SignUpPage() {
                 email: data.email,
                 phone: data.phone,
                 address: data.address,
+                country: data.country,
                 password: data.password,
                 tenantTimezone: data.tenantTimezone,
                 tenantLanguage: data.tenantLanguage,
@@ -180,6 +182,7 @@ export default function SignUpPage() {
             });
 
             const responseData = await response.json();
+            console.log(responseData);
             if (response.ok) {
                 toast.success(responseData.message);
                 // Reset form or redirect
@@ -400,6 +403,7 @@ export default function SignUpPage() {
                                             )}
                                         </div>
 
+                                        <div className="flex flex-row justify-between space-x-4">
                                         <div>
                                             <Label className="text-sm font-medium text-gray-700 mb-2 block">
                                                 Address
@@ -422,6 +426,31 @@ export default function SignUpPage() {
                                                 </p>
                                             )}
                                         </div>
+
+                                        <div>
+                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                Country
+                                            </Label>
+                                            <div className="relative">
+                                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                <Input
+                                                    type="text"
+                                                    placeholder="United States"
+                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                    {...register('country', {
+                                                        required: "Country is required"
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.country && (
+                                                <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                    <X className="w-4 h-4 mr-1" />
+                                                    {errors.country.message}
+                                                </p>
+                                            )}
+                                        </div>
+                                        </div>
+
                                     </div>
                                 )}
 
