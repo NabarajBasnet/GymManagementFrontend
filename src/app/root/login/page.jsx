@@ -43,7 +43,6 @@ const RootLoginForm = ({ className, ...props })=> {
       });
 
       const responseBody = await response.json();
-      console.log('Response Body: ', responseBody);
 
       if(response.ok){
         toast.success(responseBody.message || 'Login successful!');
@@ -118,6 +117,7 @@ const RootLoginForm = ({ className, ...props })=> {
               </div>
 
               <form onSubmit={handleSubmit(onLoginUser)} className="space-y-6">
+                
                   <div>
                       <Label>Email</Label>
                       <Input

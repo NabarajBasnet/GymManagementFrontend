@@ -1,16 +1,19 @@
 import RootUserHeader from "./Header";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
+import LoggedInRootUserProvider from "@/components/Providers/LoggedInRootUserProvider";
 
-const MemberLayout = ({ children }) => {
+const RootUserLayout = ({ children }) => {
 
     return (
         <div className='w-full'>
+            <LoggedInRootUserProvider>
                 <ReactQueryClientProvider>
                     <RootUserHeader />
                     {children}
                 </ReactQueryClientProvider>
+            </LoggedInRootUserProvider>
         </div>
     );
 }
 
-export default MemberLayout;
+export default RootUserLayout;

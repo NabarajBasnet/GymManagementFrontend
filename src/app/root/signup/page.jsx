@@ -116,6 +116,26 @@ export default function RootSignUpPage() {
                             </div>
 
                             <form onSubmit={handleSubmit(onSignUp)} className="space-y-3">
+                                <div>
+                                    <Label>Full Name</Label>
+                                    <Input
+                                        className="text-black"
+                                        type="text"
+                                        placeholder="Eg: John Doe"
+                                        {...register('fullName', {
+                                        required: "Full name is required",
+                                        pattern: {
+                                            value: /^[a-zA-Z\s]+$/,
+                                            message: "Please enter a valid full name"
+                                        }
+                                        })}
+                                    />
+                                    {errors.fullName && (
+                                        <p className="text-red-500 text-sm mt-1">
+                                        {errors.fullName.message}
+                                        </p>
+                                    )}
+                                    </div>
 
                                     <div className='space-y-1'>
                                         <Label className='text-sm font-medium text-gray-700 block'>Email</Label>

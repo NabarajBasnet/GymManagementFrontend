@@ -45,12 +45,14 @@ import { RiCustomerServiceFill } from "react-icons/ri";
 import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
-import { useMember } from "@/components/Providers/LoggedInMemberProvider";
+import { useRootUser } from "@/components/Providers/LoggedInRootUserProvider";
 
 const RootUserHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
-    const member = useMember();
+    const {rootUser,loading} = useRootUser();
+    console.log('Root user header: ', rootUser);
+    console.log('Root user header loading: ', loading);
 
     const navItems = [
         { id: 'qrcode', icon: <QrCode size={20} />, label: "QR Code" },
@@ -69,9 +71,9 @@ const RootUserHeader = ({ activeTab }) => {
         setIsSheetOpen(false);
     };
 
-    const logOutMember = async () => {
+    const logOutRootUser = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/member/auth/member-logout`, {
+            const response = await fetch(`http://localhost:3000/api/rootuser/logout`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -81,18 +83,17 @@ const RootUserHeader = ({ activeTab }) => {
             const responseBody = await response.json();
             if (response.ok) {
                 toast.success(responseBody.message);
-                router.push(responseBody.redirect);
+                router.push(responseBody.redirectUrl);
             };
         } catch (error) {
             console.log("Error: ", error);
+            toast.error(error.message);
         };
     };
 
     // Safe access to member data
-    const memberName = member?.member?.loggedInMember?.fullName || '';
-    const memberStatus = member?.member?.loggedInMember?.status || '';
-    const memberId = member?.member?.loggedInMember?._id || '';
-    const gymName = member?.member?.loggedInMember?.gymName || '';
+    const rootUserName = rootUser?.fullName || '';
+    const rootUserStatus = rootUser?.status || '';
 
     return (
         <header className="bg-white shadow-sm sticky top-0 z-10">
@@ -113,17 +114,17 @@ const RootUserHeader = ({ activeTab }) => {
                                 <div className="h-full flex flex-col">
                                     <SheetHeader className="px-4 pt-4 pb-2 border-b border-gray-200">
                                         <SheetTitle className="text-xl font-bold text-indigo-600">
-                                            {gymName}
+                                            Fit Loft
                                         </SheetTitle>
                                     </SheetHeader>
 
                                     {/* User profile */}
-                                    {member && member.member && member.member.loggedInMember && (
+                                            {rootUser && (
                                         <div className="px-4 py-6 border-b border-gray-200">
                                             <div className="flex items-center">
                                                 <div className="relative">
                                                     <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
-                                                        {memberName
+                                                        {rootUserName
                                                             ?.split(' ')
                                                             .map((word) => word[0])
                                                             .join('')
@@ -134,12 +135,12 @@ const RootUserHeader = ({ activeTab }) => {
                                                     <span className="absolute bottom-0 right-0 block w-3 h-3 rounded-full bg-green-500 border-2 border-white"></span>
                                                 </div>
                                                 <div className="ml-3">
-                                                    <p className="font-medium text-gray-900">{memberName}</p>
+                                                    <p className="font-medium text-gray-900">{rootUserName}</p>
                                                     <p className="text-sm text-gray-500 flex items-center">
                                                         <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
-                                                            {memberStatus}
+                                                            {rootUserStatus}
                                                         </span>
-                                                        {/* {memberId} */}
+                                                        {/* {rootUserId} */}
                                                     </p>
                                                 </div>
                                             </div>
@@ -167,7 +168,7 @@ const RootUserHeader = ({ activeTab }) => {
                                     <div className="px-4 py-4 border-t border-gray-200">
                                         <button
                                             onClick={() => {
-                                                logOutMember()
+                                                logOutRootUser()
                                                 setIsSheetOpen(false);
                                             }}
                                             className="flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
@@ -184,7 +185,7 @@ const RootUserHeader = ({ activeTab }) => {
                     {/* Logo - hidden on mobile */}
                     <div className="hidden md:flex items-center">
                         <h1 className="text-xl font-bold text-indigo-600">
-                            {gymName}
+                            Fit Loft
                         </h1>
                     </div>
 
@@ -192,14 +193,14 @@ const RootUserHeader = ({ activeTab }) => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <div>
-                                {member?.member?.loggedInMember && (
+                                {rootUser && (
                                     <div className="flex cursor-pointer items-center">
                                         <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
-                                            {memberName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
+                                            {rootUserName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
                                             <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
                                         </div>
                                         <span className="ml-2 text-sm font-medium text-gray-700 hidden lg:inline">
-                                            {memberName}
+                                            {rootUserName}
                                         </span>
                                     </div>
                                 )}
@@ -208,7 +209,7 @@ const RootUserHeader = ({ activeTab }) => {
                         <DropdownMenuContent className="w-56">
                             <DropdownMenuLabel className='cursor-pointer'>My Account</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutMember}>
+                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutRootUser}>
                                 <LogOut />
                                 Log out
                             </DropdownMenuItem>
