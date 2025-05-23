@@ -21,7 +21,7 @@ import {
   Linkedin
 } from 'lucide-react';
 
-export function LoginForm({ className, ...props }) {
+export function RootLoginForm({ className, ...props }) {
   const router = useRouter();
   const {
     register,

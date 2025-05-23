@@ -142,8 +142,8 @@ const MembershipPlanManagement = () => {
 
         try {
             const url = isEditMode
-                ? `http://88.198.112.156:3000/api/membershipplans/${editingPlan._id}`
-                : "http://88.198.112.156:3000/api/membershipplans";
+                ? `http://localhost:3000/api/membershipplans/${editingPlan._id}`
+                : "http://localhost:3000/api/membershipplans";
 
             const method = isEditMode ? "PUT" : "POST";
 
@@ -227,7 +227,7 @@ const MembershipPlanManagement = () => {
     const getAllMembershipPlans = async ({ queryKey }) => {
         const [, page, searchQuery, filterByPaymentType, filterByStatus, filterByAccessType, filterByShift, filterByCurrency] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
+            const response = await fetch(`http://localhost:3000/api/membershipplans?page=${page}&limit=${limit}&search=${searchQuery}&paymentType=${filterByPaymentType}&status=${filterByStatus}&accessType=${filterByAccessType}&shift=${filterByShift}&currency=${filterByCurrency}`);
             const data = await response.json();
             return data;
         } catch (error) {
@@ -246,7 +246,7 @@ const MembershipPlanManagement = () => {
 
     const deleteMembershipPlan = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3000/api/membershipplans/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/membershipplans/${id}`, {
                 method: "DELETE"
             });
             const responseBody = await response.json();

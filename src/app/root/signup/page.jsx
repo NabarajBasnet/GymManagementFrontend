@@ -21,7 +21,7 @@ import {
     Linkedin
 } from 'lucide-react';
 
-export default function SignUpPage() {
+export default function RootSignUpPage() {
     const {
         register,
         reset,
@@ -34,7 +34,8 @@ export default function SignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('http://localhost:3000/api/auth/signup', {
+            console.log(data);
+            const response = await fetch('http://localhost:3000/api/rootuser/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,54 +55,6 @@ export default function SignUpPage() {
             console.log("Error: ", error);
         }
     };
-
-    const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder }) => (
-        <div className="space-y-1">
-            <Label
-                htmlFor={name}
-                className="text-sm font-medium text-gray-700 block"
-            >
-                {label}
-            </Label>
-
-            <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    {icon}
-                </div>
-
-                <Input
-                    id={name}
-                    type={type}
-                    className={`pl-10 w-full transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''
-                        }`}
-                    placeholder={placeholder}
-                    {...register(name, validation)}
-                />
-
-                {error && (
-                    <motion.div
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <X className="h-5 w-5 text-red-500" />
-                    </motion.div>
-                )}
-            </div>
-
-            {error && (
-                <motion.p
-                    className="text-sm font-medium text-red-500 mt-1"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                >
-                    {error.message}
-                </motion.p>
-            )}
-        </div>
-    );
 
     return (
         <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 overflow-auto">
@@ -159,66 +112,51 @@ export default function SignUpPage() {
                     <div className="lg:w-7/12 p-6 bg-white/95 overflow-y-auto max-h-screen">
                         <div className="w-full mx-auto">
                             <div className="mb-4">
-                                <h2 className="text-xl font-bold text-gray-800">Sign Up</h2>
-                                <p className="text-gray-600 text-sm">Fill in your information to create an account</p>
+                                <h2 className="text-xl font-bold text-gray-800">Root User Sign Up</h2>
+                                <p className="text-gray-600 text-sm">Fill in your information to create an root user account</p>
                             </div>
 
                             <form onSubmit={handleSubmit(onSignUp)} className="space-y-3">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                    <FormField
-                                        label="First Name"
-                                        name="firstName"
-                                        icon={<User className="text-gray-400" />}
-                                        validation={{
-                                            required: "First name is required"
-                                        }}
-                                        error={errors.firstName}
-                                        placeholder="John"
-                                    />
 
-                                    <FormField
-                                        label="Last Name"
-                                        name="lastName"
-                                        icon={<User className="text-gray-400" />}
-                                        validation={{
-                                            required: "Last name is required"
-                                        }}
-                                        error={errors.lastName}
-                                        placeholder="Doe"
-                                    />
-                                </div>
+                                    <div className='space-y-1'>
+                                        <Label className='text-sm font-medium text-gray-700 block'>Email</Label>
+                                        <Input
+                                            type="email"
+                                            placeholder="Email"
+                                            {...register('email', {
+                                                    required: "Email is required",
+                                                pattern: {
+                                                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                    message: "Please enter a valid email"
+                                            }
+                                            })}
+                                        />
+                                        {errors.email && (
+                                            <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                <X className="w-4 h-4 mr-1" /> {errors.email.message}
+                                            </p>
+                                        )}
+                                    </div>
 
-                                <FormField
-                                    label="Email Address"
-                                    name="email"
-                                    type="email"
-                                    icon={<AtSign className="text-gray-400" />}
-                                    validation={{
-                                        required: "Email is required",
-                                        pattern: {
-                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                            message: "Please enter a valid email"
+                                    <div className='space-y-1'>
+                                        <Label className='text-sm font-medium text-gray-700 block'>Phone</Label>
+                                        <Input
+                                            type="tel"
+                                            placeholder="Phone"
+                                        {...register('phone', {
+                                                required: "Phone is required",
+                                            pattern: {
+                                                value: /^[0-9+\-\s()]{10,15}$/,
+                                                message: "Please enter a valid phone number"
                                         }
-                                    }}
-                                    error={errors.email}
-                                    placeholder="john.doe@example.com"
-                                />
-
-                                <FormField
-                                    label="Phone Number"
-                                    name="phoneNumber"
-                                    type="tel"
-                                    icon={<Phone className="text-gray-400" />}
-                                    validation={{
-                                        required: "Phone number is required",
-                                        pattern: {
-                                            value: /^[0-9+\-\s()]{10,15}$/,
-                                            message: "Please enter a valid phone number"
-                                        }
-                                    }}
-                                    error={errors.phoneNumber}
-                                    placeholder="+1 (555) 000-0000"
-                                />
+                                        })}
+                                    />
+                                    {errors.phone && (
+                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                            <X className="w-4 h-4 mr-1" /> {errors.phone.message}
+                                        </p>
+                                    )}
+                                    </div>
 
                                 <div className='md:flex items-center justify-between'>
                                     <div className="space-y-1">
@@ -245,42 +183,52 @@ export default function SignUpPage() {
                                         )}
                                     </div>
 
-                                    <FormField
-                                        label="Confirm Password"
-                                        name="confirmPassword"
-                                        type="password"
-                                        icon={<Lock className="text-gray-400" />}
-                                        validation={{
-                                            required: "Please confirm your password",
-                                            validate: value =>
-                                                value === watchPassword || "Passwords do not match"
-                                        }}
-                                        error={errors.confirmPassword}
-                                        placeholder="Confirm your password"
-                                    />
+                                    <div className="space-y-1">
+                                        <Label className="text-sm font-medium text-gray-700 block">
+                                            Confirm Password
+                                        </Label>
+                                        <div className="relative">
+                                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                                <Lock className="h-5 w-5 text-gray-400" />
+                                            </div>
+                                            <Input
+                                                type="password"
+                                                className="pl-10 w-full transition-all duration-200"
+                                                placeholder="Confirm Password"
+                                                {...register('confirmPassword', {
+                                                    required: "Confirm Password is required",
+                                                    validate: value =>
+                                                        value === watchPassword || "Passwords do not match"
+                                                })}
+                                            />
+                                        </div>
+                                        {errors.confirmPassword && (
+                                            <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                                <X className="w-4 h-4 mr-1" /> {errors.confirmPassword.message}
+                                            </p>
+                                        )}
+                                    </div>
                                 </div>
 
-                                <FormField
-                                    label="Address"
-                                    name="address"
-                                    icon={<MapPin className="text-gray-400" />}
-                                    validation={{
-                                        required: "Address is required"
-                                    }}
-                                    error={errors.address}
-                                    placeholder="123 Main St, City, Country"
-                                />
-
-                                <FormField
-                                    label="Date of Birth"
-                                    name="dob"
-                                    type="date"
-                                    icon={<Calendar className="text-gray-400" />}
-                                    validation={{
-                                        required: "Date of birth is required"
-                                    }}
-                                    error={errors.dob}
-                                />
+                                <div className='space-y-1'>
+                                        <Label className='text-sm font-medium text-gray-700 block'>Address</Label>
+                                        <Input
+                                            type="text"
+                                            placeholder="Address"
+                                        {...register('address', {
+                                                required: "Address is required",
+                                            pattern: {
+                                                value: /^[a-zA-Z0-9\s\.,-]{3,100}$/,
+                                                message: "Please enter a valid address"
+                                        }
+                                        })}
+                                    />
+                                    {errors.address && (
+                                        <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
+                                            <X className="w-4 h-4 mr-1" /> {errors.address.message}
+                                        </p>
+                                    )}
+                                    </div>
 
                                 <Button
                                     type="submit"
