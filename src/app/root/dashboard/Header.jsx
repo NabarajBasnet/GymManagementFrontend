@@ -53,9 +53,10 @@ const RootUserHeader = ({ activeTab }) => {
     const {rootUser,loading} = useRootUser();
 
     const navItems = [
-        { id: 'tenantmanagement', icon: <QrCode size={20} />, label: "Tenant Management" },
-        { id: 'subsriptionmanagement', icon: <MessageSquare size={20} />, label: "Subscription Management" },
-        { id: 'settings', icon: <Settings size={20} />, label: "Settings" },
+        { id: '/root/dashboard', icon: <Home size={20} />, label: "Dashboard" },
+        { id: '/root/dashboard/tenantmanagement', icon: <QrCode size={20} />, label: "Tenant Management" },
+        { id: '/root/dashboard/subscriptionmanagement', icon: <MessageSquare size={20} />, label: "Subscription Management" },
+        { id: '/root/dashboard/settings', icon: <Settings size={20} />, label: "Settings" },
     ];
 
     const handleNavClick = (id, tab) => {
@@ -111,7 +112,7 @@ const RootUserHeader = ({ activeTab }) => {
                                     </SheetHeader>
 
                                     {/* User profile */}
-                                            {rootUser && (
+                                        {rootUser && (
                                         <div className="px-4 py-6 border-b border-gray-200">
                                             <div className="flex items-center">
                                                 <div className="relative">
@@ -129,10 +130,12 @@ const RootUserHeader = ({ activeTab }) => {
                                                 <div className="ml-3">
                                                     <p className="font-medium text-gray-900">{rootUserName}</p>
                                                     <p className="text-sm text-gray-500 flex items-center">
-                                                        <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
-                                                            {rootUserStatus}
+                                                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full mr-1">
+                                                            {rootUser?.rootUserStatus}
                                                         </span>
-                                                        {/* {rootUserId} */}
+                                                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded-full mr-1">
+                                                            {rootUser?.rootUserRole}
+                                                        </span>
                                                     </p>
                                                 </div>
                                             </div>

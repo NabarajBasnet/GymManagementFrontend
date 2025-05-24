@@ -143,15 +143,15 @@ const SignUpPage = () => {
     ];
 
     const languages = [
-        { name: "English", code: "en" },
-        { name: "Spanish", code: "es" },
-        { name: "French", code: "fr" },
-        { name: "German", code: "de" },
-        { name: "Italian", code: "it" },
-        { name: "Portuguese", code: "pt" },
-        { name: "Russian", code: "ru" },
-        { name: "Arabic", code: "ar" },
-        { name: "Chinese", code: "zh" },
+        { name: "English", code: "English" },
+        { name: "Spanish", code: "Spanish" },
+        { name: "French", code: "French" },
+        { name: "German", code: "German" },
+        { name: "Italian", code: "Italian" },
+        { name: "Portuguese", code: "Portuguese" },
+        { name: "Russian", code: "Russian" },
+        { name: "Arabic", code: "Arabic" },
+        { name: "Chinese", code: "Chinese" },
     ];
 
     const currencies = [
