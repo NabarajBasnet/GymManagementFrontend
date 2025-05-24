@@ -33,26 +33,23 @@ export default function SignUpPage() {
     const [isValidating, setIsValidating] = useState(false);
     const totalSteps = 3;
 
+    const [tenantTimezone, setTenantTimezone] = useState('');
+    const [tenantLanguage, setTenantLanguage] = useState('');
+    const [tenantCurrency, setTenantCurrency] = useState('');
+
     const {
         register,
         handleSubmit,
         watch,
         trigger,
         formState: { errors }
-    } = useForm({
-        mode: "onChange",
-        defaultValues: {
-            tenantTimezone: 'UTC',
-            tenantLanguage: 'en',
-            tenantCurrency: 'USD'
-        }
-    });
+    } = useForm();
 
     const watchPassword = watch('password', '');
 
     const timezones = [
         { name: "UTC", offset: 0 },
-        { name: "Kathmandu", offset: 5.45 },
+        { name: "Asia/Kathmandu", offset: 5.45 },
         { name: "America/New_York", offset: -5 },
         { name: "America/Los_Angeles", offset: -8 },
         { name: "Europe/London", offset: 0 },
@@ -155,6 +152,7 @@ export default function SignUpPage() {
     };
 
     const onSubmit = async (data) => {
+        console.log(data);
         setIsSubmitting(true);
         try {
             // Only send required fields to the backend
@@ -166,9 +164,9 @@ export default function SignUpPage() {
                 address: data.address,
                 country: data.country,
                 password: data.password,
-                tenantTimezone: data.tenantTimezone,
-                tenantLanguage: data.tenantLanguage,
-                tenantCurrency: data.tenantCurrency
+                tenantTimezone,
+                tenantLanguage,
+                tenantCurrency
             };
 
             const response = await fetch('http://localhost:3000/api/tenant/signup', {
@@ -562,11 +560,7 @@ export default function SignUpPage() {
                                                 Timezone
                                             </Label>
                                             <Select 
-                                                onValueChange={(value) => {
-                                                    const event = { target: { value } };
-                                                    register('tenantTimezone').onChange(event);
-                                                }}
-                                                defaultValue={watch('tenantTimezone')}
+                                                onValueChange={(value) => setTenantTimezone(value)}
                                             >
                                                 <SelectTrigger className="h-12">
                                                     <SelectValue placeholder="Select timezone" />
@@ -587,11 +581,7 @@ export default function SignUpPage() {
                                                 Language
                                             </Label>
                                             <Select 
-                                                onValueChange={(value) => {
-                                                    const event = { target: { value } };
-                                                    register('tenantLanguage').onChange(event);
-                                                }}
-                                                defaultValue={watch('tenantLanguage')}
+                                                onValueChange={(value) => setTenantLanguage(value)}
                                             >
                                                 <SelectTrigger className="h-12">
                                                     <SelectValue placeholder="Select language" />
@@ -612,11 +602,7 @@ export default function SignUpPage() {
                                                 Currency
                                             </Label>
                                             <Select 
-                                                onValueChange={(value) => {
-                                                    const event = { target: { value } };
-                                                    register('tenantCurrency').onChange(event);
-                                                }}
-                                                defaultValue={watch('tenantCurrency')}
+                                                onValueChange={(value) => setTenantCurrency(value)}
                                             >
                                                 <SelectTrigger className="h-12">
                                                     <SelectValue placeholder="Select currency" />
