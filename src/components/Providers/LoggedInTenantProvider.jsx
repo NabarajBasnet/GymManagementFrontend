@@ -1,0 +1,46 @@
+'use client';
+
+import React, { createContext, useContext, useEffect, useState } from "react";
+
+const TenantContext = createContext();
+
+const LoggedInTenantProvider = ({ children }) => {
+
+    const [tenant, setTenant] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const getLoggedInTenantDetails = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/tenant/details`, {
+                credentials: 'include',
+            });
+            if (response.ok) {
+                const responseBody = await response.json();
+                setTenant(responseBody);
+            } else {
+                setTenant(null);
+            }
+        } catch (error) {
+            console.error("Error fetching user details:", error);
+            setTenant(null);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        getLoggedInTenantDetails();
+    }, []);
+
+    return (
+        <TenantContext.Provider value={{ tenant, loading }}>
+            {children}
+        </TenantContext.Provider>
+    );
+};
+
+export const useTenant = () => {
+    return useContext(TenantContext);
+};
+
+export default LoggedInTenantProvider;

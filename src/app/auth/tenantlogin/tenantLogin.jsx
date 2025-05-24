@@ -33,7 +33,7 @@ export function TenantLoginForm({ className, ...props }) {
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch('http://localhost:3000/api/tenant/auth/login', {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
@@ -43,43 +43,18 @@ export function TenantLoginForm({ className, ...props }) {
       });
 
       const responseBody = await response.json();
-      if (response.status === 404) {
-        setError(
-          "email", {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
+      console.log("Response body: ", responseBody);
 
-      if (response.status === 403) {
-        setError(
-          "password", {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
-
-      if (response.status === 400) {
-        setError(
-          ["password", "email"], {
-          type: "manual",
-          message: responseBody.message
-        }
-        );
-      }
-
-      if (response.status === 200) {
+      if (response.ok && response.status === 200) {
         toast.success(responseBody.message || 'Login successful!');
         reset();
-        router.push('/dashboard');
+        router.push(responseBody.redirectUrl);
       } else {
         toast.error(responseBody.message);
       }
 
     } catch (error) {
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(error.message);
       console.log('Error: ', error);
     };
   };
@@ -179,7 +154,7 @@ export function TenantLoginForm({ className, ...props }) {
 
               <div className="pt-4 text-sm">
                 <p>Don't have an account?</p>
-                <Link href="/signup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
+                <Link href="/auth/tenantsignup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
                   Create a new account <ChevronRight className="ml-1 w-4 h-4" />
                 </Link>
               </div>
@@ -246,14 +221,14 @@ export function TenantLoginForm({ className, ...props }) {
                   )}
                 </Button>
 
-                {/* <div className="relative text-center text-sm mt-4">
+                <div className="relative text-center text-sm mt-4">
                   <span className="relative z-10 bg-white/95 px-4 text-gray-500">
                     Or continue with
                   </span>
                   <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div> */}
+                </div>
 
-                {/* <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaApple className="text-xl" />
                   </Button>
@@ -263,7 +238,7 @@ export function TenantLoginForm({ className, ...props }) {
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaMeta className="text-xl" />
                   </Button>
-                </div> */}
+                </div>
               </form>
 
               <div className="mt-6 text-center">

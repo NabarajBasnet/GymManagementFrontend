@@ -30,7 +30,7 @@ import { GB, US, NP, IN, CN, JP, KR, AU, DE, FR, IT, ES, NL, BE, CH, SE, NO, DK,
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import React from 'react';
-
+import { useRouter } from 'next/navigation';
 // Country codes with flags
 const countryCodes = [
     { code: '+977', country: 'Nepal', flag: NP, iso: 'NP' },
@@ -94,7 +94,8 @@ const countryCodes = [
 ];
 
 const SignUpPage = () => {
-
+    
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -374,7 +375,7 @@ const SignUpPage = () => {
                                 {/* Sign In Link */}
                                 <div className="mt-8 pt-6 border-t border-white/20">
                                     <p className="text-sm text-white/80">Already have an account?</p>
-                                    <button className="text-white font-medium hover:underline flex items-center mt-1">
+                                    <button onClick={() => router.push('/auth/tenantlogin')} className="text-white font-medium hover:underline flex items-center mt-1">
                                         Sign in here <ChevronRight className="w-4 h-4 ml-1" />
                                     </button>
                                 </div>
