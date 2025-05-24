@@ -40,7 +40,7 @@ const HeroSection = () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
                 <a
                   href="#demo"
-                  className="btn-primary px-8 py-3 rounded-full text-white font-medium text-lg shadow-xl"
+                  className="btn-primary bg-gradient-to-r from-blue-600 to-indigo-400 px-8 py-3 rounded-full text-white font-medium text-lg shadow-xl"
                 >
                   Try For Free
                 </a>
@@ -66,13 +66,13 @@ const HeroSection = () => {
                   />
                 </div>
                 {/* Floating Elements */}
-                <div className="absolute -top-4 -right-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3 animate-bounce">
+                <div className="absolute top-20 -left-0 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3 animate-bounce">
                   <div className="flex items-center">
                     <div className="h-3 w-3 bg-green-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium">+27% Revenue</span>
                   </div>
                 </div>
-                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3">
+                <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3 animate-pulse">
                   <div className="flex items-center">
                     <div className="h-3 w-3 bg-blue-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium">152 Active Members</span>
