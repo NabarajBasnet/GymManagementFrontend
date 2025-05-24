@@ -60,36 +60,13 @@ export default function MainClientLayout({ children }) {
 
     const hideNavbar = pathname.startsWith('/dashboard') ||
         pathname.startsWith('/login') ||
-        pathname.startsWith('/signup');
-
-    useEffect(() => {
-        const lenis = new Lenis({
-            duration: 1.2,
-            smoothWheel: true,
-            smoothTouch: false,
-            wheelMultiplier: 1,
-            lerp: 0.1,
-            infinite: false,
-            orientation: 'vertical',
-            gestureOrientation: 'vertical',
-            normalizeWheel: true,
-            syncTouch: true,
-            syncTouchLerp: 0.04,
-            touchMultiplier: 2,
-        });
-
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-
-        lenisRef.current = lenis;
-        return () => lenis.destroy();
-    }, []);
+        pathname.startsWith('/signup') ||
+        pathname.startsWith('/auth/') ||
+        pathname.startsWith('/root/') ||
+        pathname.startsWith('/clientarea/');
 
     return (
-        <div className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen`}>
+        <div className={`min-h-screen`}>
             {/* Navbar */}
             {(!hideNavbar && (scrollDir === null || scrollDir === 'up')) && (
                 <div className="fixed top-0 left-0 right-0 z-50">
@@ -98,7 +75,7 @@ export default function MainClientLayout({ children }) {
             )}
 
             {/* Main Content with Footer */}
-            <div className="lenis-content">
+            <div className="">
                 <main className="min-h-screen">
                     {children}
                 </main>
