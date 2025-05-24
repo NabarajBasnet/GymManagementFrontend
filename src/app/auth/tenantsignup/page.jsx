@@ -25,8 +25,76 @@ import {
     ChevronLeft,
     Loader2
 } from 'lucide-react';
+import { GB, US, NP, IN, CN, JP, KR, AU, DE, FR, IT, ES, NL, BE, CH, SE, NO, DK, FI, AT, HU, PL, CZ, SK, HR, SI, RO, BG, GR, PT, BR, AR, CL, CO, VE, EC, PE, MX, CA, ZA, EG, AE, SA, IL, TR, IR, PK, BD, MM, TH, VN, MY, ID, PH, SG, HK, TW, NZ } from 'country-flag-icons/react/3x2';
 
-export default function SignUpPage() {
+import TextField from '@mui/material/TextField';
+import Autocomplete from '@mui/material/Autocomplete';
+import React from 'react';
+
+// Country codes with flags
+const countryCodes = [
+    { code: '+977', country: 'Nepal', flag: NP, iso: 'NP' },
+    { code: '+91', country: 'India', flag: IN, iso: 'IN' },
+    { code: '+1', country: 'United States', flag: US, iso: 'US' },
+    { code: '+44', country: 'United Kingdom', flag: GB, iso: 'GB' },
+    { code: '+86', country: 'China', flag: CN, iso: 'CN' },
+    { code: '+81', country: 'Japan', flag: JP, iso: 'JP' },
+    { code: '+82', country: 'South Korea', flag: KR, iso: 'KR' },
+    { code: '+61', country: 'Australia', flag: AU, iso: 'AU' },
+    { code: '+49', country: 'Germany', flag: DE, iso: 'DE' },
+    { code: '+33', country: 'France', flag: FR, iso: 'FR' },
+    { code: '+39', country: 'Italy', flag: IT, iso: 'IT' },
+    { code: '+34', country: 'Spain', flag: ES, iso: 'ES' },
+    { code: '+31', country: 'Netherlands', flag: NL, iso: 'NL' },
+    { code: '+32', country: 'Belgium', flag: BE, iso: 'BE' },
+    { code: '+41', country: 'Switzerland', flag: CH, iso: 'CH' },
+    { code: '+46', country: 'Sweden', flag: SE, iso: 'SE' },
+    { code: '+47', country: 'Norway', flag: NO, iso: 'NO' },
+    { code: '+45', country: 'Denmark', flag: DK, iso: 'DK' },
+    { code: '+358', country: 'Finland', flag: FI, iso: 'FI' },
+    { code: '+43', country: 'Austria', flag: AT, iso: 'AT' },
+    { code: '+36', country: 'Hungary', flag: HU, iso: 'HU' },
+    { code: '+48', country: 'Poland', flag: PL, iso: 'PL' },
+    { code: '+420', country: 'Czech Republic', flag: CZ, iso: 'CZ' },
+    { code: '+421', country: 'Slovakia', flag: SK, iso: 'SK' },
+    { code: '+385', country: 'Croatia', flag: HR, iso: 'HR' },
+    { code: '+386', country: 'Slovenia', flag: SI, iso: 'SI' },
+    { code: '+40', country: 'Romania', flag: RO, iso: 'RO' },
+    { code: '+359', country: 'Bulgaria', flag: BG, iso: 'BG' },
+    { code: '+30', country: 'Greece', flag: GR, iso: 'GR' },
+    { code: '+351', country: 'Portugal', flag: PT, iso: 'PT' },
+    { code: '+55', country: 'Brazil', flag: BR, iso: 'BR' },
+    { code: '+54', country: 'Argentina', flag: AR, iso: 'AR' },
+    { code: '+56', country: 'Chile', flag: CL, iso: 'CL' },
+    { code: '+57', country: 'Colombia', flag: CO, iso: 'CO' },
+    { code: '+58', country: 'Venezuela', flag: VE, iso: 'VE' },
+    { code: '+593', country: 'Ecuador', flag: EC, iso: 'EC' },
+    { code: '+51', country: 'Peru', flag: PE, iso: 'PE' },
+    { code: '+52', country: 'Mexico', flag: MX, iso: 'MX' },
+    { code: '+1', country: 'Canada', flag: CA, iso: 'CA' },
+    { code: '+27', country: 'South Africa', flag: ZA, iso: 'ZA' },
+    { code: '+20', country: 'Egypt', flag: EG, iso: 'EG' },
+    { code: '+971', country: 'UAE', flag: AE, iso: 'AE' },
+    { code: '+966', country: 'Saudi Arabia', flag: SA, iso: 'SA' },
+    { code: '+972', country: 'Israel', flag: IL, iso: 'IL' },
+    { code: '+90', country: 'Turkey', flag: TR, iso: 'TR' },
+    { code: '+98', country: 'Iran', flag: IR, iso: 'IR' },
+    { code: '+92', country: 'Pakistan', flag: PK, iso: 'PK' },
+    { code: '+880', country: 'Bangladesh', flag: BD, iso: 'BD' },
+    { code: '+95', country: 'Myanmar', flag: MM, iso: 'MM' },
+    { code: '+66', country: 'Thailand', flag: TH, iso: 'TH' },
+    { code: '+84', country: 'Vietnam', flag: VN, iso: 'VN' },
+    { code: '+60', country: 'Malaysia', flag: MY, iso: 'MY' },
+    { code: '+62', country: 'Indonesia', flag: ID, iso: 'ID' },
+    { code: '+63', country: 'Philippines', flag: PH, iso: 'PH' },
+    { code: '+65', country: 'Singapore', flag: SG, iso: 'SG' },
+    { code: '+852', country: 'Hong Kong', flag: HK, iso: 'HK' },
+    { code: '+886', country: 'Taiwan', flag: TW, iso: 'TW' },
+    { code: '+64', country: 'New Zealand', flag: NZ, iso: 'NZ' }
+];
+
+const SignUpPage = () => {
+
     const [currentStep, setCurrentStep] = useState(1);
     const [passwordStrength, setPasswordStrength] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,11 +104,20 @@ export default function SignUpPage() {
     const [tenantTimezone, setTenantTimezone] = useState('');
     const [tenantLanguage, setTenantLanguage] = useState('');
     const [tenantCurrency, setTenantCurrency] = useState('');
+    const [selectedCountryCode, setSelectedCountryCode] = useState('+977'); // Default to Nepal
+
+    const options = countryCodes.map((option) => {
+        const firstLetter = option.country[0].toUpperCase();
+        return {
+          firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
+          ...option,
+        };
+    });
 
     const {
         register,
         handleSubmit,
-        watch,
+            watch,
         trigger,
         formState: { errors }
     } = useForm();
@@ -294,345 +371,425 @@ export default function SignUpPage() {
                         </div>
 
                         {/* Right Panel - Form */}
-                        <div className="lg:w-3/5 bg-white p-8 lg:p-12">
-                            <form onSubmit={handleSubmit(onSubmit)} className="max-w-md mx-auto">
+                        <div className="lg:w-3/5 bg-white p-8 lg:p-12 flex flex-col">
+                            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
                                 {/* Step 1: Basic Information */}
                                 {currentStep === 1 && (
-                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Organization Name
-                                            </Label>
-                                            <div className="relative">
-                                                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Your Gym Name"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('organizationName', {
-                                                        required: "Organization name is required"
-                                                    })}
-                                                />
+                                    <div className="flex-1 overflow-y-auto pr-2">
+                                        <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Organization Name
+                                                </Label>
+                                                <div className="relative">
+                                                    <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="Your Gym Name"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('organizationName', {
+                                                            required: "Organization name is required"
+                                                        })}
+                                                    />
+                                                </div>
+                                                {errors.organizationName && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.organizationName.message}
+                                                    </p>
+                                                )}
                                             </div>
-                                            {errors.organizationName && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.organizationName.message}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Owner Name
-                                            </Label>
-                                            <div className="relative">
-                                                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="text"
-                                                    placeholder="John Doe"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('ownerName', {
-                                                        required: "Owner name is required"
-                                                    })}
-                                                />
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Owner Name
+                                                </Label>
+                                                <div className="relative">
+                                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="John Doe"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('ownerName', {
+                                                            required: "Owner name is required"
+                                                        })}
+                                                    />
+                                                </div>
+                                                {errors.ownerName && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.ownerName.message}
+                                                    </p>
+                                                )}
                                             </div>
-                                            {errors.ownerName && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.ownerName.message}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Email Address
-                                            </Label>
-                                            <div className="relative">
-                                                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="email"
-                                                    placeholder="john@example.com"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('email', {
-                                                        required: "Email is required",
-                                                        pattern: {
-                                                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                                            message: "Please enter a valid email"
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Email Address
+                                                </Label>
+                                                <div className="relative">
+                                                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="email"
+                                                        placeholder="john@example.com"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('email', {
+                                                            required: "Email is required",
+                                                            pattern: {
+                                                                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                                                                message: "Please enter a valid email"
+                                                            }
+                                                        })}
+                                                    />
+                                                </div>
+                                                {errors.email && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.email.message}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Phone Number
+                                                </Label>
+                                                <div className="flex space-x-2">
+                                                    <Select
+                                                        value={selectedCountryCode}
+                                                        onValueChange={(value) => {
+                                                            setSelectedCountryCode(value);
+                                                            const country = countryCodes.find(c => c.code === value);
+                                                            if (country) {
+                                                                register('country').onChange({ target: { value: country.country } });
+                                                            }
+                                                        }}
+                                                    >
+                                                        <SelectTrigger className="w-[140px] h-12 rounded-md">
+                                                            <SelectValue placeholder="Select country" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            {countryCodes.map((country) => (
+                                                                <SelectItem key={country.code} value={country.code}>
+                                                                    <div className="flex items-center space-x-2">
+                                                                        <country.flag className="w-5 h-4" />
+                                                                        <span>{country.code}</span>
+                                                                    </div>
+                                                                </SelectItem>
+                                                            ))}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <div className="relative flex-1">
+                                                        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                        <Input
+                                                            type="tel"
+                                                            placeholder="Phone number"
+                                                            className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                            {...register('phone', {
+                                                                required: "Phone number is required",
+                                                                pattern: {
+                                                                    value: /^[0-9]{10,15}$/,
+                                                                    message: "Please enter a valid phone number"
+                                                                }
+                                                            })}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                {errors.phone && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.phone.message}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            <div className="mb-6">
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Country
+                                                </Label>
+                                                <Autocomplete
+                                                    options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
+                                                    groupBy={(option) => option.firstLetter}
+                                                    getOptionLabel={(option) => option.country}
+                                                    renderOption={(props, option) => (
+                                                        <li {...props} className="flex items-center space-x-3 py-2 px-3">
+                                                            <option.flag className="w-6 h-4" />
+                                                            <span className="text-sm">{option.country}</span>
+                                                        </li>
+                                                    )}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            placeholder="Select your country"
+                                                            className="w-full"
+                                                            InputProps={{
+                                                                ...params.InputProps,
+                                                                className: "h-12 pl-3",
+                                                                startAdornment: (
+                                                                    <>
+                                                                        {params.InputProps.startAdornment}
+                                                                        {selectedCountryCode && (
+                                                                            <div className="flex items-center mr-2">
+                                                                                {countryCodes.find(c => c.code === selectedCountryCode)?.flag && 
+                                                                                    React.createElement(countryCodes.find(c => c.code === selectedCountryCode).flag, {
+                                                                                        className: "w-6 h-4"
+                                                                                    })
+                                                                                }
+                                                                            </div>
+                                                                        )}
+                                                                    </>
+                                                                ),
+                                                            }}
+                                                        />
+                                                    )}
+                                                    onChange={(event, newValue) => {
+                                                        if (newValue) {
+                                                            setSelectedCountryCode(newValue.code);
+                                                            register('country').onChange({ target: { value: newValue.country } });
                                                         }
-                                                    })}
+                                                    }}
+                                                    className="w-full"
+                                                    sx={{
+                                                        '& .MuiOutlinedInput-root': {
+                                                            '& fieldset': {
+                                                                borderColor: '#e5e7eb',
+                                                            },
+                                                            '&:hover fieldset': {
+                                                                borderColor: '#9333ea',
+                                                            },
+                                                            '&.Mui-focused fieldset': {
+                                                                borderColor: '#9333ea',
+                                                            },
+                                                        },
+                                                        '& .MuiInputLabel-root': {
+                                                            color: '#6b7280',
+                                                        },
+                                                        '& .MuiInputLabel-root.Mui-focused': {
+                                                            color: '#9333ea',
+                                                        },
+                                                    }}
                                                 />
+                                                {errors.country && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.country.message}
+                                                    </p>
+                                                )}
                                             </div>
-                                            {errors.email && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.email.message}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Phone Number
-                                            </Label>
-                                            <div className="relative">
-                                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="tel"
-                                                    placeholder="+1 (555) 000-0000"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('phone', {
-                                                        required: "Phone number is required",
-                                                        pattern: {
-                                                            value: /^[0-9+\-\s()]{10,15}$/,
-                                                            message: "Please enter a valid phone number"
-                                                        }
-                                                    })}
-                                                />
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Address
+                                                </Label>
+                                                <div className="relative">
+                                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="text"
+                                                        placeholder="123 Main St, City, Country"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('address', {
+                                                            required: "Address is required"
+                                                        })}
+                                                    />
+                                                </div>
+                                                {errors.address && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.address.message}
+                                                    </p>
+                                                )}
                                             </div>
-                                            {errors.phone && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.phone.message}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        <div className="flex flex-row justify-between space-x-4">
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Address
-                                            </Label>
-                                            <div className="relative">
-                                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="text"
-                                                    placeholder="123 Main St, City, Country"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('address', {
-                                                        required: "Address is required"
-                                                    })}
-                                                />
-                                            </div>
-                                            {errors.address && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.address.message}
-                                                </p>
-                                            )}
                                         </div>
-
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Country
-                                            </Label>
-                                            <div className="relative">
-                                                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="text"
-                                                    placeholder="United States"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('country', {
-                                                        required: "Country is required"
-                                                    })}
-                                                />
-                                            </div>
-                                            {errors.country && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.country.message}
-                                                </p>
-                                            )}
-                                        </div>
-                                        </div>
-
                                     </div>
                                 )}
 
                                 {/* Step 2: Account Security */}
                                 {currentStep === 2 && (
-                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Password
-                                            </Label>
-                                            <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Create a strong password"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('password', {
-                                                        required: "Password is required",
-                                                        minLength: {
-                                                            value: 8,
-                                                            message: "Password must be at least 8 characters"
-                                                        },
-                                                        onChange: (e) => setPasswordStrength(calculatePasswordStrength(e.target.value))
-                                                    })}
-                                                />
-                                            </div>
-                                            {watchPassword && (
-                                                <div className="mt-3 space-y-2">
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-xs text-gray-500">Password strength:</span>
-                                                        <span className={`text-xs font-medium ${
-                                                            passwordStrength <= 25 ? 'text-red-500' :
-                                                            passwordStrength <= 50 ? 'text-orange-500' :
-                                                            passwordStrength <= 75 ? 'text-yellow-500' : 'text-green-500'
-                                                        }`}>
-                                                            {getPasswordStrengthText(passwordStrength)}
-                                                        </span>
-                                                    </div>
-                                                    <div className="w-full bg-gray-200 rounded-full h-2">
-                                                        <div 
-                                                            className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor(passwordStrength)}`}
-                                                            style={{ width: `${passwordStrength}%` }}
-                                                        ></div>
-                                                    </div>
+                                    <div className="flex-1 overflow-y-auto pr-2">
+                                        <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Password
+                                                </Label>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="password"
+                                                        placeholder="Create a strong password"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('password', {
+                                                            required: "Password is required",
+                                                            minLength: {
+                                                                value: 8,
+                                                                message: "Password must be at least 8 characters"
+                                                            },
+                                                            onChange: (e) => setPasswordStrength(calculatePasswordStrength(e.target.value))
+                                                        })}
+                                                    />
                                                 </div>
-                                            )}
-                                            {errors.password && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.password.message}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                                                Confirm Password
-                                            </Label>
-                                            <div className="relative">
-                                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                                                <Input
-                                                    type="password"
-                                                    placeholder="Confirm your password"
-                                                    className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                                                    {...register('confirmPassword', {
-                                                        required: "Please confirm your password",
-                                                        validate: value =>
-                                                            value === watchPassword || "Passwords do not match"
-                                                    })}
-                                                />
+                                                {watchPassword && (
+                                                    <div className="mt-3 space-y-2">
+                                                        <div className="flex items-center justify-between">
+                                                            <span className="text-xs text-gray-500">Password strength:</span>
+                                                            <span className={`text-xs font-medium ${
+                                                                passwordStrength <= 25 ? 'text-red-500' :
+                                                                passwordStrength <= 50 ? 'text-orange-500' :
+                                                                passwordStrength <= 75 ? 'text-yellow-500' : 'text-green-500'
+                                                            }`}>
+                                                                {getPasswordStrengthText(passwordStrength)}
+                                                            </span>
+                                                        </div>
+                                                        <div className="w-full bg-gray-200 rounded-full h-2">
+                                                            <div 
+                                                                className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor(passwordStrength)}`}
+                                                                style={{ width: `${passwordStrength}%` }}
+                                                            ></div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                {errors.password && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.password.message}
+                                                    </p>
+                                                )}
                                             </div>
-                                            {errors.confirmPassword && (
-                                                <p className="text-sm text-red-500 mt-1 flex items-center">
-                                                    <X className="w-4 h-4 mr-1" />
-                                                    {errors.confirmPassword.message}
-                                                </p>
-                                            )}
-                                        </div>
 
-                                        {/* Password Requirements */}
-                                        <div className="bg-gray-50 rounded-lg p-4">
-                                            <h4 className="text-sm font-medium text-gray-700 mb-2">Password must contain:</h4>
-                                            <ul className="space-y-1 text-xs text-gray-600">
-                                                <li className="flex items-center">
-                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${watchPassword.length >= 8 ? 'text-green-500' : 'text-gray-300'}`} />
-                                                    At least 8 characters
-                                                </li>
-                                                <li className="flex items-center">
-                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[A-Z]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
-                                                    One uppercase letter
-                                                </li>
-                                                <li className="flex items-center">
-                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
-                                                    One number
-                                                </li>
-                                                <li className="flex items-center">
-                                                    <CheckCircle2 className={`w-3 h-3 mr-2 ${/[^A-Za-z0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
-                                                    One special character
-                                                </li>
-                                            </ul>
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                                    Confirm Password
+                                                </Label>
+                                                <div className="relative">
+                                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                                                    <Input
+                                                        type="password"
+                                                        placeholder="Confirm your password"
+                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        {...register('confirmPassword', {
+                                                            required: "Please confirm your password",
+                                                            validate: value =>
+                                                                value === watchPassword || "Passwords do not match"
+                                                        })}
+                                                    />
+                                                </div>
+                                                {errors.confirmPassword && (
+                                                    <p className="text-sm text-red-500 mt-1 flex items-center">
+                                                        <X className="w-4 h-4 mr-1" />
+                                                        {errors.confirmPassword.message}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* Password Requirements */}
+                                            <div className="bg-gray-50 rounded-lg p-4">
+                                                <h4 className="text-sm font-medium text-gray-700 mb-2">Password must contain:</h4>
+                                                <ul className="space-y-1 text-xs text-gray-600">
+                                                    <li className="flex items-center">
+                                                        <CheckCircle2 className={`w-3 h-3 mr-2 ${watchPassword.length >= 8 ? 'text-green-500' : 'text-gray-300'}`} />
+                                                        At least 8 characters
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <CheckCircle2 className={`w-3 h-3 mr-2 ${/[A-Z]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                        One uppercase letter
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <CheckCircle2 className={`w-3 h-3 mr-2 ${/[0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                        One number
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <CheckCircle2 className={`w-3 h-3 mr-2 ${/[^A-Za-z0-9]/.test(watchPassword) ? 'text-green-500' : 'text-gray-300'}`} />
+                                                        One special character
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Step 3: Preferences */}
                                 {currentStep === 3 && (
-                                    <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                                <Clock className="w-4 h-4 mr-2 text-gray-400" />
-                                                Timezone
-                                            </Label>
-                                            <Select 
-                                                onValueChange={(value) => setTenantTimezone(value)}
-                                            >
-                                                <SelectTrigger className="h-12">
-                                                    <SelectValue placeholder="Select timezone" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {timezones.map((timezone) => (
-                                                        <SelectItem key={timezone.name} value={timezone.name}>
-                                                            {timezone.name} (UTC{timezone.offset >= 0 ? '+' : ''}{timezone.offset})
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                    <div className="flex-1 overflow-y-auto pr-2">
+                                        <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <Clock className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Timezone
+                                                </Label>
+                                                <Select 
+                                                    onValueChange={(value) => setTenantTimezone(value)}
+                                                >
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue placeholder="Select timezone" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {timezones.map((timezone) => (
+                                                            <SelectItem key={timezone.name} value={timezone.name}>
+                                                                {timezone.name} (UTC{timezone.offset >= 0 ? '+' : ''}{timezone.offset})
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
 
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                                <Globe className="w-4 h-4 mr-2 text-gray-400" />
-                                                Language
-                                            </Label>
-                                            <Select 
-                                                onValueChange={(value) => setTenantLanguage(value)}
-                                            >
-                                                <SelectTrigger className="h-12">
-                                                    <SelectValue placeholder="Select language" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {languages.map((language) => (
-                                                        <SelectItem key={language.code} value={language.code}>
-                                                            {language.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <Globe className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Language
+                                                </Label>
+                                                <Select 
+                                                    onValueChange={(value) => setTenantLanguage(value)}
+                                                >
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue placeholder="Select language" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {languages.map((language) => (
+                                                            <SelectItem key={language.code} value={language.code}>
+                                                                {language.name}
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
 
-                                        <div>
-                                            <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-                                                <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
-                                                Currency
-                                            </Label>
-                                            <Select 
-                                                onValueChange={(value) => setTenantCurrency(value)}
-                                            >
-                                                <SelectTrigger className="h-12">
-                                                    <SelectValue placeholder="Select currency" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {currencies.map((currency) => (
-                                                        <SelectItem key={currency.code} value={currency.code}>
-                                                            {currency.name} ({currency.symbol})
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                            <div>
+                                                <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                                                    <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
+                                                    Currency
+                                                </Label>
+                                                <Select 
+                                                    onValueChange={(value) => setTenantCurrency(value)}
+                                                >
+                                                    <SelectTrigger className="h-12">
+                                                        <SelectValue placeholder="Select currency" />
+                                                    </SelectTrigger>
+                                                    <SelectContent>
+                                                        {currencies.map((currency) => (
+                                                            <SelectItem key={currency.code} value={currency.code}>
+                                                                {currency.name} ({currency.symbol})
+                                                            </SelectItem>
+                                                        ))}
+                                                    </SelectContent>
+                                                </Select>
+                                            </div>
 
-                                        {/* Summary */}
-                                        <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                                            <h4 className="text-sm font-medium text-purple-800 mb-2">Setup Summary</h4>
-                                            <div className="space-y-1 text-xs text-purple-700">
-                                                <p><strong>Organization:</strong> {watch('organizationName')}</p>
-                                                <p><strong>Owner:</strong> {watch('ownerName')}</p>
-                                                <p><strong>Email:</strong> {watch('email')}</p>
-                                                <p><strong>Currency:</strong> {currencies.find(c => c.code === watch('tenantCurrency'))?.name}</p>
+                                            {/* Summary */}
+                                            <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                                                <h4 className="text-sm font-medium text-purple-800 mb-2">Setup Summary</h4>
+                                                <div className="space-y-1 text-xs text-purple-700">
+                                                    <p><strong>Organization:</strong> {watch('organizationName')}</p>
+                                                    <p><strong>Owner:</strong> {watch('ownerName')}</p>
+                                                    <p><strong>Email:</strong> {watch('email')}</p>
+                                                    <p><strong>Currency:</strong> {currencies.find(c => c.code === watch('tenantCurrency'))?.name}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
                                 {/* Navigation Buttons */}
-                                    {/* Navigation Buttons */}
-                                    <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200">
+                                <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 sticky bottom-0 bg-white">
                                     {currentStep > 1 ? (
                                         <Button
                                             type="button"
@@ -648,38 +805,38 @@ export default function SignUpPage() {
                                         <div></div>
                                     )}
                                         
-                                        {currentStep < totalSteps ? (
-                                            <Button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    nextStep();
-                                                }}
-                                                className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
-                                                disabled={isValidating || isSubmitting}
-                                            >
-                                                {isValidating ? (
-                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                ) : (
-                                                    <>
-                                                        Next <ChevronRight className="w-4 h-4 ml-2" />
-                                                    </>
-                                                )}
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                type="submit"
-                                                className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
-                                                disabled={isSubmitting}
-                                            >
-                                                {isSubmitting ? (
-                                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                ) : (
-                                                    "Create Account"
-                                                )}
-                                            </Button>
-                                        )}
-                                    </div>
+                                    {currentStep < totalSteps ? (
+                                        <Button
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                nextStep();
+                                            }}
+                                            className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
+                                            disabled={isValidating || isSubmitting}
+                                        >
+                                            {isValidating ? (
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            ) : (
+                                                <>
+                                                    Next <ChevronRight className="w-4 h-4 ml-2" />
+                                                </>
+                                            )}
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            type="submit"
+                                            className="px-6 h-12 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg transition-all duration-300"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? (
+                                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                            ) : (
+                                                "Create Account"
+                                            )}
+                                        </Button>
+                                    )}
+                                </div>
                             </form>
                         </div>
                     </div>
@@ -688,3 +845,5 @@ export default function SignUpPage() {
         </div>
     );
 }
+
+export default SignUpPage;
