@@ -229,22 +229,33 @@ const SignUpPage = () => {
     };
 
     const onSubmit = async (data) => {
-        console.log(data);
         setIsSubmitting(true);
         try {
+            // Get the selected country data
+            const selectedCountry = countryCodes.find(c => c.code === selectedCountryCode);
+            
+            // Structure the phone data
+            const phoneData = {
+                country: selectedCountry?.country || '',
+                countryCode: selectedCountry?.code || '',
+                number: data.phone
+            };
+
             // Only send required fields to the backend
             const submitData = {
                 organizationName: data.organizationName,
                 ownerName: data.ownerName,
                 email: data.email,
-                phone: data.phone,
+                phone: phoneData,
                 address: data.address,
-                country: data.country,
+                country: selectedCountry?.country || '',
                 password: data.password,
                 tenantTimezone,
                 tenantLanguage,
                 tenantCurrency
             };
+
+            console.log('Submitting data:', submitData);
 
             const response = await fetch('http://localhost:3000/api/tenant/signup', {
                 method: 'POST',
@@ -371,12 +382,12 @@ const SignUpPage = () => {
                         </div>
 
                         {/* Right Panel - Form */}
-                        <div className="lg:w-3/5 bg-white p-8 lg:p-12 flex flex-col">
+                        <div className="lg:w-3/5 bg-white p-4 lg:p-8 flex flex-col">
                             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
                                 {/* Step 1: Basic Information */}
                                 {currentStep === 1 && (
                                     <div className="flex-1 overflow-y-auto pr-2">
-                                        <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
+                                        <div className="space-y-2 animate-in slide-in-from-right-2 duration-300">
                                             <div>
                                                 <Label className="text-sm font-medium text-gray-700 mb-2 block">
                                                     Organization Name
@@ -789,7 +800,7 @@ const SignUpPage = () => {
                                 )}
 
                                 {/* Navigation Buttons */}
-                                <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-200 sticky bottom-0 bg-white">
+                                <div className="flex justify-between items-center mt-2 border-gray-200 sticky bottom-0 bg-white">
                                     {currentStep > 1 ? (
                                         <Button
                                             type="button"
