@@ -69,6 +69,20 @@
     --chart-5: 340 75% 55%;
   }
 
+  @font-face {
+    font-family: 'Oswald-Bold';
+    src: url('../../public/fonts/Oswald-Bold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  
+  @font-face {
+    font-family: 'Lobster-Regular';
+    src: url('../../public/fonts/Lobster/Lobster-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   * {
     @apply border-border outline-ring/50;
   }

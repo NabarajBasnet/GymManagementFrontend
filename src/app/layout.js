@@ -7,6 +7,7 @@ import { MantineProvider } from "@mantine/core";
 import '@mantine/core/styles.css';
 import LoggedInUserProvider from "@/components/Providers/LoggedInUserProvider";
 import { Toaster } from "react-hot-toast";
+import MainClientLayout from "./clientLayout";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -59,9 +60,11 @@ export default function RootLayout({ children }) {
               <RTKProvider>
                 <UserProvider>
                   <Toaster />
+                  <MainClientLayout>
                   <div className='w-full'>
                     {children}
                   </div>
+                  </MainClientLayout>
                 </UserProvider>
               </RTKProvider>
             </MantineProvider>
