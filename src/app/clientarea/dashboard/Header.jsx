@@ -145,7 +145,7 @@ const ClientAreaHeader = ({ activeTab }) => {
     const subscriptionStyle = getSubscriptionStyling(loggedInTenant?.tenantSubscriptionStatus);
 
     return (
-        <header className="bg-white/95 backdrop-blur-lg shadow-lg border-b border-gray-100/50 sticky top-0 z-50">
+        <header className="bg-white/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 sticky top-0 z-50">
             {loading ? (
                <Loader />
             ) : (
@@ -344,16 +344,16 @@ const ClientAreaHeader = ({ activeTab }) => {
                         </div>
 
                         {/* Enhanced Logo */}
-                        <div className="hidden md:flex items-center space-x-4">
+                        <div className="hidden md:flex justify-center ml-52 items-center space-x-4">
                             <div className="flex items-center space-x-3">
                                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg">
                                     <Building2 className="w-6 h-6 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent">
-                                        Fit Loft Pro
+                                    <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent">
+                                        Fit Loft
                                     </h1>
-                                    <p className="text-xs text-gray-500 font-medium">Fitness Management</p>
+                                    <p className="text-xs text-gray-500 font-medium">Automate Gym</p>
                                 </div>
                             </div>
                         </div>
