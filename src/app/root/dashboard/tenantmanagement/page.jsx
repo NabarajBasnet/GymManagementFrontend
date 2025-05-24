@@ -314,8 +314,8 @@ const TenantManagement = () => {
                                         <TableHead>Contact</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Trial</TableHead>
-                                        <TableHead>Created</TableHead>
-                                        <TableHead>Actions</TableHead>
+                                        <TableHead className="text-center">Created</TableHead>
+                                        <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
@@ -358,7 +358,7 @@ const TenantManagement = () => {
                                                     )}
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell className="text-center">
                                                 <p className="text-sm">
                                                     {format(new Date(tenant.createdAt), 'MMM dd, yyyy')}
                                                 </p>
@@ -366,8 +366,8 @@ const TenantManagement = () => {
                                                     {format(new Date(tenant.createdAt), 'HH:mm')}
                                                 </p>
                                             </TableCell>
-                                            <TableCell>
-                                                <div className="flex items-center space-x-2">
+                                            <TableCell className="text-right flex justify-end">
+                                                <div className="flex flex-col items-center space-y-2">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
