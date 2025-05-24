@@ -1,20 +1,19 @@
-import RootUserHeader from "./Header";
+import ClientAreaHeader from "./Header";
 import ReactQueryClientProvider from "@/components/Providers/ReactQueryProvider";
-import LoggedInRootUserProvider from "@/components/Providers/LoggedInRootUserProvider";
 import LoggedInTenantProvider from "@/components/Providers/LoggedInTenantProvider";
 
 const RootUserLayout = ({ children }) => {
 
     return (
         <div className='w-full'>
-            <LoggedInRootUserProvider>
-                <LoggedInTenantProvider>
+            <LoggedInTenantProvider>
                 <ReactQueryClientProvider>
-                    <RootUserHeader />
-                    {children}
+                    <ClientAreaHeader />
+                    <div className="w-full">
+                        {children}
+                    </div>
                 </ReactQueryClientProvider>
-                </LoggedInTenantProvider>
-            </LoggedInRootUserProvider>
+            </LoggedInTenantProvider>
         </div>
     );
 }
