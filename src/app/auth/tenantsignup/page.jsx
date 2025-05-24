@@ -155,7 +155,6 @@ export default function SignUpPage() {
     };
 
     const onSubmit = async (data) => {
-        console.log('Form Data:', data);
         setIsSubmitting(true);
         try {
             // Only send required fields to the backend
@@ -182,7 +181,6 @@ export default function SignUpPage() {
             });
 
             const responseData = await response.json();
-            console.log(responseData);
             if (response.ok) {
                 toast.success(responseData.message);
                 // Reset form or redirect
@@ -201,7 +199,7 @@ export default function SignUpPage() {
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex items-center justify-center p-4">
             <div className="w-full max-w-7xl">
                 <Card className="overflow-hidden border-0 shadow-2xl bg-white/10 backdrop-blur-xl">
-                    <div className="flex flex-col lg:flex-row min-h-[700px]">
+                    <div className="flex flex-col lg:flex-row min-h-[95vh] max-h-[95vh]">
                         {/* Left Panel - Progress & Info */}
                         <div className="lg:w-2/5 bg-gradient-to-br from-purple-600/30 to-blue-600/30 p-8 text-white relative overflow-hidden">
                             {/* Background Pattern */}
