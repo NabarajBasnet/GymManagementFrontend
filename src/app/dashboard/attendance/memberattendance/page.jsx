@@ -261,7 +261,7 @@ const MemberAttendance = () => {
     };
 
     return (
-        <div className='w-full bg-slate-50 min-h-screen'>
+        <div className='w-full bg-slate-50 dark:bg-gray-900 min-h-screen'>
             {/* Toast Notification */}
             {toast && (
                 <>
@@ -384,7 +384,7 @@ const MemberAttendance = () => {
                             <Button
                                 onClick={() => setMembershipHoldToggle(false)}
                                 variant="outline"
-                                className="px-4 py-2 text-gray-700 border-gray-300 hover:bg-gray-100 transition-colors"
+                                className="px-4 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 text-gray-700 border-gray-300 hover:bg-gray-100 transition-colors"
                             >
                                 Cancel
                             </Button>
@@ -411,32 +411,32 @@ const MemberAttendance = () => {
             )}
 
             {/* Breadcrumb and Header */}
-            <div className='w-full p-6  border-b border-gray-200 bg-gray-50 shadow-sm'>
+            <div className='w-full p-6  border-b border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800 shadow-sm'>
                 <Breadcrumb className="mb-4">
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <MdHome className='w-4 h-4' /><BreadcrumbLink href="/" className="text-slate-600 hover:text-slate-800">Home</BreadcrumbLink>
+                            <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink className="text-slate-600 hover:text-slate-800">Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink className="text-slate-600 hover:text-slate-800">Attendance</BreadcrumbLink>
+                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Attendance</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className="font-medium text-slate-900">Member Attendance</BreadcrumbPage>
+                            <BreadcrumbPage className="font-medium text-slate-900 dark:text-gray-200">Member Attendance</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex justify-between items-center">
-                    <h1 className="text-2xl md:text-lg font-bold text-slate-900">Member Attendance</h1>
+                    <h1 className="text-2xl md:text-lg font-bold text-slate-900 dark:text-gray-200">Member Attendance</h1>
                     <Button
                         variant="outline"
                         onClick={reloadPage}
-                        className='flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'
+                        className='flex items-center dark:bg-gray-900 dark:border-gray-600 rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'
                     >
                         <RefreshCw className="h-4 w-4" />
                         Refresh
@@ -448,8 +448,8 @@ const MemberAttendance = () => {
             <div className="w-full mx-auto p-4">
                 <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Check-in Card */}
-                    <Card className="overflow-hidden bg-white shadow-md border-0">
-                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-600 text-white p-6">
+                    <Card className="overflow-hidden bg-white dark:bg-gray-800 dark:border-none shadow-md border-0">
+                        <CardHeader className="bg-gradient-to-r from-slate-800 dark:border-gray-600 dark:border-b to-slate-600 text-white p-6">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center space-x-2">
                                     <User className="h-5 w-5" />
@@ -466,12 +466,12 @@ const MemberAttendance = () => {
                         <CardContent className="p-6">
                             {/* QR Code Input */}
                             <div className="mb-6">
-                                <Label htmlFor="qrcode" className="text-sm font-medium text-gray-700 mb-2 block">
+                                <Label htmlFor="qrcode" className="text-sm font-medium dark:text-gray-200 text-gray-700 mb-2 block">
                                     Scan QR Code or Enter Member ID
                                 </Label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <QrCode className="h-5 w-5 text-gray-400" />
+                                        <QrCode className="h-5 w-5 text-gray-400 dark:text-gray-200" />
                                     </div>
                                     <Input
                                         id="qrcode"
@@ -499,20 +499,20 @@ const MemberAttendance = () => {
                             {/* Member Info */}
                             <div className="space-y-6">
                                 {/* Personal Details */}
-                                <div className="bg-gray-50 border rounded-lg p-4">
-                                    <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-3">
+                                <div className="bg-gray-50 dark:bg-gray-800 border rounded-lg p-4">
+                                    <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider dark:text-gray-200 mb-3">
                                         Personal Details
                                     </h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <Label className="text-xs text-gray-600 block mb-1">Full Name</Label>
-                                            <div className="bg-white border border-gray-200 rounded-md px-3 py-2 text-sm font-medium text-gray-800">
+                                            <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Full Name</Label>
+                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {validationResult?.member?.fullName || "—"}
                                             </div>
                                         </div>
-                                        <div>
-                                            <Label className="text-xs text-gray-600 block mb-1">Category</Label>
-                                            <div className="bg-white border border-gray-200 rounded-md px-3 py-2 text-sm font-medium text-gray-800">
+                                        <div className="dark:text-gray-200">
+                                            <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Category</Label>
+                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {validationResult?.member?.membershipType || "—"}
                                             </div>
                                         </div>
@@ -520,26 +520,29 @@ const MemberAttendance = () => {
                                 </div>
 
                                 {/* Membership Details */}
-                                <div className="bg-gray-50 border rounded-lg p-4">
-                                    <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-3">
+                                <div className="bg-gray-50 dark:bg-gray-800 border rounded-lg p-4">
+                                    <h3 className="text-sm font-medium text-gray-600 uppercase tracking-wider mb-3 dark:text-gray-200">
                                         Membership Details
                                     </h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                         <div>
-                                            <Label className="text-xs text-gray-600 block mb-1">Membership Option</Label>
+                                            <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Membership Option</Label>
                                             <Input
+                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                                 value={validationResult?.member?.membershipOption || "—"}
                                             />
                                         </div>
                                         <div>
-                                            <Label className="text-xs text-gray-600 block mb-1">Start Date</Label>
+                                            <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Start Date</Label>
                                             <Input
+                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipDate)}
                                             />
                                         </div>
                                         <div>
-                                            <Label className="text-xs text-gray-600 block mb-1">Expire Date</Label>
+                                            <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Expire Date</Label>
                                             <Input
+                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipExpireDate)}
 
                                             />
@@ -549,10 +552,10 @@ const MemberAttendance = () => {
 
                                 {/* System Message */}
                                 <div>
-                                    <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                                    <Label className="text-sm font-medium text-gray-700 mb-2 block dark:text-gray-200">
                                         System Message
                                     </Label>
-                                    <div className={`relative bg-gray-50 rounded-lg border border-gray-200 p-4`}>
+                                    <div className={`relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4`}>
                                         {validationResult && (
                                             <div className={`flex items-start ${textareaColor}`}>
                                                 <div className="flex-shrink-0 mt-0.5">
@@ -576,7 +579,7 @@ const MemberAttendance = () => {
                                         {!validationResult && (
                                             <div className="flex flex-col items-center justify-center py-4 text-center text-gray-500">
                                                 <QrCode className="h-8 w-8 mb-2 opacity-50" />
-                                                <p className="text-sm">Scan a membership QR code to display information</p>
+                                                <p className="text-sm dark:text-gray-200">Scan a membership QR code to display information</p>
                                             </div>
                                         )}
                                     </div>
