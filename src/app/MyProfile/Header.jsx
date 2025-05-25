@@ -41,7 +41,8 @@ import {
     Menu,
     X,
     User,
-    QrCode
+    QrCode,
+    ChevronDown
 } from 'lucide-react';
 import { RiCustomerServiceFill } from "react-icons/ri";
 import { IoMenu } from "react-icons/io5";
@@ -96,7 +97,7 @@ const StaffHeader = ({ activeTab }) => {
     };
 
     return (
-        <header className="bg-white shadow-sm sticky top-0 z-10">
+        <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Mobile menu button */}
@@ -104,78 +105,82 @@ const StaffHeader = ({ activeTab }) => {
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <SheetTrigger asChild>
                                 <button
-                                    className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+                                    className="inline-flex items-center justify-center p-2.5 rounded-xl text-gray-600 hover:text-gray-800 hover:bg-gray-100/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50 transition-all duration-200 group"
                                     aria-label="Open menu"
                                 >
-                                    <IoMenu className="block h-6 w-6" />
+                                    <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                                 </button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-[280px] sm:w-[300px] p-0">
+                            <SheetContent side="left" className="w-[320px] sm:w-[340px] p-0 bg-gradient-to-br from-white to-gray-50/50">
                                 <div className="h-full flex flex-col">
-                                    <SheetHeader className="px-4 pt-4 pb-2 border-b border-gray-200">
-                                        <SheetTitle className="text-xl font-bold text-indigo-600">
+                                    <SheetHeader className="px-6 pt-6 pb-4 border-b border-gray-200/60 bg-gradient-to-r from-indigo-50 to-blue-50">
+                                        <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                                             {gymName}
                                         </SheetTitle>
                                     </SheetHeader>
 
                                     {/* User profile */}
                                     {staff && staff && staff.loggedInStaff && (
-                                        <div className="px-4 py-6 border-b border-gray-200">
+                                        <div className="px-6 py-6 border-b border-gray-200/60 bg-gradient-to-r from-blue-50/50 to-indigo-50/50">
                                             <div className="flex items-center">
                                                 <div className="relative">
-                                                    <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
+                                                    <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-base font-bold text-white shadow-lg ring-4 ring-white">
                                                         {staffName
                                                             ?.split(' ')
                                                             .map((word) => word[0])
                                                             .join('')
                                                             .slice(0, 2)
                                                             .toUpperCase()}
-                                                        <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
                                                     </div>
-                                                    <span className="absolute bottom-0 right-0 block w-3 h-3 rounded-full bg-green-500 border-2 border-white"></span>
+                                                    <span className="absolute -bottom-1 -right-1 block w-4 h-4 rounded-full bg-emerald-500 border-3 border-white shadow-sm animate-pulse"></span>
                                                 </div>
-                                                <div className="ml-3">
-                                                    <p className="font-medium text-gray-900">{staffName}</p>
-                                                    <p className="text-sm text-gray-500 flex items-center space-x-2">
-                                                        <span className="bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded-full mr-1">
+                                                <div className="ml-4 flex-1">
+                                                    <p className="font-semibold text-gray-900 text-base">{staffName}</p>
+                                                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                                                        <span className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-sm">
                                                             {staffStatus}
                                                         </span>
-                                                        <span className="bg-indigo-100 text-black text-xs px-2 py-0.5 rounded-full mr-1">
-                                                            Branch: {gymBranchName}
+                                                        <span className="bg-gray-100 text-gray-700 text-xs px-3 py-1 rounded-full font-medium">
+                                                            {gymBranchName}
                                                         </span>
-                                                    </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Navigation */}
-                                    <nav className="flex-1 px-2 py-4 space-y-1 overflow-y-auto">
+                                    <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                                         {navItems.map((item) => (
                                             <button
                                                 key={item.id}
                                                 onClick={() => handleNavClick(item.id)}
-                                                className={`flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium transition-colors ${activeTab === item.id
-                                                    ? 'bg-indigo-50 text-indigo-700'
-                                                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                                                    }`}
+                                                className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
+                                                    activeTab === item.id
+                                                        ? 'bg-gradient-to-r from-indigo-500 to-blue-500 text-white shadow-lg shadow-indigo-500/25 transform scale-[1.02]'
+                                                        : 'text-gray-700 hover:bg-gray-100/80 hover:text-gray-900 hover:shadow-sm hover:scale-[1.01]'
+                                                }`}
                                             >
-                                                <span className="mr-3 opacity-80">{item.icon}</span>
+                                                <span className={`mr-4 transition-all duration-200 ${
+                                                    activeTab === item.id ? 'text-white' : 'text-gray-500 group-hover:text-gray-700'
+                                                }`}>
+                                                    {item.icon}
+                                                </span>
                                                 {item.label}
                                             </button>
                                         ))}
                                     </nav>
 
                                     {/* Footer with logout */}
-                                    <div className="px-4 py-4 border-t border-gray-200">
+                                    <div className="px-4 py-4 border-t border-gray-200/60 bg-gray-50/50">
                                         <button
                                             onClick={() => {
                                                 logOutStaff()
                                                 setIsSheetOpen(false);
                                             }}
-                                            className="flex items-center w-full px-3 py-2.5 rounded-md text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
+                                            className="flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-red-50 hover:text-red-600 transition-all duration-200 group hover:shadow-sm"
                                         >
-                                            <LogOut size={18} className="mr-3" />
+                                            <LogOut size={18} className="mr-4 group-hover:scale-110 transition-transform duration-200" />
                                             Sign out
                                         </button>
                                     </div>
@@ -185,8 +190,8 @@ const StaffHeader = ({ activeTab }) => {
                     </div>
 
                     {/* Logo - hidden on mobile */}
-                    <div className="hidden md:flex items-center">
-                        <h1 className="text-xl font-bold text-indigo-600">
+                    <div className="hidden md:flex ml-48 items-center">
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
                             {gymName}
                         </h1>
                     </div>
@@ -196,23 +201,34 @@ const StaffHeader = ({ activeTab }) => {
                         <DropdownMenuTrigger asChild>
                             <div>
                                 {staff?.loggedInStaff && (
-                                    <div className="flex cursor-pointer items-center">
-                                        <div className="relative w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-semibold text-white">
+                                    <div className="flex cursor-pointer items-center px-3 py-2 rounded-xl hover:bg-gray-50 transition-all duration-200 group">
+                                        <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-blue-600 flex items-center justify-center text-sm font-bold text-white shadow-md ring-2 ring-white">
                                             {staffName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
-                                            <span className="absolute bottom-0 right-0 block w-2 h-2 rounded-full bg-green-500 border-2 border-white"></span>
+                                            <span className="absolute -bottom-0.5 -right-0.5 block w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></span>
                                         </div>
-                                        <span className="ml-2 text-sm font-medium text-gray-700 hidden lg:inline">
-                                            {staffName}
-                                        </span>
+                                        <div className="ml-3 hidden lg:block">
+                                            <span className="text-sm font-semibold text-gray-800 block">
+                                                {staffName}
+                                            </span>
+                                            <span className="text-xs text-gray-500 block">
+                                                {staffStatus}
+                                            </span>
+                                        </div>
+                                        <ChevronDown className="ml-2 h-4 w-4 text-gray-500 group-hover:text-gray-700 transition-colors duration-200 hidden lg:block" />
                                     </div>
                                 )}
                             </div>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56">
-                            <DropdownMenuLabel className='cursor-pointer'>My Account</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem className='cursor-pointer text-red-600' onClick={logOutStaff}>
-                                <LogOut />
+                        <DropdownMenuContent className="w-64 mt-2 p-2 bg-white/95 backdrop-blur-xl border border-gray-200/50 shadow-xl rounded-2xl">
+                            <DropdownMenuLabel className='cursor-pointer px-4 py-3 font-semibold text-gray-800 border-b border-gray-100'>
+                                My Account
+                            </DropdownMenuLabel>
+                            <DropdownMenuSeparator className="my-2" />
+                            <DropdownMenuItem 
+                                className='cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl mx-1 px-4 py-3 transition-all duration-200 font-medium' 
+                                onClick={logOutStaff}
+                            >
+                                <LogOut className="mr-3 h-4 w-4" />
                                 Log out
                             </DropdownMenuItem>
                         </DropdownMenuContent>

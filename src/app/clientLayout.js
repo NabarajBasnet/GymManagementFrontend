@@ -63,7 +63,11 @@ export default function MainClientLayout({ children }) {
         pathname.startsWith('/signup') ||
         pathname.startsWith('/auth/') ||
         pathname.startsWith('/root/') ||
-        pathname.startsWith('/clientarea/');
+        pathname.startsWith('/clientarea') ||
+        pathname.startsWith('/StaffLogin') ||
+        pathname.startsWith('/MyProfile') ||
+        pathname.startsWith('/memberlogin') ||
+        pathname.startsWith('/member');
 
     return (
         <div className={`min-h-screen`}>

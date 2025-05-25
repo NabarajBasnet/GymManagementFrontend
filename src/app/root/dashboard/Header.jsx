@@ -338,13 +338,13 @@ const RootUserHeader = ({ activeTab }) => {
                     </div>
 
                     {/* Enhanced Logo */}
-                    <div className="hidden md:flex items-center space-x-4">
+                    <div className="hidden md:flex items-center ml-56 space-x-4">
                         <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center shadow-lg">
                                 <ShieldCheck className="w-6 h-6 text-white" />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold bg-gradient-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
+                                <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
                                     Fit Loft Admin
                                 </h1>
                                 <p className="text-xs text-gray-500 font-medium">System Administration</p>

@@ -182,7 +182,7 @@ const MemberHeader = ({ activeTab }) => {
                     </div>
 
                     {/* Logo - hidden on mobile */}
-                    <div className="hidden md:flex items-center">
+                    <div className="hidden md:flex ml-32 items-center">
                         <h1 className="text-xl font-bold text-indigo-600">
                             {gymName}
                         </h1>
