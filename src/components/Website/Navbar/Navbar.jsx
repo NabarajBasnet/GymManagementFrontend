@@ -131,7 +131,7 @@ const Navbar = () => {
 
                         {/* CTA Button with Icon */}
                         <a
-                            href="/signup"
+                            href="/auth/tenantsignup"
                             className={cn(
                                 "px-6 py-2 rounded-full font-medium shadow-lg flex items-center transition-all duration-300",
                                 scrolled 
@@ -236,10 +236,10 @@ const Navbar = () => {
                                 </a>
                                 <a
                                     href="#demo"
-                                    className="btn-primary w-full text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
+                                    className="btn-primary w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        handleMobileNavigation('#demo');
+                                        handleMobileNavigation('auth/tenantsignup');
                                     }}
                                 >
                                     Get Started
