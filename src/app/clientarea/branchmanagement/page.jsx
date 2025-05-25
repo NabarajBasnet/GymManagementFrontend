@@ -290,16 +290,17 @@ const BranchManagement = () => {
                                             <Controller
                                                 name="gymBranchStatus"
                                                 control={control}
-                                                defaultValue="active"
+                                                defaultValue="Active"
                                                 render={({ field }) => (
                                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                         <SelectTrigger className="py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm">
                                                             <SelectValue placeholder="Select status" />
                                                         </SelectTrigger>
                                                         <SelectContent className="py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm">
-                                                            <SelectItem value="active">Active</SelectItem>
-                                                            <SelectItem value="inactive">Inactive</SelectItem>
-                                                            <SelectItem value="maintenance">Maintenance</SelectItem>
+                                                            <SelectItem value="Active">Active</SelectItem>
+                                                            <SelectItem value="Inactive">Inactive</SelectItem>
+                                                            <SelectItem value="Closed">Closed</SelectItem>
+                                                            <SelectItem value="Maintenance">Maintenance</SelectItem>
                                                         </SelectContent>
                                                     </Select>
                                                 )}
