@@ -5,7 +5,7 @@ import * as React from 'react';
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { InfoIcon, TrendingDown, TrendingUp } from 'lucide-react';
+import { InfoIcon, TrendingDown, TrendingUp, RefreshCcw } from 'lucide-react';
 import { MdAutorenew } from "react-icons/md";
 import { GiBiceps } from "react-icons/gi";
 import { FaUsers } from "react-icons/fa6";
@@ -162,13 +162,13 @@ const AdminDashboard = () => {
 
 
   return (
-    <div className="min-h-screen w-full flex justify-center bg-gray-50">
+    <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">
       <div className="w-full px-5 py-7">
 
         {/* Welcome Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
           {/* Welcome Card */}
-          <Card className="lg:col-span-8 relative overflow-hidden rounded-2xl shadow-md group">
+          <Card className="lg:col-span-8 dark:border dark:border-gray-600 relative overflow-hidden rounded-2xl shadow-md group">
             {/* Background elements */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/90 to-transparent z-10"></div>
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="lg:col-span-4 relative rounded-2xl shadow-md overflow-hidden">
+          <Card className="lg:col-span-4 dark:border dark:border-gray-600 relative rounded-2xl shadow-md overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/40 to-neutral-800/95 z-10"></div>
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-100"></div>
             <div className="relative z-20 p-3">
@@ -254,28 +254,28 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Card className="py-2 rounded-2xl shadow-sm mb-4 border border-gray-100">
+        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-4 dark:border dark:border-gray-600 border border-gray-200">
           <div className="px-3 py-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-50 rounded-lg">
+                <div className="p-2 bg-blue-50 dark:bg-gray-800 rounded-lg">
                   <InfoIcon className="h-5 w-5 text-blue-600" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900">Date Range Filter</h3>
-                  <p className="text-sm text-gray-500">Select a custom date range to view specific data</p>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-200">Date Range Filter</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">Select a custom date range to view specific data</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                  <span className="text-sm text-gray-600">Current Month</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Current Month</span>
                 </div>
                 <div className="h-4 w-px bg-gray-200"></div>
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                  <span className="text-sm text-gray-600">Custom Range</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Custom Range</span>
                 </div>
               </div>
             </div>
@@ -283,7 +283,7 @@ const AdminDashboard = () => {
             <div className="mt-2 rounded-lg">
               <form className="flex flex-col md:flex-row items-start md:items-end gap-4">
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="startDate" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="startDate" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                     Start Date
                   </Label>
                   <div className="relative">
@@ -292,7 +292,7 @@ const AdminDashboard = () => {
                       type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="h-10 pl-3 pr-3 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
+                      className="h-10 pl-3 pr-3 bg-white dark:border-gray-600 dark:bg-gray-800 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
                     />
                   </div>
                 </div>
@@ -302,7 +302,7 @@ const AdminDashboard = () => {
                 </div>
 
                 <div className="flex-1 space-y-2">
-                  <Label htmlFor="endDate" className="text-sm font-medium text-gray-700">
+                  <Label htmlFor="endDate" className="text-sm font-medium text-gray-700 dark:text-gray-200">
                     End Date
                   </Label>
                   <div className="relative">
@@ -311,7 +311,7 @@ const AdminDashboard = () => {
                       type="date"
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="h-10 pl-3 pr-3 bg-white border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
+                      className="h-10 pl-3 pr-3 bg-white dark:border-gray-600 dark:bg-gray-800 border-gray-200 focus:border-blue-500 focus:ring-blue-500 rounded-md cursor-pointer"
                     />
                   </div>
                 </div>
@@ -320,7 +320,7 @@ const AdminDashboard = () => {
                   <Button
                     type="button"
                     variant="outline"
-                    className="h-10 px-4 border-gray-200 hover:bg-gray-50"
+                    className="h-10 px-4 border-gray-200 dark:border-gray-600 dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-700"
                     onClick={() => {
                       let start = new Date();
                       start.setDate(1);
@@ -330,6 +330,7 @@ const AdminDashboard = () => {
                       setEndDate(end.toISOString().split("T")[0]);
                     }}
                   >
+                    <RefreshCcw className="h-4 w-4 mr-2" />
                     Reset
                   </Button>
                 </div>
