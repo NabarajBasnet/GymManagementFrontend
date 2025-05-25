@@ -1,9 +1,9 @@
-const RootDashboard = () => {
+const TenantDashboard = () => {
     return (
         <div>
-            <h1>Root Dashboard</h1>
+            <h1>Tenant Dashboard</h1>
         </div>
     );
 };
 
-export default RootDashboard;
+export default TenantDashboard;

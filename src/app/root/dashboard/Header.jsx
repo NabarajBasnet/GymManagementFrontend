@@ -228,7 +228,7 @@ const RootUserHeader = ({ activeTab }) => {
                                     )}
 
                                     {/* System Stats */}
-                                    <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-red-50/50 border-b border-gray-200">
+                                    {/* <div className="px-6 py-4 bg-gradient-to-r from-gray-50 to-red-50/50 border-b border-gray-200">
                                         <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">
                                             System Overview
                                         </h4>
@@ -249,7 +249,7 @@ const RootUserHeader = ({ activeTab }) => {
                                                 </div>
                                             ))}
                                         </div>
-                                    </div>
+                                    </div> */}
 
                                     {/* Navigation */}
                                     <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">

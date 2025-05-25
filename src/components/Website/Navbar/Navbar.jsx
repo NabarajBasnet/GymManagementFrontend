@@ -225,21 +225,19 @@ const Navbar = () => {
                             {/* Mobile Login & CTA Buttons */}
                             <div className="pt-2 space-y-3">
                                 <a
-                                    href="#login"
+                                    href="/auth/tenantlogin"
                                     className="block w-full text-center px-6 py-3 rounded-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white font-medium shadow-sm"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        handleMobileNavigation('#login');
                                     }}
                                 >
                                     Login
                                 </a>
                                 <a
-                                    href="#demo"
+                                    href="auth/tenantsignup"
                                     className="btn-primary w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        handleMobileNavigation('auth/tenantsignup');
                                     }}
                                 >
                                     Get Started
