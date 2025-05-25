@@ -206,17 +206,6 @@ const MemberAttendance = () => {
         }
     };
 
-    // Pagination hook
-    const { range, setPage, active } = usePagination({
-        total: totalPages || 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
-
     // Helper function to format dates
     const formatDate = (dateString) => {
         if (!dateString) return "";
@@ -480,7 +469,7 @@ const MemberAttendance = () => {
                                         value={memberId}
                                         onChange={(e) => setMemberId(e.target.value)}
                                         autoFocus
-                                        className="pl-10 pr-3 py-2 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
+                                        className="pl-10 pr-3 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -589,8 +578,8 @@ const MemberAttendance = () => {
                     </Card>
 
                     {/* Attendance History Card */}
-                    <Card className="overflow-hidden bg-white shadow-md border-0">
-                        <CardHeader className="bg-gradient-to-r from-slate-800 to-slate-600 text-white p-6">
+                    <Card className="overflow-hidden bg-white dark:bg-gray-800 dark:border-none shadow-md border-0">
+                        <CardHeader className="bg-gradient-to-r from-slate-800 dark:border-gray-600 dark:border-b to-slate-600 text-white p-6">
                             <div className="flex items-center justify-between">
                                 <CardTitle className="flex items-center space-x-2">
                                     <Calendar className="h-5 w-5" />
@@ -605,12 +594,12 @@ const MemberAttendance = () => {
                         <CardContent className="p-6">
                             {/* Search Input */}
                             <div className="mb-4">
-                                <Label htmlFor="search" className="text-sm font-medium text-gray-700 mb-2 block">
+                                <Label htmlFor="search" className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                                     Search Attendance Records
                                 </Label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <Search className="h-5 w-5 text-gray-400" />
+                                        <Search className="h-5 w-5 text-gray-400 dark:text-gray-200" />
                                     </div>
                                     <Input
                                         id="search"
@@ -618,7 +607,7 @@ const MemberAttendance = () => {
                                         placeholder="Search by name or member ID..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10 pr-3 py-2 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
+                                        className="pl-10 pr-3 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
                                     />
                                 </div>
                             </div>
@@ -675,8 +664,8 @@ const MemberAttendance = () => {
                             ) : (
                                 <div className="flex flex-col items-center justify-center p-12 border border-dashed border-gray-300 rounded-lg">
                                     <Search className="h-10 w-10 text-gray-400 mb-4" />
-                                    <h3 className="text-lg font-medium text-gray-700 mb-1">No attendance records found</h3>
-                                    <p className="text-sm text-gray-500 text-center">
+                                    <h3 className="text-lg font-medium text-gray-700 dark:text-gray-200 mb-1">No attendance records found</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-200 text-center">
                                         {debouncedSearchQuery
                                             ? "No records match your search criteria"
                                             : "Attendance records will appear here once members start checking in"}
