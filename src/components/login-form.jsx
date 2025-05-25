@@ -104,7 +104,7 @@ export function LoginForm({ className, ...props }) {
         <Input
           id={name}
           type={type}
-          className={`pl-10 w-full transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
+          className={`pl-10 w-full dark:text-gray-200 dark:bg-white dark:border-gray-600 border-gray-300 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
           placeholder={placeholder}
           {...register(name, validation)}
         />

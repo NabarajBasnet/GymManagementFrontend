@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer } from 'lucide-react';
+import { Loader2, X, QrCode, RefreshCw, Search, User, Calendar, Timer, Home } from 'lucide-react';
 import {
     FaCheckCircle,
 } from 'react-icons/fa';
@@ -157,16 +157,6 @@ const StaffAttendance = () => {
 
     const { TemporaryAttendanceHistory, TotalTemporaryAttendanceHistory, totalPages } = temporarystaffattendance || {};
 
-    const { range, setPage, active } = usePagination({
-        total: totalPages || 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
-
     let debounceTimeout;
 
     const handleInputChange = async (e) => {
@@ -201,7 +191,7 @@ const StaffAttendance = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100 px-4 py-7'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 px-4 py-7'>
 
             {successfulAlert && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -340,40 +330,44 @@ const StaffAttendance = () => {
                 </div>
             )}
 
-            <div className='w-full bg-white p-4 border rounded-md'>
-                <Breadcrumb>
+            <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/" className="dark:text-gray-200 font-medium flex items-center gap-2"><Home className="h-4 w-4" /> Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <BreadcrumbEllipsis className="h-4 w-4 dark:text-gray-200" />
                                 </DropdownMenuTrigger>
                             </DropdownMenu>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink>Attendance</BreadcrumbLink>
+                            <BreadcrumbLink className="dark:text-gray-200 font-medium">Attendance</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Staff Attendance</BreadcrumbPage>
+                            <BreadcrumbPage className="dark:text-gray-200 font-medium">Staff Attendance</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
-                </Breadcrumb>
+                </Breadcrumb>   
 
+                <div className='w-full bg-white mt-4 dark:bg-gray-800 p-4 border dark:border-none rounded-md'>
                 <div className='w-full md:flex items-center justify-between'>
-                    <h1 className="md:w-6/12 w-full text-xl font-bold mt-2">Staff Attendance</h1>
+                    <div className="md:w-6/12 w-full">
+                    <h1 className="w-full text-xl font-bold mt-2 dark:text-gray-200">Staff Attendance</h1>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                        Daily staff check-in and check-out records.</p>
+                    </div>
                     <div className="md:w-6/12 w-full flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-between border bg-white border-gray-300 rounded-sm items-center">
-                            <Search className="h-5 w-5 text-gray-400" />
+                        <div className="w-full px-4 flex justify-between border border-gray-600 bg-white dark:bg-gray-800 border-gray-300 rounded-sm items-center">
+                            <Search className="h-5 w-5 text-gray-400 dark:text-gray-200" />
                             <Input
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className='w-full border-none bg-none'
+                                className='w-full border-none bg-none dark:bg-transparent dark:text-gray-200'
                                 placeholder='Search...'
                             />
                         </div>
@@ -381,16 +375,16 @@ const StaffAttendance = () => {
                 </div>
             </div>
 
-            <div className="w-full flex bg-white mt-4 rounded-md border justify-center">
+            <div className="w-full flex bg-white dark:bg-gray-800 dark:border-none mt-4 rounded-md border justify-center">
                 <div className="w-full mx-4">
                     <div className="w-full">
                         <form className="w-full md:flex justify-between items-center my-4">
                             <div className='w-full flex justify-start items-center p-2'>
-                                <div className='w-full flex border px-2 rounded-sm items-center'>
+                                <div className='w-full flex border border-gray-600 bg-white dark:bg-gray-800 dark:border px-2 rounded-sm items-center'>
                                     <QrCode className='h-5 w-5 text-gray-400' />
                                     <Input
                                         placeholder='Scan qr code here'
-                                        className='rounded-md border-none outline-none focus:outline-none focus:border-none'
+                                        className='rounded-md dark:bg-transparent dark:text-gray-200 border-none outline-none focus:outline-none focus:border-none'
                                         autoFocus
                                         onChange={handleInputChange}
                                         onKeyDown={(e) => {
@@ -404,34 +398,34 @@ const StaffAttendance = () => {
                             </div>
 
                             <div className='w-full md:w-2/12 flex justify-start items-center p-2'>
-                                <Button type='submit' className='w-full flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'>
+                                <Button type='submit' className='w-full dark:bg-gray-900 dark:border-none dark:text-gray-200 flex items-center rounded-sm bg-slate-800 hover:bg-slate-700 border text-gray-100 hover:text-gray-200'>
                                     <RefreshCw className='h-4 w-4 hover:text-gray-800 text-gray-100 mr-2' />Refresh</Button>
                             </div>
                         </form>
 
-                        <div className="w-full bg-white">
+                        <div className="w-full bg-white dark:bg-gray-800">
                             {AttendanceFetching ? (
                                 <Loader />
                             ) : (
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead className="w-[100px]">Staff Id</TableHead>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Role</TableHead>
-                                            <TableHead>Check In</TableHead>
-                                            <TableHead>Check Out</TableHead>
-                                            <TableHead>Remark</TableHead>
+                                            <TableHead className="w-[100px] dark:text-gray-200">Staff Id</TableHead>
+                                            <TableHead className="dark:text-gray-200">Name</TableHead>
+                                            <TableHead className="dark:text-gray-200">Role</TableHead>
+                                            <TableHead className="dark:text-gray-200">Check In</TableHead>
+                                            <TableHead className="dark:text-gray-200">Check Out</TableHead>
+                                            <TableHead className="dark:text-gray-200">Remark</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory.length > 0 ? (
                                             TemporaryAttendanceHistory.map((attendance) => (
                                                 <TableRow key={attendance._id}>
-                                                    <TableCell className="font-medium text-sm">{attendance.staffId}</TableCell>
-                                                    <TableCell className="text-sm">{attendance.fullName}</TableCell>
-                                                    <TableCell className="text-sm">{attendance.role}</TableCell>
-                                                    <TableCell className="text-sm">
+                                                    <TableCell className="font-medium text-sm dark:text-gray-200">{attendance.staffId}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.fullName}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.role}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">
                                                         {attendance.checkIn ?
                                                             `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
                                                             new Date(attendance.checkIn).toLocaleTimeString('en-US', {
@@ -443,7 +437,7 @@ const StaffAttendance = () => {
                                                             })
                                                         : ''}
                                                     </TableCell>
-                                                    <TableCell className="text-sm">
+                                                    <TableCell className="text-sm dark:text-gray-200">
                                                         {attendance.checkOut ?
                                                             `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
                                                             new Date(attendance.checkOut).toLocaleTimeString('en-US', {
@@ -455,12 +449,12 @@ const StaffAttendance = () => {
                                                             })
                                                         : ''}
                                                     </TableCell>
-                                                    <TableCell className="text-sm">{attendance.remark}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.remark}</TableCell>
                                                 </TableRow>
                                             ))
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={7} align="center">
+                                                <TableCell colSpan={7} align="center" className="dark:text-gray-200">
                                                     Showing 0 out of 0 entries
                                                 </TableCell>
                                             </TableRow>
@@ -468,8 +462,8 @@ const StaffAttendance = () => {
                                     </TableBody>
                                     <TableFooter>
                                         <TableRow>
-                                            <TableCell colSpan={1}>Total Entries</TableCell>
-                                            <TableCell className="text-right">{TotalTemporaryAttendanceHistory}</TableCell>
+                                            <TableCell colSpan={1} className="dark:text-gray-200">Total Entries</TableCell>
+                                            <TableCell className="text-right dark:text-gray-200">{TotalTemporaryAttendanceHistory}</TableCell>
                                         </TableRow>
                                     </TableFooter>
                                 </Table>
@@ -477,7 +471,7 @@ const StaffAttendance = () => {
                         </div>
                     </div>
 
-                    <div className="py-2 my-2">
+                    <div className="py-2 my-2 dark:text-gray-200">
                         <Pagination
                             total={totalPages ? totalPages : 1}
                             siblings={1}

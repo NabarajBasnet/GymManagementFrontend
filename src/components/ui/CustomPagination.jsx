@@ -64,7 +64,7 @@ const Pagination = ({
     };
 
     return (
-        <div className="pagination-root" style={{ gap }}>
+        <div className="pagination-root dark:text-gray-200" style={{ gap }}>
             {withEdges && (
                 <button
                     {...getControlProps('first')}
