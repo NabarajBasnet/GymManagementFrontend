@@ -398,7 +398,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="text"
                                                         placeholder="Your Gym Name"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('organizationName', {
                                                             required: "Organization name is required"
                                                         })}
@@ -421,7 +421,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="text"
                                                         placeholder="John Doe"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('ownerName', {
                                                             required: "Owner name is required"
                                                         })}
@@ -444,7 +444,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="email"
                                                         placeholder="john@example.com"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('email', {
                                                             required: "Email is required",
                                                             pattern: {
@@ -477,7 +477,7 @@ const SignUpPage = () => {
                                                             }
                                                         }}
                                                     >
-                                                        <SelectTrigger className="w-[140px] h-12 rounded-md">
+                                                        <SelectTrigger className="w-[140px] bg-transparent text-gray-800 h-12 border-gray-200 rounded-md">
                                                             <SelectValue placeholder="Select country" />
                                                         </SelectTrigger>
                                                         <SelectContent>
@@ -491,12 +491,12 @@ const SignUpPage = () => {
                                                             ))}
                                                         </SelectContent>
                                                     </Select>
-                                                    <div className="relative flex-1">
+                                                    <div className="relative flex-1 bg-transparent text-gray-800">
                                                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                                                         <Input
                                                             type="tel"
                                                             placeholder="Phone number"
-                                                            className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                            className="pl-10 bg-transparent text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                             {...register('phone', {
                                                                 required: "Phone number is required",
                                                                 pattern: {
@@ -598,7 +598,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="text"
                                                         placeholder="123 Main St, City, Country"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:text-gray-800 dark:bg-transparent h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('address', {
                                                             required: "Address is required"
                                                         })}
@@ -629,7 +629,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="password"
                                                         placeholder="Create a strong password"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:bg-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('password', {
                                                             required: "Password is required",
                                                             minLength: {
@@ -677,7 +677,7 @@ const SignUpPage = () => {
                                                     <Input
                                                         type="password"
                                                         placeholder="Confirm your password"
-                                                        className="pl-10 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                                                        className="pl-10 dark:bg-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                                                         {...register('confirmPassword', {
                                                             required: "Please confirm your password",
                                                             validate: value =>

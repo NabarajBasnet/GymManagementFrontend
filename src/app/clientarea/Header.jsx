@@ -150,7 +150,7 @@ const ClientAreaHeader = ({ activeTab }) => {
     const subscriptionStyle = getSubscriptionStyling(loggedInTenant?.tenantSubscriptionStatus);
 
     return (
-        <header className="bg-white/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 sticky top-0 z-50 dark:bg-gray-900/95">
+        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-50">
             {loading ? (
                <Loader />
             ) : (
@@ -161,13 +161,13 @@ const ClientAreaHeader = ({ activeTab }) => {
                             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                                 <SheetTrigger asChild>
                                     <button
-                                        className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-indigo-700 hover:bg-indigo-50/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 transition-all duration-200 group"
+                                        className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 dark:focus:bg-indigo-900/20 transition-all duration-200 group"
                                         aria-label="Open menu"
                                     >
-                                        <IoMenu className="block h-6 w-6 dark:text-white group-hover:scale-110 transition-transform duration-200" />
+                                        <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                                     </button>
                                 </SheetTrigger>
-                                <SheetContent side="left" className="w-[320px] sm:w-[360px] p-0 bg-gradient-to-b from-white to-gray-50/30">
+                                <SheetContent side="left" className="w-[320px] sm:w-[360px] p-0 bg-gradient-to-b from-white dark:from-gray-900 to-gray-50/30 dark:to-gray-800/30">
                                     <div className="h-full flex flex-col">
                                         <SheetHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
                                             <div className="flex items-center space-x-3">
@@ -185,7 +185,7 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                                         {/* Enhanced User Profile */}
                                         {loggedInTenant && (
-                                            <div className="px-6 py-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-indigo-100">
+                                            <div className="px-6 py-6 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 border-b border-indigo-100 dark:border-indigo-800/30">
                                                 <div className="flex items-center space-x-4">
                                                     <div className="relative">
                                                         <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
@@ -201,7 +201,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                         </div>
                                                     </div>
                                                     <div className="flex-1 min-w-0">
-                                                        <h3 className="font-semibold text-gray-900 text-lg truncate">
+                                                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg truncate">
                                                             {loggedInTenant?.organizationName}
                                                         </h3>
                                                         <div className="flex items-center space-x-2 mt-1">
@@ -209,11 +209,11 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                                 {subscriptionStyle.icon}
                                                                 <span>{loggedInTenant?.tenantSubscriptionStatus}</span>
                                                             </span>
-                                                            <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 text-emerald-800">
+                                                            <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
                                                                 {loggedInTenant?.tenantStatus}
                                                             </span>
                                                         </div>
-                                                        <p className="text-sm text-gray-600 mt-1 flex items-center">
+                                                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
                                                             <Calendar size={12} className="mr-1" />
                                                             Member since 2024
                                                         </p>
@@ -225,7 +225,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                         {/* Navigation */}
                                         <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                                             <div className="mb-4">
-                                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">
+                                                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                                                     Main Navigation
                                                 </h4>
                                                 {navItems.map((item) => (
@@ -235,13 +235,13 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                         className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
                                                             activeTab === item.id
                                                                 ? 'bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg transform scale-[1.02]'
-                                                                : 'text-gray-700 hover:bg-gray-100/80 hover:text-indigo-700 hover:transform hover:scale-[1.01]'
+                                                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-indigo-700 dark:hover:text-indigo-400 hover:transform hover:scale-[1.01]'
                                                         }`}
                                                     >
                                                         <span className={`mr-4 p-1.5 rounded-lg ${
                                                             activeTab === item.id 
                                                                 ? 'bg-white/20' 
-                                                                : 'bg-gray-100 group-hover:bg-indigo-100'
+                                                                : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30'
                                                         }`}>
                                                             {item.icon}
                                                         </span>
@@ -250,7 +250,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                             <div className={`text-xs ${
                                                                 activeTab === item.id 
                                                                     ? 'text-white/80' 
-                                                                    : 'text-gray-500 group-hover:text-indigo-600'
+                                                                    : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400'
                                                             }`}>
                                                                 {item.description}
                                                             </div>
@@ -263,16 +263,16 @@ const ClientAreaHeader = ({ activeTab }) => {
                                             </div>
 
                                             {/* Quick Actions */}
-                                            <div className="pt-4 border-t border-gray-200">
-                                                <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">
+                                            <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                                <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                                                     Quick Actions
                                                 </h4>
                                                 {quickActions.map((action, index) => (
                                                     <button
                                                         key={index}
-                                                        className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100/80 hover:text-indigo-700 transition-all duration-200 group"
+                                                        className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-indigo-700 dark:hover:text-indigo-400 transition-all duration-200 group"
                                                     >
-                                                        <span className="mr-3 p-1 rounded-md bg-gray-100 group-hover:bg-indigo-100">
+                                                        <span className="mr-3 p-1 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30">
                                                             {action.icon}
                                                         </span>
                                                         <span className="flex-1 text-left">{action.label}</span>
@@ -287,17 +287,17 @@ const ClientAreaHeader = ({ activeTab }) => {
                                         </nav>
 
                                         {/* Enhanced Footer */}
-                                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                                        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
                                             <div className="flex items-center justify-between mb-4">
-                                                <div className="flex items-center text-sm text-gray-600">
-                                                    <User size={16} className="mr-2 text-gray-500" />
+                                                <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                                                    <User size={16} className="mr-2 text-gray-500 dark:text-gray-400" />
                                                     <span className="font-medium">Owner: {ownerName}</span>
                                                 </div>
                                             </div>
                                             
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <button className="w-full flex items-center p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-indigo-300 transition-all duration-200 group">
+                                                    <button className="w-full flex items-center p-3 rounded-xl bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-200 group">
                                                         {loggedInTenant && (
                                                             <>
                                                                 <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
@@ -305,39 +305,39 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
                                                                 </div>
                                                                 <div className="ml-3 flex-1 text-left">
-                                                                    <p className="text-sm font-semibold text-gray-900">{ownerName}</p>
-                                                                    <p className="text-xs text-gray-500">Account Settings</p>
+                                                                    <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{ownerName}</p>
+                                                                    <p className="text-xs text-gray-500 dark:text-gray-400">Account Settings</p>
                                                                 </div>
-                                                                <Settings size={16} className="text-gray-400 group-hover:text-indigo-600 transition-colors" />
+                                                                <Settings size={16} className="text-gray-400 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors" />
                                                             </>
                                                         )}
                                                     </button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent className="w-64" side="right">
-                                                    <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100">
-                                                        <div className="font-semibold text-gray-800">Account Management</div>
-                                                        <div className="text-xs text-gray-500 mt-1">Manage your account settings</div>
+                                                    <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+                                                        <div className="font-semibold text-gray-800 dark:text-gray-200">Account Management</div>
+                                                        <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">Manage your account settings</div>
                                                     </DropdownMenuLabel>
-                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                                         <User className="mr-3" size={16} />
                                                         <div>
-                                                            <div className="font-medium">Profile Settings</div>
-                                                            <div className="text-xs text-gray-500">Update personal information</div>
+                                                            <div className="font-medium text-gray-900 dark:text-gray-100">Profile Settings</div>
+                                                            <div className="text-xs text-gray-500 dark:text-gray-400">Update personal information</div>
                                                         </div>
                                                     </DropdownMenuItem>
-                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100">
+                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 hover:from-indigo-100 dark:hover:from-indigo-800/30 hover:to-purple-100 dark:hover:to-purple-800/30">
                                                         <Crown className="mr-3 text-yellow-600" size={16} />
                                                         <div>
-                                                            <div className="font-medium text-indigo-700">Upgrade Plan</div>
-                                                            <div className="text-xs text-indigo-600">Unlock premium features</div>
+                                                            <div className="font-medium text-indigo-700 dark:text-indigo-400">Upgrade Plan</div>
+                                                            <div className="text-xs text-indigo-600 dark:text-indigo-500">Unlock premium features</div>
                                                         </div>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 hover:bg-red-50" onClick={logOutTenant}>
+                                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={logOutTenant}>
                                                         <LogOut className="mr-3" size={16} />
                                                         <div>
                                                             <div className="font-medium">Sign Out</div>
-                                                            <div className="text-xs text-red-500">End current session</div>
+                                                            <div className="text-xs text-red-500 dark:text-red-400">End current session</div>
                                                         </div>
                                                     </DropdownMenuItem>
                                                 </DropdownMenuContent>
@@ -358,7 +358,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                     <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-700 bg-clip-text text-transparent">
                                         Fit Loft
                                     </h1>
-                                    <p className="text-xs text-gray-500 font-medium">Automate Gym</p>
+                                    <p className="text-xs text-gray-500 dark:text-gray-200 font-medium">Automate Gym</p>
                                 </div>
                             </div>
                         </div>
@@ -370,7 +370,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                 {quickActions.slice(0, 2).map((action, index) => (
                                     <button
                                         key={index}
-                                        className="relative p-2.5 rounded-xl text-gray-600 hover:text-indigo-700 hover:bg-indigo-50/80 transition-all duration-200 group"
+                                        className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
                                         title={action.label}
                                     >
                                         {action.icon}
@@ -385,28 +385,28 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="outline" size="icon">
-                                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                    <span className="sr-only">Toggle theme</span>
+                                    <Button size="icon" className="bg-transparent text-gray-800 dark:text-gray-200 hover:bg-transparent border-gray-200 dark:border-gray-700 focus:border-purple-500 focus:ring-purple-500">
+                                        <Sun className="h-[1.3rem] w-[1.3rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                                        <Moon className="absolute h-[1.3rem] w-[1.3rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                                        <span className="sr-only">Toggle theme</span>
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
                                     <DropdownMenuItem onClick={() => setTheme("light")}>
-                                    Light
+                                        Light
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                    Dark
+                                        Dark
                                     </DropdownMenuItem>
                                     <DropdownMenuItem onClick={() => setTheme("system")}>
-                                    System
+                                        System
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>
-                                </DropdownMenu>
+                            </DropdownMenu>
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50/80 transition-all duration-200 group">
+                                    <button className="flex items-center space-x-3 p-2 hover:bg-transparent rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-800/80 transition-all duration-200 group">
                                         {loggedInTenant && (
                                             <>
                                                 <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white shadow-lg">
@@ -414,7 +414,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                     <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
                                                 </div>
                                                 <div className="hidden lg:block text-left">
-                                                    <div className="text-sm font-semibold text-gray-900 group-hover:text-indigo-700 transition-colors">
+                                                    <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
                                                         {loggedInTenant?.organizationName}
                                                     </div>
                                                     <div className="flex items-center space-x-2">
@@ -429,64 +429,64 @@ const ClientAreaHeader = ({ activeTab }) => {
                                     </button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="w-72" align="end">
-                                    <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100">
+                                    <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                                         <div className="flex items-center space-x-3">
                                             <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
                                                 {loggedInTenant?.organizationName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
                                             </div>
                                             <div>
-                                                <div className="font-semibold text-gray-800">{loggedInTenant?.organizationName}</div>
-                                                <div className="text-xs text-gray-500 flex items-center mt-1">
+                                                <div className="font-semibold text-gray-800 dark:text-gray-200">{loggedInTenant?.organizationName}</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                                                     <span className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white ${subscriptionStyle.bg} mr-2`}>
                                                         {subscriptionStyle.icon}
                                                         <span>{loggedInTenant?.tenantSubscriptionStatus}</span>
                                                     </span>
-                                                    <span className="text-emerald-600 font-medium">{loggedInTenant?.tenantStatus}</span>
+                                                    <span className="text-emerald-600 dark:text-emerald-400 font-medium">{loggedInTenant?.tenantStatus}</span>
                                                 </div>
                                             </div>
                                         </div>
                                     </DropdownMenuLabel>
                                     
                                     <div className="py-2">
-                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                             <User className="mr-3" size={16} />
                                             <div>
-                                                <div className="font-medium">Account Settings</div>
-                                                <div className="text-xs text-gray-500">Manage your profile</div>
+                                                <div className="font-medium text-gray-900 dark:text-gray-100">Account Settings</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">Manage your profile</div>
                                             </div>
                                         </DropdownMenuItem>
                                         
-                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                             <CreditCard className="mr-3" size={16} />
                                             <div>
-                                                <div className="font-medium">Billing & Usage</div>
-                                                <div className="text-xs text-gray-500">View invoices and usage</div>
+                                                <div className="font-medium text-gray-900 dark:text-gray-100">Billing & Usage</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">View invoices and usage</div>
                                             </div>
                                         </DropdownMenuItem>
                                         
-                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 hover:from-indigo-100 hover:to-purple-100">
+                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 hover:from-indigo-100 dark:hover:from-indigo-800/30 hover:to-purple-100 dark:hover:to-purple-800/30">
                                             <Crown className="mr-3 text-yellow-600" size={16} />
                                             <div>
-                                                <div className="font-medium text-indigo-700">Upgrade to Premium</div>
-                                                <div className="text-xs text-indigo-600">Unlock advanced features</div>
+                                                <div className="font-medium text-indigo-700 dark:text-indigo-400">Upgrade to Premium</div>
+                                                <div className="text-xs text-indigo-600 dark:text-indigo-500">Unlock advanced features</div>
                                             </div>
                                         </DropdownMenuItem>
                                         
-                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                        <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                             <HelpCircle className="mr-3" size={16} />
                                             <div>
-                                                <div className="font-medium">Help & Support</div>
-                                                <div className="text-xs text-gray-500">Get assistance</div>
+                                                <div className="font-medium text-gray-900 dark:text-gray-100">Help & Support</div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">Get assistance</div>
                                             </div>
                                         </DropdownMenuItem>
                                     </div>
                                     
                                     <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 hover:bg-red-50" onClick={logOutTenant}>
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={logOutTenant}>
                                         <LogOut className="mr-3" size={16} />
                                         <div>
                                             <div className="font-medium">Sign Out</div>
-                                            <div className="text-xs text-red-500">End your session securely</div>
+                                            <div className="text-xs text-red-500 dark:text-red-400">End your session securely</div>
                                         </div>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

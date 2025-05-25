@@ -67,13 +67,13 @@ const HeroSection = () => {
                 </div>
                 {/* Floating Elements */}
                 <div className="absolute top-20 -left-0 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3 animate-bounce">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-gray-200">
                     <div className="h-3 w-3 bg-green-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium">+27% Revenue</span>
                   </div>
                 </div>
                 <div className="absolute -bottom-4 -left-4 bg-white dark:bg-gray-800 shadow-lg rounded-lg p-3 animate-pulse">
-                  <div className="flex items-center">
+                  <div className="flex items-center dark:text-gray-200">
                     <div className="h-3 w-3 bg-blue-500 rounded-full mr-2"></div>
                     <span className="text-sm font-medium">152 Active Members</span>
                   </div>
