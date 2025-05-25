@@ -88,6 +88,12 @@ const ClientAreaHeader = ({ activeTab }) => {
             description: "Access Control & Monitoring"
         },
         { 
+            id: '/clientarea/branchmanagement', 
+            icon: <Building2 size={20} />, 
+            label: "Branch Management",
+            description: "Manage Branch"
+        },
+        { 
             id: '/clientarea/subscriptionmanagement', 
             icon: <CreditCard size={20} />, 
             label: "Subscription Plan & Billing",

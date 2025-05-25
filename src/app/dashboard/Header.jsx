@@ -95,7 +95,10 @@ import { FaUsersGear } from "react-icons/fa6";
 
 const Header = () => {
     const { user } = useUser();
+    const [darkMode, setDarkMode] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { setTheme } = useTheme();
+
     const [isScrolled, setIsScrolled] = useState(false);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
@@ -152,6 +155,33 @@ const Header = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+
+        // Theme handling
+        useEffect(() => {
+            setMounted(true);
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setDarkMode(savedTheme === 'dark');
+            } else {
+                setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+        }, []);
+    
+        useEffect(() => {
+            if (mounted) {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+        }, [darkMode, mounted]);
+    
+        const toggleTheme = () => {
+            setDarkMode(!darkMode);
+        };
 
     const minimizeSidebar = () => {
         dispatch(MinimizeSidebar());
@@ -669,26 +699,21 @@ const Header = () => {
                 </div>
 
                 {/* Theme changer */}
-                <DropdownMenu className='dark:text-white bg-white'>
-                    <DropdownMenuTrigger asChild>
-                        <Button className='hover:bg-transparent bg-transparent focus:outline-none focus:border-none focus:ring-0 text-blue-600' size="icon">
-                            <Sun className="h-[1.3rem] w-[1.3rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                            <Moon className="absolute h-[1.3rem] w-[1.3rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                            <span className="sr-only">Toggle theme</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setTheme("light")}>
-                        Light
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setTheme("dark")}>
-                        Dark
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setTheme("system")}>
-                        System
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                   {/* Theme Toggle */}
+                            <button
+                            onClick={toggleTheme}
+                            className="relative p-2.5 rounded-xl bg-transparent dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
+                            aria-label="Toggle theme"
+                        >
+                            <div className="relative w-5 h-5">
+                                <Sun className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
+                                    darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
+                                }`} />
+                                <Moon className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
+                                    darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
+                                }`} />
+                            </div>
+                        </button>
 
                 {/* Settings Dialog */}
                 <AlertDialog>
