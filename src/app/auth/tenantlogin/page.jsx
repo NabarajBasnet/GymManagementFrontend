@@ -269,7 +269,7 @@ const TenantLoginForm = ({ className, ...props })=> {
                           <div className="relative flex items-center">
                             <AtSign className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
                             <Input
-                              className="pl-12 pr-4 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/10"
+                              className="pl-12 rounded-sm py-7 pr-4"
                               type="email"
                               placeholder="john.doe@example.com"
                               {...register('email', {
@@ -301,7 +301,7 @@ const TenantLoginForm = ({ className, ...props })=> {
                           <div className="relative flex items-center">
                             <Lock className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
                             <Input
-                              className="pl-12 pr-12 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/10"
+                              className="pl-12 rounded-sm py-7 pr-4"
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
                               {...register('password', {
