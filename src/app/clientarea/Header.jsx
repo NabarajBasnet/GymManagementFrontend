@@ -32,7 +32,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Home,
     MessageSquare,
@@ -64,7 +64,9 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
 
 const ClientAreaHeader = ({ activeTab }) => {
-    
+
+    const [darkMode, setDarkMode] = useState(false);
+    const [mounted, setMounted] = useState(false);
     const { setTheme } = useTheme();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
@@ -149,8 +151,35 @@ const ClientAreaHeader = ({ activeTab }) => {
 
     const subscriptionStyle = getSubscriptionStyling(loggedInTenant?.tenantSubscriptionStatus);
 
+        // Theme handling
+        useEffect(() => {
+            setMounted(true);
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setDarkMode(savedTheme === 'dark');
+            } else {
+                setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+        }, []);
+    
+        useEffect(() => {
+            if (mounted) {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+        }, [darkMode, mounted]);
+    
+        const toggleTheme = () => {
+            setDarkMode(!darkMode);
+        };
+
     return (
-        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-50">
+        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-50">
             {loading ? (
                <Loader />
             ) : (
@@ -383,26 +412,21 @@ const ClientAreaHeader = ({ activeTab }) => {
                                 ))}
                             </div>
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button size="icon" className="bg-transparent text-gray-800 dark:text-gray-200 hover:bg-transparent border-gray-200 dark:border-gray-700 focus:border-purple-500 focus:ring-purple-500">
-                                        <Sun className="h-[1.3rem] w-[1.3rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                        <Moon className="absolute h-[1.3rem] w-[1.3rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                        <span className="sr-only">Toggle theme</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => setTheme("light")}>
-                                        Light
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTheme("dark")}>
-                                        Dark
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setTheme("system")}>
-                                        System
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            {/* Theme Toggle */}
+                            <button
+                            onClick={toggleTheme}
+                            className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
+                            aria-label="Toggle theme"
+                        >
+                            <div className="relative w-5 h-5">
+                                <Sun className={`absolute inset-0 w-5 h-5 text-yellow-500 transition-all duration-300 ${
+                                    darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
+                                }`} />
+                                <Moon className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
+                                    darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
+                                }`} />
+                            </div>
+                        </button>
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
