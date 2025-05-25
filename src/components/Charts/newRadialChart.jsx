@@ -119,8 +119,8 @@ export function NewRadialChart() {
     const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
 
     return (
-        <div className="w-full border-none dark:border-none dark:bg-gray-800">
-            <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800">
+        <div className="w-full border-none dark:border-none dark:bg-gray-800 rounded-2xl">
+            <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800 rounded-2xl">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admissions</CardTitle>
                     <CardDescription className='text-xs font-medium'>
@@ -249,7 +249,7 @@ export function NewRadialChart() {
                     </Table>
                 </div>
 
-                <div className="py-3 px-4 border-t dark:border-gray-600 dark:bg-gray-800">
+                <div className="py-3 px-4 border-t dark:border-gray-600 rounded-b-2xl dark:bg-gray-800">
                     <Pagination
                         total={totalNewMembersPages}
                         page={currentPage || 1}

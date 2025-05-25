@@ -375,26 +375,26 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
+          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg rounded-2xl">
             <BarChartMultiple />
           </Card>
 
-          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
+          <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
+          <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
             <RenewRadialChart />
           </Card>
 
-          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
+          <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
             <NewRadialChart />
           </Card>
         </div>
 
-        <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
+        <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
           <BarChartInterActive />
         </Card>
       </div>
