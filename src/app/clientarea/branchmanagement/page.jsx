@@ -1,5 +1,7 @@
 'use client';
 
+import Loader from "@/components/Loader/Loader";
+import { toast } from "react-hot-toast";
 import { useState } from "react";
 import { useForm,Controller } from "react-hook-form";
 import { FiPlus, FiTrash2, FiEdit, FiSearch, FiChevronRight, FiHome, FiPhone, FiMail, FiGlobe, FiMapPin, FiCheck, FiX } from "react-icons/fi";
@@ -14,17 +16,49 @@ import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
 
 const BranchManagement = () => {
+    const {tenant, loading}= useTenant();
+    const loggedInTenant = tenant?.tenant;
+
     const [activeTab, setActiveTab] = useState("view");
     const [branches, setBranches] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [editingBranch, setEditingBranch] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
-    const { register, handleSubmit, formState: { errors }, reset, control, setValue } = useForm();
+    const {
+         register, 
+        handleSubmit,
+         formState: { errors,isSubmitting },
+          reset, 
+          control,
+           setValue 
+        } = useForm();
 
     const onSubmit = async (data) => {
+        const tenantId = loggedInTenant?._id;
+        try{
+            const response = await fetch(`http://localhost:3000/api/gymbranch`,{
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({...data, tenantId})
+            });
+
+            const responseBody = await response.json();
+            if(response.ok && response.status === 200){
+                toast.success(responseBody.message);
+            }else{
+                toast.error(responseBody.message);
+            };
+
+        }catch(error){
+            console.log("Error: ",error);
+            toast.error("Error: ",error.error);
+        }
         if (isEditing && editingBranch) {
             // Handle branch update
             const updatedBranches = branches.map(branch => 
@@ -33,7 +67,6 @@ const BranchManagement = () => {
                     : branch
             );
             setBranches(updatedBranches);
-            toast.success("Branch updated successfully!");
         } else {
             // Handle new branch creation
             const newBranch = {
@@ -43,7 +76,6 @@ const BranchManagement = () => {
                 gymBranchCreatedAt: new Date().toISOString()
             };
             setBranches([...branches, newBranch]);
-            toast.success("Branch created successfully!");
         }
         
         // Reset form and state
@@ -89,6 +121,9 @@ const BranchManagement = () => {
 
     return (
         <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
+            {loading?(
+                <Loader />
+            ):(
             <div className="max-w-7xl mx-auto">
                 {/* Breadcrumb */}
                 <Breadcrumb className="mb-8">
@@ -321,7 +356,11 @@ const BranchManagement = () => {
                                             type="submit" 
                                             className="h-12 px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-sm text-white shadow-lg"
                                         >
-                                            {isEditing ? "Update Branch" : "Register Branch"}
+                                            {isSubmitting ? "Submitting..." : (
+                                                <>
+                                                    {isEditing ? "Update Branch" : "Register Branch"}
+                                                </>
+                                            )}
                                         </Button>
                                     </CardFooter>
                                 </form>
@@ -454,6 +493,7 @@ const BranchManagement = () => {
                     </TabsContent>
                 </Tabs>
             </div>
+            )}
         </div>
     );
 };
