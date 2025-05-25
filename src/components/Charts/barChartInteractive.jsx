@@ -102,14 +102,14 @@ export function BarChartInterActive() {
 
     return (
         <div className="w-full border-none">
-            <Card className="w-full border-none">
-                <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+            <Card className="w-full border-none dark:bg-gray-800">
+                <CardHeader className="flex flex-col items-stretch space-y-0 border-b border-gray-200 dark:border-gray-400 p-0 sm:flex-row">
                     <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                         <CardDescription>
                             Showing average member attendance in months
                         </CardDescription>
                     </div>
-                    <div className="flex">
+                    <div className="flex dark:border-gray-400 dark:bg-gray-600">
                         {["Inactive", "Active"].map((key) => {
                             const chart = key
                             return (
@@ -119,7 +119,7 @@ export function BarChartInterActive() {
                                     className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
                                     onClick={() => setActiveChart(chart)}
                                 >
-                                    <span className="text-xs text-muted-foreground">
+                                    <span className="text-xs text-muted-foreground dark:text-gray-400">
                                         {chartConfig[chart].label}
                                     </span>
                                     <span className="text-lg font-bold leading-none sm:text-3xl">

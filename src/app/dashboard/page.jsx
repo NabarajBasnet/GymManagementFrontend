@@ -254,7 +254,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-4 dark:border dark:border-gray-600 border border-gray-200">
+        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-4 dark:border dark:border-none border border-gray-200">
           <div className="px-3 py-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -343,7 +343,7 @@ const AdminDashboard = () => {
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden dark:bg-gray-800 rounded-2xl shadow-md dark:border dark:border-gray-600 border ${item.border}`}>
+              className={`overflow-hidden dark:bg-gray-800 rounded-2xl shadow-md dark:border dark:border-none border ${item.border}`}>
               <div className="p-5 py-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
@@ -375,26 +375,26 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border dark:border-gray-600 shadow-lg">
+          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
             <BarChartMultiple />
           </Card>
 
-          <Card className="border dark:border-gray-600 shadow-lg">
+          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border dark:border-gray-600 shadow-lg">
+          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
             <RenewRadialChart />
           </Card>
 
-          <Card className="border dark:border-gray-600 shadow-lg">
+          <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
             <NewRadialChart />
           </Card>
         </div>
 
-        <Card className="border dark:border-gray-600 shadow-lg">
+        <Card className="border dark:border-none dark:bg-gray-800 shadow-lg">
           <BarChartInterActive />
         </Card>
       </div>

@@ -96,7 +96,7 @@ export function BarChartMultiple() {
 
     return (
         <div className="w-full border-none">
-            <Card className="border-none dark:border-gray-600 dark:bg-gray-800">
+            <Card className="border-none dark:border-none dark:bg-gray-800">
                 <CardHeader>
                     <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
                         year: 'numeric',

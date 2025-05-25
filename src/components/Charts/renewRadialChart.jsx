@@ -118,7 +118,7 @@ export function RenewRadialChart() {
     };
 
     return (
-        <div className="w-full border-none dark:border-gray-600 dark:bg-gray-800">
+        <div className="w-full border-none dark:border-none dark:bg-gray-800">
             <Card className="flex flex-col dark:border-gray-600 dark:bg-gray-800 border-none">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>

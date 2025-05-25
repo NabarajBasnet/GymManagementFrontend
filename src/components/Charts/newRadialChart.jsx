@@ -119,7 +119,7 @@ export function NewRadialChart() {
     const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
 
     return (
-        <div className="w-full border-none dark:border-gray-600 dark:bg-gray-800">
+        <div className="w-full border-none dark:border-none dark:bg-gray-800">
             <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admissions</CardTitle>
