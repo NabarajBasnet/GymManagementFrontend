@@ -1,23 +1,35 @@
 'use client'
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { toast as notify } from 'react-hot-toast';
-import '../../globals.css';
+import { Switch } from "@/components/ui/switch"
+import { BiSolidUserDetail } from "react-icons/bi";
+import { TiBusinessCard } from "react-icons/ti";
+import { MdOutlinePayment } from "react-icons/md";
+import { BiHomeAlt } from "react-icons/bi";
 import { MdDone, MdError, MdClose } from "react-icons/md";
-import { ImagePlus, X } from 'lucide-react';
+import { Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
+import { useForm } from 'react-hook-form';
+import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { toast as notify } from 'react-hot-toast';
+import { cn } from "@/lib/utils";
+
+// Import UI components
 import {
-    DropdownMenu,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from "@/components/ui/card"
 import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,18 +42,25 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { useForm } from 'react-hook-form';
-import { useEffect, useState } from "react";
 import { Calendar } from "@/components/ui/calendar"
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { useQuery } from "@tanstack/react-query";
+import {
+    Breadcrumb,
+    BreadcrumbEllipsis,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    BreadcrumbList,
+    BreadcrumbPage,
+    BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import {
+    DropdownMenu,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const NewMemberRegistrationForm = () => {
     const [imagePreview, setImagePreview] = useState(null);
@@ -132,7 +151,7 @@ const NewMemberRegistrationForm = () => {
 
     // Members details
     const [gender, setGender] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState(false);
 
     // Payment Details
     const [paymentMethod, setPaymentMethod] = useState('');
@@ -472,18 +491,14 @@ const NewMemberRegistrationForm = () => {
     const { actionTakersDB } = actionTakers || {};
 
     return (
-        <div className="w-full bg-gray-100 px-4 py-7" onClick={() => {
-            setToast(false);
-            setSignUpAlert(false);
-        }}>
-            <div className='w-full bg-white border p-4 rounded-md' onClick={() => {
-                setToast(false);
-                setSignUpAlert(false);
-            }}>
+        <div className="w-full bg-gray-100 px-4 py-6">
+            <div className="flex items-center gap-2 mb-3">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className='font-medium text-gray-600'>Home</BreadcrumbLink>
+                            <BreadcrumbLink href="/" className='font-medium text-gray-600 flex items-center gap-1'>
+                                <BiHomeAlt size={18} /> Home
+                            </BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
@@ -503,16 +518,14 @@ const NewMemberRegistrationForm = () => {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <h1 className="text-xl font-bold text-gray-600 mt-3">Register New Member</h1>
+            </div>
+
+            <div className='w-full'>
+                <h1 className="text-xl font-bold text-gray-600 my-3">Register New Member</h1>
             </div>
 
             {signUpAlert && (
-                <>
-                    <div
-                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
-                        onClick={() => setSignUpAlert(false)}
-                    ></div>
-
+                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in">
                     <div className="fixed top-4 right-4 z-50 animate-slide-in">
                         <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
                             transition-all duration-300 ease-in-out w-80
@@ -573,238 +586,192 @@ const NewMemberRegistrationForm = () => {
                             />
                         </div>
                     </div>
-                </>
+                </div>
             )}
 
-            <div className="w-full flex justify-center">
-                <div className="w-full">
-                    <div className="w-full rounded-md">
-                        <form onSubmit={handleSubmit(onRegisterMember)} className="w-full rounded-md bg-white">
-                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPersonalInformationForm(!renderPersonalInformationForm)}>
-                                <h1 className="mx-4 text-blue-600 font-semibold">Personal Information</h1>
-                            </div>
-                            {
-                                renderPersonalInformationForm ? (
-                                    <div className="p-2 bg-white ease-in-out duration-700">
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                                            <div>
-                                                <Label>Member Full Name</Label>
-                                                <Input
-                                                    {
-                                                    ...register('fullName', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Enter member's full name here!"
-                                                        }
-                                                    })
-                                                    }
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Full Name'
-                                                />
-                                                {errors.fullName && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.fullName.message}`}</p>
-                                                )}
+            <form onSubmit={handleSubmit(onRegisterMember)} className="w-full">
+                <Card className="w-full">
+                    <CardHeader>
+                        <CardTitle>Member Registration</CardTitle>
+                        <CardDescription>Fill in the member details below</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Tabs defaultValue="personal" className="w-full">
+                            <TabsList className="grid w-full grid-cols-3">
+                                <TabsTrigger value="personal">
+                                    <BiSolidUserDetail size={22} className="mr-2" /> Personal Information
+                                </TabsTrigger>
+                                <TabsTrigger value="membership">
+                                    <TiBusinessCard size={22} className="mr-2" /> Membership Information
+                                </TabsTrigger>
+                                <TabsTrigger value="payment">
+                                    <MdOutlinePayment size={22} className="mr-2" /> Payment Information
+                                </TabsTrigger>
+                            </TabsList>
+
+                            <TabsContent value="personal">
+                                <div className="w-full md:flex items-center justify-between space-x-4">
+                                    <Card className="w-full lg:w-4/12 py-4 h-full">
+                                        <CardContent className="pt-6">
+                                            <div className="flex items-center justify-center">
+                                                <h1 className="text-4xl font-bold text-gray-600 rounded-full bg-gray-200 w-40 h-40"></h1>
                                             </div>
-
-                                            <div>
-                                                <Label>Contact No</Label>
-                                                <Input
-                                                    {
-                                                    ...register('contactNo', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Enter contact number here!"
-                                                        }
-                                                    })
-                                                    }
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Contact Number'
-                                                />
-                                                {errors.contactNo && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.contactNo.message}`}</p>
-                                                )}
+                                            <div className="w-full items-center justify-center">
+                                                <div className="flex flex-col items-center justify-center my-3 space-y-1">
+                                                    <Label>Status</Label>
+                                                    <Switch id="airplane-mode" 
+                                                    checked={status}
+                                                    onCheckedChange={setStatus}
+                                                    />
+                                                    {errors.status && (
+                                                        <p className="text-sm text-red-600">{errors.status.message}</p>
+                                                    )}
+                                                    <p className="text-sm text-gray-600">Select membership status</p>
+                                                </div>
                                             </div>
+                                        </CardContent>
+                                    </Card>
 
-                                            <div>
-                                                <Label>Email Address</Label>
-                                                <Input
-                                                    {
-                                                    ...register('email', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Email address is required!"
-                                                        }
-                                                    })
-                                                    }
-                                                    onChange={() => clearErrors('userRegistered')}
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Email Address'
-                                                />
-                                                {errors.email && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.email.message}`}</p>
-                                                )}
-                                                {errors.userRegistered && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.userRegistered.message}`}</p>
-                                                )}
+                                    <Card className="w-full lg:w-8/12">
+                                        <CardContent className="pt-6">
+                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                                <div className="space-y-2">
+                                                    <Label>Member Full Name</Label>
+                                                    <Input
+                                                        {...register('fullName', {
+                                                            required: "Enter member's full name here!"
+                                                        })}
+                                                        placeholder='Full Name'
+                                                        className="rounded-md py-6"
+                                                    />
+                                                    {errors.fullName && (
+                                                        <p className="text-sm text-red-600">{errors.fullName.message}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Contact No</Label>
+                                                    <Input
+                                                        {...register('contactNo', {
+                                                            required: "Enter contact number here!"
+                                                        })}
+                                                        placeholder='Contact Number'
+                                                        className="rounded-md py-6"
+                                                    />
+                                                    {errors.contactNo && (
+                                                        <p className="text-sm text-red-600">{errors.contactNo.message}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Email Address</Label>
+                                                    <Input
+                                                        {...register('email', {
+                                                            required: "Email address is required!"
+                                                        })}
+                                                        onChange={() => clearErrors('userRegistered')}
+                                                        placeholder='Email Address'
+                                                        className="rounded-md py-6"
+                                                    />
+                                                    {errors.email && (
+                                                        <p className="text-sm text-red-600">{errors.email.message}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Date Of Birth</Label>
+                                                    <Popover>
+                                                        <PopoverTrigger asChild>
+                                                            <Button
+                                                                variant={"outline"}
+                                                                className={cn(
+                                                                    "w-full justify-start text-left py-6 rounded-md font-normal",
+                                                                    !dob && "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                                                {dob ? format(dob, "PPP") : <span>Pick a date</span>}
+                                                            </Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent className="w-auto p-0">
+                                                            <Calendar
+                                                                mode="single"
+                                                                selected={dob}
+                                                                onSelect={setDob}
+                                                                initialFocus
+                                                            />
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Secondary Contact No</Label>
+                                                    <Input
+                                                        {...register('secondaryContactNo', {
+                                                            required: "Enter secondary contact number here!"
+                                                        })}
+                                                        placeholder='Secondary Contact Number'
+                                                        className="rounded-md py-6"
+                                                    />
+                                                    {errors.secondaryContactNo && (
+                                                        <p className="text-sm text-red-600">{errors.secondaryContactNo.message}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Address</Label>
+                                                    <Input
+                                                        {...register('address', {
+                                                            required: "Enter address!"
+                                                        })}
+                                                        className="rounded-md py-6"
+                                                        placeholder='Address'
+                                                    />
+                                                    {errors.address && (
+                                                        <p className="text-sm text-red-600">{errors.address.message}</p>
+                                                    )}
+                                                </div>
+
+                                                <div className="space-y-2">
+                                                    <Label>Gender</Label>
+                                                    <Select onValueChange={(value) => {
+                                                        setGender(value);
+                                                        if (value) clearErrors("gender");
+                                                    }}>
+                                                        <SelectTrigger className="w-full py-6 rounded-md">
+                                                            <SelectValue placeholder="Select Gender" />
+                                                        </SelectTrigger>
+                                                        <SelectContent>
+                                                            <SelectGroup>
+                                                                <SelectLabel>Gender</SelectLabel>
+                                                                <SelectItem value="Male">Male</SelectItem>
+                                                                <SelectItem value="Female">Female</SelectItem>
+                                                                <SelectItem value="Other">Other</SelectItem>
+                                                            </SelectGroup>
+                                                        </SelectContent>
+                                                    </Select>
+                                                    {errors.gender && (
+                                                        <p className="text-sm text-red-600">{errors.gender.message}</p>
+                                                    )}
+                                                </div>
                                             </div>
+                                        </CardContent>
+                                    </Card>
+                                </div>
+                            </TabsContent>
 
-                                            <div>
-                                                <Label>Date Of Birth</Label>
-                                                <Input
-                                                    {
-                                                    ...register('dob')
-                                                    }
-                                                    type='date'
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Membership Expire Date'
-                                                />
-                                                {errors.dob && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.dob.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Secondary Contact No</Label>
-                                                <Input
-                                                    {
-                                                    ...register('secondaryContactNo', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Enter secondary contact number here!"
-                                                        }
-                                                    })
-                                                    }
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Secondary Contact Number'
-                                                />
-                                                {errors.secondaryContactNo && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.secondaryContactNo.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Gender</Label>
-                                                <Select onValueChange={(value) => {
-                                                    setGender(value);
-                                                    if (value) {
-                                                        clearErrors("gender");
-                                                    }
-                                                }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Gender" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Gender</SelectLabel>
-                                                            <SelectItem value="Male">Male</SelectItem>
-                                                            <SelectItem value="Female">Female</SelectItem>
-                                                            <SelectItem value="Other">Other</SelectItem>
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                                {errors.gender && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.gender.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Address</Label>
-                                                <Input
-                                                    {
-                                                    ...register('address', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Enter address!"
-                                                        }
-                                                    })
-                                                    }
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Address'
-                                                />
-                                                {errors.address && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.address.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            {/* <div>
-                                                <Label>Status</Label>
-                                                <Select onValueChange={(value) => {
-                                                    setStatus(value);
-                                                    if (value) {
-                                                        clearErrors('status')
-                                                    }
-                                                }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Status" />
-                                                    </SelectTrigger>
-                                                    <SelectContent>
-                                                        <SelectGroup>
-                                                            <SelectLabel>Status</SelectLabel>
-                                                            <SelectItem value="Active" className='bg-green-600'>Active</SelectItem>
-                                                            <SelectItem value="Inactive" className='bg-red-600'>Inactive</SelectItem>
-                                                            <SelectItem value="OnHold" className='bg-yellow-400'>Hold</SelectItem>
-                                                        </SelectGroup>
-                                                    </SelectContent>
-                                                </Select>
-                                                {errors.status && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.status.message}`}</p>
-                                                )}
-                                            </div> */}
-
-                                            <div className=''>
-                                                <Label>Status</Label>
-                                                <RadioGroup
-                                                    value={status}
-                                                    onValueChange={(value) => {
-                                                        setStatus(value)
-                                                        if (value) {
-                                                            clearErrors("status")
-                                                        }
-                                                    }}
-                                                    className="flex items-center border p-3 rounded-md space-x-2"
-                                                >
-                                                    <div className="flex items-center space-x-2">
-                                                        <RadioGroupItem value="Active" id="status-active" className="text-green-600" />
-                                                        <Label htmlFor="status-active">Active</Label>
-                                                    </div>
-                                                    <div className="flex items-center space-x-2">
-                                                        <RadioGroupItem value="Inactive" id="status-inactive" className="text-red-600" />
-                                                        <Label htmlFor="status-inactive">Inactive</Label>
-                                                    </div>
-                                                </RadioGroup>
-
-                                                {errors.status && (
-                                                    <p className="text-sm font-semibold text-red-600">
-                                                        {errors.status.message}
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <div className='ease-in-out duration-700'></div>
-                                )
-                            }
-
-                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderMembershipInformationForm(!renderMembershipInformationForm)}>
-                                <h1 className="mx-4 text-blue-600 font-semibold">Membership Information</h1>
-                            </div>
-                            {
-                                renderMembershipInformationForm ? (
-                                    <div className="p-2 bg-white ease-in-out duration-700">
-                                        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-
-                                            <div>
+                            <TabsContent value="membership">
+                                <Card>
+                                    <CardContent className="pt-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <div className="space-y-2">
                                                 <Label>Membership Option</Label>
                                                 <Select onValueChange={(value) => {
                                                     setMembershipOption(value);
-                                                    if (value) {
-                                                        clearErrors('membershipOption')
-                                                    }
+                                                    if (value) clearErrors('membershipOption')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Membership Option" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Option" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -816,20 +783,18 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.membershipOption && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipOption.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.membershipOption.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Membership Type</Label>
                                                 <Select onValueChange={(value) => {
                                                     setMembershipType(value);
-                                                    if (value) {
-                                                        clearErrors('membershipType')
-                                                    }
+                                                    if (value) clearErrors('membershipType')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Membership Type" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Type" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -840,20 +805,18 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.membershipType && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipType.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.membershipType.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Membership Shift</Label>
                                                 <Select onValueChange={(value) => {
                                                     setMembershipShift(value);
-                                                    if (value) {
-                                                        clearErrors('membershipShift')
-                                                    }
+                                                    if (value) clearErrors('membershipShift')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Membership Shift" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Shift" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -865,78 +828,18 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.membershipShift && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipShift.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.membershipShift.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
-                                                <Label>Membership Date</Label>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal",
-                                                                !membershipDate && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon />
-                                                            {membershipDate ? format(membershipDate, "PPP") : <span>Membership Date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={membershipDate}
-                                                            onSelect={setMembershipDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                                {errors.membershipDate && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipDate.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
-                                                <Label>Membership Renew Date</Label>
-                                                <Popover>
-                                                    <PopoverTrigger asChild>
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className={cn(
-                                                                "w-full justify-start text-left font-normal",
-                                                                !membershipRenewDate && "text-muted-foreground"
-                                                            )}
-                                                        >
-                                                            <CalendarIcon />
-                                                            {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Membership Renew Date</span>}
-                                                        </Button>
-                                                    </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
-                                                        <Calendar
-                                                            mode="single"
-                                                            selected={membershipRenewDate}
-                                                            onSelect={setMembershipRenewDate}
-                                                            initialFocus
-                                                        />
-                                                    </PopoverContent>
-                                                </Popover>
-                                                {errors.membershipRenewDate && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipRenewDate.message}`}</p>
-                                                )}
-                                            </div>
-
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Membership Duration</Label>
                                                 <Select onValueChange={(value) => {
                                                     handleMembershipSelection(value);
-                                                    if (value) {
-                                                        clearErrors('membershipDuration')
-                                                    }
+                                                    if (value) clearErrors('membershipDuration')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Membership Duration" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Duration" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -949,11 +852,63 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.membershipDuration && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipDuration.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.membershipDuration.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
+                                                <Label>Membership Date</Label>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full justify-start text-left font-normal",
+                                                                !membershipDate && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                                            {membershipDate ? format(membershipDate, "PPP") : <span>Pick a date</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={membershipDate}
+                                                            onSelect={setMembershipDate}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <Label>Membership Renew Date</Label>
+                                                <Popover>
+                                                    <PopoverTrigger asChild>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full justify-start text-left font-normal",
+                                                                !membershipRenewDate && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                                            {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Pick a date</span>}
+                                                        </Button>
+                                                    </PopoverTrigger>
+                                                    <PopoverContent className="w-auto p-0">
+                                                        <Calendar
+                                                            mode="single"
+                                                            selected={membershipRenewDate}
+                                                            onSelect={setMembershipRenewDate}
+                                                            initialFocus
+                                                        />
+                                                    </PopoverContent>
+                                                </Popover>
+                                            </div>
+
+                                            <div className="space-y-2">
                                                 <Label>Membership Expire Date</Label>
                                                 <Popover>
                                                     <PopoverTrigger asChild>
@@ -964,8 +919,8 @@ const NewMemberRegistrationForm = () => {
                                                                 !membershipExpireDate && "text-muted-foreground"
                                                             )}
                                                         >
-                                                            <CalendarIcon />
-                                                            {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Membership Expire Date</span>}
+                                                            <CalendarIcon className="mr-2 h-4 w-4" />
+                                                            {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Pick a date</span>}
                                                         </Button>
                                                     </PopoverTrigger>
                                                     <PopoverContent className="w-auto p-0">
@@ -977,36 +932,24 @@ const NewMemberRegistrationForm = () => {
                                                         />
                                                     </PopoverContent>
                                                 </Popover>
-                                                {errors.membershipExpireDate && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.membershipExpireDate.message}`}</p>
-                                                )}
                                             </div>
-
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className='ease-in-out duration-700'></div>
-                                )
-                            }
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
 
-                            <div className="bg-blue-50 border rounded-md py-2 my-2 w-full cursor-pointer" onClick={() => setRenderPaymentDetailForm(!renderPaymentDetailForm)}>
-                                <h1 className="mx-4 text-blue-600 font-semibold">Payment Details</h1>
-                            </div>
-                            {
-                                renderPaymentDetailForm ? (
-                                    <div className="p-2 bg-white  ease-in-out duration-700">
-                                        <div
-                                            className="grid grid-cols-1 md:grid-cols-4 gap-3 ease-in-out duration-700">
-                                            <div>
+                            <TabsContent value="payment">
+                                <Card>
+                                    <CardContent className="pt-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <div className="space-y-2">
                                                 <Label>Payment Method</Label>
                                                 <Select onValueChange={(value) => {
                                                     setPaymentMethod(value);
-                                                    if (value) {
-                                                        clearErrors('paymentMethod')
-                                                    }
+                                                    if (value) clearErrors('paymentMethod')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Payment Method" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Method" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
@@ -1018,55 +961,46 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.paymentMethod && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.paymentMethod.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.paymentMethod.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Discount Amount</Label>
                                                 <Input
                                                     value={discountAmmount}
                                                     onChange={(e) => setDiscountAmmount(e.target.value)}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Discount Ammount'
+                                                    placeholder='Discount Amount'
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Discount Reason</Label>
                                                 <Input
-                                                    {
-                                                    ...register('discountReason')
-                                                    }
+                                                    {...register('discountReason')}
                                                     onChange={(e) => clearErrors("discountReason")}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
                                                     placeholder='Discount Reason'
                                                 />
                                                 {errors.discountReason && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.discountReason.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.discountReason.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Discount Code</Label>
                                                 <Input
-                                                    {
-                                                    ...register('discountCode')
-                                                    }
+                                                    {...register('discountCode')}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
                                                     placeholder='Discount Code'
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Admission Fee</Label>
                                                 <Input
-                                                    {
-                                                    ...register('admissionFee')
-                                                    }
+                                                    {...register('admissionFee')}
                                                     type='text'
                                                     defaultValue={'1000'}
                                                     disabled
@@ -1075,113 +1009,85 @@ const NewMemberRegistrationForm = () => {
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Final Amount</Label>
                                                 <Input
-                                                    {
-                                                    ...register('finalAmmount')
-                                                    }
-                                                    type='text'
-                                                    disabled
                                                     value={finalAmmount}
-                                                    className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                    placeholder='Final Ammount'
+                                                    disabled
+                                                    className="bg-gray-100"
+                                                    placeholder="Final Amount"
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Paid Amount</Label>
                                                 <Input
                                                     value={paidAmmount}
                                                     onChange={(e) => {
                                                         setPaidAmmount(e.target.value);
-                                                        if (e.target.value) {
-                                                            clearErrors('paidAmmount')
-                                                        }
+                                                        if (e.target.value) clearErrors('paidAmmount')
                                                     }}
-                                                    type='text'
-                                                    className='rounded-md focus:outline-none'
-                                                    placeholder='Paid Ammount'
+                                                    placeholder="Paid Amount"
                                                 />
                                                 {errors.paidAmmount && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.paidAmmount.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.paidAmmount.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Due Amount</Label>
                                                 <Input
-                                                    {
-                                                    ...register('dueAmmount')
-                                                    }
                                                     value={dueAmmount}
-                                                    type='text'
                                                     disabled
-                                                    className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
-                                                    placeholder='Due Ammount'
+                                                    className="bg-gray-100"
+                                                    placeholder="Due Amount"
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Receipt No</Label>
                                                 <Input
-                                                    {
-                                                    ...register('receiptNo', {
-                                                        required: {
-                                                            value: true,
-                                                            message: "Mention receipt no!"
-                                                        }
-                                                    })
-                                                    }
+                                                    {...register('receiptNo', {
+                                                        required: "Mention receipt no!"
+                                                    })}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
                                                     placeholder='Receipt No'
                                                 />
                                                 {errors.receiptNo && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.receiptNo.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.receiptNo.message}</p>
                                                 )}
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Reference Code</Label>
                                                 <Input
-                                                    {
-                                                    ...register('referenceCode')
-                                                    }
+                                                    {...register('referenceCode')}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
                                                     placeholder='Reference Code'
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Remark</Label>
                                                 <Input
-                                                    {
-                                                    ...register('remark')
-                                                    }
+                                                    {...register('remark')}
                                                     type='text'
-                                                    className='rounded-md focus:outline-none'
                                                     placeholder='Remark'
                                                 />
                                             </div>
 
-                                            <div>
+                                            <div className="space-y-2">
                                                 <Label>Action Taker</Label>
                                                 <Select onValueChange={(value) => {
                                                     setActionTaker(value);
-                                                    if (value) {
-                                                        clearErrors('actionTaker')
-                                                    }
+                                                    if (value) clearErrors('actionTaker')
                                                 }}>
-                                                    <SelectTrigger className="w-full rounded-md">
-                                                        <SelectValue placeholder="Action Taker" />
+                                                    <SelectTrigger>
+                                                        <SelectValue placeholder="Select Action Taker" />
                                                     </SelectTrigger>
                                                     <SelectContent>
                                                         <SelectGroup>
-                                                            <SelectItem value={"Not Selected"}>
-                                                                Select
-                                                            </SelectItem>
+                                                            <SelectItem value="Not Selected">Select</SelectItem>
                                                             {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
                                                                 actionTakersDB.map((actionTaker) => (
                                                                     <div key={actionTaker._id}>
@@ -1197,27 +1103,24 @@ const NewMemberRegistrationForm = () => {
                                                     </SelectContent>
                                                 </Select>
                                                 {errors.actionTaker && (
-                                                    <p className="text-sm font-semibold text-red-600">{`${errors.actionTaker.message}`}</p>
+                                                    <p className="text-sm text-red-600">{errors.actionTaker.message}</p>
                                                 )}
                                             </div>
-
                                         </div>
-                                    </div>
-                                ) : (
-                                    <div className=' ease-in-out duration-700'></div>
-                                )
-                            }
-
-                            <div className="border-t border-gray-200"></div>
-                            <div className="flex items-center space-x-2 p-2">
-                                <Button type='submit' className='rounded-md'>{isSubmitting ? 'Processing...' : 'Register'}</Button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                    <CardFooter className="flex justify-end space-x-2">
+                        <Button type="submit" className="bg-indigo-600 hover:bg-indigo-700">
+                            {isSubmitting ? 'Processing...' : 'Register Member'}
+                        </Button>
+                    </CardFooter>
+                </Card>
+            </form>
         </div>
     );
-}
+};
 
 export default NewMemberRegistrationForm;
