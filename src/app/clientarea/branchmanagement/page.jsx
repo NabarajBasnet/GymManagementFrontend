@@ -1,318 +1,457 @@
 'use client';
 
-import { TiEye } from "react-icons/ti";
-import { useState, useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader, FiRefreshCcw, FiSearch, FiMail, FiPhone, FiMapPin, FiClock, FiDollarSign } from "react-icons/fi";
-import { MdHome, MdBusiness } from "react-icons/md";
-import toast from "react-hot-toast";
-import { format } from 'date-fns';
-
-// UI Components
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-    CardFooter,
-    CardDescription
-} from "@/components/ui/card";
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Button } from '@/components/ui/button';
+import { useState } from "react";
+import { useForm,Controller } from "react-hook-form";
+import { FiPlus, FiTrash2, FiEdit, FiSearch, FiChevronRight, FiHome, FiPhone, FiMail, FiGlobe, FiMapPin, FiCheck, FiX } from "react-icons/fi";
+import { MdBusiness, MdOutlineSportsGymnastics } from "react-icons/md";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogTrigger,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useForm, Controller } from "react-hook-form";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Pagination from "@/components/ui/CustomPagination.jsx";
-import Loader from "@/components/Loader/Loader";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogFooter,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 
 const BranchManagement = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit, setLimit] = useState(6);
-    const [activeTab, setActiveTab] = useState("all");
+    const [activeTab, setActiveTab] = useState("view");
+    const [branches, setBranches] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
-    const [statusFilter, setStatusFilter] = useState("all");
-    const [selectedTenant, setSelectedTenant] = useState(null);
-    const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-    const queryClient = useQueryClient();
+    const [editingBranch, setEditingBranch] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
-    const ref = useRef(null);
+    const { register, handleSubmit, formState: { errors }, reset, control, setValue } = useForm();
 
-    // React hook form 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors, isSubmitting },
-        control,
-        reset,
-        setValue
-    } = useForm();
-
-    const getAllTenants = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/api/tenant');
-            const data = await response.json();
-            console.log("Data: ", data);
-            return data;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to get tenants");
+    const onSubmit = async (data) => {
+        if (isEditing && editingBranch) {
+            // Handle branch update
+            const updatedBranches = branches.map(branch => 
+                branch.id === editingBranch.id 
+                    ? { ...branch, ...data, gymBranchUpdatedAt: new Date().toISOString() }
+                    : branch
+            );
+            setBranches(updatedBranches);
+            toast.success("Branch updated successfully!");
+        } else {
+            // Handle new branch creation
+            const newBranch = {
+                ...data,
+                id: Date.now().toString(),
+                gymBranchStatus: "active",
+                gymBranchCreatedAt: new Date().toISOString()
+            };
+            setBranches([...branches, newBranch]);
+            toast.success("Branch created successfully!");
         }
-    }
-
-    const { data, isLoading, refetch } = useQuery({
-        queryKey: ['tenants'],
-        queryFn: getAllTenants
-    });
-
-    const { tenants } = data || {};
-
-    // Filter tenants based on search and status
-    const filteredTenants = tenants?.filter(tenant => {
-        const matchesSearch = 
-            tenant.organizationName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            tenant.ownerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            tenant.email?.toLowerCase().includes(searchTerm.toLowerCase());
         
-        const matchesStatus = statusFilter === "all" || 
-            tenant.tenantStatus?.toLowerCase() === statusFilter.toLowerCase();
+        // Reset form and state
+        reset();
+        setEditingBranch(null);
+        setIsEditing(false);
+        setActiveTab("view");
+    };
+
+    const handleEditBranch = (branch) => {
+        setEditingBranch(branch);
+        setIsEditing(true);
         
-        return matchesSearch && matchesStatus;
-    }) || [];
-
-    // Get status badge variant
-    const getStatusBadge = (status) => {
-        switch (status?.toLowerCase()) {
-            case 'active':
-                return <Badge variant="default" className="bg-green-100 text-green-800">Active</Badge>;
-            case 'pending':
-                return <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">Pending</Badge>;
-            case 'suspended':
-                return <Badge variant="destructive">Suspended</Badge>;
-            default:
-                return <Badge variant="outline">{status}</Badge>;
-        }
+        // Set form values
+        setValue("gymBranchName", branch.gymBranchName);
+        setValue("gymBranchAddress", branch.gymBranchAddress);
+        setValue("gymBranchPhone", branch.gymBranchPhone);
+        setValue("gymBranchEmail", branch.gymBranchEmail);
+        setValue("gymBranchWebsite", branch.gymBranchWebsite);
+        setValue("gymBranchStatus", branch.gymBranchStatus);
+        
+        // Switch to register tab
+        setActiveTab("register");
     };
 
-    // Get trial status badge
-    const getTrialStatusBadge = (tenant) => {
-        if (tenant.tenantOnFreeTrial) {
-            return <Badge variant="outline" className="bg-blue-100 text-blue-800">Free Trial</Badge>;
-        }
-        return null;
+    const handleCancel = () => {
+        reset();
+        setEditingBranch(null);
+        setIsEditing(false);
+        setActiveTab("view");
     };
 
-    // Handle tenant actions
-    const handleViewTenant = (tenant) => {
-        setSelectedTenant(tenant);
-        setIsViewDialogOpen(true);
+    const handleDeleteBranch = (branchId) => {
+        const updatedBranches = branches.filter(branch => branch.id !== branchId);
+        setBranches(updatedBranches);
+        toast.success("Branch deleted successfully!");
     };
 
-    const handleDeleteTenant = async (tenantId) => {
-        try {
-            // Add your delete API call here
-            toast.success("Tenant deleted successfully");
-            refetch();
-        } catch (error) {
-            toast.error("Failed to delete tenant");
-        }
-    };
-
-    const handleUpdateTenantStatus = async (tenantId, newStatus) => {
-        try {
-            // Add your update API call here
-            toast.success("Tenant status updated successfully");
-            refetch();
-        } catch (error) {
-            toast.error("Failed to update tenant status");
-        }
-    };
-
-    if (isLoading) {
-        return <Loader />;
-    }
+    const filteredBranches = branches.filter(branch => 
+        branch.gymBranchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        branch.gymBranchAddress.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-7'>
-            <div className="w-full">
+        <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
+            <div className="max-w-7xl mx-auto">
                 {/* Breadcrumb */}
-                <div className='w-full mb-4'>
-                    <Breadcrumb className="mb-4">
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <MdHome className='w-4 h-4' />
-                                <BreadcrumbLink href="/" className="ml-2 font-semibold">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4" />
-                            </BreadcrumbSeparator>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold">Tenant</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4" />
-                            </BreadcrumbSeparator>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold">Dashboard</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4" />
-                            </BreadcrumbSeparator>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold">Branch Management</BreadcrumbLink>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                <Breadcrumb className="mb-8">
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <FiHome className="h-4 w-4" />
+                            <BreadcrumbLink href="/" className="ml-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4 text-gray-400" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Tenant</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator>
+                            <FiChevronRight className="h-4 w-4 text-gray-400" />
+                        </BreadcrumbSeparator>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="text-gray-900 dark:text-gray-100 font-medium">Branch Management</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+
+                {/* Header */}
+                <div className="flex justify-between items-center mb-8 dark:bg-gray-800 p-5 rounded-sm">
+                    <div>
+                        <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">Branch Management</h1>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Manage your gym branches efficiently</p>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <div className="relative">
+                            <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                            <Input
+                                placeholder="Search branches..."
+                                className="py-6 pl-12 dark:text-white w-[300px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm shadow-sm"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
+                        </div>
+                        <Button 
+                            onClick={() => {
+                                setActiveTab("register");
+                                setIsEditing(false);
+                                setEditingBranch(null);
+                                reset();
+                            }}
+                            className="h-12 px-6 dark:text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-sm shadow-lg"
+                        >
+                            <FiPlus className="mr-2 h-5 w-5" />
+                            Add Branch
+                        </Button>
+                    </div>
                 </div>
 
                 {/* Tabs */}
-                <Tabs defaultValue="registerbranch" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-white dark:bg-gray-800 rounded-md dark:border-gray-600 dark:text-white">
-                        <TabsTrigger value="registerbranch">Register Branch</TabsTrigger>
-                        <TabsTrigger value="viewbranches">View Branches</TabsTrigger>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 bg-gray-100 border dark:border-none dark:bg-gray-800 rounded-sm p-1.5 h-16 mb-8">
+                        <TabsTrigger 
+                            value="view" 
+                            className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
+                        >
+                            <MdBusiness className="mr-2 h-5 w-5" />
+                            View Branches
+                        </TabsTrigger>
+                        <TabsTrigger 
+                            value="register" 
+                            className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
+                        >
+                            {isEditing ? (
+                                <>
+                                    <FiEdit className="mr-2 h-5 w-5" />
+                                    Edit Branch
+                                </>
+                            ) : (
+                                <>
+                                    <FiPlus className="mr-2 h-5 w-5" />
+                                    Register Branch
+                                </>
+                            )}
+                        </TabsTrigger>
                     </TabsList>
-                    <TabsContent value="registerbranch">
-                        <Card>
-                            
+
+                    {/* Register Branch Tab */}
+                    <TabsContent value="register" className="mt-8">
+                        <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+                            <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+                                <CardTitle className="flex items-center text-xl">
+                                    {isEditing ? (
+                                        <>
+                                            <FiEdit className="h-6 w-6 mr-2 text-blue-600" />
+                                            Edit Branch
+                                        </>
+                                    ) : (
+                                        <>
+                                            <MdOutlineSportsGymnastics className="h-6 w-6 mr-2 text-blue-600" />
+                                            Register New Branch
+                                        </>
+                                    )}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-8">
+                                <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        {/* Branch Name */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchName" className="text-sm font-medium text-gray-700 dark:text-gray-300">Branch Name *</Label>
+                                            <Input
+                                                id="gymBranchName"
+                                                placeholder="Enter branch name"
+                                                {...register("gymBranchName", { required: "Branch name is required" })}
+                                                className={`py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchName ? "border-red-500" : ""}`}
+                                            />
+                                            {errors.gymBranchName && (
+                                                <p className="text-red-500 text-sm mt-1">{errors.gymBranchName.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Branch Address */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchAddress" className="text-sm font-medium text-gray-700 dark:text-gray-300">Address *</Label>
+                                            <div className="relative">
+                                                <FiMapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                                <Input
+                                                    id="gymBranchAddress"
+                                                    placeholder="Enter full address"
+                                                    className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchAddress ? "border-red-500" : ""}`}
+                                                    {...register("gymBranchAddress", { required: "Address is required" })}
+                                                />
+                                            </div>
+                                            {errors.gymBranchAddress && (
+                                                <p className="text-red-500 text-sm mt-1">{errors.gymBranchAddress.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Phone */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchPhone" className="text-sm font-medium text-gray-700 dark:text-gray-300">Phone *</Label>
+                                            <div className="relative">
+                                                <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                                <Input
+                                                    id="gymBranchPhone"
+                                                    placeholder="Enter phone number"
+                                                    className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchPhone ? "border-red-500" : ""}`}
+                                                    {...register("gymBranchPhone", { 
+                                                        required: "Phone is required",
+                                                        pattern: {
+                                                            value: /^[0-9]{10,15}$/,
+                                                            message: "Please enter a valid phone number"
+                                                        }
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.gymBranchPhone && (
+                                                <p className="text-red-500 text-sm mt-1">{errors.gymBranchPhone.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Email */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchEmail" className="text-sm font-medium text-gray-700 dark:text-gray-300">Email *</Label>
+                                            <div className="relative">
+                                                <FiMail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                                <Input
+                                                    id="gymBranchEmail"
+                                                    type="email"
+                                                    placeholder="Enter email address"
+                                                    className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchEmail ? "border-red-500" : ""}`}
+                                                    {...register("gymBranchEmail", { 
+                                                        required: "Email is required",
+                                                        pattern: {
+                                                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                                            message: "Invalid email address"
+                                                        }
+                                                    })}
+                                                />
+                                            </div>
+                                            {errors.gymBranchEmail && (
+                                                <p className="text-red-500 text-sm mt-1">{errors.gymBranchEmail.message}</p>
+                                            )}
+                                        </div>
+
+                                        {/* Website */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchWebsite" className="text-sm font-medium text-gray-700 dark:text-gray-300">Website</Label>
+                                            <div className="relative">
+                                                <FiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                                                <Input
+                                                    id="gymBranchWebsite"
+                                                    placeholder="Enter website URL"
+                                                    className="py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm"
+                                                    {...register("gymBranchWebsite")}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Status */}
+                                        <div className="space-y-2">
+                                            <Label htmlFor="gymBranchStatus" className="text-sm font-medium text-gray-700 dark:text-gray-300">Status</Label>
+                                            <Controller
+                                                name="gymBranchStatus"
+                                                control={control}
+                                                defaultValue="active"
+                                                render={({ field }) => (
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <SelectTrigger className="py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm">
+                                                            <SelectValue placeholder="Select status" />
+                                                        </SelectTrigger>
+                                                        <SelectContent className="py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm">
+                                                            <SelectItem value="active">Active</SelectItem>
+                                                            <SelectItem value="inactive">Inactive</SelectItem>
+                                                            <SelectItem value="maintenance">Maintenance</SelectItem>
+                                                        </SelectContent>
+                                                    </Select>
+                                                )}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <CardFooter className="flex justify-end px-0 pb-0 pt-8">
+                                        <Button 
+                                            type="button" 
+                                            variant="outline" 
+                                            className="mr-3 h-12 dark:bg-gray-800 border border-gray-600 dark:border-gray-600 px-6 rounded-sm"
+                                            onClick={handleCancel}
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button 
+                                            type="submit" 
+                                            className="h-12 px-6 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-sm text-white shadow-lg"
+                                        >
+                                            {isEditing ? "Update Branch" : "Register Branch"}
+                                        </Button>
+                                    </CardFooter>
+                                </form>
+                            </CardContent>
                         </Card>
                     </TabsContent>
-                    <TabsContent value="viewbranches">
-                        <Card>
-                    
+
+                    {/* View Branches Tab */}
+                    <TabsContent value="view" className="mt-8">
+                        <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+                            <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+                                <CardTitle className="flex items-center text-xl">
+                                    <MdBusiness className="h-6 w-6 mr-2 text-blue-600" />
+                                    All Branches
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="pt-8">
+                                {filteredBranches.length === 0 ? (
+                                    <div className="flex flex-col items-center justify-center py-16">
+                                        <MdOutlineSportsGymnastics className="h-20 w-20 text-gray-300 dark:text-gray-600 mb-4" />
+                                        <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400">No branches found</h3>
+                                        <p className="text-gray-400 dark:text-gray-500 mt-2">Register a new branch to get started</p>
+                                        <Button 
+                                            className="mt-6 h-12 px-6 dark:text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-lg shadow-lg" 
+                                            onClick={() => {
+                                                setActiveTab("register");
+                                                setIsEditing(false);
+                                                setEditingBranch(null);
+                                                reset();
+                                            }}
+                                        >
+                                            <FiPlus className="mr-2 h-5 w-5" />
+                                            Add Branch
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <div className="overflow-x-auto">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow className="border-b border-gray-200 dark:border-gray-700">
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Branch Name</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Address</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Contact</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Status</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Created</TableHead>
+                                                    <TableHead className="text-right text-gray-600 dark:text-gray-400 font-medium">Actions</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {filteredBranches.map((branch) => (
+                                                    <TableRow key={branch.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                                        <TableCell className="font-medium">
+                                                            <div className="flex items-center">
+                                                                <MdOutlineSportsGymnastics className="h-5 w-5 mr-2 text-blue-600" />
+                                                                {branch.gymBranchName}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center">
+                                                                <FiMapPin className="h-4 w-4 mr-2 text-gray-400" />
+                                                                <span className="truncate max-w-[200px]">
+                                                                    {branch.gymBranchAddress}
+                                                                </span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="space-y-1">
+                                                                <div className="flex items-center">
+                                                                    <FiPhone className="h-4 w-4 mr-2 text-gray-400" />
+                                                                    {branch.gymBranchPhone}
+                                                                </div>
+                                                                <div className="flex items-center">
+                                                                    <FiMail className="h-4 w-4 mr-2 text-gray-400" />
+                                                                    <span className="truncate max-w-[180px]">
+                                                                        {branch.gymBranchEmail}
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {branch.gymBranchStatus === "active" ? (
+                                                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-3 py-1 rounded-full">
+                                                                    <FiCheck className="h-3 w-3 mr-1" />
+                                                                    Active
+                                                                </Badge>
+                                                            ) : branch.gymBranchStatus === "inactive" ? (
+                                                                <Badge variant="destructive" className="px-3 py-1 rounded-full">
+                                                                    <FiX className="h-3 w-3 mr-1" />
+                                                                    Inactive
+                                                                </Badge>
+                                                            ) : (
+                                                                <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400 px-3 py-1 rounded-full">
+                                                                    Maintenance
+                                                                </Badge>
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            {new Date(branch.gymBranchCreatedAt).toLocaleDateString()}
+                                                        </TableCell>
+                                                        <TableCell className="text-right">
+                                                            <div className="flex justify-end space-x-2">
+                                                                <Button 
+                                                                    variant="outline" 
+                                                                    size="sm" 
+                                                                    className="h-9 rounded-lg"
+                                                                    onClick={() => handleEditBranch(branch)}
+                                                                >
+                                                                    <FiEdit className="h-4 w-4 mr-1" />
+                                                                    Edit
+                                                                </Button>
+                                                                <Button 
+                                                                    variant="destructive" 
+                                                                    size="sm" 
+                                                                    className="h-9 rounded-lg"
+                                                                    onClick={() => handleDeleteBranch(branch.id)}
+                                                                >
+                                                                    <FiTrash2 className="h-4 w-4 mr-1" />
+                                                                    Delete
+                                                                </Button>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                )}
+                            </CardContent>
                         </Card>
                     </TabsContent>
                 </Tabs>
-
-                {/* Filters and Search */}
-                <Card className="mb-6 bg-white dark:bg-gray-800 dark:border-none">
-                    <CardContent className="pt-6">
-                        <div className="flex flex-col md:flex-row gap-4">
-                            <div className="flex-1">
-                                <div className="relative">
-                                    <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                                    <Input
-                                        placeholder="Search by organization, owner name, or email..."
-                                        value={searchTerm}
-                                        onChange={(e) => setSearchTerm(e.target.value)}
-                                        className="pl-10 bg-white dark:bg-transparent dark:border-gray-600 dark:text-white"
-                                    />
-                                </div>
-                            </div>
-                            <div className="w-full md:w-48">
-                                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                                    <SelectTrigger className="w-full rounded-md bg-white dark:bg-transparent dark:border-gray-600 dark:text-white">
-                                        <SelectValue placeholder="Filter by status" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-white dark:bg-gray-800 rounded-md dark:border-gray-600 dark:text-white">
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="Active">Active</SelectItem>
-                                        <SelectItem value="Pending">Pending</SelectItem>
-                                        <SelectItem value="Suspended">Suspended</SelectItem>
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-
-                {/* Tenants Overview Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">Total Tenants</p>
-                                    <p className="text-2xl font-bold">{tenants?.length || 0}</p>
-                                </div>
-                                <MdBusiness className="h-8 w-8 text-blue-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">Active Tenants</p>
-                                    <p className="text-2xl font-bold text-green-600">
-                                        {tenants?.filter(t => t.tenantStatus === 'Active').length || 0}
-                                    </p>
-                                </div>
-                                <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
-                                    <div className="h-4 w-4 bg-green-600 rounded-full"></div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">On Free Trial</p>
-                                    <p className="text-2xl font-bold text-blue-600">
-                                        {tenants?.filter(t => t.tenantOnFreeTrial).length || 0}
-                                    </p>
-                                </div>
-                                <FiClock className="h-8 w-8 text-blue-600" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                    
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm font-medium text-gray-600">Pending</p>
-                                    <p className="text-2xl font-bold text-yellow-600">
-                                        {tenants?.filter(t => t.tenantStatus === 'Pending').length || 0}
-                                    </p>
-                                </div>
-                                <div className="h-8 w-8 bg-yellow-100 rounded-full flex items-center justify-center">
-                                    <div className="h-4 w-4 bg-yellow-600 rounded-full"></div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
             </div>
         </div>
     );

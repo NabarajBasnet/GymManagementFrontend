@@ -425,7 +425,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                             aria-label="Toggle theme"
                         >
                             <div className="relative w-5 h-5">
-                                <Sun className={`absolute inset-0 w-5 h-5 text-yellow-500 transition-all duration-300 ${
+                                <Sun className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
                                     darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
                                 }`} />
                                 <Moon className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
