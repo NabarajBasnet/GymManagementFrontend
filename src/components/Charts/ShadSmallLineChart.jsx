@@ -46,7 +46,7 @@ const chartConfig = {
 export function ShadSmallLineChart() {
     return (
         <div className="w-full border-none">
-            <Card className="w-full border-none">
+            <Card className="w-full dark:border-gray-600 dark:bg-gray-800 border-none">
                 <CardHeader>
                     <CardDescription>January - December 2024</CardDescription>
                 </CardHeader>
@@ -91,7 +91,7 @@ export function ShadSmallLineChart() {
                     <div className="flex gap-2 font-medium leading-none">
                         Increasing new admission by 5.2% this month <TrendingUp className="h-4 w-4" />
                     </div>
-                    <div className="leading-none text-muted-foreground">
+                    <div className="leading-none text-muted-foreground dark:text-gray-400">
                         Showing total new admission for the last 12 months
                     </div>
                 </CardFooter>

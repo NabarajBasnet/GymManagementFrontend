@@ -119,8 +119,8 @@ export function NewRadialChart() {
     const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
 
     return (
-        <div className="w-full border-none">
-            <Card className="flex flex-col border-none shadow-sm">
+        <div className="w-full border-none dark:border-gray-600 dark:bg-gray-800">
+            <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admissions</CardTitle>
                     <CardDescription className='text-xs font-medium'>
@@ -178,10 +178,10 @@ export function NewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div className="bg-white rounded-md mt-6 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-md mt-6 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <Table className='min-w-full'>
-                        <TableHeader className="bg-pink-50">
+                    <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800'>
+                        <TableHeader className="bg-pink-50 dark:bg-gray-800">
                             <TableRow>
                                 <TableHead className='text-pink-600 text-xs font-medium'>Member ID</TableHead>
                                 <TableHead className='text-pink-600 text-xs font-medium'>Full Name</TableHead>
@@ -195,11 +195,11 @@ export function NewRadialChart() {
                             {newAdmissions && newAdmissions.length > 0 ? (
                                 newAdmissions.map((member) => {
                                     const textColor =
-                                        member.status === 'Active' ? 'text-black' :
-                                            member.status === 'OnHold' ? 'text-yellow-600' :
-                                                'text-red-500';
+                                        member.status === 'Active' ? 'text-black dark:text-white' :
+                                            member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
+                                                'text-red-500 dark:text-red-500';
                                     return (
-                                        <TableRow key={member._id} className={`${textColor} hover:bg-pink-50`}>
+                                        <TableRow key={member._id} className={`${textColor} hover:bg-pink-50 dark:hover:bg-gray-800`}>
                                             <TableCell>
                                                 <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
                                                     <span className="truncate text-center text-xs font-medium">{member._id}</span>
@@ -233,14 +233,14 @@ export function NewRadialChart() {
                                     );
                                 })
                             ) : (
-                                <TableRow className='hover:bg-pink-50'>
+                                <TableRow className='hover:bg-pink-50 dark:hover:bg-pink-50'>
                                     <TableCell colSpan={6} className="text-center py-4">
                                         No new members found.
                                     </TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
-                        <TableFooter className="bg-pink-50">
+                        <TableFooter className="bg-pink-50 dark:bg-gray-800">
                             <TableRow>
                                 <TableCell colSpan={5} className="text-left text-xs font-medium">Total New Members</TableCell>
                                 <TableCell className="text-right text-xs font-medium">{newAdmissionsLength || 0}</TableCell>
@@ -249,7 +249,7 @@ export function NewRadialChart() {
                     </Table>
                 </div>
 
-                <div className="py-3 px-4">
+                <div className="py-3 px-4 border-t dark:border-gray-600 dark:bg-gray-800">
                     <Pagination
                         total={totalNewMembersPages}
                         page={currentPage || 1}

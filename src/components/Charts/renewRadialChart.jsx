@@ -118,8 +118,8 @@ export function RenewRadialChart() {
     };
 
     return (
-        <div className="w-full border-none">
-            <Card className="flex flex-col border-none">
+        <div className="w-full border-none dark:border-gray-600 dark:bg-gray-800">
+            <Card className="flex flex-col dark:border-gray-600 dark:bg-gray-800 border-none">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
                     <CardDescription className='text-xs font-medium'>January - June 2024</CardDescription>
@@ -165,17 +165,17 @@ export function RenewRadialChart() {
                     </div>
                 </CardContent>
                 <CardFooter className="flex-col gap-2 text-sm">
-                    <div className="flex items-center gap-2 font-medium text-emerald-600 leading-none">
-                        New admission target reached 5.2% this month <TrendingUp className="h-4 w-4" />
+                    <div className="flex items-center gap-2 font-medium text-emerald-600 dark:text-gray-300 leading-none">
+                        New admission target reached 5.2% this month <TrendingUp className="h-4 w-4 dark:text-white" />
                     </div>
-                    <div className="leading-none text-muted-foreground">
+                    <div className="leading-none text-muted-foreground dark:text-gray-400">
                         Showing target progress for the last 1 month
                     </div>
                 </CardFooter>
             </Card>
 
             <div className="mt-6 overflow-x-auto">
-                <Table className='min-w-full'>
+                <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800'>
                     <TableHeader>
                         <TableRow>
                             <TableHead className='text-emerald-600 text-xs font-medium'>Member Id</TableHead>
@@ -190,9 +190,9 @@ export function RenewRadialChart() {
                         {renewdMembers && renewdMembers.length > 0 ? (
                             renewdMembers.map((member) => {
                                 const textColor =
-                                    member.status === 'Active' ? 'text-black' :
-                                        member.status === 'OnHold' ? 'text-yellow-600' :
-                                            'text-red-500';
+                                    member.status === 'Active' ? 'text-black dark:text-white' :
+                                        member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
+                                            'text-red-500 dark:text-red-500';
                                 return (
                                     <TableRow key={member._id} className={textColor}>
                                         <TableCell>
@@ -225,7 +225,7 @@ export function RenewRadialChart() {
                                 );
                             })
                         ) : (
-                            <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
+                            <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900 dark:bg-gray-800 dark:hover:bg-emerald-100 dark:text-gray-200 dark:hover:text-gray-900'>
                                 <TableCell colSpan={6} className="text-center">
                                     No members found.
                                 </TableCell>
@@ -233,13 +233,13 @@ export function RenewRadialChart() {
                         )}
                     </TableBody>
                     <TableFooter>
-                        <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900'>
-                            <TableCell colSpan={5} className="text-left text-xs font-medium">Total Renewd Members</TableCell>
-                            <TableCell className="text-right">{renewdMembersLength}</TableCell>
+                        <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900 dark:bg-gray-800 dark:hover:bg-emerald-100 dark:text-gray-200 dark:hover:text-gray-900'>
+                            <TableCell colSpan={5} className="text-left text-xs bg-gray-100 dark:bg-gray-800 font-medium hover:text-gray-300">Total Renewd Members</TableCell>
+                            <TableCell className="text-right hover:bg-transparent">{renewdMembersLength}</TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
-                <div className="py-3">
+                <div className="py-3 border-t dark:border-gray-600 dark:bg-gray-800">
                     <Pagination
                         total={totalRenewdMembersPages}
                         page={currentPage || 1}

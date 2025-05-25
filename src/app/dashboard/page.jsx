@@ -343,11 +343,11 @@ const AdminDashboard = () => {
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden rounded-2xl shadow-md border ${item.border}`}>
+              className={`overflow-hidden dark:bg-gray-800 rounded-2xl shadow-md dark:border dark:border-gray-600 border ${item.border}`}>
               <div className="p-5 py-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-500">{item.text}</p>
+                    <p className="text-sm font-medium text-gray-500 dark:text-gray-300">{item.text}</p>
                     <div className="flex items-baseline">
                       <h3 className={`text-4xl pt-6 pb-2 text-streamline font-bold ${item.color}`}>
                         {item.value.toLocaleString()}
@@ -375,26 +375,26 @@ const AdminDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border shadow-lg">
+          <Card className="border dark:border-gray-600 shadow-lg">
             <BarChartMultiple />
           </Card>
 
-          <Card className="border shadow-lg">
+          <Card className="border dark:border-gray-600 shadow-lg">
             <ShadSmallLineChart />
           </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <Card className="border shadow-lg">
+          <Card className="border dark:border-gray-600 shadow-lg">
             <RenewRadialChart />
           </Card>
 
-          <Card className="border shadow-lg">
+          <Card className="border dark:border-gray-600 shadow-lg">
             <NewRadialChart />
           </Card>
         </div>
 
-        <Card className="border shadow-lg">
+        <Card className="border dark:border-gray-600 shadow-lg">
           <BarChartInterActive />
         </Card>
       </div>

@@ -96,7 +96,7 @@ export function BarChartMultiple() {
 
     return (
         <div className="w-full border-none">
-            <Card className="border-none">
+            <Card className="border-none dark:border-gray-600 dark:bg-gray-800">
                 <CardHeader>
                     <CardDescription>{fromStartingMonth.toLocaleString('default', { month: 'long' })} {fromStartingMonth.getDate()} - {new Date().toLocaleDateString('en-US', {
                         year: 'numeric',
@@ -125,10 +125,10 @@ export function BarChartMultiple() {
                     </ChartContainer>
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-2 text-sm">
-                    <div className="flex gap-2 font-medium leading-none text-green-600">
-                        Increased renewal by 5.2% this month <TrendingUp className="text-green-600 h-4 w-4" />
+                    <div className="flex gap-2 font-medium leading-none text-green-600 dark:text-white">
+                        Increased renewal by 5.2% this month <TrendingUp className="text-green-600 dark:text-white h-4 w-4" />
                     </div>
-                    <div className="leading-none text-muted-foreground">
+                    <div className="leading-none text-muted-foreground dark:text-gray-400">
                         Showing total new admission and renew from Jan 1 this year
                     </div>
                 </CardFooter>
