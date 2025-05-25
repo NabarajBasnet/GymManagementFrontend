@@ -6,6 +6,7 @@ import Lenis from "@studio-freight/lenis";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Website/Navbar/Navbar";
 import Footer from "@/components/Website/Footer/Footer";
+import { ThemeProvider } from "@/components/Providers/ThemeProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -70,6 +71,12 @@ export default function MainClientLayout({ children }) {
         pathname.startsWith('/member');
 
     return (
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+        >
         <div className={`min-h-screen`}>
             {/* Navbar */}
             {(!hideNavbar && (scrollDir === null || scrollDir === 'up')) && (
@@ -92,5 +99,6 @@ export default function MainClientLayout({ children }) {
                 )}
             </div>
         </div>
+        </ThemeProvider>
     );
 }

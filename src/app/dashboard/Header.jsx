@@ -1,5 +1,7 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { TbListDetails } from "react-icons/tb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { FaMoneyBillAlt } from "react-icons/fa";
@@ -93,7 +95,7 @@ import { FaUsersGear } from "react-icons/fa6";
 
 const Header = () => {
     const { user } = useUser();
-
+    const { setTheme } = useTheme();
     const [isScrolled, setIsScrolled] = useState(false);
     const sidebarMinimized = useSelector(state => state.rtkreducer.sidebarMinimized);
     const dispatch = useDispatch();
@@ -389,7 +391,7 @@ const Header = () => {
 
     return (
         <div className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
-        ${isScrolled ? 'bg-white shadow-md' : 'bg-white'} 
+        ${isScrolled ? 'bg-white shadow-md dark:bg-gray-900' : 'bg-white dark:bg-gray-900'} 
         ${sidebarMinimized ? 'md:w-[calc(100%-80px)]' : 'md:w-[calc(100%-240px)]'} 
         w-full flex justify-between px-2 py-3 md:px-4 items-center`}>
             <div className='mx-4 flex items-center'>
@@ -656,20 +658,42 @@ const Header = () => {
             <div className='flex items-center space-x-2 md:space-x-4'>
                 {/* Date/Time for desktop */}
                 <div className="hidden items-center md:flex space-x-4">
-                    <div className="flex items-center bg-gray-100 rounded-md px-3 py-2">
+                    <div className="flex items-center rounded-md px-3 py-2">
                         <Calendar size={16} className="text-blue-600 mr-2" />
-                        <h1 className="text-sm font-medium text-gray-700">{currentDateTime.date}</h1>
+                        <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">{currentDateTime.date}</h1>
                     </div>
-                    <div className="flex items-center bg-gray-100 rounded-md px-3 py-2">
+                    <div className="flex items-center rounded-md px-3 py-2">
                         <Clock size={16} className="text-blue-600 mr-2" />
-                        <h1 className="text-sm font-medium text-gray-700">{currentDateTime.time}</h1>
+                        <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">{currentDateTime.time}</h1>
                     </div>
                 </div>
+
+                {/* Theme changer */}
+                <DropdownMenu className='dark:text-white bg-white'>
+                    <DropdownMenuTrigger asChild>
+                        <Button className='hover:bg-transparent bg-transparent text-blue-600' size="icon">
+                            <Sun className="h-[1.3rem] w-[1.3rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                            <Moon className="absolute h-[1.3rem] w-[1.3rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                            <span className="sr-only">Toggle theme</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => setTheme("light")}>
+                        Light
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("dark")}>
+                        Dark
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => setTheme("system")}>
+                        System
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
 
                 {/* Settings Dialog */}
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors cursor-pointer">
+                        <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors cursor-pointer">
                         <SettingsIcon size={20} className="text-blue-600 animate-spin duration-[10ms] transition-all" />
                         </div>
                     </AlertDialogTrigger>
@@ -693,7 +717,7 @@ const Header = () => {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <div className='cursor-pointer'>
-                            <div className="bg-gray-100 hover:bg-gray-200 p-1 md:p-2 rounded-full transition-colors">
+                            <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors">
                                 <FaUserCircle className="text-2xl text-blue-600" />
                             </div>
                         </div>

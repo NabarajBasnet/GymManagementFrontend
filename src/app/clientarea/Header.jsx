@@ -1,5 +1,8 @@
 'use client';
 
+import { Moon, Sun } from "lucide-react"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
 import { WiStars } from "react-icons/wi";
 import { Loader2 } from "lucide-react";
 import { AiOutlineSchedule } from "react-icons/ai";
@@ -61,6 +64,8 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
 
 const ClientAreaHeader = ({ activeTab }) => {
+    
+    const { setTheme } = useTheme();
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
 
@@ -75,19 +80,19 @@ const ClientAreaHeader = ({ activeTab }) => {
             description: "Overview & Analytics"
         },
         { 
-            id: '/clientarea/dashboard/gymdashboard', 
+            id: '/login', 
             icon: <QrCode size={20} />, 
             label: "Gym Dashboard",
             description: "Access Control & Monitoring"
         },
         { 
-            id: '/clientarea/dashboard/subscriptionmanagement', 
+            id: '/clientarea/subscriptionmanagement', 
             icon: <CreditCard size={20} />, 
-            label: "Subscription Management",
-            description: "Plans & Billing"
+            label: "Subscription Plan & Billing",
+            description: "Manage Plans & Billing"
         },
         { 
-            id: '/clientarea/dashboard/settings', 
+            id: '/clientarea/settings', 
             icon: <Settings size={20} />, 
             label: "Settings",
             description: "Configuration & Preferences"
@@ -145,7 +150,7 @@ const ClientAreaHeader = ({ activeTab }) => {
     const subscriptionStyle = getSubscriptionStyling(loggedInTenant?.tenantSubscriptionStatus);
 
     return (
-        <header className="bg-white/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 sticky top-0 z-50">
+        <header className="bg-white/95 backdrop-blur-lg shadow-md border-b border-gray-100/50 sticky top-0 z-50 dark:bg-gray-900/95">
             {loading ? (
                <Loader />
             ) : (
@@ -159,7 +164,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                         className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-indigo-700 hover:bg-indigo-50/80 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 transition-all duration-200 group"
                                         aria-label="Open menu"
                                     >
-                                        <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
+                                        <IoMenu className="block h-6 w-6 dark:text-white group-hover:scale-110 transition-transform duration-200" />
                                     </button>
                                 </SheetTrigger>
                                 <SheetContent side="left" className="w-[320px] sm:w-[360px] p-0 bg-gradient-to-b from-white to-gray-50/30">
@@ -171,9 +176,9 @@ const ClientAreaHeader = ({ activeTab }) => {
                                                 </div>
                                                 <div>
                                                     <SheetTitle className="text-xl font-bold text-white">
-                                                        Fit Loft Pro
+                                                        Fit Loft
                                                     </SheetTitle>
-                                                    <p className="text-indigo-100 text-sm font-medium">Fitness Management Suite</p>
+                                                    <p className="text-indigo-100 text-sm font-medium">Your Gym Automation</p>
                                                 </div>
                                             </div>
                                         </SheetHeader>
@@ -377,6 +382,27 @@ const ClientAreaHeader = ({ activeTab }) => {
                                     </button>
                                 ))}
                             </div>
+
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" size="icon">
+                                    <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                                    <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                                    <span className="sr-only">Toggle theme</span>
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                    <DropdownMenuItem onClick={() => setTheme("light")}>
+                                    Light
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTheme("dark")}>
+                                    Dark
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem onClick={() => setTheme("system")}>
+                                    System
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                                </DropdownMenu>
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
