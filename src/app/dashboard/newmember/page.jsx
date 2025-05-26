@@ -1218,7 +1218,7 @@ const NewMemberRegistrationForm = () => {
                                 type="button"
                                 onClick={handlePrevStep}
                                 variant="outline"
-                                className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                className="border-gray-200 dark:border-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                             >
                                 Previous
                             </Button>

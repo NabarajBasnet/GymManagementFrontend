@@ -88,6 +88,7 @@ const AttendanceHistory = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [currentPage, setCurrentPage] = useState(1);
     const [persons, setPersons] = useState([]);
+    const [activeTab, setActiveTab] = useState('filters');
     const limit = 10; // Set limit for pagination
     const searchRef = useRef(null);
 
@@ -132,6 +133,14 @@ const AttendanceHistory = () => {
         }
     }, [membershipType]);
 
+    // Handle person selection
+    const handlePersonSelect = (person) => {
+        setSearchQuery(person.fullName);
+        setId(person._id);
+        setRenderDropdown(false);
+        // Don't switch tabs here anymore
+    };
+
     // Fetch attendance history
     const fetchAttendanceHistory = async () => {
         if (!id) return;
@@ -146,6 +155,8 @@ const AttendanceHistory = () => {
 
             if (response.ok) {
                 setBody(responseBody);
+                // Switch to results tab only after successful fetch
+                setActiveTab('results');
             }
 
             if (membershipType === 'Staffs') {
@@ -201,42 +212,46 @@ const AttendanceHistory = () => {
     };
 
     return (
-        <div className="w-full min-h-screen bg-gray-50 px-4 py-6">
-            <Card className="shadow-sm mb-6">
+        <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
+            <Card className="shadow-sm mb-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 <CardHeader className="pb-3">
                     <div className="flex items-center pb-2">
                         <Breadcrumb>
                             <BreadcrumbList>
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink href="/" className="text-blue-600 hover:text-blue-800">Home</BreadcrumbLink>
+                                    <BreadcrumbLink href="/" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Home</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbLink className="text-blue-600 hover:text-blue-800">Attendance</BreadcrumbLink>
+                                    <BreadcrumbLink className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Attendance</BreadcrumbLink>
                                 </BreadcrumbItem>
                                 <BreadcrumbSeparator />
                                 <BreadcrumbItem>
-                                    <BreadcrumbPage>Attendance History</BreadcrumbPage>
+                                    <BreadcrumbPage className="text-gray-700 dark:text-gray-300">Attendance History</BreadcrumbPage>
                                 </BreadcrumbItem>
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
-                    <CardTitle className="text-2xl font-bold text-gray-800">Attendance History</CardTitle>
-                    <CardDescription className="text-gray-500">
+                    <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">Attendance History</CardTitle>
+                    <CardDescription className="text-gray-500 dark:text-gray-400">
                         View and track attendance records for staff and members
                     </CardDescription>
                 </CardHeader>
             </Card>
 
-            <Tabs defaultValue="filters" className="w-full">
-                <TabsList className="mb-6 bg-white">
-                    <TabsTrigger value="filters" className="data-[state=active]:bg-blue-50">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="mb-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <TabsTrigger value="filters" className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700">
                         <div className="flex items-center">
                             <Search className="mr-2 h-4 w-4" />
                             Filters & Search
                         </div>
                     </TabsTrigger>
-                    <TabsTrigger value="results" className="data-[state=active]:bg-blue-50">
+                    <TabsTrigger 
+                        value="results" 
+                        className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
+                        disabled={!id}
+                    >
                         <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4" />
                             Attendance Results
@@ -245,11 +260,11 @@ const AttendanceHistory = () => {
                 </TabsList>
 
                 <TabsContent value="filters">
-                    <Card className="shadow-sm">
+                    <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                         <CardHeader className="pb-2">
-                            <Alert className="bg-blue-50 border-blue-200 mb-4">
-                                <InfoIcon className="h-4 w-4 text-blue-600" />
-                                <AlertDescription className="text-blue-700 text-sm ml-2">
+                            <Alert className="bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 mb-4">
+                                <InfoIcon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                                <AlertDescription className="text-blue-700 dark:text-blue-300 text-sm ml-2">
                                     Showing data from the beginning of the current month. Adjust dates below to view different periods.
                                 </AlertDescription>
                             </Alert>
@@ -258,28 +273,28 @@ const AttendanceHistory = () => {
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                                 {/* From Date */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="from-date" className="text-sm font-medium text-gray-700">From Date</Label>
+                                    <Label htmlFor="from-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">From Date</Label>
                                     <Popover>
-                                        <PopoverTrigger asChild>
+                                        <PopoverTrigger asChild className="py-6">
                                             <Button
                                                 id="from-date"
                                                 variant="outline"
                                                 className={cn(
-                                                    "w-full justify-start text-left font-normal transition-all",
-                                                    !startDate && "text-gray-400"
+                                                    "w-full justify-start text-left font-normal transition-all dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300",
+                                                    !startDate && "text-gray-400 dark:text-gray-500"
                                                 )}
                                             >
-                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
                                                 {startDate ? format(startDate, "PPP") : "Select start date"}
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
+                                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" align="start">
                                             <Calendar
                                                 mode="single"
                                                 selected={startDate}
                                                 onSelect={setStartDate}
                                                 initialFocus
-                                                className="rounded-md border"
+                                                className="rounded-md border dark:border-gray-700"
                                             />
                                         </PopoverContent>
                                     </Popover>
@@ -287,28 +302,28 @@ const AttendanceHistory = () => {
 
                                 {/* To Date */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="to-date" className="text-sm font-medium text-gray-700">To Date</Label>
+                                    <Label htmlFor="to-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">To Date</Label>
                                     <Popover>
-                                        <PopoverTrigger asChild>
+                                        <PopoverTrigger asChild className="py-6">
                                             <Button
                                                 id="to-date"
                                                 variant="outline"
                                                 className={cn(
-                                                    "w-full justify-start text-left font-normal transition-all",
-                                                    !endDate && "text-gray-400"
+                                                    "w-full justify-start text-left font-normal transition-all dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300",
+                                                    !endDate && "text-gray-400 dark:text-gray-500"
                                                 )}
                                             >
-                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500" />
+                                                <CalendarIcon className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
                                                 {endDate ? format(endDate, "PPP") : "Select end date"}
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto p-0" align="start">
+                                        <PopoverContent className="w-auto  p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" align="start">
                                             <Calendar
                                                 mode="single"
                                                 selected={endDate}
                                                 onSelect={setEndDate}
                                                 initialFocus
-                                                className="rounded-md border"
+                                                className="rounded-md border dark:border-gray-700"
                                             />
                                         </PopoverContent>
                                     </Popover>
@@ -316,20 +331,20 @@ const AttendanceHistory = () => {
 
                                 {/* Membership Type */}
                                 <div className="space-y-2">
-                                    <Label htmlFor="membership-type" className="text-sm font-medium text-gray-700">Membership Type</Label>
+                                    <Label htmlFor="membership-type" className="text-sm font-medium text-gray-700 dark:text-gray-300">Membership Type</Label>
                                     <Select value={membershipType} onValueChange={(value) => {
                                         setMembershipType(value);
-                                        setId(''); // Reset selected person when changing type
+                                        setId('');
                                         setSearchQuery('');
                                     }}>
-                                        <SelectTrigger id="membership-type" className="w-full">
+                                        <SelectTrigger id="membership-type" className="w-full py-6 rounded-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
                                             <SelectValue placeholder="Select type" />
                                         </SelectTrigger>
-                                        <SelectContent>
+                                        <SelectContent className="bg-white rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                                             <SelectGroup>
-                                                <SelectLabel>Select Type</SelectLabel>
-                                                <SelectItem value="Members">Members</SelectItem>
-                                                <SelectItem value="Staffs">Staff</SelectItem>
+                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Select Type</SelectLabel>
+                                                <SelectItem value="Members" className="text-gray-900 dark:text-gray-100">Members</SelectItem>
+                                                <SelectItem value="Staffs" className="text-gray-900 dark:text-gray-100">Staff</SelectItem>
                                             </SelectGroup>
                                         </SelectContent>
                                     </Select>
@@ -337,29 +352,29 @@ const AttendanceHistory = () => {
 
                                 {/* Search Person */}
                                 <div className="space-y-2" ref={searchRef}>
-                                    <Label htmlFor="person-search" className="text-sm font-medium text-gray-700">
+                                    <Label htmlFor="person-search" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                                         {membershipType === 'Members' ? 'Member' : 'Staff'} Name
                                     </Label>
                                     <div className="relative">
-                                        <div className="flex items-center border rounded-md transition-all focus-within:ring-2 focus-within:ring-blue-200 focus-within:border-blue-400">
-                                            <Search className="h-4 w-4 ml-3 text-gray-400" />
+                                        <div className="flex items-center border dark:border-gray-700 rounded-md transition-all focus-within:ring-2 focus-within:ring-blue-200 dark:focus-within:ring-blue-800 focus-within:border-blue-400 dark:focus-within:border-blue-600">
+                                            <Search className="h-4 w-4 ml-3 text-gray-400 dark:text-gray-500" />
                                             <Input
                                                 id="person-search"
                                                 value={searchQuery}
                                                 onChange={(e) => setSearchQuery(e.target.value)}
                                                 onFocus={() => setRenderDropdown(true)}
-                                                className="border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                                                className="border-0 focus-visible:ring-0 py-6 focus-visible:ring-offset-0 dark:bg-gray-800 dark:text-gray-300"
                                                 placeholder={`Search ${membershipType === 'Members' ? 'members' : 'staff'}...`}
                                             />
                                         </div>
 
                                         {renderDropdown && (
-                                            <div className="absolute z-50 w-full mt-1 max-h-64 overflow-y-auto bg-white border rounded-md shadow-lg">
+                                            <div className="absolute z-50 w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
                                                 {isLoading ? (
                                                     <div className="p-4 space-y-2">
-                                                        <Skeleton className="h-6 w-full" />
-                                                        <Skeleton className="h-6 w-full" />
-                                                        <Skeleton className="h-6 w-full" />
+                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                                                        <Skeleton className="h-6 w-full dark:bg-gray-700" />
                                                     </div>
                                                 ) : persons?.length > 0 ? (
                                                     persons
@@ -369,19 +384,15 @@ const AttendanceHistory = () => {
                                                         .map((person) => (
                                                             <div
                                                                 key={person._id}
-                                                                onClick={() => {
-                                                                    setSearchQuery(person.fullName);
-                                                                    setId(person._id);
-                                                                    setRenderDropdown(false);
-                                                                }}
-                                                                className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 transition-colors"
+                                                                onClick={() => handlePersonSelect(person)}
+                                                                className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                                                             >
-                                                                <User className="h-4 w-4 text-gray-500" />
-                                                                <span>{person.fullName}</span>
+                                                                <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                                                                <span className="text-gray-900 dark:text-gray-100">{person.fullName}</span>
                                                             </div>
                                                         ))
                                                 ) : (
-                                                    <div className="p-4 text-center text-gray-500">
+                                                    <div className="p-4 text-center text-gray-500 dark:text-gray-400">
                                                         No {membershipType.toLowerCase()} found
                                                     </div>
                                                 )}
@@ -392,9 +403,10 @@ const AttendanceHistory = () => {
                             </div>
 
                             <Button
-                                className="mt-8 bg-blue-600 hover:bg-blue-700 text-white"
+                                className="mt-8 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white dark:border-none"
                                 onClick={() => {
                                     if (id) fetchAttendanceHistory();
+                                    setActiveTab('results');
                                 }}
                                 disabled={!id}
                             >
@@ -407,12 +419,12 @@ const AttendanceHistory = () => {
 
                 <TabsContent value="results">
                     {id ? (
-                        <Card className="shadow-sm">
+                        <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-xl font-medium">
+                                <CardTitle className="text-xl font-medium text-gray-900 dark:text-gray-100">
                                     {searchQuery ? `Attendance Record for ${searchQuery}` : 'Attendance Records'}
                                 </CardTitle>
-                                <CardDescription>
+                                <CardDescription className="text-gray-500 dark:text-gray-400">
                                     {startDate && endDate ? (
                                         <span>Showing data from {format(startDate, "PP")} to {format(endDate, "PP")}</span>
                                     ) : (
@@ -425,30 +437,30 @@ const AttendanceHistory = () => {
                             {membershipType === 'Staffs' && body && (
                                 <div className="px-6 py-4">
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <Card className="bg-amber-50 border-amber-200">
+                                        <Card className="bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800">
                                             <CardHeader className="py-3">
-                                                <CardTitle className="text-sm font-medium text-amber-800">Late Check-ins</CardTitle>
+                                                <CardTitle className="text-sm font-medium text-amber-800 dark:text-amber-400">Late Check-ins</CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-2xl font-bold text-amber-900">{body.totalLatePunchIns || 0}</p>
+                                                <p className="text-2xl font-bold text-amber-900 dark:text-amber-300">{body.totalLatePunchIns || 0}</p>
                                             </CardContent>
                                         </Card>
 
-                                        <Card className="bg-purple-50 border-purple-200">
+                                        <Card className="bg-purple-50 dark:bg-purple-900/30 border-purple-200 dark:border-purple-800">
                                             <CardHeader className="py-3">
-                                                <CardTitle className="text-sm font-medium text-purple-800">Deduction Days</CardTitle>
+                                                <CardTitle className="text-sm font-medium text-purple-800 dark:text-purple-400">Deduction Days</CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-2xl font-bold text-purple-900">{body.deductionDays || 0}</p>
+                                                <p className="text-2xl font-bold text-purple-900 dark:text-purple-300">{body.deductionDays || 0}</p>
                                             </CardContent>
                                         </Card>
 
-                                        <Card className="bg-red-50 border-red-200">
+                                        <Card className="bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-800">
                                             <CardHeader className="py-3">
-                                                <CardTitle className="text-sm font-medium text-red-800">Salary Deducted</CardTitle>
+                                                <CardTitle className="text-sm font-medium text-red-800 dark:text-red-400">Salary Deducted</CardTitle>
                                             </CardHeader>
                                             <CardContent>
-                                                <p className="text-2xl font-bold text-red-900">₹ {body.salaryDeduction ? Math.floor(body.salaryDeduction) : 0}</p>
+                                                <p className="text-2xl font-bold text-red-900 dark:text-red-300">₹ {body.salaryDeduction ? Math.floor(body.salaryDeduction) : 0}</p>
                                             </CardContent>
                                         </Card>
                                     </div>
@@ -458,31 +470,31 @@ const AttendanceHistory = () => {
                             <CardContent>
                                 {isLoading ? (
                                     <div className="space-y-4">
-                                        <Skeleton className="h-10 w-full" />
-                                        <Skeleton className="h-32 w-full" />
-                                        <Skeleton className="h-32 w-full" />
+                                        <Skeleton className="h-10 w-full dark:bg-gray-700" />
+                                        <Skeleton className="h-32 w-full dark:bg-gray-700" />
+                                        <Skeleton className="h-32 w-full dark:bg-gray-700" />
                                     </div>
                                 ) : membershipType === 'Staffs' ? (
-                                    <div className="rounded-md border">
+                                    <div className="rounded-md border dark:border-gray-700">
                                         <Table>
-                                            <TableHeader className="bg-gray-50">
-                                                <TableRow>
-                                                    <TableHead className="font-medium">Staff ID</TableHead>
-                                                    <TableHead className="font-medium">Full Name</TableHead>
-                                                    <TableHead className="font-medium">Role</TableHead>
-                                                    <TableHead className="font-medium">Check In</TableHead>
-                                                    <TableHead className="font-medium">Check Out</TableHead>
-                                                    <TableHead className="font-medium">Status</TableHead>
+                                            <TableHeader className="bg-gray-50 dark:bg-gray-800">
+                                                <TableRow className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Staff ID</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Full Name</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Role</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Check In</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Check Out</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Status</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {staffHistory && staffHistory.length > 0 ? (
                                                     staffHistory.map((attendance) => (
-                                                        <TableRow key={attendance._id} className="hover:bg-gray-50">
-                                                            <TableCell className="font-medium">{attendance.staffId}</TableCell>
-                                                            <TableCell>{attendance.fullName}</TableCell>
-                                                            <TableCell>{attendance.role}</TableCell>
-                                                            <TableCell>
+                                                        <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                                            <TableCell className="font-medium text-gray-900 dark:text-gray-100">{attendance.staffId}</TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">{attendance.fullName}</TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">{attendance.role}</TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">
                                                                 {attendance.checkIn ? (
                                                                     <TooltipProvider>
                                                                         <Tooltip>
@@ -520,7 +532,7 @@ const AttendanceHistory = () => {
                                                                     <span className="text-gray-400">--</span>
                                                                 )}
                                                             </TableCell>
-                                                            <TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">
                                                                 {attendance.checkOut ? (
                                                                     <TooltipProvider>
                                                                         <Tooltip>
@@ -560,11 +572,11 @@ const AttendanceHistory = () => {
                                                             </TableCell>
                                                             <TableCell>
                                                                 {attendance.remark === 'LatePunchIn' ? (
-                                                                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                                                                    <Badge variant="outline" className="bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">
                                                                         Late
                                                                     </Badge>
                                                                 ) : (
-                                                                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                                                    <Badge variant="outline" className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
                                                                         On Time
                                                                     </Badge>
                                                                 )}
@@ -573,7 +585,7 @@ const AttendanceHistory = () => {
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell colSpan={6} className="h-24 text-center text-gray-500">
+                                                        <TableCell colSpan={6} className="h-24 text-center text-gray-500 dark:text-gray-400">
                                                             No attendance records found
                                                         </TableCell>
                                                     </TableRow>
@@ -581,38 +593,38 @@ const AttendanceHistory = () => {
                                             </TableBody>
                                             {staffHistory && staffHistory.length > 0 && (
                                                 <TableFooter>
-                                                    <TableRow className="bg-gray-50">
-                                                        <TableCell colSpan={2} className="font-medium">Total Check-in Time</TableCell>
-                                                        <TableCell colSpan={4}>{body ? body.totalStaffAttendance : '--'}</TableCell>
+                                                    <TableRow className="bg-gray-50 dark:bg-gray-800">
+                                                        <TableCell colSpan={2} className="font-medium text-gray-900 dark:text-gray-100">Total Check-in Time</TableCell>
+                                                        <TableCell colSpan={4} className="text-gray-900 dark:text-gray-100">{body ? body.totalStaffAttendance : '--'}</TableCell>
                                                     </TableRow>
                                                 </TableFooter>
                                             )}
                                         </Table>
                                     </div>
                                 ) : (
-                                    <div className="rounded-md border">
+                                    <div className="rounded-md border dark:border-gray-700">
                                         <Table>
-                                            <TableHeader className="bg-gray-50">
-                                                <TableRow>
-                                                    <TableHead className="font-medium">Member ID</TableHead>
-                                                    <TableHead className="font-medium">Full Name</TableHead>
-                                                    <TableHead className="font-medium">Membership Option</TableHead>
-                                                    <TableHead className="font-medium">Check In Date</TableHead>
-                                                    <TableHead className="font-medium">Check In Time</TableHead>
+                                            <TableHeader className="bg-gray-50 dark:bg-gray-800">
+                                                <TableRow className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Member ID</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Full Name</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Membership Option</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Check In Date</TableHead>
+                                                    <TableHead className="font-medium text-gray-900 dark:text-gray-100">Check In Time</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {memberHistory && memberHistory.length > 0 ? (
                                                     memberHistory.map((attendance) => (
-                                                        <TableRow key={attendance._id} className="hover:bg-gray-50">
-                                                            <TableCell className="font-medium">{attendance.memberId}</TableCell>
-                                                            <TableCell>{attendance.fullName}</TableCell>
+                                                        <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                                            <TableCell className="font-medium text-gray-900 dark:text-gray-100">{attendance.memberId}</TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">{attendance.fullName}</TableCell>
                                                             <TableCell className='text-start'>
-                                                                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                                                                <Badge variant="outline" className="bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800">
                                                                     {attendance.membershipOption}
                                                                 </Badge>
                                                             </TableCell>
-                                                            <TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger asChild>
@@ -633,7 +645,7 @@ const AttendanceHistory = () => {
                                                                     </Tooltip>
                                                                 </TooltipProvider>
                                                             </TableCell>
-                                                            <TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">
                                                                 <TooltipProvider>
                                                                     <Tooltip>
                                                                         <TooltipTrigger asChild>
@@ -657,7 +669,7 @@ const AttendanceHistory = () => {
                                                     ))
                                                 ) : (
                                                     <TableRow>
-                                                        <TableCell colSpan={4} className="h-24 text-center text-gray-500">
+                                                        <TableCell colSpan={4} className="h-24 text-center text-gray-500 dark:text-gray-400">
                                                             No attendance records found
                                                         </TableCell>
                                                     </TableRow>
@@ -665,9 +677,9 @@ const AttendanceHistory = () => {
                                             </TableBody>
                                             {memberHistory && memberHistory.length > 0 && (
                                                 <TableFooter>
-                                                    <TableRow className="bg-gray-50">
-                                                        <TableCell colSpan={2} className="font-medium">Total Check-ins</TableCell>
-                                                        <TableCell colSpan={2}>{memberHistory ? memberHistory.length : '--'}</TableCell>
+                                                    <TableRow className="bg-gray-50 dark:bg-gray-800">
+                                                        <TableCell colSpan={2} className="font-medium text-gray-900 dark:text-gray-100">Total Check-ins</TableCell>
+                                                        <TableCell colSpan={2} className="text-gray-900 dark:text-gray-100">{memberHistory ? memberHistory.length : '--'}</TableCell>
                                                     </TableRow>
                                                 </TableFooter>
                                             )}
@@ -677,11 +689,11 @@ const AttendanceHistory = () => {
                             </CardContent>
 
                             {(staffHistory?.length > 0 || memberHistory?.length > 0) && (
-                                <CardFooter className="flex flex-col sm:flex-row justify-between items-center pt-6 pb-4 gap-4 border-t">
-                                    <div className="text-sm text-gray-500">
-                                        Showing <span className="font-medium">{startEntry}</span> to{" "}
-                                        <span className="font-medium">{endEntry}</span> of{" "}
-                                        <span className="font-medium">{totalEntries}</span> entries
+                                <CardFooter className="flex flex-col sm:flex-row justify-between items-center pt-6 pb-4 gap-4 border-t dark:border-gray-700">
+                                    <div className="text-sm text-gray-500 dark:text-gray-400">
+                                        Showing <span className="font-medium text-gray-900 dark:text-gray-100">{startEntry}</span> to{" "}
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">{endEntry}</span> of{" "}
+                                        <span className="font-medium text-gray-900 dark:text-gray-100">{totalEntries}</span> entries
                                     </div>
 
                                     <Pagination
@@ -696,18 +708,19 @@ const AttendanceHistory = () => {
                             )}
                         </Card>
                     ) : (
-                        <Card className="shadow-sm">
+                        <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                             <div className="flex flex-col items-center justify-center py-12">
-                                <div className="rounded-full bg-blue-50 p-3 mb-4">
-                                    <User className="h-6 w-6 text-blue-600" />
+                                <div className="rounded-full bg-blue-50 dark:bg-blue-900/30 p-3 mb-4">
+                                    <User className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900 mb-1">No Person Selected</h3>
-                                <p className="text-gray-500 text-center max-w-md mb-6">
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">No Person Selected</h3>
+                                <p className="text-gray-500 dark:text-gray-400 text-center max-w-md mb-6">
                                     Please select a {membershipType === 'Staffs' ? 'staff member' : 'member'} from the search to view their attendance history.
                                 </p>
                                 <Button
                                     variant="outline"
-                                    onClick={() => document.querySelector('[value="filters"]').click()}
+                                    onClick={() => setActiveTab('filters')}
+                                    className="dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
                                 >
                                     Go to Search
                                 </Button>

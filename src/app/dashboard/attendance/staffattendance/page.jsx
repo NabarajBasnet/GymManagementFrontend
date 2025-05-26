@@ -362,7 +362,7 @@ const StaffAttendance = () => {
                         Daily staff check-in and check-out records.</p>
                     </div>
                     <div className="md:w-6/12 w-full flex justify-center p-2">
-                        <div className="w-full px-4 flex justify-between border border-gray-600 bg-white dark:bg-gray-800 border-gray-300 rounded-sm items-center">
+                        <div className="w-full px-4 flex justify-between border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-500 rounded-sm items-center">
                             <Search className="h-5 w-5 text-gray-400 dark:text-gray-200" />
                             <Input
                                 value={searchQuery}
@@ -380,7 +380,7 @@ const StaffAttendance = () => {
                     <div className="w-full">
                         <form className="w-full md:flex justify-between items-center my-4">
                             <div className='w-full flex justify-start items-center p-2'>
-                                <div className='w-full flex border border-gray-600 bg-white dark:bg-gray-800 dark:border px-2 rounded-sm items-center'>
+                                <div className='w-full flex border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-500 px-2 rounded-sm items-center'>
                                     <QrCode className='h-5 w-5 text-gray-400' />
                                     <Input
                                         placeholder='Scan qr code here'
