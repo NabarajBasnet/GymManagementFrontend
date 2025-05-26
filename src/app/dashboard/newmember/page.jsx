@@ -770,7 +770,7 @@ const NewMemberRegistrationForm = () => {
                                                     setMembershipOption(value);
                                                     if (value) clearErrors('membershipOption')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Option" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -793,7 +793,7 @@ const NewMemberRegistrationForm = () => {
                                                     setMembershipType(value);
                                                     if (value) clearErrors('membershipType')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Type" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -815,7 +815,7 @@ const NewMemberRegistrationForm = () => {
                                                     setMembershipShift(value);
                                                     if (value) clearErrors('membershipShift')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Shift" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -838,7 +838,7 @@ const NewMemberRegistrationForm = () => {
                                                     handleMembershipSelection(value);
                                                     if (value) clearErrors('membershipDuration')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Duration" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -859,7 +859,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Membership Date</Label>
                                                 <Popover>
-                                                    <PopoverTrigger asChild>
+                                                    <PopoverTrigger className='py-6' asChild>
                                                         <Button
                                                             variant={"outline"}
                                                             className={cn(
@@ -871,7 +871,7 @@ const NewMemberRegistrationForm = () => {
                                                             {membershipDate ? format(membershipDate, "PPP") : <span>Pick a date</span>}
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
+                                                    <PopoverContent className="w-auto p-2">
                                                         <Calendar
                                                             mode="single"
                                                             selected={membershipDate}
@@ -885,7 +885,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Membership Renew Date</Label>
                                                 <Popover>
-                                                    <PopoverTrigger asChild>
+                                                    <PopoverTrigger className='py-6' asChild>
                                                         <Button
                                                             variant={"outline"}
                                                             className={cn(
@@ -897,7 +897,7 @@ const NewMemberRegistrationForm = () => {
                                                             {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Pick a date</span>}
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
+                                                    <PopoverContent className="w-auto p-2">
                                                         <Calendar
                                                             mode="single"
                                                             selected={membershipRenewDate}
@@ -911,7 +911,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Membership Expire Date</Label>
                                                 <Popover>
-                                                    <PopoverTrigger asChild>
+                                                    <PopoverTrigger className='py-6' asChild>
                                                         <Button
                                                             variant={"outline"}
                                                             className={cn(
@@ -923,7 +923,7 @@ const NewMemberRegistrationForm = () => {
                                                             {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Pick a date</span>}
                                                         </Button>
                                                     </PopoverTrigger>
-                                                    <PopoverContent className="w-auto p-0">
+                                                    <PopoverContent className="w-auto p-2">
                                                         <Calendar
                                                             mode="single"
                                                             selected={membershipExpireDate}
@@ -948,7 +948,7 @@ const NewMemberRegistrationForm = () => {
                                                     setPaymentMethod(value);
                                                     if (value) clearErrors('paymentMethod')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Method" />
                                                     </SelectTrigger>
                                                     <SelectContent>
@@ -968,6 +968,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Discount Amount</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     value={discountAmmount}
                                                     onChange={(e) => setDiscountAmmount(e.target.value)}
                                                     type='text'
@@ -978,6 +979,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Discount Reason</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     {...register('discountReason')}
                                                     onChange={(e) => clearErrors("discountReason")}
                                                     type='text'
@@ -991,6 +993,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Discount Code</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     {...register('discountCode')}
                                                     type='text'
                                                     placeholder='Discount Code'
@@ -1004,7 +1007,7 @@ const NewMemberRegistrationForm = () => {
                                                     type='text'
                                                     defaultValue={'1000'}
                                                     disabled
-                                                    className='rounded-md disabled:bg-gray-300 text-black focus:outline-none'
+                                                    className='py-6 rounded-sm disabled:bg-gray-300 text-black focus:outline-none'
                                                     placeholder='Admission Fee'
                                                 />
                                             </div>
@@ -1012,9 +1015,9 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Final Amount</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm bg-gray-100'
                                                     value={finalAmmount}
                                                     disabled
-                                                    className="bg-gray-100"
                                                     placeholder="Final Amount"
                                                 />
                                             </div>
@@ -1022,6 +1025,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Paid Amount</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     value={paidAmmount}
                                                     onChange={(e) => {
                                                         setPaidAmmount(e.target.value);
@@ -1037,9 +1041,9 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Due Amount</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm bg-gray-100'
                                                     value={dueAmmount}
                                                     disabled
-                                                    className="bg-gray-100"
                                                     placeholder="Due Amount"
                                                 />
                                             </div>
@@ -1047,6 +1051,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Receipt No</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     {...register('receiptNo', {
                                                         required: "Mention receipt no!"
                                                     })}
@@ -1061,6 +1066,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Reference Code</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     {...register('referenceCode')}
                                                     type='text'
                                                     placeholder='Reference Code'
@@ -1070,6 +1076,7 @@ const NewMemberRegistrationForm = () => {
                                             <div className="space-y-2">
                                                 <Label>Remark</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     {...register('remark')}
                                                     type='text'
                                                     placeholder='Remark'
@@ -1082,7 +1089,7 @@ const NewMemberRegistrationForm = () => {
                                                     setActionTaker(value);
                                                     if (value) clearErrors('actionTaker')
                                                 }}>
-                                                    <SelectTrigger>
+                                                    <SelectTrigger className='py-6 rounded-sm'>
                                                         <SelectValue placeholder="Select Action Taker" />
                                                     </SelectTrigger>
                                                     <SelectContent>
