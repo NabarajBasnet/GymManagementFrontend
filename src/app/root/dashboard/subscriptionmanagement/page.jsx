@@ -7,6 +7,7 @@ import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader,  FiRefreshCc
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
+import { Checkbox } from "@/components/ui/checkbox";
 
 // UI Components
 import {
@@ -88,6 +89,8 @@ const SubscriptionManagement = () => {
 
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingSubscription, setEditingSubscription] = useState(null);
+    const [selectedFeatures, setSelectedFeatures] = useState([]);
+    const [selectedAccess, setSelectedAccess] = useState([]);
 
     // Fetch all subscriptions
     const { data: subscriptions, isLoading } = useQuery({
@@ -98,6 +101,50 @@ const SubscriptionManagement = () => {
             return data.subscriptions;
         }
     });
+
+    const featuresList = [
+        "QR Check-in",
+        "Locker Management",
+        "Attendance Report",
+        "Membership Analytics",
+        "Staff Management",
+        "Branch Access",
+        "Class Booking",
+        "Personal Training",
+        "Group Classes",
+        "Equipment Access",
+        "Nutrition Planning",
+        "Progress Tracking"
+    ];
+
+    const accessList = [
+        "Gym Access",
+        "Pool Access",
+        "Sauna Access",
+        "Spa Access",
+        "Group Class Access",
+        "Personal Training Access",
+        "Locker Access",
+        "Equipment Access",
+        "24/7 Access",
+        "VIP Lounge Access"
+    ];
+
+    const handleFeatureToggle = (feature) => {
+        setSelectedFeatures(prev => 
+            prev.includes(feature)
+                ? prev.filter(f => f !== feature)
+                : [...prev, feature]
+        );
+    };
+
+    const handleAccessToggle = (access) => {
+        setSelectedAccess(prev => 
+            prev.includes(access)
+                ? prev.filter(a => a !== access)
+                : [...prev, access]
+        );
+    };
 
     const onSubmit = async (data) => {
         try {
@@ -116,8 +163,8 @@ const SubscriptionManagement = () => {
                     ...data,
                     subscriptionPrice: Number(data.subscriptionPrice),
                     subscriptionDuration: Number(data.subscriptionDuration),
-                    subscriptionFeatures: data.subscriptionFeatures.split(',').map(feature => feature.trim()),
-                    subscriptionAccess: data.subscriptionAccess.split(',').map(access => access.trim())
+                    subscriptionFeatures: selectedFeatures,
+                    subscriptionAccess: selectedAccess
                 }),
             });
 
@@ -127,6 +174,8 @@ const SubscriptionManagement = () => {
                 toast.success(responseData.message);
                 setIsDialogOpen(false);
                 reset();
+                setSelectedFeatures([]);
+                setSelectedAccess([]);
                 setEditingSubscription(null);
                 queryClient.invalidateQueries(['subscriptions']);
             } else {
@@ -139,13 +188,13 @@ const SubscriptionManagement = () => {
 
     const handleEdit = (subscription) => {
         setEditingSubscription(subscription);
+        setSelectedFeatures(subscription.subscriptionFeatures);
+        setSelectedAccess(subscription.subscriptionAccess);
         reset({
             subscriptionName: subscription.subscriptionName,
             subscriptionDescription: subscription.subscriptionDescription,
             subscriptionPrice: subscription.subscriptionPrice,
             subscriptionDuration: subscription.subscriptionDuration,
-            subscriptionFeatures: subscription.subscriptionFeatures.join(', '),
-            subscriptionAccess: subscription.subscriptionAccess.join(', ')
         });
         setIsDialogOpen(true);
     };
@@ -313,7 +362,7 @@ const SubscriptionManagement = () => {
                                         Create Subscription
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent className="sm:max-w-[600px]">
+                                <DialogContent className="w-11/12 lg:max-w-[1000px] overflow-y-auto max-h-[90vh]">
                                     <DialogHeader>
                                         <DialogTitle>
                                             {editingSubscription ? 'Edit Subscription' : 'Create New Subscription'}
@@ -375,28 +424,48 @@ const SubscriptionManagement = () => {
                                             </div>
                                         </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="subscriptionFeatures">Features (comma-separated)</Label>
-                                            <Textarea
-                                                id="subscriptionFeatures"
-                                                {...register('subscriptionFeatures', { required: 'Features are required' })}
-                                                placeholder="e.g., Access to all classes, Personal trainer, Locker access"
-                                            />
-                                            {errors.subscriptionFeatures && (
-                                                <p className="text-sm text-red-500">{errors.subscriptionFeatures.message}</p>
-                                            )}
-                                        </div>
+                                        <div className="space-y-4">
+                                            <div>
+                                                <Label className="text-base font-semibold">Features</Label>
+                                                <div className="grid grid-cols-2 gap-3 mt-2">
+                                                    {featuresList.map((feature) => (
+                                                        <div key={feature} className="flex items-center space-x-2">
+                                                            <Checkbox
+                                                                id={feature}
+                                                                checked={selectedFeatures.includes(feature)}
+                                                                onCheckedChange={() => handleFeatureToggle(feature)}
+                                                            />
+                                                            <label
+                                                                htmlFor={feature}
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                            >
+                                                                {feature}
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
 
-                                        <div className="space-y-2">
-                                            <Label htmlFor="subscriptionAccess">Access Rights (comma-separated)</Label>
-                                            <Textarea
-                                                id="subscriptionAccess"
-                                                {...register('subscriptionAccess', { required: 'Access rights are required' })}
-                                                placeholder="e.g., Gym access, Pool access, Sauna access"
-                                            />
-                                            {errors.subscriptionAccess && (
-                                                <p className="text-sm text-red-500">{errors.subscriptionAccess.message}</p>
-                                            )}
+                                            <div>
+                                                <Label className="text-base font-semibold">Access Rights</Label>
+                                                <div className="grid grid-cols-2 gap-3 mt-2">
+                                                    {accessList.map((access) => (
+                                                        <div key={access} className="flex items-center space-x-2">
+                                                            <Checkbox
+                                                                id={access}
+                                                                checked={selectedAccess.includes(access)}
+                                                                onCheckedChange={() => handleAccessToggle(access)}
+                                                            />
+                                                            <label
+                                                                htmlFor={access}
+                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                                            >
+                                                                {access}
+                                                            </label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
 
                                         <DialogFooter>

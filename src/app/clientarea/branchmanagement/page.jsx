@@ -185,7 +185,7 @@ const BranchManagement = () => {
             {loading?(
                 <Loader />
             ):(
-            <div className="max-w-7xl mx-auto">
+            <div className="w-full mx-auto">
                 {/* Breadcrumb */}
                 <Breadcrumb className="mb-8">
                     <BreadcrumbList>
