@@ -41,9 +41,9 @@ const BranchManagement = () => {
     const [editingBranch, setEditingBranch] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 1;
+    const limit = 10;
     const [sortBy, setSortBy] = useState('gymBranchName');
-    const [sortOrderDesc, setSortOrderDesc] = useState(true);
+    const [sortOrderDesc, setSortOrderDesc] = useState(false);
 
     const {
          register, 
@@ -152,6 +152,17 @@ const {branches, totalPages, totalBranches} = data || {};
 
 const startEntry = (currentPage - 1) * limit + 1;
 const endEntry = Math.min(currentPage * limit,totalBranches);
+
+    const handleSort = (column) => {
+        if (sortBy === column) {
+            // If clicking the same column, toggle sort order
+            setSortOrderDesc(!sortOrderDesc);
+        } else {
+            // If clicking a new column, set it as sort column and default to ascending
+            setSortBy(column);
+            setSortOrderDesc(false);
+        }
+    };
 
     return (
         <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
@@ -439,21 +450,60 @@ const endEntry = Math.min(currentPage * limit,totalBranches);
                                             <TableHeader>
                                                 <TableRow className="border-b border-gray-200 dark:border-gray-700">
                                                     <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
-                                                    <div className="flex items-center">
-                                                    Branch Name
-                                                    <ArrowUpDown
-                                                        onClick={() => {
-                                                            setSortBy('fullName');
-                                                            setSortOrderDesc(!sortOrderDesc);
-                                                        }}
-                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
-                                                    />
-                                                </div>
+                                                        <div className="flex items-center">
+                                                            Branch Name
+                                                            <ArrowUpDown
+                                                                onClick={() => handleSort('gymBranchName')}
+                                                                className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
+                                                                    sortBy === 'gymBranchName' ? 'text-blue-600' : ''
+                                                                }`}
+                                                            />
+                                                        </div>
                                                     </TableHead>
-                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Address</TableHead>
-                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Contact</TableHead>
-                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Status</TableHead>
-                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Created</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
+                                                        <div className="flex items-center">
+                                                            Address
+                                                            <ArrowUpDown
+                                                                onClick={() => handleSort('gymBranchAddress')}
+                                                                className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
+                                                                    sortBy === 'gymBranchAddress' ? 'text-blue-600' : ''
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                    </TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
+                                                        <div className="flex items-center">
+                                                            Contact
+                                                            <ArrowUpDown
+                                                                onClick={() => handleSort('gymBranchPhone')}
+                                                                className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
+                                                                    sortBy === 'gymBranchPhone' ? 'text-blue-600' : ''
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                    </TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
+                                                        <div className="flex items-center">
+                                                            Status
+                                                            <ArrowUpDown
+                                                                onClick={() => handleSort('gymBranchStatus')}
+                                                                className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
+                                                                    sortBy === 'gymBranchStatus' ? 'text-blue-600' : ''
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                    </TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
+                                                        <div className="flex items-center">
+                                                            Created
+                                                            <ArrowUpDown
+                                                                onClick={() => handleSort('createdAt')}
+                                                                className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
+                                                                    sortBy === 'createdAt' ? 'text-blue-600' : ''
+                                                                }`}
+                                                            />
+                                                        </div>
+                                                    </TableHead>
                                                     <TableHead className="text-right text-gray-600 dark:text-gray-400 font-medium">Actions</TableHead>
                                                 </TableRow>
                                             </TableHeader>
