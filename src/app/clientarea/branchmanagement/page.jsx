@@ -1,5 +1,17 @@
 'use client';
 
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+  } from "@/components/ui/alert-dialog";
 import Loader from "@/components/Loader/Loader";
 import { toast } from "react-hot-toast";
 import { useState } from "react";
@@ -21,9 +33,8 @@ import { useTenant } from "../../../components/Providers/LoggedInTenantProvider"
 const BranchManagement = () => {
     const {tenant, loading}= useTenant();
     const loggedInTenant = tenant?.tenant;
-
+    const queryClient = useQueryClient();
     const [activeTab, setActiveTab] = useState("view");
-    const [branches, setBranches] = useState([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [editingBranch, setEditingBranch] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -51,6 +62,7 @@ const BranchManagement = () => {
             const responseBody = await response.json();
             if(response.ok && response.status === 200){
                 toast.success(responseBody.message);
+                queryClient.invalidateQueries({queryKey: ["branches"]});
             }else{
                 toast.error(responseBody.message);
             };
@@ -59,25 +71,6 @@ const BranchManagement = () => {
             console.log("Error: ",error);
             toast.error("Error: ",error.error);
         }
-        if (isEditing && editingBranch) {
-            // Handle branch update
-            const updatedBranches = branches.map(branch => 
-                branch.id === editingBranch.id 
-                    ? { ...branch, ...data, gymBranchUpdatedAt: new Date().toISOString() }
-                    : branch
-            );
-            setBranches(updatedBranches);
-        } else {
-            // Handle new branch creation
-            const newBranch = {
-                ...data,
-                id: Date.now().toString(),
-                gymBranchStatus: "active",
-                gymBranchCreatedAt: new Date().toISOString()
-            };
-            setBranches([...branches, newBranch]);
-        }
-        
         // Reset form and state
         reset();
         setEditingBranch(null);
@@ -108,16 +101,47 @@ const BranchManagement = () => {
         setActiveTab("view");
     };
 
-    const handleDeleteBranch = (branchId) => {
-        const updatedBranches = branches.filter(branch => branch.id !== branchId);
-        setBranches(updatedBranches);
-        toast.success("Branch deleted successfully!");
+    const handleDeleteBranch = async (branchId) => {
+        try{
+            const response = await fetch(`http://localhost:3000/api/gymbranch/${branchId}`,{
+                method: "DELETE"
+            });
+            
+            const responseBody = await response.json();
+            if(response.ok && response.status === 200){
+                queryClient.invalidateQueries({queryKey: ["branches"]});
+                toast.success(responseBody.message);
+            }else{
+                toast.error(responseBody.message);
+            };
+            
+        }catch(error){
+            console.log("Error: ",error);
+            toast.error("Error: ",error.error);
+        }
     };
 
-    const filteredBranches = branches.filter(branch => 
-        branch.gymBranchName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        branch.gymBranchAddress.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const getAllBranches = async()=>{
+        try{
+            const response = await fetch(`http://localhost:3000/api/gymbranch`);
+            const responseBody = await response.json();
+            if(response.ok && response.status === 200){
+                return responseBody;
+            }else{
+                toast.error(responseBody.message);
+            };
+        }catch(error){
+            console.log("Error: ",error);
+            toast.error(error.error);
+        };
+    };
+
+const {data, isLoading, isError} = useQuery({
+    queryKey: ["branches"],
+    queryFn: getAllBranches
+});
+
+const {branches} = data || {};
 
     return (
         <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
@@ -378,7 +402,7 @@ const BranchManagement = () => {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-8">
-                                {filteredBranches.length === 0 ? (
+                                {branches?.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center py-16">
                                         <MdOutlineSportsGymnastics className="h-20 w-20 text-gray-300 dark:text-gray-600 mb-4" />
                                         <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400">No branches found</h3>
@@ -410,8 +434,8 @@ const BranchManagement = () => {
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
-                                                {filteredBranches.map((branch) => (
-                                                    <TableRow key={branch.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                                    {branches?.map((branch) => (
+                                                    <TableRow key={branch._id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
                                                         <TableCell className="font-medium">
                                                             <div className="flex items-center">
                                                                 <MdOutlineSportsGymnastics className="h-5 w-5 mr-2 text-blue-600" />
@@ -441,12 +465,12 @@ const BranchManagement = () => {
                                                             </div>
                                                         </TableCell>
                                                         <TableCell>
-                                                            {branch.gymBranchStatus === "active" ? (
+                                                            {branch.gymBranchStatus === "Active" ? (
                                                                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-3 py-1 rounded-full">
                                                                     <FiCheck className="h-3 w-3 mr-1" />
                                                                     Active
                                                                 </Badge>
-                                                            ) : branch.gymBranchStatus === "inactive" ? (
+                                                            ) : branch.gymBranchStatus === "Inactive" ? (
                                                                 <Badge variant="destructive" className="px-3 py-1 rounded-full">
                                                                     <FiX className="h-3 w-3 mr-1" />
                                                                     Inactive
@@ -471,15 +495,36 @@ const BranchManagement = () => {
                                                                     <FiEdit className="h-4 w-4 mr-1" />
                                                                     Edit
                                                                 </Button>
-                                                                <Button 
+
+                                                    <AlertDialog className="dark:bg-gray-900">
+                                                    <AlertDialogTrigger asChild>
+                                                    <Button 
                                                                     variant="destructive" 
                                                                     size="sm" 
-                                                                    className="h-9 rounded-lg"
-                                                                    onClick={() => handleDeleteBranch(branch.id)}
+                                                                    className="h-9 rounded-lg bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
                                                                 >
                                                                     <FiTrash2 className="h-4 w-4 mr-1" />
                                                                     Delete
                                                                 </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                        <AlertDialogTitle className="text-red-600 dark:text-red-500">Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete your
+                                                            account and remove your data from our servers.
+                                                        </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                        <AlertDialogCancel className="text-gray-800 dark:text-white dark:bg-gray-500 dark:hover:bg-gray-600 dark:border-none">Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction 
+                                                                    className="bg-red-500 hover:bg-red-600 text-white dark:bg-red-500 dark:hover:bg-red-600"
+                                                                    onClick={() => handleDeleteBranch(branch._id)}
+                                                                    >Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                    </AlertDialog>
+
                                                             </div>
                                                         </TableCell>
                                                     </TableRow>
