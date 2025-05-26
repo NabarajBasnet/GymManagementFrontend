@@ -205,9 +205,9 @@ const SubscriptionPlans = () => {
                   </div>
                 )}
                 
-                <div className="relative bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 transition-all duration-300 h-full shadow-sm">
+                <div className="relative bg-white dark:bg-gray-800 rounded-xl p-8 border border-gray-200 dark:border-gray-700 hover:border-blue-500/50 transition-all duration-300 h-full shadow-sm flex flex-col">
                   {/* Plan Header */}
-                  <div className="relative z-10">
+                  <div className="relative z-10 flex-grow">
                     <div className="inline-flex p-3 rounded-xl bg-blue-100 dark:bg-blue-900/30 mb-6">
                       <Icon className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     </div>
@@ -247,8 +247,10 @@ const SubscriptionPlans = () => {
                         </div>
                       ))}
                     </div>
+                  </div>
 
-                    {/* CTA Button */}
+                  {/* CTA Button and Guarantee - Always at bottom */}
+                  <div className="mt-auto pt-6">
                     <button
                       onClick={() => handlePurchase(plan._id)}
                       disabled={purchasing === plan._id}

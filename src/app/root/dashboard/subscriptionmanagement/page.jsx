@@ -8,6 +8,7 @@ import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
 import { Checkbox } from "@/components/ui/checkbox";
+import { Check } from "lucide-react";
 
 // UI Components
 import {
@@ -302,10 +303,10 @@ const SubscriptionManagement = () => {
     }
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
-            <div className="w-full">
+        <div className='w-full bg-gray-50 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
+            <div className="w-full max-w-7xl">
                 {/* Breadcrumb */}
-                <div className='w-full mb-4'>
+                <div className='w-full mb-6'>
                     <Breadcrumb className="mb-4">
                         <BreadcrumbList>
                             <BreadcrumbItem>
@@ -328,15 +329,19 @@ const SubscriptionManagement = () => {
                     </Breadcrumb>
 
                     {/* Header */}
-                    <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-5 py-5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm md:items-center gap-4">
+                    <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm md:items-center gap-4">
                         <div>
-                            <h1 className="text-xl font-bold mb-2 text-gray-900 dark:text-gray-100">Subscription Management</h1>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
-                                Create and manage subscription plans
+                            <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100">Subscription Management</h1>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                                Create and manage subscription plans for your gym
                             </p>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Button variant="outline" onClick={handleRefresh} className="dark:border-none dark:text-gray-300 dark:hover:bg-gray-700">
+                        <div className="flex items-center gap-3">
+                            <Button 
+                                variant="outline" 
+                                onClick={handleRefresh} 
+                                className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
+                            >
                                 <FiRefreshCcw className="mr-2" />
                                 Refresh
                             </Button>
@@ -455,90 +460,125 @@ const SubscriptionManagement = () => {
                         <Loader />
                     </div>
                 ) : subscriptions?.length > 0 ? (
-                    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                        <CardHeader>
-                            <CardTitle className="text-gray-900 dark:text-gray-100">Subscription Plans</CardTitle>
-                            <CardDescription className="text-gray-500 dark:text-gray-400">
-                                Total: <span className="font-semibold text-gray-900 dark:text-gray-100">{subscriptions.length}</span> plans
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Name</TableHead>
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Description</TableHead>
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Price</TableHead>
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Duration</TableHead>
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Features</TableHead>
-                                            <TableHead className="text-right text-gray-600 dark:text-gray-400">Actions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {subscriptions.map((subscription) => (
-                                            <TableRow key={subscription._id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                                                <TableCell className="font-medium text-gray-900 dark:text-gray-100">{subscription.subscriptionName}</TableCell>
-                                                <TableCell className="text-gray-700 dark:text-gray-300">{subscription.subscriptionDescription}</TableCell>
-                                                <TableCell className="text-gray-700 dark:text-gray-300">${subscription.subscriptionPrice}</TableCell>
-                                                <TableCell className="text-gray-700 dark:text-gray-300">{subscription.subscriptionDuration} months</TableCell>
-                                                <TableCell>
-                                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
-                                                        {subscription.subscriptionFeatures.map((feature, index) => (
-                                                            <li key={index} className="text-sm">{feature}</li>
-                                                        ))}
-                                                    </ul>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <div className="flex items-center justify-end gap-2">
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            onClick={() => handleEdit(subscription)}
-                                                            className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {subscriptions.map((subscription) => (
+                            <Card key={subscription._id} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+                                <CardHeader className="border-b border-gray-200 dark:border-gray-700 pb-4">
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <CardTitle className="text-xl font-bold text-gray-900 dark:text-gray-100">
+                                                {subscription.subscriptionName}
+                                            </CardTitle>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                {subscription.subscriptionDescription}
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                onClick={() => handleEdit(subscription)}
+                                                className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                                            >
+                                                <FiEdit className="h-4 w-4" />
+                                            </Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="destructive"
+                                                        className="bg-red-600 dark:text-gray-100 dark:border-none hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+                                                    >
+                                                        <FiTrash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription className="text-gray-500 dark:text-gray-400">
+                                                            This action cannot be undone. This will permanently delete the subscription plan.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction 
+                                                            onClick={() => handleDelete(subscription._id)}
+                                                            className="bg-red-600 dark:text-gray-100 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
                                                         >
-                                                            <FiEdit className="h-4 w-4" />
-                                                        </Button>
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button
-                                                                    size="sm"
-                                                                    variant="destructive"
-                                                                    className="bg-red-600 dark:text-gray-100 dark:border-none hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
-                                                                >
-                                                                    <FiTrash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription className="text-gray-500 dark:text-gray-400">
-                                                                        This action cannot be undone. This will permanently delete the subscription plan.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction 
-                                                                        onClick={() => handleDelete(subscription._id)}
-                                                                        className="bg-red-600 dark:text-gray-100 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
-                                                                    >
-                                                                        Continue
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                            Continue
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </div>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="pt-6 flex-grow flex flex-col">
+                                    <div className="space-y-6 flex-grow">
+                                        {/* Price and Duration */}
+                                        <div className="flex justify-between items-center">
+                                            <div>
+                                                <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
+                                                    ${subscription.subscriptionPrice}
+                                                </p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    per {subscription.subscriptionDuration} months
+                                                </p>
+                                            </div>
+                                            <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                                Active
+                                            </Badge>
+                                        </div>
+
+                                        {/* Features */}
+                                        <div>
+                                            <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                                                Features
+                                            </h4>
+                                            <div className="grid grid-cols-1 gap-2">
+                                                {subscription.subscriptionFeatures.map((feature, index) => (
+                                                    <div key={index} className="flex items-center text-sm">
+                                                        <Check className="h-4 w-4 text-green-500 mr-2" />
+                                                        <span className="text-gray-600 dark:text-gray-300">{feature}</span>
                                                     </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Stats Footer - Always at bottom */}
+                                    <div className="grid grid-cols-2 gap-4 pt-6 mt-6 border-t border-gray-200 dark:border-gray-700">
+                                        <div>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Purchased By</p>
+                                            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                {subscription.purchasedBy?.length || 0}
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400">Created</p>
+                                            <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                                {new Date(subscription.createdAt).toLocaleDateString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
                 ) : (
-                    <div className="flex justify-center items-center min-h-[400px]">
-                        <p className="text-gray-500 dark:text-gray-400">No subscription plans found</p>
+                    <div className="flex flex-col items-center justify-center min-h-[400px] bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-8">
+                        <div className="text-center">
+                            <FiPlus className="h-16 w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+                            <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-2">No subscription plans found</h3>
+                            <p className="text-gray-400 dark:text-gray-500 mb-6">Create your first subscription plan to get started</p>
+                            <Button 
+                                onClick={() => setIsDialogOpen(true)}
+                                className="bg-blue-600 dark:text-gray-100 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+                            >
+                                <FiPlus className="mr-2" />
+                                Create Subscription
+                            </Button>
+                        </div>
                     </div>
                 )}
             </div>

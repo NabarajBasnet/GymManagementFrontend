@@ -191,7 +191,7 @@ const RootUserHeader = ({ activeTab }) => {
         };
 
     return (
-        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-red-100/50 dark:border-gray-800/50 sticky top-0 z-50">
+        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-3 shadow-lg border-b border-red-100/50 dark:border-gray-800/50 sticky top-0 z-50">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-18">
                     {/* Mobile menu button */}
