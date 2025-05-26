@@ -41,22 +41,20 @@ const Loader = () => {
     }, []);
 
     return (
-        <div className="w-full min-h-screen flex flex-col items-center justify-center bg-white text-blue-600 p-4">
-
-
+        <div className="w-full min-h-screen flex flex-col items-center justify-center dark:bg-gray-900 bg-white p-4">
             {/* Progress info */}
             <div className="mt-16 w-full max-w-md">
-                <div className="flex justify-between text-xs text-gray-600 mb-1">
+                <div className="flex justify-between text-xs dark:text-gray-300 text-gray-600 mb-1">
                     <span>Extracting data...</span>
                     <span>{progress}%</span>
                 </div>
-                <div className="w-full bg-gray-100 rounded-full h-2 border border-gray-200">
+                <div className="w-full bg-gray-100 dark:bg-gray-800 rounded-full h-2 border border-gray-200 dark:border-gray-700">
                     <div
-                        className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                        className="bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 h-2 rounded-full transition-all duration-300"
                         style={{ width: `${progress}%` }}
                     ></div>
                 </div>
-                <div className="mt-4 text-center text-gray-600 text-sm">
+                <div className="mt-4 text-center text-gray-600 dark:text-gray-300 text-sm">
                     {progress < 30 && 'Connecting to database...'}
                     {progress >= 30 && progress < 60 && 'Decrypting data packets...'}
                     {progress >= 60 && progress < 90 && 'Verifying data integrity...'}
@@ -66,18 +64,18 @@ const Loader = () => {
 
             {/* Spinner */}
             <div className="mt-12">
-                <AiOutlineLoading3Quarters className="text-3xl animate-spin text-blue-600" />
+                <AiOutlineLoading3Quarters className="text-3xl animate-spin text-blue-600 dark:text-blue-400" />
             </div>
 
             {/* CSS for binary rain */}
             <style jsx>{`
-        @keyframes fall {
-          0% { transform: translateY(-20px); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(100px); opacity: 0; }
-        }
-      `}</style>
+                @keyframes fall {
+                    0% { transform: translateY(-20px); opacity: 0; }
+                    10% { opacity: 1; }
+                    90% { opacity: 1; }
+                    100% { transform: translateY(100px); opacity: 0; }
+                }
+            `}</style>
         </div>
     );
 };

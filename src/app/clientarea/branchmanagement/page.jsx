@@ -16,7 +16,7 @@ import {
   } from "@/components/ui/alert-dialog";
 import Loader from "@/components/Loader/Loader";
 import { toast } from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm,Controller } from "react-hook-form";
 import { FiPlus, FiTrash2, FiEdit, FiSearch, FiChevronRight, FiHome, FiPhone, FiMail, FiGlobe, FiMapPin, FiCheck, FiX } from "react-icons/fi";
 import { MdBusiness, MdOutlineSportsGymnastics } from "react-icons/md";
@@ -44,6 +44,18 @@ const BranchManagement = () => {
     const limit = 10;
     const [sortBy, setSortBy] = useState('gymBranchName');
     const [sortOrderDesc, setSortOrderDesc] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
+
+    // Debounce search query
+    useEffect(() => {
+        const delayedTimerId = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+            setCurrentPage(1); // Reset to first page when searching
+        }, 300);
+
+        return () => clearTimeout(delayedTimerId);
+    }, [searchQuery]);
 
     const {
          register, 
@@ -127,31 +139,35 @@ const BranchManagement = () => {
         }
     };
 
-    const getAllBranches = async({queryKey})=>{
-        const [,page,sortBy,sortOrderDesc] = queryKey;
-        try{
-            const response = await fetch(`http://localhost:3000/api/gymbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+    const getAllBranches = async({queryKey}) => {
+        const [,page,sortBy,sortOrderDesc,searchQuery] = queryKey;
+        try {
+            const response = await fetch(
+                `http://localhost:3000/api/gymbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(searchQuery)}`
+            );
             const responseBody = await response.json();
             if(response.ok && response.status === 200){
                 return responseBody;
-            }else{
+            } else {
                 toast.error(responseBody.message);
-            };
-        }catch(error){
+                return { branches: [], totalPages: 0, totalBranches: 0 };
+            }
+        } catch(error) {
             console.log("Error: ",error);
-            toast.error(error.error);
-        };
+            toast.error("Error fetching branches");
+            return { branches: [], totalPages: 0, totalBranches: 0 };
+        }
     };
 
-const {data, isLoading, isError} = useQuery({
-    queryKey: ["branches", currentPage, sortBy, sortOrderDesc],
-    queryFn: getAllBranches
-});
+    const {data, isLoading, isError} = useQuery({
+        queryKey: ["branches", currentPage, sortBy, sortOrderDesc, debouncedSearchQuery],
+        queryFn: getAllBranches
+    });
 
-const {branches, totalPages, totalBranches} = data || {};
+    const {branches, totalPages, totalBranches} = data || {};
 
-const startEntry = (currentPage - 1) * limit + 1;
-const endEntry = Math.min(currentPage * limit,totalBranches);
+    const startEntry = (currentPage - 1) * limit + 1;
+    const endEntry = Math.min(currentPage * limit,totalBranches);
 
     const handleSort = (column) => {
         if (sortBy === column) {
@@ -204,8 +220,8 @@ const endEntry = Math.min(currentPage * limit,totalBranches);
                             <Input
                                 placeholder="Search branches..."
                                 className="py-6 pl-12 dark:text-white w-[300px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm shadow-sm"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
                         <Button 
