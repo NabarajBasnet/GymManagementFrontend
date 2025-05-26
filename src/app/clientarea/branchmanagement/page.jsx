@@ -1,5 +1,7 @@
 'use client';
 
+import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
+import Pagination from "@/components/ui/CustomPagination.jsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
     AlertDialog,
@@ -38,6 +40,10 @@ const BranchManagement = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [editingBranch, setEditingBranch] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 1;
+    const [sortBy, setSortBy] = useState('gymBranchName');
+    const [sortOrderDesc, setSortOrderDesc] = useState(true);
 
     const {
          register, 
@@ -121,9 +127,10 @@ const BranchManagement = () => {
         }
     };
 
-    const getAllBranches = async()=>{
+    const getAllBranches = async({queryKey})=>{
+        const [,page,sortBy,sortOrderDesc] = queryKey;
         try{
-            const response = await fetch(`http://localhost:3000/api/gymbranch`);
+            const response = await fetch(`http://localhost:3000/api/gymbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             if(response.ok && response.status === 200){
                 return responseBody;
@@ -137,11 +144,14 @@ const BranchManagement = () => {
     };
 
 const {data, isLoading, isError} = useQuery({
-    queryKey: ["branches"],
+    queryKey: ["branches", currentPage, sortBy, sortOrderDesc],
     queryFn: getAllBranches
 });
 
-const {branches} = data || {};
+const {branches, totalPages, totalBranches} = data || {};
+
+const startEntry = (currentPage - 1) * limit + 1;
+const endEntry = Math.min(currentPage * limit,totalBranches);
 
     return (
         <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
@@ -394,7 +404,10 @@ const {branches} = data || {};
 
                     {/* View Branches Tab */}
                     <TabsContent value="view" className="mt-8">
-                        <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+                        {isLoading?(
+                            <Loader />
+                        ):(
+                            <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
                             <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
                                 <CardTitle className="flex items-center text-xl">
                                     <MdBusiness className="h-6 w-6 mr-2 text-blue-600" />
@@ -402,7 +415,7 @@ const {branches} = data || {};
                                 </CardTitle>
                             </CardHeader>
                             <CardContent className="pt-8">
-                                {branches?.length === 0 ? (
+                                {Array.isArray(branches) && branches?.length === 0 ? (
                                     <div className="flex flex-col items-center justify-center py-16">
                                         <MdOutlineSportsGymnastics className="h-20 w-20 text-gray-300 dark:text-gray-600 mb-4" />
                                         <h3 className="text-xl font-medium text-gray-500 dark:text-gray-400">No branches found</h3>
@@ -425,7 +438,18 @@ const {branches} = data || {};
                                         <Table>
                                             <TableHeader>
                                                 <TableRow className="border-b border-gray-200 dark:border-gray-700">
-                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Branch Name</TableHead>
+                                                    <TableHead className="text-gray-600 dark:text-gray-400 font-medium">
+                                                    <div className="flex items-center">
+                                                    Branch Name
+                                                    <ArrowUpDown
+                                                        onClick={() => {
+                                                            setSortBy('fullName');
+                                                            setSortOrderDesc(!sortOrderDesc);
+                                                        }}
+                                                        className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                                                    />
+                                                </div>
+                                                    </TableHead>
                                                     <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Address</TableHead>
                                                     <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Contact</TableHead>
                                                     <TableHead className="text-gray-600 dark:text-gray-400 font-medium">Status</TableHead>
@@ -489,16 +513,16 @@ const {branches} = data || {};
                                                                 <Button 
                                                                     variant="outline" 
                                                                     size="sm" 
-                                                                    className="h-9 rounded-lg"
+                                                                    className="h-9 dark:border-none rounded-lg"
                                                                     onClick={() => handleEditBranch(branch)}
                                                                 >
                                                                     <FiEdit className="h-4 w-4 mr-1" />
                                                                     Edit
                                                                 </Button>
 
-                                                    <AlertDialog className="dark:bg-gray-900">
-                                                    <AlertDialogTrigger asChild>
-                                                    <Button 
+                                                            <AlertDialog className="dark:bg-gray-900">
+                                                            <AlertDialogTrigger asChild>
+                                                            <Button 
                                                                     variant="destructive" 
                                                                     size="sm" 
                                                                     className="h-9 rounded-lg bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
@@ -535,6 +559,23 @@ const {branches} = data || {};
                                 )}
                             </CardContent>
                         </Card>
+                        )}
+
+                        <div className='my-2'>
+                            <div className="mt-4 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm dark:text-white font-gray-700">
+                                    Showing <span className="font-semibold text-sm dark:text-white font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm dark:text-white font-gray-700">{endEntry}</span> of <span className="font-semibold dark:text-white">{totalBranches}</span> entries
+                                </p>
+                                <Pagination
+                                    total={totalPages}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
+                            </div>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>
