@@ -28,7 +28,7 @@ const SubscriptionPlans = () => {
   };
 
   const formatPrice = (price) => {
-    return (price / 100).toLocaleString('en-US', {
+    return (price / 136.12).toLocaleString('en-US', {
       style: 'currency',
       currency: 'USD'
     });
@@ -37,15 +37,6 @@ const SubscriptionPlans = () => {
   const getPlanIcon = (index) => {
     const icons = [Zap, Crown, Sparkles];
     return icons[index] || Star;
-  };
-
-  const getPlanColor = (index) => {
-    const colors = [
-      'from-blue-500 to-cyan-500',
-      'from-purple-500 to-pink-500',
-      'from-orange-500 to-red-500'
-    ];
-    return colors[index] || 'from-gray-500 to-gray-600';
   };
 
   if (loading) {
@@ -118,7 +109,7 @@ const SubscriptionPlans = () => {
                 key={plan._id}
                 className={`relative group ${
                   isPopular ? 'scale-105 z-10' : 'hover:scale-105'
-                } transition-all duration-300`}
+                } transition-all my-4 md:my-0 duration-300`}
               >
                 {isPopular && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
@@ -146,7 +137,7 @@ const SubscriptionPlans = () => {
                     <div className="mb-8">
                       <div className="flex items-baseline">
                         <span className="text-5xl font-bold text-gray-900 dark:text-white">
-                          {formatPrice(plan.subscriptionPrice)}
+                          {plan.subscriptionPrice}
                         </span>
                         <span className="text-gray-500 dark:text-gray-400 ml-2">
                           /{plan.subscriptionDuration} days
@@ -154,7 +145,7 @@ const SubscriptionPlans = () => {
                       </div>
                       {selectedPlan === 'monthly' && (
                         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                          {formatPrice(Math.round(plan.subscriptionPrice / 12))} per month
+                          {Math.round(plan.subscriptionPrice / 12)} per month
                         </p>
                       )}
                     </div>
