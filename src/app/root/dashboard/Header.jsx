@@ -1,5 +1,7 @@
 'use client';
 
+import { Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 import { AiOutlineSchedule } from "react-icons/ai";
 import {
     DropdownMenu,
@@ -27,7 +29,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import {
     Home,
     MessageSquare,
@@ -71,6 +73,10 @@ const RootUserHeader = ({ activeTab }) => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const router = useRouter();
     const { rootUser, loading } = useRootUser();
+
+    const [darkMode, setDarkMode] = useState(false);
+    const [mounted, setMounted] = useState(false);
+    const { setTheme } = useTheme();
 
     const navItems = [
         { 
@@ -157,8 +163,35 @@ const RootUserHeader = ({ activeTab }) => {
 
     const adminRoleStyle = getAdminRoleStyling(rootUser?.rootUserRole);
 
+        // Theme handling
+        useEffect(() => {
+            setMounted(true);
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setDarkMode(savedTheme === 'dark');
+            } else {
+                setDarkMode(window.matchMedia('(prefers-color-scheme: dark)').matches);
+            }
+        }, []);
+    
+        useEffect(() => {
+            if (mounted) {
+                if (darkMode) {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+        }, [darkMode, mounted]);
+    
+        const toggleTheme = () => {
+            setDarkMode(!darkMode);
+        };
+
     return (
-        <header className="bg-white/95 backdrop-blur-lg shadow-lg border-b border-red-100/50 sticky top-0 z-50">
+        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg shadow-lg border-b border-red-100/50 dark:border-gray-800/50 sticky top-0 z-50">
             <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-18">
                     {/* Mobile menu button */}
@@ -166,13 +199,13 @@ const RootUserHeader = ({ activeTab }) => {
                         <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                             <SheetTrigger asChild>
                                 <button
-                                    className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 hover:text-red-700 hover:bg-red-50/80 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 transition-all duration-200 group"
+                                    className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:bg-red-50/80 dark:focus:bg-gray-800 transition-all duration-200 group"
                                     aria-label="Open menu"
                                 >
                                     <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
                                 </button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-[340px] sm:w-[380px] p-0 bg-gradient-to-b from-white to-red-50/30">
+                            <SheetContent side="left" className="w-[340px] sm:w-[380px] p-0 bg-gradient-to-b from-white dark:from-gray-900 to-red-50/30 dark:to-gray-800/30">
                                 <div className="h-full flex flex-col">
                                     <SheetHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-red-600 to-rose-700 text-white">
                                         <div className="flex items-center space-x-3">
@@ -190,7 +223,7 @@ const RootUserHeader = ({ activeTab }) => {
 
                                     {/* Enhanced Admin Profile */}
                                     {rootUser && (
-                                        <div className="px-6 py-6 bg-gradient-to-r from-red-50 to-rose-50 border-b border-red-100">
+                                        <div className="px-6 py-6 bg-gradient-to-r from-red-50 dark:from-gray-800 to-rose-50 dark:to-gray-900 border-b border-red-100 dark:border-gray-700">
                                             <div className="flex items-center space-x-4">
                                                 <div className="relative">
                                                     <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
@@ -206,7 +239,7 @@ const RootUserHeader = ({ activeTab }) => {
                                                     </div>
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <h3 className="font-semibold text-gray-900 text-lg truncate">
+                                                    <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg truncate">
                                                         {rootUserName}
                                                     </h3>
                                                     <div className="flex items-center space-x-2 mt-1">
@@ -214,11 +247,11 @@ const RootUserHeader = ({ activeTab }) => {
                                                             {adminRoleStyle.icon}
                                                             <span>{adminRoleStyle.label}</span>
                                                         </span>
-                                                        <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 text-emerald-800">
+                                                        <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-400">
                                                             {rootUser?.rootUserStatus}
                                                         </span>
                                                     </div>
-                                                    <p className="text-sm text-gray-600 mt-1 flex items-center">
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
                                                         <Lock size={12} className="mr-1" />
                                                         System Administrator
                                                     </p>
@@ -254,7 +287,7 @@ const RootUserHeader = ({ activeTab }) => {
                                     {/* Navigation */}
                                     <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
                                         <div className="mb-4">
-                                            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">
+                                            <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                                                 Administration
                                             </h4>
                                             {navItems.map((item) => (
@@ -264,13 +297,13 @@ const RootUserHeader = ({ activeTab }) => {
                                                     className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
                                                         activeTab === item.id
                                                             ? 'bg-gradient-to-r from-red-600 to-rose-700 text-white shadow-lg transform scale-[1.02]'
-                                                            : 'text-gray-700 hover:bg-gray-100/80 hover:text-red-700 hover:transform hover:scale-[1.01]'
+                                                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 hover:transform hover:scale-[1.01]'
                                                     }`}
                                                 >
                                                     <span className={`mr-4 p-1.5 rounded-lg ${
                                                         activeTab === item.id 
                                                             ? 'bg-white/20' 
-                                                            : 'bg-gray-100 group-hover:bg-red-100'
+                                                            : 'bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30'
                                                     }`}>
                                                         {item.icon}
                                                     </span>
@@ -279,7 +312,7 @@ const RootUserHeader = ({ activeTab }) => {
                                                         <div className={`text-xs ${
                                                             activeTab === item.id 
                                                                 ? 'text-white/80' 
-                                                                : 'text-gray-500 group-hover:text-red-600'
+                                                                : 'text-gray-500 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400'
                                                         }`}>
                                                             {item.description}
                                                         </div>
@@ -292,16 +325,16 @@ const RootUserHeader = ({ activeTab }) => {
                                         </div>
 
                                         {/* Quick Actions */}
-                                        <div className="pt-4 border-t border-gray-200">
-                                            <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wider px-3 mb-3">
+                                        <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                            <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                                                 System Controls
                                             </h4>
                                             {adminQuickActions.map((action, index) => (
                                                 <button
                                                     key={index}
-                                                    className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-100/80 hover:text-red-700 transition-all duration-200 group"
+                                                    className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200 group"
                                                 >
-                                                    <span className={`mr-3 p-1 rounded-md bg-gray-100 group-hover:bg-red-100 ${action.color}`}>
+                                                    <span className={`mr-3 p-1 rounded-md bg-gray-100 dark:bg-gray-800 group-hover:bg-red-100 dark:group-hover:bg-red-900/30 ${action.color}`}>
                                                         {action.icon}
                                                     </span>
                                                     <span className="flex-1 text-left">{action.label}</span>
@@ -316,20 +349,20 @@ const RootUserHeader = ({ activeTab }) => {
                                     </nav>
 
                                     {/* Enhanced Footer */}
-                                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                                    <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
                                         <button
                                             onClick={() => {
                                                 logOutRootUser()
                                                 setIsSheetOpen(false);
                                             }}
-                                            className="flex items-center w-full p-3 rounded-xl bg-white hover:bg-red-50 border border-gray-200 hover:border-red-300 text-red-600 hover:text-red-700 transition-all duration-200 group"
+                                            className="flex items-center w-full p-3 rounded-xl bg-white dark:bg-gray-900 hover:bg-red-50 dark:hover:bg-red-900/30 border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 transition-all duration-200 group"
                                         >
                                             <LogOut size={18} className="mr-3 group-hover:scale-110 transition-transform" />
                                             <div className="flex-1 text-left">
                                                 <div className="font-semibold">Secure Logout</div>
-                                                <div className="text-xs text-red-500">End admin session</div>
+                                                <div className="text-xs text-red-500 dark:text-red-400">End admin session</div>
                                             </div>
-                                            <Shield size={16} className="text-red-400 group-hover:text-red-600 transition-colors" />
+                                            <Shield size={16} className="text-red-400 dark:text-red-500 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" />
                                         </button>
                                     </div>
                                 </div>
@@ -347,7 +380,7 @@ const RootUserHeader = ({ activeTab }) => {
                                 <h1 className="text-2xl font-bold bg-gradient-to-r from-red-600 to-rose-700 bg-clip-text text-transparent">
                                     Fit Loft Admin
                                 </h1>
-                                <p className="text-xs text-gray-500 font-medium">System Administration</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">System Administration</p>
                             </div>
                         </div>
                     </div>
@@ -359,7 +392,7 @@ const RootUserHeader = ({ activeTab }) => {
                             {adminQuickActions.slice(0, 3).map((action, index) => (
                                 <button
                                     key={index}
-                                    className={`relative p-2.5 rounded-xl text-gray-600 hover:text-red-700 hover:bg-red-50/80 transition-all duration-200 group ${action.color}`}
+                                    className={`relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-red-700 dark:hover:text-red-400 hover:bg-red-50/80 dark:hover:bg-gray-800/80 transition-all duration-200 group ${action.color}`}
                                     title={action.label}
                                 >
                                     {action.icon}
@@ -372,9 +405,25 @@ const RootUserHeader = ({ activeTab }) => {
                             ))}
                         </div>
 
+                        {/* Theme Toggle */}
+                        <button
+                            onClick={toggleTheme}
+                            className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group"
+                            aria-label="Toggle theme"
+                        >
+                            <div className="relative w-5 h-5">
+                                <Sun className={`absolute inset-0 w-5 h-5 text-black dark:text-white transition-all duration-300 ${
+                                    darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
+                                }`} />
+                                <Moon className={`absolute inset-0 w-5 h-5 text-white transition-all duration-300 ${
+                                    darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
+                                }`} />
+                            </div>
+                        </button>
+
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50/80 transition-all duration-200 group">
+                                <button className="flex items-center space-x-3 p-2 rounded-xl hover:bg-gray-50/80 dark:hover:bg-gray-800/80 transition-all duration-200 group">
                                     {rootUser && (
                                         <>
                                             <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-sm font-bold text-white shadow-lg">
@@ -382,7 +431,7 @@ const RootUserHeader = ({ activeTab }) => {
                                                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-emerald-500 border-2 border-white"></div>
                                             </div>
                                             <div className="hidden lg:block text-left">
-                                                <div className="text-sm font-semibold text-gray-900 group-hover:text-red-700 transition-colors">
+                                                <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-red-700 dark:group-hover:text-red-400 transition-colors">
                                                     {rootUserName}
                                                 </div>
                                                 <div className="flex items-center space-x-2">
@@ -396,73 +445,73 @@ const RootUserHeader = ({ activeTab }) => {
                                     )}
                                 </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-80" align="end">
-                                <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100">
+                            <DropdownMenuContent className="w-80 bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800" align="end">
+                                <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
                                     <div className="flex items-center space-x-3">
                                         <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-600 to-rose-700 flex items-center justify-center text-sm font-bold text-white">
                                             {rootUserName?.split(' ').map((word) => word[0]).join('').slice(0, 2).toUpperCase()}
                                         </div>
                                         <div>
-                                            <div className="font-semibold text-gray-800">{rootUserName}</div>
-                                            <div className="text-xs text-gray-500 flex items-center mt-1">
+                                            <div className="font-semibold text-gray-800 dark:text-gray-100">{rootUserName}</div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                                                 <span className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white ${adminRoleStyle.bg} mr-2`}>
                                                     {adminRoleStyle.icon}
                                                     <span>{adminRoleStyle.label}</span>
                                                 </span>
-                                                <span className="text-emerald-600 font-medium">{rootUser?.rootUserStatus}</span>
+                                                <span className="text-emerald-600 dark:text-emerald-400 font-medium">{rootUser?.rootUserStatus}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </DropdownMenuLabel>
                                 
                                 <div className="py-2">
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                         <User className="mr-3" size={16} />
                                         <div>
-                                            <div className="font-medium">Admin Profile</div>
-                                            <div className="text-xs text-gray-500">Manage admin settings</div>
+                                            <div className="font-medium text-gray-900 dark:text-gray-100">Admin Profile</div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">Manage admin settings</div>
                                         </div>
                                     </DropdownMenuItem>
                                     
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                         <Globe className="mr-3" size={16} />
                                         <div>
-                                            <div className="font-medium">System Configuration</div>
-                                            <div className="text-xs text-gray-500">Platform settings</div>
+                                            <div className="font-medium text-gray-900 dark:text-gray-100">System Configuration</div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">Platform settings</div>
                                         </div>
                                     </DropdownMenuItem>
                                     
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
-                                        <Activity className="mr-3 text-green-600" size={16} />
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <Activity className="mr-3 text-green-600 dark:text-green-400" size={16} />
                                         <div>
-                                            <div className="font-medium">System Health</div>
-                                            <div className="text-xs text-green-600">All systems operational</div>
+                                            <div className="font-medium text-gray-900 dark:text-gray-100">System Health</div>
+                                            <div className="text-xs text-green-600 dark:text-green-400">All systems operational</div>
                                         </div>
                                     </DropdownMenuItem>
                                     
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
-                                        <Database className="mr-3 text-blue-600" size={16} />
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
+                                        <Database className="mr-3 text-blue-600 dark:text-blue-400" size={16} />
                                         <div>
-                                            <div className="font-medium">Database Management</div>
-                                            <div className="text-xs text-blue-600">Monitor & maintain</div>
+                                            <div className="font-medium text-gray-900 dark:text-gray-100">Database Management</div>
+                                            <div className="text-xs text-blue-600 dark:text-blue-400">Monitor & maintain</div>
                                         </div>
                                     </DropdownMenuItem>
                                     
-                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50">
+                                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                                         <HelpCircle className="mr-3" size={16} />
                                         <div>
-                                            <div className="font-medium">Admin Documentation</div>
-                                            <div className="text-xs text-gray-500">System guides & help</div>
+                                            <div className="font-medium text-gray-900 dark:text-gray-100">Admin Documentation</div>
+                                            <div className="text-xs text-gray-500 dark:text-gray-400">System guides & help</div>
                                         </div>
                                     </DropdownMenuItem>
                                 </div>
                                 
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 hover:bg-red-50" onClick={logOutRootUser}>
+                                <DropdownMenuSeparator className="border-gray-200 dark:border-gray-800" />
+                                <DropdownMenuItem className="cursor-pointer px-4 py-3 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30" onClick={logOutRootUser}>
                                     <LogOut className="mr-3" size={16} />
                                     <div>
                                         <div className="font-medium">Secure Logout</div>
-                                        <div className="text-xs text-red-500">End admin session</div>
+                                        <div className="text-xs text-red-500 dark:text-red-400">End admin session</div>
                                     </div>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

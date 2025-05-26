@@ -375,6 +375,7 @@ const SubscriptionManagement = () => {
                                         <div className="space-y-2">
                                             <Label htmlFor="subscriptionName">Subscription Name</Label>
                                             <Input
+                                            className='py-6 rounded-sm'
                                                 id="subscriptionName"
                                                 {...register('subscriptionName', { required: 'Name is required' })}
                                                 placeholder="e.g., Premium Plan"
@@ -400,6 +401,7 @@ const SubscriptionManagement = () => {
                                             <div className="space-y-2">
                                                 <Label htmlFor="subscriptionPrice">Price</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     id="subscriptionPrice"
                                                     type="number"
                                                     {...register('subscriptionPrice', { required: 'Price is required' })}
@@ -413,6 +415,7 @@ const SubscriptionManagement = () => {
                                             <div className="space-y-2">
                                                 <Label htmlFor="subscriptionDuration">Duration (months)</Label>
                                                 <Input
+                                                    className='py-6 rounded-sm'
                                                     id="subscriptionDuration"
                                                     type="number"
                                                     {...register('subscriptionDuration', { required: 'Duration is required' })}
