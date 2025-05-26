@@ -17,90 +17,13 @@ const SubscriptionPlans = () => {
     try {
       const response = await fetch('http://localhost:3000/api/subscription/getall');
       const data = await response.json();
+      console.log(data);
       // The API returns data in { subscriptions: [...] } format
       setPlans(data.subscriptions || []);
     } catch (error) {
       console.error('Error fetching plans:', error);
-      // Fallback data for demo
-      setPlans([
-        {
-          _id: '1',
-          subscriptionName: 'Basic Plan',
-          subscriptionDescription: 'Perfect for small gyms getting started',
-          subscriptionPrice: 9900,
-          subscriptionDuration: 365,
-          subscriptionFeatures: [
-            'QR Check-in',
-            'Member Management',
-            'Basic Reports',
-            'Email Support'
-          ]
-        },
-        {
-          _id: '2',
-          subscriptionName: 'Standard Plan',
-          subscriptionDescription: 'Most popular choice for growing fitness centers',
-          subscriptionPrice: 15000,
-          subscriptionDuration: 365,
-          subscriptionFeatures: [
-            'QR Check-in',
-            'Attendance Report',
-            'Staff Management',
-            'Class Booking',
-            'Group Classes',
-            'Nutrition Planning',
-            'Locker Management',
-            'Membership Analytics',
-            'Personal Training'
-          ]
-        },
-        {
-          _id: '3',
-          subscriptionName: 'Premium Plan',
-          subscriptionDescription: 'Complete solution for enterprise fitness facilities',
-          subscriptionPrice: 25000,
-          subscriptionDuration: 365,
-          subscriptionFeatures: [
-            'All Standard Features',
-            'Advanced Analytics',
-            'Custom Branding',
-            'API Access',
-            'Priority Support',
-            'Multi-location Support',
-            'Advanced Reporting',
-            'Integration Support',
-            'Custom Workflows'
-          ]
-        }
-      ]);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handlePurchase = async (planId) => {
-    setPurchasing(planId);
-    
-    try {
-      // Simulate API call for purchase
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Here you would make the actual purchase API call
-      // const response = await fetch('/api/subscription/purchase', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ planId })
-      // });
-      
-      alert('Purchase successful! Redirecting to dashboard...');
-      // Redirect to dashboard
-      // window.location.href = '/dashboard';
-      
-    } catch (error) {
-      console.error('Purchase failed:', error);
-      alert('Purchase failed. Please try again.');
-    } finally {
-      setPurchasing(null);
     }
   };
 
@@ -148,7 +71,7 @@ const SubscriptionPlans = () => {
                 {' '}Power Plan
               </span>
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+            <p className="text-md font-medium text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
               Transform your gym with our cutting-edge management system. 
               From small studios to enterprise facilities, we've got you covered.
             </p>
@@ -252,7 +175,6 @@ const SubscriptionPlans = () => {
                   {/* CTA Button and Guarantee - Always at bottom */}
                   <div className="mt-auto pt-6">
                     <button
-                      onClick={() => handlePurchase(plan._id)}
                       disabled={purchasing === plan._id}
                       className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${
                         isPopular

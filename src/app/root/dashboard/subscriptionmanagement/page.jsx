@@ -52,7 +52,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm, Controller } from "react-hook-form";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Pagination from "@/components/ui/CustomPagination.jsx";
 import Loader from "@/components/Loader/Loader";
 import {
     Dialog,
@@ -66,17 +65,8 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 
 const SubscriptionManagement = () => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const [limit, setLimit] = useState(6);
-    const [activeTab, setActiveTab] = useState("view");
-    const [isEditing, setIsEditing] = useState(false);
-    const [editingScheduleId, setEditingScheduleId] = useState(null);
+
     const queryClient = useQueryClient();
-
-    const ref = useRef(null);
-
-    const [selectedRoom, setSelectedRoom] = useState('');
-    const [trainer, setTrainerId] = useState('');
 
     // React hook form 
     const {
@@ -207,100 +197,6 @@ const SubscriptionManagement = () => {
     const handleRefresh = () => {
         queryClient.invalidateQueries(['subscriptions']);
     };
-
-    // Get all staffs
-    const getAllStaffs = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch staffs");
-        }
-    };
-
-    const { data: staffsData, isLoading: staffsLoading } = useQuery({
-        queryKey: ['staffs'],
-        queryFn: getAllStaffs
-    });
-
-    const { staffs } = staffsData || {};
-
-    // Staff search states
-    const [trainerSearchQuery, setTrainerSearchQuery] = useState('');
-    const [trainerName, setTrainerName] = useState('');
-    const [renderTrainerDropdown, setRenderTrainerDropdown] = useState(false);
-    const trainerSearchRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (trainerSearchRef.current && !trainerSearchRef.current.contains(event.target)) {
-                setRenderTrainerDropdown(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [trainerSearchRef]);
-
-    const handleTrainerSearchFocus = () => {
-        setRenderTrainerDropdown(true);
-    };
-
-    // Get all schedules
-    const getAllSchedules = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/schedules?page=${currentPage}&limit=${limit}`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to fetch schedules");
-        }
-    };
-
-    const { data: schedulesData, isLoading: schedulesLoading } = useQuery({
-        queryKey: ['schedules', currentPage],
-        queryFn: getAllSchedules
-    });
-
-    const { schedules, totalPages } = schedulesData || {};
-    const startEntry = (currentPage - 1) * limit + 1;
-    const endEntry = startEntry + schedules?.length - 1;
-
-    // Format datetime for display
-    const formatDateTime = (dateTimeString) => {
-        const date = new Date(dateTimeString);
-        return date.toLocaleString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
-
-    const deleteSchedule = async (scheduleId) => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/schedules/${scheduleId}`, {
-                method: 'DELETE',
-            });
-
-            const responseBody = await response.json();
-            if (response.ok) {
-                toast.success(responseBody.message);
-                queryClient.invalidateQueries(['schedules']);
-            } else {
-                toast.error(responseBody.message);
-            }
-        } catch (error) {
-            console.log("Error: ", error);
-            toast.error("Failed to delete schedule");
-        }
-    }
 
     return (
         <div className='w-full bg-gray-50 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
