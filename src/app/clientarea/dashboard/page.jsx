@@ -175,7 +175,7 @@ const AdminDashboard = () => {
         {/* Welcome Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
           {/* Welcome Card */}
-          <Card className="lg:col-span-8 dark:border dark:border-gray-600 relative overflow-hidden rounded-2xl shadow-md group">
+          <Card className="lg:col-span-8 dark:border-none dark:border-gray-600 relative overflow-hidden rounded-2xl shadow-md group">
             {/* Background elements */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/60 to-transparent z-10"></div>
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1637666218229-1fe0a9419267?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
@@ -218,7 +218,7 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="lg:col-span-4 dark:border dark:border-gray-600 relative rounded-2xl shadow-md overflow-hidden">
+          <Card className="lg:col-span-4 dark:border-none dark:border-gray-600 relative rounded-2xl shadow-md overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/40 to-neutral-800/95 z-10"></div>
             <div className="absolute inset-0 bg-[url('https://cdn.pixabay.com/photo/2023/08/02/13/42/ai-generated-8165284_960_720.jpg')] bg-cover bg-center opacity-100"></div>
             <div className="relative z-20 p-3">

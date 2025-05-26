@@ -90,7 +90,6 @@ const SubscriptionManagement = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingSubscription, setEditingSubscription] = useState(null);
     const [selectedFeatures, setSelectedFeatures] = useState([]);
-    const [selectedAccess, setSelectedAccess] = useState([]);
 
     // Fetch all subscriptions
     const { data: subscriptions, isLoading } = useQuery({
@@ -103,31 +102,28 @@ const SubscriptionManagement = () => {
     });
 
     const featuresList = [
-        "QR Check-in",
+        "Attendance Management",
         "Locker Management",
         "Attendance Report",
         "Membership Analytics",
         "Staff Management",
-        "Branch Access",
+        "Multi Branch Support",
         "Class Booking",
         "Personal Training",
-        "Group Classes",
-        "Equipment Access",
-        "Nutrition Planning",
-        "Progress Tracking"
-    ];
-
-    const accessList = [
-        "Gym Access",
-        "Pool Access",
-        "Sauna Access",
-        "Spa Access",
-        "Group Class Access",
-        "Personal Training Access",
-        "Locker Access",
-        "Equipment Access",
-        "24/7 Access",
-        "VIP Lounge Access"
+        "Billing & Invoicing",
+        "Equipment Management",
+        "Progress Tracking",
+        "Customer Support",
+        "Customizable Features",
+        "API Integration",
+        "Email Notifications",
+        "Multi-Language Support",    
+        "Analytics & Reporting",
+        "Member Web Portal",
+        "Payment Gateway Integration",
+        "Backup & Recovery",
+        "Scheduled Maintenance",
+        "AI Integration",
     ];
 
     const handleFeatureToggle = (feature) => {
@@ -135,14 +131,6 @@ const SubscriptionManagement = () => {
             prev.includes(feature)
                 ? prev.filter(f => f !== feature)
                 : [...prev, feature]
-        );
-    };
-
-    const handleAccessToggle = (access) => {
-        setSelectedAccess(prev => 
-            prev.includes(access)
-                ? prev.filter(a => a !== access)
-                : [...prev, access]
         );
     };
 
@@ -163,8 +151,7 @@ const SubscriptionManagement = () => {
                     ...data,
                     subscriptionPrice: Number(data.subscriptionPrice),
                     subscriptionDuration: Number(data.subscriptionDuration),
-                    subscriptionFeatures: selectedFeatures,
-                    subscriptionAccess: selectedAccess
+                    subscriptionFeatures: selectedFeatures
                 }),
             });
 
@@ -175,7 +162,6 @@ const SubscriptionManagement = () => {
                 setIsDialogOpen(false);
                 reset();
                 setSelectedFeatures([]);
-                setSelectedAccess([]);
                 setEditingSubscription(null);
                 queryClient.invalidateQueries(['subscriptions']);
             } else {
@@ -189,7 +175,6 @@ const SubscriptionManagement = () => {
     const handleEdit = (subscription) => {
         setEditingSubscription(subscription);
         setSelectedFeatures(subscription.subscriptionFeatures);
-        setSelectedAccess(subscription.subscriptionAccess);
         reset({
             subscriptionName: subscription.subscriptionName,
             subscriptionDescription: subscription.subscriptionDescription,
@@ -351,13 +336,13 @@ const SubscriptionManagement = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" onClick={handleRefresh} className="dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700">
+                            <Button variant="outline" onClick={handleRefresh} className="dark:border-none dark:text-gray-300 dark:hover:bg-gray-700">
                                 <FiRefreshCcw className="mr-2" />
                                 Refresh
                             </Button>
                             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                 <DialogTrigger asChild>
-                                    <Button className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
+                                    <Button className="bg-blue-600 dark:text-gray-100 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
                                         <FiPlus className="mr-2" />
                                         Create Subscription
                                     </Button>
@@ -450,32 +435,10 @@ const SubscriptionManagement = () => {
                                                     ))}
                                                 </div>
                                             </div>
-
-                                            <div>
-                                                <Label className="text-base font-semibold text-gray-700 dark:text-gray-300">Access Rights</Label>
-                                                <div className="grid grid-cols-2 gap-3 mt-2">
-                                                    {accessList.map((access) => (
-                                                        <div key={access} className="flex items-center space-x-2">
-                                                            <Checkbox
-                                                                id={access}
-                                                                checked={selectedAccess.includes(access)}
-                                                                onCheckedChange={() => handleAccessToggle(access)}
-                                                                className="border-gray-300 dark:border-gray-600"
-                                                            />
-                                                            <label
-                                                                htmlFor={access}
-                                                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-gray-700 dark:text-gray-300"
-                                                            >
-                                                                {access}
-                                                            </label>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
                                         </div>
 
                                         <DialogFooter>
-                                            <Button type="submit" disabled={isSubmitting} className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
+                                            <Button type="submit" disabled={isSubmitting} className="bg-blue-600 dark:text-gray-100 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700">
                                                 {isSubmitting ? 'Saving...' : editingSubscription ? 'Update' : 'Create'}
                                             </Button>
                                         </DialogFooter>
@@ -509,7 +472,6 @@ const SubscriptionManagement = () => {
                                             <TableHead className="text-gray-600 dark:text-gray-400">Price</TableHead>
                                             <TableHead className="text-gray-600 dark:text-gray-400">Duration</TableHead>
                                             <TableHead className="text-gray-600 dark:text-gray-400">Features</TableHead>
-                                            <TableHead className="text-gray-600 dark:text-gray-400">Access Rights</TableHead>
                                             <TableHead className="text-right text-gray-600 dark:text-gray-400">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
@@ -528,13 +490,6 @@ const SubscriptionManagement = () => {
                                                     </ul>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
-                                                        {subscription.subscriptionAccess.map((access, index) => (
-                                                            <li key={index} className="text-sm">{access}</li>
-                                                        ))}
-                                                    </ul>
-                                                </TableCell>
-                                                <TableCell>
                                                     <div className="flex items-center justify-end gap-2">
                                                         <Button
                                                             size="sm"
@@ -549,7 +504,7 @@ const SubscriptionManagement = () => {
                                                                 <Button
                                                                     size="sm"
                                                                     variant="destructive"
-                                                                    className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+                                                                    className="bg-red-600 dark:text-gray-100 dark:border-none hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
                                                                 >
                                                                     <FiTrash2 className="h-4 w-4" />
                                                                 </Button>
@@ -565,7 +520,7 @@ const SubscriptionManagement = () => {
                                                                     <AlertDialogCancel className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
                                                                     <AlertDialogAction 
                                                                         onClick={() => handleDelete(subscription._id)}
-                                                                        className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+                                                                        className="bg-red-600 dark:text-gray-100 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
                                                                     >
                                                                         Continue
                                                                     </AlertDialogAction>
