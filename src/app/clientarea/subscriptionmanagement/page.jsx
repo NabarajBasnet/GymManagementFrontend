@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, Zap, Crown, Sparkles, ArrowRight, Loader2, Star } from 'lucide-react';
 
-const SubscriptionPlans = () => {
+const TenantSubscriptionPlansManagement = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [purchasing, setPurchasing] = useState(null);
@@ -180,7 +180,7 @@ const SubscriptionPlans = () => {
                         </>
                       ) : (
                         <>
-                          Get Started
+                          Add to Cart
                           <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
                         </>
                       )}
@@ -253,4 +253,4 @@ const SubscriptionPlans = () => {
   );
 };
 
-export default SubscriptionPlans;
+export default TenantSubscriptionPlansManagement;

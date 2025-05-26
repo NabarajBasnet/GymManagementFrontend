@@ -1,5 +1,6 @@
 'use client';
 
+import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { AiOutlineSchedule } from "react-icons/ai";
@@ -419,6 +420,11 @@ const RootUserHeader = ({ activeTab }) => {
                                     darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
                                 }`} />
                             </div>
+                        </button>
+
+                        {/* Cart */}
+                        <button className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group">
+                            <MdOutlineShoppingCart size={24} className="text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400" />
                         </button>
 
                         <DropdownMenu>
