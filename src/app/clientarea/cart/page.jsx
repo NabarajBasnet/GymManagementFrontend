@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 const TenantCartManagement = () => {
   const [processing, setProcessing] = useState({});
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const getCartItems = async () => {
     try {
@@ -28,8 +29,8 @@ const TenantCartManagement = () => {
       });
 
       if (response.status === 401) {
-        router.push('/login');
-        throw new Error('Unauthorized');
+        router.push("/login");
+        throw new Error("Unauthorized");
       }
 
       const responseBody = await response.json();
@@ -44,37 +45,40 @@ const TenantCartManagement = () => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["cartItems"],
     queryFn: getCartItems,
-    retry: false
+    retry: false,
   });
 
-  const handleRemoveItem = async (itemId) => {
-    setProcessing(prev => ({ ...prev, [itemId]: true }));
+  const handleRemoveItem = async (itemId, ) => {
+    setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/remove-item`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ itemId }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/cart/remove-item`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ itemId }),
+          credentials: "include",
+        }
+      );
 
       if (response.status === 401) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       const data = await response.json();
       if (response.ok) {
         toast.success("Item removed from cart");
-        refetch();
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error("Failed to remove item");
     } finally {
-      setProcessing(prev => ({ ...prev, [itemId]: false }));
+      setProcessing((prev) => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -89,7 +93,7 @@ const TenantCartManagement = () => {
       const data = await response.json();
       if (response.ok) {
         toast.success("Checkout successful");
-        refetch();
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
       } else {
         toast.error(data.message);
       }
@@ -100,36 +104,73 @@ const TenantCartManagement = () => {
     }
   };
 
-  const handleUpdateQuantity = async (itemId, newQuantity) => {
-    if (newQuantity < 1) return;
-    
-    setProcessing(prev => ({ ...prev, [itemId]: true }));
+  const handleIncreaseQuantity = async (itemId, itemPrice) => {
+    setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/update-item`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ itemId, quantity: newQuantity }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        `http://localhost:3000/api/cart/update-item`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ itemId, itemPrice }),
+          credentials: "include",
+        }
+      );
 
       if (response.status === 401) {
-        router.push('/login');
+        router.push("/login");
         return;
       }
 
       const data = await response.json();
       if (response.ok) {
-        toast.success("Quantity updated");
-        refetch();
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error("Failed to update quantity");
+      console.log("Error: ", error);
+      toast.error(error.error);
     } finally {
-      setProcessing(prev => ({ ...prev, [itemId]: false }));
+      setProcessing((prev) => ({ ...prev, [itemId]: false }));
+    }
+  };
+
+  const handleDecreaseQuantity = async (itemId, itemPrice) => {
+    setProcessing((prev) => ({ ...prev, [itemId]: true }));
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/cart/decrease-item`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ itemId, itemPrice }),
+          credentials: "include",
+        }
+      );
+
+      if (response.status === 401) {
+        router.push("/login");
+        return;
+      }
+
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.error);
+    } finally {
+      setProcessing((prev) => ({ ...prev, [itemId]: false }));
     }
   };
 
@@ -151,9 +192,7 @@ const TenantCartManagement = () => {
           <p className="text-gray-600 dark:text-gray-400 mb-4">
             Please log in to view your cart
           </p>
-          <Button onClick={() => router.push('/login')}>
-            Go to Login
-          </Button>
+          <Button onClick={() => router.push("/login")}>Go to Login</Button>
         </div>
       </div>
     );
@@ -161,8 +200,6 @@ const TenantCartManagement = () => {
 
   const { cart } = data || {};
 
-  console.log('Cart: ',cart);
-  
   return (
     <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-full">
@@ -201,18 +238,6 @@ const TenantCartManagement = () => {
                       <p className="text-sm text-gray-500 dark:text-gray-400">
                         Duration: {cartItem.item.subscriptionDuration} days
                       </p>
-                      {cartItem.item.subscriptionFeatures && (
-                        <div className="mt-1 flex flex-wrap gap-2">
-                          {cartItem.item.subscriptionFeatures.slice(0, 3).map((feature, index) => (
-                            <span
-                              key={index}
-                              className="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded"
-                            >
-                              {feature}
-                            </span>
-                          ))}
-                        </div>
-                      )}
                     </div>
                   </div>
                   <div className="flex items-center space-x-4">
@@ -220,17 +245,30 @@ const TenantCartManagement = () => {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => handleUpdateQuantity(cartItem.item._id, cartItem.quantity - 1)}
+                        className="dark:border-none dark:outline-none"
+                        onClick={() =>
+                          handleDecreaseQuantity(
+                            cartItem.item._id,
+                            cartItem.item.subscriptionPrice
+                          )
+                        }
                         disabled={processing[cartItem.item._id]}
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
-                      <span className="w-8 text-center">{cartItem.quantity}</span>
+                      <span className="w-8 text-center">
+                        {cartItem.quantity}
+                      </span>
                       <Button
                         variant="outline"
                         size="icon"
-                        className="dark:border-none"
-                        onClick={() => handleUpdateQuantity(cartItem.item._id, cartItem.quantity + 1)}
+                        className="dark:border-none dark:outline-none"
+                        onClick={() =>
+                          handleIncreaseQuantity(
+                            cartItem.item._id,
+                            cartItem.item.subscriptionPrice
+                          )
+                        }
                         disabled={processing[cartItem.item._id]}
                       >
                         <Plus className="w-4 h-4" />
@@ -238,17 +276,18 @@ const TenantCartManagement = () => {
                     </div>
                     <div className="text-right">
                       <p className="font-semibold text-gray-900 dark:text-white">
-                        {cartItem.price.toLocaleString()} {cart?.tenantId?.tenantCurrency}
+                        {cartItem.price.toLocaleString()}{" "}
+                        {cart?.tenantId?.tenantCurrency}
                       </p>
                       <p className="text-sm text-gray-500">
                         {cartItem.item.subscriptionPrice} each
                       </p>
                     </div>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
-                      className="dark:border-none"
-                      onClick={() => handleRemoveItem(cartItem.item._id)}
+                      className="dark:border-none dark:outline-none"
+                      onClick={() => handleRemoveItem(cartItem.item._id, cartItem.item.subscriptionPrice)}
                       disabled={processing[cartItem.item._id]}
                     >
                       <Trash2 className="w-5 h-5 text-red-500" />
@@ -269,20 +308,28 @@ const TenantCartManagement = () => {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Total Items</span>
-                <span className="font-semibold">{cart?.totalItems || 0} items</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Total Items
+                </span>
+                <span className="font-semibold">
+                  {cart?.totalItems || 0} items
+                </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Subtotal</span>
+                <span className="text-gray-600 dark:text-gray-300">
+                  Subtotal
+                </span>
                 <span className="font-semibold">
-                  {cart?.totalPrice?.toLocaleString()} {cart?.tenantId?.tenantCurrency}
+                  {cart?.totalPrice?.toLocaleString()}{" "}
+                  {cart?.tenantId?.tenantCurrency}
                 </span>
               </div>
               <div className="border-t pt-4 dark:border-gray-700">
                 <div className="flex justify-between">
                   <span className="text-lg font-semibold">Total</span>
                   <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                    {cart?.totalPrice?.toLocaleString()} {cart?.tenantId?.tenantCurrency}
+                    {cart?.totalPrice?.toLocaleString()}{" "}
+                    {cart?.tenantId?.tenantCurrency}
                   </span>
                 </div>
               </div>
