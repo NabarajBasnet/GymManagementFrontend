@@ -17,12 +17,8 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
 const TenantSubscriptionPlansManagement = () => {
   const [selectedPlan, setSelectedPlan] = useState("annually");
-  const [cartItemAdding, setCartItemAdding] = useState(false);
-
+  const [loadingButtons, setLoadingButtons] = useState({});
   const { tenant, loading: tenantLoading } = useTenant();
-
-  console.log("Tenant: ", tenant.tenant._id);
-
   const queryClient = useQueryClient();
 
   const fetchPlans = async () => {
@@ -50,32 +46,32 @@ const TenantSubscriptionPlansManagement = () => {
     return icons[index] || Star;
   };
 
-  const [cart, setCart] = useState([])
-
-  console.log("Cart: ", cart)
-
   const handleAddToCart = async (plan) => {
-    setCartItemAdding(true);
-    setCart([...cart, plan]);
+    setLoadingButtons(prev => ({ ...prev, [plan._id]: true }));
     try {
       const response = await fetch(`http://localhost:3000/api/cart/add-item`, {
         method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ plan }),
+        credentials: 'include'
       });
 
       const responseBody = await response.json();
-      console.log("Response Body: ", responseBody);
       
-      if (response.ok) {  
-        setCartItemAdding(false);
+      if (response.ok) {
         toast.success(responseBody.message);
+        // Invalidate cart query to refresh cart data
+        queryClient.invalidateQueries(['cart']);
       } else {
-        setCartItemAdding(false);
         toast.error(responseBody.message);
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Error adding to cart:", error.message);
+      toast.error("Error adding to cart");
+    } finally {
+      setLoadingButtons(prev => ({ ...prev, [plan._id]: false }));
     }
   };
 
@@ -207,15 +203,22 @@ const TenantSubscriptionPlansManagement = () => {
                       {/* CTA Button and Guarantee - Always at bottom */}
                       <div className="mt-auto pt-6">
                         <button
-                        onClick={() => handleAddToCart(plan)}
+                          onClick={() => handleAddToCart(plan)}
+                          disabled={loadingButtons[plan._id]}
                           className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${
                             isPopular
                               ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                               : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
-                          }`}
+                          } ${loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""}`}
                         >
-                          Add to Cart
+                          {loadingButtons[plan._id] ? (
+                            <Loader2 className="w-5 h-5 animate-spin" />
+                          ) : (
+                            <>
+                              Add to Cart
                               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                            </>
+                          )}
                         </button>
 
                         {/* Money Back Guarantee */}

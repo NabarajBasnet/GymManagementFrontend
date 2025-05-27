@@ -1,6 +1,8 @@
-import * as React from "react"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,97 +10,127 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
+} from "@/components/ui/select";
+import { useState, useEffect } from "react";
 
 const TenantCartManagement = () => {
+  const getCartItems = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/cart/`, {
+        credentials: "include",
+      });
+
+      const responseBody = await response.json();
+      console.log("Response Body: ", responseBody);
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["cartItems"],
+    queryFn: getCartItems,
+  });
+
+  const { items } = data?.cart || {};
+
+  console.log("Data: ", items);
+
   return (
     <div className="w-full p-6 space-y-6">
-        <div className="w-full justify-between">
-            <h1 className="text-4xl font-bold">Review and Checkout</h1>
-            <p className="text-sm font-medium text-gray-500">Please review your cart and checkout.</p>
-        </div>
-        <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
-            <Card className="w-full lg:w-8/12">
-            <CardHeader>
-                <CardTitle>Create project</CardTitle>
-                <CardDescription>Deploy your new project in one-click.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form>
-                <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Name of your project" />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="framework">Framework</Label>
-                    <Select>
-                        <SelectTrigger id="framework">
-                        <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                        <SelectItem value="next">Next.js</SelectItem>
-                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                        <SelectItem value="astro">Astro</SelectItem>
-                        <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
+      <div className="w-full justify-between">
+        <h1 className="text-4xl font-bold">Review and Checkout</h1>
+        <p className="text-sm font-medium text-gray-500">
+          Please review your cart and checkout.
+        </p>
+      </div>
+      <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
+        <Card className="w-full lg:w-8/12">
+          <CardHeader>
+            <CardTitle>Create project</CardTitle>
+            <CardDescription>
+              Deploy your new project in one-click.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" placeholder="Name of your project" />
                 </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button variant="outline">Cancel</Button>
-                <Button>Deploy</Button>
-            </CardFooter>
-            </Card>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="framework">Framework</Label>
+                  <Select>
+                    <SelectTrigger id="framework">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="next">Next.js</SelectItem>
+                      <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                      <SelectItem value="astro">Astro</SelectItem>
+                      <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline">Cancel</Button>
+            <Button>Deploy</Button>
+          </CardFooter>
+        </Card>
 
-            <Card className="w-full lg:w-4/12">
-            <CardHeader>
-                <CardTitle>Create project</CardTitle>
-                <CardDescription>Deploy your new project in one-click.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form>
-                <div className="grid w-full items-center gap-4">
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Name of your project" />
-                    </div>
-                    <div className="flex flex-col space-y-1.5">
-                    <Label htmlFor="framework">Framework</Label>
-                    <Select>
-                        <SelectTrigger id="framework">
-                        <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent position="popper">
-                        <SelectItem value="next">Next.js</SelectItem>
-                        <SelectItem value="sveltekit">SvelteKit</SelectItem>
-                        <SelectItem value="astro">Astro</SelectItem>
-                        <SelectItem value="nuxt">Nuxt.js</SelectItem>
-                        </SelectContent>
-                    </Select>
-                    </div>
+        <Card className="w-full lg:w-4/12">
+          <CardHeader>
+            <CardTitle>Create project</CardTitle>
+            <CardDescription>
+              Deploy your new project in one-click.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form>
+              <div className="grid w-full items-center gap-4">
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="name">Name</Label>
+                  <Input id="name" placeholder="Name of your project" />
                 </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-                <Button variant="outline">Cancel</Button>
-                <Button>Deploy</Button>
-            </CardFooter>
-            </Card>
-        </div>
+                <div className="flex flex-col space-y-1.5">
+                  <Label htmlFor="framework">Framework</Label>
+                  <Select>
+                    <SelectTrigger id="framework">
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="next">Next.js</SelectItem>
+                      <SelectItem value="sveltekit">SvelteKit</SelectItem>
+                      <SelectItem value="astro">Astro</SelectItem>
+                      <SelectItem value="nuxt">Nuxt.js</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <Button variant="outline">Cancel</Button>
+            <Button>Deploy</Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default TenantCartManagement;

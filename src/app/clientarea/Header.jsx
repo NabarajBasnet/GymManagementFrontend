@@ -95,10 +95,16 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "Manage Branch",
     },
     {
-      id: "/clientarea/subscriptionmanagement",
+      id: "/clientarea/serviceandproductmanagement",
+      icon: <MdOutlineShoppingCart size={20} />,
+      label: "Service & Product Management",
+      description: "Service & Product Management",
+    },
+    {
+      id: "/clientarea/services",
       icon: <CreditCard size={20} />,
-      label: "Subscription Plan & Billing",
-      description: "Manage Plans & Billing",
+      label: "Service & Product",
+      description: "Service & Product",
     },
     {
       id: "/clientarea/settings",
