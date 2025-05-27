@@ -44,14 +44,20 @@ const OrderManagement = () => {
     queryFn: getOrders,
   });
 
-  const { tenantId, items } = data?.cart || {};
+  const { cart } = data || {};
+  console.log("Cart: ", cart);
 
-  console.log("Cart: ", tenantId);
+  const { items, tenantId, createdAt, confirmCheckout, totalPrice } =
+    cart || {};
+
+  console.log("Create at: ", createdAt);
+  console.log("confirmCheckout: ", confirmCheckout);
+  console.log("totalPrice: ", totalPrice);
 
   return (
-    <div className="w-full p-6 space-y-6">
+    <div className="w-full p-6 space-y-6 min-h-screen dark:bg-gray-900 bg-gray-100">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Order Management</h1>
+        <h1 className="text-2xl font-bold dark:text-white">Order Management</h1>
       </div>
 
       <div>
@@ -59,43 +65,60 @@ const OrderManagement = () => {
           <Loader />
         ) : (
           <div>
-            {Array.isArray(items) && items.length > 0 ? (
-              <Table>
-                <TableCaption>A list of your recent invoices.</TableCaption>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Plan Name</TableHead>
-                    <TableHead>Tenant Name</TableHead>
-                    <TableHead>Order Date</TableHead>
-                    <TableHead>Order Status</TableHead>
-                    <TableHead>Payment Status</TableHead>
-                    <TableHead>Payment Method</TableHead>
-                    <TableHead>Payment Date</TableHead>
-                    <TableHead>Total Amount</TableHead>
-                    <TableHead>Paid Amount</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {items.map((item) => (
-                    <TableRow key={item._id}>
-                      <TableCell>{item.subscriptionName}</TableCell>
-                      <TableCell>{item.subscriptionPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
-                      <TableCell>{item.totalPrice}</TableCell>
+            <Card className="w-full dark:bg-gray-800 bg-white dark:border-none text-white">
+              {Array.isArray(items) && items.length > 0 ? (
+                <Table>
+                  <TableCaption>
+                    A list of your recent services and products.
+                  </TableCaption>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Plan Name</TableHead>
+                      <TableHead>Tenant Name</TableHead>
+                      <TableHead>Organization</TableHead>
+                      <TableHead>Order Date</TableHead>
+                      <TableHead>Order Status</TableHead>
+                      <TableHead>Payment Status</TableHead>
+                      <TableHead>Payment Method</TableHead>
+                      <TableHead>Payment Date</TableHead>
+                      <TableHead>Total Amount</TableHead>
+                      <TableHead>Paid Amount</TableHead>
+                      <TableHead>Action</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            ) : (
-              <p>No orders found</p>
-            )}
+                  </TableHeader>
+                  <TableBody>
+                    {items.map((item) => (
+                      <TableRow key={item._id}>
+                        <TableCell>{item.subscriptionName}</TableCell>
+                        <TableCell>{tenantId?.ownerName}</TableCell>
+                        <TableCell>{tenantId?.organizationName}</TableCell>
+                        <TableCell>
+                          {createdAt
+                            ? new Date(createdAt).toLocaleString(undefined, {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                second: "2-digit",
+                              })
+                            : ""}
+                        </TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                        <TableCell>{item.subscriptionPrice}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <p>No orders found</p>
+              )}
+            </Card>
           </div>
         )}
       </div>
