@@ -1,5 +1,7 @@
 "use client";
 
+import { LiaShippingFastSolid } from "react-icons/lia";
+import { TbTruckDelivery } from "react-icons/tb";
 import toast from "react-hot-toast";
 import {
   Table,
@@ -120,6 +122,34 @@ const OrderManagement = () => {
     try {
       const response = await fetch(
         `http://localhost:3000/api/order/update-status/${orderId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ orderId, status: newStatus }),
+        }
+      );
+
+      const responseBody = await response.json();
+
+      if (response.ok) {
+        toast.success(responseBody.message);
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+      } else {
+        toast.error(responseBody.error);
+      }
+    } catch (error) {
+      toast.error("Error:", error.error);
+      console.error("Error updating order status:", error);
+    }
+  };
+
+  const handlePaymentStatus = async (orderId, newStatus) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/order/update-payment-status/${orderId}`,
         {
           method: "PUT",
           headers: {
@@ -295,7 +325,7 @@ const OrderManagement = () => {
                               {order.orderStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="flex items-center gap-2">
                             <Badge
                               className={`${getPaymentStatusColor(
                                 order.paymentStatus
@@ -304,6 +334,47 @@ const OrderManagement = () => {
                             >
                               {order.paymentStatus}
                             </Badge>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <MoreVertical className="w-4 h-4 text-black dark:text-white cursor-pointer" />
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent
+                                align="end"
+                                className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+                              >
+                                <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
+                                  Actions
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handlePaymentStatus(order._id, "Paid")
+                                  }
+                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                >
+                                  <CheckCircle className="w-4 h-4" />
+                                  Mark as Paid
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handlePaymentStatus(order._id, "Pending")
+                                  }
+                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                >
+                                  <CreditCard className="w-4 h-4" />
+                                  Mark as Pending
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handlePaymentStatus(order._id, "Failed")
+                                  }
+                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                >
+                                  <XCircle className="w-4 h-4" />
+                                  Mark as Failed
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex items-center gap-2">
@@ -354,6 +425,24 @@ const OrderManagement = () => {
                                 >
                                   <CheckCircle className="w-4 h-4" />
                                   Mark as Completed
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleUpdateStatus(order._id, "Delivered")
+                                  }
+                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                >
+                                  <TbTruckDelivery className="w-4 h-4" />
+                                  Mark as Delivered
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleUpdateStatus(order._id, "Shipped")
+                                  }
+                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                >
+                                  <LiaShippingFastSolid className="w-4 h-4" />
+                                  Mark as Shipped
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() =>
