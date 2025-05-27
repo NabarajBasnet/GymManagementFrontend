@@ -11,13 +11,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Trash2, CreditCard, Package, Minus, Plus } from "lucide-react";
+import {
+  Trash2,
+  CreditCard,
+  Package,
+  Minus,
+  Plus,
+  ShoppingBag,
+} from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const TenantCartManagement = () => {
+  const [ordering, setOrdering] = useState(false);
   const [processing, setProcessing] = useState({});
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -48,7 +56,7 @@ const TenantCartManagement = () => {
     retry: false,
   });
 
-  const handleRemoveItem = async (itemId, ) => {
+  const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
@@ -82,25 +90,32 @@ const TenantCartManagement = () => {
     }
   };
 
-  const handleCheckout = async () => {
-    setProcessing(true);
+  const handleCreateOrder = async (item , subTotal) => {
+    setOrdering(true);
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/checkout`, {
+      const response = await fetch(`http://localhost:3000/api/order/create`, {
         method: "POST",
         credentials: "include",
+        body: JSON.stringify({ item , subTotal}),
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      const data = await response.json();
-      if (response.ok) {
-        toast.success("Checkout successful");
+      const responseBody = await response.json();
+      if(response.ok){
+        toast.success(responseBody.message);
+        setOrdering(false);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
-      } else {
-        toast.error(data.message);
+      }else{
+        toast.error(responseBody.error);
+        setOrdering(false);
       }
+      console.log("Response Body: ", responseBody);
     } catch (error) {
+      console.log("Error: ", error);
       toast.error("Checkout failed");
-    } finally {
-      setProcessing(false);
+      setOrdering(false);
     }
   };
 
@@ -287,7 +302,12 @@ const TenantCartManagement = () => {
                       variant="outline"
                       size="icon"
                       className="dark:border-none dark:outline-none"
-                      onClick={() => handleRemoveItem(cartItem.item._id, cartItem.item.subscriptionPrice)}
+                      onClick={() =>
+                        handleRemoveItem(
+                          cartItem.item._id,
+                          cartItem.item.subscriptionPrice
+                        )
+                      }
                       disabled={processing[cartItem.item._id]}
                     >
                       <Trash2 className="w-5 h-5 text-red-500" />
@@ -336,19 +356,17 @@ const TenantCartManagement = () => {
             </div>
           </CardContent>
           <CardFooter>
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={handleCheckout}
-              disabled={processing || !cart?.items?.length}
+            <button
+              className="w-full flex items-center justify-center dark:bg-white dark:text-black py-3 rounded-md cursor-pointer bg-gray-900 text-white hover:bg-gray-800 hover:dark:bg-gray-200 transition-all duration-300 font-semibold"
+              onClick={() => handleCreateOrder(cart?._id, cart?.totalPrice)}
             >
-              {processing ? (
-                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+              {ordering ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
               ) : (
-                <CreditCard className="w-5 h-5 mr-2" />
+                <ShoppingBag className="w-5 h-5 mr-2" />
               )}
-              Proceed to Checkout
-            </Button>
+              Place Order
+            </button>
           </CardFooter>
         </Card>
       </div>
