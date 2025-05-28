@@ -57,6 +57,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
@@ -86,8 +87,6 @@ const OrderManagement = () => {
   });
 
   const { orders } = data || {};
-
-  console.log("Orders: ", orders);
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -202,7 +201,7 @@ const OrderManagement = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <Select>
                 <SelectTrigger className="w-[200px] rounded-md dark:text-white h-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 shadow-sm">
                   <Filter className="w-4 h-4 mr-2 text-slate-500" />
                   <SelectValue placeholder="Filter by status" />
@@ -236,7 +235,9 @@ const OrderManagement = () => {
               </Select>
 
               <Button
-                onClick={() => queryClient.invalidateQueries({ queryKey: ["orders"] })}
+                onClick={() =>
+                  queryClient.invalidateQueries({ queryKey: ["orders"] })
+                }
                 variant="outline"
                 size="icon"
                 className="h-11 w-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
@@ -255,7 +256,7 @@ const OrderManagement = () => {
             </div>
           ) : (
             <CardContent className="p-0">
-              {filteredOrders && filteredOrders.length > 0 ? (
+              {orders && orders.length > 0 ? (
                 <div className="overflow-x-auto">
                   <Table>
                     <TableHeader>
@@ -290,7 +291,7 @@ const OrderManagement = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredOrders.map((order) => (
+                      {orders.map((order) => (
                         <TableRow
                           key={order._id}
                           className="border-slate-100 dark:border-slate-800 hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors"
@@ -405,69 +406,93 @@ const OrderManagement = () => {
                               )}
                             </div>
                           </TableCell>
-                          <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  className="h-8 w-8 hover:bg-slate-100 dark:hover:bg-slate-700"
+                          <TableCell className="p-2">
+                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                              {/* Approve Button */}
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button className="h-8 w-8 p-0 bg-transparent hover:dark:bg-gray-900 hover:bg-gray-100">
+                                    <CheckCircle className="w-4 h-4 text-green-600" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="sm:max-w-[425px]">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-gray-900 dark:text-gray-200">
+                                      Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      This action will attach the taken subscription by tenant to the tenant
+                                      account. And once tenant account status is active by tenant management
+                                      page then tenant will be able to access the subscription features and
+                                      dashboard access.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel className="text-gray-900 dark:text-gray-200">
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction>Continue</AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+
+                              {/* Actions Dropdown */}
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                  >
+                                    <MoreVertical className="w-4 h-4 dark:text-white" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 w-48"
                                 >
-                                  <MoreVertical className="w-4 h-4 dark:text-white" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-                              >
-                                <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
-                                  Actions
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleUpdateStatus(order._id, "Completed")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <CheckCircle className="w-4 h-4" />
-                                  Mark as Completed
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleUpdateStatus(order._id, "Delivered")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <TbTruckDelivery className="w-4 h-4" />
-                                  Mark as Delivered
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleUpdateStatus(order._id, "Shipped")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <LiaShippingFastSolid className="w-4 h-4" />
-                                  Mark as Shipped
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handleUpdateStatus(order._id, "Cancelled")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <XCircle className="w-4 h-4" />
-                                  Cancel Order
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() => handleViewDetails(order)}
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <Eye className="w-4 h-4" /> View Details
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                                  <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
+                                    Actions
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(order._id, "Completed")}
+                                    className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700 flex items-center gap-2"
+                                  >
+                                    <CheckCircle className="w-4 h-4" />
+                                    <span>Mark as Completed</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(order._id, "Delivered")}
+                                    className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700 flex items-center gap-2"
+                                  >
+                                    <TbTruckDelivery className="w-4 h-4" />
+                                    <span>Mark as Delivered</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(order._id, "Shipped")}
+                                    className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700 flex items-center gap-2"
+                                  >
+                                    <LiaShippingFastSolid className="w-4 h-4" />
+                                    <span>Mark as Shipped</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleUpdateStatus(order._id, "Cancelled")}
+                                    className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700 flex items-center gap-2"
+                                  >
+                                    <XCircle className="w-4 h-4" />
+                                    <span>Cancel Order</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() => handleViewDetails(order)}
+                                    className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700 flex items-center gap-2"
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                    <span>View Details</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))}

@@ -268,21 +268,6 @@ const ClientAreaHeader = ({ activeTab }) => {
                               {loggedInTenant?.organizationName}
                             </h3>
                             <div className="flex items-center space-x-2 mt-1">
-                              <span
-                                className={`inline-flex items-center space-x-1 text-xs font-semibold px-3 py-1 rounded-full text-white ${subscriptionStyle.bg} shadow-sm`}
-                              >
-                                {subscriptionStyle.icon}
-                                {loggedInTenant?.tenantOnFreeTrial && (
-                                  <span>
-                                    {loggedInTenant?.tenantFreeTrialStatus}
-                                  </span>
-                                )}
-                                {!loggedInTenant?.tenantOnFreeTrial && (
-                                  <span>
-                                    {loggedInTenant?.tenantSubscriptionStatus}
-                                  </span>
-                                )}
-                              </span>
                               <div className="flex items-center space-x-1">
                                 <span className="text-xs font-medium dark:text-white">
                                   Account Status:
