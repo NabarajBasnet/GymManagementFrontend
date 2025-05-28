@@ -342,7 +342,7 @@ const MyOrders = () => {
                   </h3>
                   <p className="text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
                     {filterStatus === "all"
-                      ? "There are no orders in the system yet. Orders will appear here once customers start placing them."
+                      ? "It looks like you haven't placed any orders yet. Orders will appear here once you place them."
                       : `No orders with status "${filterStatus}" found. Try adjusting your filter or check back later.`}
                   </p>
                 </div>

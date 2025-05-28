@@ -246,22 +246,6 @@ const ClientAreaHeader = ({ activeTab }) => {
                   className="w-[320px] sm:w-[360px] p-0 bg-gradient-to-b from-white dark:from-gray-900 to-gray-50/30 dark:to-gray-800/30"
                 >
                   <div className="h-full flex flex-col">
-                    <SheetHeader className="px-6 pt-6 pb-4 bg-gradient-to-r from-indigo-600 to-purple-700 text-white">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
-                          <Building2 className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <SheetTitle className="text-xl font-bold text-white">
-                            Fit Loft
-                          </SheetTitle>
-                          <p className="text-indigo-100 text-sm font-medium">
-                            Your Gym Automation
-                          </p>
-                        </div>
-                      </div>
-                    </SheetHeader>
-
                     {/* Enhanced User Profile */}
                     {loggedInTenant && (
                       <div className="px-6 py-6 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 border-b border-indigo-100 dark:border-indigo-800/30">
@@ -288,18 +272,40 @@ const ClientAreaHeader = ({ activeTab }) => {
                                 className={`inline-flex items-center space-x-1 text-xs font-semibold px-3 py-1 rounded-full text-white ${subscriptionStyle.bg} shadow-sm`}
                               >
                                 {subscriptionStyle.icon}
-                                <span>
-                                  {loggedInTenant?.tenantSubscriptionStatus}
-                                </span>
+                                {loggedInTenant?.tenantOnFreeTrial && (
+                                  <span>
+                                    {loggedInTenant?.tenantFreeTrialStatus}
+                                  </span>
+                                )}
+                                {!loggedInTenant?.tenantOnFreeTrial && (
+                                  <span>
+                                    {loggedInTenant?.tenantSubscriptionStatus}
+                                  </span>
+                                )}
                               </span>
                               <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
                                 {loggedInTenant?.tenantStatus}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
-                              <Calendar size={12} className="mr-1" />
-                              Member since 2024
-                            </p>
+                            {loggedInTenant?.tenantOnFreeTrial && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
+                                <Calendar size={12} className="mr-1" />
+                                {
+                                  loggedInTenant?.tenantFreeTrailRemainingDays
+                                }{" "}
+                                Days left for free trail
+                              </p>
+                            )}
+
+                            {loggedInTenant?.tenantOnFreeTrial && (
+                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
+                                <Calendar size={12} className="mr-1" />
+                                Ends on{" "}
+                                {new Date(
+                                  loggedInTenant?.tenantFreeTrialEndDate
+                                ).toLocaleDateString()}
+                              </p>
+                            )}
                           </div>
                         </div>
                       </div>
