@@ -299,20 +299,18 @@ const OrderManagement = () => {
                           <TableCell className="font-medium text-slate-800 dark:text-slate-200">
                             <div className="flex items-center gap-2">
                               <Building2 className="w-4 h-4 text-slate-500" />
-                              {order.tenantId.organizationName}
+                              {order?.tenantId?.organizationName || "N/A"}
                             </div>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
-                            <div
-                              className="flex cursor-pointer items-center gap-2"
-                            >
+                            <div className="flex cursor-pointer items-center gap-2">
                               <Package className="w-4 h-4 text-slate-500" />
-                              {order.items.totalItems} items
+                              {order?.items?.totalItems || 0} items
                             </div>
                           </TableCell>
                           <TableCell className="font-semibold text-slate-900 dark:text-slate-100">
-                            {order.subTotal.toLocaleString()}{" "}
-                            {order.tenantId.tenantCurrency}
+                            {order?.subTotal?.toLocaleString() || 0}{" "}
+                            {order?.tenantId?.tenantCurrency || "N/A"}
                           </TableCell>
                           <TableCell>
                             <Badge
@@ -321,7 +319,7 @@ const OrderManagement = () => {
                               )} border font-medium px-3 py-1`}
                               variant="outline"
                             >
-                              {order.orderStatus}
+                              {order?.orderStatus || "N/A"}
                             </Badge>
                           </TableCell>
                           <TableCell>
@@ -332,7 +330,7 @@ const OrderManagement = () => {
                                 )} border font-medium px-3 py-1`}
                                 variant="outline"
                               >
-                                {order.paymentStatus}
+                                {order?.paymentStatus || "N/A"}
                               </Badge>
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -386,13 +384,13 @@ const OrderManagement = () => {
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex items-center gap-2">
                               <CreditCard className="w-4 h-4 text-slate-500" />
-                              {order.paymentMethod}
+                              {order?.paymentMethod || "N/A"}
                             </div>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex items-center gap-2">
                               <Calendar className="w-4 h-4 text-slate-500" />
-                              {new Date(order.createdAt).toLocaleDateString(
+                              {new Date(order?.createdAt).toLocaleDateString(
                                 "en-US",
                                 {
                                   year: "numeric",
@@ -531,7 +529,7 @@ const OrderManagement = () => {
                           Organization
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.tenantId.organizationName}
+                          {selectedOrder?.tenantId?.organizationName || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -539,7 +537,7 @@ const OrderManagement = () => {
                           Order Date
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {new Date(selectedOrder.createdAt).toLocaleString()}
+                          {new Date(selectedOrder?.createdAt).toLocaleString()}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -547,7 +545,7 @@ const OrderManagement = () => {
                           Payment Method
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.paymentMethod}
+                          {selectedOrder?.paymentMethod || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -555,7 +553,9 @@ const OrderManagement = () => {
                           Payment Date
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {new Date(selectedOrder.paymentDate).toLocaleString()}
+                          {new Date(
+                            selectedOrder?.paymentDate
+                          ).toLocaleString()}
                         </p>
                       </div>
                     </div>
@@ -586,24 +586,24 @@ const OrderManagement = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {selectedOrder.items.items.map((item) => (
+                        {selectedOrder?.items?.items?.map((item) => (
                           <TableRow
                             key={item._id}
                             className="border-slate-100 dark:border-slate-700"
                           >
                             <TableCell className="font-medium text-slate-900 dark:text-slate-100">
-                              {item.item.subscriptionName || "N/A"}
+                              {item?.item?.subscriptionName || "N/A"}
                             </TableCell>
                             <TableCell className="text-slate-700 dark:text-slate-300">
-                              {item.quantity}
+                              {item?.quantity}
                             </TableCell>
                             <TableCell className="text-slate-700 dark:text-slate-300">
-                              {(item.price / item.quantity).toLocaleString()}{" "}
-                              {selectedOrder.tenantId.tenantCurrency}
+                              {(item?.price / item?.quantity).toLocaleString()}{" "}
+                              {selectedOrder?.tenantId?.tenantCurrency || "N/A"}
                             </TableCell>
                             <TableCell className="font-semibold text-slate-900 dark:text-slate-100">
-                              {item.price.toLocaleString()}{" "}
-                              {selectedOrder.tenantId.tenantCurrency}
+                              {item?.price?.toLocaleString() || 0}{" "}
+                              {selectedOrder?.tenantId?.tenantCurrency || "N/A"}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -617,8 +617,8 @@ const OrderManagement = () => {
                             Total
                           </TableCell>
                           <TableCell className="font-bold text-slate-900 dark:text-slate-100">
-                            {selectedOrder.subTotal.toLocaleString()}{" "}
-                            {selectedOrder.tenantId.tenantCurrency}
+                            {selectedOrder?.subTotal?.toLocaleString() || 0}{" "}
+                            {selectedOrder?.tenantId?.tenantCurrency || "N/A"}
                           </TableCell>
                         </TableRow>
                       </TableFooter>
@@ -636,7 +636,7 @@ const OrderManagement = () => {
                           Contact Person
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.tenantId.ownerName}
+                          {selectedOrder?.tenantId?.ownerName || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -644,7 +644,7 @@ const OrderManagement = () => {
                           Email
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.tenantId.email}
+                          {selectedOrder?.tenantId?.email || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -652,8 +652,8 @@ const OrderManagement = () => {
                           Phone
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.tenantId.phone.countryCode}{" "}
-                          {selectedOrder.tenantId.phone.number}
+                          {selectedOrder?.tenantId?.phone?.countryCode || "N/A"}{" "}
+                          {selectedOrder?.tenantId?.phone?.number || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -661,7 +661,7 @@ const OrderManagement = () => {
                           Address
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder.tenantId.address}
+                          {selectedOrder?.tenantId?.address || "N/A"}
                         </p>
                       </div>
                     </div>

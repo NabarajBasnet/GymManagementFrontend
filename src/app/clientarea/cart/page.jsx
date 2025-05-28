@@ -90,28 +90,27 @@ const TenantCartManagement = () => {
     }
   };
 
-  const handleCreateOrder = async (item , subTotal) => {
+  const handleCreateOrder = async (item, subTotal) => {
     setOrdering(true);
     try {
       const response = await fetch(`http://localhost:3000/api/order/create`, {
         method: "POST",
         credentials: "include",
-        body: JSON.stringify({ item , subTotal}),
+        body: JSON.stringify({ item, subTotal }),
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       const responseBody = await response.json();
-      if(response.ok){
+      if (response.ok) {
         toast.success(responseBody.message);
         setOrdering(false);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
-      }else{
+      } else {
         toast.error(responseBody.error);
         setOrdering(false);
       }
-      console.log("Response Body: ", responseBody);
     } catch (error) {
       console.log("Error: ", error);
       toast.error("Checkout failed");
@@ -215,6 +214,8 @@ const TenantCartManagement = () => {
 
   const { cart } = data || {};
 
+  console.log("Cart: ", cart);
+
   return (
     <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">
       <div className="w-full">
@@ -226,150 +227,171 @@ const TenantCartManagement = () => {
         </p>
       </div>
 
-      <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
-        {/* Cart Items */}
-        <Card className="w-full lg:w-8/12 bg-white dark:bg-gray-800 dark:border-none">
+      {cart?.items?.length === 0 ? (
+        <Card className="w-full flex flex-col min-h-screen items-center justify-center bg-white dark:bg-gray-800 dark:border-none">
           <CardHeader>
-            <CardTitle>Subscription Plans</CardTitle>
-            <CardDescription>
-              {cart?.items?.length || 0} items in your cart
+            <CardTitle className="text-center">Subscription Plans</CardTitle>
+            <CardDescription className="flex flex-col items-center justify-center">
+              <span className="text-gray-500 text-sm my-4 font-medium dark:text-gray-300 text-center">
+                It looks like you haven't added any items to your cart yet.
+              </span>
+              <Button
+                variant="outline"
+                onClick={() => router.push("/clientarea/services")}
+                className="dark:border-none dark:hover:bg-gray-700 dark:text-white dark:outline-none"
+              >
+                <ShoppingBag className="w-4 h-4 dark:text-white" />
+                Continue Shopping
+              </Button>
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {cart?.items?.map((cartItem) => (
-                <div
-                  key={cartItem.item._id}
-                  className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                      <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white">
-                        {cartItem.item.subscriptionName}
-                      </h3>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Duration: {cartItem.item.subscriptionDuration} days
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="dark:border-none dark:outline-none"
-                        onClick={() =>
-                          handleDecreaseQuantity(
-                            cartItem.item._id,
-                            cartItem.item.subscriptionPrice
-                          )
-                        }
-                        disabled={processing[cartItem.item._id]}
-                      >
-                        <Minus className="w-4 h-4" />
-                      </Button>
-                      <span className="w-8 text-center">
-                        {cartItem.quantity}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="dark:border-none dark:outline-none"
-                        onClick={() =>
-                          handleIncreaseQuantity(
-                            cartItem.item._id,
-                            cartItem.item.subscriptionPrice
-                          )
-                        }
-                        disabled={processing[cartItem.item._id]}
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900 dark:text-white">
-                        {cartItem.price.toLocaleString()}{" "}
-                        {cart?.tenantId?.tenantCurrency}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {cartItem.item.subscriptionPrice} each
-                      </p>
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="dark:border-none dark:outline-none"
-                      onClick={() =>
-                        handleRemoveItem(
-                          cartItem.item._id,
-                          cartItem.item.subscriptionPrice
-                        )
-                      }
-                      disabled={processing[cartItem.item._id]}
-                    >
-                      <Trash2 className="w-5 h-5 text-red-500" />
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
         </Card>
+      ) : (
+        <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
+          {/* Cart Items */}
+          <Card className="w-full lg:w-8/12 bg-white dark:bg-gray-800 dark:border-none lg:min-h-80">
+            <CardHeader>
+              <CardTitle>Subscription Plans</CardTitle>
+              <CardDescription>
+                {cart?.items?.length || 0} items in your cart
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {cart?.items?.map((cartItem) => (
+                  <div
+                    key={cartItem.item._id}
+                    className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                        <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                          {cartItem.item.subscriptionName}
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Duration: {cartItem.item.subscriptionDuration} days
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="dark:border-none dark:outline-none"
+                          onClick={() =>
+                            handleDecreaseQuantity(
+                              cartItem.item._id,
+                              cartItem.item.subscriptionPrice
+                            )
+                          }
+                          disabled={processing[cartItem.item._id]}
+                        >
+                          <Minus className="w-4 h-4" />
+                        </Button>
+                        <span className="w-8 text-center">
+                          {cartItem.quantity}
+                        </span>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="dark:border-none dark:outline-none"
+                          onClick={() =>
+                            handleIncreaseQuantity(
+                              cartItem.item._id,
+                              cartItem.item.subscriptionPrice
+                            )
+                          }
+                          disabled={processing[cartItem.item._id]}
+                        >
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900 dark:text-white">
+                          {cartItem.price.toLocaleString()}{" "}
+                          {cart?.tenantId?.tenantCurrency}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {cartItem.item.subscriptionPrice} each
+                        </p>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="dark:border-none dark:outline-none"
+                        onClick={() =>
+                          handleRemoveItem(
+                            cartItem.item._id,
+                            cartItem.item.subscriptionPrice
+                          )
+                        }
+                        disabled={processing[cartItem.item._id]}
+                      >
+                        <Trash2 className="w-5 h-5 text-red-500" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Order Summary */}
-        <Card className="w-full lg:w-4/12 bg-white dark:bg-gray-800 dark:border-none">
-          <CardHeader>
-            <CardTitle>Order Summary</CardTitle>
-            <CardDescription>Review your order details</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  Total Items
-                </span>
-                <span className="font-semibold">
-                  {cart?.totalItems || 0} items
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">
-                  Subtotal
-                </span>
-                <span className="font-semibold">
-                  {cart?.totalPrice?.toLocaleString()}{" "}
-                  {cart?.tenantId?.tenantCurrency}
-                </span>
-              </div>
-              <div className="border-t pt-4 dark:border-gray-700">
+          {/* Order Summary */}
+          <Card className="w-full lg:w-4/12 bg-white dark:bg-gray-800 dark:border-none">
+            <CardHeader>
+              <CardTitle>Order Summary</CardTitle>
+              <CardDescription>Review your order details</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-lg font-semibold">Total</span>
-                  <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Total Items
+                  </span>
+                  <span className="font-semibold">
+                    {cart?.totalItems || 0} items
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 dark:text-gray-300">
+                    Subtotal
+                  </span>
+                  <span className="font-semibold">
                     {cart?.totalPrice?.toLocaleString()}{" "}
                     {cart?.tenantId?.tenantCurrency}
                   </span>
                 </div>
+                <div className="border-t pt-4 dark:border-gray-700">
+                  <div className="flex justify-between">
+                    <span className="text-lg font-semibold">Total</span>
+                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                      {cart?.totalPrice?.toLocaleString()}{" "}
+                      {cart?.tenantId?.tenantCurrency}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          </CardContent>
-          <CardFooter>
-            <button
-              className="w-full flex items-center justify-center dark:bg-white dark:text-black py-3 rounded-md cursor-pointer bg-gray-900 text-white hover:bg-gray-800 hover:dark:bg-gray-200 transition-all duration-300 font-semibold"
-              onClick={() => handleCreateOrder(cart?._id, cart?.totalPrice)}
-            >
-              {ordering ? (
-                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              ) : (
-                <ShoppingBag className="w-5 h-5 mr-2" />
-              )}
-              Place Order
-            </button>
-          </CardFooter>
-        </Card>
-      </div>
+            </CardContent>
+            <CardFooter>
+              <button
+                className="w-full flex items-center justify-center dark:bg-white dark:text-black py-3 rounded-md cursor-pointer bg-gray-900 text-white hover:bg-gray-800 hover:dark:bg-gray-200 transition-all duration-300 font-semibold"
+                onClick={() => handleCreateOrder(cart?._id, cart?.totalPrice)}
+              >
+                {ordering ? (
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                ) : (
+                  <ShoppingBag className="w-5 h-5 mr-2" />
+                )}
+                Place Order
+              </button>
+            </CardFooter>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
