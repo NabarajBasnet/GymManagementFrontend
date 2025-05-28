@@ -1,5 +1,6 @@
 "use client";
 
+import { toast as sonnertoast } from "sonner";
 import * as React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -105,8 +106,12 @@ const TenantCartManagement = () => {
       const responseBody = await response.json();
       if (response.ok) {
         toast.success(responseBody.message);
+        sonnertoast(responseBody.message, {
+          description: "Redirecting to orders page",
+        });
         setOrdering(false);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        router.push(responseBody.redirectUrl);
       } else {
         toast.error(responseBody.error);
         setOrdering(false);
@@ -213,8 +218,6 @@ const TenantCartManagement = () => {
   }
 
   const { cart } = data || {};
-
-  console.log("Cart: ", cart);
 
   return (
     <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">

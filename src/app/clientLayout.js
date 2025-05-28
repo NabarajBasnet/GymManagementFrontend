@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -7,98 +7,101 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Website/Navbar/Navbar";
 import Footer from "@/components/Website/Footer/Footer";
 import { ThemeProvider } from "@/components/Providers/ThemeProvider";
+import { Toaster as Sooner } from "@/components/ui/sonner";
 
 const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export default function MainClientLayout({ children }) {
-    const pathname = usePathname();
-    const lenisRef = useRef(null);
-    const [scrollDir, setScrollDir] = useState(null);
-    const [isScrolling, setIsScrolling] = useState(false);
+  const pathname = usePathname();
+  const lenisRef = useRef(null);
+  const [scrollDir, setScrollDir] = useState(null);
+  const [isScrolling, setIsScrolling] = useState(false);
 
-    useEffect(() => {
-        let lastScrollY = window.scrollY;
-        let scrollTimeout;
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let scrollTimeout;
 
-        const handleScroll = () => {
-            const currentScrollY = window.scrollY;
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
 
-            if (currentScrollY > lastScrollY) {
-                setScrollDir('down');
-            } else if (currentScrollY < lastScrollY) {
-                setScrollDir('up');
-            }
+      if (currentScrollY > lastScrollY) {
+        setScrollDir("down");
+      } else if (currentScrollY < lastScrollY) {
+        setScrollDir("up");
+      }
 
-            lastScrollY = currentScrollY;
-            setIsScrolling(true);
+      lastScrollY = currentScrollY;
+      setIsScrolling(true);
 
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
 
-            scrollTimeout = setTimeout(() => {
-                setIsScrolling(false);
-            }, 150);
-        };
+      scrollTimeout = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+    };
 
-        window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-            if (scrollTimeout) {
-                clearTimeout(scrollTimeout);
-            }
-        };
-    }, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, []);
 
-    const hideNavbar = pathname.startsWith('/dashboard') ||
-        pathname.startsWith('/login') ||
-        pathname.startsWith('/signup') ||
-        pathname.startsWith('/auth/') ||
-        pathname.startsWith('/root/') ||
-        pathname.startsWith('/clientarea') ||
-        pathname.startsWith('/StaffLogin') ||
-        pathname.startsWith('/MyProfile') ||
-        pathname.startsWith('/memberlogin') ||
-        pathname.startsWith('/member');
+  const hideNavbar =
+    pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/root/") ||
+    pathname.startsWith("/clientarea") ||
+    pathname.startsWith("/StaffLogin") ||
+    pathname.startsWith("/MyProfile") ||
+    pathname.startsWith("/memberlogin") ||
+    pathname.startsWith("/member");
 
-    return (
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-        >
-        <div className={`min-h-screen`}>
-            {/* Navbar */}
-            {(!hideNavbar && (scrollDir === null || scrollDir === 'up')) && (
-                <div className="fixed top-0 left-0 right-0 z-50">
-                    <Navbar />
-                </div>
-            )}
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      <div className={`min-h-screen`}>
+        {/* Navbar */}
+        {!hideNavbar && (scrollDir === null || scrollDir === "up") && (
+          <div className="fixed top-0 left-0 right-0 z-50">
+            <Navbar />
+          </div>
+        )}
 
-            {/* Main Content with Footer */}
-            <div className="">
-                <main className="min-h-screen">
-                    {children}
-                </main>
+        {/* Main Content with Footer */}
+        <div className="">
+          <main className="min-h-screen">
+            {children}
+            <Sooner />
+          </main>
 
-                {/* Footer */}
-                {!hideNavbar && (
-                    <div className="w-full">
-                        <Footer />
-                    </div>
-                )}
+          {/* Footer */}
+          {!hideNavbar && (
+            <div className="w-full">
+              <Footer />
             </div>
+          )}
         </div>
-        </ThemeProvider>
-    );
+      </div>
+    </ThemeProvider>
+  );
 }
