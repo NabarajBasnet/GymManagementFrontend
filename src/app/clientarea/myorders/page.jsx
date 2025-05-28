@@ -122,19 +122,20 @@ const MyOrders = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div className="max-w-7xl mx-auto p-6 space-y-8">
         {/* Header Section */}
-        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 dark:border-slate-800/50 p-8 shadow-lg shadow-slate-900/5">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 p-8 shadow-lg shadow-slate-900/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-blue-600 rounded-xl shadow-lg">
+                <div className="p-2 bg-blue-600 rounded-lg shadow-lg">
                   <ShoppingBag className="w-6 h-6 text-white" />
                 </div>
                 <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-                  Order Management
+                  My Orders
                 </h1>
               </div>
               <p className="text-slate-600 dark:text-slate-400 font-medium leading-relaxed">
-                Manage and track all subscription orders with real-time updates
+                View and manage all your subscription orders with real-time
+                updates
               </p>
             </div>
 
@@ -187,7 +188,7 @@ const MyOrders = () => {
         </div>
 
         {/* Orders Table */}
-        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-2xl border border-slate-200/50 dark:border-slate-800/50 shadow-lg shadow-slate-900/5 overflow-hidden">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 shadow-lg shadow-slate-900/5 overflow-hidden">
           {isLoading ? (
             <div className="p-12">
               <Loader />
@@ -291,18 +292,6 @@ const MyOrders = () => {
                                     Payment Actions
                                   </DropdownMenuLabel>
                                   <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                                  <DropdownMenuItem className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700">
-                                    <CheckCircle className="w-4 h-4 text-emerald-500" />
-                                    <span>Mark as Paid</span>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700">
-                                    <CreditCard className="w-4 h-4 text-amber-500" />
-                                    <span>Mark as Pending</span>
-                                  </DropdownMenuItem>
-                                  <DropdownMenuItem className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700">
-                                    <XCircle className="w-4 h-4 text-rose-500" />
-                                    <span>Mark as Failed</span>
-                                  </DropdownMenuItem>
                                 </DropdownMenuContent>
                               </DropdownMenu>
                             </div>

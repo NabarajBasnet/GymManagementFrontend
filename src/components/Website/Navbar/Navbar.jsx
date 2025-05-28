@@ -131,7 +131,7 @@ const Navbar = () => {
 
                         {/* CTA Button with Icon */}
                         <a
-                            href="/auth/tenantsignup"
+                            href="/auth/tenantlogin"
                             className={cn(
                                 "px-6 py-2 rounded-full font-medium shadow-lg flex items-center transition-all duration-300",
                                 scrolled 
