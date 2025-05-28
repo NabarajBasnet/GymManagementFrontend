@@ -283,29 +283,15 @@ const ClientAreaHeader = ({ activeTab }) => {
                                   </span>
                                 )}
                               </span>
-                              <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
-                                {loggedInTenant?.tenantStatus}
-                              </span>
+                              <div className="flex items-center space-x-1">
+                                <span className="text-xs font-medium dark:text-white">
+                                  Account Status:
+                                </span>
+                                <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
+                                  {loggedInTenant?.tenantStatus}
+                                </span>
+                              </div>
                             </div>
-                            {loggedInTenant?.tenantOnFreeTrial && (
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
-                                <Calendar size={12} className="mr-1" />
-                                {
-                                  loggedInTenant?.tenantFreeTrailRemainingDays
-                                }{" "}
-                                Days left for free trail
-                              </p>
-                            )}
-
-                            {loggedInTenant?.tenantOnFreeTrial && (
-                              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
-                                <Calendar size={12} className="mr-1" />
-                                Ends on{" "}
-                                {new Date(
-                                  loggedInTenant?.tenantFreeTrialEndDate
-                                ).toLocaleDateString()}
-                              </p>
-                            )}
                           </div>
                         </div>
                       </div>
@@ -382,8 +368,30 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                     {/* Enhanced Footer */}
                     <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center text-sm text-gray-600 dark:text-gray-400">
+                      <div className="flex flex-col items-start justify-between mb-4">
+                        <div className="w-full mb-1 flex flex-col items-start text-xs font-medium space-x-1">
+                          {loggedInTenant?.tenantOnFreeTrial && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
+                              <Calendar size={12} className="mr-1" />
+                              {
+                                loggedInTenant?.tenantFreeTrailRemainingDays
+                              }{" "}
+                              Days left for free trail
+                            </p>
+                          )}
+
+                          {loggedInTenant?.tenantOnFreeTrial && (
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
+                              <Calendar size={12} className="mr-1" />
+                              Ends on{" "}
+                              {new Date(
+                                loggedInTenant?.tenantFreeTrialEndDate
+                              ).toLocaleDateString()}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-800 py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
                           <User
                             size={16}
                             className="mr-2 text-gray-500 dark:text-gray-400"
@@ -393,7 +401,6 @@ const ClientAreaHeader = ({ activeTab }) => {
                           </span>
                         </div>
                       </div>
-
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <button className="w-full flex items-center p-3 rounded-xl bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-200 group">
