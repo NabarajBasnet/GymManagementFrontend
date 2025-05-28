@@ -304,7 +304,6 @@ const OrderManagement = () => {
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div
-                              onClick={() => setIsDetailsOpen(true)}
                               className="flex cursor-pointer items-center gap-2"
                             >
                               <Package className="w-4 h-4 text-slate-500" />
@@ -325,56 +324,64 @@ const OrderManagement = () => {
                               {order.orderStatus}
                             </Badge>
                           </TableCell>
-                          <TableCell className="flex items-center gap-2">
-                            <Badge
-                              className={`${getPaymentStatusColor(
-                                order.paymentStatus
-                              )} border font-medium px-3 py-1`}
-                              variant="outline"
-                            >
-                              {order.paymentStatus}
-                            </Badge>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <MoreVertical className="w-4 h-4 text-black dark:text-white cursor-pointer" />
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent
-                                align="end"
-                                className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+                          <TableCell>
+                            <div className="flex items-center space-x-2">
+                              <Badge
+                                className={`${getPaymentStatusColor(
+                                  order.paymentStatus
+                                )} border font-medium px-3 py-1`}
+                                variant="outline"
                               >
-                                <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
-                                  Actions
-                                </DropdownMenuLabel>
-                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handlePaymentStatus(order._id, "Paid")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                {order.paymentStatus}
+                              </Badge>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700"
+                                  >
+                                    <MoreVertical className="w-4 h-4 text-slate-500 dark:text-slate-400" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent
+                                  align="end"
+                                  className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                                 >
-                                  <CheckCircle className="w-4 h-4" />
-                                  Mark as Paid
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handlePaymentStatus(order._id, "Pending")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <CreditCard className="w-4 h-4" />
-                                  Mark as Pending
-                                </DropdownMenuItem>
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    handlePaymentStatus(order._id, "Failed")
-                                  }
-                                  className="focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
-                                >
-                                  <XCircle className="w-4 h-4" />
-                                  Mark as Failed
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                                  <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
+                                    Payment Actions
+                                  </DropdownMenuLabel>
+                                  <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handlePaymentStatus(order._id, "Paid")
+                                    }
+                                    className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                  >
+                                    <CheckCircle className="w-4 h-4 text-emerald-500" />
+                                    <span>Mark as Paid</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handlePaymentStatus(order._id, "Pending")
+                                    }
+                                    className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                  >
+                                    <CreditCard className="w-4 h-4 text-amber-500" />
+                                    <span>Mark as Pending</span>
+                                  </DropdownMenuItem>
+                                  <DropdownMenuItem
+                                    onClick={() =>
+                                      handlePaymentStatus(order._id, "Failed")
+                                    }
+                                    className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
+                                  >
+                                    <XCircle className="w-4 h-4 text-rose-500" />
+                                    <span>Mark as Failed</span>
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                            </div>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex items-center gap-2">
