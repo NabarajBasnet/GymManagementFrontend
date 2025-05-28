@@ -87,6 +87,8 @@ const OrderManagement = () => {
 
   const { orders } = data || {};
 
+  console.log("Orders: ", orders);
+
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
       case "pending":
@@ -234,7 +236,7 @@ const OrderManagement = () => {
               </Select>
 
               <Button
-                onClick={() => refetch()}
+                onClick={() => queryClient.invalidateQueries({ queryKey: ["orders"] })}
                 variant="outline"
                 size="icon"
                 className="h-11 w-11 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 shadow-sm"
@@ -305,7 +307,7 @@ const OrderManagement = () => {
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex cursor-pointer items-center gap-2">
                               <Package className="w-4 h-4 text-slate-500" />
-                              {order?.items?.totalItems || 0} items
+                              {order?.cartSnapshoot?.totalItems || 0} items
                             </div>
                           </TableCell>
                           <TableCell className="font-semibold text-slate-900 dark:text-slate-100">
@@ -586,7 +588,7 @@ const OrderManagement = () => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {selectedOrder?.items?.items?.map((item) => (
+                        {selectedOrder?.cartSnapshoot?.items?.map((item) => (
                           <TableRow
                             key={item._id}
                             className="border-slate-100 dark:border-slate-700"

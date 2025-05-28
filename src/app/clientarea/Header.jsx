@@ -1,7 +1,7 @@
 "use client";
 
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { WiStars } from "react-icons/wi";
@@ -105,6 +105,12 @@ const ClientAreaHeader = ({ activeTab }) => {
       icon: <CreditCard size={20} />,
       label: "Service & Product",
       description: "Service & Product",
+    },
+    {
+      id: "/clientarea/myorders",
+      icon: <Package size={20} />,
+      label: "My Orders",
+      description: "My Orders",
     },
     {
       id: "/clientarea/settings",
@@ -502,14 +508,6 @@ const ClientAreaHeader = ({ activeTab }) => {
                 ))}
               </div>
 
-              {/* Cart */}
-              {/* <button className="relative p-2.5 rounded-xl bg-gray-100/80 dark:bg-gray-800/80 hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-300 group">
-                <MdOutlineShoppingCart
-                  size={24}
-                  className="text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400"
-                />
-              </button> */}
-
               {/* Theme Toggle */}
               <button
                 onClick={toggleTheme}
@@ -620,6 +618,21 @@ const ClientAreaHeader = ({ activeTab }) => {
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">
                           View invoices and usage
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <Package className="mr-3" size={16} />
+                      <div
+                        onClick={() => router.push("/clientarea/myorders")}
+                        className="cursor-pointer"
+                      >
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          My Orders
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          View my orders
                         </div>
                       </div>
                     </DropdownMenuItem>
