@@ -1,10 +1,13 @@
 "use client";
 
+import { Loader2 } from "lucide-react";
+import { GrStatusGoodSmall } from "react-icons/gr";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { LiaShippingFastSolid } from "react-icons/lia";
 import { TbTruckDelivery } from "react-icons/tb";
 import toast from "react-hot-toast";
+import { toast as soonerToast } from "sonner";
 import {
   Table,
   TableBody,
@@ -63,7 +66,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useRouter } from "next/navigation";
-
+import { useForm } from "react-hook-form";
 const OrderManagement = () => {
   const router = useRouter();
   const [filterStatus, setFilterStatus] = useState("all");
@@ -118,11 +121,6 @@ const OrderManagement = () => {
     }
   };
 
-  const filteredOrders = orders?.filter((order) => {
-    if (filterStatus === "all") return true;
-    return order.orderStatus.toLowerCase() === filterStatus.toLowerCase();
-  });
-
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
@@ -151,11 +149,21 @@ const OrderManagement = () => {
     }
   };
 
-  const handlePaymentStatus = async (orderId, newStatus) => {
-    console.log("Status: ", newStatus);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm();
+
+  const handlePaidStatus = async (orderId, newStatus) => {
     if (newStatus === "Paid") {
       setIsPaymentDetailsFormOpen(true);
+      setSelectedOrder(orderId);
     }
+  };
+
+  const handlePaymentStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
         `http://localhost:3000/api/order/update-payment-status/${orderId}`,
@@ -192,9 +200,67 @@ const OrderManagement = () => {
     console.log("Order: ", order);
   };
 
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
+
+  const onSubmit = async (data) => {
+    const { paymentDate, paidAmount, discountAmount, dueAmount, totalAmount } =
+      data;
+
+    const finalObject = {
+      paymentDate,
+      paidAmount,
+      discountAmount,
+      dueAmount,
+      totalAmount,
+      paymentMethod,
+      paymentStatus,
+      orderStatus,
+    };
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/order/update-payment-status/${selectedOrder}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ orderId: selectedOrder, finalObject }),
+        }
+      );
+
+      const responseBody = await response.json();
+      if (response.ok) {
+        toast.success(responseBody.message);
+        soonerToast(responseBody.message, {
+          description: "Payment details updated successfully",
+        });
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        reset();
+        setPaymentMethod("");
+        setPaymentStatus("");
+        setOrderStatus("");
+        setIsPaymentDetailsFormOpen(false);
+      } else {
+        toast.error(responseBody.error);
+        soonerToast(responseBody.error, {
+          description: "Error updating payment details",
+        });
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="max-w-7xl mx-auto p-6 space-y-8">
+      <div
+        className={`max-w-full mx-auto p-6 ${
+          isPaymentDetailsFormOpen ? "space-y-0" : "space-y-8"
+        }`}
+      >
         {/* Header Section */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 p-8 shadow-lg shadow-slate-900/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
@@ -367,7 +433,7 @@ const OrderManagement = () => {
                                   <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                                   <DropdownMenuItem
                                     onClick={() =>
-                                      handlePaymentStatus(order._id, "Paid")
+                                      handlePaidStatus(order._id, "Paid")
                                     }
                                     className="flex items-center space-x-2 focus:bg-slate-50 cursor-pointer dark:focus:bg-slate-700"
                                   >
@@ -735,290 +801,276 @@ const OrderManagement = () => {
         </AlertDialog>
 
         {/* Payment Details Modal */}
-        <AlertDialog
-          open={isPaymentDetailsFormOpen}
-          onOpenChange={setIsPaymentDetailsFormOpen}
-        >
-          <AlertDialogContent className="w-full max-w-4xl h-[85vh] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-xl rounded-xl overflow-hidden flex flex-col">
-            {/* Fixed Header */}
-            <AlertDialogHeader className="flex-shrink-0 border-b border-slate-200 dark:border-slate-700 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-900">
-              <AlertDialogTitle className="flex justify-between items-center">
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                    <svg
-                      className="w-5 h-5 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+        {isPaymentDetailsFormOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/60 backdrop-blur-sm px-6 md:px-0">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full z-50 lg:w-9/12 w-12/12 max-h-[90vh] flex flex-col">
+              {/* Header */}
+              <div className="flex items-center justify-between p-4 md:p-6 border-b border-slate-200 dark:border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg">
+                    <CreditCard className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <h2 className="text-lg md:text-xl font-semibold text-slate-900 dark:text-slate-100">
+                    Payment Details
+                  </h2>
+                </div>
+                <button
+                  onClick={() => setIsPaymentDetailsFormOpen(false)}
+                  className="p-1 md:p-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
+                <form
+                  className="space-y-4 md:space-y-6"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
+                  {/* Payment Information Group */}
+                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-5 border border-slate-200 dark:border-slate-700/50">
+                    <div className="flex items-center gap-3 mb-3 md:mb-4">
+                      <div className="w-8 h-8 bg-green-100 dark:bg-green-900/50 rounded-lg flex items-center justify-center">
+                        <CreditCard className="w-4 h-4 text-green-600 dark:text-green-400" />
+                      </div>
+                      <h3 className="text-base font-medium text-slate-900 dark:text-slate-100">
+                        Payment Information
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Payment Date <span className="text-rose-500">*</span>
+                        </Label>
+                        <Input
+                          type="date"
+                          {...register("paymentDate", { required: true })}
+                          required
+                          className="w-full dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Payment Method{" "}
+                          <span className="text-rose-500">*</span>
+                        </Label>
+                        <Select
+                          required
+                          onValueChange={(value) => setPaymentMethod(value)}
+                        >
+                          <SelectTrigger className="w-full dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50">
+                            <SelectValue placeholder="Select payment method" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Credit Card">
+                              💳 Credit Card
+                            </SelectItem>
+                            <SelectItem value="Debit Card">
+                              💳 Debit Card
+                            </SelectItem>
+                            <SelectItem value="PayPal">🎫 PayPal</SelectItem>
+                            <SelectItem value="Bank Transfer">
+                              🏦 Bank Transfer
+                            </SelectItem>
+                            <SelectItem value="Cash">💵 Cash</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Amount Details Group */}
+                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-5 border border-slate-200 dark:border-slate-700/50">
+                    <div className="flex items-center gap-3 mb-3 md:mb-4">
+                      <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/50 rounded-lg flex items-center justify-center">
+                        <svg
+                          className="w-4 h-4 text-blue-600 dark:text-blue-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                      <h3 className="text-base font-medium text-slate-900 dark:text-slate-100">
+                        Amount Details
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Paid Amount <span className="text-rose-500">*</span>
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            step="0.0"
+                            {...register("paidAmount", { required: true })}
+                            placeholder="0.00"
+                            required
+                            className="pl-7 dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Discount Amount
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            step="0.0"
+                            {...register("discountAmount", { required: true })}
+                            placeholder="0.00"
+                            className="pl-7 dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Due Amount
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            step="0.0"
+                            {...register("dueAmount", { required: true })}
+                            placeholder="0.00"
+                            className="pl-7 dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Total Amount <span className="text-rose-500">*</span>
+                        </Label>
+                        <div className="relative">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500">
+                            $
+                          </span>
+                          <Input
+                            type="number"
+                            step="0.0"
+                            {...register("totalAmount", { required: true })}
+                            placeholder="0.00"
+                            required
+                            className="pl-7 dark:text-white font-medium border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50 bg-blue-50 dark:bg-blue-900/20"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Status Group */}
+                  <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-4 md:p-5 border border-slate-200 dark:border-slate-700/50">
+                    <div className="flex items-center gap-3 mb-3 md:mb-4">
+                      <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/50 rounded-lg flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <h3 className="text-base font-medium text-slate-900 dark:text-slate-100">
+                        Status Information
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Payment Status{" "}
+                          <span className="text-rose-500">*</span>
+                        </Label>
+                        <Select
+                          required
+                          onValueChange={(value) => setPaymentStatus(value)}
+                        >
+                          <SelectTrigger className="w-full dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50">
+                            <SelectValue placeholder="Select payment status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Pending">🟡 Pending</SelectItem>
+                            <SelectItem value="Paid">🟢 Paid</SelectItem>
+                            <SelectItem value="Failed">🔴 Failed</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                          Order Status <span className="text-rose-500">*</span>
+                        </Label>
+                        <Select
+                          required
+                          onValueChange={(value) => setOrderStatus(value)}
+                        >
+                          <SelectTrigger className="w-full dark:text-white border-slate-200 dark:border-slate-700 focus:ring-2 focus:ring-blue-500 dark:bg-slate-800/50">
+                            <SelectValue placeholder="Select order status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="Pending">⏳ Pending</SelectItem>
+                            <SelectItem value="Confirmed">
+                              ✅ Confirmed
+                            </SelectItem>
+                            <SelectItem value="Completed">
+                              🟢 Completed
+                            </SelectItem>
+                            <SelectItem value="Shipped">🚚 Shipped</SelectItem>
+                            <SelectItem value="Delivered">
+                              📦 Delivered
+                            </SelectItem>
+                            <SelectItem value="Cancelled">
+                              ❌ Cancelled
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Footer */}
+                  <div className="p-4 md:p-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3 md:gap-4">
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsPaymentDetailsFormOpen(false)}
+                      className="bg-slate-100 dark:text-white dark:border-none hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border-slate-200 dark:border-slate-700"
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
-                      />
-                    </svg>
+                      Cancel
+                    </Button>
+
+                    <Button
+                      type="submit"
+                      className="bg-blue-600 hover:bg-blue-700 text-white"
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        "Save Changes"
+                      )}
+                    </Button>
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                      Payment Details
-                    </h1>
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                      Enter payment and order information
-                    </p>
-                  </div>
-                </div>
-              </AlertDialogTitle>
-            </AlertDialogHeader>
-
-            {/* Scrollable Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50 dark:bg-slate-900">
-              <div className="space-y-6">
-                {/* Payment Information Group */}
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-green-600 dark:text-green-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
-                        />
-                      </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      Payment Information
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Payment Date <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="date"
-                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Payment Method <span className="text-red-500">*</span>
-                      </label>
-                      <select className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors">
-                        <option value="">Select a payment method</option>
-                        <option value="Credit Card">Credit Card</option>
-                        <option value="Debit Card">Debit Card</option>
-                        <option value="PayPal">PayPal</option>
-                        <option value="Bank Transfer">Bank Transfer</option>
-                        <option value="Cash">Cash</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Amount Details Group */}
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-blue-600 dark:text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                        />
-                      </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      Amount Details
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Paid Amount <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                          $
-                        </span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          className="w-full pl-8 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Discount Amount
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                          $
-                        </span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          className="w-full pl-8 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Due Amount
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                          $
-                        </span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          className="w-full pl-8 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Total Amount <span className="text-red-500">*</span>
-                      </label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">
-                          $
-                        </span>
-                        <input
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          className="w-full pl-8 pr-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors bg-blue-50 dark:bg-blue-900/20 font-semibold"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Status Group */}
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-purple-600 dark:text-purple-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      Status Information
-                    </h2>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Payment Status <span className="text-red-500">*</span>
-                      </label>
-                      <select className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors">
-                        <option value="">Select a payment status</option>
-                        <option value="Pending">🟡 Pending</option>
-                        <option value="Paid">🟢 Paid</option>
-                        <option value="Failed">🔴 Failed</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                        Order Status <span className="text-red-500">*</span>
-                      </label>
-                      <select className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors">
-                        <option value="">Select order status</option>
-                        <option value="Pending">⏳ Pending</option>
-                        <option value="Confirmed">✅ Confirmed</option>
-                        <option value="Shipped">🚚 Shipped</option>
-                        <option value="Delivered">📦 Delivered</option>
-                        <option value="Cancelled">❌ Cancelled</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Notes Section */}
-                <div className="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                  <div className="flex items-center space-x-3 mb-4">
-                    <div className="w-8 h-8 bg-gray-100 dark:bg-gray-700 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-4 h-4 text-gray-600 dark:text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                        />
-                      </svg>
-                    </div>
-                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-                      Additional Notes
-                    </h2>
-                  </div>
-                  <textarea
-                    placeholder="Enter any additional notes or comments..."
-                    rows="3"
-                    className="w-full px-4 py-3 border border-slate-300 dark:border-slate-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-slate-800 dark:text-slate-100 transition-colors resize-none"
-                  />
-                </div>
+                </form>
               </div>
             </div>
-
-            {/* Fixed Footer */}
-            <AlertDialogFooter className="flex-shrink-0 border-t border-slate-200 dark:border-slate-700 p-6 bg-white dark:bg-slate-900">
-              <div className="flex justify-between items-center w-full">
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  <span className="text-red-500">*</span> Required fields
-                </p>
-                <div className="flex space-x-3">
-                  <AlertDialogCancel className="px-6 py-2 border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction className="px-6 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white rounded-lg transition-all transform hover:scale-105 shadow-lg">
-                    Save Payment Details
-                  </AlertDialogAction>
-                </div>
-              </div>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -224,7 +224,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   };
 
   return (
-    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-50">
+    <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
       {loading ? (
         <Loader />
       ) : (
@@ -376,7 +376,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                           )}
                         </div>
 
-                        <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-800 py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
+                        <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-100 border-gray-200 border py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
                           <User
                             size={16}
                             className="mr-2 text-gray-500 dark:text-gray-400"
