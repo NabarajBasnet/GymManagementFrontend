@@ -167,28 +167,28 @@ const MyServiceAndProductManagement = () => {
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <Building2 className="h-4 w-4" />
               Organization
             </div>
             <p className="font-semibold">{loggedInTenant?.organizationName}</p>
           </div>
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <User className="h-4 w-4" />
               Owner
             </div>
             <p className="font-semibold">{loggedInTenant?.ownerName}</p>
           </div>
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <Mail className="h-4 w-4" />
               Email
             </div>
             <p className="font-semibold text-sm">{loggedInTenant?.email}</p>
           </div>
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
+            <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
               <MapPin className="h-4 w-4" />
               Location
             </div>
@@ -198,17 +198,17 @@ const MyServiceAndProductManagement = () => {
       </Card>
 
       <Tabs defaultValue="subscription" className="w-full">
-        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 h-auto p-1 dark:bg-gray-800 dark:border-none">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 h-auto p-1 dark:bg-gray-800 dark:border-none">
           <TabsTrigger value="subscription" className="flex items-center gap-2 p-3 dark:data-[state=active]:bg-gray-700 dark:border-none">
             <Package className="h-4 w-4" />
             <span className="hidden sm:inline">Current Subscription</span>
             <span className="sm:hidden">Subscription</span>
           </TabsTrigger>
-          <TabsTrigger value="features" className="flex items-center gap-2 p-3 dark:data-[state=active]:bg-gray-700 dark:border-none">
+          {/* <TabsTrigger value="features" className="flex items-center gap-2 p-3 dark:data-[state=active]:bg-gray-700 dark:border-none">
             <Star className="h-4 w-4" />
             <span className="hidden sm:inline">Available Features</span>
             <span className="sm:hidden">Features</span>
-          </TabsTrigger>
+          </TabsTrigger> */}
           <TabsTrigger value="billing" className="flex items-center gap-2 p-3 dark:data-[state=active]:bg-gray-700 dark:border-none">
             <CreditCard className="h-4 w-4" />
             <span className="hidden sm:inline">Billing Information</span>

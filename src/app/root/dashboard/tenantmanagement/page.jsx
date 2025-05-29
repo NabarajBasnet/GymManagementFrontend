@@ -341,7 +341,7 @@ const TenantManagement = () => {
                 <TableHeader>
                   <TableRow className="border-slate-200 dark:border-slate-800">
                     <TableHead className="text-slate-700 dark:text-slate-300">
-                      Organization
+                      Organization & Business Type
                     </TableHead>
                     <TableHead className="text-slate-700 dark:text-slate-300">
                       Owner
@@ -378,7 +378,10 @@ const TenantManagement = () => {
                       <TableCell>
                         <div>
                           <p className="font-medium text-slate-900 dark:text-slate-100">
-                            {tenant.organizationName}
+                            {tenant.organizationName} -{" "}
+                            <span className="text-sm text-blue-500 dark:text-blue-400">
+                              {tenant.businessType}
+                            </span>
                           </p>
                           <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center">
                             <FiMapPin className="mr-1 h-3 w-3" />

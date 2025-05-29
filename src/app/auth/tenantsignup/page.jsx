@@ -241,6 +241,16 @@ const SignUpPage = () => {
     { name: "MXN", code: "MXN", symbol: "$" },
   ];
 
+  const businessTypes = [
+    "Gym & Fitness",
+    "Yoga & Pilates",
+    "Dance & Zumba",
+    "Sports & Training",
+    "Other",
+  ];
+
+  const [businessType, setBusinessType] = useState("");
+
   const calculatePasswordStrength = (password) => {
     let strength = 0;
     if (password.length >= 8) strength += 25;
@@ -271,6 +281,7 @@ const SignUpPage = () => {
       case 1:
         fieldsToValidate = [
           "organizationName",
+          "businessType",
           "ownerName",
           "email",
           "phone",
@@ -318,6 +329,7 @@ const SignUpPage = () => {
       // Only send required fields to the backend
       const submitData = {
         organizationName: data.organizationName,
+        businessType,
         ownerName: data.ownerName,
         email: data.email,
         phone: phoneData,
@@ -506,6 +518,27 @@ const SignUpPage = () => {
                             {errors.organizationName.message}
                           </p>
                         )}
+                      </div>
+
+                      <div>
+                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                          Business Type
+                        </Label>
+                        <Select
+                          value={businessType}
+                          onValueChange={(value) => setBusinessType(value)}
+                        >
+                          <SelectTrigger className="w-full bg-transparent text-gray-800 h-12 border-gray-200 rounded-md">
+                            <SelectValue placeholder="Select business type" />
+                          </SelectTrigger>
+                          <SelectContent className="w-full rounded-sm bg-white text-black hover:text-gray-800 cursor-pointer">
+                            {businessTypes.map((type) => (
+                              <SelectItem key={type} value={type} className="hover:text-gray-800 dark:hover:text-gray-800 cursor-pointer">
+                                {type}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
 
                       <div>
