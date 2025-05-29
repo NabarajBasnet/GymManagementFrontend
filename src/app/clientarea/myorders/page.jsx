@@ -265,36 +265,14 @@ const MyOrders = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <div className="flex items-center space-x-2">
-                              <Badge
-                                className={`${getPaymentStatusColor(
-                                  order.paymentStatus
-                                )} border font-medium px-3 py-1`}
-                                variant="outline"
-                              >
-                                {order?.paymentStatus || "N/A"}
-                              </Badge>
-                              <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="h-8 w-8 p-0 hover:bg-slate-100 dark:hover:bg-slate-700"
-                                  >
-                                    <MoreVertical className="w-4 h-4 text-slate-500 dark:text-slate-400" />
-                                  </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent
-                                  align="end"
-                                  className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
-                                >
-                                  <DropdownMenuLabel className="text-slate-700 dark:text-slate-300">
-                                    Payment Actions
-                                  </DropdownMenuLabel>
-                                  <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                                </DropdownMenuContent>
-                              </DropdownMenu>
-                            </div>
+                            <Badge
+                              className={`${getPaymentStatusColor(
+                                order.paymentStatus
+                              )} border font-medium px-3 py-1`}
+                              variant="outline"
+                            >
+                              {order?.paymentStatus || "N/A"}
+                            </Badge>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
                             <div className="flex items-center gap-2">
