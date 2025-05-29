@@ -65,17 +65,8 @@ import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
 
-const ClientAreaHeader = ({ activeTab }) => {
-  const [darkMode, setDarkMode] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { setTheme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const router = useRouter();
-
-  const { tenant, loading } = useTenant();
-  const loggedInTenant = tenant?.tenant;
-
-  const navItems = [
+const getNavItems = (multiBranchSupport) => {
+  const baseNavItems = [
     {
       id: "/clientarea/dashboard",
       icon: <Home size={20} />,
@@ -88,13 +79,16 @@ const ClientAreaHeader = ({ activeTab }) => {
       label: "Gym Dashboard",
       description: "Access Control & Monitoring",
     },
-    {
-      id: "/clientarea/branchmanagement",
-      icon: <Building2 size={20} />,
-      label: "Branch Management",
-      description: "Manage Branch",
-    },
-    {
+    // Only include Branch Management if multiBranchSupport is true
+    ...(multiBranchSupport ? [
+      {
+        id: "/clientarea/branchmanagement",
+        icon: <Building2 size={20} />,
+        label: "Branch Management",
+        description: "Manage Branch",
+      }
+    ] : []),
+    { 
       id: "/clientarea/serviceandproductmanagement",
       icon: <MdOutlineShoppingCart size={20} />,
       label: "Service & Product Management",
@@ -105,6 +99,12 @@ const ClientAreaHeader = ({ activeTab }) => {
       icon: <CreditCard size={20} />,
       label: "Store",
       description: "View and purchase services & products",
+    },
+    {
+      id: "/clientarea/usermanagement",
+      icon: <User size={20} />,
+      label: "User Management",
+      description: "Manage Users",
     },
     {
       id: "/clientarea/myorders",
@@ -119,6 +119,25 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "Configuration & Preferences",
     },
   ];
+
+  return baseNavItems;
+};
+
+const ClientAreaHeader = ({ activeTab }) => {
+  const [darkMode, setDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { setTheme } = useTheme();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const router = useRouter();
+
+  const { tenant, loading } = useTenant();
+  const loggedInTenant = tenant?.tenant;
+
+  const features = loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
+  const multiBranchSupport = features?.includes("Multi Branch Support");
+
+  // Get the nav items based on features
+  const navItems = getNavItems(multiBranchSupport);
 
   const quickActions = [
     {
