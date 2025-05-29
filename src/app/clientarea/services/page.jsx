@@ -14,12 +14,15 @@ import {
   Star,
 } from "lucide-react";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
+import { useDispatch } from "react-redux";
+import { setCartLength } from "@/state/slicer";
 
 const TenantSubscriptionPlansManagement = () => {
   const [selectedPlan, setSelectedPlan] = useState("annually");
   const [loadingButtons, setLoadingButtons] = useState({});
   const { tenant, loading: tenantLoading } = useTenant();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const fetchPlans = async () => {
     try {
@@ -47,23 +50,24 @@ const TenantSubscriptionPlansManagement = () => {
   };
 
   const handleAddToCart = async (plan) => {
-    setLoadingButtons(prev => ({ ...prev, [plan._id]: true }));
+    setLoadingButtons((prev) => ({ ...prev, [plan._id]: true }));
     try {
       const response = await fetch(`http://localhost:3000/api/cart/add-item`, {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ plan }),
-        credentials: 'include'
+        credentials: "include",
       });
 
       const responseBody = await response.json();
-      
+
       if (response.ok) {
         toast.success(responseBody.message);
         // Invalidate cart query to refresh cart data
-        queryClient.invalidateQueries(['cart']);
+        queryClient.invalidateQueries(["cart"]);
+        dispatch(setCartLength(responseBody.cart.totalItems));
       } else {
         toast.error(responseBody.message);
       }
@@ -71,7 +75,7 @@ const TenantSubscriptionPlansManagement = () => {
       console.error("Error adding to cart:", error);
       toast.error("Error adding to cart");
     } finally {
-      setLoadingButtons(prev => ({ ...prev, [plan._id]: false }));
+      setLoadingButtons((prev) => ({ ...prev, [plan._id]: false }));
     }
   };
 
@@ -209,7 +213,11 @@ const TenantSubscriptionPlansManagement = () => {
                             isPopular
                               ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                               : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
-                          } ${loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""}`}
+                          } ${
+                            loadingButtons[plan._id]
+                              ? "opacity-75 cursor-not-allowed"
+                              : ""
+                          }`}
                         >
                           {loadingButtons[plan._id] ? (
                             <Loader2 className="w-5 h-5 animate-spin" />
