@@ -1,7 +1,6 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
-import { GrStatusGoodSmall } from "react-icons/gr";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { LiaShippingFastSolid } from "react-icons/lia";
@@ -74,7 +73,21 @@ const OrderManagement = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isPaymentDetailsFormOpen, setIsPaymentDetailsFormOpen] =
     useState(false);
+
+  // Payment Details
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
+  const [orderStatus, setOrderStatus] = useState("");
+
   const queryClient = useQueryClient();
+
+  // React Hook Form
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm();
 
   const getOrders = async () => {
     try {
@@ -94,6 +107,11 @@ const OrderManagement = () => {
   });
 
   const { orders } = data || {};
+
+  const handleViewDetails = (order) => {
+    setSelectedOrder(order);
+    setIsDetailsOpen(true);
+  };
 
   const getStatusColor = (status) => {
     switch (status?.toLowerCase()) {
@@ -149,20 +167,6 @@ const OrderManagement = () => {
     }
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-    reset,
-  } = useForm();
-
-  const handlePaidStatus = async (orderId, newStatus) => {
-    if (newStatus === "Paid") {
-      setIsPaymentDetailsFormOpen(true);
-      setSelectedOrder(orderId);
-    }
-  };
-
   const handlePaymentStatus = async (orderId, newStatus) => {
     try {
       const response = await fetch(
@@ -191,18 +195,12 @@ const OrderManagement = () => {
     }
   };
 
-  const handleViewDetails = (order) => {
-    setSelectedOrder(order);
-    setIsDetailsOpen(true);
+  const handlePaidStatus = async (orderId, newStatus) => {
+    if (newStatus === "Paid") {
+      setIsPaymentDetailsFormOpen(true);
+      setSelectedOrder(orderId);
+    }
   };
-
-  const handleAttachSubscription = async (order) => {
-    console.log("Order: ", order);
-  };
-
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [paymentStatus, setPaymentStatus] = useState("");
-  const [orderStatus, setOrderStatus] = useState("");
 
   const onSubmit = async (data) => {
     const { paymentDate, paidAmount, discountAmount, dueAmount, totalAmount } =
@@ -251,6 +249,35 @@ const OrderManagement = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
+    }
+  };
+
+  const handleAttachSubscription = async (orderId) => {
+    try{
+      const response = await fetch(`http://localhost:3000/api/order/attach-order-to-tenant/${orderId}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const responseBody = await response.json();
+      console.log("Response: ", responseBody);
+      if(response.ok){
+        toast.success(responseBody.message);
+        queryClient.invalidateQueries({ queryKey: ["orders"] });
+        soonerToast(responseBody.message, { 
+          description: "Order attached to tenant successfully",
+        });
+      }else{
+        toast.error(responseBody.error);
+        soonerToast(responseBody.error, {
+          description: "Error attaching order to tenant",
+        });
+      }
+    }catch(error){
+      console.log("Error: ", error);
+      toast.error(error.error);
     }
   };
 
@@ -502,10 +529,9 @@ const OrderManagement = () => {
                                       This action will attach the taken
                                       subscription by tenant to the tenant
                                       account. And once tenant account status is
-                                      active by tenant management page then
-                                      tenant will be able to access the
-                                      subscription features and dashboard
-                                      access.
+                                      active by administrator then tenant will
+                                      be able to access the subscription
+                                      features and access dashboard.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
@@ -514,7 +540,7 @@ const OrderManagement = () => {
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                       onClick={() =>
-                                        handleAttachSubscription(order)
+                                        handleAttachSubscription(order.orderId)
                                       }
                                     >
                                       Continue
