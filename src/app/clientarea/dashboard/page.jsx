@@ -1,29 +1,42 @@
 "use client";
 
-import { User } from "lucide-react";
+import { User, Settings, LogOut } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { InfoIcon, TrendingDown, TrendingUp, RefreshCcw } from "lucide-react";
-import { MdAutorenew } from "react-icons/md";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { motion } from "framer-motion";
 import { GiBiceps } from "react-icons/gi";
-import { FaUsers } from "react-icons/fa6";
-import { PiUsersFourFill } from "react-icons/pi";
-import { RiUserShared2Fill } from "react-icons/ri";
+import { FaUsers, FaBuilding } from "react-icons/fa6";
+import { RiServiceLine } from "react-icons/ri";
 import { useRouter } from "next/navigation";
-import { BarChartMultiple } from "@/components/Charts/BarChart";
-import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
-import { NewRadialChart } from "@/components/Charts/newRadialChart";
-import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
-import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
-const AdminDashboard = () => {
+const StatCard = ({ icon: Icon, title, value, className }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.3 }}
+  >
+    <Card className="hover:shadow-lg dark:border-none dark:bg-gray-800 transition-all duration-300">
+      <CardContent className="p-6">
+        <div className="flex items-center space-x-4">
+          <div className={`p-3 rounded-full ${className}`}>
+            <Icon className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-3xl font-bold">{value}</h3>
+            <p className="text-sm text-muted-foreground">{title}</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  </motion.div>
+);
+
+const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
@@ -34,14 +47,21 @@ const AdminDashboard = () => {
 
   if (!loggedInTenant) {
     return (
-      <div>
-        <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="text-center space-y-4"
+        >
           <h1 className="text-2xl font-bold">Please login to continue</h1>
-          <p className="text-sm text-gray-500">Please login to continue</p>
-          <Button onClick={() => router.push("/auth/tenantlogin")}>
+          <p className="text-sm text-muted-foreground">Access your dashboard</p>
+          <Button
+            onClick={() => router.push("/auth/tenantlogin")}
+            className="px-8"
+          >
             Login
           </Button>
-        </div>
+        </motion.div>
       </div>
     );
   }
@@ -54,64 +74,161 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">
+    <div className="min-h-screen w-full flex justify-center bg-gray-50 dark:bg-gray-900">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <h1 className="text-2xl font-bold">My Dashboard</h1>
-        <div className="w-full flex items-start justify-between space-x-4">
-          <Card className="w-full lg:w-3/12">
-            <div>
-              <div className="flex flex-col items-center justify-between p-2">
-                <div className="flex items-center justify-center bg-white rounded-full p-12 text-gray-500">
-                  {loggedInTenant?.ownerName.split(" ")[0].charAt(0)}
-                  {loggedInTenant?.ownerName.split(" ")[1].charAt(0)}
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">
-                    {getGreeting()}, {loggedInTenant?.ownerName}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">
-                    {loggedInTenant?.email}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {loggedInTenant?.phone?.countryCode}{" "}
-                    {loggedInTenant?.phone?.number}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {loggedInTenant?.address}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {loggedInTenant?.tenantStatus}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(
-                      loggedInTenant?.tenantSubscriptionStartDate
-                    ).toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {new Date(
-                      loggedInTenant?.tenantSubscriptionEndDate
-                    ).toLocaleString()}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    {loggedInTenant?.tenantSubscriptionStatus}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Card>
+        <motion.h1
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="text-3xl font-bold dark:text-white"
+        >
+          My Dashboard
+        </motion.h1>
+        <p className="text-sm text-muted-foreground my-4 font-medium dark:text-white">
+          Portal / Client Area / Dashboard
+        </p>
 
-          <Card className="w-full lg:w-9/12">
-            <h2 className="text-lg font-bold">My Tenants</h2>
-            <p className="text-sm text-gray-500">
-              View and manage your tenants
-            </p>
-          </Card>
+        <div className="flex flex-col-reverse lg:flex-row gap-8">
+          {/* Profile Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full lg:w-3/12"
+          >
+            <Card className="overflow-hidden dark:border-none dark:bg-gray-800">
+              <CardContent className="p-6">
+                <div className="flex flex-col items-center space-y-6">
+                  <div className="relative">
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                      {loggedInTenant?.ownerName.split(" ")[0].charAt(0)}
+                      {loggedInTenant?.ownerName.split(" ")[1].charAt(0)}
+                    </div>
+                  </div>
+
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold">
+                      {loggedInTenant?.ownerName}
+                    </h2>
+                    <p className="text-sm dark:text-gray-100">
+                      {getGreeting()}
+                    </p>
+                  </div>
+
+                  <div className="w-full space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <User className="w-4 h-4 dark:text-gray-100" />
+                        <span className="dark:text-gray-100">
+                          {loggedInTenant?.email}
+                        </span>
+                      </div>
+                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                        <FaBuilding className="w-4 h-4 dark:text-gray-100" />
+                        <span className="dark:text-gray-100">
+                          {loggedInTenant?.address}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 pt-4 border-t dark:border-gray-800">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-gray-100">
+                          Account Status
+                        </span>
+                        <span className="font-medium dark:text-gray-100">
+                          {loggedInTenant?.tenantStatus}
+                        </span>
+                      </div>
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground dark:text-gray-100">
+                          Subscription Status
+                        </span>
+                        <span className="font-medium dark:text-gray-100 ">
+                          {loggedInTenant?.tenantSubscriptionStatus}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col space-y-2 pt-4">
+                      <Button
+                        variant="outline"
+                        className="w-full dark:border-none dark:hover:bg-gray-700 hover:bg-gray-200"
+                        onClick={() => {}}
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        Edit Profile
+                      </Button>
+                      <Button
+                        className="w-full bg-red-600 text-white dark:border-none dark:hover:bg-red-700 hover:bg-red-700" 
+                        onClick={() => {}}
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Log Out
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Main Content */}
+          <div className="w-full lg:w-9/12 space-y-8">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard
+                icon={FaUsers}
+                title="Staffs"
+                value={loggedInTenant?.staffs?.length || 0}
+                className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+              />
+              <StatCard
+                icon={FaBuilding}
+                title="Branches"
+                value={
+                  loggedInTenant?.tenantSubscription?.branches?.length || 0
+                }
+                className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+              />
+              <StatCard
+                icon={FaUsers}
+                title="Users"
+                value={loggedInTenant?.tenantSubscription?.users?.length || 0}
+                className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+              />
+              <StatCard
+                icon={GiBiceps}
+                title="Members"
+                value={loggedInTenant?.tenantSubscription?.members?.length || 0}
+                className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
+              />
+            </div>
+
+            {/* Active Services Card */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <Card className="dark:border-none dark:bg-gray-800 shadow-md">
+                <CardHeader>
+                  <CardTitle>Active Services/Products</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white">
+                    <h3 className="text-2xl font-semibold mb-2">
+                      {loggedInTenant?.tenantSubscription?.subscriptionName ||
+                        "No Active Subscription"}
+                    </h3>
+                    <p className="text-blue-100">Current Plan</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default AdminDashboard;
+export default TenantDashboard;
