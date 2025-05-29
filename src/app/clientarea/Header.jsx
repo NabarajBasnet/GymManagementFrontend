@@ -64,6 +64,7 @@ import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
+import { useSelector } from "react-redux";
 
 const getNavItems = (multiBranchSupport) => {
   const baseNavItems = [
@@ -80,15 +81,17 @@ const getNavItems = (multiBranchSupport) => {
       description: "Access Control & Monitoring",
     },
     // Only include Branch Management if multiBranchSupport is true
-    ...(multiBranchSupport ? [
-      {
-        id: "/clientarea/branchmanagement",
-        icon: <Building2 size={20} />,
-        label: "Branch Management",
-        description: "Manage Branch",
-      }
-    ] : []),
-    { 
+    ...(multiBranchSupport
+      ? [
+          {
+            id: "/clientarea/branchmanagement",
+            icon: <Building2 size={20} />,
+            label: "Branch Management",
+            description: "Manage Branch",
+          },
+        ]
+      : []),
+    {
       id: "/clientarea/serviceandproductmanagement",
       icon: <MdOutlineShoppingCart size={20} />,
       label: "Service & Product Management",
@@ -124,12 +127,12 @@ const getNavItems = (multiBranchSupport) => {
 };
 
 const ClientAreaHeader = ({ activeTab }) => {
+  const cartLength = useSelector((state) => state.rtkreducer.cartLength);
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { setTheme } = useTheme();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
-
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
 
@@ -149,7 +152,7 @@ const ClientAreaHeader = ({ activeTab }) => {
     {
       icon: <ShoppingCart size={16} />,
       label: "Cart",
-      count: 1,
+      count: cartLength,
       link: "/clientarea/cart",
     },
   ];
@@ -350,7 +353,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                         <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
                           Quick Actions
                         </h4>
-                        <div className="hidden lg:flex items-center space-x-2">
+                        <div className="flex items-center space-x-2">
                           {quickActions.slice(0, 2).map((action, index) => (
                             <button
                               key={index}

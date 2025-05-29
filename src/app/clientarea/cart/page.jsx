@@ -24,12 +24,15 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setCartLength } from "@/state/slicer";
 
 const TenantCartManagement = () => {
   const [ordering, setOrdering] = useState(false);
   const [processing, setProcessing] = useState({});
   const router = useRouter();
   const queryClient = useQueryClient();
+  const dispatch = useDispatch();
 
   const getCartItems = async () => {
     try {
@@ -38,11 +41,12 @@ const TenantCartManagement = () => {
       });
 
       if (response.status === 401) {
-        router.push("/login");
+        router.push("/auth/tenantlogin");
         throw new Error("Unauthorized");
       }
 
       const responseBody = await response.json();
+      dispatch(setCartLength(responseBody?.cart?.totalItems));
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
@@ -56,6 +60,8 @@ const TenantCartManagement = () => {
     queryFn: getCartItems,
     retry: false,
   });
+
+  const { cart } = data || {};
 
   const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
@@ -81,6 +87,7 @@ const TenantCartManagement = () => {
       if (response.ok) {
         toast.success("Item removed from cart");
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        dispatch(setCartLength(cart.totalItems));
       } else {
         toast.error(data.message);
       }
@@ -111,6 +118,7 @@ const TenantCartManagement = () => {
         });
         setOrdering(false);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        dispatch(setCartLength(cart.totalItems));
         router.push(responseBody.redirectUrl);
       } else {
         toast.error(responseBody.error);
@@ -147,6 +155,7 @@ const TenantCartManagement = () => {
       if (response.ok) {
         toast.success(data.message);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        dispatch(setCartLength(cart.totalItems));
       } else {
         toast.error(data.message);
       }
@@ -182,6 +191,7 @@ const TenantCartManagement = () => {
       if (response.ok) {
         toast.success(data.message);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
+        dispatch(setCartLength(cart.totalItems));
       } else {
         toast.error(data.message);
       }
@@ -216,8 +226,6 @@ const TenantCartManagement = () => {
       </div>
     );
   }
-
-  const { cart } = data || {};
 
   return (
     <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">
