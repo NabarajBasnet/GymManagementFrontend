@@ -20,7 +20,7 @@ const StatCard = ({ icon: Icon, title, value, className }) => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3 }}
   >
-    <Card className="hover:shadow-lg dark:border-none dark:bg-gray-800 transition-all duration-300">
+    <Card className="hover:shadow-lg cursor-pointer dark:border-none dark:bg-gray-800 transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-center space-x-4">
           <div className={`p-3 rounded-full ${className}`}>
@@ -158,7 +158,7 @@ const TenantDashboard = () => {
                         Edit Profile
                       </Button>
                       <Button
-                        className="w-full bg-red-600 text-white dark:border-none dark:hover:bg-red-700 hover:bg-red-700" 
+                        className="w-full bg-red-600 text-white dark:border-none dark:hover:bg-red-700 hover:bg-red-700"
                         onClick={() => {}}
                       >
                         <LogOut className="w-4 h-4 mr-2" />
@@ -211,15 +211,34 @@ const TenantDashboard = () => {
             >
               <Card className="dark:border-none dark:bg-gray-800 shadow-md">
                 <CardHeader>
-                  <CardTitle>Active Services/Products</CardTitle>
+                  <CardTitle>Your Current Active Services/Products</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white">
-                    <h3 className="text-2xl font-semibold mb-2">
-                      {loggedInTenant?.tenantSubscription?.subscriptionName ||
-                        "No Active Subscription"}
-                    </h3>
-                    <p className="text-blue-100">Current Plan</p>
+                  <div className="p-6 flex justify-between items-center bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white">
+                    <div>
+                      <h3 className="text-2xl font-semibold mb-2">
+                        {loggedInTenant?.tenantSubscription[0]
+                          ?.subscriptionName || "No Active Subscription"}
+                      </h3>
+                      <p className="text-blue-100 font-medium text-sm">
+                        {loggedInTenant?.ownerName || "N/A"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <h1 className="text-blue-100 font-medium text-sm">
+                        Start:{" "}
+                        {new Date(
+                          loggedInTenant?.tenantSubscriptionStartDate
+                        ).toLocaleDateString()}
+                      </h1>
+                      <h1 className="text-blue-100 font-medium text-sm">
+                        End:{" "}
+                        {new Date(
+                          loggedInTenant?.tenantSubscriptionEndDate
+                        ).toLocaleDateString()}
+                      </h1>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
