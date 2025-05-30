@@ -70,7 +70,8 @@ export default function MainClientLayout({ children }) {
     pathname.startsWith("/StaffLogin") ||
     pathname.startsWith("/MyProfile") ||
     pathname.startsWith("/memberlogin") ||
-    pathname.startsWith("/member");
+    pathname.startsWith("/member") ||
+    pathname.startsWith("/unauthorized");
 
   return (
     <ThemeProvider
