@@ -1,6 +1,6 @@
 "use client";
 
-import {toast as soonerToast} from "sonner";
+import { toast as soonerToast } from "sonner";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -26,6 +26,13 @@ import {
   ChevronRight,
   Github,
   Linkedin,
+  Shield,
+  Users,
+  Building2,
+  Sparkles,
+  UserPlus,
+  Info,
+  Star,
 } from "lucide-react";
 
 const CreateUsers = () => {
@@ -34,14 +41,19 @@ const CreateUsers = () => {
     reset,
     handleSubmit,
     watch,
+    setValue,
     formState: { isSubmitting, errors },
   } = useForm();
 
   const watchPassword = watch("password", "");
 
+  const handleRoleSelect = (value) => {
+    setValue("role", value);
+  };
+
   const createSystemUser = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/api/systemusers/create", {
+      const response = await fetch("/api/systemusers/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,250 +71,525 @@ const CreateUsers = () => {
         soonerToast.error(responseBody.message || "Failed to create account");
       }
     } catch (error) {
+      console.error("Error: ", error);
       toast.error("An unexpected error occurred. Please try again.");
       soonerToast.error("An unexpected error occurred. Please try again.");
-      console.log("Error: ", error);
     }
   };
 
+  const roleCategories = [
+    {
+      category: "Executive Leadership",
+      roles: [
+        { value: "CEO", label: "CEO", icon: Star, color: "text-amber-500" },
+        {
+          value: "Super Admin",
+          label: "Super Admin",
+          icon: Shield,
+          color: "text-red-500",
+        },
+      ],
+    },
+    {
+      category: "Operations & Management",
+      roles: [
+        {
+          value: "Operation Manager",
+          label: "Operation Manager",
+          icon: Building2,
+          color: "text-blue-500",
+        },
+        {
+          value: "Gym Admin",
+          label: "Gym Admin",
+          icon: Users,
+          color: "text-green-500",
+        },
+        {
+          value: "HR Manager",
+          label: "HR Manager",
+          icon: Users,
+          color: "text-purple-500",
+        },
+      ],
+    },
+    {
+      category: "Specialized Roles",
+      roles: [
+        {
+          value: "Developer",
+          label: "Developer",
+          icon: Github,
+          color: "text-cyan-500",
+        },
+        {
+          value: "Accountant",
+          label: "Accountant",
+          icon: Building2,
+          color: "text-orange-500",
+        },
+      ],
+    },
+  ];
+
   return (
-    <div className="min-h-screen w-full p-4 bg-gray-100 dark:bg-gray-900">
-      <div className="w-full mx-auto flex flex-col lg:flex-row gap-4">
-        {/* Left Card - User Info */}
-        <div className="w-full lg:w-3/12 flex">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full transition-colors duration-200">
-            <div className="text-center">
-              <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4">
-                <User className="w-full h-full p-4 text-gray-400 dark:text-gray-500" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">New User</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Create a new system user</p>
+    <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-900 transition-all duration-300">
+      {/* Header Section */}
+      <div className="relative overflow-hidden bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl border-b border-gray-200/50 dark:border-gray-700/50">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-indigo-600/5 dark:from-blue-400/5 dark:to-indigo-400/5"></div>
+        <div className="relative max-w-7xl mx-auto px-6 py-8">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-lg">
+              <UserPlus className="w-6 h-6 text-white" />
             </div>
-            
-            <div className="mt-6 space-y-4">
-              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-2">Available Roles</h4>
-                <ul className="text-sm font-medium text-gray-600 dark:text-gray-400 space-y-2">
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>Super Admin</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>Gym Admin</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>Operation Manager</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>Developer</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>CEO</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>HR Manager</span>
-                  </li>
-                  <li className="flex items-center space-x-2">
-                    <span>•</span>
-                    <span>Accountant</span>
-                  </li>
-                </ul>
+            <div>
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                User Management
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400 font-medium">
+                Create and manage system users with role-based access control
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto p-6">
+        <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+          {/* Left Sidebar - Enhanced Info Card */}
+          <div className="xl:col-span-4 space-y-6">
+            {/* User Avatar Card */}
+            <div className="group bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-8 transition-all duration-300 hover:shadow-2xl hover:scale-105">
+              <div className="text-center">
+                <div className="relative mx-auto mb-6">
+                  <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-2xl flex items-center justify-center shadow-lg">
+                    <User className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full flex items-center justify-center shadow-lg">
+                    <Sparkles className="w-3 h-3 text-white" />
+                  </div>
+                </div>
+                <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">
+                  New System User
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 font-medium">
+                  Configure user profile and access permissions
+                </p>
+              </div>
+            </div>
+
+            {/* Role Categories Card */}
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 transition-all duration-300">
+              <div className="flex items-center space-x-3 mb-6">
+                <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-white" />
+                </div>
+                <h4 className="text-lg font-bold text-gray-800 dark:text-white">
+                  Available Roles
+                </h4>
+              </div>
+
+              <div className="space-y-6">
+                {roleCategories.map((category, index) => (
+                  <div key={index} className="space-y-3">
+                    <h5 className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
+                      {category.category}
+                    </h5>
+                    <div className="space-y-2">
+                      {category.roles.map((role, roleIndex) => (
+                        <div
+                          key={roleIndex}
+                          className="flex items-center space-x-3 p-3 rounded-xl bg-gray-50/80 dark:bg-gray-700/50 transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 group"
+                        >
+                          <role.icon className={`w-4 h-4 ${role.color}`} />
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">
+                            {role.label}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Info Card */}
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-2xl p-6 border border-blue-200/50 dark:border-blue-800/50">
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Info className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <h5 className="font-semibold text-blue-900 dark:text-blue-300 mb-2">
+                    Security Notice
+                  </h5>
+                  <p className="text-sm text-blue-700 dark:text-blue-400 leading-relaxed">
+                    All user accounts are created with secure authentication
+                    protocols. Role permissions are automatically applied based
+                    on selection.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Main Form */}
+          <div className="xl:col-span-8">
+            <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50 transition-all duration-300">
+              {/* Form Header */}
+              <div className="p-8 border-b border-gray-200/50 dark:border-gray-700/50">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+                      Create New User Account
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-400 font-medium">
+                      Enter the required information to set up a new system user
+                    </p>
+                  </div>
+                  <div className="hidden md:flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                    <span>Secure Connection</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Content */}
+              <div className="p-8">
+                <form
+                  onSubmit={handleSubmit(createSystemUser)}
+                  className="space-y-8"
+                >
+                  {/* Personal Information Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3 pb-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                      <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-lg flex items-center justify-center">
+                        <User className="w-4 h-4 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                        Personal Information
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          First Name
+                        </Label>
+                        <div className="relative group">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="text"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Enter first name"
+                            {...register("firstName", {
+                              required: "First name is required",
+                            })}
+                          />
+                        </div>
+                        {errors.firstName && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.firstName.message}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Last Name
+                        </Label>
+                        <div className="relative group">
+                          <User className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="text"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Enter last name"
+                            {...register("lastName", {
+                              required: "Last name is required",
+                            })}
+                          />
+                        </div>
+                        {errors.lastName && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.lastName.message}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Email Address
+                        </Label>
+                        <div className="relative group">
+                          <AtSign className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="email"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Enter email address"
+                            {...register("email", {
+                              required: "Email is required",
+                            })}
+                          />
+                        </div>
+                        {errors.email && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.email.message}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Phone Number
+                        </Label>
+                        <div className="relative group">
+                          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="tel"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Enter phone number"
+                            {...register("phoneNumber", {
+                              required: "Phone number is required",
+                              pattern: {
+                                value: /^[0-9+\-\s()]{10,15}$/,
+                                message: "Please enter a valid phone number",
+                              },
+                            })}
+                          />
+                        </div>
+                        {errors.phoneNumber && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.phoneNumber.message}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Security Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3 pb-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                      <div className="w-8 h-8 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg flex items-center justify-center">
+                        <Lock className="w-4 h-4 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                        Security Credentials
+                      </h3>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Password
+                        </Label>
+                        <div className="relative group">
+                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="password"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Create secure password"
+                            {...register("password", {
+                              required: "Password is required",
+                            })}
+                          />
+                        </div>
+                        {errors.password && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.password.message}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Confirm Password
+                        </Label>
+                        <div className="relative group">
+                          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="password"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Confirm password"
+                            {...register("confirmPassword", {
+                              required: "Please confirm your password",
+                              validate: (value) =>
+                                value === watchPassword ||
+                                "Passwords do not match",
+                            })}
+                          />
+                        </div>
+                        {errors.confirmPassword && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.confirmPassword.message}</span>
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Additional Information Section */}
+                  <div className="space-y-6">
+                    <div className="flex items-center space-x-3 pb-4 border-b border-gray-200/50 dark:border-gray-700/50">
+                      <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-4 h-4 text-white" />
+                      </div>
+                      <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
+                        Additional Information
+                      </h3>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                          Address
+                        </Label>
+                        <div className="relative group">
+                          <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                          <Input
+                            type="text"
+                            className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                            placeholder="Enter full address"
+                            {...register("address", {
+                              required: "Address is required",
+                            })}
+                          />
+                        </div>
+                        {errors.address && (
+                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                            <X className="w-3 h-3" />
+                            <span>{errors.address.message}</span>
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            Date of Birth
+                          </Label>
+                          <div className="relative group">
+                            <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                            <Input
+                              type="date"
+                              className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 text-gray-900 dark:text-white rounded-xl transition-all duration-200 font-medium"
+                              {...register("dob", {
+                                required: "Date of birth is required",
+                              })}
+                            />
+                          </div>
+                          {errors.dob && (
+                            <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                              <X className="w-3 h-3" />
+                              <span>{errors.dob.message}</span>
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                            System Role
+                          </Label>
+                          <div className="relative group">
+                            <Select onValueChange={handleRoleSelect}>
+                              <SelectTrigger className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 rounded-xl font-medium">
+                                <Shield className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                                <SelectValue
+                                  placeholder="Select user role"
+                                  className="text-gray-900 dark:text-white"
+                                />
+                              </SelectTrigger>
+                              <SelectContent className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-2xl">
+                                {roleCategories.flatMap((category) =>
+                                  category.roles.map((role) => (
+                                    <SelectItem
+                                      key={role.value}
+                                      value={role.value}
+                                      className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium"
+                                    >
+                                      <div className="flex items-center space-x-3">
+                                        <role.icon
+                                          className={`w-4 h-4 ${role.color}`}
+                                        />
+                                        <span>{role.label}</span>
+                                      </div>
+                                    </SelectItem>
+                                  ))
+                                )}
+                              </SelectContent>
+                            </Select>
+                            {errors.role && (
+                              <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1 mt-1">
+                                <X className="w-3 h-3" />
+                                <span>{errors.role.message}</span>
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-6 border-t border-gray-200/50 dark:border-gray-700/50">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-14 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:from-emerald-600 hover:via-teal-600 hover:to-cyan-600 text-white font-bold text-lg rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center space-x-3"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          <span>Creating User...</span>
+                        </>
+                      ) : (
+                        <>
+                          <UserPlus className="w-5 h-5" />
+                          <span>Create System User</span>
+                          <ChevronRight className="w-4 h-4" />
+                        </>
+                      )}
+                    </Button>
+                  </div>
+
+                  {/* Additional Actions */}
+                  <div className="flex items-center justify-between pt-4">
+                    <Link
+                      href="/dashboard/users"
+                      className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium transition-colors"
+                    >
+                      <span>← Back to Users</span>
+                    </Link>
+
+                    <div className="flex items-center space-x-4">
+                      <button
+                        type="button"
+                        onClick={() => reset()}
+                        className="px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium transition-colors"
+                      >
+                        Clear Form
+                      </button>
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Right Card - Form */}
-        <div className="w-full lg:w-9/12 flex">
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full transition-colors duration-200">
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Create New User</h2>
-              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Fill in the information below to create a new system user</p>
-            </div>
-
-            <form onSubmit={handleSubmit(createSystemUser)} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">First Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="text"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("firstName", { required: "First name is required" })}
-                    />
-                  </div>
-                  {errors.firstName && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.firstName.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Last Name</Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="text"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("lastName", { required: "Last name is required" })}
-                    />
-                  </div>
-                  {errors.lastName && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.lastName.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Email</Label>
-                  <div className="relative">
-                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="email"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("email", { required: "Email is required" })}
-                    />
-                  </div>
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.email.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Phone Number</Label>
-                  <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="tel"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("phoneNumber", {
-                        required: "Phone number is required",
-                        pattern: {
-                          value: /^[0-9+\-\s()]{10,15}$/,
-                          message: "Please enter a valid phone number",
-                        },
-                      })}
-                    />
-                  </div>
-                  {errors.phoneNumber && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.phoneNumber.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="password"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("password", { required: "Password is required" })}
-                    />
-                  </div>
-                  {errors.password && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.password.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Confirm Password</Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="password"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("confirmPassword", {
-                        required: "Please confirm your password",
-                        validate: (value) => value === watchPassword || "Passwords do not match",
-                      })}
-                    />
-                  </div>
-                  {errors.confirmPassword && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.confirmPassword.message}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <Label className="text-gray-700 dark:text-gray-200">Address</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                  <Input
-                    type="text"
-                    className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                    {...register("address", { required: "Address is required" })}
-                  />
-                </div>
-                {errors.address && (
-                  <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.address.message}</p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Date of Birth</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                    <Input
-                      type="date"
-                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
-                      {...register("dob", { required: "Date of birth is required" })}
-                    />
-                  </div>
-                  {errors.dob && (
-                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.dob.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <Label className="text-gray-700 dark:text-gray-200">Role</Label>
-                  <div className="relative">
-                    <Select>
-                      <SelectTrigger className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
-                        <SelectItem value="super_admin" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Super Admin</SelectItem>
-                        <SelectItem value="gym_admin" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Gym Admin</SelectItem>
-                        <SelectItem value="operation_manager" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Operation Manager</SelectItem>
-                        <SelectItem value="developer" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Developer</SelectItem>
-                        <SelectItem value="ceo" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">CEO</SelectItem>
-                        <SelectItem value="hr_manager" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">HR Manager</SelectItem>
-                        <SelectItem value="accountant" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Accountant</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full py-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <div className="flex items-center justify-center">
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Creating Account...</span>
-                  </div>
-                ) : (
-                  <span>Create Account</span>
-                )}
-              </Button>
-            </form>
-          </div>
+        {/* Footer Info */}
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            All user data is encrypted and stored securely. Changes take effect
+            immediately upon creation.
+          </p>
         </div>
       </div>
     </div>

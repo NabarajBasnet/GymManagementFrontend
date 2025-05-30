@@ -239,23 +239,33 @@ const TenantCartManagement = () => {
       </div>
 
       {cart?.items?.length === 0 ? (
-        <Card className="w-full flex flex-col min-h-screen items-center justify-center bg-white dark:bg-gray-800 dark:border-none">
-          <CardHeader>
-            <CardTitle className="text-center">Subscription Plans</CardTitle>
-            <CardDescription className="flex flex-col items-center justify-center">
-              <span className="text-gray-500 text-sm my-4 font-medium dark:text-gray-300 text-center">
-                It looks like you haven't added any items to your cart yet.
-              </span>
-              <Button
-                variant="outline"
-                onClick={() => router.push("/clientarea/store")}
-                className="dark:border-none dark:hover:bg-gray-700 dark:text-white dark:outline-none"
-              >
-                <ShoppingBag className="w-4 h-4 dark:text-white" />
-                Continue Shopping
-              </Button>
+        <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
+          <CardHeader className="text-center pb-2">
+            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center">
+              <ShoppingBag className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+              Your Cart is Empty
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400 mt-2 px-4">
+              Discover our subscription plans and find the perfect fit for your
+              needs
             </CardDescription>
           </CardHeader>
+          <CardContent className="pt-2 pb-6">
+            <div className="text-center">
+              <Button
+                onClick={() => router.push("/clientarea/store")}
+                className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-sm hover:shadow-md"
+              >
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Browse Subscription Plans
+              </Button>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                Choose from our variety of plans designed for your success
+              </p>
+            </div>
+          </CardContent>
         </Card>
       ) : (
         <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
