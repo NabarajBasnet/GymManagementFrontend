@@ -34,6 +34,7 @@ import {
   Info,
   Star,
 } from "lucide-react";
+import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
 
 const CreateUsers = () => {
   const {
@@ -47,8 +48,23 @@ const CreateUsers = () => {
 
   const watchPassword = watch("password", "");
 
+  const { tenant } = useTenant();
+  const loggedInTenant = tenant?.tenant;
+
+  const branches = loggedInTenant?.organizationBranch;
+  console.log("Branches", branches);
+
+  // Check if tenant has selected features
+  const selectedFeatures =
+    loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
+  const multiBranchSupport = selectedFeatures?.includes("Multi Branch Support");
+
   const handleRoleSelect = (value) => {
     setValue("role", value);
+  };
+
+  const handleBranchSelect = (value) => {
+    setValue("companyBranch", value);
   };
 
   const createSystemUser = async (data) => {
@@ -463,10 +479,46 @@ const CreateUsers = () => {
                           />
                         </div>
                         {errors.address && (
-                          <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
+                          <p className="text-sm mt-2 text-red-500 dark:text-red-400 font-medium flex items-center space-x-1">
                             <X className="w-3 h-3" />
                             <span>{errors.address.message}</span>
                           </p>
+                        )}
+
+                        {multiBranchSupport && (
+                          <div className="space-y-2">
+                            <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+                              Company Branch
+                            </Label>
+                            <div className="relative group">
+                              <Select onValueChange={handleBranchSelect}>
+                                <SelectTrigger className="pl-12 h-12 bg-white dark:bg-gray-700 border-2 border-gray-200 dark:border-gray-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-4 focus:ring-emerald-500/20 dark:focus:ring-emerald-400/20 rounded-xl font-medium">
+                                  <Shield className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors" />
+                                  <SelectValue
+                                    placeholder="Select Branch"
+                                    className="text-gray-900 dark:text-white"
+                                  />
+                                </SelectTrigger>
+                                <SelectContent className="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-xl shadow-2xl">
+                                  {branches?.map((branch) => (
+                                    <SelectItem
+                                      key={branch._id}
+                                      value={branch._id}
+                                        className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium"
+                                      >
+                                        {branch.gymBranchName}
+                                      </SelectItem>
+                                    ))}  
+                                </SelectContent>
+                              </Select>
+                              {errors.companyBranch && (
+                                <p className="text-sm text-red-500 dark:text-red-400 font-medium flex items-center space-x-1 mt-1">
+                                  <X className="w-3 h-3" />
+                                  <span>{errors.companyBranch.message}</span>
+                                </p>
+                              )}
+                            </div>
+                          </div>
                         )}
                       </div>
 

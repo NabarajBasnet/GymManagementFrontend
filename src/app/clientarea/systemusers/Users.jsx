@@ -63,6 +63,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
 
 const Users = () => {
   const queryClient = useQueryClient();
@@ -77,6 +78,22 @@ const Users = () => {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
+  const { tenant } = useTenant();
+  const loggedInTenant = tenant?.tenant;
+
+  const branches = loggedInTenant?.organizationBranch;
+  console.log("Branches", branches);
+
+  // Check if tenant has selected features
+  const selectedFeatures =
+    loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
+  const multiBranchSupport = selectedFeatures?.includes("Multi Branch Support");
+
+  const getBranchName = (branchId) => {
+    const branch = branches.find((branch) => branch._id === branchId);
+    return branch?.gymBranchName;
+  };
+
   const {
     register,
     handleSubmit,
@@ -87,6 +104,7 @@ const Users = () => {
 
   const [role, setUserRole] = useState("");
   const [status, setUserStatus] = useState("");
+  const [userBranch, setUserBranch] = useState("");
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
@@ -165,6 +183,7 @@ const Users = () => {
         phoneNumber,
         dob,
         address,
+        companyBranch: userBranch,
         role,
         status,
       };
@@ -398,7 +417,7 @@ const Users = () => {
                                     field.onChange(value);
                                   }}
                                 >
-                                  <SelectTrigger className="mt-1 py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
+                                  <SelectTrigger className="mt-1 rounded-md py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
                                     <SelectValue placeholder="Select role" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
@@ -441,7 +460,7 @@ const Users = () => {
                                     field.onChange(value);
                                   }}
                                 >
-                                  <SelectTrigger className="mt-1 py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
+                                  <SelectTrigger className="mt-1 py-6 rounded-md bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
                                     <SelectValue placeholder="Select status" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
@@ -463,6 +482,39 @@ const Users = () => {
                             />
                           </div>
                         </div>
+
+                        {multiBranchSupport && (
+                          <div>
+                            <Label className="dark:text-gray-200">Branch</Label>
+                            <Controller
+                              name="companyBranch"
+                              control={control}
+                              render={({ field }) => (
+                                <Select
+                                  {...field}
+                                  onValueChange={(value) => {
+                                    setUserBranch(value);
+                                    field.onChange(value);
+                                  }}
+                                >
+                                  <SelectTrigger className="mt-1 rounded-md py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
+                                    <SelectValue placeholder="Select Branch" />
+                                  </SelectTrigger>
+                                  <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                    {branches?.map((branch) => (
+                                      <SelectItem
+                                        key={branch._id}
+                                        value={branch._id}
+                                      >
+                                        {branch.gymBranchName}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              )}
+                            />
+                          </div>
+                        )}
                       </div>
 
                       {/* Address Section */}
@@ -585,6 +637,9 @@ const Users = () => {
                         Role
                       </TableHead>
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                        Branch
+                      </TableHead>
+                      <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Email
                       </TableHead>
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
@@ -627,6 +682,11 @@ const Users = () => {
                           <TableCell className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900 dark:text-gray-100">
                               {user.role}
+                            </div>
+                          </TableCell>
+                          <TableCell className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-900 dark:text-gray-100">
+                              {getBranchName(user.companyBranch)}
                             </div>
                           </TableCell>
                           <TableCell className="px-6 py-4 whitespace-nowrap">

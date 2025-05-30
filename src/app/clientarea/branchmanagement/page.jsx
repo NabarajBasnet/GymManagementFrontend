@@ -242,36 +242,6 @@ const BranchManagement = () => {
         <Loader />
       ) : (
         <div className="w-full mx-auto">
-          {/* Breadcrumb */}
-          <Breadcrumb className="mb-8">
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <FiHome className="h-4 w-4" />
-                <BreadcrumbLink
-                  href="/"
-                  className="ml-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400"
-                >
-                  Home
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <FiChevronRight className="h-4 w-4 text-gray-400" />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
-                  Tenant
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator>
-                <FiChevronRight className="h-4 w-4 text-gray-400" />
-              </BreadcrumbSeparator>
-              <BreadcrumbItem>
-                <BreadcrumbLink className="text-gray-900 dark:text-gray-100 font-medium">
-                  Branch Management
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
 
           {/* Header */}
           <div className="flex justify-between items-center mb-8 dark:bg-gray-800 p-5 rounded-sm">
@@ -342,7 +312,7 @@ const BranchManagement = () => {
 
             {/* Register Branch Tab */}
             <TabsContent value="register" className="mt-8">
-              <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+              <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
                 <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
                   <CardTitle className="flex items-center text-xl">
                     {isEditing ? (
@@ -565,7 +535,7 @@ const BranchManagement = () => {
               {isLoading ? (
                 <Loader />
               ) : (
-                <Card className="border-0 shadow-xl bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
+                <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
                   <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
                     <CardTitle className="flex items-center text-xl">
                       <MdBusiness className="h-6 w-6 mr-2 text-blue-600" />
