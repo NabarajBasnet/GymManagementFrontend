@@ -26,9 +26,6 @@ const SystemUsers = () => {
             <TabsTrigger value="users" className="w-full py-2">
               <User size={16} className="mr-2" /> System Users
             </TabsTrigger>
-            <TabsTrigger value="userlogs" className="w-full py-2">
-              <UserCheck size={16} className="mr-2" /> User Logs
-            </TabsTrigger>
             <TabsTrigger value="adduser" className="w-full py-2">
               <UserPlus size={16} className="mr-2" /> Add User
             </TabsTrigger>
@@ -40,17 +37,12 @@ const SystemUsers = () => {
             </Card>
           </TabsContent>
 
-          <TabsContent value="userlogs">
-            <Card></Card>
-          </TabsContent>
-
           <TabsContent value="adduser">
             <Card className="border-none">
               <CreateUsers />
             </Card>
           </TabsContent>
         </Tabs>
-
       </div>
     </div>
   );

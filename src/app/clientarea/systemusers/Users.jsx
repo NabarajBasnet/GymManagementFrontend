@@ -86,7 +86,7 @@ const Users = () => {
   } = useForm();
 
   const [role, setUserRole] = useState("");
-  const [approval, setUserApproval] = useState("");
+  const [status, setUserStatus] = useState("");
 
   useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
@@ -136,7 +136,7 @@ const Users = () => {
           firstName: responseBody.user.firstName,
           lastName: responseBody.user.lastName,
           role: responseBody.user.role,
-          approval: responseBody.user.approval,
+          status: responseBody.user.status,
           email: responseBody.user.email,
           phoneNumber: responseBody.user.phoneNumber,
           address: responseBody.user.address,
@@ -164,7 +164,7 @@ const Users = () => {
         dob,
         address,
         role,
-        approval,
+        status,
       };
       const response = await fetch(
         `http://localhost:3000/api/systemusers/update/${userId}`,
@@ -416,6 +416,9 @@ const Users = () => {
                                     <SelectItem value="HR Manager">
                                       HR Manager
                                     </SelectItem>
+                                    <SelectItem value="Accountant">
+                                      Accountant
+                                    </SelectItem>
                                   </SelectContent>
                                 </Select>
                               )}
@@ -426,13 +429,13 @@ const Users = () => {
                               Account Status
                             </Label>
                             <Controller
-                              name="approval"
+                              name="status"
                               control={control}
                               render={({ field }) => (
                                 <Select
                                   {...field}
                                   onValueChange={(value) => {
-                                    setUserApproval(value);
+                                    setUserStatus(value);
                                     field.onChange(value);
                                   }}
                                 >
@@ -440,11 +443,11 @@ const Users = () => {
                                     <SelectValue placeholder="Select status" />
                                   </SelectTrigger>
                                   <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                                    <SelectItem value="Approved">
-                                      Approved
+                                    <SelectItem value="Active">
+                                      Active
                                     </SelectItem>
-                                    <SelectItem value="Rejected">
-                                      Rejected
+                                    <SelectItem value="Inactive">
+                                      Inactive
                                     </SelectItem>
                                     <SelectItem value="Pending">
                                       Pending
@@ -644,18 +647,18 @@ const Users = () => {
                           <TableCell className="px-6 py-4 whitespace-nowrap">
                             <span
                               className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                user.approval === "Approved"
+                                user.status === "Active"
                                   ? "bg-green-100 text-green-800"
-                                  : user.approval === "Pending"
+                                  : user.status === "Pending"
                                   ? "bg-yellow-100 text-yellow-800"
-                                  : user.approval === "Rejected"
+                                  : user.status === "Inactive"
                                   ? "bg-red-100 text-red-800"
-                                  : user.approval === "Blocked"
+                                  : user.status === "Blocked"
                                   ? "bg-gray-100 text-gray-800"
                                   : "bg-blue-100 text-blue-800"
                               }`}
                             >
-                              {user.approval}
+                              {user.status}
                             </span>
                           </TableCell>
                           <TableCell className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

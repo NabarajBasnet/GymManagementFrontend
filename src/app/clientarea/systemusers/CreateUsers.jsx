@@ -1,5 +1,6 @@
 "use client";
 
+import {toast as soonerToast} from "sonner";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Link from "next/link";
@@ -40,7 +41,7 @@ const CreateUsers = () => {
 
   const createSystemUser = async (data) => {
     try {
-      const response = await fetch("http://localhost:3000/api/auth/signup", {
+      const response = await fetch("http://localhost:3000/api/systemusers/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,13 +51,16 @@ const CreateUsers = () => {
       });
       const responseBody = await response.json();
       if (response.ok) {
-        toast.success("Account created successfully!");
+        toast.success(responseBody.message);
+        soonerToast.success(responseBody.message);
         reset();
       } else {
         toast.error(responseBody.message || "Failed to create account");
+        soonerToast.error(responseBody.message || "Failed to create account");
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
+      soonerToast.error("An unexpected error occurred. Please try again.");
       console.log("Error: ", error);
     }
   };
