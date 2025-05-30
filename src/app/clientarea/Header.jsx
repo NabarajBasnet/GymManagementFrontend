@@ -101,10 +101,10 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "Manage Branch",
     },
     {
-      id: "/clientarea/serviceandproductmanagement",
+      id: "/clientarea/mysubscriptions",
       icon: <MdOutlineShoppingCart size={20} />,
-      label: "Service & Product Management",
-      description: "Service & Product Management",
+      label: "My Subscriptions",
+      description: "My Subscriptions",
     },
     {
       id: "/clientarea/store",
@@ -113,10 +113,10 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "View and purchase services & products",
     },
     {
-      id: "/clientarea/usermanagement",
+      id: "/clientarea/systemusers",
       icon: <User size={20} />,
-      label: "User Management",
-      description: "Manage Users",
+      label: "System Users",
+      description: "Manage System Users",
     },
     {
       id: "/clientarea/myorders",
