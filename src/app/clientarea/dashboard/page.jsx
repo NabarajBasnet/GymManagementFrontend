@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "react-hot-toast";
+import { toast as soonerToast } from "sonner";
 import { User, Settings, LogOut } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
@@ -71,6 +73,31 @@ const TenantDashboard = () => {
     if (hour < 12) return "Good Morning";
     if (hour < 18) return "Good Afternoon";
     return "Good Evening";
+  };
+
+  const logOutTenant = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/tenant/auth/logout`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const responseBody = await response.json();
+      if (response.ok) {
+        soonerToast.success(responseBody.message);
+        toast.success(responseBody.message);
+        router.push(responseBody.redirectUrl);
+      }
+    } catch (error) {
+      console.log("Error: ", error);
+      soonerToast.error(error.message);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -159,7 +186,7 @@ const TenantDashboard = () => {
                       </Button>
                       <Button
                         className="w-full bg-red-600 text-white dark:border-none dark:hover:bg-red-700 hover:bg-red-700"
-                        onClick={() => {}}
+                        onClick={() => logOutTenant()}
                       >
                         <LogOut className="w-4 h-4 mr-2" />
                         Log Out

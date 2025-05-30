@@ -248,7 +248,7 @@ const TenantCartManagement = () => {
               </span>
               <Button
                 variant="outline"
-                onClick={() => router.push("/clientarea/services")}
+                onClick={() => router.push("/clientarea/store")}
                 className="dark:border-none dark:hover:bg-gray-700 dark:text-white dark:outline-none"
               >
                 <ShoppingBag className="w-4 h-4 dark:text-white" />

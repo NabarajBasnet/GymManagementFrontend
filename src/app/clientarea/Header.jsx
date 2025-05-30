@@ -66,8 +66,22 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import Loader from "@/components/Loader/Loader";
 import { useSelector } from "react-redux";
 
-const getNavItems = (multiBranchSupport) => {
-  const baseNavItems = [
+const ClientAreaHeader = ({ activeTab }) => {
+  const cartLength = useSelector((state) => state.rtkreducer.cartLength);
+  const [darkMode, setDarkMode] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { setTheme } = useTheme();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const router = useRouter();
+  const { tenant, loading } = useTenant();
+  const loggedInTenant = tenant?.tenant;
+
+  const features = loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
+  const isOnTrail = loggedInTenant?.tenantOnFreeTrial;
+  const multiBranchSupport = features?.includes("Multi Branch Support");
+
+  // Get the nav items based on features
+  const navItems = [
     {
       id: "/clientarea/dashboard",
       icon: <Home size={20} />,
@@ -80,17 +94,12 @@ const getNavItems = (multiBranchSupport) => {
       label: "Gym Dashboard",
       description: "Access Control & Monitoring",
     },
-    // Only include Branch Management if multiBranchSupport is true
-    ...(multiBranchSupport
-      ? [
-          {
-            id: "/clientarea/branchmanagement",
-            icon: <Building2 size={20} />,
-            label: "Branch Management",
-            description: "Manage Branch",
-          },
-        ]
-      : []),
+    {
+      id: "/clientarea/branchmanagement",
+      icon: <Building2 size={20} />,
+      label: "Branch Management",
+      description: "Manage Branch",
+    },
     {
       id: "/clientarea/serviceandproductmanagement",
       icon: <MdOutlineShoppingCart size={20} />,
@@ -98,7 +107,7 @@ const getNavItems = (multiBranchSupport) => {
       description: "Service & Product Management",
     },
     {
-      id: "/clientarea/services",
+      id: "/clientarea/store",
       icon: <CreditCard size={20} />,
       label: "Store",
       description: "View and purchase services & products",
@@ -122,25 +131,6 @@ const getNavItems = (multiBranchSupport) => {
       description: "Configuration & Preferences",
     },
   ];
-
-  return baseNavItems;
-};
-
-const ClientAreaHeader = ({ activeTab }) => {
-  const cartLength = useSelector((state) => state.rtkreducer.cartLength);
-  const [darkMode, setDarkMode] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { setTheme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const router = useRouter();
-  const { tenant, loading } = useTenant();
-  const loggedInTenant = tenant?.tenant;
-
-  const features = loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
-  const multiBranchSupport = features?.includes("Multi Branch Support");
-
-  // Get the nav items based on features
-  const navItems = getNavItems(multiBranchSupport);
 
   const quickActions = [
     {
@@ -347,35 +337,34 @@ const ClientAreaHeader = ({ activeTab }) => {
                           </button>
                         ))}
                       </div>
-
-                      {/* Quick Actions */}
-                      <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
-                          Quick Actions
-                        </h4>
-                        <div className="flex items-center space-x-2">
-                          {quickActions.slice(0, 2).map((action, index) => (
-                            <button
-                              key={index}
-                              onClick={() => router.push(action.link)}
-                              className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
-                              title={action.label}
-                            >
-                              {action.icon}
-                              {action.count ? (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                                  {action.count}
-                                </span>
-                              ) : null}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
                     </nav>
 
                     {/* Enhanced Footer */}
                     <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
                       <div className="flex flex-col items-start justify-between mb-4">
+                        {/* Quick Actions */}
+                        <div className="border-gray-200 dark:border-gray-700">
+                          <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
+                            Quick Actions
+                          </h4>
+                          <div className="flex items-center space-x-2">
+                            {quickActions.slice(0, 2).map((action, index) => (
+                              <button
+                                key={index}
+                                onClick={() => router.push(action.link)}
+                                className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+                                title={action.label}
+                              >
+                                {action.icon}
+                                {action.count ? (
+                                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                                    {action.count}
+                                  </span>
+                                ) : null}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
                         <div className="w-full mb-1 flex flex-col items-start text-xs font-medium space-x-1">
                           {loggedInTenant?.tenantOnFreeTrial && (
                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
@@ -398,7 +387,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                           )}
                         </div>
 
-                        <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-100 border-gray-200 border py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
+                        {/* <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-100 dark:bg-gray-800 border-gray-200 border py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
                           <User
                             size={16}
                             className="mr-2 text-gray-500 dark:text-gray-400"
@@ -406,7 +395,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                           <span className="font-medium">
                             Owner: {ownerName}
                           </span>
-                        </div>
+                        </div> */}
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>

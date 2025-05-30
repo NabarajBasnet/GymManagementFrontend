@@ -352,7 +352,7 @@ const SignUpPage = () => {
 
       const responseData = await response.json();
       if (response.ok) {
-        soonerToast(responseData.message, {
+        soonerToast.success(responseData.message, {
           description: "Please login to continue",
           duration: 3000,
           icon: "🔑",
@@ -362,10 +362,12 @@ const SignUpPage = () => {
         // Reset form or redirect
         router.push(responseData.redirectUrl);
       } else {
+        soonerToast.error(responseData.message || "Failed to create account");
         toast.error(responseData.message || "Failed to create account");
       }
     } catch (error) {
       console.error(error);
+      soonerToast.error(error.message || "An error occurred. Please try again.");
       toast.error(error.message || "An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
