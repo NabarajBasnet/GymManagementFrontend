@@ -34,8 +34,8 @@ const SystemUsers = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="users">
-            <Card>
+          <TabsContent value="users" className="border-none">
+            <Card className="rounded-md dark:border-none shadow-md dark:shadow-none">
               <Users />
             </Card>
           </TabsContent>
@@ -45,13 +45,12 @@ const SystemUsers = () => {
           </TabsContent>
 
           <TabsContent value="adduser">
-            <Card>
+            <Card className="border-none">
               <CreateUsers />
             </Card>
           </TabsContent>
         </Tabs>
 
-        <Card className="w-full max-w-sm"></Card>
       </div>
     </div>
   );

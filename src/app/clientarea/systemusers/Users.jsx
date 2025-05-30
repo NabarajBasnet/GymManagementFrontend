@@ -97,7 +97,7 @@ const Users = () => {
     const [, page, searchQuery] = queryKey;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/users?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
+        `http://localhost:3000/api/systemusers?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
       return responseBody;
@@ -123,7 +123,7 @@ const Users = () => {
   const fetchSingleUser = async (id) => {
     reset();
     try {
-      const response = await fetch(`http://localhost:3000/api/users/${id}`);
+      const response = await fetch(`http://localhost:3000/api/systemusers/${id}`);
       const responseBody = await response.json();
       setUser(responseBody.user);
       setUserId(responseBody.user._id);
@@ -167,7 +167,7 @@ const Users = () => {
         approval,
       };
       const response = await fetch(
-        `http://localhost:3000/api/users/update/${userId}`,
+        `http://localhost:3000/api/systemusers/update/${userId}`,
         {
           method: "PATCH",
           headers: {
@@ -200,7 +200,7 @@ const Users = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `http://localhost:3000/api/users/remove/${id}`,
+        `http://localhost:3000/api/systemusers/remove/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -228,7 +228,7 @@ const Users = () => {
   };
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 flex justify-center py-6">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 flex justify-center">
       <div className="w-full">
         {isDeleting ? (
           <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -520,7 +520,7 @@ const Users = () => {
 
         <div className="w-full space-y-4">
           {/* Controls Section */}
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
               {/* Items Per Page Selector */}
               <div className="flex items-center gap-2">
@@ -568,7 +568,7 @@ const Users = () => {
               <Loader />
             </div>
           ) : (
-            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
               <div className="overflow-x-auto">
                 <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                   <TableHeader className="bg-gray-50 dark:bg-gray-900">

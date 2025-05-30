@@ -3,10 +3,16 @@
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   CheckCircle2,
   X,
@@ -32,7 +38,7 @@ const CreateUsers = () => {
 
   const watchPassword = watch("password", "");
 
-  const onSignUp = async (data) => {
+  const createSystemUser = async (data) => {
     try {
       const response = await fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
@@ -55,316 +61,246 @@ const CreateUsers = () => {
     }
   };
 
-  const FormField = ({
-    label,
-    name,
-    type = "text",
-    icon,
-    validation,
-    error,
-    placeholder,
-  }) => (
-    <div className="space-y-1">
-      <Label htmlFor={name} className="text-sm font-medium text-gray-700 block">
-        {label}
-      </Label>
-
-      <div className="relative">
-        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-          {icon}
-        </div>
-
-        <Input
-          id={name}
-          type={type}
-          className={`pl-10 w-full transition-all duration-200 ${
-            error ? "border-red-500 focus:border-red-500" : ""
-          }`}
-          placeholder={placeholder}
-          {...register(name, validation)}
-        />
-
-        {error && (
-          <motion.div
-            className="absolute inset-y-0 right-0 pr-3 flex items-center"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <X className="h-5 w-5 text-red-500" />
-          </motion.div>
-        )}
-      </div>
-
-      {error && (
-        <motion.p
-          className="text-sm font-medium text-red-500 mt-1"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
-          {error.message}
-        </motion.p>
-      )}
-    </div>
-  );
-
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-gradient-to-br from-purple-700 via-indigo-800 to-blue-900 overflow-auto">
-      <motion.div
-        className="w-full md:max-w-4xl rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex flex-col lg:flex-row max-h-screen overflow-auto">
-          {/* Left side - Brand panel */}
-          <div className="lg:w-5/12 relative flex flex-col items-center justify-center p-6 text-white">
-            <motion.div
-              className="text-center"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-            >
-              <motion.div
-                className="md:mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm"
-                whileHover={{
-                  scale: 1.05,
-                  backgroundColor: "rgba(255,255,255,0.15)",
-                }}
-              >
-                <User className="w-7 h-7 text-white" />
-              </motion.div>
-
-              <h1 className="text-2xl font-bold mb-3">Create Account</h1>
-              <p className="text-white/80 md:mb-6 text-sm">
-                Join thousands of users and start your journey today.
-              </p>
-
-              <div className="hidden md:flex flex-col space-y-3 mb-6">
-                <div className="flex items-center space-x-3 text-xs">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Premium design templates</span>
-                </div>
-                <div className="flex items-center space-x-3 text-xs">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Advanced analytics dashboard</span>
-                </div>
-                <div className="flex items-center space-x-3 text-xs">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>Priority customer support</span>
-                </div>
+    <div className="min-h-screen w-full p-4 bg-gray-100 dark:bg-gray-900">
+      <div className="w-full mx-auto flex flex-col lg:flex-row gap-4">
+        {/* Left Card - User Info */}
+        <div className="w-full lg:w-3/12 flex">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full transition-colors duration-200">
+            <div className="text-center">
+              <div className="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full mx-auto mb-4">
+                <User className="w-full h-full p-4 text-gray-400 dark:text-gray-500" />
               </div>
-
-              <div className="pt-3 text-xs">
-                <p>Already have an account?</p>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center mt-2 text-white font-medium hover:underline"
-                >
-                  Sign in to your account{" "}
-                  <ChevronRight className="ml-1 w-3 h-3" />
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-
-          {/* Right side - Form */}
-          <div className="lg:w-7/12 p-6 bg-white/95 overflow-y-auto max-h-screen">
-            <div className="w-full mx-auto">
-              <div className="mb-4">
-                <h2 className="text-xl font-bold text-gray-800">Sign Up</h2>
-                <p className="text-gray-600 text-sm">
-                  Fill in your information to create an account
-                </p>
-              </div>
-
-              <form onSubmit={handleSubmit(onSignUp)} className="space-y-3">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <FormField
-                    label="First Name"
-                    name="firstName"
-                    icon={<User className="text-gray-400" />}
-                    validation={{
-                      required: "First name is required",
-                    }}
-                    error={errors.firstName}
-                    placeholder="John"
-                  />
-
-                  <FormField
-                    label="Last Name"
-                    name="lastName"
-                    icon={<User className="text-gray-400" />}
-                    validation={{
-                      required: "Last name is required",
-                    }}
-                    error={errors.lastName}
-                    placeholder="Doe"
-                  />
-                </div>
-
-                <FormField
-                  label="Email Address"
-                  name="email"
-                  type="email"
-                  icon={<AtSign className="text-gray-400" />}
-                  validation={{
-                    required: "Email is required",
-                    pattern: {
-                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Please enter a valid email",
-                    },
-                  }}
-                  error={errors.email}
-                  placeholder="john.doe@example.com"
-                />
-
-                <FormField
-                  label="Phone Number"
-                  name="phoneNumber"
-                  type="tel"
-                  icon={<Phone className="text-gray-400" />}
-                  validation={{
-                    required: "Phone number is required",
-                    pattern: {
-                      value: /^[0-9+\-\s()]{10,15}$/,
-                      message: "Please enter a valid phone number",
-                    },
-                  }}
-                  error={errors.phoneNumber}
-                  placeholder="+1 (555) 000-0000"
-                />
-
-                <div className="md:flex items-center justify-between">
-                  <div className="space-y-1">
-                    <Label className="text-sm font-medium text-gray-700 block">
-                      Password
-                    </Label>
-                    <div className="relative">
-                      <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <Lock className="h-5 w-5 text-gray-400" />
-                      </div>
-                      <Input
-                        type="password"
-                        className="pl-10 w-full transition-all duration-200"
-                        placeholder="Create a password"
-                        {...register("password", {
-                          required: "Password is required",
-                        })}
-                      />
-                    </div>
-                    {errors.password && (
-                      <p className="text-sm font-medium text-red-500 mt-1 flex items-center">
-                        <X className="w-4 h-4 mr-1" /> {errors.password.message}
-                      </p>
-                    )}
-                  </div>
-
-                  <FormField
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type="password"
-                    icon={<Lock className="text-gray-400" />}
-                    validation={{
-                      required: "Please confirm your password",
-                      validate: (value) =>
-                        value === watchPassword || "Passwords do not match",
-                    }}
-                    error={errors.confirmPassword}
-                    placeholder="Confirm your password"
-                  />
-                </div>
-
-                <FormField
-                  label="Address"
-                  name="address"
-                  icon={<MapPin className="text-gray-400" />}
-                  validation={{
-                    required: "Address is required",
-                  }}
-                  error={errors.address}
-                  placeholder="123 Main St, City, Country"
-                />
-
-                <FormField
-                  label="Date of Birth"
-                  name="dob"
-                  type="date"
-                  icon={<Calendar className="text-gray-400" />}
-                  validation={{
-                    required: "Date of birth is required",
-                  }}
-                  error={errors.dob}
-                />
-
-                <Button
-                  type="submit"
-                  className="w-full py-5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Processing...
-                    </span>
-                  ) : (
-                    <span>Create Account</span>
-                  )}
-                </Button>
-              </form>
-
-              <div className="mt-4 text-center">
-                <p className="text-xs text-gray-500">
-                  By signing up, you agree to our{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
-                    Privacy Policy
-                  </a>
-                  .
-                </p>
-
-                <div className="mt-4 flex items-center justify-center space-x-4">
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-gray-500 transition-colors"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-gray-500 transition-colors"
-                  >
-                    <Linkedin className="h-5 w-5" />
-                  </a>
-                </div>
+              <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2">New User</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Create a new system user</p>
+            </div>
+            
+            <div className="mt-6 space-y-4">
+              <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <h4 className="font-medium text-gray-700 dark:text-gray-200 mb-2">Available Roles</h4>
+                <ul className="text-sm font-medium text-gray-600 dark:text-gray-400 space-y-2">
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>Super Admin</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>Gym Admin</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>Operation Manager</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>Developer</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>CEO</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>HR Manager</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span>•</span>
+                    <span>Accountant</span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </div>
-      </motion.div>
+
+        {/* Right Card - Form */}
+        <div className="w-full lg:w-9/12 flex">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 w-full transition-colors duration-200">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Create New User</h2>
+              <p className="text-gray-600 dark:text-gray-400 text-sm font-medium">Fill in the information below to create a new system user</p>
+            </div>
+
+            <form onSubmit={handleSubmit(createSystemUser)} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">First Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="text"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("firstName", { required: "First name is required" })}
+                    />
+                  </div>
+                  {errors.firstName && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.firstName.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Last Name</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="text"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("lastName", { required: "Last name is required" })}
+                    />
+                  </div>
+                  {errors.lastName && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.lastName.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Email</Label>
+                  <div className="relative">
+                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="email"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("email", { required: "Email is required" })}
+                    />
+                  </div>
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.email.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Phone Number</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="tel"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("phoneNumber", {
+                        required: "Phone number is required",
+                        pattern: {
+                          value: /^[0-9+\-\s()]{10,15}$/,
+                          message: "Please enter a valid phone number",
+                        },
+                      })}
+                    />
+                  </div>
+                  {errors.phoneNumber && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.phoneNumber.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="password"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("password", { required: "Password is required" })}
+                    />
+                  </div>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.password.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Confirm Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="password"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("confirmPassword", {
+                        required: "Please confirm your password",
+                        validate: (value) => value === watchPassword || "Passwords do not match",
+                      })}
+                    />
+                  </div>
+                  {errors.confirmPassword && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.confirmPassword.message}</p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <Label className="text-gray-700 dark:text-gray-200">Address</Label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  <Input
+                    type="text"
+                    className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                    {...register("address", { required: "Address is required" })}
+                  />
+                </div>
+                {errors.address && (
+                  <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.address.message}</p>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Date of Birth</Label>
+                  <div className="relative">
+                    <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      type="date"
+                      className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:border-emerald-500 dark:focus:border-emerald-400 text-gray-900 dark:text-white"
+                      {...register("dob", { required: "Date of birth is required" })}
+                    />
+                  </div>
+                  {errors.dob && (
+                    <p className="mt-1 text-sm text-red-500 dark:text-red-400">{errors.dob.message}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-gray-700 dark:text-gray-200">Role</Label>
+                  <div className="relative">
+                    <Select>
+                      <SelectTrigger className="pl-10 py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-600">
+                        <SelectItem value="super_admin" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Super Admin</SelectItem>
+                        <SelectItem value="gym_admin" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Gym Admin</SelectItem>
+                        <SelectItem value="operation_manager" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Operation Manager</SelectItem>
+                        <SelectItem value="developer" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Developer</SelectItem>
+                        <SelectItem value="ceo" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">CEO</SelectItem>
+                        <SelectItem value="hr_manager" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">HR Manager</SelectItem>
+                        <SelectItem value="accountant" className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">Accountant</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full py-6 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-600 dark:to-teal-600 dark:hover:from-emerald-700 dark:hover:to-teal-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Creating Account...</span>
+                  </div>
+                ) : (
+                  <span>Create Account</span>
+                )}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
