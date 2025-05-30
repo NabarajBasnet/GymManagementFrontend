@@ -499,7 +499,7 @@ const ClientAreaHeader = ({ activeTab }) => {
             {/* Enhanced User Profile */}
             <div className="flex items-center space-x-4">
               {/* Quick Action Buttons - Desktop */}
-              <div className="hidden lg:flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
                 {quickActions.slice(0, 2).map((action, index) => (
                   <button
                     key={index}
