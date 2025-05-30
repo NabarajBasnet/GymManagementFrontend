@@ -606,7 +606,10 @@ const ClientAreaHeader = ({ activeTab }) => {
                     </div>
                   </DropdownMenuLabel>
 
-                  <div className="py-2">
+                  <div
+                    className="py-2"
+                    onClick={() => router.push("/clientarea/accountsetting")}
+                  >
                     <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
                       <User className="mr-3" size={16} />
                       <div>

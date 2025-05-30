@@ -561,12 +561,14 @@ const CreateUsers = () => {
 
                   {/* Additional Actions */}
                   <div className="flex items-center justify-between pt-4">
-                    <Link
-                      href="/dashboard/users"
+                    <span
+                      onClick={() =>
+                        (window.location.href = "/clientarea/systemusers")
+                      }
                       className="flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white font-medium transition-colors"
                     >
-                      <span>← Back to Users</span>
-                    </Link>
+                      ← Back to Users
+                    </span>
 
                     <div className="flex items-center space-x-4">
                       <button

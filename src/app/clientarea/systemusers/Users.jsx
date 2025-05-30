@@ -123,7 +123,9 @@ const Users = () => {
   const fetchSingleUser = async (id) => {
     reset();
     try {
-      const response = await fetch(`http://localhost:3000/api/systemusers/${id}`);
+      const response = await fetch(
+        `http://localhost:3000/api/systemusers/${id}`
+      );
       const responseBody = await response.json();
       setUser(responseBody.user);
       setUserId(responseBody.user._id);
@@ -131,7 +133,7 @@ const Users = () => {
         toast.error(responseBody.message);
       }
       if (response.status === 200 && response.ok) {
-        toast.success(responseBody.message);
+        soonerToast.success(responseBody.message);
         reset({
           firstName: responseBody.user.firstName,
           lastName: responseBody.user.lastName,
