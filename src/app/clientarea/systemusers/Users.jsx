@@ -82,7 +82,6 @@ const Users = () => {
   const loggedInTenant = tenant?.tenant;
 
   const branches = loggedInTenant?.organizationBranch;
-  console.log("Branches", branches);
 
   // Check if tenant has selected features
   const selectedFeatures =
@@ -156,6 +155,7 @@ const Users = () => {
           firstName: responseBody.user.firstName,
           lastName: responseBody.user.lastName,
           role: responseBody.user.role,
+          companyBranch: responseBody.user.companyBranch,
           status: responseBody.user.status,
           email: responseBody.user.email,
           phoneNumber: responseBody.user.phoneNumber,
@@ -636,9 +636,11 @@ const Users = () => {
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Role
                       </TableHead>
-                      <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                        Branch
-                      </TableHead>
+                      {multiBranchSupport && (
+                        <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                          Branch
+                        </TableHead>
+                      )}
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Email
                       </TableHead>
@@ -684,11 +686,13 @@ const Users = () => {
                               {user.role}
                             </div>
                           </TableCell>
-                          <TableCell className="px-6 py-4 whitespace-nowrap">
-                            <div className="text-sm text-gray-900 dark:text-gray-100">
-                              {getBranchName(user.companyBranch)}
-                            </div>
-                          </TableCell>
+                          {multiBranchSupport && (
+                            <TableCell className="px-6 py-4 whitespace-nowrap">
+                              <div className="text-sm text-gray-900 dark:text-gray-100">
+                                {getBranchName(user.companyBranch)}
+                              </div>
+                            </TableCell>
+                          )}
                           <TableCell className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900 dark:text-gray-100">
                               {user.email}
@@ -743,7 +747,7 @@ const Users = () => {
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>
+                                    <AlertDialogTitle className="text-red-600">
                                       Confirm User Deletion
                                     </AlertDialogTitle>
                                     <AlertDialogDescription>
@@ -754,12 +758,12 @@ const Users = () => {
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>
+                                    <AlertDialogCancel className="dark:text-gray-100 text-gray-600">
                                       Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction
                                       onClick={() => deleteUser(user._id)}
-                                      className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500"
+                                      className="bg-red-600 hover:bg-red-700 focus-visible:ring-red-500 dark:bg-red-600 dark:hover:bg-red-700 dark:focus-visible:ring-red-500 dark:text-gray-100"
                                     >
                                       Delete User
                                     </AlertDialogAction>
@@ -773,7 +777,7 @@ const Users = () => {
                     ) : (
                       <TableRow>
                         <TableCell
-                          colSpan={7}
+                          colSpan={8}
                           className="px-6 py-4 text-center"
                         >
                           <div className="text-gray-500 py-8">

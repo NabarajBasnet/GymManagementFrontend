@@ -177,7 +177,7 @@ const BranchManagement = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("Error: ", error.error);
+      toast.error("Error: ", error.message);
     }
   };
 

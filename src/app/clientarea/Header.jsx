@@ -614,10 +614,10 @@ const ClientAreaHeader = ({ activeTab }) => {
                       <User className="mr-3" size={16} />
                       <div>
                         <div className="font-medium text-gray-900 dark:text-gray-100">
-                          Account Settings
+                          Account Details
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400">
-                          Manage your profile
+                          View and manage account details
                         </div>
                       </div>
                     </DropdownMenuItem>

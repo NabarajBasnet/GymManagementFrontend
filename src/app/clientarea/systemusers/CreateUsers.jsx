@@ -52,7 +52,6 @@ const CreateUsers = () => {
   const loggedInTenant = tenant?.tenant;
 
   const branches = loggedInTenant?.organizationBranch;
-  console.log("Branches", branches);
 
   // Check if tenant has selected features
   const selectedFeatures =
@@ -504,11 +503,11 @@ const CreateUsers = () => {
                                     <SelectItem
                                       key={branch._id}
                                       value={branch._id}
-                                        className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium"
-                                      >
-                                        {branch.gymBranchName}
-                                      </SelectItem>
-                                    ))}  
+                                      className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium"
+                                    >
+                                      {branch.gymBranchName}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
                               {errors.companyBranch && (
