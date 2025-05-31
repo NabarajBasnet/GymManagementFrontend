@@ -285,7 +285,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                           <div className="relative flex items-center">
                             <AtSign className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
                             <Input
-                              className="pl-12 rounded-sm py-7 pr-4 bg-transparent text-gray-800 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                              className="pl-12 rounded-sm py-7 pr-4 bg-transparent dark:text-gray-300 dark:border-gray-300 text-gray-800 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                               type="email"
                               placeholder="john.doe@example.com"
                               {...register("email", {
@@ -319,7 +319,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                           <div className="relative flex items-center">
                             <Lock className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
                             <Input
-                              className="pl-12 rounded-sm py-7 pr-4 bg-transparent text-gray-800 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                              className="pl-12 rounded-sm py-7 pr-4 bg-transparent dark:text-gray-300 dark:border-gray-300 text-gray-800 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
                               {...register("password", {
@@ -363,7 +363,7 @@ const TenantLoginForm = ({ className, ...props }) => {
 
                           <Button
                             type="submit"
-                            className="relative w-full py-6 bg-transparent border-0 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center overflow-hidden group-hover:shadow-2xl group-hover:shadow-purple-500/25"
+                            className="relative w-full py-6 bg-transparent hover:bg-gray-800 hover:text-gray-200 border-0 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center overflow-hidden group-hover:shadow-2xl group-hover:shadow-purple-500/25"
                             disabled={isSubmitting}
                           >
                             {/* Shimmer effect */}
