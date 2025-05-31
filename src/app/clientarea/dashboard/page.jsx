@@ -1,8 +1,19 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
-import { User, Settings, LogOut } from "lucide-react";
+import { User, Settings, LogOut, X, Info } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
@@ -43,7 +54,22 @@ const TenantDashboard = () => {
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
 
-  console.log(loggedInTenant);
+  const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] =
+    useState(false);
+
+  useEffect(() => {
+    const checkOrganizationEmailExists = loggedInTenant?.organizationEmail;
+    const checkOrganizationPhoneExists = loggedInTenant?.organizationPhone;
+
+    if (
+      checkOrganizationEmailExists === null ||
+      checkOrganizationPhoneExists === null
+    ) {
+      setCreateOrganizationAlertDialog(true);
+    } else {
+      setCreateOrganizationAlertDialog(false);
+    }
+  }, [loggedInTenant]);
 
   if (loading) {
     return <Loader />;
@@ -277,6 +303,118 @@ const TenantDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Alert Dialog */}
+      <AlertDialog
+        open={createOrganizationAlertDialog}
+        onOpenChange={setCreateOrganizationAlertDialog}
+      >
+        <AlertDialogContent className="sm:max-w-[525px] dark:bg-gray-800 dark:border-gray-700">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl flex items-center font-semibold dark:text-white">
+              <Info className="w-6 mt-1 h-6 mr-2" />
+              Organization Details Required
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-600 text-sm font-medium dark:text-gray-300">
+              Please provide your organization's contact information which will
+              be usefull for notifications and many other purposes.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <form
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target);
+              try {
+                const response = await fetch(
+                  `http://localhost:3000/api/tenant/email-phone-assign/${loggedInTenant?._id}`,
+                  {
+                    method: "PATCH",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      organizationEmail: formData.get("organizationEmail"),
+                      organizationPhone: formData.get("organizationPhone"),
+                    }),
+                  }
+                );
+
+                const data = await response.json();
+                if (response.ok) {
+                  toast.success(data.message);
+                  soonerToast.success(data.message);
+                  setCreateOrganizationAlertDialog(false);
+                  window.location.reload();
+                } else {
+                  throw new Error(data.message || "Something went wrong");
+                }
+              } catch (error) {
+                soonerToast.error(error.message);
+              }
+            }}
+          >
+            <div className="space-y-6 py-6">
+              <div className="flex flex-col space-y-2">
+                <label
+                  htmlFor="organizationEmail"
+                  className="text-sm font-medium dark:text-gray-200"
+                >
+                  Organization Email
+                </label>
+                <input
+                  id="organizationEmail"
+                  name="organizationEmail"
+                  type="email"
+                  placeholder="organization@example.com"
+                  className="flex w-full rounded-sm border border-gray-200 bg-white px-3 py-3 text-sm 
+                     ring-offset-white transition-colors file:border-0 file:bg-transparent 
+                     file:text-sm file:font-medium placeholder:text-gray-500 
+                     focus-visible:outline-none focus-visible:ring-gray-400 
+                     focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+                     dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 
+                     dark:ring-offset-gray-800 dark:placeholder:text-gray-400
+                     dark:focus-visible:ring-gray-500"
+                  required
+                />
+              </div>
+              <div className="flex flex-col space-y-2">
+                <label
+                  htmlFor="organizationPhone"
+                  className="text-sm font-medium dark:text-gray-200"
+                >
+                  Organization Phone
+                </label>
+                <input
+                  id="organizationPhone"
+                  name="organizationPhone"
+                  type="tel"
+                  placeholder="+1 (555) 000-0000"
+                  className="flex w-full rounded-sm border border-gray-200 bg-white px-3 py-3 text-sm 
+                     ring-offset-white transition-colors file:border-0 file:bg-transparent 
+                     file:text-sm file:font-medium placeholder:text-gray-500 
+                     focus-visible:outline-none focus-visible:ring-gray-400 
+                     focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
+                     dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 
+                     dark:ring-offset-gray-800 dark:placeholder:text-gray-400
+                     dark:focus-visible:ring-gray-500"
+                  required
+                />
+              </div>
+            </div>
+            <AlertDialogFooter className="sm:justify-end gap-2">
+              <AlertDialogCancel className="mt-0 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-600">
+                Cancel
+              </AlertDialogCancel>
+              <AlertDialogAction
+                type="submit"
+                className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
+              >
+                Save Changes
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </form>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
