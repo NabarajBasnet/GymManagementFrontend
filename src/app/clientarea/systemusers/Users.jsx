@@ -117,7 +117,7 @@ const Users = () => {
         `http://localhost:3000/api/systemusers?page=${page}&limit=${limit}&searchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
-      return responseBody;
+      return responseBody || {};
     } catch (error) {
       console.log("Error: ", error);
     }
