@@ -43,6 +43,8 @@ const TenantDashboard = () => {
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
 
+  console.log(loggedInTenant);
+
   if (loading) {
     return <Loader />;
   }
@@ -55,7 +57,7 @@ const TenantDashboard = () => {
           animate={{ opacity: 1, scale: 1 }}
           className="text-center space-y-4"
         >
-          <h1 className="text-2xl font-bold">Please login to continue</h1>
+          <h1 className="text-2xl font-bold dark:text-gray-200">Please login to continue</h1>
           <p className="text-sm text-muted-foreground">Access your dashboard</p>
           <Button
             onClick={() => router.push("/auth/tenantlogin")}

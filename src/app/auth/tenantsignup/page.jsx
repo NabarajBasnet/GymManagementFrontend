@@ -367,7 +367,9 @@ const SignUpPage = () => {
       }
     } catch (error) {
       console.error(error);
-      soonerToast.error(error.message || "An error occurred. Please try again.");
+      soonerToast.error(
+        error.message || "An error occurred. Please try again."
+      );
       toast.error(error.message || "An error occurred. Please try again.");
     } finally {
       setIsSubmitting(false);
@@ -490,7 +492,7 @@ const SignUpPage = () => {
             </div>
 
             {/* Right Panel - Form */}
-            <div className="lg:w-3/5 bg-white p-4 lg:p-8 flex flex-col">
+            <div className="lg:w-3/5 bg-white dark:bg-gray-900 p-4 lg:p-8 flex flex-col">
               <form
                 onSubmit={handleSubmit(onSubmit)}
                 className="flex flex-col h-full"
@@ -500,7 +502,7 @@ const SignUpPage = () => {
                   <div className="flex-1 overflow-y-auto pr-2">
                     <div className="space-y-2 animate-in slide-in-from-right-2 duration-300">
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Organization Name
                         </Label>
                         <div className="relative">
@@ -508,7 +510,7 @@ const SignUpPage = () => {
                           <Input
                             type="text"
                             placeholder="Your Gym Name"
-                            className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                            className="pl-10 dark:bg-gray-900 dark:text-gray-200 h-12 dark:border-gray-500 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                             {...register("organizationName", {
                               required: "Organization name is required",
                             })}
@@ -523,19 +525,23 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Business Type
                         </Label>
                         <Select
                           value={businessType}
                           onValueChange={(value) => setBusinessType(value)}
                         >
-                          <SelectTrigger className="w-full bg-transparent text-gray-800 h-12 border-gray-200 rounded-md">
+                          <SelectTrigger className="w-full bg-transparent dark:text-gray-200 text-gray-800 h-12 dark:border-gray-500 border-gray-200 rounded-md">
                             <SelectValue placeholder="Select business type" />
                           </SelectTrigger>
                           <SelectContent className="w-full rounded-sm bg-white text-black hover:text-gray-800 cursor-pointer">
                             {businessTypes.map((type) => (
-                              <SelectItem key={type} value={type} className="hover:text-gray-800 dark:hover:text-gray-800 cursor-pointer">
+                              <SelectItem
+                                key={type}
+                                value={type}
+                                className="hover:text-gray-800 dark:hover:text-gray-800 cursor-pointer"
+                              >
                                 {type}
                               </SelectItem>
                             ))}
@@ -544,7 +550,7 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Owner Name
                         </Label>
                         <div className="relative">
@@ -552,7 +558,7 @@ const SignUpPage = () => {
                           <Input
                             type="text"
                             placeholder="John Doe"
-                            className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                            className="pl-10 dark:bg-gray-900 dark:text-gray-200 h-12 dark:border-gray-500 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                             {...register("ownerName", {
                               required: "Owner name is required",
                             })}
@@ -567,7 +573,7 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Email Address
                         </Label>
                         <div className="relative">
@@ -575,7 +581,7 @@ const SignUpPage = () => {
                           <Input
                             type="email"
                             placeholder="john@example.com"
-                            className="pl-10 dark:bg-transparent dark:text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                            className="pl-10 dark:bg-gray-900 dark:text-gray-200 h-12 dark:border-gray-500 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                             {...register("email", {
                               required: "Email is required",
                               pattern: {
@@ -594,7 +600,7 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Phone Number
                         </Label>
                         <div className="flex space-x-2">
@@ -612,7 +618,7 @@ const SignUpPage = () => {
                               }
                             }}
                           >
-                            <SelectTrigger className="w-[140px] bg-transparent text-gray-800 h-12 border-gray-200 rounded-md">
+                            <SelectTrigger className="w-[140px] bg-transparent dark:text-gray-200 text-gray-800 h-12 dark:border-gray-500 border-gray-200 rounded-md">
                               <SelectValue placeholder="Select country" />
                             </SelectTrigger>
                             <SelectContent>
@@ -634,7 +640,7 @@ const SignUpPage = () => {
                             <Input
                               type="tel"
                               placeholder="Phone number"
-                              className="pl-10 bg-transparent text-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                              className="pl-10 bg-transparent text-gray-800 h-12 dark:border-gray-500 dark:text-gray-200 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
                               {...register("phone", {
                                 required: "Phone number is required",
                                 pattern: {
@@ -653,116 +659,121 @@ const SignUpPage = () => {
                         )}
                       </div>
 
-                      <div className="mb-6">
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                          Country
-                        </Label>
-                        <Autocomplete
-                          options={options.sort(
-                            (a, b) =>
-                              -b.firstLetter.localeCompare(a.firstLetter)
-                          )}
-                          groupBy={(option) => option.firstLetter}
-                          getOptionLabel={(option) => option.country}
-                          renderOption={(props, option) => (
-                            <li
-                              {...props}
-                              className="flex items-center space-x-3 py-2 px-3"
-                            >
-                              <option.flag className="w-6 h-4" />
-                              <span className="text-sm">{option.country}</span>
-                            </li>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              placeholder="Select your country"
-                              className="w-full"
-                              InputProps={{
-                                ...params.InputProps,
-                                className: "h-12 pl-3",
-                                startAdornment: (
-                                  <>
-                                    {params.InputProps.startAdornment}
-                                    {selectedCountryCode && (
-                                      <div className="flex items-center mr-2">
-                                        {countryCodes.find(
-                                          (c) => c.code === selectedCountryCode
-                                        )?.flag &&
-                                          React.createElement(
-                                            countryCodes.find(
-                                              (c) =>
-                                                c.code === selectedCountryCode
-                                            ).flag,
-                                            {
-                                              className: "w-6 h-4",
-                                            }
-                                          )}
-                                      </div>
-                                    )}
-                                  </>
-                                ),
-                              }}
-                            />
-                          )}
-                          onChange={(event, newValue) => {
-                            if (newValue) {
-                              setSelectedCountryCode(newValue.code);
-                              register("country").onChange({
-                                target: { value: newValue.country },
-                              });
-                            }
-                          }}
-                          className="w-full"
-                          sx={{
-                            "& .MuiOutlinedInput-root": {
-                              "& fieldset": {
-                                borderColor: "#e5e7eb",
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="mb-6">
+                          <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
+                            Country
+                          </Label>
+                          <Autocomplete
+                            options={options.sort(
+                              (a, b) =>
+                                -b.firstLetter.localeCompare(a.firstLetter)
+                            )}
+                            groupBy={(option) => option.firstLetter}
+                            getOptionLabel={(option) => option.country}
+                            renderOption={(props, option) => (
+                              <li
+                                {...props}
+                                className="flex items-center space-x-3 py-2 px-3"
+                              >
+                                <option.flag className="w-6 h-4" />
+                                <span className="text-sm">
+                                  {option.country}
+                                </span>
+                              </li>
+                            )}
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                placeholder="Select your country"
+                                className="w-full"
+                                InputProps={{
+                                  ...params.InputProps,
+                                  className: "h-12 pl-3",
+                                  startAdornment: (
+                                    <>
+                                      {params.InputProps.startAdornment}
+                                      {selectedCountryCode && (
+                                        <div className="flex items-center mr-2">
+                                          {countryCodes.find(
+                                            (c) =>
+                                              c.code === selectedCountryCode
+                                          )?.flag &&
+                                            React.createElement(
+                                              countryCodes.find(
+                                                (c) =>
+                                                  c.code === selectedCountryCode
+                                              ).flag,
+                                              {
+                                                className: "w-6 h-4",
+                                              }
+                                            )}
+                                        </div>
+                                      )}
+                                    </>
+                                  ),
+                                }}
+                              />
+                            )}
+                            onChange={(event, newValue) => {
+                              if (newValue) {
+                                setSelectedCountryCode(newValue.code);
+                                register("country").onChange({
+                                  target: { value: newValue.country },
+                                });
+                              }
+                            }}
+                            className="w-full"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                "& fieldset": {
+                                  borderColor: "#e5e7eb",
+                                },
+                                "&:hover fieldset": {
+                                  borderColor: "#9333ea",
+                                },
+                                "&.Mui-focused fieldset": {
+                                  borderColor: "#9333ea",
+                                },
                               },
-                              "&:hover fieldset": {
-                                borderColor: "#9333ea",
+                              "& .MuiInputLabel-root": {
+                                color: "#6b7280",
                               },
-                              "&.Mui-focused fieldset": {
-                                borderColor: "#9333ea",
+                              "& .MuiInputLabel-root.Mui-focused": {
+                                color: "#9333ea",
                               },
-                            },
-                            "& .MuiInputLabel-root": {
-                              color: "#6b7280",
-                            },
-                            "& .MuiInputLabel-root.Mui-focused": {
-                              color: "#9333ea",
-                            },
-                          }}
-                        />
-                        {errors.country && (
-                          <p className="text-sm text-red-500 mt-1 flex items-center">
-                            <X className="w-4 h-4 mr-1" />
-                            {errors.country.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
-                          Address
-                        </Label>
-                        <div className="relative">
-                          <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                          <Input
-                            type="text"
-                            placeholder="123 Main St, City, Country"
-                            className="pl-10 dark:text-gray-800 dark:bg-transparent h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
-                            {...register("address", {
-                              required: "Address is required",
-                            })}
+                            }}
                           />
+                          {errors.country && (
+                            <p className="text-sm text-red-500 mt-1 flex items-center">
+                              <X className="w-4 h-4 mr-1" />
+                              {errors.country.message}
+                            </p>
+                          )}
                         </div>
-                        {errors.address && (
-                          <p className="text-sm text-red-500 mt-1 flex items-center">
-                            <X className="w-4 h-4 mr-1" />
-                            {errors.address.message}
-                          </p>
-                        )}
+
+                        <div>
+                          <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
+                            Address
+                          </Label>
+                          <div className="relative">
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                            <Input
+                              type="text"
+                              placeholder="123 Main St, City, Country"
+                              className="pl-10 dark:text-gray-800 dark:border-gray-500 dark:text-gray-100 dark:bg-transparent h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                              {...register("address", {
+                                required: "Address is required",
+                              })}
+                            />
+                          </div>
+                          {errors.address && (
+                            <p className="text-sm text-red-500 mt-1 flex items-center">
+                              <X className="w-4 h-4 mr-1" />
+                              {errors.address.message}
+                            </p>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -773,7 +784,7 @@ const SignUpPage = () => {
                   <div className="flex-1 overflow-y-auto pr-2">
                     <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Password
                         </Label>
                         <div className="relative">
@@ -781,7 +792,7 @@ const SignUpPage = () => {
                           <Input
                             type="password"
                             placeholder="Create a strong password"
-                            className="pl-10 dark:bg-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                            className="pl-10 dark:bg-gray-800 h-12 border-gray-200 dark:text-gray-200 dark:border-gray-500 focus:border-purple-500 focus:ring-purple-500"
                             {...register("password", {
                               required: "Password is required",
                               minLength: {
@@ -816,9 +827,9 @@ const SignUpPage = () => {
                                 {getPasswordStrengthText(passwordStrength)}
                               </span>
                             </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div className="w-full bg-gray-200 dark:text-gray-800 rounded-full h-2">
                               <div
-                                className={`h-2 rounded-full transition-all duration-300 ${getPasswordStrengthColor(
+                                className={`h-2 rounded-full transition-all dark:text-gray-200 duration-300 ${getPasswordStrengthColor(
                                   passwordStrength
                                 )}`}
                                 style={{ width: `${passwordStrength}%` }}
@@ -835,7 +846,7 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 block">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 block">
                           Confirm Password
                         </Label>
                         <div className="relative">
@@ -843,7 +854,7 @@ const SignUpPage = () => {
                           <Input
                             type="password"
                             placeholder="Confirm your password"
-                            className="pl-10 dark:bg-gray-800 h-12 border-gray-200 focus:border-purple-500 focus:ring-purple-500"
+                            className="pl-10 dark:bg-gray-800 h-12 border-gray-200 dark:text-gray-200 dark:border-gray-500 focus:border-purple-500 focus:ring-purple-500"
                             {...register("confirmPassword", {
                               required: "Please confirm your password",
                               validate: (value) =>
@@ -861,12 +872,12 @@ const SignUpPage = () => {
                       </div>
 
                       {/* Password Requirements */}
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
+                        <h4 className="text-sm font-medium dark:text-gray-200 text-gray-700 mb-2">
                           Password must contain:
                         </h4>
                         <ul className="space-y-1 text-xs text-gray-600">
-                          <li className="flex items-center">
+                          <li className="flex items-center dark:text-gray-200">
                             <CheckCircle2
                               className={`w-3 h-3 mr-2 ${
                                 watchPassword.length >= 8
@@ -876,7 +887,7 @@ const SignUpPage = () => {
                             />
                             At least 8 characters
                           </li>
-                          <li className="flex items-center">
+                          <li className="flex items-center dark:text-gray-200">
                             <CheckCircle2
                               className={`w-3 h-3 mr-2 ${
                                 /[A-Z]/.test(watchPassword)
@@ -886,7 +897,7 @@ const SignUpPage = () => {
                             />
                             One uppercase letter
                           </li>
-                          <li className="flex items-center">
+                          <li className="flex items-center dark:text-gray-200">
                             <CheckCircle2
                               className={`w-3 h-3 mr-2 ${
                                 /[0-9]/.test(watchPassword)
@@ -896,7 +907,7 @@ const SignUpPage = () => {
                             />
                             One number
                           </li>
-                          <li className="flex items-center">
+                          <li className="flex items-center dark:text-gray-200">
                             <CheckCircle2
                               className={`w-3 h-3 mr-2 ${
                                 /[^A-Za-z0-9]/.test(watchPassword)
@@ -917,14 +928,14 @@ const SignUpPage = () => {
                   <div className="flex-1 overflow-y-auto pr-2">
                     <div className="space-y-6 animate-in slide-in-from-right-2 duration-300">
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 flex items-center">
                           <Clock className="w-4 h-4 mr-2 text-gray-400" />
                           Timezone
                         </Label>
                         <Select
                           onValueChange={(value) => setTenantTimezone(value)}
                         >
-                          <SelectTrigger className="h-12">
+                          <SelectTrigger className="h-12 rounded-sm dark:bg-gray-800 dark:text-gray-200 dark:border-none">
                             <SelectValue placeholder="Select timezone" />
                           </SelectTrigger>
                           <SelectContent>
@@ -943,14 +954,14 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 flex items-center">
                           <Globe className="w-4 h-4 mr-2 text-gray-400" />
                           Language
                         </Label>
                         <Select
                           onValueChange={(value) => setTenantLanguage(value)}
                         >
-                          <SelectTrigger className="h-12">
+                          <SelectTrigger className="h-12 rounded-sm dark:bg-gray-800 dark:text-gray-200 dark:border-none">
                             <SelectValue placeholder="Select language" />
                           </SelectTrigger>
                           <SelectContent>
@@ -967,14 +978,14 @@ const SignUpPage = () => {
                       </div>
 
                       <div>
-                        <Label className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+                        <Label className="text-sm dark:text-gray-200 font-medium text-gray-700 mb-2 flex items-center">
                           <DollarSign className="w-4 h-4 mr-2 text-gray-400" />
                           Currency
                         </Label>
                         <Select
                           onValueChange={(value) => setTenantCurrency(value)}
                         >
-                          <SelectTrigger className="h-12">
+                          <SelectTrigger className="h-12 rounded-sm dark:bg-gray-800 dark:text-gray-200 dark:border-none">
                             <SelectValue placeholder="Select currency" />
                           </SelectTrigger>
                           <SelectContent>
@@ -991,11 +1002,11 @@ const SignUpPage = () => {
                       </div>
 
                       {/* Summary */}
-                      <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
-                        <h4 className="text-sm font-medium text-purple-800 mb-2">
+                      <div className="bg-purple-50 dark:bg-gray-800 rounded-lg p-4 border dark:border-gray-500 border-purple-200">
+                        <h4 className="text-sm font-medium dark:text-gray-200 text-purple-800 mb-2">
                           Setup Summary
                         </h4>
-                        <div className="space-y-1 text-xs text-purple-700">
+                        <div className="space-y-1 text-xs dark:text-gray-200 text-purple-700">
                           <p>
                             <strong>Organization:</strong>{" "}
                             {watch("organizationName")}
@@ -1021,13 +1032,13 @@ const SignUpPage = () => {
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between items-center mt-2 border-gray-200 sticky bottom-0 bg-white">
+                <div className="flex justify-between items-center mt-2 border-gray-200 sticky bottom-0 dark:bg-transparent bg-white">
                   {currentStep > 1 ? (
                     <Button
                       type="button"
                       variant="outline"
                       onClick={prevStep}
-                      className="px-6 h-12"
+                      className="px-6 h-12 dark:border-none dark:bg-gray-800"
                       disabled={isValidating || isSubmitting}
                     >
                       <ChevronLeft className="w-4 h-4 mr-2" />
