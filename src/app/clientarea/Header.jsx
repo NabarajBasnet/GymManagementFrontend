@@ -649,6 +649,21 @@ const ClientAreaHeader = ({ activeTab }) => {
                       </div>
                     </DropdownMenuItem>
 
+                    <DropdownMenuItem className="cursor-pointer px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800">
+                      <Settings className="mr-3" size={16} />
+                      <div
+                        onClick={() => router.push("/clientarea/settings")}
+                        className="cursor-pointer"
+                      >
+                        <div className="font-medium text-gray-900 dark:text-gray-100">
+                          Settings
+                        </div>
+                        <div className="text-xs text-gray-500 dark:text-gray-400">
+                          Configure and preferences
+                        </div>
+                      </div>
+                    </DropdownMenuItem>
+
                     <DropdownMenuItem className="cursor-pointer px-4 py-3 bg-gradient-to-r from-indigo-50 dark:from-indigo-900/20 to-purple-50 dark:to-purple-900/20 hover:from-indigo-100 dark:hover:from-indigo-800/30 hover:to-purple-100 dark:hover:to-purple-800/30">
                       <Crown className="mr-3 text-yellow-600" size={16} />
                       <div>
