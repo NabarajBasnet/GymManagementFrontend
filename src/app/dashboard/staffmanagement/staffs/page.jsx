@@ -1,6 +1,13 @@
 "use client";
 
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -156,6 +163,39 @@ const StaffManagement = () => {
   };
 
   const { user, loading } = useUser();
+  const checkMultiBranchSupport = user?.user?.companyBranch;
+  const [branches, setBranches] = useState(null);
+  const [selectedBranch, setSelectedBranch] = useState("");
+  console.log("Branches: ", branches);
+
+  useEffect(() => {
+    const getBranches = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/gymbranch/`);
+        const responseBody = await response.json();
+
+        if (response.ok) {
+          setBranches(responseBody.branches);
+        } else {
+          toastMessage.error(responseBody.message);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+        toastMessage.error(error.message);
+      }
+    };
+
+    getBranches();
+  }, [user]);
+
+  // Get branch name
+  const getBranchName = (staffId) => {
+    const branch = branches.find(
+      (branch) => branch.gymBranchStaffs.toString() === staffId
+    );
+    return branch.gymBranchName;
+  };
+
   const router = useRouter();
   const checkUserPermission = () => {
     if (loading) {
@@ -177,9 +217,6 @@ const StaffManagement = () => {
 
   const [renderImage, setRenderImage] = useState(false);
   const [dbImage, setDbImage] = useState(null);
-
-  const [checkInTime, setCheckInTime] = useState(null);
-  const [checkOutTime, setCheckOutTime] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
@@ -266,14 +303,6 @@ const StaffManagement = () => {
     }
   };
 
-  const debounce = (func, delay) => {
-    let timerId;
-    return (...args) => {
-      if (timerId) clearTimeout(timerId);
-      timerId = setTimeout(() => func(...args), delay);
-    };
-  };
-
   const fetchAllStaffs = async ({ queryKey }) => {
     const [, page, searchQuery] = queryKey;
     try {
@@ -302,15 +331,7 @@ const StaffManagement = () => {
     personalTrainers,
   } = data || {};
 
-  const { range, setPage, active } = usePagination({
-    total: totalPages ? totalPages : 1,
-    siblings: 1,
-    boundaries: 1,
-    page: currentPage,
-    onChange: (page) => {
-      setCurrentPage(page);
-    },
-  });
+  console.log("staffs: ", staffs);
 
   React.useEffect(() => {
     const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
@@ -652,16 +673,6 @@ const StaffManagement = () => {
   const [sortBy, setSortBy] = useState("");
   const [sortOrder, setSortOrder] = useState("asc");
 
-  // Sorting handler
-  const handleSort = (field) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
-    }
-  };
-
   return (
     <div className="w-full bg-gray-100 px-4 py-6">
       <div
@@ -925,6 +936,11 @@ const StaffManagement = () => {
                             <TableHead className="text-black text-center">
                               Contact
                             </TableHead>
+                            {branches && (
+                              <TableHead className="text-black text-center">
+                                Branch
+                              </TableHead>
+                            )}
                             <TableHead className="text-black text-center">
                               Address
                             </TableHead>
@@ -976,6 +992,11 @@ const StaffManagement = () => {
                                     </span>
                                   </p>
                                 </TableCell>
+                                {branches && (
+                                  <TableCell className="text-center">
+                                    {getBranchName(staff._id)}
+                                  </TableCell>
+                                )}
                                 <TableCell className="text-center">
                                   <p
                                     onClick={() =>
@@ -1955,6 +1976,32 @@ const StaffManagement = () => {
                                         </p>
                                       )}
                                     </div>
+
+                                         {checkMultiBranchSupport && (
+                              <div>
+                                <Label>Branch</Label>
+                                <Select
+                                  {...register("branch")}
+                                  placeholder="Select branch"
+                                  required
+                                >
+                                  <SelectTrigger className="w-full rounded-sm">
+                                    <SelectValue placeholder="Select branch" />
+                                  </SelectTrigger>
+                                  <SelectContent className="w-full cursor-pointer rounded-sm">
+                                    {branches?.map((branch) => (
+                                      <SelectItem
+                                        key={branch._id}
+                                        value={branch._id}
+                                        className="cursor-pointer hover:bg-gray-100 dark:bg-gray-800"
+                                      >
+                                        {branch.gymBranchName}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+                            )}
                                   </div>
 
                                   {/* Dynamic Shifts Section */}
