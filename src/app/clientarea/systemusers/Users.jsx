@@ -124,7 +124,7 @@ const Users = () => {
   };
 
   const { data: allUsers, isLoading } = useQuery({
-    queryKey: ["users", currentPage, debouncedSearchQuery, limit],
+    queryKey: ["users", currentPage, debouncedSearchQuery],
     queryFn: fetchAllUsers,
   });
 

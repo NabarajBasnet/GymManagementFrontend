@@ -79,7 +79,7 @@ export function LoginForm({ className, ...props }) {
       }
 
     } catch (error) {
-      toast.error('An unexpected error occurred. Please try again.');
+      toast.error(error.message);
       console.log('Error: ', error);
     };
   };
@@ -104,7 +104,7 @@ export function LoginForm({ className, ...props }) {
         <Input
           id={name}
           type={type}
-          className={`pl-10 w-full dark:text-gray-200 dark:bg-white dark:border-gray-100 border-gray-300 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
+          className={`pl-10 w-full dark:text-gray-200 rounded-sm dark:text-gray-800 dark:bg-white dark:border-gray-100 border-gray-300 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
           placeholder={placeholder}
           {...register(name, validation)}
         />
@@ -246,14 +246,14 @@ export function LoginForm({ className, ...props }) {
                   )}
                 </Button>
 
-                {/* <div className="relative text-center text-sm mt-4">
+                 <div className="relative text-center text-sm mt-4">
                   <span className="relative z-10 bg-white/95 px-4 text-gray-500">
                     Or continue with
                   </span>
                   <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div> */}
+                </div> 
 
-                {/* <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaApple className="text-xl" />
                   </Button>
@@ -263,7 +263,7 @@ export function LoginForm({ className, ...props }) {
                   <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
                     <FaMeta className="text-xl" />
                   </Button>
-                </div> */}
+                </div> 
               </form>
 
               <div className="mt-6 text-center">

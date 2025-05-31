@@ -56,10 +56,14 @@ const TenantDashboard = () => {
 
   const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] =
     useState(false);
+  const [onFreeTrail, setOnFreeTrail] = useState(false);
 
   useEffect(() => {
     const checkOrganizationEmailExists = loggedInTenant?.organizationEmail;
     const checkOrganizationPhoneExists = loggedInTenant?.organizationPhone;
+
+    const checkOnFreeTrail = loggedInTenant?.tenantOnFreeTrial;
+    setOnFreeTrail(checkOnFreeTrail);
 
     if (
       checkOrganizationEmailExists === null ||
@@ -70,6 +74,14 @@ const TenantDashboard = () => {
       setCreateOrganizationAlertDialog(false);
     }
   }, [loggedInTenant]);
+
+  const calculateRemainingDays = () => {
+    const endDate = new Date(loggedInTenant?.tenantSubscriptionEndDate);
+    const today = new Date();
+    const diffTime = endDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
 
   if (loading) {
     return <Loader />;
@@ -274,8 +286,10 @@ const TenantDashboard = () => {
                   <div className="p-6 flex justify-between items-center bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white">
                     <div>
                       <h3 className="text-2xl font-semibold mb-2">
-                        {loggedInTenant?.tenantSubscription[0]
-                          ?.subscriptionName || "No Active Subscription"}
+                        {onFreeTrail
+                          ? "Free Trial"
+                          : loggedInTenant?.tenantSubscription[0]
+                              ?.subscriptionName || "No Active Subscription"}
                       </h3>
                       <p className="text-blue-100 font-medium text-sm">
                         {loggedInTenant?.ownerName || "N/A"}
@@ -291,9 +305,27 @@ const TenantDashboard = () => {
                       </h1>
                       <h1 className="text-blue-100 font-medium text-sm">
                         End:{" "}
-                        {new Date(
-                          loggedInTenant?.tenantSubscriptionEndDate
-                        ).toLocaleDateString()}
+                        {onFreeTrail
+                          ? new Date(
+                              loggedInTenant?.tenantFreeTrialEndDate
+                            ).toLocaleDateString()
+                          : new Date(
+                              loggedInTenant?.tenantSubscriptionEndDate
+                            ).toLocaleDateString()}
+                      </h1>
+
+                      <h1 className="text-blue-100 font-medium text-sm">
+                        Remaining Days:{" "}
+                        {onFreeTrail ? (
+                          loggedInTenant?.tenantFreeTrailRemainingDays
+                        ) : (
+                          <h1 className="text-blue-100 font-medium text-sm">
+                            Remaining Days:{" "}
+                            {onFreeTrail
+                              ? loggedInTenant?.tenantFreeTrailRemainingDays
+                              : calculateRemainingDays()}
+                          </h1>
+                        )}
                       </h1>
                     </div>
                   </div>
