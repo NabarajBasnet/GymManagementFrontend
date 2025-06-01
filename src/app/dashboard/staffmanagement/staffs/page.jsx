@@ -1497,7 +1497,7 @@ const StaffManagement = () => {
                       <div className="fixed inset-0 bg-black bg-opacity-65 z-50"></div>
                       <div className="fixed inset-0 z-50 flex items-center justify-center">
                         <div className="w-full flex justify-center">
-                          <div className="w-11/12 md:w-8/12 overflow-y-auto bg-white rounded-2xl shadow-2xl">
+                          <div className="w-11/12 md:w-8/12 overflow-y-auto bg-white dark:bg-gray-900 dark:text-white rounded-2xl shadow-2xl">
                             <div className="w-full flex justify-between bg-indigo-600 items-center py-2">
                               <h1 className="font-bold m-3 text-white text-md md:text-xl">
                                 Staff Registration
@@ -1525,7 +1525,7 @@ const StaffManagement = () => {
                                         }}
                                       />
                                     </div>
-                                    <div className="flex justify-between mt-2 text-sm text-gray-500">
+                                    <div className="flex justify-between mt-2 text-sm text-gray-500 dark:text-gray-400">
                                       {Array.from({ length: totalSteps }).map(
                                         (_, idx) => (
                                           <div
@@ -1535,7 +1535,7 @@ const StaffManagement = () => {
                                             key={idx}
                                             className={`flex items-center cursor-pointer ${
                                               idx + 1 <= currentStep
-                                                ? "text-black"
+                                                ? "text-black dark:text-white"
                                                 : ""
                                             }`}
                                           >
@@ -1576,7 +1576,7 @@ const StaffManagement = () => {
                                                   onChange={(e) => {
                                                     field.onChange(e);
                                                   }}
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Full Name"
                                                 />
                                               )}
@@ -1603,7 +1603,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("dob")}
                                                   type="date"
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               )}
                                             />
@@ -1631,7 +1631,7 @@ const StaffManagement = () => {
                                                     field.onChange(e);
                                                     clearErrors("gender");
                                                   }}
-                                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                  className="w-full py-3 rounded-sm dark:bg-gray-800 dark:text-white dark:border-none border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                 >
                                                   <option>Select</option>
                                                   <option value="Male">
@@ -1666,7 +1666,7 @@ const StaffManagement = () => {
                                                     field.onChange(e);
                                                   }}
                                                   {...register("contactNo")}
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Contact Number"
                                                 />
                                               )}
@@ -1691,7 +1691,7 @@ const StaffManagement = () => {
                                                   onChange={(e) => {
                                                     field.onChange(e);
                                                   }}
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Email address"
                                                 />
                                               )}
@@ -1732,7 +1732,7 @@ const StaffManagement = () => {
                                                     <Input
                                                       {...field}
                                                       placeholder="Enter street address"
-                                                      className="rounded-md focus:outline-none"
+                                                      className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     />
                                                   )}
                                                 />
@@ -1753,6 +1753,7 @@ const StaffManagement = () => {
                                                     "currentAddress.city"
                                                   )}
                                                   placeholder="Enter city"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   required
                                                 />
                                               </div>
@@ -1764,6 +1765,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter state"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1774,6 +1776,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter postal code"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div className="md:col-span-2">
@@ -1784,6 +1787,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter country"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                             </div>
@@ -1803,6 +1807,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter street address"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1813,6 +1818,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter city"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1823,6 +1829,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter state"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1833,6 +1840,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter postal code"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div className="md:col-span-2">
@@ -1843,6 +1851,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter country"
                                                   required
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                             </div>
@@ -1882,7 +1891,7 @@ const StaffManagement = () => {
                                                       selectedValue
                                                     );
                                                   }}
-                                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                  className="w-full py-3 rounded-sm dark:border-none dark:bg-gray-800 dark:text-white border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                 >
                                                   <option>Select</option>
                                                   <option value="Super Admin">
@@ -1936,7 +1945,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("joinedDate")}
                                                   type="date"
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               )}
                                             />
@@ -1959,7 +1968,7 @@ const StaffManagement = () => {
                                                   min="1"
                                                   max="5"
                                                   placeholder="Enter Number Of Shifts"
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   onChange={(e) => {
                                                     const value = Math.min(
                                                       Math.max(
@@ -2000,7 +2009,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("salary")}
                                                   type="text"
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Salary"
                                                 />
                                               )}
@@ -2033,7 +2042,7 @@ const StaffManagement = () => {
                                                       selectedValue
                                                     );
                                                   }}
-                                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                  className="w-full py-3 rounded-sm dark:border-none dark:bg-gray-800 dark:text-white border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                 >
                                                   <option>Status</option>
                                                   <option value="Active">
@@ -2063,16 +2072,17 @@ const StaffManagement = () => {
                                                   setSelectedBranch(value)
                                                 }
                                               >
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger className="w-full dark:border-none py-6 dark:bg-gray-800 rounded-sm">
                                                   <SelectValue placeholder="Select Branch" />
                                                 </SelectTrigger>
-                                                <SelectContent>
+                                                <SelectContent className="dark:bg-gray-800 rounded-sm dark:border-none">
                                                   <SelectGroup>
                                                     <SelectLabel>
                                                       Branches
                                                     </SelectLabel>
                                                     {branches?.map((branch) => (
                                                       <SelectItem
+                                                        className="hover:cursor-pointer hover:bg-blue-600"
                                                         value={branch._id}
                                                         key={branch._id}
                                                       >
@@ -2099,7 +2109,7 @@ const StaffManagement = () => {
                                             {shifts.map((shift, index) => (
                                               <div
                                                 key={shift.id}
-                                                className="p-4 border border-gray-200 rounded-md bg-gray-50"
+                                                className="p-4 border dark:bg-gray-900 dark:border-gray-700 border-gray-200 rounded-md bg-gray-50"
                                               >
                                                 <div className="flex justify-between items-center mb-3">
                                                   <h3 className="font-medium text-indigo-600">
@@ -2130,7 +2140,7 @@ const StaffManagement = () => {
                                                               selectedValue
                                                             );
                                                           }}
-                                                          className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                          className="w-full py-3 rounded-sm dark:bg-gray-800 dark:text-white dark:border-none border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                         >
                                                           <option>
                                                             Select
@@ -2203,7 +2213,7 @@ const StaffManagement = () => {
                                                               selectedValue
                                                             );
                                                           }}
-                                                          className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                          className="w-full py-3 rounded-sm dark:bg-gray-800 dark:text-white dark:border-none border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                                         >
                                                           <option value="">
                                                             Select Shift
@@ -2257,7 +2267,7 @@ const StaffManagement = () => {
                                                             );
                                                             field.onChange(e);
                                                           }}
-                                                          className="rounded-md focus:outline-none"
+                                                          className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                         />
                                                       )}
                                                     />
@@ -2300,7 +2310,7 @@ const StaffManagement = () => {
                                                             );
                                                             field.onChange(e);
                                                           }}
-                                                          className="rounded-md focus:outline-none"
+                                                          className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                         />
                                                       )}
                                                     />
@@ -2351,7 +2361,7 @@ const StaffManagement = () => {
                                                 }}
                                                 {...register("username")}
                                                 type="text"
-                                                className="rounded-md focus:outline-none"
+                                                className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 placeholder="Username"
                                               />
                                             )}
@@ -2377,7 +2387,7 @@ const StaffManagement = () => {
                                                 }}
                                                 {...register("password")}
                                                 type="password"
-                                                className="rounded-md focus:outline-none"
+                                                className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 placeholder="Password"
                                               />
                                             )}
@@ -2418,7 +2428,7 @@ const StaffManagement = () => {
                                                   {...register(
                                                     "emergencyContactName"
                                                   )}
-                                                  className="rounded-md focus:outline-none"
+                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Emergency Contact Name"
                                                 />
                                               )}
@@ -2449,7 +2459,7 @@ const StaffManagement = () => {
                                                     {...register(
                                                       "emergencyContactNo"
                                                     )}
-                                                    className="rounded-md focus:outline-none"
+                                                    className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     placeholder="Emergency Contact No"
                                                   />
                                                 )}
@@ -2479,7 +2489,7 @@ const StaffManagement = () => {
                                                     {...register(
                                                       "relationship"
                                                     )}
-                                                    className="rounded-md focus:outline-none"
+                                                    className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     placeholder="Relationship"
                                                   />
                                                 )}
@@ -2502,7 +2512,7 @@ const StaffManagement = () => {
                                     onClick={handlePrev}
                                     disabled={currentStep === 1}
                                     type="button"
-                                    className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
+                                    className={`flex items-center dark:text-white px-4 py-2 rounded-sm transition-colors duration-100 
                                       ${
                                         currentStep === 1
                                           ? "cursor-not-allowed text-gray-400"
@@ -2517,7 +2527,7 @@ const StaffManagement = () => {
                                     <button
                                       onClick={handleNext}
                                       type="button"
-                                      className="cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2"
+                                      className="cursor-pointer dark:text-white flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2"
                                     >
                                       Next <ChevronRight />
                                     </button>
