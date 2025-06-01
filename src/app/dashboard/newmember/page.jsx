@@ -1,6 +1,7 @@
-'use client'
+"use client";
 
-import { Switch } from "@/components/ui/switch"
+import { toast as sonnerToast } from "sonner";
+import { Switch } from "@/components/ui/switch";
 import { BiSolidUserDetail } from "react-icons/bi";
 import { TiBusinessCard } from "react-icons/ti";
 import { MdOutlinePayment } from "react-icons/md";
@@ -8,1246 +9,1452 @@ import { BiHomeAlt } from "react-icons/bi";
 import { MdDone, MdError, MdClose } from "react-icons/md";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { useForm } from 'react-hook-form';
+import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { toast as notify } from 'react-hot-toast';
+import { toast as notify } from "react-hot-toast";
 import { cn } from "@/lib/utils";
 
 // Import UI components
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "@/components/ui/calendar";
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
-    Breadcrumb,
-    BreadcrumbEllipsis,
-    BreadcrumbItem,
-    BreadcrumbLink,
-    BreadcrumbList,
-    BreadcrumbPage,
-    BreadcrumbSeparator,
+  Breadcrumb,
+  BreadcrumbEllipsis,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-    DropdownMenu,
-    DropdownMenuTrigger,
+  DropdownMenu,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
 const NewMemberRegistrationForm = () => {
-    const [imagePreview, setImagePreview] = useState(null);
-    const handleImageChange = (e) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const removeImage = () => {
-        setImagePreview(null);
-    };
-
-    // For rendering states
-    const [renderPersonalInformationForm, setRenderPersonalInformationForm] = useState(true);
-    const [renderBodyMeasurementsForm, setRenderBodyMeasurementsForm] = useState(false);
-    const [renderMembershipInformationForm, setRenderMembershipInformationForm] = useState(true);
-    const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
-    const [renderProfileDetails, setRenderProfileDetails] = useState(false);
-
-    const membershipPlans = [
+  const membershipPlans = [
+    {
+      title: "ADMISSION FEE",
+      type: "Admission",
+      admissionFee: 1000,
+    },
+    {
+      regularMemberships: [
         {
-            title: "ADMISSION FEE",
-            type: "Admission",
-            admissionFee: 1000
+          option: "Regular",
+          type: "Gym",
+          gymRegularFees: {
+            "1 Month": 4000,
+            "3 Months": 10500,
+            "6 Months": 18000,
+            "12 Months": 30000,
+          },
         },
         {
-            regularMemberships: [
-                {
-                    option: "Regular",
-                    type: "Gym",
-                    gymRegularFees: {
-                        "1 Month": 4000,
-                        "3 Months": 10500,
-                        "6 Months": 18000,
-                        "12 Months": 30000
-                    }
-                },
-                {
-                    option: "Regular",
-                    type: "Gym & Cardio",
-                    gymCardioRegularFees: {
-                        "1 Month": 5000,
-                        "3 Months": 12000,
-                        "6 Months": 21000,
-                        "12 Months": 36000
-                    }
-                },
-            ],
-            daytimeMemberships: [
-                {
-                    option: "Daytime",
-                    type: "Gym",
-                    gymDayFees: {
-                        "1 Month": 3000,
-                        "3 Months": 7500,
-                        "6 Months": 12000,
-                        "12 Months": 18000
-                    }
-                },
-                {
-                    option: "Daytime",
-                    type: "Gym & Cardio",
-                    gymCardioDayFees: {
-                        "1 Month": 4000,
-                        "3 Months": 10500,
-                        "6 Months": 18000,
-                        "12 Months": 30000
-                    }
-                },
-            ]
-        }
-    ];
+          option: "Regular",
+          type: "Gym & Cardio",
+          gymCardioRegularFees: {
+            "1 Month": 5000,
+            "3 Months": 12000,
+            "6 Months": 21000,
+            "12 Months": 36000,
+          },
+        },
+      ],
+      daytimeMemberships: [
+        {
+          option: "Daytime",
+          type: "Gym",
+          gymDayFees: {
+            "1 Month": 3000,
+            "3 Months": 7500,
+            "6 Months": 12000,
+            "12 Months": 18000,
+          },
+        },
+        {
+          option: "Daytime",
+          type: "Gym & Cardio",
+          gymCardioDayFees: {
+            "1 Month": 4000,
+            "3 Months": 10500,
+            "6 Months": 18000,
+            "12 Months": 30000,
+          },
+        },
+      ],
+    },
+  ];
 
-    const [toast, setToast] = useState(false);
-    const [responseMessage, setResponseMessage] = useState('');
-    const [signUpAlert, setSignUpAlert] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('');
-    const responseResultType = ['Success', 'Failure'];
-    const [membershipDuration, setMembershipDuration] = useState('');
+  const [membershipDuration, setMembershipDuration] = useState("");
 
-    // Members details
-    const [gender, setGender] = useState('');
-    const [status, setStatus] = useState(false);
+  // Members details
+  const [gender, setGender] = useState("");
+  const [status, setStatus] = useState(false);
 
-    // Payment Details
-    const [paymentMethod, setPaymentMethod] = useState('');
-    const [actionTaker, setActionTaker] = useState('');
+  // Payment Details
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [actionTaker, setActionTaker] = useState("");
 
-    // Membership details
-    const [membershipOption, setMembershipOption] = useState('');
-    const [membershipType, setMembershipType] = useState('');
-    const [membershipShift, setMembershipShift] = useState('');
+  // Membership details
+  const [membershipOption, setMembershipOption] = useState("");
+  const [membershipType, setMembershipType] = useState("");
+  const [membershipShift, setMembershipShift] = useState("");
 
-    // Date Detais
-    const [dob, setDob] = useState(new Date());
-    const [membershipDate, setMembershipDate] = useState(new Date());
-    const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
-    const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
+  // Date Detais
+  const [dob, setDob] = useState(new Date());
+  const [membershipDate, setMembershipDate] = useState(new Date());
+  const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
+  const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
 
-    // Payment Details
-    const [finalAmmount, setFinalAmmount] = useState('');
-    const [discountAmmount, setDiscountAmmount] = useState('');
-    const [paidAmmount, setPaidAmmount] = useState('');
-    const [dueAmmount, setDueAmmount] = useState('');
+  // Payment Details
+  const [finalAmmount, setFinalAmmount] = useState("");
+  const [discountAmmount, setDiscountAmmount] = useState("");
+  const [paidAmmount, setPaidAmmount] = useState("");
+  const [dueAmmount, setDueAmmount] = useState("");
 
-    const calculateDueAmmount = () => {
-        const due = finalAmmount - paidAmmount;
-        setDueAmmount(due);
-    };
+  const calculateDueAmmount = () => {
+    const due = finalAmmount - paidAmmount;
+    setDueAmmount(due);
+  };
 
-    useEffect(() => {
-        calculateDueAmmount();
-    }, [finalAmmount, discountAmmount, paidAmmount]);
+  useEffect(() => {
+    calculateDueAmmount();
+  }, [finalAmmount, discountAmmount, paidAmmount]);
 
-    const calculateFinalAmmount = () => {
-        let selectedPlan = null;
+  const calculateFinalAmmount = () => {
+    let selectedPlan = null;
 
-        membershipPlans.forEach((plan) => {
-            if (plan.regularMemberships) {
-                plan.regularMemberships.forEach((regular) => {
-                    if (regular.option === membershipOption && regular.type === membershipType) {
-                        selectedPlan = regular;
-                    }
-                });
-            }
-
-            if (plan.daytimeMemberships) {
-                plan.daytimeMemberships.forEach((day) => {
-                    if (day.option === membershipOption && day.type === membershipType) {
-                        selectedPlan = day;
-                    }
-                });
-            }
+    membershipPlans.forEach((plan) => {
+      if (plan.regularMemberships) {
+        plan.regularMemberships.forEach((regular) => {
+          if (
+            regular.option === membershipOption &&
+            regular.type === membershipType
+          ) {
+            selectedPlan = regular;
+          }
         });
+      }
 
-        if (selectedPlan) {
-            let selectedFee = 0;
-
-            if (membershipOption === "Regular" && membershipType === "Gym") {
-                selectedFee = selectedPlan.gymRegularFees[membershipDuration];
-            } else if (membershipOption === "Regular" && membershipType === "Gym & Cardio") {
-                selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-            } else if (membershipOption === "Daytime" && membershipType === "Gym") {
-                selectedFee = selectedPlan.gymDayFees[membershipDuration];
-            } else if (membershipOption === "Daytime" && membershipType === "Gym & Cardio") {
-                selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
-            }
-
-            const admissionFee = membershipPlans.find(plan => plan.type === "Admission").admissionFee;
-            setFinalAmmount(admissionFee + selectedFee - discountAmmount);
-        } else {
-            setFinalAmmount(0);
-        }
-    };
-
-    useEffect(() => {
-        calculateFinalAmmount()
-    }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
-
-    const {
-        register,
-        reset,
-        formState: { errors, isSubmitting },
-        handleSubmit,
-        setError,
-        clearErrors
-    } = useForm();
-
-    const handleMembershipSelection = (duration) => {
-        setMembershipDuration(duration);
-        const newMembershipExpireDate = new Date(membershipRenewDate)
-
-        switch (duration) {
-            case "1 Month":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 1);
-                break;
-
-            case "3 Months":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 3);
-                break;
-
-            case "6 Months":
-                newMembershipExpireDate.setMonth(newMembershipExpireDate.getMonth() + 6);
-                break;
-
-            case "12 Months":
-                newMembershipExpireDate.setFullYear(newMembershipExpireDate.getFullYear() + 1);
-                break;
-
-            default:
-                break;
-        }
-        setMembershipExpireDate(newMembershipExpireDate);
-    };
-
-    useEffect(() => {
-        handleMembershipSelection(membershipDuration);
-    }, [membershipRenewDate])
-
-    const onRegisterMember = async (data) => {
-
-        clearErrors();
-
-        let isValid = true;
-
-        if (!gender) {
-            setError("gender", { type: "manual", message: "Gender is required" });
-            isValid = false;
-        }
-
-        if (!status) {
-            setError("status", { type: "manual", message: "Status is required" });
-            isValid = false;
-        }
-
-        if (!membershipOption) {
-            setError("membershipOption", { type: "manual", message: "Membership option is required" });
-            isValid = false;
-        }
-
-        if (!membershipType) {
-            setError("membershipType", { type: "manual", message: "Membership type is required" });
-            isValid = false;
-        }
-
-        if (!membershipShift) {
-            setError("membershipShift", { type: "manual", message: "Membership shift is required" });
-            isValid = false;
-        }
-
-        if (!paymentMethod) {
-            setError("paymentMethod", { type: "manual", message: "Payment method is required" });
-            isValid = false;
-        }
-
-        if (!actionTaker) {
-            setError("actionTaker", { type: "manual", message: "Select action taker" });
-            isValid = false;
-        }
-
-        if (!isValid) {
-            return;
-        }
-
-        try {
-            const {
-                fullName,
-                contactNo,
-                email,
-                dob,
-                secondaryContactNo,
-                address,
-
-                bodyMeasuredate,
-                weight,
-                height,
-                upperArm,
-                foreArm,
-                chest,
-                waist,
-                thigh,
-                calf,
-
-                discountReason,
-                discountCode,
-                receiptNo,
-                referenceCode,
-                remark
-            } = data;
-
-            const membersFinalData = {
-                fullName,
-                contactNo,
-                email,
-                dob,
-                secondaryContactNo,
-                gender,
-                address,
-
-                bodyMeasuredate,
-                weight,
-                height,
-                upperArm,
-                foreArm,
-                chest,
-                waist,
-                thigh,
-                calf,
-
-                status,
-                membershipOption,
-                membershipType,
-                membershipShift,
-                membershipDate,
-                membershipRenewDate,
-                membershipDuration,
-                membershipExpireDate,
-                paymentMethod,
-                discountAmmount,
-                discountReason,
-                discountCode,
-                admissionFee: 1000,
-                finalAmmount,
-                paidAmmount,
-                receiptNo,
-                dueAmmount,
-                referenceCode,
-                remark,
-                actionTaker
-            };
-
-            if (discountAmmount && !discountReason) {
-                setError(
-                    'discountReason', {
-                    type: 'manual',
-                    message: "Discount reason is required"
-                }
-                )
-            };
-
-            if (!paidAmmount) {
-                setError(
-                    'paidAmmount', {
-                    type: 'manual',
-                    message: "Paid ammount is required"
-                }
-                )
-            }
-            const response = await fetch('http://localhost:3000/api/members', {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(membersFinalData)
-            })
-            const responseBody = await response.json();
-
-            if (response.status === 400 && type === 'fullName') {
-                setError('fullName', {
-                    type: 'manual',
-                    message: 'This full name already exists',
-                });
-            };
-
-            if (response.status === 400) {
-                notify.error(responseBody.message);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 7000);
-                setResponseMessage(responseBody.message);
-                setError(
-                    'userRegistered', {
-                    type: "manual",
-                    message: "User exists with this email"
-                }
-                )
-                setResponseMessage(responseBody.message);
-                setResponseType(responseResultType[1]);
-                setSignUpAlert(true);
-                setTimeout(() => {
-                    setSignUpAlert(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-            }
-
-            if (response.ok) {
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 7000);
-                setResponseMessage(responseBody.message);
-                setResponseType(responseResultType[0]);
-                setSignUpAlert(true);
-                setTimeout(() => {
-                    setSignUpAlert(false)
-                }, 10000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
-                });
-                reset();
-            };
-
-        } catch (error) {
-            setResponseType(responseResultType[1]);
-            setSignUpAlert(true);
-            setTimeout(() => {
-                setSignUpAlert(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message || 'Unauthorized action'
-            });
-            console.log('Error: ', error);
-        }
-    };
-
-    const getAactionTakers = async () => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${['Gym Admin', 'Super Admin', 'Operational Manager', 'HR Manager', 'CEO', 'Intern', 'Floor Trainer', 'Personal Trainer']}`);
-            const responseBody = await response.json();
-            return responseBody;
-        } catch (error) {
-            console.log("Error: ", error);
-            if (error) {
-                alert("Error: ", error)
-            }
-        };
-    };
-
-    const { data: actionTakers, isLoading: fetchingActionTakers } = useQuery({
-        queryKey: ['actiontakers'],
-        queryFn: getAactionTakers
+      if (plan.daytimeMemberships) {
+        plan.daytimeMemberships.forEach((day) => {
+          if (day.option === membershipOption && day.type === membershipType) {
+            selectedPlan = day;
+          }
+        });
+      }
     });
 
-    const { actionTakersDB } = actionTakers || {};
+    if (selectedPlan) {
+      let selectedFee = 0;
 
-    // Add new state for step management
-    const [currentStep, setCurrentStep] = useState(1);
-    const totalSteps = 3;
+      if (membershipOption === "Regular" && membershipType === "Gym") {
+        selectedFee = selectedPlan.gymRegularFees[membershipDuration];
+      } else if (
+        membershipOption === "Regular" &&
+        membershipType === "Gym & Cardio"
+      ) {
+        selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
+      } else if (membershipOption === "Daytime" && membershipType === "Gym") {
+        selectedFee = selectedPlan.gymDayFees[membershipDuration];
+      } else if (
+        membershipOption === "Daytime" &&
+        membershipType === "Gym & Cardio"
+      ) {
+        selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
+      }
 
-    // Function to handle step navigation
-    const handleNextStep = () => {
-        if (currentStep < totalSteps) {
-            setCurrentStep(currentStep + 1);
-        }
-    };
+      const admissionFee = membershipPlans.find(
+        (plan) => plan.type === "Admission"
+      ).admissionFee;
+      setFinalAmmount(admissionFee + selectedFee - discountAmmount);
+    } else {
+      setFinalAmmount(0);
+    }
+  };
 
-    const handlePrevStep = () => {
-        if (currentStep > 1) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
+  useEffect(() => {
+    calculateFinalAmmount();
+  }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
 
-    // Function to validate current step
-    const validateStep = (step) => {
-        switch (step) {
-            case 1:
-                return !errors.fullName && !errors.contactNo && !errors.email && !errors.dob && !errors.secondaryContactNo && !errors.address && !errors.gender;
-            case 2:
-                return !errors.membershipOption && !errors.membershipType && !errors.membershipShift && !errors.membershipDuration;
-            case 3:
-                return !errors.paymentMethod && !errors.paidAmmount;
-            default:
-                return false;
-        }
-    };
+  const {
+    register,
+    reset,
+    formState: { errors, isSubmitting },
+    handleSubmit,
+    setError,
+    clearErrors,
+  } = useForm();
 
-    return (
-        <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
-            <div className="flex items-center gap-2 mb-3">
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className='font-medium text-gray-600 dark:text-gray-300 flex items-center gap-1'>
-                                <BiHomeAlt size={18} /> Home
-                            </BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink className='font-medium text-gray-600 dark:text-gray-300'>Dashboard</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className='font-medium text-gray-600 dark:text-gray-300'>New Member</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
-            </div>
+  const handleMembershipSelection = (duration) => {
+    setMembershipDuration(duration);
+    const newMembershipExpireDate = new Date(membershipRenewDate);
 
-            <div className='w-full'>
-                <h1 className="text-xl font-bold text-gray-600 dark:text-gray-100 my-3">Register New Member</h1>
-            </div>
+    switch (duration) {
+      case "1 Month":
+        newMembershipExpireDate.setMonth(
+          newMembershipExpireDate.getMonth() + 1
+        );
+        break;
 
-            {/* Progress Steps Card */}
-            <Card className="w-full mb-8 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <CardContent className="pt-6">
-                    <div className="flex items-center justify-between max-w-3xl mx-auto">
-                        {[1, 2, 3].map((step) => (
-                            <div key={step} className="flex flex-col items-center">
-                                <div className={`w-12 h-12 rounded-full flex items-center justify-center mb-2
-                                    ${currentStep >= step 
-                                        ? 'bg-indigo-600 dark:bg-indigo-600 text-white' 
-                                        : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400'}`}>
-                                    {step}
-                                </div>
-                                <span className={`text-sm font-medium
-                                    ${currentStep >= step 
-                                        ? 'text-indigo-600 dark:text-indigo-400' 
-                                        : 'text-gray-500 dark:text-gray-400'}`}>
-                                    {step === 1 ? 'Personal Info' : step === 2 ? 'Membership' : 'Payment'}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                    <div className="relative max-w-3xl mx-auto mt-4">
-                        <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 -translate-y-1/2">
-                            <div className="h-full bg-indigo-600 dark:bg-indigo-600 transition-all duration-300"
-                                style={{ width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%` }}>
-                            </div>
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
+      case "3 Months":
+        newMembershipExpireDate.setMonth(
+          newMembershipExpireDate.getMonth() + 3
+        );
+        break;
 
-            {signUpAlert && (
-                <div className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in">
-                    <div className="fixed top-4 right-4 z-50 animate-slide-in">
-                        <div className={`relative flex items-start gap-3 px-4 py-3 bg-white dark:bg-gray-800 shadow-lg border-l-[5px] rounded-xl
-                            transition-all duration-300 ease-in-out w-80
-                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
+      case "6 Months":
+        newMembershipExpireDate.setMonth(
+          newMembershipExpireDate.getMonth() + 6
+        );
+        break;
 
-                            <div className={`flex items-center justify-center p-2 rounded-full 
-                                    ${responseType === 'Success' ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-rose-100 dark:bg-rose-900/30'}`}>
-                                {responseType === 'Success' ? (
-                                    <MdDone className="text-xl text-emerald-600 dark:text-emerald-400" />
-                                ) : (
-                                    <MdError className="text-xl text-rose-600 dark:text-rose-400" />
-                                )}
-                            </div>
+      case "12 Months":
+        newMembershipExpireDate.setFullYear(
+          newMembershipExpireDate.getFullYear() + 1
+        );
+        break;
 
-                            <div className="flex-1">
-                                <h3 className={`text-base font-semibold mb-1
-                                    ${responseType === 'Success' ? 'text-emerald-800 dark:text-emerald-400' : 'text-rose-800 dark:text-rose-400'}`}>
-                                    {responseType === 'Success' ? "Successfully sent!" : "Action required"}
-                                </h3>
+      default:
+        break;
+    }
+    setMembershipExpireDate(newMembershipExpireDate);
+  };
 
-                                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
-                                    {
-                                        responseType === 'Success' ?
-                                            (
-                                                <p>
-                                                    {`${successMessage.message}`}
-                                                </p>
-                                            ) : (
-                                                <p>
-                                                    {`${errorMessage.message}`}
-                                                </p>
-                                            )
-                                    }
-                                </p>
+  useEffect(() => {
+    handleMembershipSelection(membershipDuration);
+  }, [membershipRenewDate]);
 
-                                <div className="mt-3 flex items-center gap-2">
-                                    {responseType === 'Success' ? (
-                                        <button className="text-xs font-medium text-emerald-700 dark:text-emerald-400 hover:text-emerald-900 dark:hover:text-emerald-300 underline">
-                                            Done
-                                        </button>
-                                    ) : (
-                                        <button className="text-xs font-medium text-rose-700 dark:text-rose-400 hover:text-rose-900 dark:hover:text-rose-300 underline">
-                                            Retry Now
-                                        </button>
-                                    )}
-                                    <span className="text-gray-400 dark:text-gray-500">|</span>
-                                    <button
-                                        className="text-xs font-medium text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 underline"
-                                        onClick={() => setSignUpAlert(false)}>
-                                        Dismiss
-                                    </button>
-                                </div>
-                            </div>
+  const onRegisterMember = async (data) => {
+    console.log("Data: ", data);
+    clearErrors();
 
-                            <MdClose
-                                onClick={() => setSignUpAlert(false)}
-                                className="cursor-pointer text-lg text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition mt-0.5"
-                            />
-                        </div>
-                    </div>
+    let isValid = true;
+
+    if (!gender) {
+      setError("gender", { type: "manual", message: "Gender is required" });
+      isValid = false;
+    }
+
+    if (!status) {
+      setError("status", { type: "manual", message: "Status is required" });
+      isValid = false;
+    }
+
+    if (!membershipOption) {
+      setError("membershipOption", {
+        type: "manual",
+        message: "Membership option is required",
+      });
+      isValid = false;
+    }
+
+    if (!membershipType) {
+      setError("membershipType", {
+        type: "manual",
+        message: "Membership type is required",
+      });
+      isValid = false;
+    }
+
+    if (!membershipShift) {
+      setError("membershipShift", {
+        type: "manual",
+        message: "Membership shift is required",
+      });
+      isValid = false;
+    }
+
+    if (!paymentMethod) {
+      setError("paymentMethod", {
+        type: "manual",
+        message: "Payment method is required",
+      });
+      isValid = false;
+    }
+
+    if (!actionTaker) {
+      setError("actionTaker", {
+        type: "manual",
+        message: "Select action taker",
+      });
+      isValid = false;
+    }
+
+    if (!isValid) {
+      return;
+    }
+
+    try {
+      const {
+        fullName,
+        contactNo,
+        email,
+        dob,
+        secondaryContactNo,
+        address,
+
+        bodyMeasuredate,
+        weight,
+        height,
+        upperArm,
+        foreArm,
+        chest,
+        waist,
+        thigh,
+        calf,
+
+        discountReason,
+        discountCode,
+        receiptNo,
+        referenceCode,
+        remark,
+      } = data;
+
+      const membersFinalData = {
+        fullName,
+        contactNo,
+        email,
+        dob,
+        secondaryContactNo,
+        gender,
+        address,
+
+        bodyMeasuredate,
+        weight,
+        height,
+        upperArm,
+        foreArm,
+        chest,
+        waist,
+        thigh,
+        calf,
+
+        status,
+        membershipOption,
+        membershipType,
+        membershipShift,
+        membershipDate,
+        membershipRenewDate,
+        membershipDuration,
+        membershipExpireDate,
+        paymentMethod,
+        discountAmmount,
+        discountReason,
+        discountCode,
+        admissionFee: 1000,
+        finalAmmount,
+        paidAmmount,
+        receiptNo,
+        dueAmmount,
+        referenceCode,
+        remark,
+        actionTaker,
+      };
+
+      if (discountAmmount && !discountReason) {
+        setError("discountReason", {
+          type: "manual",
+          message: "Discount reason is required",
+        });
+      }
+
+      if (!paidAmmount) {
+        setError("paidAmmount", {
+          type: "manual",
+          message: "Paid ammount is required",
+        });
+      }
+      const response = await fetch("http://localhost:3000/api/members", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(membersFinalData),
+      });
+      const responseBody = await response.json();
+
+      if (response.ok) {
+        notify.success(responseBody.message);
+        sonnerToast.success("Member registration completed", {
+          description: responseBody.message,
+        });
+        reset();
+      }
+
+      if (response.status === 400 && type === "fullName") {
+        setError("fullName", {
+          type: "manual",
+          message: "This full name already exists",
+        });
+      }
+
+      if (response.status === 400) {
+        notify.error(responseBody.message);
+        sonnerToast.error("Member registration completed", {
+          description: responseBody.message,
+        });
+        setError("userRegistered", {
+          type: "manual",
+          message: "User exists with this email",
+        });
+      }
+    } catch (error) {
+      nofity.error(error.message);
+      sonnerToast.error("Internal server error", {
+        description: error.message,
+      });
+      console.log("Error: ", error);
+    }
+  };
+
+  const getAactionTakers = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/staffsmanagement/actiontakers?actionTakers=${[
+          "Gym Admin",
+          "Super Admin",
+          "Operational Manager",
+          "HR Manager",
+          "CEO",
+          "Intern",
+          "Floor Trainer",
+          "Personal Trainer",
+        ]}`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      if (error) {
+        sonnerToast.error("Internal server error", {
+          description: error.message,
+        });
+      }
+    }
+  };
+
+  const { data: actionTakers, isLoading: fetchingActionTakers } = useQuery({
+    queryKey: ["actiontakers"],
+    queryFn: getAactionTakers,
+  });
+
+  const { actionTakersDB } = actionTakers || {};
+
+  // Add new state for step management
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
+
+  // Function to handle step navigation
+  const handleNextStep = () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  // Function to validate current step
+  const validateStep = (step) => {
+    switch (step) {
+      case 1:
+        return (
+          !errors.fullName &&
+          !errors.contactNo &&
+          !errors.email &&
+          !errors.dob &&
+          !errors.secondaryContactNo &&
+          !errors.address &&
+          !errors.gender
+        );
+      case 2:
+        return (
+          !errors.membershipOption &&
+          !errors.membershipType &&
+          !errors.membershipShift &&
+          !errors.membershipDuration
+        );
+      case 3:
+        return !errors.paymentMethod && !errors.paidAmmount;
+      default:
+        return false;
+    }
+  };
+
+  return (
+    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
+      <div className="flex items-center gap-2 mb-3">
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink
+                href="/"
+                className="font-medium text-gray-600 dark:text-gray-300 flex items-center gap-1"
+              >
+                <BiHomeAlt size={18} /> Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1">
+                  <BreadcrumbEllipsis className="h-4 w-4" />
+                </DropdownMenuTrigger>
+              </DropdownMenu>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink className="font-medium text-gray-600 dark:text-gray-300">
+                Dashboard
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="font-medium text-gray-600 dark:text-gray-300">
+                New Member
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
+      <div className="w-full">
+        <h1 className="text-xl font-bold text-gray-600 dark:text-gray-100 my-3">
+          Register New Member
+        </h1>
+      </div>
+
+      <form
+        onSubmit={handleSubmit(onRegisterMember)}
+        className="w-full md:flex md:items-stretch gap-4"
+      >
+        {/* Stepper Card */}
+        <Card className="md:w-2/12 w-full mb-8 md:mb-0 bg-white dark:bg-gray-800  border-gray-200 dark:border-gray-700 flex-shrink-0">
+          <CardContent className="pt-6 h-full">
+            <div className="flex flex-col items-center justify-between w-full h-full">
+              {[1, 2, 3].map((step) => (
+                <div key={step} className="flex flex-col items-center mb-4">
+                  <div
+                    className={`w-12 h-12 rounded-full flex items-center justify-center mb-2
+              ${
+                currentStep >= step
+                  ? "bg-indigo-600 dark:bg-indigo-600 text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+              }`}
+                  >
+                    {step}
+                  </div>
+                  <span
+                    className={`text-sm font-medium
+              ${
+                currentStep >= step
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-gray-500 dark:text-gray-400"
+              }`}
+                  >
+                    {step === 1
+                      ? "Personal Info"
+                      : step === 2
+                      ? "Membership"
+                      : "Payment"}
+                  </span>
                 </div>
-            )}
+              ))}
+              <div className="relative w-full mt-4">
+                <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 -translate-y-1/2">
+                  <div
+                    className="h-full bg-indigo-600 dark:bg-indigo-600 transition-all duration-300"
+                    style={{
+                      width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
+                    }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
 
-            <form onSubmit={handleSubmit(onRegisterMember)} className="w-full">
-                <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                    <CardHeader>
-                        <CardTitle className="text-gray-900 dark:text-gray-100">Member Registration</CardTitle>
-                        <CardDescription className="text-gray-500 dark:text-gray-400">
-                            Step {currentStep} of {totalSteps}: {
-                                currentStep === 1 ? 'Personal Information' :
-                                currentStep === 2 ? 'Membership Details' :
-                                'Payment Information'
-                            }
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Tabs value={`step${currentStep}`} className="w-full">
-                            <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
-                                <TabsTrigger 
-                                    value="step1" 
-                                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 1 ? 'bg-white dark:bg-gray-800' : ''}`}
-                                    onClick={() => setCurrentStep(1)}
-                                >
-                                    <BiSolidUserDetail size={22} className="mr-2" /> Personal Information
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="step2" 
-                                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 2 ? 'bg-white dark:bg-gray-800' : ''}`}
-                                    onClick={() => setCurrentStep(2)}
-                                >
-                                    <TiBusinessCard size={22} className="mr-2" /> Membership Information
-                                </TabsTrigger>
-                                <TabsTrigger 
-                                    value="step3" 
-                                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 3 ? 'bg-white dark:bg-gray-800' : ''}`}
-                                    onClick={() => setCurrentStep(3)}
-                                >
-                                    <MdOutlinePayment size={22} className="mr-2" /> Payment Information
-                                </TabsTrigger>
-                            </TabsList>
+        <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-grow">
+          <CardHeader>
+            <CardTitle className="text-gray-900 dark:text-gray-100">
+              Member Registration
+            </CardTitle>
+            <CardDescription className="text-gray-500 dark:text-gray-400">
+              Step {currentStep} of {totalSteps}:{" "}
+              {currentStep === 1
+                ? "Personal Information"
+                : currentStep === 2
+                ? "Membership Details"
+                : "Payment Information"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Tabs value={`step${currentStep}`} className="w-full">
+              <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
+                <TabsTrigger
+                  value="step1"
+                  className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
+                    currentStep === 1 ? "bg-white dark:bg-gray-800" : ""
+                  }`}
+                  onClick={() => setCurrentStep(1)}
+                >
+                  <BiSolidUserDetail size={22} className="mr-2" /> Personal
+                  Information
+                </TabsTrigger>
+                <TabsTrigger
+                  value="step2"
+                  className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
+                    currentStep === 2 ? "bg-white dark:bg-gray-800" : ""
+                  }`}
+                  onClick={() => setCurrentStep(2)}
+                >
+                  <TiBusinessCard size={22} className="mr-2" /> Membership
+                  Information
+                </TabsTrigger>
+                <TabsTrigger
+                  value="step3"
+                  className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
+                    currentStep === 3 ? "bg-white dark:bg-gray-800" : ""
+                  }`}
+                  onClick={() => setCurrentStep(3)}
+                >
+                  <MdOutlinePayment size={22} className="mr-2" /> Payment
+                  Information
+                </TabsTrigger>
+              </TabsList>
 
-                            <TabsContent value="step1">
-                                {/* Step 1: Personal Information */}
-                                {currentStep === 1 && (
-                                    <div className="w-full md:flex items-center justify-between space-x-4">
-                                        <Card className="w-full lg:w-4/12 py-4 h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                            <CardContent className="pt-6">
-                                                <div className="flex items-center justify-center">
-                                                    <h1 className="text-4xl font-bold text-gray-600 dark:text-gray-300 rounded-full bg-gray-200 dark:bg-gray-700 w-40 h-40"></h1>
-                                                </div>
-                                                <div className="w-full items-center justify-center">
-                                                    <div className="flex flex-col items-center justify-center my-3 space-y-1">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Status</Label>
-                                                        <Switch id="airplane-mode" 
-                                                        checked={status}
-                                                        onCheckedChange={setStatus}
-                                                        />
-                                                        {errors.status && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.status.message}</p>
-                                                        )}
-                                                        <p className="text-sm text-gray-600 dark:text-gray-400">Select membership status</p>
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-
-                                        <Card className="w-full lg:w-8/12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                            <CardContent className="pt-6">
-                                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Member Full Name</Label>
-                                                        <Input
-                                                            {...register('fullName', {
-                                                                required: "Enter member's full name here!"
-                                                            })}
-                                                            placeholder='Full Name'
-                                                            className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                                                        />
-                                                        {errors.fullName && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.fullName.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Contact No</Label>
-                                                        <Input
-                                                            {...register('contactNo', {
-                                                                required: "Enter contact number here!"
-                                                            })}
-                                                            placeholder='Contact Number'
-                                                            className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                                                        />
-                                                        {errors.contactNo && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.contactNo.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Email Address</Label>
-                                                        <Input
-                                                            {...register('email', {
-                                                                required: "Email address is required!"
-                                                            })}
-                                                            onChange={() => clearErrors('userRegistered')}
-                                                            placeholder='Email Address'
-                                                            className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                                                        />
-                                                        {errors.email && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Date Of Birth</Label>
-                                                        <Popover>
-                                                            <PopoverTrigger asChild>
-                                                                <Button
-                                                                    variant={"outline"}
-                                                                    className={cn(
-                                                                        "w-full justify-start text-left py-6 rounded-md font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                                                        !dob && "text-muted-foreground"
-                                                                    )}
-                                                                >
-                                                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                    {dob ? format(dob, "PPP") : <span>Pick a date</span>}
-                                                                </Button>
-                                                            </PopoverTrigger>
-                                                            <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                                <Calendar
-                                                                    mode="single"
-                                                                    selected={dob}
-                                                                    onSelect={setDob}
-                                                                    initialFocus
-                                                                    className="bg-white dark:bg-gray-800"
-                                                                />
-                                                            </PopoverContent>
-                                                        </Popover>
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Secondary Contact No</Label>
-                                                        <Input
-                                                            {...register('secondaryContactNo', {
-                                                                required: "Enter secondary contact number here!"
-                                                            })}
-                                                            placeholder='Secondary Contact Number'
-                                                            className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                                                        />
-                                                        {errors.secondaryContactNo && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.secondaryContactNo.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Address</Label>
-                                                        <Input
-                                                            {...register('address', {
-                                                                required: "Enter address!"
-                                                            })}
-                                                            className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                                                            placeholder='Address'
-                                                        />
-                                                        {errors.address && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.address.message}</p>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="space-y-2">
-                                                        <Label className="text-gray-700 dark:text-gray-300">Gender</Label>
-                                                        <Select onValueChange={(value) => {
-                                                            setGender(value);
-                                                            if (value) clearErrors("gender");
-                                                        }}>
-                                                            <SelectTrigger className="w-full py-6 rounded-md bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                                                                <SelectValue placeholder="Select Gender" />
-                                                            </SelectTrigger>
-                                                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                                <SelectGroup>
-                                                                    <SelectLabel className="text-gray-700 dark:text-gray-300">Gender</SelectLabel>
-                                                                    <SelectItem value="Male" className="text-gray-900 dark:text-gray-100">Male</SelectItem>
-                                                                    <SelectItem value="Female" className="text-gray-900 dark:text-gray-100">Female</SelectItem>
-                                                                    <SelectItem value="Other" className="text-gray-900 dark:text-gray-100">Other</SelectItem>
-                                                                </SelectGroup>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        {errors.gender && (
-                                                            <p className="text-sm text-red-600 dark:text-red-400">{errors.gender.message}</p>
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </div>
-                                )}
-                            </TabsContent>
-
-                            <TabsContent value="step2">
-                                {/* Step 2: Membership Information */}
-                                {currentStep === 2 && (
-                                    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                        <CardContent className="pt-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Option</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        setMembershipOption(value);
-                                                        if (value) clearErrors('membershipOption')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Option" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Membership Option</SelectLabel>
-                                                                <SelectItem value="Regular" className="text-gray-900 dark:text-gray-100">Regular</SelectItem>
-                                                                <SelectItem value="Daytime" className="text-gray-900 dark:text-gray-100">Daytime</SelectItem>
-                                                                <SelectItem value="Temporary" className="text-gray-900 dark:text-gray-100">Temporary</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.membershipOption && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.membershipOption.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Type</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        setMembershipType(value);
-                                                        if (value) clearErrors('membershipType')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Type" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Membership Type</SelectLabel>
-                                                                <SelectItem value="Gym" className="text-gray-900 dark:text-gray-100">Gym</SelectItem>
-                                                                <SelectItem value="Gym & Cardio" className="text-gray-900 dark:text-gray-100">Gym & Cardio</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.membershipType && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.membershipType.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Shift</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        setMembershipShift(value);
-                                                        if (value) clearErrors('membershipShift')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Shift" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Membership Shift</SelectLabel>
-                                                                <SelectItem value="Morning" className="text-gray-900 dark:text-gray-100">Morning</SelectItem>
-                                                                <SelectItem value="Day" className="text-gray-900 dark:text-gray-100">Day</SelectItem>
-                                                                <SelectItem value="Evening" className="text-gray-900 dark:text-gray-100">Evening</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.membershipShift && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.membershipShift.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Duration</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        handleMembershipSelection(value);
-                                                        if (value) clearErrors('membershipDuration')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Duration" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Membership Duration</SelectLabel>
-                                                                <SelectItem value="1 Month" className="text-gray-900 dark:text-gray-100">1 Month</SelectItem>
-                                                                <SelectItem value="3 Months" className="text-gray-900 dark:text-gray-100">3 Months</SelectItem>
-                                                                <SelectItem value="6 Months" className="text-gray-900 dark:text-gray-100">6 Months</SelectItem>
-                                                                <SelectItem value="12 Months" className="text-gray-900 dark:text-gray-100">12 Months</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.membershipDuration && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.membershipDuration.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Date</Label>
-                                                    <Popover>
-                                                        <PopoverTrigger className='py-6' asChild>
-                                                            <Button
-                                                                variant={"outline"}
-                                                                className={cn(
-                                                                    "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                                                    !membershipDate && "text-muted-foreground"
-                                                                )}
-                                                            >
-                                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                {membershipDate ? format(membershipDate, "PPP") : <span>Pick a date</span>}
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={membershipDate}
-                                                                onSelect={setMembershipDate}
-                                                                initialFocus
-                                                                className="bg-white dark:bg-gray-800"
-                                                            />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Renew Date</Label>
-                                                    <Popover>
-                                                        <PopoverTrigger className='py-6' asChild>
-                                                            <Button
-                                                                variant={"outline"}
-                                                                className={cn(
-                                                                    "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                                                    !membershipRenewDate && "text-muted-foreground"
-                                                                )}
-                                                            >
-                                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                {membershipRenewDate ? format(membershipRenewDate, "PPP") : <span>Pick a date</span>}
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={membershipRenewDate}
-                                                                onSelect={setMembershipRenewDate}
-                                                                initialFocus
-                                                                className="bg-white dark:bg-gray-800"
-                                                            />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Membership Expire Date</Label>
-                                                    <Popover>
-                                                        <PopoverTrigger className='py-6' asChild>
-                                                            <Button
-                                                                variant={"outline"}
-                                                                className={cn(
-                                                                    "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                                                    !membershipExpireDate && "text-muted-foreground"
-                                                                )}
-                                                            >
-                                                                <CalendarIcon className="mr-2 h-4 w-4" />
-                                                                {membershipExpireDate ? format(membershipExpireDate, "PPP") : <span>Pick a date</span>}
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <Calendar
-                                                                mode="single"
-                                                                selected={membershipExpireDate}
-                                                                onSelect={setMembershipExpireDate}
-                                                                initialFocus
-                                                                className="bg-white dark:bg-gray-800"
-                                                            />
-                                                        </PopoverContent>
-                                                    </Popover>
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-                            </TabsContent>
-
-                            <TabsContent value="step3">
-                                {/* Step 3: Payment Information */}
-                                {currentStep === 3 && (
-                                    <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                        <CardContent className="pt-6">
-                                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Payment Method</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        setPaymentMethod(value);
-                                                        if (value) clearErrors('paymentMethod')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Method" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Payment Method</SelectLabel>
-                                                                <SelectItem value="Fonepay" className="text-gray-900 dark:text-gray-100">Fonepay</SelectItem>
-                                                                <SelectItem value="Cash" className="text-gray-900 dark:text-gray-100">Cash</SelectItem>
-                                                                <SelectItem value="Card" className="text-gray-900 dark:text-gray-100">Card</SelectItem>
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.paymentMethod && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.paymentMethod.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Discount Amount</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        value={discountAmmount}
-                                                        onChange={(e) => setDiscountAmmount(e.target.value)}
-                                                        type='text'
-                                                        placeholder='Discount Amount'
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Discount Reason</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        {...register('discountReason')}
-                                                        onChange={(e) => clearErrors("discountReason")}
-                                                        type='text'
-                                                        placeholder='Discount Reason'
-                                                    />
-                                                    {errors.discountReason && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.discountReason.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Discount Code</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        {...register('discountCode')}
-                                                        type='text'
-                                                        placeholder='Discount Code'
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Admission Fee</Label>
-                                                    <Input
-                                                        {...register('admissionFee')}
-                                                        type='text'
-                                                        defaultValue={'1000'}
-                                                        disabled
-                                                        className='py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none'
-                                                        placeholder='Admission Fee'
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Final Amount</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                                                        value={finalAmmount}
-                                                        disabled
-                                                        placeholder="Final Amount"
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Paid Amount</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        value={paidAmmount}
-                                                        onChange={(e) => {
-                                                            setPaidAmmount(e.target.value);
-                                                            if (e.target.value) clearErrors('paidAmmount')
-                                                        }}
-                                                        placeholder="Paid Amount"
-                                                    />
-                                                    {errors.paidAmmount && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.paidAmmount.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Due Amount</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-                                                        value={dueAmmount}
-                                                        disabled
-                                                        placeholder="Due Amount"
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Receipt No</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        {...register('receiptNo', {
-                                                            required: "Mention receipt no!"
-                                                        })}
-                                                        type='text'
-                                                        placeholder='Receipt No'
-                                                    />
-                                                    {errors.receiptNo && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.receiptNo.message}</p>
-                                                    )}
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Reference Code</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        {...register('referenceCode')}
-                                                        type='text'
-                                                        placeholder='Reference Code'
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Remark</Label>
-                                                    <Input
-                                                        className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'
-                                                        {...register('remark')}
-                                                        type='text'
-                                                        placeholder='Remark'
-                                                    />
-                                                </div>
-
-                                                <div className="space-y-2">
-                                                    <Label className="text-gray-700 dark:text-gray-300">Action Taker</Label>
-                                                    <Select onValueChange={(value) => {
-                                                        setActionTaker(value);
-                                                        if (value) clearErrors('actionTaker')
-                                                    }}>
-                                                        <SelectTrigger className='py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100'>
-                                                            <SelectValue placeholder="Select Action Taker" />
-                                                        </SelectTrigger>
-                                                        <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                                            <SelectGroup>
-                                                                <SelectItem value="Not Selected" className="text-gray-900 dark:text-gray-100">Select</SelectItem>
-                                                                {Array.isArray(actionTakersDB) && actionTakersDB.length >= 1 ? (
-                                                                    actionTakersDB.map((actionTaker) => (
-                                                                        <div key={actionTaker._id}>
-                                                                            <SelectItem value={actionTaker.fullName || "Not Selected"} className="text-gray-900 dark:text-gray-100">
-                                                                                {actionTaker.fullName}
-                                                                            </SelectItem>
-                                                                        </div>
-                                                                    ))
-                                                                ) : (
-                                                                    <SelectItem value="Revive Fitness" className="text-gray-900 dark:text-gray-100">No staffs registered</SelectItem>
-                                                                )}
-                                                            </SelectGroup>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.actionTaker && (
-                                                        <p className="text-sm text-red-600 dark:text-red-400">{errors.actionTaker.message}</p>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                )}
-                            </TabsContent>
-                        </Tabs>
-                    </CardContent>
-                    <CardFooter className="flex justify-between space-x-2">
-                        {currentStep > 1 && (
-                            <Button
-                                type="button"
-                                onClick={handlePrevStep}
-                                variant="outline"
-                                className="border-gray-200 dark:border-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                            >
-                                Previous
-                            </Button>
-                        )}
-                        <div className="flex gap-2">
-                            {currentStep < totalSteps ? (
-                                <Button
-                                    type="button"
-                                    onClick={handleNextStep}
-                                    disabled={!validateStep(currentStep)}
-                                    className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
-                                >
-                                    Next
-                                </Button>
-                            ) : (
-                                <Button
-                                    type="submit"
-                                    disabled={isSubmitting || !validateStep(currentStep)}
-                                    className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
-                                >
-                                    {isSubmitting ? 'Processing...' : 'Register Member'}
-                                </Button>
-                            )}
+              <TabsContent value="step1">
+                {/* Step 1: Personal Information */}
+                {currentStep === 1 && (
+                  <div className="w-full md:flex items-center justify-between space-x-4">
+                    <Card className="w-full lg:w-4/12 py-4 h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <CardContent className="pt-6">
+                        <div className="flex items-center justify-center">
+                          <h1 className="text-4xl font-bold text-gray-600 dark:text-gray-300 rounded-full bg-gray-200 dark:bg-gray-700 w-40 h-40"></h1>
                         </div>
-                    </CardFooter>
-                </Card>
-            </form>
-        </div>
-    );
+                        <div className="w-full items-center justify-center">
+                          <div className="flex flex-col items-center justify-center my-3 space-y-1">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Status
+                            </Label>
+                            <Switch
+                              id="airplane-mode"
+                              checked={status}
+                              className="dark:data-[state=checked]:bg-blue-blue-600 dark:data-[state=unchecked]:bg-blue-white"
+                              onCheckedChange={setStatus}
+                            />
+                            {errors.status && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.status.message}
+                              </p>
+                            )}
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Select membership status
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="w-full lg:w-8/12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                      <CardContent className="pt-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Member Full Name
+                            </Label>
+                            <Input
+                              {...register("fullName", {
+                                required: "Enter member's full name here!",
+                              })}
+                              placeholder="Full Name"
+                              className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            />
+                            {errors.fullName && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.fullName.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Contact No
+                            </Label>
+                            <Input
+                              {...register("contactNo", {
+                                required: "Enter contact number here!",
+                              })}
+                              placeholder="Contact Number"
+                              className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            />
+                            {errors.contactNo && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.contactNo.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Email Address
+                            </Label>
+                            <Input
+                              {...register("email", {
+                                required: "Email address is required!",
+                              })}
+                              onChange={() => clearErrors("userRegistered")}
+                              placeholder="Email Address"
+                              className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            />
+                            {errors.email && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.email.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Date Of Birth
+                            </Label>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    "w-full justify-start text-left py-6 rounded-md font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
+                                    !dob && "text-muted-foreground"
+                                  )}
+                                >
+                                  <CalendarIcon className="mr-2 h-4 w-4" />
+                                  {dob ? (
+                                    format(dob, "PPP")
+                                  ) : (
+                                    <span>Pick a date</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                                <Calendar
+                                  mode="single"
+                                  selected={dob}
+                                  onSelect={setDob}
+                                  initialFocus
+                                  className="bg-white dark:bg-gray-800"
+                                />
+                              </PopoverContent>
+                            </Popover>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Secondary Contact No
+                            </Label>
+                            <Input
+                              {...register("secondaryContactNo", {
+                                required:
+                                  "Enter secondary contact number here!",
+                              })}
+                              placeholder="Secondary Contact Number"
+                              className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            />
+                            {errors.secondaryContactNo && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.secondaryContactNo.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Address
+                            </Label>
+                            <Input
+                              {...register("address", {
+                                required: "Enter address!",
+                              })}
+                              className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                              placeholder="Address"
+                            />
+                            {errors.address && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.address.message}
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label className="text-gray-700 dark:text-gray-300">
+                              Gender
+                            </Label>
+                            <Select
+                              onValueChange={(value) => {
+                                setGender(value);
+                                if (value) clearErrors("gender");
+                              }}
+                            >
+                              <SelectTrigger className="w-full py-6 rounded-md bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                                <SelectValue placeholder="Select Gender" />
+                              </SelectTrigger>
+                              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                                <SelectGroup>
+                                  <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                    Gender
+                                  </SelectLabel>
+                                  <SelectItem
+                                    value="Male"
+                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                  >
+                                    Male
+                                  </SelectItem>
+                                  <SelectItem
+                                    value="Female"
+                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                  >
+                                    Female
+                                  </SelectItem>
+                                  <SelectItem
+                                    value="Other"
+                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                  >
+                                    Other
+                                  </SelectItem>
+                                </SelectGroup>
+                              </SelectContent>
+                            </Select>
+                            {errors.gender && (
+                              <p className="text-sm text-red-600 dark:text-red-400">
+                                {errors.gender.message}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="step2">
+                {/* Step 2: Membership Information */}
+                {currentStep === 2 && (
+                  <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Option
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setMembershipOption(value);
+                              if (value) clearErrors("membershipOption");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Option" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                  Membership Option
+                                </SelectLabel>
+                                <SelectItem
+                                  value="Regular"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Regular
+                                </SelectItem>
+                                <SelectItem
+                                  value="Daytime"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Daytime
+                                </SelectItem>
+                                <SelectItem
+                                  value="Temporary"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Temporary
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.membershipOption && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.membershipOption.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Type
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setMembershipType(value);
+                              if (value) clearErrors("membershipType");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Type" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                  Membership Type
+                                </SelectLabel>
+                                <SelectItem
+                                  value="Gym"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Gym
+                                </SelectItem>
+                                <SelectItem
+                                  value="Gym & Cardio"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Gym & Cardio
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.membershipType && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.membershipType.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Shift
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setMembershipShift(value);
+                              if (value) clearErrors("membershipShift");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Shift" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                  Membership Shift
+                                </SelectLabel>
+                                <SelectItem
+                                  value="Morning"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Morning
+                                </SelectItem>
+                                <SelectItem
+                                  value="Day"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Day
+                                </SelectItem>
+                                <SelectItem
+                                  value="Evening"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  Evening
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.membershipShift && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.membershipShift.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Duration
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              handleMembershipSelection(value);
+                              if (value) clearErrors("membershipDuration");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Duration" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                  Membership Duration
+                                </SelectLabel>
+                                <SelectItem
+                                  value="1 Month"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  1 Month
+                                </SelectItem>
+                                <SelectItem
+                                  value="3 Months"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  3 Months
+                                </SelectItem>
+                                <SelectItem
+                                  value="6 Months"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  6 Months
+                                </SelectItem>
+                                <SelectItem
+                                  value="12 Months"
+                                  className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                >
+                                  12 Months
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.membershipDuration && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.membershipDuration.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger className="py-6" asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
+                                  !membershipDate && "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {membershipDate ? (
+                                  format(membershipDate, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <Calendar
+                                mode="single"
+                                selected={membershipDate}
+                                onSelect={setMembershipDate}
+                                initialFocus
+                                className="bg-white dark:bg-gray-800"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Renew Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger className="py-6" asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
+                                  !membershipRenewDate &&
+                                    "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {membershipRenewDate ? (
+                                  format(membershipRenewDate, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <Calendar
+                                mode="single"
+                                selected={membershipRenewDate}
+                                onSelect={setMembershipRenewDate}
+                                initialFocus
+                                className="bg-white dark:bg-gray-800"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Membership Expire Date
+                          </Label>
+                          <Popover>
+                            <PopoverTrigger className="py-6" asChild>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
+                                  !membershipExpireDate &&
+                                    "text-muted-foreground"
+                                )}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {membershipExpireDate ? (
+                                  format(membershipExpireDate, "PPP")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <Calendar
+                                mode="single"
+                                selected={membershipExpireDate}
+                                onSelect={setMembershipExpireDate}
+                                initialFocus
+                                className="bg-white dark:bg-gray-800"
+                              />
+                            </PopoverContent>
+                          </Popover>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+
+              <TabsContent value="step3">
+                {/* Step 3: Payment Information */}
+                {currentStep === 3 && (
+                  <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <CardContent className="pt-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Payment Method
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setPaymentMethod(value);
+                              if (value) clearErrors("paymentMethod");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Method" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectLabel className="text-gray-700 dark:text-gray-300">
+                                  Payment Method
+                                </SelectLabel>
+                                <SelectItem
+                                  value="Fonepay"
+                                  className="text-gray-900 cursor-pointer hover:bg-blue-600 dark:text-gray-100"
+                                >
+                                  Fonepay
+                                </SelectItem>
+                                <SelectItem
+                                  value="Cash"
+                                  className="text-gray-900 cursor-pointer hover:bg-blue-600 dark:text-gray-100"
+                                >
+                                  Cash
+                                </SelectItem>
+                                <SelectItem
+                                  value="Card"
+                                  className="text-gray-900 cursor-pointer hover:bg-blue-600 dark:text-gray-100"
+                                >
+                                  Card
+                                </SelectItem>
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.paymentMethod && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.paymentMethod.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Discount Amount
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            value={discountAmmount}
+                            onChange={(e) => setDiscountAmmount(e.target.value)}
+                            type="text"
+                            placeholder="Discount Amount"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Discount Reason
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            {...register("discountReason")}
+                            onChange={(e) => clearErrors("discountReason")}
+                            type="text"
+                            placeholder="Discount Reason"
+                          />
+                          {errors.discountReason && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.discountReason.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Discount Code
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            {...register("discountCode")}
+                            type="text"
+                            placeholder="Discount Code"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Admission Fee
+                          </Label>
+                          <Input
+                            {...register("admissionFee")}
+                            type="text"
+                            defaultValue={"1000"}
+                            disabled
+                            className="py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none"
+                            placeholder="Admission Fee"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Final Amount
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                            value={finalAmmount}
+                            disabled
+                            placeholder="Final Amount"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Paid Amount
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            value={paidAmmount}
+                            onChange={(e) => {
+                              setPaidAmmount(e.target.value);
+                              if (e.target.value) clearErrors("paidAmmount");
+                            }}
+                            placeholder="Paid Amount"
+                          />
+                          {errors.paidAmmount && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.paidAmmount.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Due Amount
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                            value={dueAmmount}
+                            disabled
+                            placeholder="Due Amount"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Receipt No
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            {...register("receiptNo", {
+                              required: "Mention receipt no!",
+                            })}
+                            type="text"
+                            placeholder="Receipt No"
+                          />
+                          {errors.receiptNo && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.receiptNo.message}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Reference Code
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            {...register("referenceCode")}
+                            type="text"
+                            placeholder="Reference Code"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Remark
+                          </Label>
+                          <Input
+                            className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                            {...register("remark")}
+                            type="text"
+                            placeholder="Remark"
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label className="text-gray-700 dark:text-gray-300">
+                            Action Taker
+                          </Label>
+                          <Select
+                            onValueChange={(value) => {
+                              setActionTaker(value);
+                              if (value) clearErrors("actionTaker");
+                            }}
+                          >
+                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
+                              <SelectValue placeholder="Select Action Taker" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-white rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                              <SelectGroup>
+                                <SelectItem
+                                  value="Not Selected"
+                                  className="text-gray-900 dark:text-gray-100 cursor-pointer"
+                                >
+                                  Select
+                                </SelectItem>
+                                {Array.isArray(actionTakersDB) &&
+                                actionTakersDB.length >= 1 ? (
+                                  actionTakersDB.map((actionTaker) => (
+                                    <div key={actionTaker._id}>
+                                      <SelectItem
+                                        value={
+                                          actionTaker.fullName || "Not Selected"
+                                        }
+                                        className="hover:bg-blue-600 cursor-pointer text-gray-900 dark:text-gray-100"
+                                      >
+                                        {actionTaker.fullName}
+                                      </SelectItem>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <SelectItem
+                                    value="Revive Fitness"
+                                    className="text-gray-900 dark:text-gray-100"
+                                  >
+                                    No staffs registered
+                                  </SelectItem>
+                                )}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                          {errors.actionTaker && (
+                            <p className="text-sm text-red-600 dark:text-red-400">
+                              {errors.actionTaker.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+          <CardFooter className="flex justify-between space-x-2">
+            {currentStep > 1 && (
+              <Button
+                type="button"
+                onClick={handlePrevStep}
+                variant="outline"
+                className="border-gray-200 dark:border-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                Previous
+              </Button>
+            )}
+            <div className="flex gap-2">
+              {currentStep < totalSteps ? (
+                <Button
+                  type="button"
+                  onClick={handleNextStep}
+                  disabled={!validateStep(currentStep)}
+                  className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button
+                  type="submit"
+                  disabled={isSubmitting || !validateStep(currentStep)}
+                  className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
+                >
+                  {isSubmitting ? "Processing..." : "Register Member"}
+                </Button>
+              )}
+            </div>
+          </CardFooter>
+        </Card>
+      </form>
+    </div>
+  );
 };
 
 export default NewMemberRegistrationForm;
