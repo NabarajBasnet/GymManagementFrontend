@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -162,36 +163,6 @@ const StaffManagement = () => {
   const { user, loading } = useUser();
   const checkMultiBranchSupport = user?.user?.companyBranch;
   const [selectedBranch, setSelectedBranch] = useState("");
-
-  const getUserRelatedBranch = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
-      );
-      const responseBody = await response.json();
-      return responseBody;
-    } catch (error) {
-      console.log("Error: ", error);
-      toastMessage.error(error.message);
-    }
-  };
-
-  const { data: userRelatedBranch } = useQuery({
-    queryKey: ["userRelatedBranch"],
-    queryFn: getUserRelatedBranch,
-    enabled: !!user?.user?.company?._id,
-  });
-
-  const { branches } = userRelatedBranch || {};
-
-  // Get branch name
-  const getBranchName = (staffId) => {
-    const branch = branches.find((branch) =>
-      branch.gymBranchStaffs?.includes(staffId)
-    );
-    return branch?.gymBranchName || "N/A";
-  };
-
   const router = useRouter();
 
   // States
@@ -225,7 +196,71 @@ const StaffManagement = () => {
     }
   };
 
+  const getUserRelatedBranch = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toastMessage.error(error.message);
+    }
+  };
+
+  const { data: userRelatedBranch } = useQuery({
+    queryKey: ["userRelatedBranch"],
+    queryFn: getUserRelatedBranch,
+    enabled: !!user?.user?.company?._id,
+  });
+
+  const { branches } = userRelatedBranch || {};
+
+  // Get branch name
+  const getBranchName = (staffId) => {
+    const branch = branches.find((branch) =>
+      branch.gymBranchStaffs?.includes(staffId)
+    );
+    return branch?.gymBranchName || "N/A";
+  };
+
+  const getBadge = (status) => {
+    switch (status) {
+      case "Active":
+        return (
+          <Badge
+            variant="default"
+            className="bg-green-500 text-white dark:bg-green-600 hover:bg-green-600"
+          >
+            Active
+          </Badge>
+        );
+      case "Inactive":
+        return (
+          <Badge
+            variant="destructive"
+            className="bg-red-500 text-white dark:bg-red-600 hover:bg-red-600"
+          >
+            Inactive
+          </Badge>
+        );
+      case "On Leave":
+        return (
+          <Badge
+            variant="secondary"
+            className="bg-blue-500 text-white dark:bg-blue-600 hover:bg-blue-700"
+          >
+            OnLeave
+          </Badge>
+        );
+      default:
+        return <Badge variant="default">Active</Badge>;
+    }
+  };
+
   useEffect(() => {
+    setCurrentPage(1);
     const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
     return () => {
       clearTimeout(handler);
@@ -234,7 +269,7 @@ const StaffManagement = () => {
 
   // Functions
   const fetchAllStaffs = async ({ queryKey }) => {
-    const [, page, searchQuery] = queryKey;
+    const [, page, searchQuery, limit] = queryKey;
     try {
       const response = await fetch(
         `http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
@@ -251,9 +286,9 @@ const StaffManagement = () => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["staffs", currentPage, debouncedSearchQuery],
+    queryKey: ["staffs", currentPage, debouncedSearchQuery || "", limit],
     queryFn: fetchAllStaffs,
-    enabled: !!user?.user?.company?._id,
+    enabled: !!user?.user._id,
   });
 
   const {
@@ -264,12 +299,6 @@ const StaffManagement = () => {
     gymTrainers,
     personalTrainers,
   } = data || {};
-
-  console.log("Staffs: ", staffs);
-
-  useEffect(() => {
-    fetchAllStaffs();
-  }, [limit]);
 
   const startEntry = (currentPage - 1) * limit + 1;
   const endEntry = Math.min(currentPage * limit, totalStaffs);
@@ -656,7 +685,6 @@ const StaffManagement = () => {
                       placeholder="Search staffs..."
                       value={searchQuery}
                       onChange={(e) => {
-                        setCurrentPage(1);
                         setSearchQuery(e.target.value);
                       }}
                     />
@@ -792,24 +820,7 @@ const StaffManagement = () => {
                                           }
                                         </TableCell>
                                         <TableCell className="text-center">
-                                          {" "}
-                                          <p
-                                            className={`text-center ${
-                                              staff.status === "Active"
-                                                ? "bg-green-400"
-                                                : ""
-                                            } ${
-                                              staff.status === "Inactive"
-                                                ? "bg-red-400"
-                                                : ""
-                                            } ${
-                                              staff.status === "On Leave"
-                                                ? "bg-yellow-400"
-                                                : ""
-                                            } rounded-3xl`}
-                                          >
-                                            {staff.status}
-                                          </p>{" "}
+                                          {getBadge(staff.status)}
                                         </TableCell>
                                         <TableCell className="text-center">
                                           {staff.role}
