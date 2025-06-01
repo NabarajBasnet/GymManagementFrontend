@@ -343,7 +343,6 @@ const StaffManagement = () => {
       gender,
       contactNo,
       email,
-      imageUrl,
       currentAddress,
       permanentAddress,
       role,
@@ -378,21 +377,7 @@ const StaffManagement = () => {
       if (response.ok) {
         setOpenForm(false);
         toastMessage.success(responseBody.message);
-      }
-
-      if (response.status === 200) {
-        setOpenForm(false);
         queryclient.invalidateQueries(["staffs"]);
-      }
-      if (responseBody.errors && response.status === 400) {
-        responseBody.errors.forEach((error) => {
-          setError(error.field, {
-            type: "manual",
-            message: error.message,
-          });
-        });
-      } else if (response.status === 401) {
-        toastMessage.error(responseBody.message || "Unauthorized action");
       } else {
         toastMessage.error(responseBody.message || "Unauthorized action");
       }
@@ -544,7 +529,6 @@ const StaffManagement = () => {
           <div
             className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6"
             onClick={() => {
-              setToast(false);
               setShowAddressDetails(false);
               setShowShiftDetails(false);
             }}
@@ -722,14 +706,7 @@ const StaffManagement = () => {
                                       <TableHeader>
                                         <TableRow className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                                           <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">
-                                            <div className="flex items-center gap-2">
-                                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
-                                                <span className="text-xs text-white font-bold">
-                                                  👤
-                                                </span>
-                                              </div>
-                                              <span>Member</span>
-                                            </div>
+                                            Avatar
                                           </TableHead>
                                           <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">
                                             Name
@@ -2529,11 +2506,11 @@ const StaffManagement = () => {
                                     disabled={currentStep === 1}
                                     type="button"
                                     className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
-                                                            ${
-                                                              currentStep === 1
-                                                                ? "cursor-not-allowed text-gray-400"
-                                                                : "cursor-pointer hover:bg-gray-100 text-black"
-                                                            }`}
+                                      ${
+                                        currentStep === 1
+                                          ? "cursor-not-allowed text-gray-400"
+                                          : "cursor-pointer hover:bg-gray-100 text-black"
+                                      }`}
                                   >
                                     <ChevronLeft />
                                     Previous
