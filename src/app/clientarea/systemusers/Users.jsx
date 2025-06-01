@@ -89,8 +89,8 @@ const Users = () => {
   const multiBranchSupport = selectedFeatures?.includes("Multi Branch Support");
 
   const getBranchName = (branchId) => {
-    const branch = branches.find((branch) => branch._id === branchId);
-    return branch?.gymBranchName;
+    const branch = branches.find((branch) => branch._id.toString() === branchId.toString());
+    return branch?.gymBranchName.toString();
   };
 
   const {
@@ -689,7 +689,7 @@ const Users = () => {
                           {multiBranchSupport && (
                             <TableCell className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900 dark:text-gray-100">
-                                {getBranchName(user.companyBranch)}
+                                {getBranchName(user.companyBranch._id)}
                               </div>
                             </TableCell>
                           )}
