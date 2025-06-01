@@ -1,5 +1,6 @@
 "use client";
 
+import { IoHomeOutline } from "react-icons/io5";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -539,57 +540,44 @@ const StaffManagement = () => {
         <Loader />
       ) : (
         <div className="w-full">
-          <div className="w-full bg-gray-100 px-4 py-6">
-            <div
-              className="w-full bg-white border rounded-md"
-              onClick={() => {
-                setToast(false);
-                setShowAddressDetails(false);
-                setShowShiftDetails(false);
-              }}
-            >
-              <div className="p-4">
-                <Breadcrumb>
-                  <BreadcrumbList>
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href="/">Home</BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger className="flex items-center gap-1">
-                          <BreadcrumbEllipsis className="h-4 w-4" />
-                        </DropdownMenuTrigger>
-                      </DropdownMenu>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbLink href="/docs/components">
-                        Dashboard
-                      </BreadcrumbLink>
-                    </BreadcrumbItem>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                      <BreadcrumbPage>Staff Management</BreadcrumbPage>
-                    </BreadcrumbItem>
-                  </BreadcrumbList>
-                </Breadcrumb>
-              </div>
-
-              <div className="flex justify-between pb-4 px-4 items-center">
-                <h1 className="text-xl font-bold">Staff Management</h1>
-                <Button
-                  className="rounded-sm"
-                  onClick={() => {
-                    reset();
-                    setOpenForm(!openForm);
-                  }}
-                >
-                  <RiUserAddFill className="h-6 w-6" />
-                  Add New Staff
-                </Button>
-              </div>
-            </div>
+          <div
+            className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6"
+            onClick={() => {
+              setToast(false);
+              setShowAddressDetails(false);
+              setShowShiftDetails(false);
+            }}
+          >
+            <Breadcrumb className="mb-4">
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/" className="flex items-center gap-1">
+                    <IoHomeOutline className="h-4 w-4 font-bold" />
+                    <span className="text-sm font-medium">Home</span>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="flex items-center gap-1">
+                      <BreadcrumbEllipsis className="h-4 w-4" />
+                    </DropdownMenuTrigger>
+                  </DropdownMenu>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href="/docs/components">
+                    Dashboard
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-black dark:text-gray-400">
+                    Staff Management
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
             {/* Render staff details edit form */}
             {editStaff && (
@@ -601,7 +589,7 @@ const StaffManagement = () => {
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-2 my-4 lg:grid-cols-4 gap-4">
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 dark:border-none">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Total Staff
@@ -614,7 +602,7 @@ const StaffManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 dark:border-none">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Gym Admins
@@ -627,7 +615,7 @@ const StaffManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 dark:border-none">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Personal Trainers
@@ -640,7 +628,7 @@ const StaffManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="bg-white dark:bg-gray-800 dark:border-none">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">
                     Gym Trainers
@@ -656,32 +644,32 @@ const StaffManagement = () => {
             </div>
 
             <div className="w-full flex justify-center">
-              <div className="w-full border bg-white rounded-lg">
+              <div className="w-full border bg-white dark:bg-gray-800 dark:border-none rounded-lg">
                 <div className="w-full md:flex justify-between items-center px-4">
                   <div className="w-full md:w-6/12 flex py-2 md:py-0 items-center gap-3 rounded-lg">
-                    <h1 className="text-sm font-semibold text-gray-700">
+                    <h1 className="text-sm font-semibold dark:text-gray-400 text-gray-700">
                       Show
                     </h1>
                     <select
                       onChange={(e) => setLimit(Number(e.target.value))}
-                      className="px-3 py-1 border border-gray-300 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="px-3 py-1 border border-gray-300 dark:bg-gray-900 dark:text-white dark:border-blue-500 rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="15">15</option>
                       <option value="25">25</option>
                       <option value="50">50</option>
                       <option value={totalStaffs}>All</option>
                     </select>
-                    <h1 className="text-sm font-semibold text-gray-700">
+                    <h1 className="text-sm font-semibold dark:text-gray-400 text-gray-700">
                       staffs
                     </h1>
-                    <p className="text-sm text-gray-500 italic">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 italic">
                       Selected Limit: {limit}
                     </p>
                   </div>
-                  <div className="w-full md:w-6/12 flex bg-white items-center border rounded-lg active:border-indigo-600 px-4 my-2">
-                    <IoSearch />
+                  <div className="w-full md:w-6/12 flex bg-white dark:bg-gray-900 dark:border-none items-center border rounded-lg active:border-indigo-600 px-4 my-2">
+                    <IoSearch className="h-5 w-5 text-gray-700 dark:text-gray-400" />
                     <Input
-                      className="rounded-none border-none bg-transparent"
+                      className="rounded-none border-none dark:text-white bg-transparent"
                       placeholder="Search staffs..."
                       value={searchQuery}
                       onChange={(e) => {
@@ -705,13 +693,26 @@ const StaffManagement = () => {
                               <div className="w-full">
                                 <div className="w-full bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
                                   {/* Table Header with gradient background */}
-                                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-6 py-4">
-                                    <h2 className="text-xl font-semibold text-white">
-                                      Staff Management
-                                    </h2>
-                                    <p className="text-indigo-100 text-xs mt-1 font-medium">
-                                      Manage your team members and their details
-                                    </p>
+                                  <div className="flex justify-between items-center bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-6 py-4">
+                                    <div>
+                                      <h2 className="text-xl font-semibold text-white">
+                                        Staff Management
+                                      </h2>
+                                      <p className="text-indigo-100 text-xs mt-1 font-medium">
+                                        Manage your team members and their
+                                        details
+                                      </p>
+                                    </div>
+                                    <Button
+                                      className="rounded-sm bg-white dark:bg-gray-800 text-black hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-100"
+                                      onClick={() => {
+                                        reset();
+                                        setOpenForm(!openForm);
+                                      }}
+                                    >
+                                      <RiUserAddFill className="h-6 w-6 text-black dark:text-gray-100" />
+                                      Add New Staff
+                                    </Button>
                                   </div>
 
                                   {/* Table Container with custom scrollbar */}
@@ -1078,9 +1079,9 @@ const StaffManagement = () => {
                         )}
                       </div>
 
-                      <div className="border-t border-gray-300 rounded-b-md">
-                        <div className="my-2 px-4 md:flex justify-between items-center">
-                          <p className="font-medium text-center text-sm font-gray-700">
+                      <div className="border-t border-gray-300 dark:bg-gray-900">
+                        <div className="py-2 px-4 md:flex justify-between items-center dark:bg-gray-800 rounded-b-md dark:bg-gray-800 ">
+                          <p className="font-medium text-center text-sm font-gray-700 dark:text-gray-100">
                             Showing{" "}
                             <span className="font-semibold text-sm font-gray-700">
                               {startEntry}
