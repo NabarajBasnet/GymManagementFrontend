@@ -29,7 +29,6 @@ import { useRouter } from "next/navigation.js";
 import { useEffect } from "react";
 
 const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
-    console.log("Staff: ",staff);
   const {
     register,
     reset,
@@ -51,7 +50,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
   const checkMultiBranchSupport = user?.user?.companyBranch;
   const [selectedBranch, setSelectedBranch] = useState("");
   const [currentStaffBranch, setCurrentStaffBranch] = useState(null);
-  console.log("Selected Branch: ", selectedBranch);
 
   const getUserRelatedBranch = async () => {
     try {
@@ -74,7 +72,15 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
   const { branches } = userRelatedBranch || {};
 
-  console.log("Branches: ", branches);
+  useEffect(() => {
+    if (staff?.staff?.organizationBranch) {
+      const branchName = branches.find(
+        (branch) =>
+          branch?._id?.toString() === staff.staff.organizationBranch.toString()
+      );
+      setCurrentStaffBranch(branchName?.gymBranchName);
+    }
+  }, [staff, branches]);
 
   // Populate staff details
   useEffect(() => {
@@ -204,10 +210,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     clearErrors(`shift_${index + 1}_checkOut`);
   };
 
-  const router = useRouter();
-
   // States
-
   const queryclient = useQueryClient();
   const [openForm, setOpenForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -228,7 +231,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
   // Functions
 
   const handleSubmitStaff = async (data) => {
-    // destructure numberOfShifts for destructuring shift object
     const shifts = {};
     const { numberOfShifts } = data;
 
@@ -239,7 +241,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       shifts[`shift_${i}_type`] = data[`shift_${i}_type`] || "";
     }
 
-    // destructure fields from data
     const {
       fullName,
       dob,
@@ -259,8 +260,8 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       relationship,
     } = data;
 
-    // Prepare final data
-    const finalData = {
+    // Declare finalData first
+    let finalData = {
       fullName,
       dob,
       gender,
@@ -280,9 +281,14 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       emergencyContactNo,
       relationship,
     };
+
+    // Add selectedBranch conditionally
+    if (checkMultiBranchSupport) {
+      finalData.selectedBranch = selectedBranch;
+    }
+
     try {
       const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`;
-
       const method = "PATCH";
 
       const response = await fetch(url, {
@@ -292,7 +298,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
         },
         body: JSON.stringify(finalData),
       });
+
       const responseBody = await response.json();
+
       if (response.ok) {
         setOpenForm(false);
         toastMessage.success(responseBody.message);
@@ -799,14 +807,18 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 }
                               >
                                 <SelectTrigger className="w-full rounded-sm dark:bg-gray-800 dark:text-white">
-                                  <SelectValue placeholder="Select Branch" />
+                                  <SelectValue
+                                    placeholder={
+                                      currentStaffBranch || "Select Branch"
+                                    }
+                                  />
                                 </SelectTrigger>
                                 <SelectContent className="w-full rounded-sm dark:bg-gray-800 dark:text-white">
                                   <SelectGroup>
                                     <SelectLabel>Branches</SelectLabel>
                                     {branches?.map((branch) => (
                                       <SelectItem
-                                      className='cursor-pointer'
+                                        className="cursor-pointer"
                                         value={branch._id}
                                         key={branch._id}
                                       >
