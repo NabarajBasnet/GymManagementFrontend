@@ -702,210 +702,349 @@ const StaffManagement = () => {
                             {loading ? (
                               <Loader />
                             ) : (
-                              <Table className="w-full overflow-x-auto px-4">
-                                <TableHeader>
-                                  <TableRow className="bg-gray-100 text-black">
-                                    <TableHead className="text-black">
-                                      Avatar
-                                    </TableHead>
-                                    <TableHead className="text-black text-start">
-                                      Name
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      Contact
-                                    </TableHead>
-                                    {branches && (
-                                      <TableHead className="text-black text-center">
-                                        Branch
-                                      </TableHead>
-                                    )}
-                                    <TableHead className="text-black text-center">
-                                      Address
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      No Of Shifts
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      Shift Details
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      Joined At
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      Status
-                                    </TableHead>
-                                    <TableHead className="text-black text-center">
-                                      Role
-                                    </TableHead>
-                                    {user && user.user.role === "Gym Admin" ? (
-                                      <></>
-                                    ) : (
-                                      <TableHead className="text-black text-center">
-                                        Action
-                                      </TableHead>
-                                    )}
-                                  </TableRow>
-                                </TableHeader>
-                                <TableBody className="pl-4 ml-4">
-                                  {Array.isArray(staffs) &&
-                                  staffs.length > 0 ? (
-                                    staffs?.map((staff, index) => (
-                                      <TableRow key={staff._id}>
-                                        <TableCell>
-                                          <div className="bg-indigo-600 text-white font-semibold w-8 h-8 flex items-center justify-center rounded-full">
-                                            {(() => {
-                                              const nameParts = staff.fullName
-                                                .trim()
-                                                .split(" ");
-                                              const firstInitial =
-                                                nameParts[0]
-                                                  ?.charAt(0)
-                                                  .toUpperCase() || "";
-                                              const secondInitial =
-                                                nameParts[1]
-                                                  ?.charAt(0)
-                                                  .toUpperCase() || "";
-                                              return (
-                                                firstInitial + secondInitial
-                                              );
-                                            })()}
-                                          </div>
-                                        </TableCell>
-                                        <TableCell className="font-semibold text-start">
-                                          {staff.fullName}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          <p className="flex flex-col text-[11px] items-center">
-                                            <span className="text-sm">
-                                              {staff.contactNo}
-                                            </span>
-                                            <span className="text-sm">
-                                              {staff.email}
-                                            </span>
-                                          </p>
-                                        </TableCell>
-                                        {branches && (
-                                          <TableCell className="text-center">
-                                            {getBranchName(staff._id)}
-                                          </TableCell>
+                              <div className="w-full">
+                                <div className="w-full bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+                                  {/* Table Header with gradient background */}
+                                  <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-6 py-4">
+                                    <h2 className="text-xl font-semibold text-white">
+                                      Staff Management
+                                    </h2>
+                                    <p className="text-indigo-100 text-xs mt-1 font-medium">
+                                      Manage your team members and their details
+                                    </p>
+                                  </div>
+
+                                  {/* Table Container with custom scrollbar */}
+                                  <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 scrollbar-track-transparent">
+                                    <Table className="w-full">
+                                      <TableHeader>
+                                        <TableRow className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">
+                                            <div className="flex items-center gap-2">
+                                              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+                                                <span className="text-xs text-white font-bold">
+                                                  👤
+                                                </span>
+                                              </div>
+                                              <span>Member</span>
+                                            </div>
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-left">
+                                            Name
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Contact Info
+                                          </TableHead>
+                                          {branches && (
+                                            <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                              Branch
+                                            </TableHead>
+                                          )}
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Address
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Shifts
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Schedule
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Joined
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Status
+                                          </TableHead>
+                                          <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                            Role
+                                          </TableHead>
+                                          {user &&
+                                          user.user.role === "Gym Admin" ? (
+                                            <></>
+                                          ) : (
+                                            <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
+                                              Actions
+                                            </TableHead>
+                                          )}
+                                        </TableRow>
+                                      </TableHeader>
+                                      <TableBody>
+                                        {Array.isArray(staffs) &&
+                                        staffs.length > 0 ? (
+                                          staffs?.map((staff, index) => (
+                                            <TableRow
+                                              key={staff._id}
+                                              className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-all duration-200 group"
+                                            >
+                                              <TableCell className="py-4">
+                                                <div className="flex items-center gap-3">
+                                                  <div className="relative">
+                                                    <div className="bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold w-12 h-12 flex items-center justify-center rounded-full shadow-lg ring-2 ring-white dark:ring-gray-800 group-hover:scale-105 transition-transform duration-200">
+                                                      {(() => {
+                                                        const nameParts =
+                                                          staff.fullName
+                                                            .trim()
+                                                            .split(" ");
+                                                        const firstInitial =
+                                                          nameParts[0]
+                                                            ?.charAt(0)
+                                                            .toUpperCase() ||
+                                                          "";
+                                                        const secondInitial =
+                                                          nameParts[1]
+                                                            ?.charAt(0)
+                                                            .toUpperCase() ||
+                                                          "";
+                                                        return (
+                                                          firstInitial +
+                                                          secondInitial
+                                                        );
+                                                      })()}
+                                                    </div>
+                                                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+                                                  </div>
+                                                </div>
+                                              </TableCell>
+                                              <TableCell className="py-4">
+                                                <div className="flex flex-col">
+                                                  <span className="font-semibold text-gray-900 dark:text-gray-100 text-sm">
+                                                    {staff.fullName}
+                                                  </span>
+                                                  <span className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                    ID: {staff._id.slice(-6)}
+                                                  </span>
+                                                </div>
+                                              </TableCell>
+                                              <TableCell className="py-4">
+                                                <div className="flex flex-col items-center gap-1">
+                                                  <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                                                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                                                      📱
+                                                    </span>
+                                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                      {staff.contactNo}
+                                                    </span>
+                                                  </div>
+                                                  <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full">
+                                                    <span className="text-xs text-gray-600 dark:text-gray-400">
+                                                      📧
+                                                    </span>
+                                                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300 truncate max-w-[150px]">
+                                                      {staff.email}
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                              </TableCell>
+                                              {branches && (
+                                                <TableCell className="py-4 text-center">
+                                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                                                    {getBranchName(staff._id)}
+                                                  </span>
+                                                </TableCell>
+                                              )}
+                                              <TableCell className="py-4 text-center">
+                                                <button
+                                                  onClick={() =>
+                                                    populateAddressDetails(
+                                                      staff._id
+                                                    )
+                                                  }
+                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors duration-200 cursor-pointer border border-indigo-200 dark:border-indigo-800"
+                                                >
+                                                  <span className="text-xs">
+                                                    📍
+                                                  </span>
+                                                  View
+                                                </button>
+                                              </TableCell>
+                                              <TableCell className="py-4 text-center">
+                                                <div className="inline-flex items-center justify-center w-8 h-8 bg-gradient-to-br from-emerald-400 to-emerald-600 text-white font-bold rounded-full text-sm shadow-lg">
+                                                  {staff.numberOfShifts}
+                                                </div>
+                                              </TableCell>
+                                              <TableCell className="py-4 text-center">
+                                                <button
+                                                  className="inline-flex items-center gap-1 px-3 py-1 text-sm font-medium text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-900/30 hover:bg-purple-100 dark:hover:bg-purple-900/50 rounded-lg transition-colors duration-200 cursor-pointer border border-purple-200 dark:border-purple-800"
+                                                  onClick={() =>
+                                                    populateShiftDetails(
+                                                      staff._id
+                                                    )
+                                                  }
+                                                >
+                                                  <span className="text-xs">
+                                                    🕒
+                                                  </span>
+                                                  Details
+                                                </button>
+                                              </TableCell>
+                                              <TableCell className="py-4 text-center">
+                                                <div className="flex flex-col items-center">
+                                                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    {new Date(
+                                                      staff.joinedDate
+                                                    ).toLocaleDateString(
+                                                      "en-US",
+                                                      {
+                                                        month: "short",
+                                                        day: "numeric",
+                                                        year: "numeric",
+                                                      }
+                                                    )}
+                                                  </span>
+                                                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                    {Math.floor(
+                                                      (new Date() -
+                                                        new Date(
+                                                          staff.joinedDate
+                                                        )) /
+                                                        (1000 * 60 * 60 * 24)
+                                                    )}{" "}
+                                                    days ago
+                                                  </span>
+                                                </div>
+                                              </TableCell>
+                                              <TableCell className="py-4 text-center">
+                                                <div className="flex justify-center">
+                                                  {getBadge(staff.status)}
+                                                </div>
+                                              </TableCell>
+                                              <TableCell className="py-4 text-center">
+                                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-amber-100 to-orange-100 text-amber-800 dark:from-amber-900/30 dark:to-orange-900/30 dark:text-amber-200 ring-1 ring-amber-200 dark:ring-amber-800">
+                                                  {staff.role}
+                                                </span>
+                                              </TableCell>
+                                              <TableCell className="py-4">
+                                                <div className="flex items-center justify-center gap-2">
+                                                  {user &&
+                                                  user.user.role ===
+                                                    "Gym Admin" ? (
+                                                    <></>
+                                                  ) : (
+                                                    <>
+                                                      <button
+                                                        className="text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 rounded-lg transition-all duration-200 group/btn"
+                                                        onClick={() =>
+                                                          editStaffDetails(
+                                                            staff._id
+                                                          )
+                                                        }
+                                                      >
+                                                        <FaUserEdit className="text-lg group-hover/btn:scale-110 transition-transform" />
+                                                      </button>
+                                                      <AlertDialog>
+                                                        <AlertDialogTrigger
+                                                          asChild
+                                                        >
+                                                          <button className="text-gray-600 dark:text-gray-400 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all duration-200 group/btn">
+                                                            <MdDelete className="text-lg group-hover/btn:scale-110 transition-transform" />
+                                                          </button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-2xl">
+                                                          <AlertDialogHeader>
+                                                            <AlertDialogTitle className="text-gray-900 dark:text-gray-100 text-lg font-semibold">
+                                                              Are you absolutely
+                                                              sure?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                                                              This action cannot
+                                                              be undone. This
+                                                              will permanently
+                                                              delete the staff
+                                                              account and remove
+                                                              all data from our
+                                                              servers.
+                                                            </AlertDialogDescription>
+                                                          </AlertDialogHeader>
+                                                          <AlertDialogFooter className="gap-2">
+                                                            <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 border-gray-300 dark:border-gray-600">
+                                                              Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                              onClick={() =>
+                                                                deleteStaff(
+                                                                  staff._id
+                                                                )
+                                                              }
+                                                              className="bg-red-600 hover:bg-red-700 text-white"
+                                                            >
+                                                              Continue
+                                                            </AlertDialogAction>
+                                                          </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                      </AlertDialog>
+                                                    </>
+                                                  )}
+                                                </div>
+                                              </TableCell>
+                                            </TableRow>
+                                          ))
+                                        ) : (
+                                          <TableRow>
+                                            <TableCell
+                                              colSpan={14}
+                                              className="text-center py-12"
+                                            >
+                                              <div className="flex flex-col items-center gap-3">
+                                                <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                                  <span className="text-2xl text-gray-400 dark:text-gray-600">
+                                                    👥
+                                                  </span>
+                                                </div>
+                                                <div>
+                                                  <p className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                                                    No staff found
+                                                  </p>
+                                                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                                    Add your first team member
+                                                    to get started
+                                                  </p>
+                                                </div>
+                                              </div>
+                                            </TableCell>
+                                          </TableRow>
                                         )}
-                                        <TableCell className="text-center">
-                                          <p
-                                            onClick={() =>
-                                              populateAddressDetails(staff._id)
+                                      </TableBody>
+                                      <TableFooter>
+                                        <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border-t border-gray-200 dark:border-gray-700">
+                                          <TableCell
+                                            colSpan={
+                                              user &&
+                                              user.user.role === "Gym Admin"
+                                                ? 10
+                                                : 11
                                             }
-                                            className="text-center text-sm font-semibold text-indigo-600 cursor-pointer"
+                                            className="px-6 py-4"
                                           >
-                                            View
-                                          </p>
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          {staff.numberOfShifts}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          <p
-                                            className="text-center text-sm font-semibold text-indigo-600 cursor-pointer"
-                                            onClick={() =>
-                                              populateShiftDetails(staff._id)
-                                            }
-                                          >
-                                            View
-                                          </p>
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          {
-                                            new Date(staff.joinedDate)
-                                              .toISOString()
-                                              .split("T")[0]
-                                          }
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          {getBadge(staff.status)}
-                                        </TableCell>
-                                        <TableCell className="text-center">
-                                          {staff.role}
-                                        </TableCell>
-                                        <TableCell className="text-end items-end">
-                                          <div className="flex items-end justify-center space-x-1">
-                                            {user &&
-                                            user.user.role === "Gym Admin" ? (
-                                              <></>
-                                            ) : (
-                                              <FaUserEdit
-                                                className="cursor-pointer text-lg"
-                                                onClick={() =>
-                                                  editStaffDetails(staff._id)
-                                                }
-                                              />
-                                            )}
-                                            <AlertDialog>
-                                              <AlertDialogTrigger asChild>
-                                                {user &&
-                                                user.user.role ===
-                                                  "Gym Admin" ? (
-                                                  <></>
-                                                ) : (
-                                                  <MdDelete className="text-red-600 cursor-pointer text-lg" />
-                                                )}
-                                              </AlertDialogTrigger>
-                                              <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                  <AlertDialogTitle>
-                                                    Are you absolutely sure?
-                                                  </AlertDialogTitle>
-                                                  <AlertDialogDescription>
-                                                    This action cannot be
-                                                    undone. This will
-                                                    permanently delete staff
-                                                    account and remove data from
-                                                    servers.
-                                                  </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                  <AlertDialogCancel>
-                                                    Cancel
-                                                  </AlertDialogCancel>
-                                                  <AlertDialogAction
-                                                    onClick={() =>
-                                                      deleteStaff(staff._id)
-                                                    }
-                                                  >
-                                                    Continue
-                                                  </AlertDialogAction>
-                                                </AlertDialogFooter>
-                                              </AlertDialogContent>
-                                            </AlertDialog>
-                                          </div>
-                                        </TableCell>
-                                      </TableRow>
-                                    ))
-                                  ) : (
-                                    <TableRow>
-                                      <TableCell
-                                        colSpan={14}
-                                        className="text-center text-sm font-semibold"
-                                      >
-                                        No staff found.
-                                      </TableCell>
-                                    </TableRow>
-                                  )}
-                                </TableBody>
-                                <TableFooter>
-                                  <TableRow>
-                                    <div className="my-4">
-                                      <TableCell
-                                        className="text-left"
-                                        colSpan={1}
-                                      >
-                                        Total Staffs
-                                      </TableCell>
-                                      <TableCell className="text-left font-medium">
-                                        {totalStaffs}
-                                      </TableCell>
-                                    </div>
-                                  </TableRow>
-                                </TableFooter>
-                              </Table>
+                                            <div className="flex items-center justify-between">
+                                              <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-2">
+                                                  <div className="w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center">
+                                                    <span className="text-white text-xs font-bold">
+                                                      👥
+                                                    </span>
+                                                  </div>
+                                                  <span className="font-semibold text-gray-700 dark:text-gray-300">
+                                                    Total Staff Members
+                                                  </span>
+                                                </div>
+                                                <div className="bg-indigo-100 dark:bg-indigo-900/30 px-4 py-2 rounded-full">
+                                                  <span className="font-bold text-indigo-800 dark:text-indigo-200 text-lg">
+                                                    {totalStaffs}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                              <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                Last updated:{" "}
+                                                {new Date().toLocaleTimeString()}
+                                              </div>
+                                            </div>
+                                          </TableCell>
+                                        </TableRow>
+                                      </TableFooter>
+                                    </Table>
+                                  </div>
+                                </div>
+                              </div>
                             )}
                           </div>
                         )}
