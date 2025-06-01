@@ -23,7 +23,6 @@ const AdminDashboard = () => {
 
   const { user } = useUser();
   const loggedInUser = user?.user;
-  console.log(loggedInUser);
 
   const router = useRouter();
   const [averageActiveMembers, setAverageActiveMembers] = React.useState(null);

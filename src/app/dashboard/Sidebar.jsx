@@ -803,11 +803,11 @@ const Sidebar = () => {
               >
                 <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
                   <AvatarImage
-                    src={user?.user.avatarUrl || ""}
-                    alt={user?.user.firstName || ""}
+                    src={user?.user?.avatarUrl || ""}
+                    alt={user?.user?.firstName || ""}
                   />
                   <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
-                    {user?.user.firstName?.charAt(0) || "U"}
+                    {user?.user?.firstName?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
 
@@ -815,11 +815,11 @@ const Sidebar = () => {
                   <div className="ml-3 overflow-hidden">
                     <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight">
                       {(user &&
-                        user.user.firstName + " " + user.user.lastName) ||
+                        user?.user?.firstName + " " + user?.user?.lastName) ||
                         "Admin"}
                     </p>
                     <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {(user && user.user.email) || ""}
+                      {(user && user?.user?.email) || ""}
                     </p>
                   </div>
                 )}
@@ -843,19 +843,19 @@ const Sidebar = () => {
                   <div className="flex items-center">
                     <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm mr-3">
                       <AvatarImage
-                        src={user?.user.avatarUrl || ""}
-                        alt={user?.user.firstName || ""}
+                        src={user?.user?.avatarUrl || ""}
+                        alt={user?.user?.firstName || ""}
                       />
                       <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
-                        {user?.user.firstName?.charAt(0) || "U"}
+                        {user?.user?.firstName?.charAt(0) || "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-semibold text-gray-800 dark:text-gray-200">
-                        {user.user.firstName + " " + user.user.lastName}
+                        {user?.user?.firstName + " " + user?.user?.lastName}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {user && user.user.email}
+                        {user && user?.user?.email}
                       </p>
                     </div>
                   </div>
