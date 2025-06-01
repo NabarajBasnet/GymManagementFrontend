@@ -1,5 +1,6 @@
 "use client";
 
+import { AiOutlineHome } from "react-icons/ai";
 import { IoHomeOutline } from "react-icons/io5";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -552,7 +553,7 @@ const StaffManagement = () => {
               <BreadcrumbList>
                 <BreadcrumbItem>
                   <BreadcrumbLink href="/" className="flex items-center gap-1">
-                    <IoHomeOutline className="h-4 w-4 font-bold" />
+                    <AiOutlineHome className="h-4 w-4 mr-2 font-bold" />
                     <span className="text-sm font-medium">Home</span>
                   </BreadcrumbLink>
                 </BreadcrumbItem>
@@ -566,15 +567,15 @@ const StaffManagement = () => {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbLink href="/docs/components">
+                  <BreadcrumbLink className="font-semibold">
                     Dashboard
                   </BreadcrumbLink>
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="text-black dark:text-gray-400">
+                  <BreadcrumbLink className="font-semibold">
                     Staff Management
-                  </BreadcrumbPage>
+                  </BreadcrumbLink>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
