@@ -1,7 +1,6 @@
 "use client";
 
 import { AiOutlineHome } from "react-icons/ai";
-import { IoHomeOutline } from "react-icons/io5";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -25,7 +24,7 @@ import { RiUserAddFill } from "react-icons/ri";
 import { Dumbbell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { MdContactEmergency, MdImage } from "react-icons/md";
+import { MdContactEmergency } from "react-icons/md";
 import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
 import { FaLocationDot } from "react-icons/fa6";
@@ -74,8 +73,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { PlusCircle } from "lucide-react";
 import { TiUserAdd } from "react-icons/ti";
-import Link from "next/link.js";
-import { usePagination } from "@/hooks/Pagination.js";
 import Loader from "@/components/Loader/Loader.jsx";
 import { useRouter } from "next/navigation.js";
 import { useEffect } from "react";
