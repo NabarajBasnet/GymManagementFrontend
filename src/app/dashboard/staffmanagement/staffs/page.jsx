@@ -1044,6 +1044,34 @@ const StaffManagement = () => {
                                     </Table>
                                   </div>
                                 </div>
+                                <style jsx>{`
+                                  .scrollbar-thin::-webkit-scrollbar {
+                                    height: 8px;
+                                  }
+
+                                  .scrollbar-thumb-gray-300::-webkit-scrollbar-thumb {
+                                    background-color: #d1d5db;
+                                    border-radius: 4px;
+                                  }
+
+                                  .dark
+                                    .scrollbar-thumb-gray-600::-webkit-scrollbar-thumb {
+                                    background-color: #4b5563;
+                                  }
+
+                                  .scrollbar-track-transparent::-webkit-scrollbar-track {
+                                    background: transparent;
+                                  }
+
+                                  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+                                    background-color: #9ca3af;
+                                  }
+
+                                  .dark
+                                    .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+                                    background-color: #6b7280;
+                                  }
+                                `}</style>
                               </div>
                             )}
                           </div>
@@ -1078,34 +1106,55 @@ const StaffManagement = () => {
                     </div>
                   </div>
 
-                  {/* Render address and shift details of staff */}
+                  {/* Address Details Modal */}
                   {showAddressDetails && (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 z-50">
-                      <div className="fixed inset-0 flex justify-center items-center">
-                        <div className="bg-white rounded-md p-4">
-                          <div>
-                            <div className="flex justify-between items-center space-x-2 mb-4 bg-white">
-                              <div className="flex items-center">
-                                <FaLocationDot className="w-6 h-6 text-indigo-500" />
-                                <h1 className="text-lg font-semibold text-indigo-500">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-6xl max-h-[90vh] overflow-hidden">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-700 dark:to-purple-700 px-8 py-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-white/20 rounded-lg">
+                                <FaLocationDot className="w-6 h-6 text-white" />
+                              </div>
+                              <div>
+                                <h1 className="text-2xl font-bold text-white">
                                   Address Details
                                 </h1>
+                                <p className="text-indigo-100 text-sm mt-1">
+                                  Current and permanent address information
+                                </p>
                               </div>
-                              <MdClose
-                                className="h-6 w-6 cursor-pointer"
-                                onClick={() => setShowAddressDetails(false)}
-                              />
                             </div>
+                            <button
+                              onClick={() => setShowAddressDetails(false)}
+                              className="p-2 hover:bg-white/20 rounded-lg transition-colors duration-200 group"
+                            >
+                              <MdClose className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+                            </button>
+                          </div>
+                        </div>
 
-                            <form className="w-full space-x-6 flex justify-between">
+                        {/* Modal Content */}
+                        <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
+                          <form className="space-y-8">
+                            <div className="grid lg:grid-cols-2 gap-8">
                               {/* Current Address Section */}
-                              <div className="w-full border-b pb-4 border-indigo-500">
-                                <h3 className="text-md font-semibold mb-4">
-                                  Current Address
-                                </h3>
-                                <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-6">
+                                <div className="border-l-4 border-indigo-500 pl-4">
+                                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                    Current Address
+                                  </h3>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Present residential information
+                                  </p>
+                                </div>
+
+                                <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 space-y-4 border border-gray-200 dark:border-gray-700">
                                   <div>
-                                    <Label>Street Address</Label>
+                                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                      Street Address
+                                    </Label>
                                     <Controller
                                       name="currentAddress.street"
                                       control={control}
@@ -1114,173 +1163,354 @@ const StaffManagement = () => {
                                         <Input
                                           {...field}
                                           placeholder="Enter street address"
-                                          className="rounded-md focus:outline-none"
+                                          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                                         />
                                       )}
                                     />
                                     {errors.currentAddress?.street && (
-                                      <p className="text-red-600 font-semibold text-sm">
+                                      <p className="text-red-500 text-sm mt-1 flex items-center gap-1">
+                                        <span className="text-xs">⚠️</span>
                                         {errors.currentAddress.street.message}
                                       </p>
                                     )}
                                   </div>
-                                  <div>
-                                    <Label>City</Label>
-                                    <Input
-                                      {...register("currentAddress.city")}
-                                      placeholder="Enter city"
-                                      required
-                                    />
+
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        City
+                                      </Label>
+                                      <Input
+                                        {...register("currentAddress.city")}
+                                        placeholder="Enter city"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        State
+                                      </Label>
+                                      <Input
+                                        {...register("currentAddress.state")}
+                                        placeholder="Enter state"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
                                   </div>
-                                  <div>
-                                    <Label>State</Label>
-                                    <Input
-                                      {...register("currentAddress.state")}
-                                      placeholder="Enter state"
-                                      required
-                                    />
-                                  </div>
-                                  <div>
-                                    <Label>Postal Code</Label>
-                                    <Input
-                                      {...register("currentAddress.postalCode")}
-                                      placeholder="Enter postal code"
-                                      required
-                                    />
-                                  </div>
-                                  <div className="md:col-span-2">
-                                    <Label>Country</Label>
-                                    <Input
-                                      {...register("currentAddress.country")}
-                                      placeholder="Enter country"
-                                      required
-                                    />
+
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        Postal Code
+                                      </Label>
+                                      <Input
+                                        {...register(
+                                          "currentAddress.postalCode"
+                                        )}
+                                        placeholder="Enter postal code"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        Country
+                                      </Label>
+                                      <Input
+                                        {...register("currentAddress.country")}
+                                        placeholder="Enter country"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
 
                               {/* Permanent Address Section */}
-                              <div className="w-full border-b pb-4 border-indigo-500">
-                                <h3 className="text-md font-semibold mb-4">
-                                  Permanent Address
-                                </h3>
-                                <div className="grid md:grid-cols-2 gap-4">
+                              <div className="space-y-6">
+                                <div className="border-l-4 border-purple-500 pl-4">
+                                  <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                                    Permanent Address
+                                  </h3>
+                                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                                    Permanent residential information
+                                  </p>
+                                </div>
+
+                                <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 space-y-4 border border-purple-200 dark:border-purple-800">
                                   <div>
-                                    <Label>Street Address</Label>
+                                    <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                      Street Address
+                                    </Label>
                                     <Input
                                       {...register("permanentAddress.street")}
                                       placeholder="Enter street address"
                                       required
+                                      className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
                                     />
                                   </div>
-                                  <div>
-                                    <Label>City</Label>
-                                    <Input
-                                      {...register("permanentAddress.city")}
-                                      placeholder="Enter city"
-                                      required
-                                    />
+
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        City
+                                      </Label>
+                                      <Input
+                                        {...register("permanentAddress.city")}
+                                        placeholder="Enter city"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        State
+                                      </Label>
+                                      <Input
+                                        {...register("permanentAddress.state")}
+                                        placeholder="Enter state"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
                                   </div>
-                                  <div>
-                                    <Label>State</Label>
-                                    <Input
-                                      {...register("permanentAddress.state")}
-                                      placeholder="Enter state"
-                                      required
-                                    />
-                                  </div>
-                                  <div>
-                                    <Label>Postal Code</Label>
-                                    <Input
-                                      {...register(
-                                        "permanentAddress.postalCode"
-                                      )}
-                                      placeholder="Enter postal code"
-                                      required
-                                    />
-                                  </div>
-                                  <div className="md:col-span-2">
-                                    <Label>Country</Label>
-                                    <Input
-                                      {...register("permanentAddress.country")}
-                                      placeholder="Enter country"
-                                      required
-                                    />
+
+                                  <div className="grid md:grid-cols-2 gap-4">
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        Postal Code
+                                      </Label>
+                                      <Input
+                                        {...register(
+                                          "permanentAddress.postalCode"
+                                        )}
+                                        placeholder="Enter postal code"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
+                                    <div>
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                                        Country
+                                      </Label>
+                                      <Input
+                                        {...register(
+                                          "permanentAddress.country"
+                                        )}
+                                        placeholder="Enter country"
+                                        required
+                                        className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </div>
-                            </form>
-                          </div>
+                            </div>
+                          </form>
                         </div>
                       </div>
                     </div>
                   )}
 
+                  {/* Shift Details Modal */}
                   {showShiftDetails && (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 z-50">
-                      <div className="fixed inset-0 flex justify-center items-center">
-                        <div className="bg-white pb-4 pr-4 pl-4 rounded-md">
-                          <div className="mt-6 mb-4">
-                            <div className="flex items-center justify-between space-x-2 mb-4">
-                              <div className="flex items-center">
-                                <PlusCircle className="w-5 h-5 text-indigo-500" />
-                                <h2 className="text-lg font-semibold text-indigo-500 mx-2">
+                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-5xl max-h-[90vh] overflow-hidden">
+                        {/* Modal Header */}
+                        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-700 dark:to-teal-700 px-8 py-6">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="p-2 bg-white/20 rounded-lg">
+                                <PlusCircle className="w-6 h-6 text-white" />
+                              </div>
+                              <div>
+                                <h2 className="text-2xl font-bold text-white">
                                   Shift Details
                                 </h2>
+                                <p className="text-emerald-100 text-sm mt-1">
+                                  Schedule and timing information
+                                </p>
                               </div>
-                              <MdClose
-                                className="h-6 w-6 cursor-pointer"
-                                onClick={() => setShowShiftDetails(false)}
-                              />
                             </div>
+                            <button
+                              onClick={() => setShowShiftDetails(false)}
+                              className="p-2 hover:bg-white/20 rounded-lg transition-colors duration-200 group"
+                            >
+                              <MdClose className="h-6 w-6 text-white group-hover:scale-110 transition-transform" />
+                            </button>
+                          </div>
+                        </div>
 
-                            <form className="space-y-4">
-                              {shifts.map((shift, index) => (
+                        {/* Modal Content */}
+                        <div className="p-8 overflow-y-auto max-h-[calc(90vh-120px)]">
+                          <form className="space-y-6">
+                            {shifts.length > 0 ? (
+                              shifts.map((shift, index) => (
                                 <div
                                   key={index}
-                                  className="p-4 border border-gray-200 rounded-md bg-gray-50"
+                                  className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-xl p-6 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-200"
                                 >
-                                  <div className="flex justify-between items-center mb-3">
-                                    <h3 className="font-medium text-indigo-600">
-                                      Shift {index + 1}
-                                    </h3>
+                                  <div className="flex items-center justify-between mb-6">
+                                    <div className="flex items-center gap-3">
+                                      <div className="bg-gradient-to-br from-emerald-500 to-teal-600 text-white font-bold w-10 h-10 flex items-center justify-center rounded-full shadow-lg">
+                                        {index + 1}
+                                      </div>
+                                      <div>
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                                          Shift {index + 1}
+                                        </h3>
+                                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                                          Daily schedule details
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="bg-emerald-100 dark:bg-emerald-900/30 px-3 py-1 rounded-full">
+                                      <span className="text-xs font-medium text-emerald-800 dark:text-emerald-200">
+                                        Active
+                                      </span>
+                                    </div>
                                   </div>
-                                  <div className="grid grid-cols-4 overflow-x-auto gap-4">
-                                    <div>
-                                      <Label>Shift Role</Label>
-                                      <Input
-                                        value={shift.role || ""}
-                                        readOnly
-                                      />
+
+                                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                        <span className="text-blue-500">
+                                          👤
+                                        </span>
+                                        Shift Role
+                                      </Label>
+                                      <div className="relative">
+                                        <Input
+                                          value={shift.role || ""}
+                                          readOnly
+                                          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                          <span className="text-xs text-gray-400">
+                                            👔
+                                          </span>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <Label>Shift Type</Label>
-                                      <Input
-                                        value={shift.type || ""}
-                                        readOnly
-                                      />
+
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                        <span className="text-purple-500">
+                                          📋
+                                        </span>
+                                        Shift Type
+                                      </Label>
+                                      <div className="relative">
+                                        <Input
+                                          value={shift.type || ""}
+                                          readOnly
+                                          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                          <span className="text-xs text-gray-400">
+                                            ⚡
+                                          </span>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <Label>Check In</Label>
-                                      <Input
-                                        type="time"
-                                        value={shift.checkIn || ""}
-                                        readOnly
-                                      />
+
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                        <span className="text-green-500">
+                                          🕐
+                                        </span>
+                                        Check In
+                                      </Label>
+                                      <div className="relative">
+                                        <Input
+                                          type="time"
+                                          value={shift.checkIn || ""}
+                                          readOnly
+                                          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                          <span className="text-xs text-green-500">
+                                            ▶️
+                                          </span>
+                                        </div>
+                                      </div>
                                     </div>
-                                    <div>
-                                      <Label>Check Out</Label>
-                                      <Input
-                                        type="time"
-                                        value={shift.checkOut || ""}
-                                        readOnly
-                                      />
+
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                        <span className="text-red-500">🕐</span>
+                                        Check Out
+                                      </Label>
+                                      <div className="relative">
+                                        <Input
+                                          type="time"
+                                          value={shift.checkOut || ""}
+                                          readOnly
+                                          className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 cursor-default"
+                                        />
+                                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                          <span className="text-xs text-red-500">
+                                            ⏹️
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Shift Duration Display */}
+                                  <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                    <div className="flex items-center justify-between text-sm">
+                                      <span className="text-gray-600 dark:text-gray-400">
+                                        Duration:{" "}
+                                        {shift.checkIn && shift.checkOut
+                                          ? (() => {
+                                              const start = new Date(
+                                                `2000-01-01T${shift.checkIn}`
+                                              );
+                                              const end = new Date(
+                                                `2000-01-01T${shift.checkOut}`
+                                              );
+                                              const diff =
+                                                (end - start) /
+                                                (1000 * 60 * 60);
+                                              return `${diff} hours`;
+                                            })()
+                                          : "Not calculated"}
+                                      </span>
+                                      <div className="flex items-center gap-2">
+                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                          Shift #{index + 1}
+                                        </span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
-                              ))}
-                            </form>
-                          </div>
+                              ))
+                            ) : (
+                              <div className="text-center py-12">
+                                <div className="flex flex-col items-center gap-4">
+                                  <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center">
+                                    <span className="text-3xl text-gray-400 dark:text-gray-600">
+                                      📅
+                                    </span>
+                                  </div>
+                                  <div>
+                                    <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
+                                      No shifts assigned
+                                    </h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                      This staff member doesn't have any shifts
+                                      scheduled yet.
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </form>
                         </div>
                       </div>
                     </div>
