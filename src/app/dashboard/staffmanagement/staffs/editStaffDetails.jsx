@@ -229,7 +229,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
   };
 
   // Functions
-
   const handleSubmitStaff = async (data) => {
     const shifts = {};
     const { numberOfShifts } = data;
@@ -304,6 +303,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       if (response.ok) {
         setOpenForm(false);
         toastMessage.success(responseBody.message);
+        setEditStaff(!editStaff);
         queryclient.invalidateQueries(["staffs"]);
       } else {
         toastMessage.error(responseBody.message || "Unauthorized action");
