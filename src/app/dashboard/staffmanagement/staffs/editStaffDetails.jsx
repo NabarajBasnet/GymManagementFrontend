@@ -319,7 +319,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
       <div className="fixed inset-0 bg-black bg-opacity-80 z-50"></div>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="w-full flex justify-center">
-          <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white rounded-2xl shadow-2xl">
+          <div className="w-11/12 md:w-8/12 h-full overflow-y-auto bg-white dark:bg-gray-900 rounded-2xl shadow-2xl">
             <div className="w-full flex justify-between bg-indigo-500 items-center py-2">
               <h1 className="font-bold m-3 text-white text-md md:text-xl">
                 Edit Staff Details
@@ -374,7 +374,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                         <div className="grid border-b pb-4 border-indigo-500 grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-6">
                           <div>
-                            <Label>Full Name</Label>
+                            <Label className="dark:text-white">Full Name</Label>
                             <Controller
                               name="fullName"
                               control={control}
@@ -386,7 +386,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   onChange={(e) => {
                                     field.onChange(e);
                                   }}
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Full Name"
                                 />
                               )}
@@ -399,7 +399,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Date Of Birth</Label>
+                            <Label className="dark:text-white">
+                              Date Of Birth
+                            </Label>
                             <Controller
                               name="dob"
                               control={control}
@@ -412,7 +414,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("dob")}
                                   type="date"
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               )}
                             />
@@ -424,7 +426,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Gender</Label>
+                            <Label className="dark:text-white">Gender</Label>
                             <Controller
                               name="gender"
                               control={control}
@@ -437,7 +439,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     field.onChange(e);
                                     clearErrors("gender");
                                   }}
-                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                  className="w-full rounded-sm py-3 dark:bg-gray-800 dark:text-white dark:border-none border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                 >
                                   <option>Select</option>
                                   <option value="Male">Male</option>
@@ -454,7 +456,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Contact Number</Label>
+                            <Label className="dark:text-white">
+                              Contact Number
+                            </Label>
                             <Controller
                               name="contactNo"
                               control={control}
@@ -466,7 +470,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     field.onChange(e);
                                   }}
                                   {...register("contactNo")}
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Contact Number"
                                 />
                               )}
@@ -479,7 +483,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Email Address</Label>
+                            <Label className="text-white">Email Address</Label>
                             <Controller
                               name="email"
                               control={control}
@@ -491,7 +495,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   onChange={(e) => {
                                     field.onChange(e);
                                   }}
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Email address"
                                 />
                               )}
@@ -518,12 +522,14 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                         <div className="w-full space-x-6 flex justify-between">
                           {/* Current Address Section */}
                           <div className="w-full border-b pb-4 border-indigo-500">
-                            <h3 className="text-md font-semibold mb-4">
+                            <h3 className="text-md font-semibold mb-4 dark:text-white">
                               Current Address
                             </h3>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <Label>Street Address</Label>
+                                <Label className="text-white">
+                                  Street Address
+                                </Label>
                                 <Controller
                                   name="currentAddress.street"
                                   control={control}
@@ -532,7 +538,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     <Input
                                       {...field}
                                       placeholder="Enter street address"
-                                      className="rounded-md focus:outline-none"
+                                      className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                     />
                                   )}
                                 />
@@ -543,35 +549,41 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 )}
                               </div>
                               <div>
-                                <Label>City</Label>
+                                <Label className="text-white">City</Label>
                                 <Input
                                   {...register("currentAddress.city")}
                                   placeholder="Enter city"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <Label>State</Label>
+                                <Label className="text-white">State</Label>
                                 <Input
                                   {...register("currentAddress.state")}
                                   placeholder="Enter state"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <Label>Postal Code</Label>
+                                <Label className="text-white">
+                                  Postal Code
+                                </Label>
                                 <Input
                                   {...register("currentAddress.postalCode")}
                                   placeholder="Enter postal code"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div className="md:col-span-2">
-                                <Label>Country</Label>
+                                <Label className="text-white">Country</Label>
                                 <Input
                                   {...register("currentAddress.country")}
                                   placeholder="Enter country"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -579,48 +591,59 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                           {/* Permanent Address Section */}
                           <div className="w-full border-b pb-4 border-indigo-500">
-                            <h3 className="text-md font-semibold mb-4">
+                            <h3 className="text-md font-semibold mb-4 dark:text-white">
                               Permanent Address
                             </h3>
                             <div className="grid md:grid-cols-2 gap-4">
                               <div>
-                                <Label>Street Address</Label>
+                                <Label className="text-white">
+                                  Street Address
+                                </Label>
                                 <Input
                                   {...register("permanentAddress.street")}
                                   placeholder="Enter street address"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <Label>City</Label>
+                                <Label className="text-white">City</Label>
                                 <Input
                                   {...register("permanentAddress.city")}
                                   placeholder="Enter city"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <Label>State</Label>
+                                <Label className="text-white">State</Label>
                                 <Input
                                   {...register("permanentAddress.state")}
                                   placeholder="Enter state"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <Label>Postal Code</Label>
+                                <Label className="text-white">
+                                  Postal Code
+                                </Label>
                                 <Input
                                   {...register("permanentAddress.postalCode")}
                                   placeholder="Enter postal code"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div className="md:col-span-2">
-                                <Label>Country</Label>
+                                <Label className="dark:text-white">
+                                  Country
+                                </Label>
                                 <Input
                                   {...register("permanentAddress.country")}
                                   placeholder="Enter country"
                                   required
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -640,7 +663,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                         <div className="grid border-b border-indigo-500 pb-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           <div>
-                            <Label>Role</Label>
+                            <Label className="dark:text-white">Role</Label>
                             <Controller
                               name="role"
                               control={control}
@@ -654,7 +677,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     clearErrors("role");
                                     field.onChange(selectedValue);
                                   }}
-                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                  className="w-full rounded-sm border dark:border-none border-gray-300 py-3 dark:bg-gray-800 dark:text-white text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                 >
                                   <option>Select</option>
                                   <option value="Super Admin">
@@ -683,7 +706,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Joined Date</Label>
+                            <Label className="dark:text-white">
+                              Joined Date
+                            </Label>
                             <Controller
                               name="joinedDate"
                               control={control}
@@ -696,7 +721,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("joinedDate")}
                                   type="date"
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               )}
                             />
@@ -708,7 +733,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>No. Of Shifts</Label>
+                            <Label className="dark:text-white">
+                              No. Of Shifts
+                            </Label>
                             <Controller
                               name="numberOfShifts"
                               control={control}
@@ -719,7 +746,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   min="1"
                                   max="5"
                                   placeholder="Enter Number Of Shifts"
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   onChange={(e) => {
                                     const value = Math.min(
                                       Math.max(
@@ -742,7 +769,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Salary</Label>
+                            <Label className="dark:text-white">Salary</Label>
                             <Controller
                               name="salary"
                               control={control}
@@ -755,7 +782,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("salary")}
                                   type="text"
-                                  className="rounded-md focus:outline-none"
+                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Salary"
                                 />
                               )}
@@ -768,7 +795,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                           </div>
 
                           <div>
-                            <Label>Status</Label>
+                            <Label className="dark:text-white">Status</Label>
                             <Controller
                               name="status"
                               control={control}
@@ -782,7 +809,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     clearErrors("status");
                                     field.onChange(selectedValue);
                                   }}
-                                  className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                  className="w-full py-3 rounded-sm dark:border-none dark:bg-gray-800 dark:text-white border border-gray-300 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                 >
                                   <option>Status</option>
                                   <option value="Active">Active</option>
@@ -800,25 +827,25 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                           {checkMultiBranchSupport && (
                             <div>
-                              <Label>Branch</Label>
+                              <Label className="dark:text-white">Branch</Label>
                               <Select
                                 onValueChange={(value) =>
                                   setSelectedBranch(value)
                                 }
                               >
-                                <SelectTrigger className="w-full rounded-sm dark:bg-gray-800 dark:text-white">
+                                <SelectTrigger className="w-full py-6 dark:border-none rounded-sm dark:bg-gray-800 dark:text-white">
                                   <SelectValue
                                     placeholder={
                                       currentStaffBranch || "Select Branch"
                                     }
                                   />
                                 </SelectTrigger>
-                                <SelectContent className="w-full rounded-sm dark:bg-gray-800 dark:text-white">
+                                <SelectContent className="w-full dark:border-none rounded-sm dark:bg-gray-800 dark:text-white">
                                   <SelectGroup>
                                     <SelectLabel>Branches</SelectLabel>
                                     {branches?.map((branch) => (
                                       <SelectItem
-                                        className="cursor-pointer"
+                                        className="cursor-pointer hover:bg-blue-600"
                                         value={branch._id}
                                         key={branch._id}
                                       >
@@ -845,7 +872,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                             {shifts.map((shift, index) => (
                               <div
                                 key={shift.id}
-                                className="p-4 border border-gray-200 rounded-md bg-gray-50"
+                                className="p-4 border dark:bg-gray-900 dark:border-gray-700 border-gray-200 rounded-sm bg-gray-50"
                               >
                                 <div className="flex justify-between items-center mb-3">
                                   <h3 className="font-medium text-indigo-600">
@@ -854,7 +881,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 </div>
                                 <div className="grid grid-cols-4 overflow-x-auto gap-4">
                                   <div>
-                                    <Label>Shift Role</Label>
+                                    <Label className="dark:text-white">
+                                      Shift Role
+                                    </Label>
                                     <Controller
                                       name={`shift_${index + 1}_role`}
                                       control={control}
@@ -872,7 +901,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                             );
                                             field.onChange(selectedValue);
                                           }}
-                                          className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                          className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                         >
                                           <option>Select</option>
                                           <option value="Super Admin">
@@ -912,7 +941,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   </div>
 
                                   <div>
-                                    <Label>Shift Type</Label>
+                                    <Label className="dark:text-white">
+                                      Shift Type
+                                    </Label>
                                     <Controller
                                       name={`shift_${index + 1}_type`}
                                       control={control}
@@ -930,7 +961,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                             );
                                             field.onChange(selectedValue);
                                           }}
-                                          className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                          className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                         >
                                           <option value="">Select Shift</option>
                                           <option value="Morning">
@@ -954,7 +985,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   </div>
 
                                   <div>
-                                    <Label>Check In</Label>
+                                    <Label className="dark:text-white">
+                                      Check In
+                                    </Label>
                                     <Controller
                                       name={`shift_${index + 1}_checkIn`}
                                       control={control}
@@ -971,7 +1004,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                             );
                                             field.onChange(e);
                                           }}
-                                          className="rounded-md focus:outline-none"
+                                          className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                         />
                                       )}
                                     />
@@ -986,7 +1019,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   </div>
 
                                   <div>
-                                    <Label>Check Out</Label>
+                                    <Label className="dark:text-white">
+                                      Check Out
+                                    </Label>
                                     <Controller
                                       name={`shift_${index + 1}_checkOut`}
                                       control={control}
@@ -1003,7 +1038,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                             );
                                             field.onChange(e);
                                           }}
-                                          className="rounded-md focus:outline-none"
+                                          className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                         />
                                       )}
                                     />
@@ -1034,7 +1069,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                         </div>
 
                         <div>
-                          <Label>Username</Label>
+                          <Label className="dark:text-white">Username</Label>
                           <Controller
                             name="username"
                             control={control}
@@ -1047,7 +1082,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 }}
                                 {...register("username")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                 placeholder="Username"
                               />
                             )}
@@ -1060,7 +1095,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                         </div>
 
                         <div>
-                          <Label>Password</Label>
+                          <Label className="dark:text-white">Password</Label>
                           <Controller
                             name="password"
                             control={control}
@@ -1073,7 +1108,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                 }}
                                 {...register("password")}
                                 type="password"
-                                className="rounded-md focus:outline-none"
+                                className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                 placeholder="Password"
                               />
                             )}
@@ -1098,7 +1133,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
-                            <Label>Emergency Contact Name</Label>
+                            <Label className="dark:text-white">
+                              Emergency Contact Name
+                            </Label>
                             <Controller
                               name="emergencyContactName"
                               control={control}
@@ -1110,7 +1147,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     field.onChange(e);
                                   }}
                                   {...register("emergencyContactName")}
-                                  className="rounded-md focus:outline-none"
+                                  className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                   placeholder="Emergency Contact Name"
                                 />
                               )}
@@ -1122,7 +1159,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                             )}
 
                             <div className="my-2">
-                              <Label>Emergency Contact Number</Label>
+                              <Label className="dark:text-white">
+                                Emergency Contact Number
+                              </Label>
                               <Controller
                                 name="emergencyContactNo"
                                 control={control}
@@ -1134,7 +1173,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                       field.onChange(e);
                                     }}
                                     {...register("emergencyContactNo")}
-                                    className="rounded-md focus:outline-none"
+                                    className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                     placeholder="Emergency Contact No"
                                   />
                                 )}
@@ -1147,7 +1186,9 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                             </div>
 
                             <div>
-                              <Label>Relationship</Label>
+                              <Label className="dark:text-white">
+                                Relationship
+                              </Label>
                               <Controller
                                 name="relationship"
                                 control={control}
@@ -1159,7 +1200,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                       field.onChange(e);
                                     }}
                                     {...register("relationship")}
-                                    className="rounded-md focus:outline-none"
+                                    className="w-full dark:bg-gray-800 py-3 dark:border-none dark:text-white rounded-sm border border-gray-300 py-6 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
                                     placeholder="Relationship"
                                   />
                                 )}
@@ -1182,7 +1223,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                     onClick={handlePrev}
                     disabled={currentStep === 1}
                     type="button"
-                    className={`flex items-center px-4 py-2 rounded-sm transition-colors duration-100 
+                    className={`flex items-center px-4 py-2 dark:text-white rounded-sm transition-colors duration-100 
                                                             ${
                                                               currentStep === 1
                                                                 ? "cursor-not-allowed text-gray-400"
@@ -1197,7 +1238,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                     <button
                       onClick={handleNext}
                       type="button"
-                      className="cursor-pointer flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2"
+                      className="cursor-pointer dark:text-white flex items-center bg-indigo-500 rounded-sm text-white px-4 py-2"
                     >
                       Next <ChevronRight />
                     </button>
