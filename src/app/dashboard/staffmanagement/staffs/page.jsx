@@ -19,7 +19,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { RiUserAddFill } from "react-icons/ri";
-import { Calendar, Dumbbell, Clock } from "lucide-react";
+import { Dumbbell } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { MdContactEmergency, MdImage } from "react-icons/md";
@@ -29,11 +29,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { ChevronRight, ChevronLeft, CheckCircle2 } from "lucide-react";
 import { FiUser } from "react-icons/fi";
 import { toast as toastMessage } from "react-hot-toast";
-import { FcSettings } from "react-icons/fc";
 import { IoSearch } from "react-icons/io5";
 import { useUser } from "@/components/Providers/LoggedInUserProvider.jsx";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import {
   AlertDialog,
@@ -55,7 +52,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MdDelete, MdClose, MdMenu, MdDone, MdError } from "react-icons/md";
+import { MdDelete, MdClose } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import {
   Table,
@@ -192,23 +189,10 @@ const StaffManagement = () => {
     const branch = branches.find((branch) =>
       branch.gymBranchStaffs?.includes(staffId)
     );
-      return branch?.gymBranchName || "N/A";
-  };  
-
-  const router = useRouter();
-  const checkUserPermission = () => {
-    if (loading) {
-      return <div>Loading...</div>;
-    } else {
-      if (user && user.user.role === "Gym Admin") {
-        router.push("/unauthorized");
-      }
-    }
+    return branch?.gymBranchName || "N/A";
   };
 
-  useEffect(() => {
-    checkUserPermission();
-  }, []);
+  const router = useRouter();
 
   // States
   const [currentPage, setCurrentPage] = useState(1);
@@ -223,6 +207,9 @@ const StaffManagement = () => {
   const [showAddressDetails, setShowAddressDetails] = useState(false);
   const [showShiftDetails, setShowShiftDetails] = useState(false);
 
+  const [editStaff, setEditStaff] = useState(false);
+  const [staffDetails, setStaffDetails] = useState(null);
+
   const totalSteps = 5;
 
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState();
@@ -232,12 +219,18 @@ const StaffManagement = () => {
       setCurrentStep((prev) => prev + 1);
     }
   };
-
   const handlePrev = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
   };
+
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery, limit]);
 
   // Functions
   const fetchAllStaffs = async ({ queryKey }) => {
@@ -247,10 +240,10 @@ const StaffManagement = () => {
         `http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
-      if(!response.ok){
+      if (!response.ok) {
         toastMessage.error(responseBody.message);
         router.push(responseBody.redirect);
-      };
+      }
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
@@ -258,9 +251,9 @@ const StaffManagement = () => {
   };
 
   const { data, isLoading } = useQuery({
-    queryKey: ["staffs", currentPage, searchQuery || "", limit],
+    queryKey: ["staffs", currentPage, debouncedSearchQuery],
     queryFn: fetchAllStaffs,
-    keepPreviousData: true,
+    enabled: !!user?.user?.company?._id,
   });
 
   const {
@@ -272,12 +265,7 @@ const StaffManagement = () => {
     personalTrainers,
   } = data || {};
 
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchQuery, limit]);
+  console.log("Staffs: ", staffs);
 
   useEffect(() => {
     fetchAllStaffs();
@@ -410,9 +398,6 @@ const StaffManagement = () => {
       toastMessage.error(error.message || "Unauthorized action");
     }
   };
-
-  const [editStaff, setEditStaff] = useState(false);
-  const [staffDetails, setStaffDetails] = useState(null);
 
   const editStaffDetails = async (id) => {
     try {
@@ -2182,7 +2167,7 @@ const StaffManagement = () => {
                                     </button>
                                   )}
 
-                                  {currentStep === totalSteps &&  (
+                                  {currentStep === totalSteps && (
                                     <button
                                       type="submit"
                                       className="bg-green-600 px-4 py-2 rounded-sm text-white"

@@ -608,7 +608,7 @@ const Sidebar = () => {
                                   <TooltipTrigger asChild>
                                     <Link
                                       href={subItem.link}
-                                      className={`group flex items-center px-3 py-1 text-sm font-medium transition-all duration-200 rounded-xl
+                                      className={`group flex items-center px-3 py-1 text-sm font-medium transition-all duration-200 rounded-md
                                                                                     ${
                                                                                       isActive(
                                                                                         subItem.link
@@ -627,7 +627,7 @@ const Sidebar = () => {
                                         />
                                       </div>
                                       {!sidebarMinimized && (
-                                        <span className="ml-3 text-xs font-medium tracking-tight">
+                                        <span className="ml-3 my-1 text-xs font-medium tracking-tight">
                                           {subItem.title}
                                         </span>
                                       )}
