@@ -867,16 +867,6 @@ const StaffManagement = () => {
                                                       }
                                                     )}
                                                   </span>
-                                                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                                                    {Math.floor(
-                                                      (new Date() -
-                                                        new Date(
-                                                          staff.joinedDate
-                                                        )) /
-                                                        (1000 * 60 * 60 * 24)
-                                                    )}{" "}
-                                                    days ago
-                                                  </span>
                                                 </div>
                                               </TableCell>
                                               <TableCell className="py-4 text-center">
