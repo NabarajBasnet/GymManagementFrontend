@@ -198,7 +198,7 @@ const MembershipPlanManagement = () => {
         setTabValue("Current Plans");
         setIsEditMode(false);
         setEditingPlan(null);
-        queryClient.invalidateQueries({ queryKey: ["membershipPlans"] });
+        queryClient.invalidateQueries(["membershipPlans"]);
       } else {
         toast.error(
           responseBody.message ||
@@ -248,7 +248,6 @@ const MembershipPlanManagement = () => {
   const [filterByStatus, setFilterByStatus] = useState("");
   const [filterByAccessType, setFilterByAccessType] = useState("");
   const [filterByShift, setFilterByShift] = useState("");
-  const [filterByCurrency, setFilterByCurrency] = useState("");
 
   // Debounce search query
   useEffect(() => {
@@ -291,7 +290,6 @@ const MembershipPlanManagement = () => {
       filterByStatus,
       filterByAccessType,
       filterByShift,
-      filterByCurrency,
     ],
     queryFn: getAllMembershipPlans,
   });
@@ -309,7 +307,7 @@ const MembershipPlanManagement = () => {
       const responseBody = await response.json();
       if (response.ok) {
         toast.success(responseBody.message);
-        queryClient.invalidateQueries({ queryKey: ["membershipPlans"] });
+        queryClient.invalidateQueries(["membershipPlans"]);
       } else {
         toast.error(responseBody.message || "Error deleting membership plan");
       }
@@ -403,7 +401,6 @@ const MembershipPlanManagement = () => {
                       setFilterByStatus("");
                       setFilterByAccessType("");
                       setFilterByShift("");
-                      setFilterByCurrency("");
                     }}
                   >
                     <FiRefreshCcw className="w-4 h-4 mr-2" />
@@ -412,12 +409,12 @@ const MembershipPlanManagement = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                   {/* Payment Type Filter */}
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Search</Label>
                     <Input
-                      className="rounded-sm py-6"
+                      className="rounded-sm py-6 dark:bg-gray-900 dark:border-none"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       type="text"
@@ -430,7 +427,7 @@ const MembershipPlanManagement = () => {
                     <Select
                       onValueChange={(value) => setFilterByPaymentType(value)}
                     >
-                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none dark:bg-gray-900">
                         <SelectValue placeholder="All Types" />
                       </SelectTrigger>
                       <SelectContent>
@@ -466,7 +463,7 @@ const MembershipPlanManagement = () => {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Status</Label>
                     <Select onValueChange={(value) => setFilterByStatus(value)}>
-                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none dark:bg-gray-900">
                         <SelectValue placeholder="All Status" />
                       </SelectTrigger>
                       <SelectContent>
@@ -498,7 +495,7 @@ const MembershipPlanManagement = () => {
                     <Select
                       onValueChange={(value) => setFilterByAccessType(value)}
                     >
-                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none dark:bg-gray-900">
                         <SelectValue placeholder="All Access" />
                       </SelectTrigger>
                       <SelectContent>
@@ -576,7 +573,7 @@ const MembershipPlanManagement = () => {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Shift</Label>
                     <Select onValueChange={(value) => setFilterByShift(value)}>
-                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none dark:bg-gray-900">
                         <SelectValue placeholder="All Shifts" />
                       </SelectTrigger>
                       <SelectContent>
@@ -771,16 +768,19 @@ const MembershipPlanManagement = () => {
                   </Card>
                 ))
               ) : (
-                <Card className="col-span-full">
+                <Card className="col-span-full py-14 dark:bg-gray-800 dark:border-none">
                   <CardHeader>
                     <CardTitle>
-                      <p className="text-gray-500 text-sm text-center py-8">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm text-center">
                         No plans found
                       </p>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="flex justify-center">
-                    <Button onClick={() => setTabValue("Create Plans")}>
+                    <Button
+                      onClick={() => setTabValue("Create Plans")}
+                      className=" rounded-sm"
+                    >
                       <FiPlus className="w-4 h-4 mr-2" />
                       Create Plan
                     </Button>
