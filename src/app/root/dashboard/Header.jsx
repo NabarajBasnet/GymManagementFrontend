@@ -119,22 +119,26 @@ const RootUserHeader = ({ activeTab }) => {
       icon: <AlertTriangle size={16} />,
       label: "System Alerts",
       count: 2,
+      link: "/system",
       color: "text-red-600",
     },
     {
       icon: <Activity size={16} />,
       label: "System Health",
       color: "text-green-600",
+      link: "/system",
     },
     {
       icon: <BarChart3 size={16} />,
       label: "Analytics",
+      link: "/systemalerts",
       color: "text-blue-600",
     },
     {
       icon: <Database size={16} />,
       label: "Database",
       color: "text-purple-600",
+      link: "/systemalerts",
     },
   ];
 
@@ -387,6 +391,7 @@ const RootUserHeader = ({ activeTab }) => {
                       </h4>
                       {adminQuickActions.map((action, index) => (
                         <button
+                          onClick={() => router.push(`/root/dashboard/${action.link}`)}
                           key={index}
                           className="flex items-center w-full px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-red-700 dark:hover:text-red-400 transition-all duration-200 group"
                         >
