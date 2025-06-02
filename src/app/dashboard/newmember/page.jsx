@@ -1,5 +1,6 @@
 "use client";
 
+import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { toast as sonnerToast } from "sonner";
 import { Switch } from "@/components/ui/switch";
 import { BiSolidUserDetail } from "react-icons/bi";
@@ -501,48 +502,18 @@ const NewMemberRegistrationForm = () => {
     }
   };
 
-  // Check if members name already exists in database
+  // Check if members name already taken
+
   const fullName = watch("fullName");
-  const [debouncedMemberNameSearchQuery, setDebouncedMemberNameSearchQuery] =
-    useState("");
-
-  const checkMemberNameExist = async ({ queryKey }) => {
-    const [, debouncedMemberNameSearchQuery] = queryKey;
-    console.log(
-      "debouncedMemberNameSearchQuery: ",
-      debouncedMemberNameSearchQuery
-    );
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/members/membername-exist?memberNameSearchQuery=${debouncedMemberNameSearchQuery}`
-      );
-      const responseBody = await response.json();
-      if (responseBody.exists) {
-        sonnerToast.error(responseBody.message);
-        setError("fullName", { type: "manual", message: responseBody.message });
-      } else {
-        clearErrors("fullName");
-      }
-      return responseBody;
-    } catch (error) {
-      console.log("Error: ", error);
-      notify.error(error.message);
-      sonnerToast.error(error.message);
-    }
-  };
-
-  const { data } = useQuery({
-    queryKey: ["memberName", debouncedMemberNameSearchQuery],
-    queryFn: checkMemberNameExist,
+  useFieldAvailabilityCheck({
+    fieldValue: fullName,
+    fieldName: "fullName",
+    apiUrl: "http://localhost:3000/api/members/membername-exist",
+    onError: setError,
+    onSuccess: clearErrors,
   });
 
-  useEffect(() => {
-    const handler = setTimeout(
-      () => setDebouncedMemberNameSearchQuery(fullName),
-      500
-    );
-    return () => clearTimeout(handler);
-  }, [fullName]);
+  // Check if members email already taken
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
