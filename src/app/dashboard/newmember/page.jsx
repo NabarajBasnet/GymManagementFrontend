@@ -680,8 +680,8 @@ const NewMemberRegistrationForm = () => {
                 <TabsContent value="step1">
                   {/* Step 1: Personal Information */}
                   {currentStep === 1 && (
-                    <div className="w-full md:flex items-center justify-between space-x-4">
-                      <Card className="w-full lg:w-4/12 py-4 h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                    <div className="w-full flex md:flex-row flex-col items-center justify-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
+                      <Card className="w-full lg:w-4/12 py-6 h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                         <CardContent className="pt-6">
                           <div className="flex items-center justify-center">
                             <h1 className="text-4xl font-bold text-gray-600 dark:text-gray-300 rounded-full bg-gray-200 dark:bg-gray-700 w-40 h-40"></h1>
@@ -753,7 +753,7 @@ const NewMemberRegistrationForm = () => {
                                   required: "This field is required",
                                 })}
                                 placeholder="Email address"
-                                className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                                className="rounded-md py-6 bg-transparent dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
                               {errors.email && (
                                 <p className="text-xs font-medium text-red-600 dark:text-red-400">
@@ -772,7 +772,7 @@ const NewMemberRegistrationForm = () => {
                                   required: "Date of birth required",
                                 })}
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 
-             appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                  appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
                               {errors.dob && (
                                 <p className="text-xs font-medium text-red-600 dark:text-red-400">
