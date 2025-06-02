@@ -509,7 +509,7 @@ const NewMemberRegistrationForm = () => {
     const [, debouncedMemberNameSearchQuery] = queryKey;
     console.log('debouncedMemberNameSearchQuery: ',debouncedMemberNameSearchQuery);
     try{
-      const response = await fetch(`http://localhost:3000/api/members?memberNameSearchQuery=${debouncedMemberNameSearchQuery}`);
+      const response = await fetch(`http://localhost:3000/api/members/membername-exist?memberNameSearchQuery=${debouncedMemberNameSearchQuery}`);
       const responseBody = await response.json();
       console.log("Response Body: ",responseBody);
     }catch(error){
