@@ -59,9 +59,11 @@ const TenantLoginForm = ({ className, ...props }) => {
         reset();
       } else {
         toast.error(responseBody.message);
+        soonerToast.error(responseBody.message || "Login failed!");
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
+      soonerToast.error(error.message || "Login failed!");
       console.log("Error: ", error);
     }
   };
