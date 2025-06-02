@@ -79,6 +79,7 @@ import { useEffect } from "react";
 import EditStaffDetails from "./editStaffDetails";
 
 const StaffManagement = () => {
+ 
   const {
     register,
     reset,

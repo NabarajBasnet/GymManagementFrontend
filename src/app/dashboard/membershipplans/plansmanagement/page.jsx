@@ -32,14 +32,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
@@ -49,7 +41,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -71,6 +62,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm } from "react-hook-form";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useUser } from "@/components/Providers/LoggedInUserProvider.jsx";
 
 const MembershipPlanManagement = () => {
   // React Hook Form
@@ -79,7 +71,11 @@ const MembershipPlanManagement = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm();
+
+  const { user, loading } = useUser();
+  const checkMultiBranchSupport = user?.user?.companyBranch;
 
   const [tabValue, setTabValue] = useState("Current Plans");
   const [isEditMode, setIsEditMode] = useState(false);
@@ -96,6 +92,50 @@ const MembershipPlanManagement = () => {
   const [targetAudience, setTargetAudience] = useState("General");
   const [planStatus, setPlanStatus] = useState(true);
   const [currency, setCurrency] = useState("NPR");
+
+  const [selectedBranches, setSelectedBranches] = useState([]);
+  console.log("Selected Branches: ", selectedBranches);
+
+  // Handle individual checkbox toggle
+  const handleCheckboxChange = (branchId) => {
+    setSelectedBranches((prev) => {
+      const isSelected = prev.includes(branchId);
+      const updated = isSelected
+        ? prev.filter((id) => id !== branchId)
+        : [...prev, branchId];
+
+      setValue("servicesIncluded", updated); // update react-hook-form manually
+      return updated;
+    });
+  };
+
+  // Select all branches
+  const handleSelectAll = () => {
+    const allIds = branches.map((b) => b._id);
+    setSelectedBranches(allIds);
+    setValue("servicesIncluded", allIds); // set in form
+  };
+
+  const getUserRelatedBranch = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toastMessage.error(error.message);
+    }
+  };
+
+  const { data: userRelatedBranch } = useQuery({
+    queryKey: ["userRelatedBranch"],
+    queryFn: getUserRelatedBranch,
+    enabled: !!user?.user?.company?._id,
+  });
+
+  const { branches } = userRelatedBranch || {};
 
   // Add resetForm function
   const resetForm = () => {
@@ -743,33 +783,30 @@ const MembershipPlanManagement = () => {
                 {/* Branch selection */}
                 <div className="space-y-2 md:mt-2">
                   <Label>Select Company Branch</Label>
+                  <button
+                    type="button"
+                    onClick={handleSelectAll}
+                    className="text-sm text-blue-600 underline mb-2"
+                  >
+                    Available to All Branches
+                  </button>
+
                   <div className="grid grid-cols-3 md:grid-cols-1 gap-4">
-                    {[
-                      "Gym",
-                      "Gym & Cardio",
-                      "Cardio",
-                      "Group Classes",
-                      "Swimming",
-                      "Sauna",
-                      "Steam",
-                      "Online Classes",
-                      "Locker",
-                    ].map((service) => (
+                    {branches?.map((branch) => (
                       <div
-                        key={service}
+                        key={branch._id}
                         className="flex items-center space-x-2"
                       >
                         <input
                           type="checkbox"
-                          id={service}
-                          {...register("servicesIncluded", {
-                            required: "Services included is required",
-                          })}
-                          value={service}
+                          id={branch._id}
+                          value={branch._id}
+                          checked={selectedBranches.includes(branch._id)}
+                          onChange={() => handleCheckboxChange(branch._id)}
                           className="w-5 h-5 rounded border-gray-300"
                         />
-                        <Label htmlFor={service} className="text-base">
-                          {service}
+                        <Label htmlFor={branch._id} className="text-base">
+                          {branch.gymBranchName}
                         </Label>
                       </div>
                     ))}
