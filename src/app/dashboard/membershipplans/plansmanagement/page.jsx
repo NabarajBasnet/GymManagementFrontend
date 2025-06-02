@@ -94,26 +94,31 @@ const MembershipPlanManagement = () => {
   const [currency, setCurrency] = useState("NPR");
 
   const [selectedBranches, setSelectedBranches] = useState([]);
-  console.log("Selected Branches: ", selectedBranches);
+  const [allSelected, setAllSelected] = useState(false);
 
-  // Handle individual checkbox toggle
   const handleCheckboxChange = (branchId) => {
+    if (allSelected) return; // prevent change if all selected
+
     setSelectedBranches((prev) => {
-      const isSelected = prev.includes(branchId);
-      const updated = isSelected
+      const updated = prev.includes(branchId)
         ? prev.filter((id) => id !== branchId)
         : [...prev, branchId];
 
-      setValue("servicesIncluded", updated); // update react-hook-form manually
+      setValue("servicesIncluded", updated);
       return updated;
     });
   };
 
-  // Select all branches
-  const handleSelectAll = () => {
-    const allIds = branches.map((b) => b._id);
-    setSelectedBranches(allIds);
-    setValue("servicesIncluded", allIds); // set in form
+  const handleSwitchToggle = (checked) => {
+    setAllSelected(checked);
+    if (checked) {
+      const all = branches.map((b) => b._id);
+      setSelectedBranches(all);
+      setValue("servicesIncluded", all);
+    } else {
+      setSelectedBranches([]);
+      setValue("servicesIncluded", []);
+    }
   };
 
   const getUserRelatedBranch = async () => {
@@ -144,13 +149,11 @@ const MembershipPlanManagement = () => {
 
     // Reset all state variables
     setAvailableToAllBranches(false);
-    setAvailableToClients(false);
     setMembershipPaymentType("Prepaid");
-    setMembershipAccessType("General");
     setMembershipShift("Morning");
-    setTargetAudience("General");
     setPlanStatus(false);
-    setCurrency("NPR");
+    setAllSelected(false);
+    setSelectedBranches([]);
   };
 
   const onSubmit = async (data) => {
@@ -781,37 +784,44 @@ const MembershipPlanManagement = () => {
                 </div>
 
                 {/* Branch selection */}
-                <div className="space-y-2 md:mt-2">
-                  <Label>Select Company Branch</Label>
-                  <button
-                    type="button"
-                    onClick={handleSelectAll}
-                    className="text-sm text-blue-600 underline mb-2"
-                  >
-                    Available to All Branches
-                  </button>
-
-                  <div className="grid grid-cols-3 md:grid-cols-1 gap-4">
-                    {branches?.map((branch) => (
-                      <div
-                        key={branch._id}
-                        className="flex items-center space-x-2"
-                      >
-                        <input
-                          type="checkbox"
-                          id={branch._id}
-                          value={branch._id}
-                          checked={selectedBranches.includes(branch._id)}
-                          onChange={() => handleCheckboxChange(branch._id)}
-                          className="w-5 h-5 rounded border-gray-300"
+                {checkMultiBranchSupport && (
+                  <div>
+                    <div className="space-y-2 md:mt-2">
+                      <div className="flex items-center justify-center md:justify-start space-x-2 mb-8">
+                        <Switch
+                          id="allBranches"
+                          checked={allSelected}
+                          onCheckedChange={handleSwitchToggle}
                         />
-                        <Label htmlFor={branch._id} className="text-base">
-                          {branch.gymBranchName}
+                        <Label htmlFor="allBranches">
+                          Available to All Branches
                         </Label>
                       </div>
-                    ))}
+
+                      <div className="grid grid-cols-3 md:grid-cols-1 mt-2 gap-4">
+                        {branches?.map((branch) => (
+                          <div
+                            key={branch._id}
+                            className="flex items-center justify-center md:justify-start space-x-2"
+                          >
+                            <input
+                              type="checkbox"
+                              id={branch._id}
+                              value={branch._id}
+                              checked={selectedBranches.includes(branch._id)}
+                              onChange={() => handleCheckboxChange(branch._id)}
+                              disabled={allSelected} // disable if switch is ON
+                              className="w-5 h-5 rounded border-gray-300"
+                            />
+                            <Label htmlFor={branch._id} className="text-base">
+                              {branch.gymBranchName}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 
