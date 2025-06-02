@@ -47,6 +47,8 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectLabel,
+  SelectGroup,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -85,19 +87,15 @@ const MembershipPlanManagement = () => {
 
   // Form Data
   const [availableToAllBranches, setAvailableToAllBranches] = useState(false);
-  const [availableToClients, setAvailableToClients] = useState(false);
   const [membershipPaymentType, setMembershipPaymentType] = useState("Prepaid");
-  const [membershipAccessType, setMembershipAccessType] = useState("General");
   const [membershipShift, setMembershipShift] = useState("Morning");
-  const [targetAudience, setTargetAudience] = useState("General");
-  const [planStatus, setPlanStatus] = useState(true);
-  const [currency, setCurrency] = useState("NPR");
+  const [planStatus, setPlanStatus] = useState(false);
 
   const [selectedBranches, setSelectedBranches] = useState([]);
   const [allSelected, setAllSelected] = useState(false);
 
   const handleCheckboxChange = (branchId) => {
-    if (allSelected) return; // prevent change if all selected
+    if (allSelected) return;
 
     setSelectedBranches((prev) => {
       const updated = prev.includes(branchId)
@@ -157,47 +155,21 @@ const MembershipPlanManagement = () => {
   };
 
   const onSubmit = async (data) => {
-    const {
-      name,
-      description,
-      duration,
-      price,
-      startTime,
-      endTime,
-      servicesIncluded,
-      customTags,
-    } = data;
-
-    // Convert customTags string to array
-    const tagsArray = customTags
-      ? customTags.split(",").map((tag) => tag.trim())
-      : [];
+    const { planName, duration, price, startTime, endTime, servicesIncluded } =
+      data;
 
     const finalObj = {
-      availableForAllBranches: availableToAllBranches,
-      availableToClients,
-      name,
-      description,
-      duration: parseInt(duration),
-      priceDetails: {
-        amount: parseFloat(price),
-        currency: currency,
-      },
+      companyBranch: selectedBranches,
+      planName,
+      duration,
+      price,
       membershipPaymentType,
       membershipShift,
-      accessDetails: {
-        type: membershipAccessType,
-        timeRestrictions: {
-          startTime,
-          endTime,
-        },
-      },
       servicesIncluded: Array.isArray(servicesIncluded)
         ? servicesIncluded
         : [servicesIncluded],
-      targetAudience,
-      isActive: planStatus,
-      customTags: tagsArray,
+      timeRestriction: { startTime, endTime },
+      planStatus,
     };
 
     try {
@@ -249,25 +221,19 @@ const MembershipPlanManagement = () => {
 
     // Set form values
     reset({
-      name: plan.name,
-      description: plan.description,
+      name: plan.planName,
       duration: plan.duration,
-      price: plan.priceDetails.amount,
-      startTime: plan.accessDetails.timeRestrictions?.startTime || "",
-      endTime: plan.accessDetails.timeRestrictions?.endTime || "",
+      price: plan.price,
+      startTime: plan.timeRestrictions?.startTime || "",
+      endTime: plan.timeRestrictions?.endTime || "",
       servicesIncluded: plan.servicesIncluded,
-      customTags: plan.customTags?.join(", ") || "",
     });
 
     // Set state values
     setAvailableToAllBranches(plan.availableForAllBranches);
-    setAvailableToClients(plan.availableToClients);
     setMembershipPaymentType(plan.membershipPaymentType);
-    setMembershipAccessType(plan.accessDetails.type);
     setMembershipShift(plan.membershipShift);
-    setTargetAudience(plan.targetAudience);
-    setPlanStatus(plan.isActive);
-    setCurrency(plan.priceDetails.currency);
+    setPlanStatus(plan.planStatus);
   };
 
   // Pagination
@@ -561,17 +527,14 @@ const MembershipPlanManagement = () => {
                       <div className="flex justify-between items-start gap-2">
                         <div>
                           <h3 className="text-base font-semibold line-clamp-1">
-                            {plan.name}
+                            {plan.planName}
                           </h3>
-                          <p className="text-xs text-gray-400 line-clamp-2 mt-1">
-                            {plan.description}
-                          </p>
                         </div>
                         <Badge
-                          variant={plan.isActive ? "success" : "destructive"}
+                          variant={plan.planStatus ? "success" : "destructive"}
                           className="text-xs"
                         >
-                          {plan.isActive ? "Active" : "Inactive"}
+                          {plan.planStatus ? "Active" : "Inactive"}
                         </Badge>
                       </div>
                     </CardHeader>
@@ -582,8 +545,7 @@ const MembershipPlanManagement = () => {
                           Price
                         </span>
                         <span className="font-semibold text-sm">
-                          {plan.priceDetails.amount}{" "}
-                          {plan.priceDetails.currency}
+                          {plan.price}
                         </span>
                       </div>
 
@@ -598,17 +560,14 @@ const MembershipPlanManagement = () => {
                       {/* Access Details */}
                       <div className="space-y-1">
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-600">Access</span>
-                          <span className="font-medium">
-                            {plan.accessDetails.type}
-                          </span>
+                          <span className="text-gray-600">Timing</span>
                         </div>
-                        {plan.accessDetails.timeRestrictions && (
+                        {plan.timeRestrictions && (
                           <div className="flex justify-between items-center text-xs text-gray-500">
                             <span>Time</span>
                             <span>
-                              {plan.accessDetails.timeRestrictions.startTime} -{" "}
-                              {plan.accessDetails.timeRestrictions.endTime}
+                              {plan.timeRestrictions.startTime} -{" "}
+                              {plan.timeRestrictions.endTime}
                             </span>
                           </div>
                         )}
@@ -644,34 +603,7 @@ const MembershipPlanManagement = () => {
                           <span className="text-gray-600">Shift</span>
                           <p className="font-medium">{plan.membershipShift}</p>
                         </div>
-                        <div>
-                          <span className="text-gray-600">Target</span>
-                          <p className="font-medium">{plan.targetAudience}</p>
-                        </div>
-                        <div>
-                          <span className="text-gray-600">Available</span>
-                          <p className="font-medium">
-                            {plan.availableToClients
-                              ? "To Clients"
-                              : "Internal"}
-                          </p>
-                        </div>
                       </div>
-
-                      {/* Tags */}
-                      {plan.customTags && plan.customTags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {plan.customTags.map((tag, index) => (
-                            <Badge
-                              key={index}
-                              variant="outline"
-                              className="text-[10px] py-0"
-                            >
-                              {tag}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
                     </CardContent>
                     <CardFooter className="flex justify-end gap-2 pt-2 border-t border-gray-200">
                       <Button
@@ -940,11 +872,34 @@ const MembershipPlanManagement = () => {
                             placeholder={membershipShift || "Select shift"}
                           />
                         </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Flexible">Flexible</SelectItem>
-                          <SelectItem value="Morning">Morning</SelectItem>
-                          <SelectItem value="Daytime">Daytime</SelectItem>
-                          <SelectItem value="Evening">Evening</SelectItem>
+                        <SelectContent className="rounded-sm">
+                          <SelectGroup>
+                            <SelectLabel>Select Shift</SelectLabel>
+                            <SelectItem
+                              value="Flexible"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Flexible
+                            </SelectItem>
+                            <SelectItem
+                              value="Morning"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Morning
+                            </SelectItem>
+                            <SelectItem
+                              value="Daytime"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Daytime
+                            </SelectItem>
+                            <SelectItem
+                              value="Evening"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Evening
+                            </SelectItem>
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                       {errors.shift && (
