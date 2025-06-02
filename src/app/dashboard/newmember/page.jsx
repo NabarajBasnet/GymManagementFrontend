@@ -322,16 +322,6 @@ const NewMemberRegistrationForm = () => {
         secondaryContactNo,
         address,
 
-        bodyMeasuredate,
-        weight,
-        height,
-        upperArm,
-        foreArm,
-        chest,
-        waist,
-        thigh,
-        calf,
-
         discountReason,
         discountCode,
         receiptNo,
@@ -347,16 +337,6 @@ const NewMemberRegistrationForm = () => {
         secondaryContactNo,
         gender,
         address,
-
-        bodyMeasuredate,
-        weight,
-        height,
-        upperArm,
-        foreArm,
-        chest,
-        waist,
-        thigh,
-        calf,
 
         status,
         membershipOption,
@@ -379,6 +359,8 @@ const NewMemberRegistrationForm = () => {
         remark,
         actionTaker,
       };
+
+      console.log('membersFinalData: ',membersFinalData);
 
       if (discountAmmount && !discountReason) {
         setError("discountReason", {
@@ -408,6 +390,11 @@ const NewMemberRegistrationForm = () => {
           description: responseBody.message,
         });
         reset();
+      }else{
+        notify.error(responseBody.message);
+        sonnerToast.error("Coultn't register member", {
+          description: responseBody.message,
+        });
       }
 
       if (response.status === 400 && type === "fullName") {
@@ -556,56 +543,9 @@ const NewMemberRegistrationForm = () => {
         </h1>
       </div>
 
-      <form
-        onSubmit={handleSubmit(onRegisterMember)}
-        className="w-full md:flex md:items-stretch gap-4"
+      <div
+        className="w-full flex items-stretch gap-4"
       >
-        {/* Stepper Card */}
-        <Card className="md:w-2/12 w-full mb-8 md:mb-0 bg-white dark:bg-gray-800  border-gray-200 dark:border-gray-700 flex-shrink-0">
-          <CardContent className="pt-6 h-full">
-            <div className="flex flex-col items-center justify-between w-full h-full">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className="flex flex-col items-center mb-4">
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center mb-2
-              ${
-                currentStep >= step
-                  ? "bg-indigo-600 dark:bg-indigo-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-              }`}
-                  >
-                    {step}
-                  </div>
-                  <span
-                    className={`text-sm font-medium
-              ${
-                currentStep >= step
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-gray-500 dark:text-gray-400"
-              }`}
-                  >
-                    {step === 1
-                      ? "Personal Info"
-                      : step === 2
-                      ? "Membership"
-                      : "Payment"}
-                  </span>
-                </div>
-              ))}
-              <div className="relative w-full mt-4">
-                <div className="absolute top-1/2 left-0 right-0 h-0.5 bg-gray-200 dark:bg-gray-700 -translate-y-1/2">
-                  <div
-                    className="h-full bg-indigo-600 dark:bg-indigo-600 transition-all duration-300"
-                    style={{
-                      width: `${((currentStep - 1) / (totalSteps - 1)) * 100}%`,
-                    }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
         <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-grow">
           <CardHeader>
             <CardTitle className="text-gray-900 dark:text-gray-100">
@@ -620,7 +560,57 @@ const NewMemberRegistrationForm = () => {
                 : "Payment Information"}
             </CardDescription>
           </CardHeader>
+        <form 
+        onSubmit={handleSubmit(onRegisterMember)}>
           <CardContent>
+            <Card className="w-full mb-8 bg-white dark:bg-gray-900 border border-gray-200 dark:border-none">
+              <CardContent className="pt-6 pb-4 px-4">
+                {/* Stepper Steps */}
+                <div className="flex items-center justify-between relative w-full">
+                  {[1, 2, 3].map((step) => (
+                    <div key={step} className="flex flex-col items-center z-10">
+                      <div
+                        className={`w-10 h-10 rounded-full flex items-center justify-center
+              ${
+                currentStep >= step
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+              }`}
+                      >
+                        {step}
+                      </div>
+                      <span
+                        className={`mt-2 text-sm font-medium text-center
+              ${
+                currentStep >= step
+                  ? "text-indigo-600 dark:text-indigo-400"
+                  : "text-gray-500 dark:text-gray-400"
+              }`}
+                      >
+                        {step === 1
+                          ? "Personal Info"
+                          : step === 2
+                          ? "Membership"
+                          : "Payment"}
+                      </span>
+                    </div>
+                  ))}
+
+                  {/* Progress Bar */}
+                  <div className="absolute top-5 left-0 w-full h-1 bg-gray-200 dark:bg-gray-700 z-0">
+                    <div
+                      className="h-full bg-indigo-600 transition-all duration-300"
+                      style={{
+                        width: `${
+                          ((currentStep - 1) / (totalSteps - 1)) * 100
+                        }%`,
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <Tabs value={`step${currentStep}`} className="w-full">
               <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
                 <TabsTrigger
@@ -675,11 +665,6 @@ const NewMemberRegistrationForm = () => {
                               className="dark:data-[state=checked]:bg-blue-blue-600 dark:data-[state=unchecked]:bg-blue-white"
                               onCheckedChange={setStatus}
                             />
-                            {errors.status && (
-                              <p className="text-sm text-red-600 dark:text-red-400">
-                                {errors.status.message}
-                              </p>
-                            )}
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               Select membership status
                             </p>
@@ -693,11 +678,11 @@ const NewMemberRegistrationForm = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
-                              Member Full Name
+                              Full Name
                             </Label>
                             <Input
                               {...register("fullName", {
-                                required: "Enter member's full name here!",
+                                required: "This field is required",
                               })}
                               placeholder="Full Name"
                               className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
@@ -715,7 +700,7 @@ const NewMemberRegistrationForm = () => {
                             </Label>
                             <Input
                               {...register("contactNo", {
-                                required: "Enter contact number here!",
+                                required: "This field is required",
                               })}
                               placeholder="Contact Number"
                               className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
@@ -1419,6 +1404,7 @@ const NewMemberRegistrationForm = () => {
               </TabsContent>
             </Tabs>
           </CardContent>
+
           <CardFooter className="flex justify-between space-x-2">
             {currentStep > 1 && (
               <Button
@@ -1451,8 +1437,9 @@ const NewMemberRegistrationForm = () => {
               )}
             </div>
           </CardFooter>
+          </form>
         </Card>
-      </form>
+      </div>
     </div>
   );
 };
