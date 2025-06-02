@@ -144,7 +144,6 @@ const MembershipPlanManagement = () => {
   const resetForm = () => {
     // Reset form fields
     reset();
-
     // Reset all state variables
     setAvailableToAllBranches(false);
     setMembershipPaymentType();
@@ -221,19 +220,23 @@ const MembershipPlanManagement = () => {
 
     // Set form values
     reset({
-      name: plan.planName,
+      planName: plan.planName,
       duration: plan.duration,
       price: plan.price,
-      startTime: plan.timeRestrictions?.startTime || "",
-      endTime: plan.timeRestrictions?.endTime || "",
+      startTime: plan.timeRestriction?.startTime || "",
+      endTime: plan.timeRestriction?.endTime || "",
       servicesIncluded: plan.servicesIncluded,
     });
 
     // Set state values
-    setAvailableToAllBranches(plan.availableForAllBranches);
+    setAvailableToAllBranches(plan.companyBranch);
     setMembershipPaymentType(plan.membershipPaymentType);
     setMembershipShift(plan.membershipShift);
     setPlanStatus(plan.planStatus);
+    if (plan?.companyBranch?.length === branches?.length) {
+      setAllSelected(true);
+    }
+    setSelectedBranches(plan.companyBranch);
   };
 
   // Pagination
@@ -368,7 +371,7 @@ const MembershipPlanManagement = () => {
       </div>
 
       <Tabs value={tabValue} onValueChange={setTabValue}>
-        <TabsList className="mb-2 border rounded-sm border-gray-300 dark:border-none">
+        <TabsList className="mb-2 border border-gray-300 dark:border-gray-700 p-2 rounded-sm dark:bg-gray-800">
           <TabsTrigger value="Current Plans">
             {" "}
             <FaList className="w-4 h-4 mr-2" /> Current Plans
@@ -855,13 +858,13 @@ const MembershipPlanManagement = () => {
                             key={branch._id}
                             className="flex items-center justify-center md:justify-start space-x-2"
                           >
-                            <input
+                            <Input
                               type="checkbox"
                               id={branch._id}
                               value={branch._id}
                               checked={selectedBranches.includes(branch._id)}
                               onChange={() => handleCheckboxChange(branch._id)}
-                              disabled={allSelected} // disable if switch is ON
+                              disabled={allSelected}
                               className="w-5 h-5 rounded border-gray-300"
                             />
                             <Label htmlFor={branch._id} className="text-base">
@@ -1091,6 +1094,7 @@ const MembershipPlanManagement = () => {
                         "Sauna",
                         "Steam",
                         "Online Classes",
+                        "Shower",
                         "Locker",
                       ].map((service) => (
                         <div
