@@ -1,5 +1,6 @@
 "use client";
 
+import { BiSolidUserCircle } from "react-icons/bi";
 import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { toast as sonnerToast } from "sonner";
 import { Switch } from "@/components/ui/switch";
@@ -683,8 +684,8 @@ const NewMemberRegistrationForm = () => {
                     <div className="w-full flex md:flex-row flex-col items-center justify-center md:justify-between space-y-4 md:space-y-0 md:space-x-4">
                       <Card className="w-full lg:w-4/12 py-6 h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                         <CardContent className="pt-6">
-                          <div className="flex items-center justify-center">
-                            <h1 className="text-4xl font-bold text-gray-600 dark:text-gray-300 rounded-full bg-gray-200 dark:bg-gray-700 w-40 h-40"></h1>
+                          <div className="flex items-center justify-center p-2">
+                            <BiSolidUserCircle className="w-32 h-32" />
                           </div>
                           <div className="w-full items-center justify-center">
                             <div className="flex flex-col items-center justify-center my-3 space-y-1">
