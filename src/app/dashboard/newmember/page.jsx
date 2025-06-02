@@ -7,7 +7,6 @@ import { BiSolidUserDetail } from "react-icons/bi";
 import { TiBusinessCard } from "react-icons/ti";
 import { MdOutlinePayment } from "react-icons/md";
 import { BiHomeAlt } from "react-icons/bi";
-import { MdDone, MdError, MdClose } from "react-icons/md";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
@@ -767,33 +766,19 @@ const NewMemberRegistrationForm = () => {
                               <Label className="text-gray-700 dark:text-gray-300">
                                 Date Of Birth
                               </Label>
-                              <Popover>
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant={"outline"}
-                                    className={cn(
-                                      "w-full justify-start text-left py-6 rounded-md font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                      !dob && "text-muted-foreground"
-                                    )}
-                                  >
-                                    <CalendarIcon className="mr-2 h-4 w-4" />
-                                    {dob ? (
-                                      format(dob, "PPP")
-                                    ) : (
-                                      <span>Pick a date</span>
-                                    )}
-                                  </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                  <Calendar
-                                    mode="single"
-                                    selected={dob}
-                                    onSelect={setDob}
-                                    initialFocus
-                                    className="bg-white dark:bg-gray-800"
-                                  />
-                                </PopoverContent>
-                              </Popover>
+                              <Input
+                                type="date"
+                                {...register("dob", {
+                                  required: "Date of birth required",
+                                })}
+                                className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 
+             appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              />
+                              {errors.dob && (
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                                  {errors.dob.message}
+                                </p>
+                              )}
                             </div>
 
                             <div className="space-y-2">
