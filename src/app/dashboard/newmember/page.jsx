@@ -212,6 +212,7 @@ const NewMemberRegistrationForm = () => {
     handleSubmit,
     setError,
     clearErrors,
+    watch
   } = useForm();
 
   const handleMembershipSelection = (duration) => {
@@ -499,6 +500,34 @@ const NewMemberRegistrationForm = () => {
         return false;
     }
   };
+
+  // Check if members name already exists in database
+  const fullName = watch("fullName");
+  const [debouncedMemberNameSearchQuery, setDebouncedMemberNameSearchQuery] = useState('');
+
+  const checkMemberNameExist = async({queryKey})=>{
+    const [, debouncedMemberNameSearchQuery] = queryKey;
+    console.log('debouncedMemberNameSearchQuery: ',debouncedMemberNameSearchQuery);
+    try{
+      const response = await fetch(`http://localhost:3000/api/members?memberNameSearchQuery=${debouncedMemberNameSearchQuery}`);
+      const responseBody = await response.json();
+      console.log("Response Body: ",responseBody);
+    }catch(error){
+      console.log("Error: ",error);
+      notify.error(error.message);
+      sonnerToast.error(error.message);
+    };
+  };
+
+  const {data}=useQuery({
+    queryKey:['memberName', debouncedMemberNameSearchQuery],
+    queryFn:checkMemberNameExist
+  });
+
+  useEffect(()=>{
+    const handler = setTimeout(()=>setDebouncedMemberNameSearchQuery(fullName),500);
+    return ()=>clearTimeout(handler);
+  },[fullName]);
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
