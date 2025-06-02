@@ -87,8 +87,8 @@ const MembershipPlanManagement = () => {
 
   // Form Data
   const [availableToAllBranches, setAvailableToAllBranches] = useState(false);
-  const [membershipPaymentType, setMembershipPaymentType] = useState("Prepaid");
-  const [membershipShift, setMembershipShift] = useState("Morning");
+  const [membershipPaymentType, setMembershipPaymentType] = useState();
+  const [membershipShift, setMembershipShift] = useState();
   const [planStatus, setPlanStatus] = useState(false);
 
   const [selectedBranches, setSelectedBranches] = useState([]);
@@ -147,8 +147,8 @@ const MembershipPlanManagement = () => {
 
     // Reset all state variables
     setAvailableToAllBranches(false);
-    setMembershipPaymentType("Prepaid");
-    setMembershipShift("Morning");
+    setMembershipPaymentType();
+    setMembershipShift();
     setPlanStatus(false);
     setAllSelected(false);
     setSelectedBranches([]);
@@ -320,7 +320,7 @@ const MembershipPlanManagement = () => {
   };
 
   return (
-    <div className="w-full bg-gray-50 min-h-screen p-4 md:p-6">
+    <div className="w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6">
       {/* Breadcrumb with arrows */}
       <div className="w-full mb-4">
         <Breadcrumb className="mb-4">
@@ -350,17 +350,17 @@ const MembershipPlanManagement = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-4 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+        <div className="flex flex-col dark:bg-gray-800 dark:border-none md:flex-row justify-between items-start bg-white p-4 py-4 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
           <div>
-            <h1 className="text-xl font-bold mb-2">
+            <h1 className="text-xl font-bold mb-2 dark:text-white">
               Membership Plans Management
             </h1>
-            <p className="text-xs text-gray-500 font-medium">
+            <p className="text-xs text-gray-500 font-medium dark:text-gray-200">
               Create and manage your gym membership plans.
             </p>
           </div>
           <Button
-            className="rounded-sm"
+            className="rounded-sm dark:bg-gray-900 hover:dark:bg-black dark:text-white transition-all duration-500"
             onClick={() => setTabValue("Create Plans")}
           >
             <FiPlus className="h-4 w-4 mr-2" />
@@ -370,7 +370,7 @@ const MembershipPlanManagement = () => {
       </div>
 
       <Tabs value={tabValue} onValueChange={setTabValue}>
-        <TabsList className="mb-2 border rounded-sm border-gray-300">
+        <TabsList className="mb-2 border rounded-sm border-gray-300 dark:border-none">
           <TabsTrigger value="Current Plans">
             {" "}
             <FaList className="w-4 h-4 mr-2" /> Current Plans
@@ -384,11 +384,11 @@ const MembershipPlanManagement = () => {
         <TabsContent value="Current Plans">
           <div className="space-y-4">
             {/* Filter Card */}
-            <Card className="rounded-xl shadow-md border border-gray-100">
+            <Card className="rounded-xl shadow-md border border-gray-100 dark:bg-gray-800 dark:border-none">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2 justify-between">
                   <div className="flex items-center gap-2">
-                    <FiFilter className="w-5 h-5 text-gray-500" />
+                    <FiFilter className="w-5 h-5 text-gray-500 dark:text-gray-300" />
                     <h3 className="text-lg font-bold">
                       Search and Filter Plans
                     </h3>
@@ -396,7 +396,7 @@ const MembershipPlanManagement = () => {
 
                   <Button
                     variant="destructive"
-                    className="text-xs"
+                    className="text-xs dark:bg-red-600 hover:dark:bg-red-700"
                     onClick={() => {
                       setSearchQuery("");
                       setFilterByPaymentType("");
@@ -417,6 +417,7 @@ const MembershipPlanManagement = () => {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Search</Label>
                     <Input
+                      className="rounded-sm py-6"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       type="text"
@@ -429,14 +430,34 @@ const MembershipPlanManagement = () => {
                     <Select
                       onValueChange={(value) => setFilterByPaymentType(value)}
                     >
-                      <SelectTrigger className="h-9 rounded-md">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
                         <SelectValue placeholder="All Types" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Types</SelectItem>
-                        <SelectItem value="Prepaid">Prepaid</SelectItem>
-                        <SelectItem value="Recurring">Recurring</SelectItem>
-                        <SelectItem value="Installment">Installment</SelectItem>
+                        <SelectItem
+                          value="all"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          All Types
+                        </SelectItem>
+                        <SelectItem
+                          value="Prepaid"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Prepaid
+                        </SelectItem>
+                        <SelectItem
+                          value="Recurring"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Recurring
+                        </SelectItem>
+                        <SelectItem
+                          value="Installment"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Installment
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -445,13 +466,28 @@ const MembershipPlanManagement = () => {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Status</Label>
                     <Select onValueChange={(value) => setFilterByStatus(value)}>
-                      <SelectTrigger className="h-9 rounded-md">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
                         <SelectValue placeholder="All Status" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Status</SelectItem>
-                        <SelectItem value="Active">Active</SelectItem>
-                        <SelectItem value="Inactive">Inactive</SelectItem>
+                        <SelectItem
+                          value="all"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          All Status
+                        </SelectItem>
+                        <SelectItem
+                          value="Active"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Active
+                        </SelectItem>
+                        <SelectItem
+                          value="Inactive"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Inactive
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -462,28 +498,74 @@ const MembershipPlanManagement = () => {
                     <Select
                       onValueChange={(value) => setFilterByAccessType(value)}
                     >
-                      <SelectTrigger className="h-9 rounded-md">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
                         <SelectValue placeholder="All Access" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Access</SelectItem>
-                        <SelectItem value="General">General</SelectItem>
-                        <SelectItem value="Gym & Cardio">
+                        <SelectItem
+                          value="all"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          All Access
+                        </SelectItem>
+                        <SelectItem
+                          value="General"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          General
+                        </SelectItem>
+                        <SelectItem
+                          value="Gym & Cardio"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
                           Gym & Cardio
                         </SelectItem>
-                        <SelectItem value="Cardio">Cardio</SelectItem>
-                        <SelectItem value="All Access">All Access</SelectItem>
-                        <SelectItem value="Time Based">Time Based</SelectItem>
-                        <SelectItem value="Location Based">
-                          Location Based
+                        <SelectItem
+                          value="Cardio"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Cardio
                         </SelectItem>
-                        <SelectItem value="Group Classes">
+                        <SelectItem
+                          value="All Access"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          All Access
+                        </SelectItem>
+                        <SelectItem
+                          value="Time Based"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Time Based
+                        </SelectItem>
+                        <SelectItem
+                          value="Group Classes"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
                           Group Classes
                         </SelectItem>
-                        <SelectItem value="Zumba">Zumba</SelectItem>
-                        <SelectItem value="Swimming">Swimming</SelectItem>
-                        <SelectItem value="Sauna">Sauna</SelectItem>
-                        <SelectItem value="Online Classes">
+                        <SelectItem
+                          value="Zumba"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Zumba
+                        </SelectItem>
+                        <SelectItem
+                          value="Swimming"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Swimming
+                        </SelectItem>
+                        <SelectItem
+                          value="Sauna"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Sauna
+                        </SelectItem>
+                        <SelectItem
+                          value="Online Classes"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
                           Online Classes
                         </SelectItem>
                       </SelectContent>
@@ -494,15 +576,40 @@ const MembershipPlanManagement = () => {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Shift</Label>
                     <Select onValueChange={(value) => setFilterByShift(value)}>
-                      <SelectTrigger className="h-9 rounded-md">
+                      <SelectTrigger className="py-6 rounded-sm dark:border-none">
                         <SelectValue placeholder="All Shifts" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="all">All Shifts</SelectItem>
-                        <SelectItem value="Morning">Morning</SelectItem>
-                        <SelectItem value="Daytime">Daytime</SelectItem>
-                        <SelectItem value="Evening">Evening</SelectItem>
-                        <SelectItem value="Flexible">Flexible</SelectItem>
+                        <SelectItem
+                          value="all"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          All Shifts
+                        </SelectItem>
+                        <SelectItem
+                          value="Morning"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Morning
+                        </SelectItem>
+                        <SelectItem
+                          value="Daytime"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Daytime
+                        </SelectItem>
+                        <SelectItem
+                          value="Evening"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Evening
+                        </SelectItem>
+                        <SelectItem
+                          value="Flexible"
+                          className="cursor-pointer hover:bg-blue-500"
+                        >
+                          Flexible
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -521,7 +628,7 @@ const MembershipPlanManagement = () => {
                 membershipPlans.map((plan) => (
                   <Card
                     key={plan._id}
-                    className="relative overflow-hidden hover:shadow-lg cursor-pointer transition-all duration-300 border border-gray-200 group"
+                    className="relative dark:bg-gray-800 dark:border-none dark:text-gray-200 overflow-hidden hover:shadow-lg cursor-pointer transition-all duration-300 border border-gray-200 group"
                   >
                     <CardHeader className="pb-2">
                       <div className="flex justify-between items-start gap-2">
@@ -540,8 +647,8 @@ const MembershipPlanManagement = () => {
                     </CardHeader>
                     <CardContent className="space-y-2.5">
                       {/* Price Details */}
-                      <div className="flex justify-between border items-center bg-gray-50 p-2 rounded-md">
-                        <span className="text-xs font-medium text-gray-600">
+                      <div className="flex justify-between border items-center bg-gray-50 dark:bg-gray-900 dark:border-none py-4 px-4 rounded-sm">
+                        <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                           Price
                         </span>
                         <span className="font-semibold text-sm">
@@ -551,7 +658,9 @@ const MembershipPlanManagement = () => {
 
                       {/* Duration */}
                       <div className="flex justify-between items-center text-sm">
-                        <span className="text-gray-600">Duration</span>
+                        <span className="text-gray-600 dark:text-gray-300">
+                          Duration
+                        </span>
                         <span className="font-medium">
                           {plan.duration} days
                         </span>
@@ -560,14 +669,18 @@ const MembershipPlanManagement = () => {
                       {/* Access Details */}
                       <div className="space-y-1">
                         <div className="flex justify-between items-center text-sm">
-                          <span className="text-gray-600">Timing</span>
+                          <span className="text-gray-600 dark:text-gray-300">
+                            Timing
+                          </span>
                         </div>
-                        {plan.timeRestrictions && (
+                        {plan.timeRestriction && (
                           <div className="flex justify-between items-center text-xs text-gray-500">
-                            <span>Time</span>
-                            <span>
-                              {plan.timeRestrictions.startTime} -{" "}
-                              {plan.timeRestrictions.endTime}
+                            <span className="dark:text-gray-300 text-gray-600">
+                              Time
+                            </span>
+                            <span className="dark:text-gray-300 text-gray-600">
+                              {plan.timeRestriction.startTime} -{" "}
+                              {plan.timeRestriction.endTime}
                             </span>
                           </div>
                         )}
@@ -575,15 +688,15 @@ const MembershipPlanManagement = () => {
 
                       {/* Services */}
                       <div>
-                        <span className="text-xs font-medium text-gray-600">
+                        <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                           Services
                         </span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {plan.servicesIncluded.map((service, index) => (
                             <Badge
                               key={index}
-                              variant="secondary"
-                              className="text-[10px] py-0"
+                              variant="default"
+                              className="text-xs py-1 px-2"
                             >
                               {service}
                             </Badge>
@@ -594,13 +707,17 @@ const MembershipPlanManagement = () => {
                       {/* Additional Details */}
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
-                          <span className="text-gray-600">Payment</span>
+                          <span className="text-gray-600 dark:text-gray-300">
+                            Payment
+                          </span>
                           <p className="font-medium">
                             {plan.membershipPaymentType}
                           </p>
                         </div>
                         <div>
-                          <span className="text-gray-600">Shift</span>
+                          <span className="text-gray-600 dark:text-gray-300">
+                            Shift
+                          </span>
                           <p className="font-medium">{plan.membershipShift}</p>
                         </div>
                       </div>
@@ -608,8 +725,8 @@ const MembershipPlanManagement = () => {
                     <CardFooter className="flex justify-end gap-2 pt-2 border-t border-gray-200">
                       <Button
                         variant="outline"
-                        size="sm"
-                        className="h-8 text-xs"
+                        size="lg"
+                        className="text-sm dark:border-none"
                         onClick={() => handleEditClick(plan)}
                       >
                         <FiEdit className="w-3 h-3 mr-1" />
@@ -620,28 +737,30 @@ const MembershipPlanManagement = () => {
                         <AlertDialogTrigger asChild>
                           <Button
                             variant="destructive"
-                            size="sm"
-                            className="h-8 text-xs"
+                            size="lg"
+                            className="text-sm dark:border-none dark:bg-red-600"
                           >
                             <FiTrash2 className="w-3 h-3 mr-1" />
                             Delete
                           </Button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className="dark:bg-gray-900 dark:border-none">
                           <AlertDialogHeader>
-                            <AlertDialogTitle>
+                            <AlertDialogTitle className="dark:text-white">
                               Are you absolutely sure?
                             </AlertDialogTitle>
-                            <AlertDialogDescription>
+                            <AlertDialogDescription className="dark:text-gray-300">
                               This action cannot be undone. This will
                               permanently delete your membership plan.
                             </AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogCancel className="dark:bg-gray-900 dark:hover:bg-gray-800 transition-all duration-500 dark:border-none dark:text-white">
+                              Cancel
+                            </AlertDialogCancel>
                             <AlertDialogAction
                               onClick={() => deleteMembershipPlan(plan._id)}
-                              className="bg-red-500 text-white"
+                              className="bg-red-500 text-white hover:bg-red-600 dark:border-none transition-all duration-500"
                             >
                               Continue
                             </AlertDialogAction>
@@ -691,7 +810,7 @@ const MembershipPlanManagement = () => {
         <TabsContent value="Create Plans">
           <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
             {/* Left Card - Settings */}
-            <Card className="rounded-xl w-full lg:w-3/12 shadow-md">
+            <Card className="rounded-xl w-full lg:w-3/12 shadow-md dark:bg-gray-800 dark:border-none">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <p className="text-md font-bold">Settings</p>
@@ -699,8 +818,8 @@ const MembershipPlanManagement = () => {
               </CardHeader>
               <CardContent className="w-full flex flex-col gap-4 justify-center items-center">
                 <div className="flex justify-center items-center">
-                  <h1 className="text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center">
-                    NB
+                  <h1 className="text-2xl font-bold dark:text-black rounded-full w-32 h-32 bg-green-200 flex justify-center items-center">
+                    N/A
                   </h1>
                 </div>
 
@@ -758,7 +877,7 @@ const MembershipPlanManagement = () => {
             </Card>
 
             {/* Right Card - Form */}
-            <Card className="rounded-xl w-full lg:w-9/12 shadow-md">
+            <Card className="rounded-xl w-full lg:w-9/12 shadow-md dark:bg-gray-800 dark:border-none">
               <CardHeader>
                 <div className="flex justify-between items-center">
                   <p className="text-lg font-bold">
@@ -776,7 +895,7 @@ const MembershipPlanManagement = () => {
                       <Label htmlFor="name">Plan Name</Label>
                       <Input
                         id="planName"
-                        className="py-6 rounded-sm"
+                        className="py-6 rounded-sm dark:bg-gray-900 dark:border-none"
                         {...register("planName", {
                           required: "Plan name is required",
                         })}
@@ -794,7 +913,7 @@ const MembershipPlanManagement = () => {
                       <Input
                         id="duration"
                         type="number"
-                        className="py-6 rounded-sm"
+                        className="py-6 rounded-sm dark:bg-gray-900 dark:border-none"
                         {...register("duration", {
                           required: "Duration is required",
                         })}
@@ -815,7 +934,7 @@ const MembershipPlanManagement = () => {
                       <Input
                         id="amount"
                         type="number"
-                        className="py-6 rounded-sm"
+                        className="py-6 rounded-sm dark:bg-gray-900 dark:border-none"
                         {...register("price", {
                           required: "Price is required",
                         })}
@@ -836,7 +955,7 @@ const MembershipPlanManagement = () => {
                         }
                         value={membershipPaymentType}
                       >
-                        <SelectTrigger className="py-6 rounded-sm">
+                        <SelectTrigger className="py-6 rounded-sm dark:bg-gray-900 dark:border-none">
                           <SelectValue
                             placeholder={
                               membershipPaymentType || "Select payment type"
@@ -844,11 +963,27 @@ const MembershipPlanManagement = () => {
                           />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="Prepaid">Prepaid</SelectItem>
-                          <SelectItem value="Recurring">Recurring</SelectItem>
-                          <SelectItem value="Installment">
-                            Installment
-                          </SelectItem>
+                          <SelectGroup>
+                            <SelectLabel>Select Shift</SelectLabel>
+                            <SelectItem
+                              value="Prepaid"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Prepaid
+                            </SelectItem>
+                            <SelectItem
+                              value="Recurring"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Recurring
+                            </SelectItem>
+                            <SelectItem
+                              value="Installment"
+                              className="hover:bg-blue-600 cursor-pointer"
+                            >
+                              Installment
+                            </SelectItem>
+                          </SelectGroup>
                         </SelectContent>
                       </Select>
                       {errors.paymentType && (
@@ -867,7 +1002,7 @@ const MembershipPlanManagement = () => {
                         onValueChange={(value) => setMembershipShift(value)}
                         value={membershipShift}
                       >
-                        <SelectTrigger className="py-6 rounded-sm">
+                        <SelectTrigger className="py-6 rounded-sm dark:bg-gray-900 dark:border-none">
                           <SelectValue
                             placeholder={membershipShift || "Select shift"}
                           />
@@ -916,7 +1051,7 @@ const MembershipPlanManagement = () => {
                         <Input
                           id="startTime"
                           type="time"
-                          className="py-6 rounded-sm"
+                          className="py-6 rounded-sm dark:bg-gray-900 dark:border-none"
                           {...register("startTime")}
                         />
                         {errors.startTime && (
@@ -931,7 +1066,7 @@ const MembershipPlanManagement = () => {
                         <Input
                           id="endTime"
                           type="time"
-                          className="py-6 rounded-sm"
+                          className="py-6 rounded-sm dark:bg-gray-900 dark:border-none"
                           {...register("endTime")}
                         />
                         {errors.endTime && (
@@ -983,6 +1118,7 @@ const MembershipPlanManagement = () => {
                     <Button
                       type="button"
                       variant="outline"
+                      className="dark:border-none dark:hover:bg-gray-900"
                       onClick={() => {
                         resetForm();
                         if (isEditMode) {
