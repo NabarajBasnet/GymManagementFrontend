@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { setError, clearErrors } from "react-hook-form";
 
 export const useFieldAvailabilityCheck = ({
   fieldValue,

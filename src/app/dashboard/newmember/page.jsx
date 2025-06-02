@@ -513,7 +513,25 @@ const NewMemberRegistrationForm = () => {
     onSuccess: clearErrors,
   });
 
+  // Check if members phone number already taken
+  const contactNo = watch("contactNo");
+  useFieldAvailabilityCheck({
+    fieldValue: contactNo,
+    fieldName: "contactNo",
+    apiUrl: "http://localhost:3000/api/members/memberphoneno-exist",
+    onError: setError,
+    onSuccess: clearErrors,
+  });
+
   // Check if members email already taken
+  const email = watch("email");
+  useFieldAvailabilityCheck({
+    fieldValue: email,
+    fieldName: "email",
+    apiUrl: "http://localhost:3000/api/members/memberemail-exist",
+    onError: setError,
+    onSuccess: clearErrors,
+  });
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
@@ -721,7 +739,7 @@ const NewMemberRegistrationForm = () => {
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
                               {errors.contactNo && (
-                                <p className="text-sm text-red-600 dark:text-red-400">
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
                                   {errors.contactNo.message}
                                 </p>
                               )}
@@ -733,14 +751,13 @@ const NewMemberRegistrationForm = () => {
                               </Label>
                               <Input
                                 {...register("email", {
-                                  required: "Email address is required!",
+                                  required: "This field is required",
                                 })}
-                                onChange={() => clearErrors("userRegistered")}
-                                placeholder="Email Address"
+                                placeholder="Email address"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
                               {errors.email && (
-                                <p className="text-sm text-red-600 dark:text-red-400">
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
                                   {errors.email.message}
                                 </p>
                               )}
