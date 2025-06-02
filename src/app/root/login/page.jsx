@@ -1,434 +1,352 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { FaApple, FaGoogle } from "react-icons/fa";
-import { FaMeta } from "react-icons/fa6";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import {
   X,
   AtSign,
   Lock,
-  User,
-  CheckCircle2,
-  ChevronRight,
+  Eye,
+  EyeOff,
+  Shield,
+  Crown,
+  Server,
+  Database,
+  Settings,
+  ArrowRight,
   Github,
   Linkedin,
-  Sparkles,
-  Shield,
-  Zap,
-  Eye,
-  EyeOff
-} from 'lucide-react';
-import { useState } from 'react';
+} from "lucide-react";
+import { useState } from "react";
 
-const RootLoginForm = ({ className, ...props })=> {
+const RootLoginForm = ({ className, ...props }) => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
-  
+
   const {
     register,
     reset,
     handleSubmit,
     formState: { isSubmitting, errors },
-    setError
+    setError,
   } = useForm();
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/api/rootuser/login', {
+      const response = await fetch("http://localhost:3000/api/rootuser/login", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-        credentials: 'include',
+        credentials: "include",
       });
 
       const responseBody = await response.json();
 
-      if(response.ok){
-        toast.success(responseBody.message || 'Login successful!');
+      if (response.ok) {
+        toast.success(responseBody.message || "Login successful!");
         router.push(responseBody.redirectUrl);
         reset();
       } else {
         toast.error(responseBody.message);
       }
     } catch (error) {
-      toast.error('An unexpected error occurred. Please try again.');
-      console.log('Error: ', error);
-    };
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        duration: 0.6
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.5 }
+      toast.error("An unexpected error occurred. Please try again.");
+      console.log("Error: ", error);
     }
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-10 animate-pulse animation-delay-4000"></div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black relative overflow-hidden flex items-center justify-center p-4">
+      {/* Subtle grid background */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
 
-      {/* Floating particles */}
-      <div className="absolute inset-0">
-        {[...Array(20)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-white rounded-full opacity-20"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, -100, 0],
-              opacity: [0.2, 0.8, 0.2],
-            }}
-            transition={{
-              duration: 3 + Math.random() * 2,
-              repeat: Infinity,
-              delay: Math.random() * 2,
-            }}
-          />
-        ))}
-      </div>
+      {/* Gradient orbs */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl"></div>
 
-      <div className="relative z-10 min-h-screen w-full flex items-center justify-center p-4">
-        <motion.div
-          className="w-full px-28"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.div
-            className="relative rounded-3xl overflow-hidden backdrop-blur-xl bg-white/5 border border-white/10 shadow-[0_0_80px_rgba(139,92,246,0.3)]"
-            variants={itemVariants}
-            whileHover={{ scale: 1.02 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <div className="flex flex-col lg:flex-row min-h-[90vh]">
-              {/* Left side - Enhanced brand panel */}
-              <motion.div 
-                className="lg:w-5/12 relative overflow-hidden"
-                initial={{ x: -100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-              >
-                {/* Gradient background with animated overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700"></div>
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-white/10"></div>
-                
-                {/* Animated geometric shapes */}
-                <div className="absolute inset-0 overflow-hidden">
-                  <motion.div
-                    className="absolute top-20 left-10 w-32 h-32 border border-white/20 rounded-full"
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                  />
-                  <motion.div
-                    className="absolute bottom-20 right-10 w-24 h-24 border border-white/20 rounded-lg"
-                    animate={{ rotate: -360 }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-                  />
-                </div>
-
-                <div className="relative z-10 flex flex-col items-center justify-center h-full p-8 text-white">
-                  <motion.div
-                    className="text-center max-w-sm"
-                    variants={itemVariants}
-                  >
-                    <motion.div
-                      className="mb-8 inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/20"
-                      whileHover={{ 
-                        scale: 1.1, 
-                        backgroundColor: 'rgba(255,255,255,0.15)',
-                        boxShadow: '0 0 30px rgba(255,255,255,0.3)'
-                      }}
-                      transition={{ type: "spring", stiffness: 300 }}
-                    >
-                      <Sparkles className="w-10 h-10 text-white" />
-                    </motion.div>
-
-                    <motion.h1 
-                      className="text-4xl font-bold mb-6 bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent"
-                      variants={itemVariants}
-                    >
-                      Welcome Back
-                    </motion.h1>
-                    
-                    <motion.p 
-                      className="text-white/90 mb-8 text-lg font-light"
-                      variants={itemVariants}
-                    >
-                      Sign in to unlock your personalized experience
-                    </motion.p>
-
-                    <motion.div 
-                      className="hidden md:flex flex-col space-y-6 mb-8"
-                      variants={containerVariants}
-                    >
-                      {[
-                        { icon: Shield, text: "Military-grade security" },
-                        { icon: Zap, text: "Lightning-fast access" },
-                        { icon: Sparkles, text: "Premium experience" }
-                      ].map((item, index) => (
-                        <motion.div
-                          key={index}
-                          className="flex items-center space-x-4 text-sm group"
-                          variants={itemVariants}
-                          whileHover={{ x: 10 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                        >
-                          <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center group-hover:bg-white/20 transition-all duration-300">
-                            <item.icon className="w-4 h-4 text-emerald-300" />
-                          </div>
-                          <span className="group-hover:text-white transition-colors duration-300">{item.text}</span>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-
-                    <motion.div 
-                      className="pt-6 text-sm"
-                      variants={itemVariants}
-                    >
-                      <p className="text-white/80 mb-3">Don't have an account?</p>
-                      <Link href="/root/signup">
-                        <motion.div 
-                          className="inline-flex items-center px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 transition-all duration-300 group"
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                        >
-                          Create new account 
-                          <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                        </motion.div>
-                      </Link>
-                    </motion.div>
-                  </motion.div>
-                </div>
-              </motion.div>
-
-              {/* Right side - Ultra-modern form */}
-              <motion.div 
-                className="lg:w-7/12 relative overflow-hidden"
-                initial={{ x: 100, opacity: 0 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-              >
-                {/* Glassmorphism background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-slate-800/40 via-gray-800/30 to-slate-900/50 backdrop-blur-2xl"></div>
-                <div className="absolute inset-0 bg-gradient-to-tl from-purple-500/5 via-transparent to-cyan-500/5"></div>
-                
-                <div className="relative z-10 p-8 md:p-12 h-full flex items-center">
-                  <div className="w-full max-w-md mx-auto">
-                    <motion.div 
-                      className="mb-10"
-                      variants={itemVariants}
-                    >
-                      <h2 className="text-3xl font-bold text-white mb-3 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-                        Sign In
-                      </h2>
-                      <p className="text-gray-400 font-light">
-                        Enter your credentials to access your dashboard
-                      </p>
-                    </motion.div>
-
-                    <motion.form 
-                      onSubmit={handleSubmit(onLoginUser)} 
-                      className="space-y-8"
-                      variants={containerVariants}
-                    >
-                      <motion.div variants={itemVariants}>
-                        <Label className="text-white/90 font-medium mb-3 block">Email Address</Label>
-                        <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl blur-sm group-hover:blur-none transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                          <div className="relative flex items-center">
-                            <AtSign className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
-                            <Input
-                              className="pl-12 pr-4 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/10"
-                              type="email"
-                              placeholder="john.doe@example.com"
-                              {...register('email', {
-                                required: "Email is required",
-                                pattern: {
-                                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                                  message: "Please enter a valid email"
-                                }
-                              })}
-                            />
-                          </div>
-                        </div>
-                        {errors.email && (
-                          <motion.p 
-                            className="text-red-400 text-sm mt-2 flex items-center"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            <X className="w-4 h-4 mr-1" />
-                            {errors.email.message}
-                          </motion.p>
-                        )}
-                      </motion.div>
-
-                      <motion.div variants={itemVariants}>
-                        <Label className="text-white/90 font-medium mb-3 block">Password</Label>
-                        <div className="relative group">
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-cyan-500/20 rounded-xl blur-sm group-hover:blur-none transition-all duration-300 opacity-0 group-hover:opacity-100"></div>
-                          <div className="relative flex items-center">
-                            <Lock className="absolute left-4 w-5 h-5 text-gray-400 group-hover:text-purple-400 transition-colors duration-300" />
-                            <Input
-                              className="pl-12 pr-12 py-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-400 focus:border-purple-500/50 focus:bg-white/10 transition-all duration-300 hover:bg-white/10"
-                              type={showPassword ? "text" : "password"}
-                              placeholder="Enter your password"
-                              {...register('password', {
-                                required: "Password is required",
-                              })}
-                            />
-                            <button
-                              type="button"
-                              className="absolute right-4 text-gray-400 hover:text-purple-400 transition-colors duration-300"
-                              onClick={() => setShowPassword(!showPassword)}
-                            >
-                              {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                            </button>
-                          </div>
-                        </div>
-                        {errors.password && (
-                          <motion.p 
-                            className="text-red-400 text-sm mt-2 flex items-center"
-                            initial={{ opacity: 0, y: -10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                          >
-                            <X className="w-4 h-4 mr-1" />
-                            {errors.password.message}
-                          </motion.p>
-                        )}
-                      </motion.div>
-
-                      <motion.div variants={itemVariants}>
-                        <motion.div
-                          className="relative group"
-                          onHoverStart={() => setIsHovered(true)}
-                          onHoverEnd={() => setIsHovered(false)}
-                        >
-                          {/* Animated gradient background */}
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 rounded-xl opacity-90 group-hover:opacity-100 transition-opacity duration-300"></div>
-                          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl opacity-0 group-hover:opacity-20 blur-sm transition-all duration-300"></div>
-                          
-                          <Button
-                            type="submit"
-                            className="relative w-full py-6 bg-transparent border-0 text-white font-semibold rounded-xl transition-all duration-300 flex items-center justify-center overflow-hidden group-hover:shadow-2xl group-hover:shadow-purple-500/25"
-                            disabled={isSubmitting}
-                          >
-                            {/* Shimmer effect */}
-                            <div className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent group-hover:animate-[shimmer_1.5s_ease-in-out] opacity-0 group-hover:opacity-100"></div>
-                            
-                            {isSubmitting ? (
-                              <motion.span 
-                                className="flex items-center"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                              >
-                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                </svg>
-                                Processing...
-                              </motion.span>
-                            ) : (
-                              <motion.span 
-                                className="flex items-center"
-                                whileHover={{ scale: 1.02 }}
-                              >
-                                Sign In
-                                <motion.div
-                                  className="ml-2"
-                                  animate={isHovered ? { x: 5 } : { x: 0 }}
-                                  transition={{ type: "spring", stiffness: 300 }}
-                                >
-                                  <ChevronRight className="w-5 h-5" />
-                                </motion.div>
-                              </motion.span>
-                            )}
-                          </Button>
-                        </motion.div>
-                      </motion.div>
-                    </motion.form>
-
-                    <motion.div 
-                      className="mt-10 text-center"
-                      variants={itemVariants}
-                    >
-                      <p className="text-sm text-gray-400 mb-6">
-                        By signing in, you agree to our{' '}
-                        <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors duration-300 hover:underline">Terms of Service</a>{' '}
-                        and{' '}
-                        <a href="#" className="text-purple-400 hover:text-purple-300 transition-colors duration-300 hover:underline">Privacy Policy</a>.
-                      </p>
-
-                      <div className="flex items-center justify-center space-x-6">
-                        {[
-                          { icon: Github, href: "#", color: "hover:text-gray-300" },
-                          { icon: Linkedin, href: "#", color: "hover:text-blue-400" }
-                        ].map((social, index) => (
-                          <motion.a 
-                            key={index}
-                            href={social.href}
-                            className={`w-12 h-12 rounded-full bg-white/5 backdrop-blur-sm border border-white/10 flex items-center justify-center text-gray-400 ${social.color} transition-all duration-300 hover:bg-white/10 hover:border-white/20`}
-                            whileHover={{ scale: 1.1, y: -2 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            <social.icon className="h-5 w-5" />
-                          </motion.a>
-                        ))}
+      {/* Main Card Container */}
+      <div className="relative z-10 w-full max-w-6xl">
+        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
+          <div className="grid lg:grid-cols-5 h-full">
+            {/* Left Panel - Root Admin Branding */}
+            <div className="lg:col-span-2 bg-gradient-to-br from-red-600 via-red-700 to-red-800 relative overflow-hidden">
+              {/* Background Pattern */}
+              <div
+                className={`absolute top-0 left-0 w-full h-full bg-[url("data:image/svg+xml,%3Csvg height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.3'%3E%3Ccircle cx='7' cy='7' r='1'/%3E%3Ccircle cx='27' cy='7' r='1'/%3E%3Ccircle cx='47' cy='7' r='1'/%3E%3Ccircle cx='7' cy='27' r='1'/%3E%3Ccircle cx='27' cy='27' r='1'/%3E%3Ccircle cx='47' cy='27' r='1'/%3E%3Ccircle cx='7' cy='47' r='1'/%3E%3Ccircle cx='27' cy='47' r='1'/%3E%3Ccircle cx='47' cy='47' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")]`}
+              ></div>
+              <div className="relative z-10 flex flex-col justify-center h-full p-8 lg:p-12 text-white">
+                <div className="max-w-sm">
+                  {/* Root Admin Icon */}
+                  <div className="mb-8">
+                    <div className="w-20 h-20 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 flex items-center justify-center mb-6 group hover:bg-white/20 transition-all duration-300">
+                      <Crown className="w-10 h-10 text-yellow-300 group-hover:scale-110 transition-transform duration-300" />
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                        <span className="text-sm text-green-300 font-medium">
+                          System Online
+                        </span>
                       </div>
-                    </motion.div>
+                      <h1 className="text-3xl lg:text-4xl font-bold mb-3">
+                        Root Access
+                      </h1>
+                      <p className="text-red-100 text-lg leading-relaxed">
+                        Administrative portal for system management and
+                        configuration.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Admin Features */}
+                  <div className="space-y-4 mb-8">
+                    <div className="flex items-center space-x-3 group">
+                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                        <Server className="w-4 h-4 text-red-200" />
+                      </div>
+                      <span className="text-red-100 text-sm">
+                        Server Management
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3 group">
+                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                        <Database className="w-4 h-4 text-red-200" />
+                      </div>
+                      <span className="text-red-100 text-sm">
+                        Database Control
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-3 group">
+                      <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                        <Settings className="w-4 h-4 text-red-200" />
+                      </div>
+                      <span className="text-red-100 text-sm">
+                        System Configuration
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Security Notice */}
+                  <div className="p-4 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl">
+                    <div className="flex items-start space-x-3">
+                      <Shield className="w-5 h-5 text-yellow-300 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h3 className="text-sm font-semibold text-white mb-1">
+                          Security Notice
+                        </h3>
+                        <p className="text-xs text-red-100 leading-relaxed">
+                          Root access provides full system privileges. Ensure
+                          you're authorized before proceeding.
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
-        </motion.div>
-      </div>
 
-      <style jsx>{`
-        @keyframes shimmer {
-          0% { transform: translateX(-100%) skewX(-12deg); }
-          100% { transform: translateX(200%) skewX(-12deg); }
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
+            {/* Right Panel - Login Form */}
+            <div className="lg:col-span-3 flex items-center justify-center p-6 sm:p-8 lg:p-12 overflow-y-auto">
+              <div className="w-full max-w-md">
+                {/* Form Header */}
+                <div className="text-center mb-8">
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-red-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg">
+                    <Crown className="w-8 h-8 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                    Administrator Login
+                  </h2>
+                  <p className="text-gray-400">
+                    Enter root credentials to access system controls
+                  </p>
+                </div>
+
+                {/* Login Form */}
+                <form
+                  onSubmit={handleSubmit(onLoginUser)}
+                  className="space-y-6"
+                >
+                  {/* Email Field */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="email"
+                      className="text-sm font-medium text-gray-300"
+                    >
+                      Administrator Email
+                    </Label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <AtSign className="w-5 h-5 text-gray-400 group-focus-within:text-red-400 transition-colors duration-200" />
+                      </div>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="admin@company.com"
+                        className="w-full pl-12 pr-4 py-3.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
+                        {...register("email", {
+                          required: "Email is required",
+                          pattern: {
+                            value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                            message: "Please enter a valid email",
+                          },
+                        })}
+                      />
+                    </div>
+                    {errors.email && (
+                      <div className="flex items-center space-x-2 text-red-400 text-sm mt-2">
+                        <X className="w-4 h-4 flex-shrink-0" />
+                        <span>{errors.email.message}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Password Field */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="password"
+                      className="text-sm font-medium text-gray-300"
+                    >
+                      Root Password
+                    </Label>
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <Lock className="w-5 h-5 text-gray-400 group-focus-within:text-red-400 transition-colors duration-200" />
+                      </div>
+                      <Input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="Enter root password"
+                        className="w-full pl-12 pr-12 py-3.5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 hover:bg-white/10 transition-all duration-200"
+                        {...register("password", {
+                          required: "Password is required",
+                        })}
+                      />
+                      <button
+                        type="button"
+                        className="absolute inset-y-0 right-0 flex items-center pr-4"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? (
+                          <EyeOff className="w-5 h-5 text-gray-400 hover:text-red-400 transition-colors duration-200" />
+                        ) : (
+                          <Eye className="w-5 h-5 text-gray-400 hover:text-red-400 transition-colors duration-200" />
+                        )}
+                      </button>
+                    </div>
+                    {errors.password && (
+                      <div className="flex items-center space-x-2 text-red-400 text-sm mt-2">
+                        <X className="w-4 h-4 flex-shrink-0" />
+                        <span>{errors.password.message}</span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-4">
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full relative overflow-hidden bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl group"
+                    >
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center">
+                          <svg
+                            className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          <span>Authenticating...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center">
+                          <span>Access System</span>
+                          <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" />
+                        </div>
+                      )}
+                    </Button>
+                  </div>
+                </form>
+
+                {/* Footer */}
+                <div className="mt-8 space-y-6">
+                  {/* Sign Up Link */}
+                  <div className="text-center">
+                    <p className="text-gray-400 text-sm mb-3">
+                      Need to create a root account?
+                    </p>
+                    <Link href="/root/signup">
+                      <button className="text-red-400 hover:text-red-300 font-medium text-sm transition-colors duration-200 hover:underline">
+                        Request Root Access →
+                      </button>
+                    </Link>
+                  </div>
+
+                  {/* Legal */}
+                  <div className="text-center">
+                    <p className="text-xs text-gray-500 leading-relaxed">
+                      By accessing this system, you acknowledge compliance with
+                      our{" "}
+                      <a
+                        href="#"
+                        className="text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        Security Policy
+                      </a>{" "}
+                      and{" "}
+                      <a
+                        href="#"
+                        className="text-red-400 hover:text-red-300 transition-colors"
+                      >
+                        Terms of Use
+                      </a>
+                    </p>
+                  </div>
+
+                  {/* Social Links */}
+                  <div className="flex justify-center space-x-4 pt-4">
+                    <a
+                      href="#"
+                      className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
+                    >
+                      <Github className="h-4 w-4" />
+                    </a>
+                    <a
+                      href="#"
+                      className="w-10 h-10 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg flex items-center justify-center text-gray-400 hover:text-white transition-all duration-200"
+                    >
+                      <Linkedin className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default RootLoginForm;
