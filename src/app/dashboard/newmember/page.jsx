@@ -643,6 +643,15 @@ const NewMemberRegistrationForm = () => {
     return `${duration / 30} Months`;
   };
 
+  const admissionCharge = fetchedPlans?.find(
+    (plan) =>
+      plan.planName.toString() === "Admission Fee" ||
+      plan.planName.toString() === "Admission Charge" ||
+      plan.planName.toString().startsWith("Admission")
+  );
+
+  const admissionPrice = admissionCharge?.price;
+
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
       <div className="flex items-center gap-2 mb-3">
@@ -1143,7 +1152,7 @@ const NewMemberRegistrationForm = () => {
                                     >
                                       {plan.planName} -{" "}
                                       {convertDurationInMonths(plan.duration)} -{" "}
-                                      -{user?.user?.company?.tenantCurrency}{" "}
+                                      {user?.user?.company?.tenantCurrency}{" "}
                                       {plan.price}
                                     </div>
                                   ))}
@@ -1223,10 +1232,6 @@ const NewMemberRegistrationForm = () => {
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Expire Date
                             </Label>
-                            {/* <Input
-                                value={new Date(membershipExpireDate).toISOString().split("T")[0]}
-                                onChange={(e)=>setMembershipExpireDate(new Date(e.target.value).toISOString().split("T")[0])}
-                                /> */}
                             <Popover>
                               <PopoverTrigger className="py-6" asChild>
                                 <Button
@@ -1288,10 +1293,10 @@ const NewMemberRegistrationForm = () => {
                                     Payment Method
                                   </SelectLabel>
                                   <SelectItem
-                                    value="Fonepay"
+                                    value="Mobile Banking"
                                     className="text-gray-900 cursor-pointer hover:bg-blue-600 dark:text-gray-100"
                                   >
-                                    Fonepay
+                                    Mobile Banking
                                   </SelectItem>
                                   <SelectItem
                                     value="Cash"
@@ -1305,6 +1310,12 @@ const NewMemberRegistrationForm = () => {
                                   >
                                     Card
                                   </SelectItem>
+                                  <SelectItem
+                                    value="Cheque"
+                                    className="text-gray-900 cursor-pointer hover:bg-blue-600 dark:text-gray-100"
+                                  >
+                                    Cheque
+                                  </SelectItem>
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -1314,6 +1325,20 @@ const NewMemberRegistrationForm = () => {
                               </p>
                             )}
                           </div>
+
+                          {paymentMethod === "Mobile Banking" && (
+                            <div className="space-y-2">
+                              <Label className="text-gray-700 dark:text-gray-300">
+                                Reference Code
+                              </Label>
+                              <Input
+                                className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
+                                {...register("referenceCode")}
+                                type="text"
+                                placeholder="Reference Code"
+                              />
+                            </div>
+                          )}
 
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
@@ -1348,7 +1373,7 @@ const NewMemberRegistrationForm = () => {
                             )}
                           </div>
 
-                          <div className="space-y-2">
+                          {/* <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
                               Discount Code
                             </Label>
@@ -1358,7 +1383,7 @@ const NewMemberRegistrationForm = () => {
                               type="text"
                               placeholder="Discount Code"
                             />
-                          </div>
+                          </div> */}
 
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
@@ -1367,7 +1392,7 @@ const NewMemberRegistrationForm = () => {
                             <Input
                               {...register("admissionFee")}
                               type="text"
-                              defaultValue={"1000"}
+                              value={`${admissionPrice}`}
                               disabled
                               className="py-6 rounded-sm bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:outline-none"
                               placeholder="Admission Fee"
@@ -1435,18 +1460,6 @@ const NewMemberRegistrationForm = () => {
                                 {errors.receiptNo.message}
                               </p>
                             )}
-                          </div>
-
-                          <div className="space-y-2">
-                            <Label className="text-gray-700 dark:text-gray-300">
-                              Reference Code
-                            </Label>
-                            <Input
-                              className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                              {...register("referenceCode")}
-                              type="text"
-                              placeholder="Reference Code"
-                            />
                           </div>
 
                           <div className="space-y-2">
