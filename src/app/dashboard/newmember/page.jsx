@@ -585,6 +585,45 @@ const NewMemberRegistrationForm = () => {
     setRenderMembershipPlanDropdown(true);
   };
 
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    setHighlightedIndex(-1); // reset on dropdown open
+  }, [renderMembershipPlanDropdown, planSearchQuery]);
+
+  const handleKeyDown = (e) => {
+    if (!renderMembershipPlanDropdown) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < filteredPlans.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredPlans.length - 1
+      );
+    } else if (e.key === "Enter" && highlightedIndex >= 0) {
+      e.preventDefault();
+      const selected = filteredPlans[highlightedIndex];
+      if (selected) {
+        setPlanName(selected.planName);
+        setPlanSearchQuery(selected.planName);
+        setPlanId(selected._id);
+        setRenderStaffDropdown(false);
+      }
+    } else if (e.key === "Escape") {
+      setRenderStaffDropdown(false);
+    }
+  };
+
+  const filteredPlans =
+    fetchedPlans?.filter((plan) =>
+      plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
+    ) || [];
+
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
       <div className="flex items-center gap-2 mb-3">
@@ -1136,6 +1175,7 @@ const NewMemberRegistrationForm = () => {
                                         setPlanName("");
                                       }}
                                       onFocus={handleMembershipSearchFocus}
+                                      onKeyDown={handleKeyDown}
                                       className="w-full rounded-sm dark:border-none dark:bg-gray-700 py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
                                       placeholder="Search membership plan..."
                                     />
@@ -1152,37 +1192,25 @@ const NewMemberRegistrationForm = () => {
                               )}
 
                               {renderMembershipPlanDropdown && (
-                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-600 border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
-                                  {fetchedPlans?.length > 0 ? (
-                                    fetchedPlans
-                                      .filter((plan) => {
-                                        return plan.planName
-                                          .toLowerCase()
-                                          .includes(
-                                            planSearchQuery.toLowerCase()
-                                          );
-                                      })
-                                      .map((plan) => (
-                                        <div
-                                          onClick={() => {
-                                            setPlanName(plan.planName);
-                                            setPlanSearchQuery(plan.planName);
-                                            setPlanId(plan._id);
-                                            setRenderStaffDropdown(false);
-                                          }}
-                                          className="px-4 py-3 dark:text-white text-sm text-gray-700 hover:bg-blue-50 dark:hover:bg-gray-900 cursor-pointer transition-colors"
-                                          key={plan._id}
-                                        >
-                                          {plan.planName}
-                                        </div>
-                                      ))
-                                  ) : (
-                                    <div className="px-4 py-3 text-sm text-gray-500">
-                                      {staffsLoading
-                                        ? "Loading..."
-                                        : "No membership plans"}
+                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-600 border-gray-200 rounded-sm shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                  {filteredPlans.map((plan, index) => (
+                                    <div
+                                      onClick={() => {
+                                        setPlanName(plan.planName);
+                                        setPlanSearchQuery(plan.planName);
+                                        setPlanId(plan._id);
+                                        setRenderStaffDropdown(false);
+                                      }}
+                                      className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
+                                        index === highlightedIndex
+                                          ? "bg-blue-100 dark:bg-gray-900"
+                                          : "hover:bg-blue-50 dark:hover:bg-gray-900"
+                                      }`}
+                                      key={plan._id}
+                                    >
+                                      {plan.planName}
                                     </div>
-                                  )}
+                                  ))}
                                 </div>
                               )}
                             </div>
