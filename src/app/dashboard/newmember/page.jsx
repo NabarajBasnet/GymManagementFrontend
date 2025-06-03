@@ -26,7 +26,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -130,7 +129,6 @@ const NewMemberRegistrationForm = () => {
   const [membershipShift, setMembershipShift] = useState("");
 
   // Date Detais
-  const [dob, setDob] = useState(new Date());
   const [membershipDate, setMembershipDate] = useState(new Date());
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
   const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
@@ -533,6 +531,28 @@ const NewMemberRegistrationForm = () => {
     onSuccess: clearErrors,
   });
 
+  // Get Membership Plans
+  const GetMembershipPlans = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/membershipplans/`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      sonnerToast.error("Internal server error");
+    }
+  };
+
+  const { data: plans } = useQuery({
+    queryKey: ["plans"],
+    queryFn: GetMembershipPlans,
+  });
+
+  const { membershipPlans: fetchedPlans } = plans || {};
+  console.log("Plans: ", fetchedPlans);
+
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
       <div className="flex items-center gap-2 mb-3">
@@ -877,7 +897,7 @@ const NewMemberRegistrationForm = () => {
                     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                       <CardContent className="pt-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          <div className="space-y-2">
+                          {/* <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Option
                             </Label>
@@ -921,7 +941,7 @@ const NewMemberRegistrationForm = () => {
                                 {errors.membershipOption.message}
                               </p>
                             )}
-                          </div>
+                          </div> */}
 
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
@@ -937,22 +957,28 @@ const NewMemberRegistrationForm = () => {
                                 <SelectValue placeholder="Select Type" />
                               </SelectTrigger>
                               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                <SelectGroup>
-                                  <SelectLabel className="text-gray-700 dark:text-gray-300">
-                                    Membership Type
-                                  </SelectLabel>
-                                  <SelectItem
-                                    value="Gym"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Gym
+                                <SelectGroup className="overflow-y-auto">
+                                  <SelectItem className="text-gray-700 dark:text-gray-300 cursor-pointer">
+                                    Select
                                   </SelectItem>
-                                  <SelectItem
-                                    value="Gym & Cardio"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Gym & Cardio
-                                  </SelectItem>
+                                  {[
+                                    "Gym",
+                                    "Gym & Cardio",
+                                    "Cardio",
+                                    "Group Classes",
+                                    "Swimming",
+                                    "Sauna",
+                                    "Steam",
+                                    "Online Classes",
+                                  ].map((type, index) => (
+                                    <SelectItem
+                                      value={type}
+                                      key={index}
+                                      className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                    >
+                                      {type}
+                                    </SelectItem>
+                                  ))}
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
