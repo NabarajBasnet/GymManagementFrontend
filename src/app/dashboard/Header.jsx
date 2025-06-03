@@ -798,18 +798,18 @@ const Header = () => {
 
       {/* Date/Time for mobile */}
       <div className="flex items-center md:hidden space-x-2">
-        <div className="flex items-center bg-gray-100 rounded-md px-2 py-2">
-          <Calendar size={14} className="text-blue-600 mr-1" />
-          <h1 className="text-xs font-medium text-gray-700">
-            {currentDateTime.date}
-          </h1>
-        </div>
-        <div className="flex items-center bg-gray-100 rounded-md px-2 py-2">
-          <Clock size={14} className="text-blue-600 mr-1" />
-          <h1 className="text-xs font-medium text-gray-700">
-            {currentDateTime.time}
-          </h1>
-        </div>
+      <div className="flex items-center rounded-md px-3 py-2">
+            <Calendar size={16} className="text-blue-600 mr-2" />
+            <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
+              {currentDateTime.date}
+            </h1>
+          </div>
+          <div className="flex items-center rounded-md px-3 py-2">
+            <Clock size={16} className="text-blue-600 mr-2" />
+            <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
+              {currentDateTime.time}
+            </h1>
+          </div>
       </div>
 
       <div className="flex items-center space-x-2 md:space-x-4">
