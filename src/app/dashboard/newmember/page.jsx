@@ -58,8 +58,12 @@ import {
   DropdownMenu,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const NewMemberRegistrationForm = () => {
+  const { user, loading } = useUser();
+  console.log("User: ", user?.user);
+
   const membershipPlans = [
     {
       title: "ADMISSION FEE",
@@ -259,7 +263,6 @@ const NewMemberRegistrationForm = () => {
   }, [membershipRenewDate]);
 
   const onRegisterMember = async (data) => {
-    console.log("Data: ", data);
     clearErrors();
 
     let isValid = true;
@@ -364,8 +367,6 @@ const NewMemberRegistrationForm = () => {
         remark,
         actionTaker,
       };
-
-      console.log("membersFinalData: ", membersFinalData);
 
       if (discountAmmount && !discountReason) {
         setError("discountReason", {
@@ -585,7 +586,6 @@ const NewMemberRegistrationForm = () => {
   };
 
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
     setHighlightedIndex(-1);
@@ -622,6 +622,10 @@ const NewMemberRegistrationForm = () => {
     fetchedPlans?.filter((plan) =>
       plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
     ) || [];
+
+  const convertDurationInMonths = (duration) => {
+    return `${duration / 30} Months`;
+  };
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
@@ -964,52 +968,6 @@ const NewMemberRegistrationForm = () => {
                     <Card className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                       <CardContent className="pt-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                          {/* <div className="space-y-2">
-                            <Label className="text-gray-700 dark:text-gray-300">
-                              Membership Option
-                            </Label>
-                            <Select
-                              onValueChange={(value) => {
-                                setMembershipOption(value);
-                                if (value) clearErrors("membershipOption");
-                              }}
-                            >
-                              <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                                <SelectValue placeholder="Select Option" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                <SelectGroup>
-                                  <SelectLabel className="text-gray-700 dark:text-gray-300">
-                                    Membership Option
-                                  </SelectLabel>
-                                  <SelectItem
-                                    value="Regular"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Regular
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="Daytime"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Daytime
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="Temporary"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Temporary
-                                  </SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {errors.membershipOption && (
-                              <p className="text-sm text-red-600 dark:text-red-400">
-                                {errors.membershipOption.message}
-                              </p>
-                            )}
-                          </div> */}
-
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Type
@@ -1100,58 +1058,6 @@ const NewMemberRegistrationForm = () => {
                             )}
                           </div>
 
-                          {/* <div className="space-y-2">
-                            <Label className="text-gray-700 dark:text-gray-300">
-                              Membership Duration
-                            </Label>
-                            <Select
-                              onValueChange={(value) => {
-                                handleMembershipSelection(value);
-                                if (value) clearErrors("membershipDuration");
-                              }}
-                            >
-                              <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100">
-                                <SelectValue placeholder="Select Duration" />
-                              </SelectTrigger>
-                              <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                <SelectGroup>
-                                  <SelectLabel className="text-gray-700 dark:text-gray-300">
-                                    Membership Duration
-                                  </SelectLabel>
-                                  <SelectItem
-                                    value="1 Month"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    1 Month
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="3 Months"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    3 Months
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="6 Months"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    6 Months
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="12 Months"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    12 Months
-                                  </SelectItem>
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                            {errors.membershipDuration && (
-                              <p className="text-sm text-red-600 dark:text-red-400">
-                                {errors.membershipDuration.message}
-                              </p>
-                            )}
-                          </div> */}
-
                           <div className="space-y-3">
                             <Label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
                               Membership Plan
@@ -1175,11 +1081,11 @@ const NewMemberRegistrationForm = () => {
                                       }}
                                       onFocus={handleMembershipSearchFocus}
                                       onKeyDown={handleKeyDown}
-                                      className="w-full rounded-sm dark:border-none dark:bg-gray-700 py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
+                                      className="w-full rounded-sm dark:border-gray-600 dark:bg-gray-700 bg-white py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
                                       placeholder="Search membership plan..."
                                     />
-                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                                      <FiSearch className="h-5 w-5" />
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                      <FiSearch className="h-5 w-5 text-black dark:text-white" />
                                     </div>
                                   </div>
                                 )}
@@ -1191,7 +1097,7 @@ const NewMemberRegistrationForm = () => {
                               )}
 
                               {renderMembershipPlanDropdown && (
-                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-600 border-gray-200 rounded-sm shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-500 border-gray-200 rounded-sm shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                                   {filteredPlans.map((plan, index) => (
                                     <div
                                       onClick={() => {
@@ -1208,7 +1114,9 @@ const NewMemberRegistrationForm = () => {
                                       }`}
                                       key={plan._id}
                                     >
-                                      {plan.planName}
+                                      {plan.planName} -{" "}
+                                      {convertDurationInMonths(plan.duration)} -{" "}
+                                      {plan.price}
                                     </div>
                                   ))}
                                 </div>
