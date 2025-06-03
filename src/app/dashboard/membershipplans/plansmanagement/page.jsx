@@ -494,7 +494,7 @@ const MembershipPlanManagement = () => {
 
                   {/* Access Type Filter */}
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium">Access Type</Label>
+                    <Label className="text-sm font-medium">Features</Label>
                     <Select
                       onValueChange={(value) => setFilterByAccessType(value)}
                     >
@@ -509,10 +509,10 @@ const MembershipPlanManagement = () => {
                           All Access
                         </SelectItem>
                         <SelectItem
-                          value="General"
+                          value="Gym"
                           className="cursor-pointer hover:bg-blue-500"
                         >
-                          General
+                          Gym
                         </SelectItem>
                         <SelectItem
                           value="Gym & Cardio"
@@ -838,42 +838,55 @@ const MembershipPlanManagement = () => {
                 </div>
 
                 {/* Branch selection */}
-                {checkMultiBranchSupport && (
+                {loading ? (
+                  <Loader />
+                ) : (
                   <div>
-                    <div className="space-y-2 md:mt-2">
-                      <div className="flex items-center justify-center md:justify-start space-x-2 mb-8">
-                        <Switch
-                          id="allBranches"
-                          checked={allSelected}
-                          onCheckedChange={handleSwitchToggle}
-                        />
-                        <Label htmlFor="allBranches">
-                          Available to All Branches
-                        </Label>
-                      </div>
-
-                      <div className="grid grid-cols-3 md:grid-cols-1 mt-2 gap-4">
-                        {branches?.map((branch) => (
-                          <div
-                            key={branch._id}
-                            className="flex items-center justify-center md:justify-start space-x-2"
-                          >
-                            <Input
-                              type="checkbox"
-                              id={branch._id}
-                              value={branch._id}
-                              checked={selectedBranches.includes(branch._id)}
-                              onChange={() => handleCheckboxChange(branch._id)}
-                              disabled={allSelected}
-                              className="w-5 h-5 rounded border-gray-300"
+                    {checkMultiBranchSupport && (
+                      <div>
+                        <div className="space-y-2 md:mt-2">
+                          <div className="flex items-center justify-center md:justify-start space-x-2 mb-8">
+                            <Switch
+                              id="allBranches"
+                              checked={allSelected}
+                              onCheckedChange={handleSwitchToggle}
                             />
-                            <Label htmlFor={branch._id} className="text-base">
-                              {branch.gymBranchName}
+                            <Label htmlFor="allBranches">
+                              Available to All Branches
                             </Label>
                           </div>
-                        ))}
+
+                          <div className="grid grid-cols-3 md:grid-cols-1 mt-2 gap-4">
+                            {branches?.map((branch) => (
+                              <div
+                                key={branch._id}
+                                className="flex items-center justify-center md:justify-start space-x-2"
+                              >
+                                <Input
+                                  type="checkbox"
+                                  id={branch._id}
+                                  value={branch._id}
+                                  checked={selectedBranches.includes(
+                                    branch._id
+                                  )}
+                                  onChange={() =>
+                                    handleCheckboxChange(branch._id)
+                                  }
+                                  disabled={allSelected}
+                                  className="w-5 h-5 rounded border-gray-300"
+                                />
+                                <Label
+                                  htmlFor={branch._id}
+                                  className="text-base"
+                                >
+                                  {branch.gymBranchName}
+                                </Label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                 )}
               </CardContent>
