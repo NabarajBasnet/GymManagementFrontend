@@ -823,6 +823,7 @@ const NewMemberRegistrationForm = () => {
                                 {...register("fullName", {
                                   required: "This field is required",
                                 })}
+                                id="fullName"
                                 placeholder="Full Name"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
@@ -841,6 +842,7 @@ const NewMemberRegistrationForm = () => {
                                 {...register("contactNo", {
                                   required: "This field is required",
                                 })}
+                                id="contactNo"
                                 placeholder="Contact Number"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
@@ -859,6 +861,7 @@ const NewMemberRegistrationForm = () => {
                                 {...register("email", {
                                   required: "This field is required",
                                 })}
+                                id="email"
                                 placeholder="Email address"
                                 className="rounded-md py-6 bg-transparent dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
@@ -878,6 +881,7 @@ const NewMemberRegistrationForm = () => {
                                 {...register("dob", {
                                   required: "Date of birth required",
                                 })}
+                                id="dob"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100 
                                   appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                               />
@@ -897,6 +901,7 @@ const NewMemberRegistrationForm = () => {
                                   required:
                                     "Enter secondary contact number here!",
                                 })}
+                                id="secondaryContactNo"
                                 placeholder="Secondary Contact Number"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               />
@@ -915,6 +920,7 @@ const NewMemberRegistrationForm = () => {
                                 {...register("address", {
                                   required: "Enter address!",
                                 })}
+                                id="address"
                                 className="rounded-md py-6 bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                                 placeholder="Address"
                               />

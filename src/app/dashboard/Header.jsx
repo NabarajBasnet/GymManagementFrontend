@@ -1,5 +1,6 @@
 "use client";
 
+import {toast as soonerToast} from 'sonner'
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { TbListDetails } from "react-icons/tb";
@@ -226,26 +227,22 @@ const Header = () => {
         credentials: "include",
       });
       const responseBody = await response.json();
-      const responseResultType = ["Success", "Failure"];
 
       if (response.ok) {
         setLoading(false);
         notify.success(responseBody.message);
+        soonerToast.success(responseBody.message,{
+          description:'Internal server error'
+        })
         router.push("/login");
         window.location.reload();
       }
     } catch (error) {
-      const responseResultType = ["Success", "Failure"];
       console.log("Error: ", error);
-      setResponseType(responseResultType[1]);
-      setToast(true);
-      setTimeout(() => {
-        setToast(false);
-      }, 6000);
-      setErrorMessage({
-        icon: MdError,
-        message: responseBody.message,
-      });
+      notify.error(error.message);
+      soonerToast.error(error.message,{
+        description:'Internal server error'
+      })
     }
   };
 
