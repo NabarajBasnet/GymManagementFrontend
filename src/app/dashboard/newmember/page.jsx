@@ -1,5 +1,6 @@
 "use client";
 
+import { FiSearch } from "react-icons/fi";
 import { BiSolidUserCircle } from "react-icons/bi";
 import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { toast as sonnerToast } from "sonner";
@@ -10,8 +11,8 @@ import { MdOutlinePayment } from "react-icons/md";
 import { BiHomeAlt } from "react-icons/bi";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { useEffect, useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { toast as notify } from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -59,6 +60,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NewMemberRegistrationForm = () => {
+  const ref = useRef(null);
+
   const membershipPlans = [
     {
       title: "ADMISSION FEE",
@@ -212,6 +215,7 @@ const NewMemberRegistrationForm = () => {
     setError,
     clearErrors,
     watch,
+    control,
   } = useForm();
 
   const handleMembershipSelection = (duration) => {
@@ -553,6 +557,34 @@ const NewMemberRegistrationForm = () => {
   const { membershipPlans: fetchedPlans } = plans || {};
   console.log("Plans: ", fetchedPlans);
 
+  // Member search states
+  const [planSearchQuery, setPlanSearchQuery] = useState("");
+  const [selectedPlanName, setPlanName] = useState("");
+  const [planId, setPlanId] = useState("");
+  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
+    useState(false);
+  const planSearchRef = useRef(null);
+
+  // Handle click outside for all dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        planSearchRef.current &&
+        !planSearchRef.current.contains(event.target)
+      ) {
+        setRenderMembershipPlanDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [planSearchRef]);
+
+  const handleMembershipSearchFocus = () => {
+    setRenderMembershipPlanDropdown(true);
+  };
+
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
       <div className="flex items-center gap-2 mb-3">
@@ -596,12 +628,9 @@ const NewMemberRegistrationForm = () => {
         </h1>
       </div>
 
-      <div className="w-full flex items-stretch gap-4">
+      <div className="w-full flex items-stretch gap-2">
         <Card className="w-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex-grow">
           <CardHeader>
-            <CardTitle className="text-gray-900 dark:text-gray-100">
-              Member Registration
-            </CardTitle>
             <CardDescription className="text-gray-500 dark:text-gray-400">
               Step {currentStep} of {totalSteps}:{" "}
               {currentStep === 1
@@ -958,17 +987,19 @@ const NewMemberRegistrationForm = () => {
                               </SelectTrigger>
                               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                                 <SelectGroup className="overflow-y-auto">
-                                  <SelectItem className="text-gray-700 dark:text-gray-300 cursor-pointer">
+                                  <SelectLabel className="text-gray-700 dark:text-gray-300 cursor-pointer">
                                     Select
-                                  </SelectItem>
+                                  </SelectLabel>
                                   {[
                                     "Gym",
                                     "Gym & Cardio",
                                     "Cardio",
                                     "Group Classes",
                                     "Swimming",
-                                    "Sauna",
-                                    "Steam",
+                                    "Zumba",
+                                    "Sauna Steam",
+                                    "Yoga",
+                                    "Dance",
                                     "Online Classes",
                                   ].map((type, index) => (
                                     <SelectItem
@@ -1007,24 +1038,20 @@ const NewMemberRegistrationForm = () => {
                                   <SelectLabel className="text-gray-700 dark:text-gray-300">
                                     Membership Shift
                                   </SelectLabel>
-                                  <SelectItem
-                                    value="Morning"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Morning
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="Day"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Day
-                                  </SelectItem>
-                                  <SelectItem
-                                    value="Evening"
-                                    className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
-                                  >
-                                    Evening
-                                  </SelectItem>
+                                  {[
+                                    "Flexible",
+                                    "Daytime",
+                                    "Morning",
+                                    "Evening",
+                                  ].map((shift, index) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={shift}
+                                      className="cursor-pointer hover:bg-blue-600 text-gray-900 dark:text-gray-100"
+                                    >
+                                      {shift}
+                                    </SelectItem>
+                                  ))}
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
@@ -1035,7 +1062,7 @@ const NewMemberRegistrationForm = () => {
                             )}
                           </div>
 
-                          <div className="space-y-2">
+                          {/* <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Duration
                             </Label>
@@ -1085,6 +1112,80 @@ const NewMemberRegistrationForm = () => {
                                 {errors.membershipDuration.message}
                               </p>
                             )}
+                          </div> */}
+
+                          <div className="space-y-3">
+                            <Label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                              Membership Plan
+                            </Label>
+                            <div ref={planSearchRef} className="relative">
+                              <Controller
+                                name="selectedPlanName"
+                                control={control}
+                                render={({ field }) => (
+                                  <div className="relative">
+                                    <Input
+                                      {...field}
+                                      autoComplete="off"
+                                      value={
+                                        selectedPlanName || planSearchQuery
+                                      }
+                                      onChange={(e) => {
+                                        setPlanSearchQuery(e.target.value);
+                                        field.onChange(e);
+                                        setPlanName("");
+                                      }}
+                                      onFocus={handleMembershipSearchFocus}
+                                      className="w-full rounded-sm dark:border-none dark:bg-gray-700 py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
+                                      placeholder="Search membership plan..."
+                                    />
+                                    <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                      <FiSearch className="h-5 w-5" />
+                                    </div>
+                                  </div>
+                                )}
+                              />
+                              {errors.selectedPlanName && (
+                                <p className="mt-1.5 text-sm font-medium text-red-600">
+                                  {errors.selectedPlanName.message}
+                                </p>
+                              )}
+
+                              {renderMembershipPlanDropdown && (
+                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-600 border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                  {fetchedPlans?.length > 0 ? (
+                                    fetchedPlans
+                                      .filter((plan) => {
+                                        return plan.planName
+                                          .toLowerCase()
+                                          .includes(
+                                            planSearchQuery.toLowerCase()
+                                          );
+                                      })
+                                      .map((plan) => (
+                                        <div
+                                          onClick={() => {
+                                            setPlanName(plan.planName);
+                                            setPlanSearchQuery(plan.planName);
+                                            setPlanId(plan._id);
+                                            setRenderStaffDropdown(false);
+                                          }}
+                                          className="px-4 py-3 dark:text-white text-sm text-gray-700 hover:bg-blue-50 dark:hover:bg-gray-900 cursor-pointer transition-colors"
+                                          key={plan._id}
+                                        >
+                                          {plan.planName}
+                                        </div>
+                                      ))
+                                  ) : (
+                                    <div className="px-4 py-3 text-sm text-gray-500">
+                                      {staffsLoading
+                                        ? "Loading..."
+                                        : "No membership plans"}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                            </div>
                           </div>
 
                           <div className="space-y-2">
