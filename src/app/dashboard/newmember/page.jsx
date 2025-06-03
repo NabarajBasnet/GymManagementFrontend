@@ -62,7 +62,6 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const NewMemberRegistrationForm = () => {
   const { user, loading } = useUser();
-  console.log("User: ", user?.user);
 
   const membershipPlans = [
     {
@@ -132,7 +131,10 @@ const NewMemberRegistrationForm = () => {
   const [membershipOption, setMembershipOption] = useState("");
   const [membershipType, setMembershipType] = useState("");
   const [membershipShift, setMembershipShift] = useState("");
-
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
+  const [membershipDurationDays, setMembershipDurationDays] = useState();
+  console.log("membershipDurationDays: ", membershipDurationDays);
+  
   // Date Detais
   const [membershipDate, setMembershipDate] = useState(new Date());
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
@@ -144,8 +146,20 @@ const NewMemberRegistrationForm = () => {
   const [paidAmmount, setPaidAmmount] = useState("");
   const [dueAmmount, setDueAmmount] = useState("");
   const [planId, setPlanId] = useState("");
-  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
-  console.log("Selected Plan Details: ", selectedPlanDetails);
+
+  // Calculate Expire Date Based On Selected Membership
+ const calculateExpiryDate = (startDate, durationDays) => {
+  if (!durationDays) return;
+
+  const newExpiryDate = new Date(startDate);
+  newExpiryDate.setDate(newExpiryDate.getDate() + parseInt(durationDays));
+  setMembershipExpireDate(newExpiryDate);
+};
+
+  useEffect(() => {
+    calculateExpiryDate(membershipRenewDate, membershipDurationDays);
+  }, [membershipRenewDate, membershipDurationDays]);
+  
 
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
@@ -1101,6 +1115,7 @@ const NewMemberRegistrationForm = () => {
                                   {filteredPlans.map((plan, index) => (
                                     <div
                                       onClick={() => {
+                                        setMembershipDurationDays(plan.duration);
                                         setPlanName(plan.planName);
                                         setPlanSearchQuery(plan.planName);
                                         setPlanId(plan._id);
@@ -1160,7 +1175,7 @@ const NewMemberRegistrationForm = () => {
 
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
-                              Membership Renew Date
+                              Membership Start Date
                             </Label>
                             <Popover>
                               <PopoverTrigger className="py-6" asChild>
@@ -1196,10 +1211,15 @@ const NewMemberRegistrationForm = () => {
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Expire Date
                             </Label>
+                                {/* <Input
+                                value={new Date(membershipExpireDate).toISOString().split("T")[0]}
+                                onChange={(e)=>setMembershipExpireDate(new Date(e.target.value).toISOString().split("T")[0])}
+                                /> */}
                             <Popover>
                               <PopoverTrigger className="py-6" asChild>
                                 <Button
                                   variant={"outline"}
+                                  disabled
                                   className={cn(
                                     "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
                                     !membershipExpireDate &&
@@ -1220,6 +1240,7 @@ const NewMemberRegistrationForm = () => {
                                   selected={membershipExpireDate}
                                   onSelect={setMembershipExpireDate}
                                   initialFocus
+                                  disabled
                                   className="bg-white dark:bg-gray-800"
                                 />
                               </PopoverContent>
