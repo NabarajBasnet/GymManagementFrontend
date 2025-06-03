@@ -140,7 +140,7 @@ const NewMemberRegistrationForm = () => {
   const [membershipShift, setMembershipShift] = useState("");
   const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
   const [membershipDurationDays, setMembershipDurationDays] = useState();
-  
+
   // Date Detais
   const [membershipDate, setMembershipDate] = useState(new Date());
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
@@ -150,7 +150,7 @@ const NewMemberRegistrationForm = () => {
   // Calculate Expiry Date
   const calculateExpiryDate = (startDate, duration) => {
     if (!startDate || isNaN(duration)) return;
-  
+
     const newDate = new Date(startDate);
     newDate.setDate(newDate.getDate() + parseInt(duration));
     setMembershipExpireDate(newDate);
@@ -577,7 +577,8 @@ const NewMemberRegistrationForm = () => {
   // Member search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
-  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] = useState(false);
+  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
+    useState(false);
   const planSearchRef = useRef(null);
 
   // Handle click outside for all dropdowns
@@ -769,8 +770,10 @@ const NewMemberRegistrationForm = () => {
                     }`}
                     onClick={() => setCurrentStep(2)}
                   >
-                    <TiBusinessCard size={22} className="mr-2" /> 
-                    <span className="hidden md:flex">Membership Information</span>
+                    <TiBusinessCard size={22} className="mr-2" />
+                    <span className="hidden md:flex">
+                      Membership Information
+                    </span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="step3"
@@ -779,7 +782,7 @@ const NewMemberRegistrationForm = () => {
                     }`}
                     onClick={() => setCurrentStep(3)}
                   >
-                    <MdOutlinePayment size={22} className="mr-2" /> 
+                    <MdOutlinePayment size={22} className="mr-2" />
                     <span className="hidden md:flex">Payment Information</span>
                   </TabsTrigger>
                 </TabsList>
@@ -1118,11 +1121,13 @@ const NewMemberRegistrationForm = () => {
                               )}
 
                               {renderMembershipPlanDropdown && (
-                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-500 border-gray-200 rounded-sm shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-500 border-gray-200 rounded-sm shadow-lg max-h-52 overflow-y-auto z-[60] top-full left-0 mt-1">
                                   {filteredPlans.map((plan, index) => (
                                     <div
                                       onClick={() => {
-                                        setMembershipDurationDays(parseInt(plan.duration));
+                                        setMembershipDurationDays(
+                                          parseInt(plan.duration)
+                                        );
                                         setPlanName(plan.planName);
                                         setPlanSearchQuery(plan.planName);
                                         setPlanId(plan._id);
@@ -1218,7 +1223,7 @@ const NewMemberRegistrationForm = () => {
                             <Label className="text-gray-700 dark:text-gray-300">
                               Membership Expire Date
                             </Label>
-                                {/* <Input
+                            {/* <Input
                                 value={new Date(membershipExpireDate).toISOString().split("T")[0]}
                                 onChange={(e)=>setMembershipExpireDate(new Date(e.target.value).toISOString().split("T")[0])}
                                 /> */}
@@ -1229,8 +1234,7 @@ const NewMemberRegistrationForm = () => {
                                   disabled
                                   className={cn(
                                     "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                    !newExpireDate &&
-                                      "text-muted-foreground"
+                                    !newExpireDate && "text-muted-foreground"
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
