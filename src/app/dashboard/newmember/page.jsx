@@ -60,8 +60,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const NewMemberRegistrationForm = () => {
-  const ref = useRef(null);
-
   const membershipPlans = [
     {
       title: "ADMISSION FEE",
@@ -141,6 +139,9 @@ const NewMemberRegistrationForm = () => {
   const [discountAmmount, setDiscountAmmount] = useState("");
   const [paidAmmount, setPaidAmmount] = useState("");
   const [dueAmmount, setDueAmmount] = useState("");
+  const [planId, setPlanId] = useState("");
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
+  console.log("Selected Plan Details: ", selectedPlanDetails);
 
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
@@ -555,12 +556,10 @@ const NewMemberRegistrationForm = () => {
   });
 
   const { membershipPlans: fetchedPlans } = plans || {};
-  console.log("Plans: ", fetchedPlans);
 
   // Member search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
-  const [planId, setPlanId] = useState("");
   const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
     useState(false);
   const planSearchRef = useRef(null);
@@ -589,7 +588,7 @@ const NewMemberRegistrationForm = () => {
   const dropdownRef = useRef(null);
 
   useEffect(() => {
-    setHighlightedIndex(-1); // reset on dropdown open
+    setHighlightedIndex(-1);
   }, [renderMembershipPlanDropdown, planSearchQuery]);
 
   const handleKeyDown = (e) => {
@@ -1199,7 +1198,8 @@ const NewMemberRegistrationForm = () => {
                                         setPlanName(plan.planName);
                                         setPlanSearchQuery(plan.planName);
                                         setPlanId(plan._id);
-                                        setRenderStaffDropdown(false);
+                                        setSelectedPlanDetails(plan);
+                                        setRenderMembershipPlanDropdown(false);
                                       }}
                                       className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
                                         index === highlightedIndex
