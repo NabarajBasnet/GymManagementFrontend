@@ -129,17 +129,6 @@ const Header = () => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
-  const [toast, setToast] = useState(false);
-  const [successMessage, setSuccessMessage] = useState({
-    icon: MdDone,
-    message: "",
-  });
-  const [errorMessage, setErrorMessage] = useState({
-    icon: MdError,
-    message: "",
-  });
-  const [responseType, setResponseType] = useState("");
-
   const [currentDateTime, setCurrentDateTime] = useState({
     date: "",
     time: "",
@@ -513,7 +502,7 @@ const Header = () => {
 
   const [activeItem, setActiveItem] = useState("");
   const [hoveredItem, setHoveredItem] = useState(null);
-  const [notifications, setNotifications] = useState(3); // Demo notification count
+  const [notifications, setNotifications] = useState(3);
 
   // Function to determine if a link is active
   const isActive = (link) => {
@@ -542,87 +531,6 @@ const Header = () => {
             onClick={minimizeSidebar}
           />
         </div>
-
-        {toast && (
-          <>
-            <div
-              className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40 animate-fade-in"
-              onClick={() => setToast(false)}
-            ></div>
-
-            <div className="fixed top-4 right-4 z-50 animate-slide-in">
-              <div
-                className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                            transition-all duration-300 ease-in-out w-80
-                            ${
-                              responseType === "Success"
-                                ? "border-blue-500"
-                                : "border-rose-500"
-                            }`}
-              >
-                <div
-                  className={`flex items-center justify-center p-2 rounded-full 
-                                    ${
-                                      responseType === "Success"
-                                        ? "bg-blue-100"
-                                        : "bg-rose-100"
-                                    }`}
-                >
-                  {responseType === "Success" ? (
-                    <MdDone className="text-xl text-blue-600" />
-                  ) : (
-                    <MdError className="text-xl text-rose-600" />
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <h3
-                    className={`text-base font-semibold mb-1
-                                    ${
-                                      responseType === "Success"
-                                        ? "text-blue-800"
-                                        : "text-rose-800"
-                                    }`}
-                  >
-                    {responseType === "Success" ? "Success" : "Action required"}
-                  </h3>
-
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    {responseType === "Success" ? (
-                      <div>{successMessage.message}</div>
-                    ) : (
-                      <div>{errorMessage.message}</div>
-                    )}
-                  </p>
-
-                  <div className="mt-3 flex items-center gap-2">
-                    {responseType === "Success" ? (
-                      <button className="text-xs font-medium text-blue-700 hover:text-blue-900 underline">
-                        Done
-                      </button>
-                    ) : (
-                      <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
-                        Retry Now
-                      </button>
-                    )}
-                    <span className="text-gray-400">|</span>
-                    <button
-                      className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
-                      onClick={() => setToast(false)}
-                    >
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-
-                <MdClose
-                  onClick={() => setToast(false)}
-                  className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
-                />
-              </div>
-            </div>
-          </>
-        )}
 
         <div>
           <Sheet>
