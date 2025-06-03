@@ -524,7 +524,7 @@ const Header = () => {
   };
 
   return (
-    <div
+    <header
       className={`fixed top-0 right-0 backdrop-blur-md transition-all duration-500 z-40 
         ${
           isScrolled
@@ -1037,7 +1037,7 @@ const Header = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-    </div>
+    </header>
   );
 };
 

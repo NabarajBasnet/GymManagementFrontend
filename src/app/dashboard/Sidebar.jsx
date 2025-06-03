@@ -438,7 +438,7 @@ const Sidebar = () => {
 
   return (
     <TooltipProvider delayDuration={200}>
-      <motion.div
+      <motion.aside
         className={`fixed left-0 transition-all duration-300 bg-white dark:bg-gray-900 top-0 h-full 
           ${
             sidebarMinimized ? "w-20" : "w-60"
@@ -897,7 +897,7 @@ const Sidebar = () => {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </motion.div>
+      </motion.aside>
     </TooltipProvider>
   );
 };
