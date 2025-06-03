@@ -233,7 +233,7 @@ const Header = () => {
         setLoading(false);
         notify.success(responseBody.message);
         soonerToast.success(responseBody.message, {
-          description: "Internal server error",
+          description: "Logout successful",
         });
         router.push("/login");
         window.location.reload();

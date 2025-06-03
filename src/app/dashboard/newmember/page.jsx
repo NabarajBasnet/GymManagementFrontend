@@ -165,68 +165,12 @@ const NewMemberRegistrationForm = () => {
 
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
-    setDueAmmount(due);
+    setDueAmmount(due - discountAmmount);
   };
 
   useEffect(() => {
     calculateDueAmmount();
   }, [finalAmmount, discountAmmount, paidAmmount]);
-
-  const calculateFinalAmmount = () => {
-    let selectedPlan = null;
-
-    membershipPlans.forEach((plan) => {
-      if (plan.regularMemberships) {
-        plan.regularMemberships.forEach((regular) => {
-          if (
-            regular.option === membershipOption &&
-            regular.type === membershipType
-          ) {
-            selectedPlan = regular;
-          }
-        });
-      }
-
-      if (plan.daytimeMemberships) {
-        plan.daytimeMemberships.forEach((day) => {
-          if (day.option === membershipOption && day.type === membershipType) {
-            selectedPlan = day;
-          }
-        });
-      }
-    });
-
-    if (selectedPlan) {
-      let selectedFee = 0;
-
-      if (membershipOption === "Regular" && membershipType === "Gym") {
-        selectedFee = selectedPlan.gymRegularFees[membershipDuration];
-      } else if (
-        membershipOption === "Regular" &&
-        membershipType === "Gym & Cardio"
-      ) {
-        selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-      } else if (membershipOption === "Daytime" && membershipType === "Gym") {
-        selectedFee = selectedPlan.gymDayFees[membershipDuration];
-      } else if (
-        membershipOption === "Daytime" &&
-        membershipType === "Gym & Cardio"
-      ) {
-        selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
-      }
-
-      const admissionFee = membershipPlans.find(
-        (plan) => plan.type === "Admission"
-      ).admissionFee;
-      setFinalAmmount(admissionFee + selectedFee - discountAmmount);
-    } else {
-      setFinalAmmount(0);
-    }
-  };
-
-  useEffect(() => {
-    calculateFinalAmmount();
-  }, [membershipOption, membershipType, membershipDuration, discountAmmount]);
 
   const {
     register,
@@ -653,7 +597,7 @@ const NewMemberRegistrationForm = () => {
   const admissionPrice = admissionCharge?.price;
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
+    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 pt-10 md:py-8">
       <div className="flex items-center gap-2 mb-3">
         <Breadcrumb>
           <BreadcrumbList>
@@ -1142,6 +1086,9 @@ const NewMemberRegistrationForm = () => {
                                         setPlanId(plan._id);
                                         setSelectedPlanDetails(plan);
                                         setRenderMembershipPlanDropdown(false);
+                                        setFinalAmmount(
+                                          plan.price + admissionPrice
+                                        );
                                       }}
                                       className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
                                         index === highlightedIndex

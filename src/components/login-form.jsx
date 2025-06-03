@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import { FaApple, FaGoogle } from "react-icons/fa";
 import { FaMeta } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
@@ -18,8 +18,8 @@ import {
   CheckCircle2,
   ChevronRight,
   Github,
-  Linkedin
-} from 'lucide-react';
+  Linkedin,
+} from "lucide-react";
 
 export function LoginForm({ className, ...props }) {
   const router = useRouter();
@@ -28,63 +28,65 @@ export function LoginForm({ className, ...props }) {
     reset,
     handleSubmit,
     formState: { isSubmitting, errors },
-    setError
+    setError,
   } = useForm();
 
   const onLoginUser = async (data) => {
     try {
-      const response = await fetch('http://localhost:3000/api/auth/login', {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
-        credentials: 'include',
+        credentials: "include",
       });
 
       const responseBody = await response.json();
       if (response.status === 404) {
-        setError(
-          "email", {
+        setError("email", {
           type: "manual",
-          message: responseBody.message
-        }
-        );
+          message: responseBody.message,
+        });
       }
 
       if (response.status === 403) {
-        setError(
-          "password", {
+        setError("password", {
           type: "manual",
-          message: responseBody.message
-        }
-        );
+          message: responseBody.message,
+        });
       }
 
       if (response.status === 400) {
-        setError(
-          ["password", "email"], {
+        setError(["password", "email"], {
           type: "manual",
-          message: responseBody.message
-        }
-        );
+          message: responseBody.message,
+        });
       }
 
       if (response.status === 200) {
-        toast.success(responseBody.message || 'Login successful!');
+        toast.success(responseBody.message || "Login successful!");
         reset();
-        router.push('/dashboard');
+        router.push("/dashboard");
       } else {
         toast.error(responseBody.message);
       }
-
     } catch (error) {
       toast.error(error.message);
-      console.log('Error: ', error);
-    };
+      console.log("Error: ", error);
+    }
   };
 
-  const FormField = ({ label, name, type = 'text', icon, validation, error, placeholder, rightElement }) => (
+  const FormField = ({
+    label,
+    name,
+    type = "text",
+    icon,
+    validation,
+    error,
+    placeholder,
+    rightElement,
+  }) => (
     <div className="space-y-1">
       <div className="flex items-center">
         <Label
@@ -104,7 +106,9 @@ export function LoginForm({ className, ...props }) {
         <Input
           id={name}
           type={type}
-          className={`pl-10 w-full dark:text-gray-200 rounded-sm dark:text-gray-800 dark:bg-white dark:border-gray-100 border-gray-300 transition-all duration-200 ${error ? 'border-red-500 focus:border-red-500' : ''}`}
+          className={`pl-10 w-full py-6 bg-white dark:bg-white dark:text-gray-200 rounded-sm dark:text-gray-800 dark:border-gray-100 border-gray-300 transition-all duration-200 ${
+            error ? "border-red-500 focus:border-red-500" : ""
+          }`}
           placeholder={placeholder}
           {...register(name, validation)}
         />
@@ -120,7 +124,7 @@ export function LoginForm({ className, ...props }) {
           </motion.div>
         )}
       </div>
-      
+
       {error && (
         <motion.p
           className="text-sm font-medium text-red-500 mt-1"
@@ -136,7 +140,6 @@ export function LoginForm({ className, ...props }) {
 
   return (
     <div className="w-full flex items-center justify-center md:p-4">
-
       <motion.div
         className="w-full rounded-2xl overflow-hidden bg-white/10 backdrop-blur-lg border border-white/20 shadow-2xl"
         initial={{ opacity: 0, scale: 0.95 }}
@@ -154,13 +157,18 @@ export function LoginForm({ className, ...props }) {
             >
               <motion.div
                 className="md:mb-8 mb-1 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm"
-                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255,255,255,0.15)' }}
+                whileHover={{
+                  scale: 1.05,
+                  backgroundColor: "rgba(255,255,255,0.15)",
+                }}
               >
                 <User className="w-8 h-8 text-white" />
               </motion.div>
 
               <h1 className="text-3xl font-bold mb-4">Welcome Back</h1>
-              <p className="text-white/80 md:mb-8">Log in to access your dashboard.</p>
+              <p className="text-white/80 md:mb-8">
+                Log in to access your dashboard.
+              </p>
 
               <div className="hidden md:flex flex-col space-y-4 mb-8">
                 <div className="flex items-center space-x-3 text-sm">
@@ -179,7 +187,10 @@ export function LoginForm({ className, ...props }) {
 
               <div className="pt-4 text-sm">
                 <p>Don't have an account?</p>
-                <Link href="/signup" className="inline-flex items-center mt-2 text-white font-medium hover:underline">
+                <Link
+                  href="/signup"
+                  className="inline-flex items-center mt-2 text-white font-medium hover:underline"
+                >
                   Create a new account <ChevronRight className="ml-1 w-4 h-4" />
                 </Link>
               </div>
@@ -191,7 +202,9 @@ export function LoginForm({ className, ...props }) {
             <div className="w-full md:mx-auto">
               <div className="mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">Sign In</h2>
-                <p className="text-gray-600">Fill in your credentials to access your account</p>
+                <p className="text-gray-600">
+                  Fill in your credentials to access your account
+                </p>
               </div>
 
               <form onSubmit={handleSubmit(onLoginUser)} className="space-y-4">
@@ -204,8 +217,8 @@ export function LoginForm({ className, ...props }) {
                     required: "Email is required",
                     pattern: {
                       value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                      message: "Please enter a valid email"
-                    }
+                      message: "Please enter a valid email",
+                    },
                   }}
                   error={errors.email}
                   placeholder="john.doe@example.com"
@@ -217,12 +230,15 @@ export function LoginForm({ className, ...props }) {
                   type="password"
                   icon={<Lock className="text-gray-400" />}
                   validation={{
-                    required: "Password is required"
+                    required: "Password is required",
                   }}
                   error={errors.password}
                   placeholder="Enter your password"
                   rightElement={
-                    <a href="#" className="ml-auto text-sm text-blue-600 hover:underline">
+                    <a
+                      href="#"
+                      className="ml-auto text-sm text-blue-600 hover:underline"
+                    >
                       Forgot password?
                     </a>
                   }
@@ -235,9 +251,25 @@ export function LoginForm({ className, ...props }) {
                 >
                   {isSubmitting ? (
                     <span className="flex items-center">
-                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      <svg
+                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
                       </svg>
                       Processing...
                     </span>
@@ -246,39 +278,59 @@ export function LoginForm({ className, ...props }) {
                   )}
                 </Button>
 
-                 <div className="relative text-center text-sm mt-4">
+                <div className="relative text-center text-sm mt-4">
                   <span className="relative z-10 bg-white/95 px-4 text-gray-500">
                     Or continue with
                   </span>
                   <div className="absolute top-1/2 left-0 right-0 h-px bg-gray-200 -z-10"></div>
-                </div> 
+                </div>
 
                 <div className="grid grid-cols-3 gap-4">
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                  >
                     <FaApple className="text-xl" />
                   </Button>
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                  >
                     <FaGoogle className="text-xl" />
                   </Button>
-                  <Button variant="outline" className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
+                  >
                     <FaMeta className="text-xl" />
                   </Button>
-                </div> 
+                </div>
               </form>
 
               <div className="mt-6 text-center">
                 <p className="text-xs text-gray-500">
-                  By signing in, you agree to our{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Terms of Service</a>{' '}
-                  and{' '}
-                  <a href="#" className="text-blue-600 hover:underline">Privacy Policy</a>.
+                  By signing in, you agree to our{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Terms of Service
+                  </a>{" "}
+                  and{" "}
+                  <a href="#" className="text-blue-600 hover:underline">
+                    Privacy Policy
+                  </a>
+                  .
                 </p>
 
                 <div className="mt-6 flex items-center justify-center space-x-4">
-                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-gray-500 transition-colors"
+                  >
                     <Github className="h-5 w-5" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-gray-500 transition-colors">
+                  <a
+                    href="#"
+                    className="text-gray-400 hover:text-gray-500 transition-colors"
+                  >
                     <Linkedin className="h-5 w-5" />
                   </a>
                 </div>
