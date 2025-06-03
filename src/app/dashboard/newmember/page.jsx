@@ -1116,6 +1116,7 @@ const NewMemberRegistrationForm = () => {
                                     >
                                       {plan.planName} -{" "}
                                       {convertDurationInMonths(plan.duration)} -{" "}
+                                      -{user?.user?.company?.tenantCurrency}{" "}
                                       {plan.price}
                                     </div>
                                   ))}
