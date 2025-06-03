@@ -759,8 +759,8 @@ const NewMemberRegistrationForm = () => {
                     }`}
                     onClick={() => setCurrentStep(1)}
                   >
-                    <BiSolidUserDetail size={22} className="mr-2" /> Personal
-                    Information
+                    <BiSolidUserDetail size={22} className="mr-2" />
+                    <span className="hidden md:flex">Personal Information</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="step2"
@@ -769,8 +769,8 @@ const NewMemberRegistrationForm = () => {
                     }`}
                     onClick={() => setCurrentStep(2)}
                   >
-                    <TiBusinessCard size={22} className="mr-2" /> Membership
-                    Information
+                    <TiBusinessCard size={22} className="mr-2" /> 
+                    <span className="hidden md:flex">Membership Information</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="step3"
@@ -779,8 +779,8 @@ const NewMemberRegistrationForm = () => {
                     }`}
                     onClick={() => setCurrentStep(3)}
                   >
-                    <MdOutlinePayment size={22} className="mr-2" /> Payment
-                    Information
+                    <MdOutlinePayment size={22} className="mr-2" /> 
+                    <span className="hidden md:flex">Payment Information</span>
                   </TabsTrigger>
                 </TabsList>
 
