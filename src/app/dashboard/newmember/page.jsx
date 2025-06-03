@@ -127,19 +127,6 @@ const NewMemberRegistrationForm = () => {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [actionTaker, setActionTaker] = useState("");
 
-  // Membership details
-  const [membershipOption, setMembershipOption] = useState("");
-  const [membershipType, setMembershipType] = useState("");
-  const [membershipShift, setMembershipShift] = useState("");
-  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
-  const [membershipDurationDays, setMembershipDurationDays] = useState();
-  console.log("membershipDurationDays: ", membershipDurationDays);
-  
-  // Date Detais
-  const [membershipDate, setMembershipDate] = useState(new Date());
-  const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
-  const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
-
   // Payment Details
   const [finalAmmount, setFinalAmmount] = useState("");
   const [discountAmmount, setDiscountAmmount] = useState("");
@@ -147,19 +134,34 @@ const NewMemberRegistrationForm = () => {
   const [dueAmmount, setDueAmmount] = useState("");
   const [planId, setPlanId] = useState("");
 
-  // Calculate Expire Date Based On Selected Membership
- const calculateExpiryDate = (startDate, durationDays) => {
-  if (!durationDays) return;
+  // Membership details
+  const [membershipOption, setMembershipOption] = useState("");
+  const [membershipType, setMembershipType] = useState("");
+  const [membershipShift, setMembershipShift] = useState("");
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
+  const [membershipDurationDays, setMembershipDurationDays] = useState();
+  
+  // Date Detais
+  const [membershipDate, setMembershipDate] = useState(new Date());
+  const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
+  const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
+  const [newExpireDate, setNewMembershipExpireDate] = useState(new Date());
 
-  const newExpiryDate = new Date(startDate);
-  newExpiryDate.setDate(newExpiryDate.getDate() + parseInt(durationDays));
-  setMembershipExpireDate(newExpiryDate);
-};
+  // Calculate Expiry Date
+  const calculateExpiryDate = (startDate, duration) => {
+    if (!startDate || isNaN(duration)) return;
+  
+    const newDate = new Date(startDate);
+    newDate.setDate(newDate.getDate() + parseInt(duration));
+    setMembershipExpireDate(newDate);
+    setNewMembershipExpireDate(newDate);
+  };
 
   useEffect(() => {
-    calculateExpiryDate(membershipRenewDate, membershipDurationDays);
-  }, [membershipRenewDate, membershipDurationDays]);
-  
+    if (membershipRenewDate && membershipDurationDays) {
+      calculateExpiryDate(membershipRenewDate, membershipDurationDays);
+    }
+  }, [membershipRenewDate, selectedPlanDetails]);
 
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
@@ -575,8 +577,7 @@ const NewMemberRegistrationForm = () => {
   // Member search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
-  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
-    useState(false);
+  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] = useState(false);
   const planSearchRef = useRef(null);
 
   // Handle click outside for all dropdowns
@@ -1115,7 +1116,7 @@ const NewMemberRegistrationForm = () => {
                                   {filteredPlans.map((plan, index) => (
                                     <div
                                       onClick={() => {
-                                        setMembershipDurationDays(plan.duration);
+                                        setMembershipDurationDays(parseInt(plan.duration));
                                         setPlanName(plan.planName);
                                         setPlanSearchQuery(plan.planName);
                                         setPlanId(plan._id);
@@ -1222,13 +1223,13 @@ const NewMemberRegistrationForm = () => {
                                   disabled
                                   className={cn(
                                     "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
-                                    !membershipExpireDate &&
+                                    !newExpireDate &&
                                       "text-muted-foreground"
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
-                                  {membershipExpireDate ? (
-                                    format(membershipExpireDate, "PPP")
+                                  {newExpireDate ? (
+                                    format(newExpireDate, "PPP")
                                   ) : (
                                     <span>Pick a date</span>
                                   )}
@@ -1237,7 +1238,7 @@ const NewMemberRegistrationForm = () => {
                               <PopoverContent className="w-auto p-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                                 <Calendar
                                   mode="single"
-                                  selected={membershipExpireDate}
+                                  selected={newExpireDate}
                                   onSelect={setMembershipExpireDate}
                                   initialFocus
                                   disabled
