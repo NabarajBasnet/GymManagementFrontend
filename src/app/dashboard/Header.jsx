@@ -1,11 +1,18 @@
 "use client";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import {toast as soonerToast} from 'sonner'
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { toast as soonerToast } from "sonner";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { TbListDetails } from "react-icons/tb";
@@ -225,18 +232,18 @@ const Header = () => {
       if (response.ok) {
         setLoading(false);
         notify.success(responseBody.message);
-        soonerToast.success(responseBody.message,{
-          description:'Internal server error'
-        })
+        soonerToast.success(responseBody.message, {
+          description: "Internal server error",
+        });
         router.push("/login");
         window.location.reload();
       }
     } catch (error) {
       console.log("Error: ", error);
       notify.error(error.message);
-      soonerToast.error(error.message,{
-        description:'Internal server error'
-      })
+      soonerToast.error(error.message, {
+        description: "Internal server error",
+      });
     }
   };
 
@@ -500,6 +507,11 @@ const Header = () => {
               link: "/dashboard/logs/errorlogs",
             },
           ],
+        },
+        {
+          icon: IoChatbubbleEllipsesSharp,
+          title: "Ai Assistant",
+          link: "/dashboard/aiassistant",
         },
       ],
     },
@@ -803,18 +815,18 @@ const Header = () => {
 
       {/* Date/Time for mobile */}
       <div className="flex items-center md:hidden space-x-2">
-      <div className="flex items-center rounded-md px-3 py-2">
-            <Calendar size={16} className="text-blue-600 mr-2" />
-            <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
-              {currentDateTime.date}
-            </h1>
-          </div>
-          <div className="flex items-center rounded-md px-3 py-2">
-            <Clock size={16} className="text-blue-600 mr-2" />
-            <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
-              {currentDateTime.time}
-            </h1>
-          </div>
+        <div className="flex items-center rounded-md px-3 py-2">
+          <Calendar size={16} className="text-blue-600 mr-2" />
+          <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
+            {currentDateTime.date}
+          </h1>
+        </div>
+        <div className="flex items-center rounded-md px-3 py-2">
+          <Clock size={16} className="text-blue-600 mr-2" />
+          <h1 className="text-sm font-medium dark:text-gray-200 text-gray-700">
+            {currentDateTime.time}
+          </h1>
+        </div>
       </div>
 
       <div className="flex items-center space-x-2 md:space-x-4">
@@ -860,262 +872,319 @@ const Header = () => {
 
         {/* Settings Dialog */}
         <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
-          <SettingsIcon
-            size={20}
-            className="text-blue-600 dark:text-blue-400 hover:animate-spin duration-300 transition-all"
-          />
-        </div>
-      </AlertDialogTrigger>
-      <AlertDialogContent className="max-w-4xl w-[95vw]">
-        <AlertDialogHeader>
-          <div className="w-full flex justify-between items-center">
-            <AlertDialogTitle className="text-xl font-bold text-blue-800 dark:text-blue-200">
-              Settings
-            </AlertDialogTitle>
-            <AlertDialogCancel className="border-none hover:bg-none hover:bg-transparent p-1">
-              <IoClose className="text-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" />
-            </AlertDialogCancel>
-          </div>
-          <Separator orientation="horizontal" className="my-2" />
-          <AlertDialogDescription className="h-[80vh]">
-            <Tabs defaultValue="general" className="h-full flex flex-col">
-              <TabsList className="w-full justify-start px-2 bg-transparent">
-                <TabsTrigger value="general">General</TabsTrigger>
-                <TabsTrigger value="appearance">Appearance</TabsTrigger>
-                <TabsTrigger value="notifications">Notifications</TabsTrigger>
-                <TabsTrigger value="advanced">Advanced</TabsTrigger>
-              </TabsList>
-              
-              <div className="flex-1 overflow-y-auto py-4 px-2">
-                <TabsContent value="general" className="space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Account</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" defaultValue="John Doe" className="max-w-xs" />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" defaultValue="john@example.com" className="max-w-xs" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Preferences</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="language">Language</Label>
-                        <Select defaultValue="en">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select language" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="en">English</SelectItem>
-                            <SelectItem value="es">Spanish</SelectItem>
-                            <SelectItem value="fr">French</SelectItem>
-                            <SelectItem value="de">German</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="timezone">Timezone</Label>
-                        <Select defaultValue="est">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select timezone" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="est">Eastern (EST)</SelectItem>
-                            <SelectItem value="cst">Central (CST)</SelectItem>
-                            <SelectItem value="pst">Pacific (PST)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="appearance" className="space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Theme</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="dark-mode">Dark Mode</Label>
-                        <Switch id="dark-mode" />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="theme-color">Accent Color</Label>
-                        <Select defaultValue="blue">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select color" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="blue">Blue</SelectItem>
-                            <SelectItem value="green">Green</SelectItem>
-                            <SelectItem value="purple">Purple</SelectItem>
-                            <SelectItem value="red">Red</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">UI Preferences</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="font-size">Font Size</Label>
-                        <Select defaultValue="medium">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select font size" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="small">Small</SelectItem>
-                            <SelectItem value="medium">Medium</SelectItem>
-                            <SelectItem value="large">Large</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="density">Density</Label>
-                        <Select defaultValue="normal">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select density" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="compact">Compact</SelectItem>
-                            <SelectItem value="normal">Normal</SelectItem>
-                            <SelectItem value="comfortable">Comfortable</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="notifications" className="space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Email Notifications</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="product-updates">Product updates</Label>
-                        <Switch id="product-updates" defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="security-alerts">Security alerts</Label>
-                        <Switch id="security-alerts" defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="newsletter">Newsletter</Label>
-                        <Switch id="newsletter" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">In-app Notifications</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="mentions">Mentions</Label>
-                        <Switch id="mentions" defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="messages">Direct messages</Label>
-                        <Switch id="messages" defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="sounds">Notification sounds</Label>
-                        <Switch id="sounds" />
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="advanced" className="space-y-6">
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Performance</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="hardware-accel">Hardware Acceleration</Label>
-                        <Switch id="hardware-accel" defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="cache-size">Cache Size</Label>
-                        <Select defaultValue="medium">
-                          <SelectTrigger className="w-[180px]">
-                            <SelectValue placeholder="Select cache size" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="small">Small (100MB)</SelectItem>
-                            <SelectItem value="medium">Medium (500MB)</SelectItem>
-                            <SelectItem value="large">Large (1GB)</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Developer Options</h3>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="dev-mode">Developer Mode</Label>
-                        <Switch id="dev-mode" />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <Label htmlFor="api-endpoint">API Endpoint</Label>
-                        <Input id="api-endpoint" defaultValue="https://api.example.com" className="max-w-xs" />
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <Separator />
-                  
-                  <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Danger Zone</h3>
-                    <div className="space-y-4 p-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="reset-preferences">Reset Preferences</Label>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Reset all preferences to default values
-                          </p>
-                        </div>
-                        <button className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50">
-                          Reset
-                        </button>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <Label htmlFor="delete-account">Delete Account</Label>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Permanently delete your account and all data
-                          </p>
-                        </div>
-                        <button className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
-                          Delete Account
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
+          <AlertDialogTrigger asChild>
+            <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+              <SettingsIcon
+                size={20}
+                className="text-blue-600 dark:text-blue-400 hover:animate-spin duration-300 transition-all"
+              />
+            </div>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="max-w-4xl w-[95vw]">
+            <AlertDialogHeader>
+              <div className="w-full flex justify-between items-center">
+                <AlertDialogTitle className="text-xl font-bold text-blue-800 dark:text-blue-200">
+                  Settings
+                </AlertDialogTitle>
+                <AlertDialogCancel className="border-none hover:bg-none hover:bg-transparent p-1">
+                  <IoClose className="text-xl text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200" />
+                </AlertDialogCancel>
               </div>
-            </Tabs>
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-      </AlertDialogContent>
-    </AlertDialog>
+              <Separator orientation="horizontal" className="my-2" />
+              <AlertDialogDescription className="h-[80vh]">
+                <Tabs defaultValue="general" className="h-full flex flex-col">
+                  <TabsList className="w-full justify-start px-2 bg-transparent">
+                    <TabsTrigger value="general">General</TabsTrigger>
+                    <TabsTrigger value="appearance">Appearance</TabsTrigger>
+                    <TabsTrigger value="notifications">
+                      Notifications
+                    </TabsTrigger>
+                    <TabsTrigger value="advanced">Advanced</TabsTrigger>
+                  </TabsList>
+
+                  <div className="flex-1 overflow-y-auto py-4 px-2">
+                    <TabsContent value="general" className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Account
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="name">Name</Label>
+                            <Input
+                              id="name"
+                              defaultValue="John Doe"
+                              className="max-w-xs"
+                            />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                              id="email"
+                              type="email"
+                              defaultValue="john@example.com"
+                              className="max-w-xs"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Preferences
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="language">Language</Label>
+                            <Select defaultValue="en">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select language" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="en">English</SelectItem>
+                                <SelectItem value="es">Spanish</SelectItem>
+                                <SelectItem value="fr">French</SelectItem>
+                                <SelectItem value="de">German</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="timezone">Timezone</Label>
+                            <Select defaultValue="est">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select timezone" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="est">
+                                  Eastern (EST)
+                                </SelectItem>
+                                <SelectItem value="cst">
+                                  Central (CST)
+                                </SelectItem>
+                                <SelectItem value="pst">
+                                  Pacific (PST)
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="appearance" className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Theme
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="dark-mode">Dark Mode</Label>
+                            <Switch id="dark-mode" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="theme-color">Accent Color</Label>
+                            <Select defaultValue="blue">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select color" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="blue">Blue</SelectItem>
+                                <SelectItem value="green">Green</SelectItem>
+                                <SelectItem value="purple">Purple</SelectItem>
+                                <SelectItem value="red">Red</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          UI Preferences
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="font-size">Font Size</Label>
+                            <Select defaultValue="medium">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select font size" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="small">Small</SelectItem>
+                                <SelectItem value="medium">Medium</SelectItem>
+                                <SelectItem value="large">Large</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="density">Density</Label>
+                            <Select defaultValue="normal">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select density" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="compact">Compact</SelectItem>
+                                <SelectItem value="normal">Normal</SelectItem>
+                                <SelectItem value="comfortable">
+                                  Comfortable
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="notifications" className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Email Notifications
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="product-updates">
+                              Product updates
+                            </Label>
+                            <Switch id="product-updates" defaultChecked />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="security-alerts">
+                              Security alerts
+                            </Label>
+                            <Switch id="security-alerts" defaultChecked />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="newsletter">Newsletter</Label>
+                            <Switch id="newsletter" />
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          In-app Notifications
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="mentions">Mentions</Label>
+                            <Switch id="mentions" defaultChecked />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="messages">Direct messages</Label>
+                            <Switch id="messages" defaultChecked />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="sounds">Notification sounds</Label>
+                            <Switch id="sounds" />
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="advanced" className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Performance
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="hardware-accel">
+                              Hardware Acceleration
+                            </Label>
+                            <Switch id="hardware-accel" defaultChecked />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="cache-size">Cache Size</Label>
+                            <Select defaultValue="medium">
+                              <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Select cache size" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="small">
+                                  Small (100MB)
+                                </SelectItem>
+                                <SelectItem value="medium">
+                                  Medium (500MB)
+                                </SelectItem>
+                                <SelectItem value="large">
+                                  Large (1GB)
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Developer Options
+                        </h3>
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="dev-mode">Developer Mode</Label>
+                            <Switch id="dev-mode" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <Label htmlFor="api-endpoint">API Endpoint</Label>
+                            <Input
+                              id="api-endpoint"
+                              defaultValue="https://api.example.com"
+                              className="max-w-xs"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      <Separator />
+
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                          Danger Zone
+                        </h3>
+                        <div className="space-y-4 p-4 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="reset-preferences">
+                                Reset Preferences
+                              </Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Reset all preferences to default values
+                              </p>
+                            </div>
+                            <button className="px-4 py-2 text-sm font-medium text-red-600 dark:text-red-400 border border-red-300 dark:border-red-700 rounded-md hover:bg-red-100 dark:hover:bg-red-900/50">
+                              Reset
+                            </button>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <Label htmlFor="delete-account">
+                                Delete Account
+                              </Label>
+                              <p className="text-sm text-gray-500 dark:text-gray-400">
+                                Permanently delete your account and all data
+                              </p>
+                            </div>
+                            <button className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                              Delete Account
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  </div>
+                </Tabs>
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
 
         {/* User Menu */}
         <DropdownMenu>

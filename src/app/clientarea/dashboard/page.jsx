@@ -316,17 +316,17 @@ const TenantDashboard = () => {
 
                       <h1 className="text-blue-100 font-medium text-sm">
                         {onFreeTrail ? (
-                          <h1>
+                          <p>
                             Remaining Days:{" "}
                             {loggedInTenant?.tenantFreeTrailRemainingDays}
-                          </h1>
+                          </p>
                         ) : (
-                          <h1 className="text-blue-100 font-medium text-sm">
+                          <p className="text-blue-100 font-medium text-sm">
                             Remaining Days:{" "}
                             {onFreeTrail
                               ? loggedInTenant?.tenantFreeTrailRemainingDays
                               : calculateRemainingDays()}
-                          </h1>
+                          </p>
                         )}
                       </h1>
                     </div>

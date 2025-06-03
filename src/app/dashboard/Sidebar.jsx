@@ -1,5 +1,6 @@
 "use client";
 
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { FaMoneyBillAlt } from "react-icons/fa";
 import { IoReceiptSharp } from "react-icons/io5";
 import { AiFillProduct } from "react-icons/ai";
@@ -426,6 +427,11 @@ const Sidebar = () => {
               link: "/dashboard/logs/errorlogs",
             },
           ],
+        },
+        {
+          icon: IoChatbubbleEllipsesSharp,
+          title: "Ai Assistant",
+          link: "/dashboard/aiassistant",
         },
       ],
     },
