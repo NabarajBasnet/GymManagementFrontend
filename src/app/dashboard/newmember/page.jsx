@@ -81,6 +81,7 @@ const NewMemberRegistrationForm = () => {
   const [planId, setPlanId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [actionTaker, setActionTaker] = useState("");
+  const [admissionFee, setAdmissionFee] = useState("");
 
   // Membership details
   const [membershipDuration, setMembershipDuration] = useState("");
@@ -194,9 +195,8 @@ const NewMemberRegistrationForm = () => {
         dob,
         secondaryContactNo,
         address,
-
+        admissionFee,
         discountReason,
-        discountCode,
         receiptNo,
         referenceCode,
         remark,
@@ -211,7 +211,7 @@ const NewMemberRegistrationForm = () => {
         gender,
         address,
 
-        status,
+        status:status?'Active':"Inactive",
         membershipType,
         membershipShift,
         membershipDate,
@@ -221,8 +221,7 @@ const NewMemberRegistrationForm = () => {
         paymentMethod,
         discountAmmount,
         discountReason,
-        discountCode,
-        admissionFee: 1000,
+        admissionFee,
         finalAmmount,
         paidAmmount,
         receiptNo,
@@ -230,6 +229,7 @@ const NewMemberRegistrationForm = () => {
         referenceCode,
         remark,
         actionTaker,
+        selectedPlanDetails
       };
 
       console.log("Final Data: ", membersFinalData);
@@ -287,7 +287,7 @@ const NewMemberRegistrationForm = () => {
         });
       }
     } catch (error) {
-      nofity.error(error.message);
+      notify.error(error.message);
       sonnerToast.error("Internal server error", {
         description: error.message,
       });
@@ -500,6 +500,10 @@ const NewMemberRegistrationForm = () => {
       plan.planName.toString().startsWith("Admission")
   );
   const admissionPrice = admissionCharge?.price;
+
+  useEffect(() => {
+    setAdmissionFee(admissionCharge?.price);
+  }, []);
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 pt-10 md:py-8">
@@ -986,8 +990,12 @@ const NewMemberRegistrationForm = () => {
                                         setMembershipDurationDays(
                                           parseInt(plan.duration)
                                         );
-                                        setPlanName(`${plan.planName} - ${plan.price}`);
-                                        setPlanSearchQuery(`${plan.planName} - ${plan.price}`);
+                                        setPlanName(
+                                          `${plan.planName} - ${plan.price}`
+                                        );
+                                        setPlanSearchQuery(
+                                          `${plan.planName} - ${plan.price}`
+                                        );
                                         setPlanId(plan._id);
                                         setSelectedPlanDetails(plan);
                                         setRenderMembershipPlanDropdown(false);
@@ -1344,8 +1352,7 @@ const NewMemberRegistrationForm = () => {
                                       <div key={actionTaker._id}>
                                         <SelectItem
                                           value={
-                                            actionTaker.fullName ||
-                                            "Not Selected"
+                                            actionTaker._id
                                           }
                                           className="hover:bg-blue-600 cursor-pointer text-gray-900 dark:text-gray-100"
                                         >
@@ -1405,7 +1412,9 @@ const NewMemberRegistrationForm = () => {
                     disabled={isSubmitting || !validateStep(currentStep)}
                     className="bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:text-gray-100 dark:border-none disabled:opacity-50"
                   >
-                    {isSubmitting ? "Processing..." : "Register Member"}
+                    {isSubmitting === true
+                      ? "Processing..."
+                      : "Register Member"}
                   </Button>
                 )}
               </div>
