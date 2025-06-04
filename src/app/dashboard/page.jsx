@@ -166,9 +166,9 @@ const AdminDashboard = () => {
       <div className="w-full px-5 py-7">
 
         {/* Welcome Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
           {/* Welcome Card */}
-          <Card className="lg:col-span-8 dark:border dark:border-gray-600 relative overflow-hidden rounded-2xl shadow-md group">
+          <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-2xl shadow-md group">
             {/* Background elements */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/90 to-transparent z-10"></div>
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="lg:col-span-4 dark:border dark:border-gray-600 relative rounded-2xl shadow-md overflow-hidden">
+          <Card className="lg:col-span-4 dark:border-none relative rounded-2xl shadow-md overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/40 to-neutral-800/95 z-10"></div>
             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-100"></div>
             <div className="relative z-20 p-3">
@@ -254,7 +254,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-4 dark:border dark:border-none border border-gray-200">
+        <Card className="py-2 rounded-2xl dark:bg-gray-800 shadow-sm mb-6 dark:border dark:border-none border border-gray-200">
           <div className="px-3 py-2">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -339,7 +339,7 @@ const AdminDashboard = () => {
           </div>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           {gridContents.map((item) => (
             <Card
               key={item.text}
@@ -374,7 +374,7 @@ const AdminDashboard = () => {
           ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Card className="border dark:border-none dark:bg-gray-800 shadow-lg rounded-2xl">
             <BarChartMultiple />
           </Card>
@@ -384,7 +384,7 @@ const AdminDashboard = () => {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
             <RenewRadialChart />
           </Card>

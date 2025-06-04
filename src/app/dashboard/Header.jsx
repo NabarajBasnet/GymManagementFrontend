@@ -1188,63 +1188,90 @@ const Header = () => {
 
         {/* User Menu */}
         <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div className="cursor-pointer">
-              <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors">
-                <FaUserCircle className="text-2xl text-blue-600" />
-              </div>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56 mt-1 border border-gray-200 shadow-lg">
-            <DropdownMenuLabel className="font-medium text-gray-800">
-              My Account
-            </DropdownMenuLabel>
-            <div className="px-2 py-1.5 text-xs text-gray-500">
-              {(user && user.user.email) || "admin@example.com"}
-            </div>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="focus:bg-blue-50 focus:text-blue-700">
-                <Button className="space-x-2 w-full flex justify-center items-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-                  <PiStarFour />
-                  Upgrade Plan
-                </Button>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="focus:bg-blue-50 focus:text-blue-700">
-                <User className="mr-2 h-4 w-4 text-blue-600" />
-                <span>Profile</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem className="focus:bg-blue-50 focus:text-blue-700">
-                <Users className="mr-2 h-4 w-4 text-blue-600" />
-                <span>Team</span>
-              </DropdownMenuItem>
-              <DropdownMenuSub>
-                <DropdownMenuPortal>
-                  <DropdownMenuSubContent>
-                    <DropdownMenuSeparator />
-                  </DropdownMenuSubContent>
-                </DropdownMenuPortal>
-              </DropdownMenuSub>
-              <DropdownMenuItem className="focus:bg-blue-50 focus:text-blue-700">
-                <Plus className="mr-2 h-4 w-4 text-blue-600" />
-                <span>New Team</span>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => logoutUser()}
-              className="focus:bg-blue-50 focus:text-blue-700 text-red-600 font-medium"
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              <span className="cursor-pointer">
-                {loading ? "Processing..." : "Log out"}
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+  <DropdownMenuTrigger asChild>
+  <div className="cursor-pointer group">
+  <div className="flex items-center gap-2">
+    {user?.user?.firstName && user?.user?.lastName ? (
+      // Show user initials if name exists
+      <div className="flex items-center justify-center h-9 w-9 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 font-medium group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+        {user.user.firstName.charAt(0)}
+        {user.user.lastName.charAt(0)}
+      </div>
+    ) : (
+      // Fallback to user icon
+      <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors group-hover:bg-gray-100 dark:group-hover:bg-gray-700">
+        <FaUserCircle className="text-2xl text-blue-600 dark:text-blue-400 transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300" />
+      </div>
+    )}
+    {/* Optional: Show full name next to avatar */}
+    {user?.user?.firstName && (
+      <span className="hidden md:inline text-sm font-medium text-gray-700 dark:text-gray-200">
+        {user.user.firstName} {user.user.lastName}
+      </span>
+    )}
+  </div>
+  </div>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent 
+      align="end"
+      className="w-64 mt-2 border border-gray-100 dark:border-gray-700 rounded-lg shadow-xl dark:shadow-2xl dark:shadow-black/50 bg-white dark:bg-gray-800 overflow-hidden"
+    >
+      <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
+        <DropdownMenuLabel className="font-semibold text-gray-900 dark:text-white">
+          My Account
+        </DropdownMenuLabel>
+        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 truncate">
+          {(user && user.user.email) || "admin@example.com"}
+        </div>
+      </div>
+      
+      <div className="p-2">
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-700 dark:to-indigo-700 dark:hover:from-blue-600 dark:hover:to-indigo-600 transition-all cursor-pointer mb-2">
+            <PiStarFour className="mr-2 h-4 w-4" />
+            <span>Upgrade Plan</span>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
+            <User className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <span>Profile</span>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        
+        <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-700" />
+        
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
+            <Users className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <span>Team</span>
+            <DropdownMenuShortcut>⌘T</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
+            <Plus className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <span>New Team</span>
+            <DropdownMenuShortcut>⌘N</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        
+        <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-700" />
+        
+        <DropdownMenuItem
+          onClick={() => logoutUser()}
+          className="px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/30 transition-colors cursor-pointer"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>{loading ? "Processing..." : "Log out"}</span>
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </div>
+      
+      <div className="px-4 py-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-700/30 text-xs text-gray-500 dark:text-gray-400">
+        v{process.env.APP_VERSION} • {new Date().getFullYear()}
+      </div>
+    </DropdownMenuContent>
+  </DropdownMenu>
       </div>
     </header>
   );

@@ -178,7 +178,7 @@ export function NewRadialChart() {
                 </CardFooter>
             </Card>
 
-            <div className="bg-white dark:bg-gray-800 rounded-md mt-6 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-2xl mt-6 overflow-hidden">
                 <div className="overflow-x-auto">
                     <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800'>
                         <TableHeader className="bg-pink-50 dark:bg-gray-800">
