@@ -1,7 +1,9 @@
 "use client";
 
+import { TiBusinessCard } from "react-icons/ti";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "lucide-react";
+import { MdOutlinePayment } from "react-icons/md";
 import {
   Popover,
   PopoverContent,
@@ -467,12 +469,12 @@ const MemberDetails = ({ memberId }) => {
         </h1>
       </div>
 
-      <form className="w-full flex justify-between items-start gap-4">
+      <form className="w-full md:flex justify-between items-start gap-4">
         <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
           <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
-            <div className="flex flex-col gap-6 md:gap-8">
+            <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8">
               {/* QR Code Section */}
-              <div className="flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
+              <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership QR
                 </h2>
@@ -486,7 +488,7 @@ const MemberDetails = ({ memberId }) => {
               </div>
 
               {/* Membership Controls & Info */}
-              <div className="flex-1 space-y-4">
+              <div className="w-6/12 md:w-full flex-1 space-y-4">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership Status
                 </h2>
@@ -600,7 +602,7 @@ const MemberDetails = ({ memberId }) => {
           </div>
         </Card>
 
-        <Card className="w-full md:w-9/12 dark:bg-gray-900 p-4">
+        <Card className="w-full md:w-9/12 dark:bg-gray-800 dark:border-none p-4">
           <div className="w-full">
             {data && (
               <div className="w-full">
@@ -610,15 +612,33 @@ const MemberDetails = ({ memberId }) => {
                     onSubmit={handleSubmit(updateMemberDetails)}
                   >
                     <Tabs defaultValue="Personal Details" className="w-full">
-                      <TabsList className="w-full flex space-x-10">
-                        <TabsTrigger value="Personal Details">
-                          Personal Details
+                      <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
+                        <TabsTrigger
+                          value="Personal Details"
+                          className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800`}
+                        >
+                          <BiSolidUserDetail size={22} className="mr-2" />
+                          <span className="hidden md:flex">
+                            Personal Information
+                          </span>
                         </TabsTrigger>
-                        <TabsTrigger value="Membership Details">
-                          Membership Details
+                        <TabsTrigger
+                          value="Membership Details"
+                          className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800`}
+                        >
+                          <TiBusinessCard size={22} className="mr-2" />
+                          <span className="hidden md:flex">
+                            Membership Details
+                          </span>
                         </TabsTrigger>
-                        <TabsTrigger value="Payment Details">
-                          Payment Details
+                        <TabsTrigger
+                          value="Payment Details"
+                          className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800`}
+                        >
+                          <MdOutlinePayment size={22} className="mr-2" />
+                          <span className="hidden md:flex">
+                            Payment Information
+                          </span>
                         </TabsTrigger>
                       </TabsList>
                       <TabsContent value="Personal Details">
