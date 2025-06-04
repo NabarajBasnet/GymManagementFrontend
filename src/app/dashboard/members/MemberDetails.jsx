@@ -79,6 +79,10 @@ const MemberDetails = ({ memberId }) => {
   const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
   const [membershipDurationDays, setMembershipDurationDays] = useState();
   const [planId, setPlanId] = useState("");
+  const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
+    new Date()
+  );
+
   // Objects
   const membershipPlans = [
     {
@@ -134,6 +138,8 @@ const MemberDetails = ({ memberId }) => {
     },
   ];
 
+  console.log("Selected Plan: ", selectedPlanDetails);
+
   // React hook form
   const {
     register,
@@ -156,8 +162,9 @@ const MemberDetails = ({ memberId }) => {
     queryFn: () => getSingleUserDetails(memberId),
     enabled: !!memberId,
   });
+
   const { member, message, qrCode } = data || {};
-console.log('Member: ',member);
+  console.log("Member: ", member);
   // Populate Data
   useEffect(() => {
     if (data) {
@@ -189,10 +196,14 @@ console.log('Member: ',member);
         discountReason: member.discountReason,
         discountCode: member.discountCode,
         paidAmmount: member.paidAmmount,
+        finalAmmount: member.finalAmmount,
         dueAmmount: member.dueAmmount,
         receiptNo: member.receiptNo,
         remark: member.remark,
       });
+      setPrevMembershipExpireDate(
+        new Date(member.membershipExpireDate).toISOString().split("T")[0]
+      );
       setPlanName(
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
@@ -200,8 +211,11 @@ console.log('Member: ',member);
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
       setAdmissionFee(member?.admissionFee);
+      setSelectedPlanDetails(member?.membership);
     }
   }, [data, reset]);
+
+  // Handle Expire Date Based On Selected Plan Details And Previous Expire Date
 
   // Function to handle membership calculations
   const handleMembershipInformation = () => {
@@ -330,22 +344,21 @@ console.log('Member: ',member);
     const {
       fullName,
       contactNo,
-email,
-dob,
-secondaryContactNo,
-gender,
-address,
-status,
-membershipType,
-membershipShift,
-membershipDate,
-membershipRenewDate,
-membershipExpireDate,
-paymentMethod,
-referenceCode,
-discountAmmount,
-discountReason,
-
+      email,
+      dob,
+      secondaryContactNo,
+      gender,
+      address,
+      status,
+      membershipType,
+      membershipShift,
+      membershipDate,
+      membershipRenewDate,
+      membershipExpireDate,
+      paymentMethod,
+      referenceCode,
+      discountAmmount,
+      discountReason,
     } = data || {};
 
     try {
@@ -583,11 +596,11 @@ discountReason,
       </div>
 
       <div className="w-full md:flex justify-between items-start gap-4">
-        <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
-          <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
-            <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8">
-              {/* QR Code Section */}
-              <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
+        {/* <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none"> */}
+        {/* <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6"> */}
+        {/* <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8"> */}
+        {/* QR Code Section */}
+        {/* <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership QR
                 </h2>
@@ -598,10 +611,10 @@ discountReason,
                     className="w-40 h-40 rounded-xl"
                   />
                 </div>
-              </div>
+              </div> */}
 
-              {/* Membership Controls & Info */}
-              <div className="w-6/12 md:w-full flex-1 space-y-4">
+        {/* Membership Controls & Info */}
+        {/* <div className="w-6/12 md:w-full flex-1 space-y-4">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership Status
                 </h2>
@@ -710,12 +723,12 @@ discountReason,
                     </p>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </Card>
+              </div> */}
+        {/* </div> */}
+        {/* </div> */}
+        {/* </Card> */}
 
-        <Card className="w-full md:w-9/12 dark:bg-gray-800 dark:border-none p-4">
+        <Card className="w-full dark:bg-gray-800 dark:border-none p-4">
           <div className="w-full">
             {data && (
               <div className="w-full">
@@ -1096,14 +1109,13 @@ discountReason,
                                 control={control}
                                 render={({ field }) => (
                                   <select
-                                    {...field}
                                     {...register("paymentMethod")}
                                     className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                     onChange={(e) =>
                                       setPaymentMethod(e.target.value)
                                     }
                                   >
-                                    <option value="">Select</option>
+                                    <option value="">{`${"Select"}`}</option>
                                     <option value="Mobile Banking">
                                       Mobile Banking
                                     </option>
