@@ -40,7 +40,7 @@ export default function ClientLayout({ children }) {
             </main>
 
             {/* Fixed footer at the bottom */}
-            <footer className="mt-3">
+            <footer>
               <DashboardFooter />
             </footer>
           </div>
