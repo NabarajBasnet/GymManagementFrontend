@@ -105,7 +105,6 @@ const AllMembers = () => {
         `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
       );
       const resBody = await response.json();
-      console.log(resBody);
       return resBody;
     } catch (error) {
       console.error("Error: ", error);
@@ -128,10 +127,6 @@ const AllMembers = () => {
   });
 
   const { totalPages, totalMembers, members } = data || {};
-
-  useEffect(() => {
-    getAllMembers();
-  }, [limit]);
 
   const [emailSending, setEmailSending] = useState(false);
   const [emailToast, setEmailToast] = useState(false);
@@ -346,8 +341,8 @@ const AllMembers = () => {
           ) : (
             <div className="w-full mb-4 bg-white dark:bg-gray-800 dark:text-white">
               <div className="w-full flex justify-start">
-                <div className="w-full overflow-x-auto">
-                  <Table className="w-full overflow-x-auto dark:text-white">
+                <div className="w-full overflow-x-auto static">
+                  <Table className="w-full overflow-x-auto relative dark:text-white">
                     <TableHeader>
                       <TableRow className="dark:bg-gray-700 dark:border-none">
                         <TableHead className="dark:text-white">
@@ -544,7 +539,12 @@ const AllMembers = () => {
                                 {member.membershipDuration}
                               </TableCell>
                               <TableCell className="text-start">
-                                {member.membershipOption}
+                                {member.membershipOption ||
+                                  member.membership.servicesIncluded.map(
+                                    (service, index) => {
+                                      return `${service} & `;
+                                    }
+                                  )}
                               </TableCell>
                               <TableCell className="text-start">
                                 {
