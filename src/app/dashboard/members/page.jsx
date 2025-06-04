@@ -1,5 +1,7 @@
 "use client";
 
+import { toast as hotToast } from "react-hot-toast";
+import { toast as sonnerToast } from "sonner";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +21,6 @@ import { TiHome } from "react-icons/ti";
 import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from "lucide-react";
 import NewMemberRegistrationForm from "../newmember/page";
 import { IoMdPersonAdd } from "react-icons/io";
-import { toast as notify } from "react-hot-toast";
 import { MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import {
   Tooltip,
@@ -81,27 +82,11 @@ import AllMembersAreaChart from "./charts/allmembersareachart";
 const AllMembers = () => {
   const { user, loading } = useUser();
   const queryClient = useQueryClient();
-  const [toast, setToast] = useState(false);
-  const [successMessage, setSuccessMessage] = useState({
-    icon: MdDone,
-    message: "",
-  });
-  const [errorMessage, setErrorMessage] = useState({
-    icon: MdError,
-    message: "",
-  });
-  const [responseType, setResponseType] = useState("");
-  const responseResultType = ["Success", "Failure"];
-  const [confirmDeleteMember, setConfirmDeleteMember] = useState(false);
-  const [toDeleteMemberId, setToDeleteMemberId] = useState("");
-  const [isMemberDeleting, setIsMemberDeleting] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [renderNewMemberRegistration, setRenderNewMemberRegistration] =
-    useState(false);
 
   // Sorting States
   const [sortBy, setSortBy] = useState("");
@@ -120,9 +105,12 @@ const AllMembers = () => {
         `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
       );
       const resBody = await response.json();
+      console.log(resBody);
       return resBody;
     } catch (error) {
       console.error("Error: ", error);
+      hotToast.error(error);
+      sonnerToast.error(error);
     }
   };
 
@@ -140,16 +128,6 @@ const AllMembers = () => {
   });
 
   const { totalPages, totalMembers, members } = data || {};
-
-  const { range, setPage, active } = usePagination({
-    total: totalPages ? totalPages : 1,
-    siblings: 1,
-    boundaries: 1,
-    page: currentPage,
-    onChange: (page) => {
-      setCurrentPage(page);
-    },
-  });
 
   useEffect(() => {
     getAllMembers();
@@ -170,40 +148,20 @@ const AllMembers = () => {
       });
       const responseBody = await response.json();
       if (response.status !== 200) {
-        setResponseType(responseResultType[1]);
-        setEmailToast(true);
-        setTimeout(() => {
-          setEmailToast(false);
-        }, 10000);
-        setErrorMessage({
-          icon: MdError,
-          message: responseBody.message || "Unauthorized action",
-        });
+        hotToast.error(responseBody.message);
+        sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
           setEmailSending(false);
-          setEmailToast(true);
-          setResponseType(responseResultType[0]);
-          setTimeout(() => {
-            setEmailToast(false);
-          }, 10000);
-          setSuccessMessage({
-            icon: MdError,
-            message: responseBody.message || "Unauthorized action",
-          });
+          hotToast.success(responseBody.message);
+          sonnerToast.success(responseBody.message);
         }
       }
     } catch (error) {
       console.log("Error: ", error);
-      setResponseType(responseResultType[1]);
+      hotToast.error(error);
+      sonnerToast.error(error);
       setEmailToast(true);
-      setTimeout(() => {
-        setEmailToast(false);
-      }, 10000);
-      setErrorMessage({
-        icon: MdError,
-        message: error.message || error,
-      });
     }
   };
 
@@ -224,27 +182,13 @@ const AllMembers = () => {
 
       if (response.status !== 200) {
         setIsDeleting(false);
-        setResponseType(responseResultType[1]);
-        setToast(true);
-        setTimeout(() => {
-          setToast(false);
-        }, 10000);
-        setErrorMessage({
-          icon: MdError,
-          message: responseBody.message || "Unauthorized action",
-        });
+        hotToast.error(responseBody.message);
+        sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
           setIsDeleting(false);
-          setResponseType(responseResultType[0]);
-          setToast(true);
-          setTimeout(() => {
-            setToast(false);
-          }, 10000);
-          setSuccessMessage({
-            icon: MdError,
-            message: responseBody.message || "Unauthorized action",
-          });
+          hotToast.success(responseBody.message);
+          sonnerToast.success(responseBody.message);
         }
         setConfirmDeleteMember(false);
         queryClient.invalidateQueries(["members"]);
@@ -252,14 +196,8 @@ const AllMembers = () => {
     } catch (error) {
       setIsDeleting(false);
       console.log("Error: ", error);
-      setToast(true);
-      setTimeout(() => {
-        setToast(false);
-      }, 10000);
-      setErrorMessage({
-        icon: MdError,
-        message: "An unexpected error occurred.",
-      });
+      hotToast.success(error);
+      sonnerToast.success(error);
     }
   };
 
@@ -270,8 +208,8 @@ const AllMembers = () => {
     ) {
       navigator.clipboard
         .writeText(_id)
-        .then(() => notify.success(`Member ID ${_id} copied to clipboard`))
-        .catch(() => notify.error("Failed to copy ID"));
+        .then(() => hotToast.success(`Member ID ${_id} copied to clipboard`))
+        .catch(() => hotToast.error("Failed to copy ID"));
     } else {
       const textArea = document.createElement("textarea");
       textArea.value = _id;
@@ -282,12 +220,12 @@ const AllMembers = () => {
       try {
         const successful = document.execCommand("copy");
         if (successful) {
-          notify.success(`Member ID ${_id} copied to clipboard`);
+          hotToast.success(`Member ID ${_id} copied to clipboard`);
         } else {
           throw new Error();
         }
       } catch (err) {
-        notify.error("Failed to copy ID");
+        hotToast.error("Failed to copy ID");
       }
       document.body.removeChild(textArea);
     }
@@ -648,6 +586,16 @@ const AllMembers = () => {
                                   <DropdownMenuContent
                                     className="w-40 dark:bg-gray-800 dark:border-gray-700 shadow-lg"
                                     align="end"
+                                    onInteractOutside={(e) => {
+                                      // Prevent closing when interacting with the alert dialog
+                                      if (
+                                        e.target.closest(
+                                          ".alert-dialog-content"
+                                        )
+                                      ) {
+                                        e.preventDefault();
+                                      }
+                                    }}
                                   >
                                     <DropdownMenuLabel className="font-medium dark:text-gray-300">
                                       Member Actions
@@ -655,7 +603,10 @@ const AllMembers = () => {
                                     <DropdownMenuSeparator className="dark:bg-gray-700" />
                                     <DropdownMenuGroup>
                                       {/* Edit Member */}
-                                      <DropdownMenuItem className="cursor-pointer px-3 py-2">
+                                      <DropdownMenuItem
+                                        className="cursor-pointer px-3 py-2"
+                                        asChild
+                                      >
                                         <Link
                                           href={`/dashboard/members/${member._id}`}
                                           className="flex items-center w-full"
@@ -666,13 +617,16 @@ const AllMembers = () => {
                                       </DropdownMenuItem>
 
                                       {/* Send QR via Email */}
-                                      <DropdownMenuItem className="cursor-pointer px-3 py-2">
+                                      <DropdownMenuItem
+                                        className="cursor-pointer px-3 py-2"
+                                        onSelect={(e) => e.preventDefault()}
+                                      >
                                         <AlertDialog>
-                                          <AlertDialogTrigger className="flex items-center w-full">
+                                          <AlertDialogTrigger className="flex items-center w-full text-left">
                                             <MdEmail className="mr-2 h-4 w-4" />
                                             <span>Send QR</span>
                                           </AlertDialogTrigger>
-                                          <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
+                                          <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700 alert-dialog-content">
                                             <AlertDialogHeader>
                                               <AlertDialogTitle className="dark:text-white">
                                                 Confirm QR Email
@@ -683,14 +637,15 @@ const AllMembers = () => {
                                               </AlertDialogDescription>
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
-                                              <AlertDialogCancel className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
+                                              <AlertDialogCancel className="dark:border-none dark:text-white dark:hover:bg-gray-700">
                                                 Cancel
                                               </AlertDialogCancel>
                                               <AlertDialogAction
-                                                className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
-                                                onClick={() =>
-                                                  sendQrInEmail(member._id)
-                                                }
+                                                className="bg-blue-600 dark:text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  sendQrInEmail(member._id);
+                                                }}
                                               >
                                                 Send
                                               </AlertDialogAction>
@@ -700,41 +655,43 @@ const AllMembers = () => {
                                       </DropdownMenuItem>
 
                                       {/* Delete Member */}
-                                      {user?.user?.role !== "Gym Admin" && (
-                                        <DropdownMenuItem className="cursor-pointer px-3 py-2">
-                                          <AlertDialog>
-                                            <AlertDialogTrigger className="flex items-center w-full text-red-600 dark:text-red-400">
-                                              <MdDelete className="mr-2 h-4 w-4" />
-                                              <span>Delete</span>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
-                                              <AlertDialogHeader>
-                                                <AlertDialogTitle className="dark:text-white">
-                                                  Confirm Deletion
-                                                </AlertDialogTitle>
-                                                <AlertDialogDescription className="dark:text-gray-400">
-                                                  This will permanently delete{" "}
-                                                  {member.fullName}'s account
-                                                  and all associated data.
-                                                </AlertDialogDescription>
-                                              </AlertDialogHeader>
-                                              <AlertDialogFooter>
-                                                <AlertDialogCancel className="dark:border-gray-600 dark:text-white dark:hover:bg-gray-700">
-                                                  Cancel
-                                                </AlertDialogCancel>
-                                                <AlertDialogAction
-                                                  className="bg-red-600 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800"
-                                                  onClick={() =>
-                                                    deleteMember(member._id)
-                                                  }
-                                                >
-                                                  Delete
-                                                </AlertDialogAction>
-                                              </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                          </AlertDialog>
-                                        </DropdownMenuItem>
-                                      )}
+                                      <DropdownMenuItem
+                                        className="cursor-pointer px-3 py-2"
+                                        onSelect={(e) => e.preventDefault()}
+                                      >
+                                        <AlertDialog>
+                                          <AlertDialogTrigger className="flex items-center w-full text-left text-red-600 dark:text-red-400">
+                                            <MdDelete className="mr-2 h-4 w-4" />
+                                            <span>Delete</span>
+                                          </AlertDialogTrigger>
+                                          <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700 alert-dialog-content">
+                                            <AlertDialogHeader>
+                                              <AlertDialogTitle className="dark:text-white">
+                                                Confirm Deletion
+                                              </AlertDialogTitle>
+                                              <AlertDialogDescription className="dark:text-gray-400">
+                                                This will permanently delete{" "}
+                                                {member.fullName}'s account and
+                                                all associated data.
+                                              </AlertDialogDescription>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                              <AlertDialogCancel className="dark:border-none dark:text-white dark:hover:bg-gray-700">
+                                                Cancel
+                                              </AlertDialogCancel>
+                                              <AlertDialogAction
+                                                className="bg-red-600 hover:bg-red-700 dark:text-white dark:bg-red-700 dark:hover:bg-red-800"
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  deleteMember(member._id);
+                                                }}
+                                              >
+                                                Delete
+                                              </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                          </AlertDialogContent>
+                                        </AlertDialog>
+                                      </DropdownMenuItem>
                                     </DropdownMenuGroup>
                                   </DropdownMenuContent>
                                 </DropdownMenu>
