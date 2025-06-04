@@ -988,7 +988,7 @@ const MemberDetails = ({ memberId }) => {
                             </div>
 
                             <div>
-                              <Label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                              <Label className="block text-sm dark:text-gray-300 mb-1 font-medium text-gray-700">
                                 Membership Plan
                               </Label>
                               <div ref={planSearchRef} className="relative">
@@ -1010,7 +1010,7 @@ const MemberDetails = ({ memberId }) => {
                                         }}
                                         onFocus={handleMembershipSearchFocus}
                                         onKeyDown={handleKeyDown}
-                                        className="w-full rounded-sm dark:border-gray-600 dark:bg-gray-900 bg-white py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
+                                        className="w-full rounded-sm dark:border-none dark:bg-gray-900 bg-white py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
                                         placeholder="Search membership plan..."
                                       />
                                       <div className="absolute inset-y-0 left-0 flex items-center pl-3">
@@ -1069,31 +1069,6 @@ const MemberDetails = ({ memberId }) => {
                                   </div>
                                 )}
                               </div>
-                            </div>
-
-                            <div>
-                              <Label>Membership Duration</Label>
-                              <Controller
-                                name="membershipDuration"
-                                control={control}
-                                render={({ field }) => (
-                                  <select
-                                    {...field}
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      setMembershipDuration(e.target.value);
-                                      field.onChange(e);
-                                    }}
-                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
-                                  >
-                                    <option value="">Select</option>
-                                    <option value="1 Month">1 Month</option>
-                                    <option value="3 Months">3 Months</option>
-                                    <option value="6 Months">6 Months</option>
-                                    <option value="12 Months">12 Months</option>
-                                  </select>
-                                )}
-                              />
                             </div>
 
                             <div>
@@ -1185,15 +1160,6 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Discount Reason</Label>
                               <Input
                                 {...register("discountReason")}
-                                type="text"
-                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
-                              />
-                            </div>
-
-                            <div>
-                              <Label>Discount Code</Label>
-                              <Input
-                                {...register("discountCode")}
                                 type="text"
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
@@ -1351,13 +1317,13 @@ const MemberDetails = ({ memberId }) => {
                           >
                             {isSubmitting ? (
                               <>
-                                <RiLoader5Fill className="animate-spin mr-2" />
+                                <RiLoader5Fill className="animate-spin" />
                                 <span>Processing...</span>
                               </>
                             ) : (
                               <>
-                                <FiSave className="mr-2" />
-                                <span>Submit</span>
+                                <FiSave />
+                                <span>Update</span>
                               </>
                             )}
                           </Button>
