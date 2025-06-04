@@ -642,13 +642,13 @@ const MemberDetails = ({ memberId }) => {
                         </TabsTrigger>
                       </TabsList>
                       <TabsContent value="Personal Details">
-                        <div className="p-2 bg-white dark:bg-gray-900">
+                        <div className="p-2 bg-white dark:bg-gray-800">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
                               <Label>Full Name</Label>
                               <Input
                                 {...register("fullName")}
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 type="text"
                               />
                             </div>
@@ -657,7 +657,7 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Contact No</Label>
                               <Input
                                 {...register("contactNo")}
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -665,7 +665,7 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Email Address</Label>
                               <Input
                                 {...register("email")}
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -674,7 +674,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 type="date"
                                 {...register("dob")}
-                                className="rounded-md focus:outline-none cursor-pointer"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -682,7 +682,7 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Secondary Contact No</Label>
                               <Input
                                 {...register("secondaryContactNo")}
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -710,7 +710,7 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Address</Label>
                               <Input
                                 {...register("address")}
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -827,6 +827,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("membershipDate")}
                                 type="date"
+                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -845,6 +846,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipRenewDate(e.target.value);
                                       field.onChange(e);
                                     }}
+                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -890,6 +892,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipExpireDate(e.target.value);
                                       field.onChange(e);
                                     }}
+                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -897,6 +900,7 @@ const MemberDetails = ({ memberId }) => {
                           </div>
                         </div>
                       </TabsContent>
+
                       <TabsContent value="Payment Details">
                         <div className="p-2 dark:bg-gray-900 bg-white">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
@@ -935,7 +939,7 @@ const MemberDetails = ({ memberId }) => {
                                       field.onChange(e);
                                     }}
                                     type="text"
-                                    className="rounded-md focus:outline-none"
+                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -946,7 +950,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("discountReason")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -955,7 +959,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("discountCode")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -965,7 +969,7 @@ const MemberDetails = ({ memberId }) => {
                                 type="text"
                                 defaultValue={"1000"}
                                 disabled
-                                className="rounded-md disabled:bg-gray-300 text-black focus:outline-none"
+                                className="rounded-sm py-6 disabled-bg-gray-300 dark:disabled:bg-gray-500 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 placeholder="Admission Fee"
                               />
                             </div>
@@ -976,7 +980,7 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("finalAmmount")}
                                 type="text"
                                 disabled
-                                className="rounded-md disabled:bg-gray-300 text-black focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -995,7 +999,7 @@ const MemberDetails = ({ memberId }) => {
                                       field.onChange(e);
                                     }}
                                     type="text"
-                                    className="rounded-md focus:outline-none"
+                                    className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -1007,7 +1011,7 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("dueAmmount")}
                                 type="text"
                                 disabled
-                                className="rounded-md disabled:bg-gray-300 text-black focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1016,7 +1020,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("receiptNo")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1025,7 +1029,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("referenceCode")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1059,7 +1063,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("remark")}
                                 type="text"
-                                className="rounded-md focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
                                 placeholder="Remark"
                               />
                             </div>
