@@ -1,14 +1,16 @@
 "use client";
 
 import { FiSearch } from "react-icons/fi";
-import { BiSolidUserCircle } from "react-icons/bi";
 import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { toast as sonnerToast } from "sonner";
 import { Switch } from "@/components/ui/switch";
-import { BiSolidUserDetail } from "react-icons/bi";
 import { TiBusinessCard } from "react-icons/ti";
 import { MdOutlinePayment } from "react-icons/md";
-import { BiHomeAlt } from "react-icons/bi";
+import {
+  BiHomeAlt,
+  BiSolidUserDetail,
+  BiSolidUserCircle,
+} from "react-icons/bi";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { useForm, Controller } from "react-hook-form";
@@ -63,69 +65,13 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 const NewMemberRegistrationForm = () => {
   const { user, loading } = useUser();
 
-  const membershipPlans = [
-    {
-      title: "ADMISSION FEE",
-      type: "Admission",
-      admissionFee: 1000,
-    },
-    {
-      regularMemberships: [
-        {
-          option: "Regular",
-          type: "Gym",
-          gymRegularFees: {
-            "1 Month": 4000,
-            "3 Months": 10500,
-            "6 Months": 18000,
-            "12 Months": 30000,
-          },
-        },
-        {
-          option: "Regular",
-          type: "Gym & Cardio",
-          gymCardioRegularFees: {
-            "1 Month": 5000,
-            "3 Months": 12000,
-            "6 Months": 21000,
-            "12 Months": 36000,
-          },
-        },
-      ],
-      daytimeMemberships: [
-        {
-          option: "Daytime",
-          type: "Gym",
-          gymDayFees: {
-            "1 Month": 3000,
-            "3 Months": 7500,
-            "6 Months": 12000,
-            "12 Months": 18000,
-          },
-        },
-        {
-          option: "Daytime",
-          type: "Gym & Cardio",
-          gymCardioDayFees: {
-            "1 Month": 4000,
-            "3 Months": 10500,
-            "6 Months": 18000,
-            "12 Months": 30000,
-          },
-        },
-      ],
-    },
-  ];
-
-  const [membershipDuration, setMembershipDuration] = useState("");
+  // Add new state for step management
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 3;
 
   // Members details
   const [gender, setGender] = useState("");
   const [status, setStatus] = useState(false);
-
-  // Payment Details
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [actionTaker, setActionTaker] = useState("");
 
   // Payment Details
   const [finalAmmount, setFinalAmmount] = useState("");
@@ -133,9 +79,11 @@ const NewMemberRegistrationForm = () => {
   const [paidAmmount, setPaidAmmount] = useState("");
   const [dueAmmount, setDueAmmount] = useState("");
   const [planId, setPlanId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [actionTaker, setActionTaker] = useState("");
 
   // Membership details
-  const [membershipOption, setMembershipOption] = useState("");
+  const [membershipDuration, setMembershipDuration] = useState("");
   const [membershipType, setMembershipType] = useState("");
   const [membershipShift, setMembershipShift] = useState("");
   const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
@@ -163,6 +111,7 @@ const NewMemberRegistrationForm = () => {
     }
   }, [membershipRenewDate, selectedPlanDetails]);
 
+  // Calculate amounts
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
     setDueAmmount(due - discountAmmount);
@@ -172,6 +121,7 @@ const NewMemberRegistrationForm = () => {
     calculateDueAmmount();
   }, [finalAmmount, discountAmmount, paidAmmount]);
 
+  // React Hook Form
   const {
     register,
     reset,
@@ -183,47 +133,10 @@ const NewMemberRegistrationForm = () => {
     control,
   } = useForm();
 
-  const handleMembershipSelection = (duration) => {
-    setMembershipDuration(duration);
-    const newMembershipExpireDate = new Date(membershipRenewDate);
-
-    switch (duration) {
-      case "1 Month":
-        newMembershipExpireDate.setMonth(
-          newMembershipExpireDate.getMonth() + 1
-        );
-        break;
-
-      case "3 Months":
-        newMembershipExpireDate.setMonth(
-          newMembershipExpireDate.getMonth() + 3
-        );
-        break;
-
-      case "6 Months":
-        newMembershipExpireDate.setMonth(
-          newMembershipExpireDate.getMonth() + 6
-        );
-        break;
-
-      case "12 Months":
-        newMembershipExpireDate.setFullYear(
-          newMembershipExpireDate.getFullYear() + 1
-        );
-        break;
-
-      default:
-        break;
-    }
-    setMembershipExpireDate(newMembershipExpireDate);
-  };
-
-  useEffect(() => {
-    handleMembershipSelection(membershipDuration);
-  }, [membershipRenewDate]);
-
+  // Register membership
   const onRegisterMember = async (data) => {
     clearErrors();
+    console.log("Data: ", data);
 
     let isValid = true;
 
@@ -234,14 +147,6 @@ const NewMemberRegistrationForm = () => {
 
     if (!status) {
       setError("status", { type: "manual", message: "Status is required" });
-      isValid = false;
-    }
-
-    if (!membershipOption) {
-      setError("membershipOption", {
-        type: "manual",
-        message: "Membership option is required",
-      });
       isValid = false;
     }
 
@@ -307,7 +212,6 @@ const NewMemberRegistrationForm = () => {
         address,
 
         status,
-        membershipOption,
         membershipType,
         membershipShift,
         membershipDate,
@@ -327,6 +231,8 @@ const NewMemberRegistrationForm = () => {
         remark,
         actionTaker,
       };
+
+      console.log("Final Data: ", membersFinalData);
 
       if (discountAmmount && !discountReason) {
         setError("discountReason", {
@@ -389,6 +295,7 @@ const NewMemberRegistrationForm = () => {
     }
   };
 
+  // Get Action Takers
   const getAactionTakers = async () => {
     try {
       const response = await fetch(
@@ -422,17 +329,15 @@ const NewMemberRegistrationForm = () => {
 
   const { actionTakersDB } = actionTakers || {};
 
-  // Add new state for step management
-  const [currentStep, setCurrentStep] = useState(1);
-  const totalSteps = 3;
-
   // Function to handle step navigation
+  // Next Step
   const handleNextStep = () => {
     if (currentStep < totalSteps) {
       setCurrentStep(currentStep + 1);
     }
   };
 
+  // Previous Step
   const handlePrevStep = () => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
@@ -467,7 +372,6 @@ const NewMemberRegistrationForm = () => {
   };
 
   // Check if members name already taken
-
   const fullName = watch("fullName");
   useFieldAvailabilityCheck({
     fieldValue: fullName,
@@ -518,7 +422,7 @@ const NewMemberRegistrationForm = () => {
 
   const { membershipPlans: fetchedPlans } = plans || {};
 
-  // Member search states
+  // Plan search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
   const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
@@ -545,8 +449,8 @@ const NewMemberRegistrationForm = () => {
     setRenderMembershipPlanDropdown(true);
   };
 
+  // Handle Keyboard Interactivity in Plans dropdown
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
-
   useEffect(() => {
     setHighlightedIndex(-1);
   }, [renderMembershipPlanDropdown, planSearchQuery]);
@@ -578,6 +482,7 @@ const NewMemberRegistrationForm = () => {
     }
   };
 
+  // Filter Plans
   const filteredPlans =
     fetchedPlans?.filter((plan) =>
       plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
@@ -587,13 +492,13 @@ const NewMemberRegistrationForm = () => {
     return `${duration / 30} Months`;
   };
 
+  // Get Admission Charge
   const admissionCharge = fetchedPlans?.find(
     (plan) =>
       plan.planName.toString() === "Admission Fee" ||
       plan.planName.toString() === "Admission Charge" ||
       plan.planName.toString().startsWith("Admission")
   );
-
   const admissionPrice = admissionCharge?.price;
 
   return (
@@ -1081,13 +986,16 @@ const NewMemberRegistrationForm = () => {
                                         setMembershipDurationDays(
                                           parseInt(plan.duration)
                                         );
-                                        setPlanName(plan.planName);
-                                        setPlanSearchQuery(plan.planName);
+                                        setPlanName(`${plan.planName} - ${plan.price}`);
+                                        setPlanSearchQuery(`${plan.planName} - ${plan.price}`);
                                         setPlanId(plan._id);
                                         setSelectedPlanDetails(plan);
                                         setRenderMembershipPlanDropdown(false);
                                         setFinalAmmount(
                                           plan.price + admissionPrice
+                                        );
+                                        setMembershipDuration(
+                                          convertDurationInMonths(plan.duration)
                                         );
                                       }}
                                       className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
@@ -1319,18 +1227,6 @@ const NewMemberRegistrationForm = () => {
                               </p>
                             )}
                           </div>
-
-                          {/* <div className="space-y-2">
-                            <Label className="text-gray-700 dark:text-gray-300">
-                              Discount Code
-                            </Label>
-                            <Input
-                              className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
-                              {...register("discountCode")}
-                              type="text"
-                              placeholder="Discount Code"
-                            />
-                          </div> */}
 
                           <div className="space-y-2">
                             <Label className="text-gray-700 dark:text-gray-300">
