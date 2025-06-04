@@ -695,7 +695,7 @@ const MemberDetails = ({ memberId }) => {
                                   <select
                                     {...field}
                                     {...register("gender")}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Male">Male</option>
@@ -722,7 +722,7 @@ const MemberDetails = ({ memberId }) => {
                                 render={({ field }) => (
                                   <select
                                     {...field}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option
@@ -751,7 +751,7 @@ const MemberDetails = ({ memberId }) => {
                         </div>
                       </TabsContent>
                       <TabsContent value="Membership Details">
-                        <div className="p-2 dark:bg-gray-900 bg-white">
+                        <div className="p-2 dark:bg-gray-800 bg-white">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
                               <Label>Membership Option</Label>
@@ -766,7 +766,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipOption(e.target.value);
                                       field.onChange(e);
                                     }}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Regular">Regular</option>
@@ -790,7 +790,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipType(e.target.value);
                                       field.onChange(e);
                                     }}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Gym">Gym</option>
@@ -811,7 +811,7 @@ const MemberDetails = ({ memberId }) => {
                                   <select
                                     {...field}
                                     {...register("membershipShift")}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Morning">Morning</option>
@@ -827,7 +827,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("membershipDate")}
                                 type="date"
-                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -846,7 +846,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipRenewDate(e.target.value);
                                       field.onChange(e);
                                     }}
-                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                    className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -865,7 +865,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipDuration(e.target.value);
                                       field.onChange(e);
                                     }}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="1 Month">1 Month</option>
@@ -892,7 +892,7 @@ const MemberDetails = ({ memberId }) => {
                                       setMembershipExpireDate(e.target.value);
                                       field.onChange(e);
                                     }}
-                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                    className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -902,7 +902,7 @@ const MemberDetails = ({ memberId }) => {
                       </TabsContent>
 
                       <TabsContent value="Payment Details">
-                        <div className="p-2 dark:bg-gray-900 bg-white">
+                        <div className="p-2 dark:bg-gray-800 bg-white">
                           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div>
                               <Label>Payment Method</Label>
@@ -913,7 +913,7 @@ const MemberDetails = ({ memberId }) => {
                                   <select
                                     {...field}
                                     {...register("paymentMethod")}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Fonepay">Fonepay</option>
@@ -939,7 +939,7 @@ const MemberDetails = ({ memberId }) => {
                                       field.onChange(e);
                                     }}
                                     type="text"
-                                    className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                    className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -950,7 +950,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("discountReason")}
                                 type="text"
-                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -959,7 +959,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("discountCode")}
                                 type="text"
-                                className="rounded-sm py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -980,7 +980,7 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("finalAmmount")}
                                 type="text"
                                 disabled
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -999,7 +999,7 @@ const MemberDetails = ({ memberId }) => {
                                       field.onChange(e);
                                     }}
                                     type="text"
-                                    className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                    className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                   />
                                 )}
                               />
@@ -1011,7 +1011,7 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("dueAmmount")}
                                 type="text"
                                 disabled
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1020,7 +1020,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("receiptNo")}
                                 type="text"
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1029,7 +1029,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("referenceCode")}
                                 type="text"
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
 
@@ -1042,7 +1042,7 @@ const MemberDetails = ({ memberId }) => {
                                   <select
                                     {...field}
                                     {...register("reasonForUpdate")}
-                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
                                     <option value="Normal Change">
@@ -1063,7 +1063,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("remark")}
                                 type="text"
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-800 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 placeholder="Remark"
                               />
                             </div>
@@ -1077,7 +1077,7 @@ const MemberDetails = ({ memberId }) => {
                                   <div>
                                     <select
                                       {...field}
-                                      className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
+                                      className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                     >
                                       <option value={""}>Select</option>
                                       {Array.isArray(actionTakersDB) &&
@@ -1115,8 +1115,8 @@ const MemberDetails = ({ memberId }) => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center space-x-2 p-2">
-                          <Button type="submit" className="rounded-md">
+                        <div className="flex items-center dark:bg-gray-800 space-x-2 p-2">
+                          <Button type="submit" className="rounded-sm">
                             {isSubmitting ? "Submitting..." : "Submit"}
                           </Button>
                         </div>
