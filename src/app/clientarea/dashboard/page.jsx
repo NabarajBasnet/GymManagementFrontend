@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
-import { User, Settings, LogOut, X, Info } from "lucide-react";
+import { User, Settings, LogOut, X, Info, Calendar, Clock, Shield, Activity } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
@@ -27,22 +27,36 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
-const StatCard = ({ icon: Icon, title, value, className }) => (
+const StatCard = ({ icon: Icon, title, value, className, trend, subtitle }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3 }}
+    whileHover={{ y: -2 }}
   >
-    <Card className="hover:shadow-lg cursor-pointer dark:border-none dark:bg-gray-800 transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-center space-x-4">
-          <div className={`p-3 rounded-full ${className}`}>
-            <Icon className="w-6 h-6" />
+    <Card className="relative overflow-hidden border-0 shadow-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group">
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/10" />
+      <CardContent className="p-6 relative">
+        <div className="flex items-center justify-between">
+          <div className="space-y-2">
+            <div className={`inline-flex p-3 rounded-xl ${className} transition-all duration-300 group-hover:scale-110`}>
+              <Icon className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</h3>
+              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{title}</p>
+              {subtitle && (
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
+              )}
+            </div>
           </div>
-          <div>
-            <h3 className="text-3xl font-bold">{value}</h3>
-            <p className="text-sm text-muted-foreground">{title}</p>
-          </div>
+          {trend && (
+            <div className="text-right">
+              <span className="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
+                {trend}
+              </span>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
@@ -89,21 +103,27 @@ const TenantDashboard = () => {
 
   if (!loggedInTenant) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)]" />
         <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="text-center space-y-4"
+          className="relative text-center space-y-6 p-8 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 dark:border-gray-700/50"
         >
-          <h1 className="text-2xl font-bold dark:text-gray-200">
-            Please login to continue
-          </h1>
-          <p className="text-sm text-muted-foreground">Access your dashboard</p>
+          <div className="w-16 h-16 mx-auto bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+            <Shield className="w-8 h-8 text-white" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Authentication Required
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300">Please sign in to access your dashboard</p>
+          </div>
           <Button
             onClick={() => router.push("/auth/tenantlogin")}
-            className="px-8"
+            className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
-            Login
+            Sign In
           </Button>
         </motion.div>
       </div>
@@ -143,95 +163,127 @@ const TenantDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="w-full px-4 sm:px-6 lg:px-8 py-8">
-        <motion.h1
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="text-3xl font-bold dark:text-white"
-        >
-          My Dashboard
-        </motion.h1>
-        <p className="text-sm text-muted-foreground my-4 font-medium dark:text-white">
-          Portal / Client Area / Dashboard
-        </p>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.1),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)]" />
 
-        <div className="flex flex-col-reverse lg:flex-row gap-8">
-          {/* Profile Card */}
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                Dashboard Overview
+              </h1>
+              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+                <span>Portal</span>
+                <span>/</span>
+                <span>Client Area</span>
+                <span>/</span>
+                <span className="text-blue-600 dark:text-blue-400 font-medium">Dashboard</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
+              <Clock className="w-4 h-4" />
+              <span>{new Date().toLocaleDateString()}</span>
+            </div>
+          </div>
+        </motion.div>
+
+        <div className="flex flex-col xl:flex-row gap-8">
+          {/* Enhanced Profile Card */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="w-full lg:w-3/12"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="w-full xl:w-80 flex-shrink-0"
           >
-            <Card className="overflow-hidden dark:border-none dark:bg-gray-800">
-              <CardContent className="p-6">
+            <Card className="overflow-hidden border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent" />
+              <CardContent className="p-8 relative">
                 <div className="flex flex-col items-center space-y-6">
+                  {/* Avatar with Status */}
                   <div className="relative">
-                    <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                    <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
                       {loggedInTenant?.ownerName.split(" ")[0].charAt(0)}
-                      {loggedInTenant?.ownerName.split(" ")[1].charAt(0)}
+                      {loggedInTenant?.ownerName.split(" ")[1]?.charAt(0) || ""}
+                    </div>
+                    <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white dark:border-gray-800 flex items-center justify-center">
+                      <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
                     </div>
                   </div>
 
+                  {/* User Info */}
                   <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       {loggedInTenant?.ownerName}
                     </h2>
-                    <p className="text-sm dark:text-gray-100">
+                    <p className="text-blue-600 dark:text-blue-400 font-medium">
                       {getGreeting()}
                     </p>
                   </div>
 
+                  {/* Contact Details */}
                   <div className="w-full space-y-4">
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <User className="w-4 h-4 dark:text-gray-100" />
-                        <span className="dark:text-gray-100">
+                    <div className="space-y-3 p-4 bg-gray-50/50 dark:bg-gray-700/30 rounded-xl">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                          <User className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
                           {loggedInTenant?.email}
                         </span>
                       </div>
-                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <FaBuilding className="w-4 h-4 dark:text-gray-100" />
-                        <span className="dark:text-gray-100">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                          <FaBuilding className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+                        </div>
+                        <span className="text-sm text-gray-700 dark:text-gray-300 truncate">
                           {loggedInTenant?.address}
                         </span>
                       </div>
                     </div>
 
-                    <div className="space-y-2 pt-4 border-t dark:border-gray-800">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-gray-100">
-                          Account Status
-                        </span>
-                        <span className="font-medium dark:text-gray-100">
-                          {loggedInTenant?.tenantStatus}
-                        </span>
+                    {/* Status Cards */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200/50 dark:border-green-700/30">
+                        <div className="text-center">
+                          <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">Account</p>
+                          <p className="text-sm font-bold text-green-700 dark:text-green-300">
+                            {loggedInTenant?.tenantStatus}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground dark:text-gray-100">
-                          Subscription Status
-                        </span>
-                        <span className="font-medium dark:text-gray-100 ">
-                          {loggedInTenant?.tenantSubscriptionStatus}
-                        </span>
+                      <div className="p-3 bg-gradient-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-xl border border-blue-200/50 dark:border-blue-700/30">
+                        <div className="text-center">
+                          <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Subscription</p>
+                          <p className="text-sm font-bold text-blue-700 dark:text-blue-300">
+                            {loggedInTenant?.tenantSubscriptionStatus}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex flex-col space-y-2 pt-4">
+                    {/* Action Buttons */}
+                    <div className="flex flex-col space-y-3 pt-4">
                       <Button
                         variant="outline"
-                        className="w-full dark:border-none dark:hover:bg-gray-700 hover:bg-gray-200"
-                        onClick={() => {}}
+                        className="w-full h-11 border-2 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 group"
+                        onClick={() => { }}
                       >
-                        <Settings className="w-4 h-4 mr-2" />
+                        <Settings className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
                         Edit Profile
                       </Button>
                       <Button
-                        className="w-full bg-red-600 text-white dark:border-none dark:hover:bg-red-700 hover:bg-red-700"
+                        className="w-full h-11 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                         onClick={() => logOutTenant()}
                       >
                         <LogOut className="w-4 h-4 mr-2" />
-                        Log Out
+                        Sign Out
                       </Button>
                     </div>
                   </div>
@@ -241,94 +293,114 @@ const TenantDashboard = () => {
           </motion.div>
 
           {/* Main Content */}
-          <div className="w-full lg:w-9/12 space-y-8">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="flex-1 space-y-8">
+            {/* Enhanced Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               <StatCard
                 icon={FaUsers}
-                title="Staffs"
+                title="Staff Members"
                 value={loggedInTenant?.staffs?.length || 0}
-                className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
+                className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400"
+                trend="+12%"
+                subtitle="Active employees"
               />
               <StatCard
                 icon={FaBuilding}
                 title="Branches"
-                value={
-                  loggedInTenant?.tenantSubscription?.branches?.length || 0
-                }
-                className="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
+                value={loggedInTenant?.tenantSubscription?.branches?.length || 0}
+                className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 text-purple-600 dark:text-purple-400"
+                trend="+5%"
+                subtitle="Business locations"
               />
               <StatCard
                 icon={FaUsers}
-                title="Users"
+                title="System Users"
                 value={loggedInTenant?.tenantSubscription?.users?.length || 0}
-                className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-600 dark:text-green-400"
+                trend="+8%"
+                subtitle="Platform access"
               />
               <StatCard
                 icon={GiBiceps}
                 title="Members"
                 value={loggedInTenant?.tenantSubscription?.members?.length || 0}
-                className="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400"
+                className="bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-600 dark:text-orange-400"
+                trend="+23%"
+                subtitle="Registered members"
               />
             </div>
 
-            {/* Active Services Card */}
+            {/* Enhanced Active Services Card */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="dark:border-none dark:bg-gray-800 shadow-md">
-                <CardHeader>
-                  <CardTitle>Your Current Active Services/Products</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="p-6 flex justify-between items-center bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg text-white">
+              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-2xl font-semibold mb-2">
-                        {onFreeTrail
-                          ? "Free Trial"
-                          : loggedInTenant?.tenantSubscription[0]
-                              ?.subscriptionName || "No Active Subscription"}
-                      </h3>
-                      <p className="text-blue-100 font-medium text-sm">
-                        {loggedInTenant?.ownerName || "N/A"}
+                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                        Current Subscription
+                      </CardTitle>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        Your active service plan and details
                       </p>
                     </div>
+                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                      <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="relative p-8 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl text-white overflow-hidden">
+                    {/* Background Pattern */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent)]" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.05),transparent)]" />
 
-                    <div>
-                      <h1 className="text-blue-100 font-medium text-sm">
-                        Start:{" "}
-                        {new Date(
-                          loggedInTenant?.tenantSubscriptionStartDate
-                        ).toLocaleDateString()}
-                      </h1>
-                      <h1 className="text-blue-100 font-medium text-sm">
-                        End:{" "}
-                        {onFreeTrail
-                          ? new Date(
-                              loggedInTenant?.tenantFreeTrialEndDate
-                            ).toLocaleDateString()
-                          : new Date(
-                              loggedInTenant?.tenantSubscriptionEndDate
-                            ).toLocaleDateString()}
-                      </h1>
+                    <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                      <div className="space-y-3">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
+                            <Shield className="w-6 h-6 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold mb-1">
+                              {onFreeTrail
+                                ? "Free Trial Plan"
+                                : loggedInTenant?.tenantSubscription[0]?.subscriptionName || "No Active Subscription"}
+                            </h3>
+                            <p className="text-blue-100 font-medium">
+                              {loggedInTenant?.ownerName || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
 
-                      <h1 className="text-blue-100 font-medium text-sm">
-                        {onFreeTrail ? (
-                          <p>
-                            Remaining Days:{" "}
-                            {loggedInTenant?.tenantFreeTrailRemainingDays}
-                          </p>
-                        ) : (
-                          <p className="text-blue-100 font-medium text-sm">
-                            Remaining Days:{" "}
+                      <div className="space-y-3 text-right">
+                        <div className="flex items-center space-x-2 text-blue-100">
+                          <Calendar className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            Start: {new Date(loggedInTenant?.tenantSubscriptionStartDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center space-x-2 text-blue-100">
+                          <Calendar className="w-4 h-4" />
+                          <span className="text-sm font-medium">
+                            End: {onFreeTrail
+                              ? new Date(loggedInTenant?.tenantFreeTrialEndDate).toLocaleDateString()
+                              : new Date(loggedInTenant?.tenantSubscriptionEndDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm font-bold">
                             {onFreeTrail
-                              ? loggedInTenant?.tenantFreeTrailRemainingDays
-                              : calculateRemainingDays()}
-                          </p>
-                        )}
-                      </h1>
+                              ? `${loggedInTenant?.tenantFreeTrailRemainingDays} days left`
+                              : `${calculateRemainingDays()} days remaining`}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -338,115 +410,112 @@ const TenantDashboard = () => {
         </div>
       </div>
 
-      {/* Alert Dialog */}
+      {/* Enhanced Alert Dialog */}
       <AlertDialog
         open={createOrganizationAlertDialog}
         onOpenChange={setCreateOrganizationAlertDialog}
       >
-        <AlertDialogContent className="sm:max-w-[525px] dark:bg-gray-800 dark:border-gray-700">
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-2xl flex items-center font-semibold dark:text-white">
-              <Info className="w-6 mt-1 h-6 mr-2" />
-              Organization Details Required
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-600 text-sm font-medium dark:text-gray-300">
-              Please provide your organization's contact information which will
-              be usefull for notifications and many other purposes.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <form
-            onSubmit={async (e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target);
-              try {
-                const response = await fetch(
-                  `http://localhost:3000/api/tenant/email-phone-assign/${loggedInTenant?._id}`,
-                  {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      organizationEmail: formData.get("organizationEmail"),
-                      organizationPhone: formData.get("organizationPhone"),
-                    }),
-                  }
-                );
+        <AlertDialogContent className="sm:max-w-[600px] border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 rounded-lg" />
+          <div className="relative">
+            <AlertDialogHeader className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Info className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+                    Complete Your Profile
+                  </AlertDialogTitle>
+                  <AlertDialogDescription className="text-gray-600 dark:text-gray-300 text-base">
+                    Please provide your organization's contact information for notifications and communication purposes.
+                  </AlertDialogDescription>
+                </div>
+              </div>
+            </AlertDialogHeader>
 
-                const data = await response.json();
-                if (response.ok) {
-                  toast.success(data.message);
-                  soonerToast.success(data.message);
-                  setCreateOrganizationAlertDialog(false);
-                  window.location.reload();
-                } else {
-                  throw new Error(data.message || "Something went wrong");
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                try {
+                  const response = await fetch(
+                    `http://localhost:3000/api/tenant/email-phone-assign/${loggedInTenant?._id}`,
+                    {
+                      method: "PATCH",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        organizationEmail: formData.get("organizationEmail"),
+                        organizationPhone: formData.get("organizationPhone"),
+                      }),
+                    }
+                  );
+
+                  const data = await response.json();
+                  if (response.ok) {
+                    toast.success(data.message);
+                    soonerToast.success(data.message);
+                    setCreateOrganizationAlertDialog(false);
+                    window.location.reload();
+                  } else {
+                    throw new Error(data.message || "Something went wrong");
+                  }
+                } catch (error) {
+                  soonerToast.error(error.message);
                 }
-              } catch (error) {
-                soonerToast.error(error.message);
-              }
-            }}
-          >
-            <div className="space-y-6 py-6">
-              <div className="flex flex-col space-y-2">
-                <label
-                  htmlFor="organizationEmail"
-                  className="text-sm font-medium dark:text-gray-200"
-                >
-                  Organization Email
-                </label>
-                <input
-                  id="organizationEmail"
-                  name="organizationEmail"
-                  type="email"
-                  placeholder="organization@example.com"
-                  className="flex w-full rounded-sm border border-gray-200 bg-white px-3 py-3 text-sm 
-                     ring-offset-white transition-colors file:border-0 file:bg-transparent 
-                     file:text-sm file:font-medium placeholder:text-gray-500 
-                     focus-visible:outline-none focus-visible:ring-gray-400 
-                     focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-                     dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 
-                     dark:ring-offset-gray-800 dark:placeholder:text-gray-400
-                     dark:focus-visible:ring-gray-500"
-                  required
-                />
+              }}
+            >
+              <div className="space-y-6 py-6">
+                <div className="space-y-3">
+                  <label
+                    htmlFor="organizationEmail"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2"
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Organization Email</span>
+                  </label>
+                  <input
+                    id="organizationEmail"
+                    name="organizationEmail"
+                    type="email"
+                    placeholder="organization@example.com"
+                    className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
+                    required
+                  />
+                </div>
+                <div className="space-y-3">
+                  <label
+                    htmlFor="organizationPhone"
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2"
+                  >
+                    <FaBuilding className="w-4 h-4" />
+                    <span>Organization Phone</span>
+                  </label>
+                  <input
+                    id="organizationPhone"
+                    name="organizationPhone"
+                    type="tel"
+                    placeholder="+1 (555) 000-0000"
+                    className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
+                    required
+                  />
+                </div>
               </div>
-              <div className="flex flex-col space-y-2">
-                <label
-                  htmlFor="organizationPhone"
-                  className="text-sm font-medium dark:text-gray-200"
+              <AlertDialogFooter className="gap-3 pt-4">
+                <AlertDialogCancel className="h-11 px-6 rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300">
+                  Cancel
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  type="submit"
+                  className="h-11 px-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                 >
-                  Organization Phone
-                </label>
-                <input
-                  id="organizationPhone"
-                  name="organizationPhone"
-                  type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  className="flex w-full rounded-sm border border-gray-200 bg-white px-3 py-3 text-sm 
-                     ring-offset-white transition-colors file:border-0 file:bg-transparent 
-                     file:text-sm file:font-medium placeholder:text-gray-500 
-                     focus-visible:outline-none focus-visible:ring-gray-400 
-                     focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50
-                     dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200 
-                     dark:ring-offset-gray-800 dark:placeholder:text-gray-400
-                     dark:focus-visible:ring-gray-500"
-                  required
-                />
-              </div>
-            </div>
-            <AlertDialogFooter className="sm:justify-end gap-2">
-              <AlertDialogCancel className="mt-0 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-600">
-                Cancel
-              </AlertDialogCancel>
-              <AlertDialogAction
-                type="submit"
-                className="bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700"
-              >
-                Save Changes
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </form>
+                  Save Changes
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </form>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </div>

@@ -58,6 +58,7 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const MemberDetails = ({ memberId }) => {
   const { user, loading } = useUser();
+  const userRole = user?.user.role;
 
   // For rendering states
   const [currentActionTaker, setCurrentActionTaker] = useState("");
@@ -82,63 +83,10 @@ const MemberDetails = ({ memberId }) => {
   const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
     new Date()
   );
-
-  // Objects
-  const membershipPlans = [
-    {
-      title: "ADMISSION FEE",
-      type: "Admission",
-      admissionFee: 1000,
-    },
-    {
-      regularMemberships: [
-        {
-          option: "Regular",
-          type: "Gym",
-          gymRegularFees: {
-            "1 Month": 4000,
-            "3 Months": 10500,
-            "6 Months": 18000,
-            "12 Months": 30000,
-          },
-        },
-        {
-          option: "Regular",
-          type: "Gym & Cardio",
-          gymCardioRegularFees: {
-            "1 Month": 5000,
-            "3 Months": 12000,
-            "6 Months": 21000,
-            "12 Months": 36000,
-          },
-        },
-      ],
-      daytimeMemberships: [
-        {
-          option: "Daytime",
-          type: "Gym",
-          gymDayFees: {
-            "1 Month": 3000,
-            "3 Months": 7500,
-            "6 Months": 12000,
-            "12 Months": 18000,
-          },
-        },
-        {
-          option: "Daytime",
-          type: "Gym & Cardio",
-          gymCardioDayFees: {
-            "1 Month": 4000,
-            "3 Months": 10500,
-            "6 Months": 18000,
-            "12 Months": 30000,
-          },
-        },
-      ],
-    },
-  ];
-
-  console.log("Selected Plan: ", selectedPlanDetails);
+  const [newMembershipExpireDate, setNewMembershipExpireDate] = useState(
+    new Date()
+  );
+  console.log("New membership expiry date: ", newMembershipExpireDate);
 
   // React hook form
   const {
@@ -153,18 +101,15 @@ const MemberDetails = ({ memberId }) => {
     clearErrors,
   } = useForm();
 
-  // Hooks
+  // Member Hooks
   const { getSingleUserDetails } = useMember();
-
-  // Get member details
   const { data, isLoading } = useQuery({
     queryKey: ["member", memberId],
     queryFn: () => getSingleUserDetails(memberId),
     enabled: !!memberId,
   });
-
   const { member, message, qrCode } = data || {};
-  console.log("Member: ", member);
+
   // Populate Data
   useEffect(() => {
     if (data) {
@@ -190,7 +135,7 @@ const MemberDetails = ({ memberId }) => {
         membershipExpireDate: member.membershipExpireDate
           ? new Date(member.membershipExpireDate).toISOString().split("T")[0]
           : "" &&
-            setMembershipExpireDate(new Date(member.membershipExpireDate)),
+          setMembershipExpireDate(new Date(member.membershipExpireDate)),
         paymentMethod: member.paymentMethod,
         discountAmmount: member.discountAmmount,
         discountReason: member.discountReason,
@@ -212,130 +157,27 @@ const MemberDetails = ({ memberId }) => {
       );
       setAdmissionFee(member?.admissionFee);
       setSelectedPlanDetails(member?.membership);
+      setMembershipDurationDays(member?.membership?.duration);
     }
   }, [data, reset]);
 
   // Handle Expire Date Based On Selected Plan Details And Previous Expire Date
+  const handleMembershipExpireDate = (prevExpDate, duration) => {
+    console.log('Prev exp date: ', prevExpDate);
+    const newExpiryDate = new Date(prevExpDate);
+    console.log('newExpiryDate: ', newExpiryDate);
+  }
 
-  // Function to handle membership calculations
-  const handleMembershipInformation = () => {
-    // Calculate membership expiration date
-    const calculateMembershipExpireDate = () => {
-      if (membershipRenewDate && membershipDuration) {
-        const newExpireDate = new Date(membershipRenewDate);
+  useEffect(() => {
+    handleMembershipExpireDate(prevMembershipExpireDate, membershipDurationDays);
+  }, [prevMembershipExpireDate, selectedPlanDetails, membershipRenewDate]);
 
-        if (isNaN(newExpireDate.getTime())) {
-          return;
-        }
-
-        switch (membershipDuration) {
-          case "1 Month":
-            newExpireDate.setMonth(newExpireDate.getMonth() + 1);
-            break;
-          case "3 Months":
-            newExpireDate.setMonth(newExpireDate.getMonth() + 3);
-            break;
-          case "6 Months":
-            newExpireDate.setMonth(newExpireDate.getMonth() + 6);
-            break;
-          case "12 Months":
-            newExpireDate.setFullYear(newExpireDate.getFullYear() + 1);
-            break;
-          default:
-            console.warn("Unhandled membership duration:", membershipDuration);
-            break;
-        }
-        setMembershipExpireDate(newExpireDate.toISOString().split("T")[0]);
-        setValue(
-          "membershipExpireDate",
-          newExpireDate.toISOString().split("T")[0]
-        );
-      } else {
-        console.warn("Membership Renew Date or Duration is missing.");
-      }
-    };
-
-    // Calculate final amount
-    const calculateFinalAmmount = () => {
-      let selectedPlan = null;
-      membershipPlans.forEach((plan) => {
-        if (plan.regularMemberships) {
-          plan.regularMemberships.forEach((regular) => {
-            if (
-              regular.option === membershipOption &&
-              regular.type === membershipType
-            ) {
-              selectedPlan = regular;
-            }
-          });
-        }
-
-        if (plan.daytimeMemberships) {
-          plan.daytimeMemberships.forEach((day) => {
-            if (
-              day.option === membershipOption &&
-              day.type === membershipType
-            ) {
-              selectedPlan = day;
-            }
-          });
-        }
-      });
-
-      if (selectedPlan) {
-        let selectedFee = 0;
-
-        if (membershipOption === "Regular" && membershipType === "Gym") {
-          selectedFee = selectedPlan.gymRegularFees[membershipDuration];
-        } else if (
-          membershipOption === "Regular" &&
-          membershipType === "Gym & Cardio"
-        ) {
-          selectedFee = selectedPlan.gymCardioRegularFees[membershipDuration];
-        } else if (membershipOption === "Daytime" && membershipType === "Gym") {
-          selectedFee = selectedPlan.gymDayFees[membershipDuration];
-        } else if (
-          membershipOption === "Daytime" &&
-          membershipType === "Gym & Cardio"
-        ) {
-          selectedFee = selectedPlan.gymCardioDayFees[membershipDuration];
-        }
-
-        const admissionFee =
-          membershipPlans.find((plan) => plan.type === "Admission")
-            ?.admissionFee || 0;
-        setFinalAmmount(admissionFee + selectedFee - (discountAmmount || 0));
-        setValue(
-          "finalAmmount",
-          admissionFee + selectedFee - (discountAmmount || 0)
-        );
-      } else {
-        setFinalAmmount(0);
-        setValue("finalAmmount", 0);
-        0;
-      }
-    };
-
-    // Call sub-functions
-    calculateMembershipExpireDate();
-    calculateFinalAmmount();
-  };
 
   // Update due amount in a separate effect to ensure finalAmount is up-to-date
   useEffect(() => {
     setDueAmmount(finalAmmount - paidAmmount);
     setValue("dueAmmount", finalAmmount - paidAmmount);
   }, [finalAmmount, paidAmmount]);
-
-  // Main useEffect to handle changes in membership details
-  useEffect(() => {
-    handleMembershipInformation();
-  }, [
-    membershipOption,
-    membershipType,
-    membershipRenewDate,
-    membershipDuration,
-  ]);
 
   // Update member details
   const updateMemberDetails = async (data) => {
@@ -966,6 +808,7 @@ const MemberDetails = ({ memberId }) => {
                               <Input
                                 {...register("membershipDate")}
                                 type="date"
+                                disabled
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
                             </div>
@@ -1004,9 +847,8 @@ const MemberDetails = ({ memberId }) => {
                                       <Input
                                         {...field}
                                         autoComplete="off"
-                                        value={`${
-                                          selectedPlanName || planSearchQuery
-                                        }`}
+                                        value={`${selectedPlanName || planSearchQuery
+                                          }`}
                                         onChange={(e) => {
                                           setPlanSearchQuery(e.target.value);
                                           field.onChange(e);
@@ -1049,7 +891,7 @@ const MemberDetails = ({ memberId }) => {
                                             false
                                           );
                                           setFinalAmmount(
-                                            plan.price + admissionPrice
+                                            plan.price
                                           );
                                           setMembershipDuration(
                                             convertDurationInMonths(
@@ -1057,11 +899,10 @@ const MemberDetails = ({ memberId }) => {
                                             )
                                           );
                                         }}
-                                        className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
-                                          index === highlightedIndex
-                                            ? "bg-blue-100 dark:bg-gray-900"
-                                            : "hover:bg-blue-50 dark:hover:bg-gray-900"
-                                        }`}
+                                        className={`px-4 py-3 text-sm cursor-pointer transition-colors ${index === highlightedIndex
+                                          ? "bg-blue-100 dark:bg-gray-900"
+                                          : "hover:bg-blue-50 dark:hover:bg-gray-900"
+                                          }`}
                                         key={plan._id}
                                       >
                                         {plan.planName} -{" "}
@@ -1077,23 +918,24 @@ const MemberDetails = ({ memberId }) => {
 
                             <div>
                               <Label>Membership Expire Date</Label>
-                              <Controller
+                              {/* <Controller
                                 name="membershipExpireDate"
                                 control={control}
-                                render={({ field }) => (
-                                  <Input
-                                    {...field}
-                                    {...register("membershipExpireDate")}
-                                    type="date"
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      setMembershipExpireDate(e.target.value);
-                                      field.onChange(e);
-                                    }}
-                                    className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
-                                  />
-                                )}
+                                render={({ field }) => ( */}
+                              <Input
+                                // {...field}
+                                {...register("membershipExpireDate")}
+                                type="date"
+                                disabled={userRole === 'Gym Admin'}
+                                value={new Date(membershipExpireDate).toISOString().split("T")[0]}
+                                onChange={(e) => {
+                                  setMembershipExpireDate(e.target.value);
+                                  field.onChange(e);
+                                }}
+                                className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {/* )} */}
+                              {/* /> */}
                             </div>
                           </div>
                         </div>
@@ -1277,7 +1119,7 @@ const MemberDetails = ({ memberId }) => {
                                     >
                                       <option value={""}>Select</option>
                                       {Array.isArray(actionTakersDB) &&
-                                      actionTakersDB.length >= 1 ? (
+                                        actionTakersDB.length >= 1 ? (
                                         actionTakersDB.map((actionTaker) => (
                                           <option
                                             onClick={() =>

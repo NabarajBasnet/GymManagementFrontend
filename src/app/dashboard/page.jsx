@@ -1,5 +1,9 @@
 'use client';
 
+import { FaUserCircle, FaUsers, FaChartLine } from 'react-icons/fa';
+import { RiUserShared2Fill } from 'react-icons/ri';
+import { ArrowUp } from 'lucide-react';
+import { User, Plus, LogOut } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
@@ -8,9 +12,7 @@ import { Label } from "@/components/ui/label";
 import { InfoIcon, TrendingDown, TrendingUp, RefreshCcw } from 'lucide-react';
 import { MdAutorenew } from "react-icons/md";
 import { GiBiceps } from "react-icons/gi";
-import { FaUsers } from "react-icons/fa6";
 import { PiUsersFourFill } from "react-icons/pi";
-import { RiUserShared2Fill } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 import { BarChartMultiple } from "@/components/Charts/BarChart";
 import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
@@ -167,85 +169,133 @@ const AdminDashboard = () => {
 
         {/* Welcome Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
-          {/* Welcome Card */}
-          <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-2xl shadow-md group">
-            {/* Background elements */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800 via-stone-800/90 to-transparent z-10"></div>
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1534258936925-c58bed479fcb?q=80&w=2070')] bg-cover bg-center opacity-90 transition-all duration-500"></div>
+          {/* Main Welcome Card */}
+          <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-xl shadow-md group transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900">
+            {/* Sleek gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-r from-slate-800/95 via-gray-900/95 to-black/95 dark:from-slate-900/95 dark:via-gray-950/95 dark:to-black/95 z-10"></div>
+
+            {/* Geometric pattern overlay */}
+            <div className="absolute inset-0 opacity-5 z-10" style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M20 20L0 0h40v40L20 20z'/%3E%3C/g%3E%3C/svg%3E")`
+            }}></div>
 
             {/* Content container */}
-            <div className="relative z-20 p-4 lg:p-6">
-              <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6">
+            <div className="relative z-20 p-5 lg:p-6">
+              <div className="flex flex-col lg:flex-row items-center gap-6">
                 {/* Text content */}
                 <div className="flex-1 space-y-4 text-center lg:text-left">
                   <div className="flex justify-center lg:justify-start items-center gap-2">
-                    <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                      {getGreeting()}, {loggedInUser?.firstName}! 👋
+                    <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
+                      {getGreeting()}, <span className="text-cyan-400 font-black">{loggedInUser?.firstName}</span>!
+                      <span className="ml-2 text-lg">👋</span>
                     </h1>
                   </div>
 
-                  <p className="text-white/80 text-sm md:text-base font-medium max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                    Track member activities, manage memberships, and analyze business metrics. Stay on top of your gym's operations and make data-driven decisions to drive success.
+                  <p className="text-gray-300 text-sm md:text-base font-medium max-w-xl mx-auto lg:mx-0 leading-snug">
+                    Streamline your gym operations with intelligent analytics and member management tools.
                   </p>
 
-                  <div className="flex justify-center lg:justify-start">
+                  <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 pt-1">
                     <Button
                       onClick={() => router.push('/dashboard')}
-                      className="bg-white text-blue-600 hover:bg-white/90 transition-all duration-300"
+                      className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white transition-all duration-300 shadow-md hover:shadow-lg px-6 py-2.5 rounded-lg font-semibold text-sm transform hover:scale-105 border-0"
                     >
-                      View Progress
+                      <span className="mr-2">🚀</span> Dashboard
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 shadow-sm hover:shadow-md px-6 py-2.5 rounded-lg font-semibold text-sm transform hover:scale-105"
+                    >
+                      <span className="mr-2">📚</span> Learn More
                     </Button>
                   </div>
                 </div>
 
                 {/* Image */}
-                <div className="flex-shrink-0 w-40 h-40 md:w-48 md:h-48 lg:w-52 lg:h-52">
-                  <img
-                    src="/dashboard.png"
-                    alt="dashboard"
-                    className="w-full h-full object-contain rounded-full lg:rounded-lg"
-                  />
+                <div className="flex-shrink-0 w-28 h-28 md:w-32 md:h-32 lg:w-36 lg:h-36 transform transition-all duration-500 group-hover:scale-105">
+                  <div className="w-full h-full bg-white/10 backdrop-blur-sm rounded-2xl p-3 border border-white/20 shadow-xl">
+                    <img
+                      src="/dashboard.png"
+                      alt="dashboard"
+                      className="w-full h-full object-contain rounded-xl filter drop-shadow-md"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </Card>
 
           {/* Quick Stats Card */}
-          <Card className="lg:col-span-4 dark:border-none relative rounded-2xl shadow-md overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-800/95 via-stone-800/40 to-neutral-800/95 z-10"></div>
-            <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070')] bg-cover bg-center opacity-100"></div>
-            <div className="relative z-20 p-3">
-              <div className="space-y-1">
+          <Card className="lg:col-span-4 dark:border-none relative rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900 group">
+            {/* Modern glass-morphism background */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/90 via-gray-600/70 to-neutral-600/90 z-10"></div>
+
+            {/* Floating elements */}
+            <div className="absolute inset-0 z-10">
+              <div className="absolute top-3 right-3 w-12 h-12 bg-white/10 rounded-full blur-sm animate-pulse"></div>
+              <div className="absolute bottom-4 left-4 w-8 h-8 bg-white/5 rounded-full blur-sm animate-pulse delay-500"></div>
+            </div>
+
+            <div className="relative z-20 p-4">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
-                    <h3 className="text-xl font-semibold text-white tracking-tight">Performance Overview</h3>
+                    <h3 className="text-lg font-bold text-white tracking-tight">
+                      <span className="mr-2">📊</span>Analytics
+                    </h3>
+                    <p className="text-xs text-white/80 font-medium">Real-time insights</p>
                   </div>
-                  <div className="p-2 bg-white/30 rounded-lg hover:bg-white/20 transition-all duration-300 cursor-pointer">
-                    <MdAutorenew className="text-2xl text-white" />
+                  <div className="p-2 bg-white/15 hover:bg-white/25 backdrop-blur-sm rounded-lg transition-all duration-300 cursor-pointer shadow-md hover:shadow-lg transform hover:scale-110">
+                    <MdAutorenew className="text-lg text-white/90 animate-spin hover:animate-none" />
                   </div>
                 </div>
 
-                <div className="space-y-2">
-
-                  <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                <div className="grid gap-3">
+                  <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
                     <div className="space-y-1">
-                      <p className="text-sm text-white/90 font-medium">Active Members</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{totalActiveMembers || 0}</p>
-                      <p className="text-xs text-blue-400 font-medium">↑ 8% this week</p>
+                      <p className="text-xs font-semibold text-white/90">👥 Active Members</p>
+                      <p className="text-2xl font-black text-white">{totalActiveMembers || 0}</p>
+                      <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 bg-emerald-500/20 px-1.5 py-0.5 rounded-md">
+                          <ArrowUp className="h-2.5 w-2.5 text-emerald-300" />
+                          <p className="text-[10px] font-bold text-emerald-300">+8%</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-3 bg-blue-500/20 border border-blue-500 rounded-lg">
-                      <FaUsers className="text-blue-600" />
+                    <div className="p-2.5 bg-gradient-to-br from-blue-400/20 to-blue-600/20 backdrop-blur-sm border border-blue-400/30 rounded-xl shadow-md">
+                      <FaUsers className="h-5 w-5 text-blue-300" />
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-white/10 rounded-lg hover:bg-white/15 transition-all duration-300">
+                  <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
                     <div className="space-y-1">
-                      <p className="text-sm text-white/90 font-medium">New Members</p>
-                      <p className="text-2xl font-bold text-white tracking-tight">{newAdmissionsLength || 0}</p>
-                      <p className="text-xs text-yellow-400 font-medium">↑ 15% this month</p>
+                      <p className="text-xs font-semibold text-white/90">✨ New Members</p>
+                      <p className="text-2xl font-black text-white">{newAdmissionsLength || 0}</p>
+                      <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 bg-amber-500/20 px-1.5 py-0.5 rounded-md">
+                          <ArrowUp className="h-2.5 w-2.5 text-amber-300" />
+                          <p className="text-[10px] font-bold text-amber-300">+15%</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="p-3 bg-yellow-500/20 border border-yellow-500 rounded-lg">
-                      <RiUserShared2Fill className="text-yellow-400" />
+                    <div className="p-2.5 bg-gradient-to-br from-amber-400/20 to-orange-500/20 backdrop-blur-sm border border-amber-400/30 rounded-xl shadow-md">
+                      <RiUserShared2Fill className="h-5 w-5 text-amber-300" />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
+                    <div className="space-y-1">
+                      <p className="text-xs font-semibold text-white/90">📈 Attendance</p>
+                      <p className="text-2xl font-black text-white">78%</p>
+                      <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-1 bg-green-500/20 px-1.5 py-0.5 rounded-md">
+                          <ArrowUp className="h-2.5 w-2.5 text-green-300" />
+                          <p className="text-[10px] font-bold text-green-300">+5%</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-2.5 bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-sm border border-green-400/30 rounded-xl shadow-md">
+                      <FaChartLine className="h-5 w-5 text-green-300" />
                     </div>
                   </div>
                 </div>
