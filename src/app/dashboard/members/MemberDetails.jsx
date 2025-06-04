@@ -1,7 +1,6 @@
 "use client";
 
 import { FiSearch } from "react-icons/fi";
-import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { RiLoader5Fill } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
 import { TiBusinessCard } from "react-icons/ti";
@@ -80,7 +79,6 @@ const MemberDetails = ({ memberId }) => {
   const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
   const [membershipDurationDays, setMembershipDurationDays] = useState();
   const [planId, setPlanId] = useState("");
-
   // Objects
   const membershipPlans = [
     {
@@ -159,7 +157,7 @@ const MemberDetails = ({ memberId }) => {
     enabled: !!memberId,
   });
   const { member, message, qrCode } = data || {};
-
+console.log('Member: ',member);
   // Populate Data
   useEffect(() => {
     if (data) {
@@ -201,6 +199,7 @@ const MemberDetails = ({ memberId }) => {
       setPlanSearchQuery(
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
+      setAdmissionFee(member?.admissionFee);
     }
   }, [data, reset]);
 
@@ -328,6 +327,27 @@ const MemberDetails = ({ memberId }) => {
   const updateMemberDetails = async (data) => {
     console.log("Data: ", data);
 
+    const {
+      fullName,
+      contactNo,
+email,
+dob,
+secondaryContactNo,
+gender,
+address,
+status,
+membershipType,
+membershipShift,
+membershipDate,
+membershipRenewDate,
+membershipExpireDate,
+paymentMethod,
+referenceCode,
+discountAmmount,
+discountReason,
+
+    } = data || {};
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/members/${memberId}`,
@@ -431,36 +451,6 @@ const MemberDetails = ({ memberId }) => {
 
   const { actionTakersDB } = actionTakers || {};
 
-  // Check if members name already taken
-  const fullName = watch("fullName");
-  useFieldAvailabilityCheck({
-    fieldValue: fullName,
-    fieldName: "fullName",
-    apiUrl: "http://localhost:3000/api/members/membername-exist",
-    onError: setError,
-    onSuccess: clearErrors,
-  });
-
-  // Check if members phone number already taken
-  const contactNo = watch("contactNo");
-  useFieldAvailabilityCheck({
-    fieldValue: contactNo,
-    fieldName: "contactNo",
-    apiUrl: "http://localhost:3000/api/members/memberphoneno-exist",
-    onError: setError,
-    onSuccess: clearErrors,
-  });
-
-  // Check if members email already taken
-  const email = watch("email");
-  useFieldAvailabilityCheck({
-    fieldValue: email,
-    fieldName: "email",
-    apiUrl: "http://localhost:3000/api/members/memberemail-exist",
-    onError: setError,
-    onSuccess: clearErrors,
-  });
-
   // Get Membership Plans
   const GetMembershipPlans = async () => {
     try {
@@ -551,19 +541,6 @@ const MemberDetails = ({ memberId }) => {
   const convertDurationInMonths = (duration) => {
     return `${duration / 30} Months`;
   };
-
-  // Get Admission Charge
-  const admissionCharge = fetchedPlans?.find(
-    (plan) =>
-      plan.planName.toString() === "Admission Fee" ||
-      plan.planName.toString() === "Admission Charge" ||
-      plan.planName.toString().startsWith("Admission")
-  );
-  const admissionPrice = admissionCharge?.price;
-
-  useEffect(() => {
-    setAdmissionFee(admissionCharge?.price);
-  }, []);
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
@@ -790,6 +767,11 @@ const MemberDetails = ({ memberId }) => {
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 type="text"
                               />
+                              {errors.fullName && (
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                                  {errors.fullName.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -798,6 +780,11 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("contactNo")}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {errors.contactNo && (
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                                  {errors.contactNo.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -806,6 +793,11 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("email")}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {errors.email && (
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                                  {errors.email.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -815,6 +807,11 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("dob")}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {errors.dob && (
+                                <p className="text-xs font-medium text-red-600 dark:text-red-400">
+                                  {errors.dob.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -823,6 +820,11 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("secondaryContactNo")}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {errors.secondaryContactNo && (
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                  {errors.secondaryContactNo.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -851,6 +853,11 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("address")}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
+                              {errors.address && (
+                                <p className="text-sm text-red-600 dark:text-red-400">
+                                  {errors.address.message}
+                                </p>
+                              )}
                             </div>
 
                             <div>
@@ -1153,7 +1160,7 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Admission Fee</Label>
                               <Input
                                 type="text"
-                                defaultValue={"1000"}
+                                defaultValue={admissionFee}
                                 disabled
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 placeholder="Admission Fee"
