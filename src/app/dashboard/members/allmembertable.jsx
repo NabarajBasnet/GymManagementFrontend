@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef(({ className, ...props }, ref) => (
-  <div className="relative w-full overflow-x-auto rounded-lg border shadow-sm">
+  <div className="relative w-full overflow-x-auto dark:border-none border shadow-sm">
     <table
       ref={ref}
       className={cn("w-full caption-bottom text-sm", className)}
@@ -17,8 +17,8 @@ const TableHeader = React.forwardRef(({ className, ...props }, ref) => (
   <thead
     ref={ref}
     className={cn(
-      "[&_tr]:border-b bg-gray-50 dark:bg-gray-800/50",
-      "[&_th]:whitespace-nowrap", // Prevent text wrapping in headers
+      "[&_tr]:border-b bg-gray-50 dark:bg-gray-700",
+      "[&_th]:whitespace-nowrap",
       className
     )}
     {...props}
@@ -31,7 +31,7 @@ const TableBody = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       "[&_tr:last-child]:border-0 [&_tr]:border-b",
-      "[&_td]:whitespace-nowrap", // Prevent text wrapping in cells
+      "[&_td]:whitespace-nowrap",
       className
     )}
     {...props}
@@ -43,7 +43,7 @@ const TableFooter = React.forwardRef(({ className, ...props }, ref) => (
   <tfoot
     ref={ref}
     className={cn(
-      "border-t bg-gray-50 dark:bg-gray-800/50 font-medium [&>tr]:last:border-b-0",
+      "border-t bg-gray-50 dark:bg-gray-700 font-medium [&>tr]:last:border-b-0",
       className
     )}
     {...props}
@@ -69,7 +69,7 @@ const TableHead = React.forwardRef(({ className, ...props }, ref) => (
     ref={ref}
     className={cn(
       "h-12 px-4 py-3 text-left align-middle font-medium text-gray-700 dark:text-gray-300",
-      "first:rounded-tl-lg last:rounded-tr-lg", // Rounded corners for first/last headers
+      "first:rounded-tl-none last:rounded-tr-none",
       className
     )}
     {...props}
@@ -78,14 +78,7 @@ const TableHead = React.forwardRef(({ className, ...props }, ref) => (
 TableHead.displayName = "TableHead";
 
 const TableCell = React.forwardRef(({ className, ...props }, ref) => (
-  <td
-    ref={ref}
-    className={cn(
-      "p-4 align-middle text-gray-800 dark:text-gray-200",
-      className
-    )}
-    {...props}
-  />
+  <td ref={ref} className={cn("p-4 align-middle", className)} {...props} />
 ));
 TableCell.displayName = "TableCell";
 

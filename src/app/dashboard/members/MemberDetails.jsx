@@ -5,14 +5,7 @@ import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { RiLoader5Fill } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
 import { TiBusinessCard } from "react-icons/ti";
-import { Calendar as CalendarIcon } from "lucide-react";
-import { Calendar } from "lucide-react";
 import { MdOutlinePayment } from "react-icons/md";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { toast as sonnerToast } from "sonner";
 import { toast as hotToast } from "react-hot-toast";
 import {
@@ -29,13 +22,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FaChevronUp } from "react-icons/fa";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import React from "react";
 import {
   AlertDialog,
@@ -91,6 +77,9 @@ const MemberDetails = ({ memberId }) => {
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
   const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
   const [admissionFee, setAdmissionFee] = useState("");
+  const [selectedPlanDetails, setSelectedPlanDetails] = useState(null);
+  const [membershipDurationDays, setMembershipDurationDays] = useState();
+  const [planId, setPlanId] = useState("");
 
   // Objects
   const membershipPlans = [
@@ -206,6 +195,12 @@ const MemberDetails = ({ memberId }) => {
         receiptNo: member.receiptNo,
         remark: member.remark,
       });
+      setPlanName(
+        `${member?.membership?.planName} - ${member?.membership?.price}`
+      );
+      setPlanSearchQuery(
+        `${member?.membership?.planName} - ${member?.membership?.price}`
+      );
     }
   }, [data, reset]);
 
@@ -331,6 +326,8 @@ const MemberDetails = ({ memberId }) => {
 
   // Update member details
   const updateMemberDetails = async (data) => {
+    console.log("Data: ", data);
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/members/${memberId}`,
@@ -548,7 +545,7 @@ const MemberDetails = ({ memberId }) => {
   // Filter Plans
   const filteredPlans =
     fetchedPlans?.filter((plan) =>
-      plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
+      plan.planName?.toLowerCase().includes(planSearchQuery?.toLowerCase())
     ) || [];
 
   const convertDurationInMonths = (duration) => {
@@ -867,24 +864,11 @@ const MemberDetails = ({ memberId }) => {
                                     className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
                                     <option value="">Select</option>
-                                    <option
-                                      value="Active"
-                                      className="text-white bg-green-600"
-                                    >
-                                      Active
+                                    <option value="Active">🟢 Active</option>
+                                    <option value="Inactive">
+                                      🔴 Inactive
                                     </option>
-                                    <option
-                                      value="Inactive"
-                                      className="text-white bg-red-600"
-                                    >
-                                      Inactive
-                                    </option>
-                                    <option
-                                      value="OnHold"
-                                      className="text-white bg-yellow-500"
-                                    >
-                                      OnHold
-                                    </option>
+                                    <option value="OnHold">🟡 OnHold</option>
                                   </select>
                                 )}
                               />
@@ -1000,9 +984,9 @@ const MemberDetails = ({ memberId }) => {
                                       <Input
                                         {...field}
                                         autoComplete="off"
-                                        value={
+                                        value={`${
                                           selectedPlanName || planSearchQuery
-                                        }
+                                        }`}
                                         onChange={(e) => {
                                           setPlanSearchQuery(e.target.value);
                                           field.onChange(e);
