@@ -137,7 +137,6 @@ const NewMemberRegistrationForm = () => {
   // Register membership
   const onRegisterMember = async (data) => {
     clearErrors();
-    console.log("Data: ", data);
 
     let isValid = true;
 
@@ -211,7 +210,7 @@ const NewMemberRegistrationForm = () => {
         gender,
         address,
 
-        status:status?'Active':"Inactive",
+        status: status ? "Active" : "Inactive",
         membershipType,
         membershipShift,
         membershipDate,
@@ -229,7 +228,7 @@ const NewMemberRegistrationForm = () => {
         referenceCode,
         remark,
         actionTaker,
-        selectedPlanDetails
+        selectedPlanDetails,
       };
 
       console.log("Final Data: ", membersFinalData);
@@ -1351,9 +1350,7 @@ const NewMemberRegistrationForm = () => {
                                     actionTakersDB.map((actionTaker) => (
                                       <div key={actionTaker._id}>
                                         <SelectItem
-                                          value={
-                                            actionTaker._id
-                                          }
+                                          value={actionTaker._id}
                                           className="hover:bg-blue-600 cursor-pointer text-gray-900 dark:text-gray-100"
                                         >
                                           {actionTaker.fullName}

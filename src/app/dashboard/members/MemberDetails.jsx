@@ -1,5 +1,7 @@
 "use client";
 
+import { FiSearch } from "react-icons/fi";
+import { useFieldAvailabilityCheck } from "@/hooks/useFieldAvailabilityCheck";
 import { RiLoader5Fill } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
 import { TiBusinessCard } from "react-icons/ti";
@@ -65,18 +67,16 @@ import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
 import useMember from "@/hooks/Members";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Loader from "@/components/Loader/Loader";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const MemberDetails = ({ memberId }) => {
+  const { user, loading } = useUser();
+
   // For rendering states
   const [currentActionTaker, setCurrentActionTaker] = useState("");
-  const [renderPersonalInformationForm, setRenderPersonalInformationForm] =
-    useState(true);
-  const [renderMembershipInformationForm, setRenderMembershipInformationForm] =
-    useState(true);
-  const [renderPaymentDetailForm, setRenderPaymentDetailForm] = useState(true);
-  const [renderProfileDetails, setRenderProfileDetails] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   // States
   const queryClient = useQueryClient();
@@ -90,6 +90,7 @@ const MemberDetails = ({ memberId }) => {
   const [paidAmmount, setPaidAmmount] = useState(0);
   const [membershipRenewDate, setMembershipRenewDate] = useState(new Date());
   const [membershipExpireDate, setMembershipExpireDate] = useState(new Date());
+  const [admissionFee, setAdmissionFee] = useState("");
 
   // Objects
   const membershipPlans = [
@@ -155,6 +156,8 @@ const MemberDetails = ({ memberId }) => {
     formState: { errors, isSubmitting },
     setError,
     control,
+    watch,
+    clearErrors,
   } = useForm();
 
   // Hooks
@@ -431,6 +434,140 @@ const MemberDetails = ({ memberId }) => {
 
   const { actionTakersDB } = actionTakers || {};
 
+  // Check if members name already taken
+  const fullName = watch("fullName");
+  useFieldAvailabilityCheck({
+    fieldValue: fullName,
+    fieldName: "fullName",
+    apiUrl: "http://localhost:3000/api/members/membername-exist",
+    onError: setError,
+    onSuccess: clearErrors,
+  });
+
+  // Check if members phone number already taken
+  const contactNo = watch("contactNo");
+  useFieldAvailabilityCheck({
+    fieldValue: contactNo,
+    fieldName: "contactNo",
+    apiUrl: "http://localhost:3000/api/members/memberphoneno-exist",
+    onError: setError,
+    onSuccess: clearErrors,
+  });
+
+  // Check if members email already taken
+  const email = watch("email");
+  useFieldAvailabilityCheck({
+    fieldValue: email,
+    fieldName: "email",
+    apiUrl: "http://localhost:3000/api/members/memberemail-exist",
+    onError: setError,
+    onSuccess: clearErrors,
+  });
+
+  // Get Membership Plans
+  const GetMembershipPlans = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/membershipplans/`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      sonnerToast.error("Internal server error");
+    }
+  };
+
+  const { data: plans } = useQuery({
+    queryKey: ["plans"],
+    queryFn: GetMembershipPlans,
+  });
+
+  const { membershipPlans: fetchedPlans } = plans || {};
+
+  // Plan search states
+  const [planSearchQuery, setPlanSearchQuery] = useState("");
+  const [selectedPlanName, setPlanName] = useState("");
+  const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
+    useState(false);
+  const planSearchRef = useRef(null);
+
+  // Handle click outside for all dropdowns
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        planSearchRef.current &&
+        !planSearchRef.current.contains(event.target)
+      ) {
+        setRenderMembershipPlanDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [planSearchRef]);
+
+  const handleMembershipSearchFocus = () => {
+    setRenderMembershipPlanDropdown(true);
+  };
+
+  // Handle Keyboard Interactivity in Plans dropdown
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  useEffect(() => {
+    setHighlightedIndex(-1);
+  }, [renderMembershipPlanDropdown, planSearchQuery]);
+
+  const handleKeyDown = (e) => {
+    if (!renderMembershipPlanDropdown) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev < filteredPlans.length - 1 ? prev + 1 : 0
+      );
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlightedIndex((prev) =>
+        prev > 0 ? prev - 1 : filteredPlans.length - 1
+      );
+    } else if (e.key === "Enter" && highlightedIndex >= 0) {
+      e.preventDefault();
+      const selected = filteredPlans[highlightedIndex];
+      if (selected) {
+        setPlanName(selected.planName);
+        setPlanSearchQuery(selected.planName);
+        setPlanId(selected._id);
+        setRenderStaffDropdown(false);
+      }
+    } else if (e.key === "Escape") {
+      setRenderStaffDropdown(false);
+    }
+  };
+
+  // Filter Plans
+  const filteredPlans =
+    fetchedPlans?.filter((plan) =>
+      plan.planName.toLowerCase().includes(planSearchQuery.toLowerCase())
+    ) || [];
+
+  const convertDurationInMonths = (duration) => {
+    return `${duration / 30} Months`;
+  };
+
+  // Get Admission Charge
+  const admissionCharge = fetchedPlans?.find(
+    (plan) =>
+      plan.planName.toString() === "Admission Fee" ||
+      plan.planName.toString() === "Admission Charge" ||
+      plan.planName.toString().startsWith("Admission")
+  );
+  const admissionPrice = admissionCharge?.price;
+
+  useEffect(() => {
+    setAdmissionFee(admissionCharge?.price);
+  }, []);
+
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
       <Breadcrumb>
@@ -648,7 +785,7 @@ const MemberDetails = ({ memberId }) => {
                       </TabsList>
                       <TabsContent value="Personal Details">
                         <div className="p-2 bg-white dark:bg-gray-800">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                               <Label>Full Name</Label>
                               <Input
@@ -757,31 +894,7 @@ const MemberDetails = ({ memberId }) => {
                       </TabsContent>
                       <TabsContent value="Membership Details">
                         <div className="p-2 dark:bg-gray-800 bg-white">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <div>
-                              <Label>Membership Option</Label>
-                              <Controller
-                                name="membershipOption"
-                                control={control}
-                                render={({ field }) => (
-                                  <select
-                                    {...field}
-                                    value={field.value}
-                                    onChange={(e) => {
-                                      setMembershipOption(e.target.value);
-                                      field.onChange(e);
-                                    }}
-                                    className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
-                                  >
-                                    <option value="">Select</option>
-                                    <option value="Regular">Regular</option>
-                                    <option value="Daytime">Daytime</option>
-                                    <option value="Temporary">Temporary</option>
-                                  </select>
-                                )}
-                              />
-                            </div>
-
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                               <Label>Membership Type</Label>
                               <Controller
@@ -797,11 +910,22 @@ const MemberDetails = ({ memberId }) => {
                                     }}
                                     className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
-                                    <option value="">Select</option>
-                                    <option value="Gym">Gym</option>
-                                    <option value="Gym & Cardio">
-                                      Gym & Cardio
-                                    </option>
+                                    {[
+                                      "Gym",
+                                      "Gym & Cardio",
+                                      "Cardio",
+                                      "Group Classes",
+                                      "Swimming",
+                                      "Zumba",
+                                      "Sauna Steam",
+                                      "Yoga",
+                                      "Dance",
+                                      "Online Classes",
+                                    ].map((type, index) => (
+                                      <option value={type} key={index}>
+                                        {type}
+                                      </option>
+                                    ))}
                                   </select>
                                 )}
                               />
@@ -818,10 +942,16 @@ const MemberDetails = ({ memberId }) => {
                                     {...register("membershipShift")}
                                     className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
                                   >
-                                    <option value="">Select</option>
-                                    <option value="Morning">Morning</option>
-                                    <option value="Day">Day</option>
-                                    <option value="Evening">Evening</option>
+                                    {[
+                                      "Flexible",
+                                      "Daytime",
+                                      "Morning",
+                                      "Evening",
+                                    ].map((type, index) => (
+                                      <option value={type} key={index}>
+                                        {type}
+                                      </option>
+                                    ))}
                                   </select>
                                 )}
                               />
@@ -855,6 +985,90 @@ const MemberDetails = ({ memberId }) => {
                                   />
                                 )}
                               />
+                            </div>
+
+                            <div>
+                              <Label className="block text-sm dark:text-gray-300 font-medium text-gray-700">
+                                Membership Plan
+                              </Label>
+                              <div ref={planSearchRef} className="relative">
+                                <Controller
+                                  name="selectedPlanName"
+                                  control={control}
+                                  render={({ field }) => (
+                                    <div className="relative">
+                                      <Input
+                                        {...field}
+                                        autoComplete="off"
+                                        value={
+                                          selectedPlanName || planSearchQuery
+                                        }
+                                        onChange={(e) => {
+                                          setPlanSearchQuery(e.target.value);
+                                          field.onChange(e);
+                                          setPlanName("");
+                                        }}
+                                        onFocus={handleMembershipSearchFocus}
+                                        onKeyDown={handleKeyDown}
+                                        className="w-full rounded-sm dark:border-gray-600 dark:bg-gray-900 bg-white py-6 dark:text-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 pl-10"
+                                        placeholder="Search membership plan..."
+                                      />
+                                      <div className="absolute inset-y-0 left-0 flex items-center pl-3">
+                                        <FiSearch className="h-5 w-5 text-black dark:text-white" />
+                                      </div>
+                                    </div>
+                                  )}
+                                />
+                                {errors.selectedPlanName && (
+                                  <p className="mt-1.5 text-sm font-medium text-red-600">
+                                    {errors.selectedPlanName.message}
+                                  </p>
+                                )}
+
+                                {renderMembershipPlanDropdown && (
+                                  <div className="absolute w-full bg-white dark:bg-gray-800 dark:text-white border dark:border-gray-500 border-gray-200 rounded-sm shadow-lg max-h-52 overflow-y-auto z-[60] top-full left-0 mt-1">
+                                    {filteredPlans.map((plan, index) => (
+                                      <div
+                                        onClick={() => {
+                                          setMembershipDurationDays(
+                                            parseInt(plan.duration)
+                                          );
+                                          setPlanName(
+                                            `${plan.planName} - ${plan.price}`
+                                          );
+                                          setPlanSearchQuery(
+                                            `${plan.planName} - ${plan.price}`
+                                          );
+                                          setPlanId(plan._id);
+                                          setSelectedPlanDetails(plan);
+                                          setRenderMembershipPlanDropdown(
+                                            false
+                                          );
+                                          setFinalAmmount(
+                                            plan.price + admissionPrice
+                                          );
+                                          setMembershipDuration(
+                                            convertDurationInMonths(
+                                              plan.duration
+                                            )
+                                          );
+                                        }}
+                                        className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
+                                          index === highlightedIndex
+                                            ? "bg-blue-100 dark:bg-gray-900"
+                                            : "hover:bg-blue-50 dark:hover:bg-gray-900"
+                                        }`}
+                                        key={plan._id}
+                                      >
+                                        {plan.planName} -{" "}
+                                        {convertDurationInMonths(plan.duration)}{" "}
+                                        - {user?.user?.company?.tenantCurrency}{" "}
+                                        {plan.price}
+                                      </div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
                             </div>
 
                             <div>
@@ -908,7 +1122,7 @@ const MemberDetails = ({ memberId }) => {
 
                       <TabsContent value="Payment Details">
                         <div className="p-2 dark:bg-gray-800 bg-white">
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div>
                               <Label>Payment Method</Label>
                               <Controller
@@ -919,15 +1133,32 @@ const MemberDetails = ({ memberId }) => {
                                     {...field}
                                     {...register("paymentMethod")}
                                     className="w-full rounded-sm p-3 dark:bg-gray-900 dark:border-none border dark:text-white border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring focus:ring-blue-600"
+                                    onChange={(e) =>
+                                      setPaymentMethod(e.target.value)
+                                    }
                                   >
                                     <option value="">Select</option>
-                                    <option value="Fonepay">Fonepay</option>
+                                    <option value="Mobile Banking">
+                                      Mobile Banking
+                                    </option>
                                     <option value="Cash">Cash</option>
+                                    <option value="Cheque">Cheque</option>
                                     <option value="Card">Card</option>
                                   </select>
                                 )}
                               />
                             </div>
+
+                            {paymentMethod === "Mobile Banking" && (
+                              <div>
+                                <Label>Reference Code</Label>
+                                <Input
+                                  {...register("referenceCode")}
+                                  type="text"
+                                  className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
+                                />
+                              </div>
+                            )}
 
                             <div>
                               <Label>Discount Amount</Label>
@@ -1024,15 +1255,6 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Receipt No</Label>
                               <Input
                                 {...register("receiptNo")}
-                                type="text"
-                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
-                              />
-                            </div>
-
-                            <div>
-                              <Label>Reference Code</Label>
-                              <Input
-                                {...register("referenceCode")}
                                 type="text"
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
