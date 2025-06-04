@@ -1,5 +1,7 @@
 "use client";
 
+import { RiLoader5Fill } from "react-icons/ri";
+import { FiSave } from "react-icons/fi";
 import { TiBusinessCard } from "react-icons/ti";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { Calendar } from "lucide-react";
@@ -469,7 +471,7 @@ const MemberDetails = ({ memberId }) => {
         </h1>
       </div>
 
-      <form className="w-full md:flex justify-between items-start gap-4">
+      <div className="w-full md:flex justify-between items-start gap-4">
         <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
           <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
             <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8">
@@ -611,7 +613,10 @@ const MemberDetails = ({ memberId }) => {
                     className="w-full bg-white dark:bg-gray-900 rounded-md"
                     onSubmit={handleSubmit(updateMemberDetails)}
                   >
-                    <Tabs defaultValue="Personal Details" className="w-full">
+                    <Tabs
+                      defaultValue="Personal Details"
+                      className="w-full dark:bg-gray-800"
+                    >
                       <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
                         <TabsTrigger
                           value="Personal Details"
@@ -969,7 +974,7 @@ const MemberDetails = ({ memberId }) => {
                                 type="text"
                                 defaultValue={"1000"}
                                 disabled
-                                className="rounded-sm py-6 disabled-bg-gray-300 dark:disabled:bg-gray-500 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
+                                className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                                 placeholder="Admission Fee"
                               />
                             </div>
@@ -1115,9 +1120,24 @@ const MemberDetails = ({ memberId }) => {
                             </div>
                           </div>
                         </div>
-                        <div className="flex items-center dark:bg-gray-800 space-x-2 p-2">
-                          <Button type="submit" className="rounded-sm">
-                            {isSubmitting ? "Submitting..." : "Submit"}
+                        <div className="flex items-center justify-end dark:bg-gray-800 space-x-2 p-2">
+                          <Button
+                            type="submit"
+                            className="rounded-sm px-4 flex items-center justify-center"
+                            disabled={isSubmitting}
+                            aria-busy={isSubmitting}
+                          >
+                            {isSubmitting ? (
+                              <>
+                                <RiLoader5Fill className="animate-spin mr-2" />
+                                <span>Processing...</span>
+                              </>
+                            ) : (
+                              <>
+                                <FiSave className="mr-2" />
+                                <span>Submit</span>
+                              </>
+                            )}
                           </Button>
                         </div>
                       </TabsContent>
@@ -1130,7 +1150,7 @@ const MemberDetails = ({ memberId }) => {
             )}
           </div>
         </Card>
-      </form>
+      </div>
     </div>
   );
 };
