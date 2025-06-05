@@ -75,6 +75,7 @@ const MemberDetails = ({ memberId }) => {
   // For rendering states
   const [currentActionTaker, setCurrentActionTaker] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  console.log('action: ', currentActionTaker);
 
   // States
   const queryClient = useQueryClient();
@@ -94,11 +95,6 @@ const MemberDetails = ({ memberId }) => {
     new Date()
   );
   const [finalAmount, setFinalAmount] = useState(0);
-  console.log("Final : ", selectedPlanDetails);
-  console.log("Final Amount: ", finalAmount);
-  console.log("Due Amount: ", dueAmmount);
-  console.log("Discount Amount: ", discountAmmount);
-  console.log("Expiry Date: ", prevMembershipExpireDate);
 
   // Member Hooks
   const { getSingleUserDetails } = useMember();
@@ -198,12 +194,12 @@ const MemberDetails = ({ memberId }) => {
 
   // Update member details
   const updateMemberDetails = async (data) => {
-    console.log("Data: ", data);
 
     if (!selectedPlanDetails) {
       hotToast.error('Plan not selected');
       sonnerToast.error('Plan not selected');
-    }
+    };
+
     const {
       fullName,
       contactNo,
@@ -283,6 +279,7 @@ const MemberDetails = ({ memberId }) => {
         if (response.status === 200) {
           hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
+          setValue('actionTaker', 'Select');
         }
       }
     } catch (error) {
