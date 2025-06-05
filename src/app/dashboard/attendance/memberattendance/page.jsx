@@ -184,10 +184,7 @@ const MemberAttendance = () => {
     // Helper function to format times
     const formatTime = (dateString) => {
         if (!dateString) return "";
-        return new Date(dateString).toLocaleTimeString('en-GB', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        return new Date(dateString).toLocaleTimeString();
     };
 
     // Helper function to determine membership status color
@@ -544,7 +541,7 @@ const MemberAttendance = () => {
                                         </TableHeader>
                                         <TableBody>
                                             {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance) => (
-                                                <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors border-t border-gray-200">
+                                                <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800 overflow-x-auto transition-colors border-t border-gray-200">
                                                     <TableCell className="py-3 flex flex-col space-y-1">
                                                         <span className="text-indigo-600 font-semibold">{attendance.fullName}</span>
                                                         <span className="text-xs font-semibold">{attendance.memberId}</span>
