@@ -191,8 +191,8 @@ const AllMembers = () => {
     } catch (error) {
       setIsDeleting(false);
       console.log("Error: ", error);
-      hotToast.success(error);
-      sonnerToast.success(error);
+      hotToast.success(error.message);
+      sonnerToast.success(error.message);
     }
   };
 

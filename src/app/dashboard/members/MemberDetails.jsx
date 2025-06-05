@@ -207,12 +207,46 @@ const MemberDetails = ({ memberId }) => {
       membershipShift,
       membershipDate,
       membershipRenewDate,
-      membershipExpireDate,
       paymentMethod,
       referenceCode,
+      discountReason,
+      receiptNo,
+      reasonForUpdate,
+      remark, actionTaker,
+    } = data || {};
+
+    const finalObjectData = {
+      fullName,
+      contactNo,
+      email,
+      dob,
+      secondaryContactNo,
+      gender,
+      address,
+      status,
+
+      membershipType,
+      membershipShift,
+      membershipDuration,
+      membershipDate,
+      membershipRenewDate,
+      membershipExpireDate: prevMembershipExpireDate,
+      selectedPlanDetails,
+
+      paymentMethod,
       discountAmmount,
       discountReason,
-    } = data || {};
+      referenceCode,
+      finalAmount,
+      paidAmmount,
+      dueAmmount,
+      receiptNo,
+      reasonForUpdate,
+      remark,
+      actionTaker,
+    };
+
+    console.log('Final Data Object ', finalObjectData);
 
     try {
       const response = await fetch(
@@ -1134,7 +1168,7 @@ const MemberDetails = ({ memberId }) => {
                                               )
                                             }
                                             key={actionTaker._id}
-                                            value={actionTaker.fullName}
+                                            value={actionTaker._id}
                                           >
                                             {actionTaker.fullName}
                                           </option>
