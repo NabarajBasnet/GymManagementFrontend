@@ -347,6 +347,18 @@ const AllMembers = () => {
                       <TableRow className="dark:bg-gray-700 dark:border-none">
                         <TableHead className="dark:text-white">
                           <div className="flex items-center">
+                            Avatar
+                            <ArrowUpDown
+                              onClick={() => {
+                                setSortBy("_id");
+                                setSortOrderDesc(!sortOrderDesc);
+                              }}
+                              className="ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500"
+                            />
+                          </div>
+                        </TableHead>
+                        <TableHead className="dark:text-white">
+                          <div className="flex items-center">
                             Member Id
                             <ArrowUpDown
                               onClick={() => {
@@ -489,8 +501,8 @@ const AllMembers = () => {
                             member.status === "Active"
                               ? "text-black dark:text-white"
                               : member.status === "OnHold"
-                              ? "text-yellow-500"
-                              : "text-red-500";
+                                ? "text-yellow-500"
+                                : "text-red-500";
                           return (
                             <TableRow
                               key={member._id}
@@ -505,6 +517,22 @@ const AllMembers = () => {
                                 },
                               }}
                             >
+                              <TableCell>
+                                {member?.fullName ? (
+                                  <div className="flex items-center justify-center h-9 w-9 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 font-medium group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                                    {member.fullName
+                                      .split(' ')
+                                      .map((word) => word.charAt(0))
+                                      .slice(0, 2)
+                                      .join('')
+                                      .toUpperCase()}
+                                  </div>
+                                ) : (
+                                  <div className="bg-transparent p-1 md:p-2 rounded-full transition-colors group-hover:bg-gray-100 dark:group-hover:bg-gray-700">
+                                    <FaUserCircle className="text-2xl text-blue-600 dark:text-blue-400 transition-colors group-hover:text-blue-700 dark:group-hover:text-blue-300" />
+                                  </div>
+                                )}
+                              </TableCell>
                               <TableCell
                                 className="text-center flex justify-start items-center"
                                 component="th"
