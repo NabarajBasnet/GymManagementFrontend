@@ -451,7 +451,7 @@ const MemberDetails = ({ memberId }) => {
       <div className="w-full md:flex justify-between items-start gap-4">
         <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
           <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
-            <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8">
+            <div className="w-full flex flex-col gap-6 md:gap-8">
               QR Code Section
               <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
@@ -467,7 +467,7 @@ const MemberDetails = ({ memberId }) => {
               </div>
 
               Membership Controls & Info
-              <div className="w-6/12 md:w-full flex-1 space-y-4">
+              <div className="w-full w-full flex-1 space-y-4">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership Status
                 </h2>
@@ -583,7 +583,7 @@ const MemberDetails = ({ memberId }) => {
         </Card>
 
         <Card className="w-full md:w-9/12 dark:bg-gray-800 dark:border-none p-4">
-          <div className="w-full">
+          <div className="w-full sticky">
             {data && (
               <div className="w-full">
                 {data ? (
