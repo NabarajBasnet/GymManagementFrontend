@@ -1,5 +1,7 @@
 'use client';
 
+import { toast as hotToast } from 'react-hot-toast';
+import { toast as sonnerToast } from 'sonner';
 import { MdHome } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -61,11 +63,6 @@ const MemberAttendance = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [textareaColor, setTextAreaColor] = useState('');
-
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('');
     const [membershipHoldToggle, setMembershipHoldToggle] = useState(false);
     const [activating, setActivating] = useState(false);
 
@@ -78,15 +75,6 @@ const MemberAttendance = () => {
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
-    // Auto-hide toast after 5 seconds
-    useEffect(() => {
-        let timer;
-        if (toast) {
-            timer = setTimeout(() => setToast(false), 5000);
-        }
-        return () => clearTimeout(timer);
-    }, [toast]);
-
     const getTemporaryAttendanceHistory = async ({ queryKey }) => {
         const [, page, searchQuery] = queryKey;
         try {
@@ -94,6 +82,8 @@ const MemberAttendance = () => {
             return await response.json();
         } catch (error) {
             console.log('Error: ', error);
+            hotToast.error(error.message)
+            sonnerToast.error(error.message)
         }
     };
 
@@ -115,26 +105,17 @@ const MemberAttendance = () => {
 
             const responseBody = await response.json();
             setValidationResult(responseBody);
-            const responseResultType = ['Success', 'Failure'];
 
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message
-                });
+                hotToast.error(responseBody.message)
+                sonnerToast.error(responseBody.message)
                 setTextAreaColor('text-red-800');
             }
 
             if (response.status === 200) {
                 setTextAreaColor('text-green-800');
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message
-                });
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
             }
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
@@ -143,17 +124,14 @@ const MemberAttendance = () => {
             }
 
             if (response.status !== 403 && response.status !== 200) {
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message
-                });
+                hotToast.error(responseBody.message);
+                sonnerToast.error(responseBody.message);
             }
-
             return response;
         } catch (error) {
             console.log('Error: ', error);
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
         }
     };
 
@@ -184,23 +162,16 @@ const MemberAttendance = () => {
 
             const responseBody = await response.json();
             if (response.status === 200) {
-                setResponseType(responseResultType[0]);
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
                 setMembershipHoldToggle(false);
-                setToast(true);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message
-                });
             }
 
             queryClient.invalidateQueries(['members']);
         } catch (error) {
             console.error("Error:", error);
-            setToast(true);
-            setErrorMessage({
-                icon: MdError,
-                message: "An unexpected error occurred."
-            });
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
         } finally {
             setActivating(false);
         }
@@ -251,61 +222,6 @@ const MemberAttendance = () => {
 
     return (
         <div className='w-full bg-slate-50 dark:bg-gray-900 min-h-screen'>
-            {/* Toast Notification */}
-            {toast && (
-                <>
-                    {/* Dark overlay */}
-                    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm" />
-
-                    {/* Toast component */}
-                    <div className="fixed top-6 right-6 z-50 animate-fade-in-down">
-                        <div
-                            className={`max-w-sm rounded-xl shadow-lg overflow-hidden backdrop-blur-md
-                    ${responseType === 'Success'
-                                    ? 'bg-white/90 border-4 border-emerald-500'
-                                    : 'bg-white/90 border-4 border-red-500'}`}
-                        >
-                            <div className="flex p-4">
-                                {/* Icon */}
-                                <div className="flex-shrink-0 mr-4">
-                                    {responseType === 'Success' ? (
-                                        <div className="w-10 h-10 bg-emerald-100 rounded-full flex items-center justify-center">
-                                            <CheckCircle className="h-6 w-6 text-emerald-500" />
-                                        </div>
-                                    ) : (
-                                        <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                                            <AlertCircle className="h-6 w-6 text-red-500" />
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Content */}
-                                <div className="flex-1">
-                                    <h3 className={`font-medium ${responseType === 'Success' ? 'text-emerald-600' : 'text-red-600'}`}>
-                                        {responseType === 'Success' ? 'Success' : 'Error'}
-                                    </h3>
-                                    <p className="mt-1 text-sm text-gray-700">
-                                        {responseType === 'Success' ? successMessage.message : errorMessage.message}
-                                    </p>
-                                </div>
-
-                                {/* Close button */}
-                                <button
-                                    onClick={() => setToast(false)}
-                                    className="flex-shrink-0 ml-4 text-gray-400 hover:text-gray-600 transition-colors"
-                                >
-                                    <MdClose className="w-5 h-5" />
-                                </button>
-                            </div>
-
-                            {/* Progress bar */}
-                            <div className="h-1 w-full bg-gray-200">
-                                <div className={`h-full ${responseType === 'Success' ? 'bg-emerald-500' : 'bg-red-500'} animate-shrink`}></div>
-                            </div>
-                        </div>
-                    </div>
-                </>
-            )}
 
             {/* Membership Hold Modal */}
             {membershipHoldToggle && (
