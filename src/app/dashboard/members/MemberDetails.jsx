@@ -59,6 +59,18 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 const MemberDetails = ({ memberId }) => {
   const { user, loading } = useUser();
   const userRole = user?.user.role;
+  // React hook form
+  const {
+    register,
+    reset,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting },
+    setError,
+    control,
+    watch,
+    clearErrors,
+  } = useForm();
 
   // For rendering states
   const [currentActionTaker, setCurrentActionTaker] = useState("");
@@ -82,19 +94,6 @@ const MemberDetails = ({ memberId }) => {
     new Date()
   );
   const [finalAmount, setFinalAmount] = useState(0);
-
-  // React hook form
-  const {
-    register,
-    reset,
-    handleSubmit,
-    setValue,
-    formState: { errors, isSubmitting },
-    setError,
-    control,
-    watch,
-    clearErrors,
-  } = useForm();
 
   // Member Hooks
   const { getSingleUserDetails } = useMember();
@@ -139,10 +138,11 @@ const MemberDetails = ({ memberId }) => {
         finalAmmount: member.finalAmmount,
         receiptNo: member.receiptNo,
         remark: member.remark,
+        dueAmmount: member.dueAmmount
       });
       setDiscountAmmount(member?.discountAmmount);
-      setDueAmmount(member?.dueAmmount);
-      setFinalAmount(member?.finalAmmount);
+      setValue('finalAmount', member?.finalAmmount);
+      setValue('dueAmmount', member?.dueAmmount);
       setPrevMembershipExpireDate(
         new Date(member.membershipExpireDate).toISOString().split("T")[0]
       );
@@ -183,16 +183,12 @@ const MemberDetails = ({ memberId }) => {
     // Calculate due amount (final amount - paid amount)
     const calculatedDueAmount = safeFinalAmount - (paidAmmount || 0);
     const safeDueAmount = Math.max(calculatedDueAmount, 0);
-    // setDueAmmount(safeDueAmount);
+    setDueAmmount(safeDueAmount);
   }
 
   useEffect(() => {
     CalculateAmountChanges()
   }, [selectedPlanDetails, paidAmmount, discountAmmount]);
-
-  useEffect(() => {
-    setDueAmmount(finalAmount - paidAmmount)
-  }, [paidAmmount, discountAmmount]);
 
   // Update member details
   const updateMemberDetails = async (data) => {
@@ -1064,8 +1060,8 @@ const MemberDetails = ({ memberId }) => {
                               <Label>Due Amount</Label>
                               <Input
                                 type="text"
-                                value={finalAmount - paidAmmount}
-                                onChange={(e) => setDueAmmount(e.target.value)}
+                                {...register('dueAmmount')}
+                                value={dueAmmount}
                                 disabled
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
