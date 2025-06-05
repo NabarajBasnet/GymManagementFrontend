@@ -548,13 +548,13 @@ const MemberDetails = ({ memberId }) => {
                         </AlertDialogTitle>
                         <AlertDialogDescription className="space-y-4 mt-2">
                           <div className="bg-red-50 border border-red-200 dark:border-none rounded-lg p-3">
-                            <p className="text-red-600 font-medium text-sm">
+                            <span className="text-red-600 font-medium text-sm">
                               Are you absolutely sure?
-                            </p>
+                            </span>
                           </div>
-                          <p className="text-gray-600 text-sm dark:text-gray-300">
+                          <span className="text-gray-600 text-sm dark:text-gray-300">
                             This action will resume the paused membership.
-                          </p>
+                          </span>
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter className="flex justify-end gap-3 mt-4">
@@ -587,15 +587,15 @@ const MemberDetails = ({ memberId }) => {
                         </AlertDialogTitle>
                         <AlertDialogDescription className="space-y-4 mt-2">
                           <div className="bg-red-50 border border-red-200 dark:border-none rounded-lg p-3">
-                            <p className="text-red-600 font-medium text-sm">
+                            <span className="text-red-600 font-medium text-sm">
                               Note: Stop/Start Date will be set to today by
                               default
-                            </p>
+                            </span>
                           </div>
-                          <p className="text-gray-600 text-sm dark:text-gray-300">
+                          <span className="text-gray-600 text-sm dark:text-gray-300">
                             To override the default Stop Date, please select a
                             date below:
-                          </p>
+                          </span>
                           <Input
                             disabled={userRole === 'Gym Admin'}
                             type="date"
