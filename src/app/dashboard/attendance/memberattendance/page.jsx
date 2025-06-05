@@ -148,7 +148,6 @@ const MemberAttendance = () => {
 
     const activateMembership = async () => {
         setActivating(true);
-        const responseResultType = ['Success', 'Failure'];
         const membershipHoldData = { status: 'Active' };
 
         try {
@@ -320,24 +319,24 @@ const MemberAttendance = () => {
                 <Breadcrumb className="mb-4">
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Home</BreadcrumbLink>
+                            <MdHome className='w-5 h-5' /><BreadcrumbLink href="/" className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Home</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800">Attendance</BreadcrumbLink>
+                            <BreadcrumbLink className="text-slate-600 dark:text-gray-200 hover:text-slate-800 font-medium">Attendance</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className="font-medium text-slate-900 dark:text-gray-200">Member Attendance</BreadcrumbPage>
+                            <BreadcrumbPage className="font-medium text-slate-900 dark:text-gray-200 font-medium">Member Attendance</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex justify-between items-center">
-                    <h1 className="text-2xl md:text-lg font-bold text-slate-900 dark:text-gray-200">Member Attendance</h1>
+                    <h1 className="text-2xl md:text-lg text-slate-900 dark:text-gray-200 font-medium">Member Attendance</h1>
                     <Button
                         variant="outline"
                         onClick={reloadPage}
@@ -534,19 +533,19 @@ const MemberAttendance = () => {
                                     <Loader />
                                 </div>
                             ) : temporaryMemberAttendanceHistory?.temporarymemberattendancehistory.length > 0 ? (
-                                <div className="overflow-hidden border border-gray-200 rounded-lg">
+                                <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
                                     <Table>
                                         <TableHeader>
-                                            <TableRow className="bg-gray-50">
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Member</TableHead>
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Membership</TableHead>
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Check-in</TableHead>
-                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 py-3">Expiration</TableHead>
+                                            <TableRow className="bg-gray-50 dark:bg-gray-900 dark:border-none">
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Member</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Membership</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Check-in</TableHead>
+                                                <TableHead className="font-medium text-xs uppercase tracking-wider text-slate-600 dark:text-gray-300 py-3">Expiration</TableHead>
                                             </TableRow>
                                         </TableHeader>
                                         <TableBody>
                                             {temporaryMemberAttendanceHistory.temporarymemberattendancehistory.map((attendance) => (
-                                                <TableRow key={attendance._id} className="hover:bg-gray-50 transition-colors border-t border-gray-200">
+                                                <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors border-t border-gray-200">
                                                     <TableCell className="py-3 flex flex-col space-y-1">
                                                         <span className="text-indigo-600 font-semibold">{attendance.fullName}</span>
                                                         <span className="text-xs font-semibold">{attendance.memberId}</span>
@@ -557,18 +556,18 @@ const MemberAttendance = () => {
                                                         </Badge>
                                                     </TableCell>
                                                     <TableCell className="py-3 text-right">
-                                                        <div className="flex flex-col items-end">
-                                                            <div className="flex items-center text-slate-500 text-xs mt-0.5">
+                                                        <div className="flex flex-col">
+                                                            <div className="flex items-center text-slate-500 dark:text-gray-300 text-xs mt-0.5">
                                                                 <Timer className="h-3 w-3 mr-1" />
                                                                 {formatTime(attendance.checkInTime)}
                                                             </div>
                                                         </div>
                                                     </TableCell>
-                                                    <TableCell className="py-3 text-center">
-                                                        <div className="flex flex-col items-end">
-                                                            <div className="flex items-center text-slate-500 text-xs mt-0.5">
+                                                    <TableCell className="py-3">
+                                                        <div className="flex flex-col">
+                                                            <div className="flex items-center text-slate-500 dark:text-gray-300 text-xs mt-0.5">
                                                                 <Timer className="h-3 w-3 mr-1" />
-                                                                {formatTime(attendance.expiration)}
+                                                                00:00
                                                             </div>
                                                         </div>
                                                     </TableCell>
