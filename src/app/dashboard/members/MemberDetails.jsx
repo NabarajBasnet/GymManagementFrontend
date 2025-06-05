@@ -86,7 +86,8 @@ const MemberDetails = ({ memberId }) => {
   const [newMembershipExpireDate, setNewMembershipExpireDate] = useState(
     new Date()
   );
-  console.log("New membership expiry date: ", newMembershipExpireDate);
+  // console.log("New membership expiry date: ", newMembershipExpireDate);
+  console.log("Selected Plan: ", selectedPlanDetails);
 
   // React hook form
   const {
@@ -156,16 +157,21 @@ const MemberDetails = ({ memberId }) => {
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
       setAdmissionFee(member?.admissionFee);
-      setSelectedPlanDetails(member?.membership);
+      // setSelectedPlanDetails(member?.membership);
       setMembershipDurationDays(member?.membership?.duration);
     }
   }, [data, reset]);
 
   // Handle Expire Date Based On Selected Plan Details And Previous Expire Date
   const handleMembershipExpireDate = (prevExpDate, duration) => {
-    console.log('Prev exp date: ', prevExpDate);
+    if (!prevExpDate || isNaN(duration)) return;
+
+    // console.log('Prev exp date: ', prevExpDate);
     const newExpiryDate = new Date(prevExpDate);
-    console.log('newExpiryDate: ', newExpiryDate);
+    newExpiryDate.setDate(newExpiryDate.getDate() + parseInt(duration));
+    setNewMembershipExpireDate(new Date(newExpiryDate));
+    setMembershipExpireDate(new Date(newExpiryDate));
+    // console.log('newExpiryDate: ', newExpiryDate);
   }
 
   useEffect(() => {
