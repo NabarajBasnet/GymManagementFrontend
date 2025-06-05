@@ -6,7 +6,6 @@ import { MdHome } from "react-icons/md";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
-import { usePagination } from "@/hooks/Pagination.js";
 
 // UI Components
 import Badge from '@mui/material/Badge';
@@ -384,7 +383,7 @@ const MemberAttendance = () => {
                                         value={memberId}
                                         onChange={(e) => setMemberId(e.target.value)}
                                         autoFocus
-                                        className="pl-10 pr-3 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
+                                        className="pl-10 pr-3 py-6 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -410,13 +409,13 @@ const MemberAttendance = () => {
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Full Name</Label>
-                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200">
+                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-sm px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {validationResult?.member?.fullName || "—"}
                                             </div>
                                         </div>
                                         <div className="dark:text-gray-200">
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Category</Label>
-                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-md px-3 py-2 text-sm font-medium text-gray-800 dark:text-gray-200">
+                                            <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-sm px-3 py-4 text-sm font-medium text-gray-800 dark:text-gray-200">
                                                 {validationResult?.member?.membershipType || "—"}
                                             </div>
                                         </div>
@@ -432,21 +431,21 @@ const MemberAttendance = () => {
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Membership Option</Label>
                                             <Input
-                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={validationResult?.member?.membershipOption || "—"}
                                             />
                                         </div>
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Start Date</Label>
                                             <Input
-                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipDate)}
                                             />
                                         </div>
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Expire Date</Label>
                                             <Input
-                                                className="dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipExpireDate)}
 
                                             />
@@ -457,9 +456,9 @@ const MemberAttendance = () => {
                                 {/* System Message */}
                                 <div>
                                     <Label className="text-sm font-medium text-gray-700 mb-2 block dark:text-gray-200">
-                                        System Message
+                                        Attendance Message
                                     </Label>
-                                    <div className={`relative bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-600 p-4`}>
+                                    <div className={`relative bg-gray-50 dark:bg-gray-800 rounded-sm border border-gray-200 dark:border-gray-600 p-4`}>
                                         {validationResult && (
                                             <div className={`flex items-start ${textareaColor}`}>
                                                 <div className="flex-shrink-0 mt-0.5">
@@ -522,7 +521,7 @@ const MemberAttendance = () => {
                                         placeholder="Search by name or member ID..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10 pr-3 py-2 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-md"
+                                        className="pl-10 pr-3 py-6 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
                                     />
                                 </div>
                             </div>
