@@ -8,17 +8,10 @@ import { MdOutlinePayment } from "react-icons/md";
 import { toast as sonnerToast } from "sonner";
 import { toast as hotToast } from "react-hot-toast";
 import {
-  BiHomeAlt,
   BiSolidUserDetail,
-  BiSolidUserCircle,
 } from "react-icons/bi";
 import {
   Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
@@ -59,6 +52,7 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider";
 const MemberDetails = ({ memberId }) => {
   const { user, loading } = useUser();
   const userRole = user?.user.role;
+
   // React hook form
   const {
     register,
@@ -75,7 +69,6 @@ const MemberDetails = ({ memberId }) => {
   // For rendering states
   const [currentActionTaker, setCurrentActionTaker] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
-  console.log('action: ', currentActionTaker);
 
   // States
   const queryClient = useQueryClient();
@@ -327,6 +320,32 @@ const MemberDetails = ({ memberId }) => {
     }
   };
 
+  const activateMembership = async () => {
+
+    const membershipHoldData = { status: 'Active' };
+
+    try {
+      const response = await fetch(`http://localhost:3000/api/members/resume-membership/${memberId}`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(membershipHoldData)
+      });
+
+      const responseBody = await response.json();
+      if (response.status === 200) {
+        hotToast.success(responseBody.message);
+        sonnerToast.success(responseBody.message);
+      };
+      queryClient.invalidateQueries(['members']);
+    } catch (error) {
+      console.error("Error:", error);
+      hotToast.success(responseBody.message);
+      sonnerToast.success(responseBody.message);
+    }
+  };
+
   const getAactionTakers = async () => {
     try {
       const response = await fetch(
@@ -513,12 +532,44 @@ const MemberDetails = ({ memberId }) => {
                 </h2>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button
-                    disabled
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-sm hover:shadow-md disabled:opacity-50"
-                  >
-                    Start
-                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        disabled={member?.status !== 'OnHold'}
+                        className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-4 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all duration-300 font-medium shadow-sm hover:shadow-md disabled:opacity-50"
+                      >
+                        Activate
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="max-w-md p-6 rounded-2xl dark:bg-gray-800 dark:border-none">
+                      <AlertDialogHeader>
+                        <AlertDialogTitle className="text-xl font-bold dark:text-white">
+                          Confirm Membership Resume
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-4 mt-2">
+                          <div className="bg-red-50 border border-red-200 dark:border-none rounded-lg p-3">
+                            <p className="text-red-600 font-medium text-sm">
+                              Are you absolutely sure?
+                            </p>
+                          </div>
+                          <p className="text-gray-600 text-sm dark:text-gray-300">
+                            This action will resume the paused membership.
+                          </p>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter className="flex justify-end gap-3 mt-4">
+                        <AlertDialogCancel className="px-4 py-2 bg-gray-100 dark:hover:bg-gray-600 dark:border-none text-gray-700 rounded-lg hover:bg-gray-200 transition-colors duration-300 text-sm">
+                          Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => activateMembership()}
+                          className="px-4 py-2 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all duration-300 shadow-sm hover:shadow-md text-sm"
+                        >
+                          Confirm Resume
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
