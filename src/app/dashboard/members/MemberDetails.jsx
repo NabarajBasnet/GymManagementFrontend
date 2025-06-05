@@ -83,11 +83,6 @@ const MemberDetails = ({ memberId }) => {
   const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
     new Date()
   );
-  const [newMembershipExpireDate, setNewMembershipExpireDate] = useState(
-    new Date()
-  );
-  // console.log("New membership expiry date: ", newMembershipExpireDate);
-  console.log("Selected Plan: ", selectedPlanDetails);
 
   // React hook form
   const {
@@ -157,27 +152,19 @@ const MemberDetails = ({ memberId }) => {
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
       setAdmissionFee(member?.admissionFee);
-      // setSelectedPlanDetails(member?.membership);
-      setMembershipDurationDays(member?.membership?.duration);
     }
   }, [data, reset]);
 
   // Handle Expire Date Based On Selected Plan Details And Previous Expire Date
-  const handleMembershipExpireDate = (prevExpDate, duration) => {
-    if (!prevExpDate || isNaN(duration)) return;
-
-    // console.log('Prev exp date: ', prevExpDate);
-    const newExpiryDate = new Date(prevExpDate);
-    newExpiryDate.setDate(newExpiryDate.getDate() + parseInt(duration));
-    setNewMembershipExpireDate(new Date(newExpiryDate));
-    setMembershipExpireDate(new Date(newExpiryDate));
-   const expireDate = new Date(member?.membershipExpireDate);
-  expireDate.setDate(expireDate.getDate() + parseInt(duration));
-  setPrevMembershipExpireDate(expireDate);
+  const handleMembershipExpireDate = (duration) => {
+    if (isNaN(duration)) return;
+    const expireDate = new Date(member?.membershipExpireDate);
+    expireDate.setDate(expireDate.getDate() + parseInt(duration));
+    setPrevMembershipExpireDate(expireDate);
   }
 
   useEffect(() => {
-    handleMembershipExpireDate(prevMembershipExpireDate, membershipDurationDays);
+    handleMembershipExpireDate(membershipDurationDays);
   }, [selectedPlanDetails]);
 
 
@@ -334,7 +321,7 @@ const MemberDetails = ({ memberId }) => {
   });
 
   const { membershipPlans: fetchedPlans } = plans || {};
-console.log('Time: ', new Date().toLocaleTimeString())
+
   // Plan search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
@@ -446,11 +433,11 @@ console.log('Time: ', new Date().toLocaleTimeString())
       </div>
 
       <div className="w-full md:flex justify-between items-start gap-4">
-        {/* <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none"> */}
-        {/* <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6"> */}
-        {/* <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8"> */}
-        {/* QR Code Section */}
-        {/* <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
+        <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
+          <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
+            <div className="w-full flex flex-row md:flex-col gap-6 md:gap-8">
+              QR Code Section
+              <div className="w-6/12 md:w-full flex flex-col items-center space-y-4 p-4 bg-gray-50 dark:border-none dark:bg-gray-900 rounded-xl border border-gray-200 w-full md:w-auto">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership QR
                 </h2>
@@ -461,10 +448,10 @@ console.log('Time: ', new Date().toLocaleTimeString())
                     className="w-40 h-40 rounded-xl"
                   />
                 </div>
-              </div> */}
+              </div>
 
-        {/* Membership Controls & Info */}
-        {/* <div className="w-6/12 md:w-full flex-1 space-y-4">
+              Membership Controls & Info
+              <div className="w-6/12 md:w-full flex-1 space-y-4">
                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-300">
                   Membership Status
                 </h2>
@@ -539,8 +526,8 @@ console.log('Time: ', new Date().toLocaleTimeString())
                     <p className="text-base font-semibold text-gray-800 dark:text-gray-300">
                       {data?.member?.membershipHoldDate
                         ? new Date(data.member.membershipHoldDate)
-                            .toISOString()
-                            .split("T")[0]
+                          .toISOString()
+                          .split("T")[0]
                         : "N/A"}
                     </p>
                   </div>
@@ -567,16 +554,16 @@ console.log('Time: ', new Date().toLocaleTimeString())
                     <p className="text-base font-semibold dark:text-gray-300 text-gray-800">
                       {data?.member?.resumedDate
                         ? new Date(data.member.resumedDate)
-                            .toISOString()
-                            .split("T")[0]
+                          .toISOString()
+                          .split("T")[0]
                         : "N/A"}
                     </p>
                   </div>
                 </div>
-              </div> */}
-        {/* </div> */}
-        {/* </div> */}
-        {/* </Card> */}
+              </div>
+            </div>
+          </div>
+        </Card>
 
         <Card className="w-full dark:bg-gray-800 dark:border-none p-4">
           <div className="w-full">
@@ -926,12 +913,7 @@ console.log('Time: ', new Date().toLocaleTimeString())
 
                             <div>
                               <Label>Membership Expire Date</Label>
-                              {/* <Controller
-                                name="membershipExpireDate"
-                                control={control}
-                                render={({ field }) => ( */}
                               <Input
-                                // {...field}
                                 {...register("membershipExpireDate")}
                                 type="date"
                                 disabled={userRole === 'Gym Admin'}
@@ -941,8 +923,6 @@ console.log('Time: ', new Date().toLocaleTimeString())
                                 }}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
-                              {/* )} */}
-                              {/* /> */}
                             </div>
                           </div>
                         </div>
