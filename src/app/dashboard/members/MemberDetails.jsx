@@ -171,12 +171,14 @@ const MemberDetails = ({ memberId }) => {
     newExpiryDate.setDate(newExpiryDate.getDate() + parseInt(duration));
     setNewMembershipExpireDate(new Date(newExpiryDate));
     setMembershipExpireDate(new Date(newExpiryDate));
-    // console.log('newExpiryDate: ', newExpiryDate);
+   const expireDate = new Date(member?.membershipExpireDate);
+  expireDate.setDate(expireDate.getDate() + parseInt(duration));
+  setPrevMembershipExpireDate(expireDate);
   }
 
   useEffect(() => {
     handleMembershipExpireDate(prevMembershipExpireDate, membershipDurationDays);
-  }, [prevMembershipExpireDate, selectedPlanDetails, membershipRenewDate]);
+  }, [selectedPlanDetails]);
 
 
   // Update due amount in a separate effect to ensure finalAmount is up-to-date
@@ -332,7 +334,7 @@ const MemberDetails = ({ memberId }) => {
   });
 
   const { membershipPlans: fetchedPlans } = plans || {};
-
+console.log('Time: ', new Date().toLocaleTimeString())
   // Plan search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
@@ -933,10 +935,9 @@ const MemberDetails = ({ memberId }) => {
                                 {...register("membershipExpireDate")}
                                 type="date"
                                 disabled={userRole === 'Gym Admin'}
-                                value={new Date(membershipExpireDate).toISOString().split("T")[0]}
+                                value={new Date(prevMembershipExpireDate).toISOString().split("T")[0]}
                                 onChange={(e) => {
                                   setMembershipExpireDate(e.target.value);
-                                  field.onChange(e);
                                 }}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
