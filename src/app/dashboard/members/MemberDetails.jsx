@@ -506,8 +506,9 @@ const MemberDetails = ({ memberId }) => {
                             date below:
                           </p>
                           <Input
+                            disabled={userRole === 'Gym Admin'}
                             type="date"
-                            value={membershipHoldDate}
+                            value={membershipHoldDate ? new Date(membershipHoldDate).toISOString().split("T")[0] : new Date().toISOString().split("T")[0]}
                             onChange={(e) =>
                               setMembershipHoldDate(
                                 new Date(e.target.value)
