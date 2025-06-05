@@ -67,10 +67,8 @@ const MemberDetails = ({ memberId }) => {
   // States
   const queryClient = useQueryClient();
   const [membershipHoldDate, setMembershipHoldDate] = useState("");
-  const [membershipOption, setMembershipOption] = useState("");
   const [membershipType, setMembershipType] = useState("");
   const [membershipDuration, setMembershipDuration] = useState("");
-  const [finalAmmount, setFinalAmmount] = useState(0);
   const [discountAmmount, setDiscountAmmount] = useState(0);
   const [dueAmmount, setDueAmmount] = useState(0);
   const [paidAmmount, setPaidAmmount] = useState(0);
@@ -83,6 +81,7 @@ const MemberDetails = ({ memberId }) => {
   const [prevMembershipExpireDate, setPrevMembershipExpireDate] = useState(
     new Date()
   );
+  const [finalAmount, setFinalAmount] = useState(0);
 
   // React hook form
   const {
@@ -138,10 +137,12 @@ const MemberDetails = ({ memberId }) => {
         discountCode: member.discountCode,
         paidAmmount: member.paidAmmount,
         finalAmmount: member.finalAmmount,
-        dueAmmount: member.dueAmmount,
         receiptNo: member.receiptNo,
         remark: member.remark,
       });
+      setDiscountAmmount(member?.discountAmmount);
+      setDueAmmount(member?.dueAmmount);
+      setFinalAmount(member?.finalAmmount);
       setPrevMembershipExpireDate(
         new Date(member.membershipExpireDate).toISOString().split("T")[0]
       );
@@ -162,17 +163,36 @@ const MemberDetails = ({ memberId }) => {
     expireDate.setDate(expireDate.getDate() + parseInt(duration));
     setPrevMembershipExpireDate(expireDate);
   }
-
   useEffect(() => {
     handleMembershipExpireDate(membershipDurationDays);
   }, [selectedPlanDetails]);
 
+  // Calculate Final Amount By Calculating with discount, selected membership
+  const CalculateAmountChanges = () => {
+    // Get the base amount from the selected plan or existing member data
+    const baseAmount = selectedPlanDetails?.price || member?.finalAmmount || 0;
 
-  // Update due amount in a separate effect to ensure finalAmount is up-to-date
+    // Calculate final amount after discount
+    const calculatedFinalAmount = baseAmount - (discountAmmount || 0);
+
+    // Ensure final amount doesn't go negative
+    const safeFinalAmount = Math.max(calculatedFinalAmount, 0);
+
+    setFinalAmount(safeFinalAmount);
+
+    // Calculate due amount (final amount - paid amount)
+    const calculatedDueAmount = safeFinalAmount - (paidAmmount || 0);
+    const safeDueAmount = Math.max(calculatedDueAmount, 0);
+    // setDueAmmount(safeDueAmount);
+  }
+
   useEffect(() => {
-    setDueAmmount(finalAmmount - paidAmmount);
-    setValue("dueAmmount", finalAmmount - paidAmmount);
-  }, [finalAmmount, paidAmmount]);
+    CalculateAmountChanges()
+  }, [selectedPlanDetails, paidAmmount, discountAmmount]);
+
+  useEffect(() => {
+    setDueAmmount(finalAmount - paidAmmount)
+  }, [paidAmmount, discountAmmount]);
 
   // Update member details
   const updateMemberDetails = async (data) => {
@@ -565,7 +585,7 @@ const MemberDetails = ({ memberId }) => {
           </div>
         </Card>
 
-        <Card className="w-full dark:bg-gray-800 dark:border-none p-4">
+        <Card className="w-full md:w-9/12 dark:bg-gray-800 dark:border-none p-4">
           <div className="w-full">
             {data && (
               <div className="w-full">
@@ -885,7 +905,7 @@ const MemberDetails = ({ memberId }) => {
                                           setRenderMembershipPlanDropdown(
                                             false
                                           );
-                                          setFinalAmmount(
+                                          setFinalAmount(
                                             plan.price
                                           );
                                           setMembershipDuration(
@@ -978,7 +998,7 @@ const MemberDetails = ({ memberId }) => {
                                     {...register("discountAmmount")}
                                     value={field.value}
                                     onChange={(e) => {
-                                      setDiscountAmmount(e.target.value);
+                                      setDiscountAmmount(parseInt(e.target.value));
                                       field.onChange(e);
                                     }}
                                     type="text"
@@ -1011,7 +1031,8 @@ const MemberDetails = ({ memberId }) => {
                             <div>
                               <Label>Final Amount</Label>
                               <Input
-                                {...register("finalAmmount")}
+                                value={finalAmount}
+                                onChange={(e) => setFinalAmount(parseInt(e.target.value))}
                                 type="text"
                                 disabled
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
@@ -1029,7 +1050,7 @@ const MemberDetails = ({ memberId }) => {
                                     {...register("paidAmmount")}
                                     value={field.value}
                                     onChange={(e) => {
-                                      setPaidAmmount(e.target.value);
+                                      setPaidAmmount(parseInt(e.target.value));
                                       field.onChange(e);
                                     }}
                                     type="text"
@@ -1042,8 +1063,9 @@ const MemberDetails = ({ memberId }) => {
                             <div>
                               <Label>Due Amount</Label>
                               <Input
-                                {...register("dueAmmount")}
                                 type="text"
+                                value={finalAmount - paidAmmount}
+                                onChange={(e) => setDueAmmount(e.target.value)}
                                 disabled
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
