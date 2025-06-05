@@ -94,6 +94,11 @@ const MemberDetails = ({ memberId }) => {
     new Date()
   );
   const [finalAmount, setFinalAmount] = useState(0);
+  console.log("Final : ", selectedPlanDetails);
+  console.log("Final Amount: ", finalAmount);
+  console.log("Due Amount: ", dueAmmount);
+  console.log("Discount Amount: ", discountAmmount);
+  console.log("Expiry Date: ", prevMembershipExpireDate);
 
   // Member Hooks
   const { getSingleUserDetails } = useMember();
@@ -153,6 +158,7 @@ const MemberDetails = ({ memberId }) => {
         `${member?.membership?.planName} - ${member?.membership?.price}`
       );
       setAdmissionFee(member?.admissionFee);
+      setSelectedPlanDetails(member?.membership);
     }
   }, [data, reset]);
 
@@ -178,7 +184,7 @@ const MemberDetails = ({ memberId }) => {
     // Ensure final amount doesn't go negative
     const safeFinalAmount = Math.max(calculatedFinalAmount, 0);
 
-    setFinalAmount(safeFinalAmount);
+    setValue('finalAmmount', safeFinalAmount);
 
     // Calculate due amount (final amount - paid amount)
     const calculatedDueAmount = safeFinalAmount - (paidAmmount || 0);
@@ -194,6 +200,10 @@ const MemberDetails = ({ memberId }) => {
   const updateMemberDetails = async (data) => {
     console.log("Data: ", data);
 
+    if (!selectedPlanDetails) {
+      hotToast.error('Plan not selected');
+      sonnerToast.error('Plan not selected');
+    }
     const {
       fullName,
       contactNo,
@@ -210,9 +220,11 @@ const MemberDetails = ({ memberId }) => {
       paymentMethod,
       referenceCode,
       discountReason,
+      finalAmmount,
       receiptNo,
       reasonForUpdate,
-      remark, actionTaker,
+      remark,
+      actionTaker,
     } = data || {};
 
     const finalObjectData = {
@@ -231,22 +243,21 @@ const MemberDetails = ({ memberId }) => {
       membershipDate,
       membershipRenewDate,
       membershipExpireDate: prevMembershipExpireDate,
-      selectedPlanDetails,
+      membership: selectedPlanDetails._id || null,
 
       paymentMethod,
       discountAmmount,
       discountReason,
       referenceCode,
-      finalAmount,
+      finalAmmount,
       paidAmmount,
       dueAmmount,
       receiptNo,
       reasonForUpdate,
       remark,
       actionTaker,
+      bodyMeasuredate: new Date(),
     };
-
-    console.log('Final Data Object ', finalObjectData);
 
     try {
       const response = await fetch(
@@ -256,7 +267,7 @@ const MemberDetails = ({ memberId }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(data),
+          body: JSON.stringify(finalObjectData),
         }
       );
       const responseBody = await response.json();
@@ -469,10 +480,8 @@ const MemberDetails = ({ memberId }) => {
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbItem className="dark:text-gray-300 font-medium">
-              {data ? `${member.fullName || "Member Name"}` : `${""}`}
-            </BreadcrumbItem>
+          <BreadcrumbItem className="dark:text-gray-300 font-medium">
+            {data ? `${member.fullName || "Member Name"}` : `${""}`}
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -970,7 +979,7 @@ const MemberDetails = ({ memberId }) => {
                                 disabled={userRole === 'Gym Admin'}
                                 value={new Date(prevMembershipExpireDate).toISOString().split("T")[0]}
                                 onChange={(e) => {
-                                  setMembershipExpireDate(e.target.value);
+                                  setPrevMembershipExpireDate(e.target.value);
                                 }}
                                 className="rounded-sm py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"
                               />
@@ -1062,8 +1071,7 @@ const MemberDetails = ({ memberId }) => {
                             <div>
                               <Label>Final Amount</Label>
                               <Input
-                                value={finalAmount}
-                                onChange={(e) => setFinalAmount(parseInt(e.target.value))}
+                                {...register('finalAmmount')}
                                 type="text"
                                 disabled
                                 className="rounded-sm disabled:bg-gray-300 py-6 dark:bg-gray-900 bg-white dark:border-none focus:outline-none"

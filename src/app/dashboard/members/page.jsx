@@ -174,7 +174,6 @@ const AllMembers = () => {
         }
       );
       const responseBody = await response.json();
-
       if (response.status !== 200) {
         setIsDeleting(false);
         hotToast.error(responseBody.message);
@@ -185,7 +184,6 @@ const AllMembers = () => {
           hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
         }
-        setConfirmDeleteMember(false);
         queryClient.invalidateQueries(["members"]);
       }
     } catch (error) {
