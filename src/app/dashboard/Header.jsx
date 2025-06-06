@@ -336,21 +336,21 @@ const Header = () => {
             },
           ],
         },
-        {
-          icon: LuLogs,
-          title: "Membership Logs",
-          link: "/dashboard/members/membershiplogs",
-        },
+        // {
+        //   icon: LuLogs,
+        //   title: "Membership Logs",
+        //   link: "/dashboard/members/membershiplogs",
+        // },
         // {
         //     icon: MdAutoGraph,
         //     title: 'Member Performance',
         //     link: '/dashboard/members/memberperformance',
         // },
-        {
-          icon: FaRulerHorizontal,
-          title: "Body Measurements",
-          link: "/dashboard/members/bodymeasurements",
-        },
+        // {
+        //   icon: FaRulerHorizontal,
+        //   title: "Body Measurements",
+        //   link: "/dashboard/members/bodymeasurements",
+        // },
       ],
     },
     // Staff Operations
@@ -390,40 +390,40 @@ const Header = () => {
           title: "Payment History",
           link: "/dashboard/paymenthistory",
         },
-        {
-          icon: MdAttachMoney,
-          title: "Billing",
-          link: "/dashboard/billing",
-          subObj: [
-            {
-              icon: AiFillProduct,
-              title: "Services & Products",
-              link: "/dashboard/billing/servicesandproducts",
-            },
-            {
-              icon: TbListDetails,
-              title: "Billing Profile",
-              link: "/dashboard/billing/billingprofile",
-            },
-            {
-              icon: IoReceiptSharp,
-              title: "Payment Receipt",
-              link: "/dashboard/billing/paymentreceipts",
-            },
-            {
-              icon: FaMoneyBillAlt,
-              title: "Sales Invoice",
-              link: "/dashboard/billing/salesinvoice",
-            },
-            // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-            // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
-          ],
-        },
-        {
-          icon: FaTags,
-          title: "Promotions & Offers",
-          link: "/dashboard/promotionsandoffers",
-        },
+        // {
+        //   icon: MdAttachMoney,
+        //   title: "Billing",
+        //   link: "/dashboard/billing",
+        //   subObj: [
+        //     {
+        //       icon: AiFillProduct,
+        //       title: "Services & Products",
+        //       link: "/dashboard/billing/servicesandproducts",
+        //     },
+        //     {
+        //       icon: TbListDetails,
+        //       title: "Billing Profile",
+        //       link: "/dashboard/billing/billingprofile",
+        //     },
+        //     {
+        //       icon: IoReceiptSharp,
+        //       title: "Payment Receipt",
+        //       link: "/dashboard/billing/paymentreceipts",
+        //     },
+        //     {
+        //       icon: FaMoneyBillAlt,
+        //       title: "Sales Invoice",
+        //       link: "/dashboard/billing/salesinvoice",
+        //     },
+        //     // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+        //     // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+        //   ],
+        // },
+        // {
+        //   icon: FaTags,
+        //   title: "Promotions & Offers",
+        //   link: "/dashboard/promotionsandoffers",
+        // },
       ],
     },
     // Facility Management
@@ -486,28 +486,28 @@ const Header = () => {
           title: "Members Feedback",
           link: "/dashboard/feedbacks",
         },
-        {
-          icon: FaBoxOpen,
-          title: "Logs",
-          link: "/dashboard/logs",
-          subObj: [
-            {
-              icon: FaBoxOpen,
-              title: "Audit Logs",
-              link: "/dashboard/logs/auditlogs",
-            },
-            {
-              icon: FaBoxOpen,
-              title: "Auth Logs",
-              link: "/dashboard/logs/authlogs",
-            },
-            {
-              icon: FaBoxOpen,
-              title: "Error Logs",
-              link: "/dashboard/logs/errorlogs",
-            },
-          ],
-        },
+        // {
+        //   icon: FaBoxOpen,
+        //   title: "Logs",
+        //   link: "/dashboard/logs",
+        //   subObj: [
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Audit Logs",
+        //       link: "/dashboard/logs/auditlogs",
+        //     },
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Auth Logs",
+        //       link: "/dashboard/logs/authlogs",
+        //     },
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Error Logs",
+        //       link: "/dashboard/logs/errorlogs",
+        //     },
+        //   ],
+        // },
         {
           icon: IoChatbubbleEllipsesSharp,
           title: "Ai Assistant",

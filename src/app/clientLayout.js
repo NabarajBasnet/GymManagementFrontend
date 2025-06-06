@@ -62,6 +62,8 @@ export default function MainClientLayout({ children }) {
 
   const hideNavbar =
     pathname.startsWith("/dashboard") ||
+    pathname.startsWith("/register") ||
+    pathname.startsWith("/onboarding") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/auth/") ||

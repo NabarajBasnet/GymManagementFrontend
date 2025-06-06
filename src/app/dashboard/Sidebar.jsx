@@ -94,7 +94,7 @@ const Sidebar = () => {
   );
   const [activeItem, setActiveItem] = useState("");
   const [hoveredItem, setHoveredItem] = useState(null);
-  const [notifications, setNotifications] = useState(3); // Demo notification count
+  const [notifications, setNotifications] = useState(3);
 
   // Set active item based on current route
   useEffect(() => {
@@ -251,11 +251,11 @@ const Sidebar = () => {
             },
           ],
         },
-        {
-          icon: LuLogs,
-          title: "Membership Logs",
-          link: "/dashboard/members/membershiplogs",
-        },
+        // {
+        //   icon: LuLogs,
+        //   title: "Membership Logs",
+        //   link: "/dashboard/members/membershiplogs",
+        // },
         // {
         //     icon: MdAutoGraph,
         //     title: 'Member Performance',
@@ -263,11 +263,11 @@ const Sidebar = () => {
         //     badge: 'Pro',
         //     badgeColor: 'bg-gradient-to-r from-purple-500 to-indigo-500'
         // },
-        {
-          icon: FaRulerHorizontal,
-          title: "Body Measurements",
-          link: "/dashboard/members/bodymeasurements",
-        },
+        // {
+        //   icon: FaRulerHorizontal,
+        //   title: "Body Measurements",
+        //   link: "/dashboard/members/bodymeasurements",
+        // },
       ],
     },
     // Staff Operations
@@ -307,40 +307,40 @@ const Sidebar = () => {
           title: "Payment History",
           link: "/dashboard/paymenthistory",
         },
-        {
-          icon: MdAttachMoney,
-          title: "Billing",
-          link: "/dashboard/billing",
-          subObj: [
-            {
-              icon: AiFillProduct,
-              title: "Services & Products",
-              link: "/dashboard/billing/servicesandproducts",
-            },
-            {
-              icon: TbListDetails,
-              title: "Billing Profile",
-              link: "/dashboard/billing/billingprofile",
-            },
-            {
-              icon: IoReceiptSharp,
-              title: "Payment Receipt",
-              link: "/dashboard/billing/paymentreceipts",
-            },
-            {
-              icon: FaMoneyBillAlt,
-              title: "Sales Invoice",
-              link: "/dashboard/billing/salesinvoice",
-            },
-            // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
-            // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
-          ],
-        },
-        {
-          icon: FaTags,
-          title: "Promotions & Offers",
-          link: "/dashboard/promotionsandoffers",
-        },
+        // {
+        //   icon: MdAttachMoney,
+        //   title: "Billing",
+        //   link: "/dashboard/billing",
+        //   subObj: [
+        //     {
+        //       icon: AiFillProduct,
+        //       title: "Services & Products",
+        //       link: "/dashboard/billing/servicesandproducts",
+        //     },
+        //     {
+        //       icon: TbListDetails,
+        //       title: "Billing Profile",
+        //       link: "/dashboard/billing/billingprofile",
+        //     },
+        //     {
+        //       icon: IoReceiptSharp,
+        //       title: "Payment Receipt",
+        //       link: "/dashboard/billing/paymentreceipts",
+        //     },
+        //     {
+        //       icon: FaMoneyBillAlt,
+        //       title: "Sales Invoice",
+        //       link: "/dashboard/billing/salesinvoice",
+        //     },
+        //     // { icon: FaMoneyBillAlt, title: 'Proforma Invoice', link: '/dashboard/billing/proformainvoice' },
+        //     // { icon: RiBillFill, title: 'Sales Return', link: '/dashboard/billing/salesreturn' },
+        //   ],
+        // },
+        // {
+        //   icon: FaTags,
+        //   title: "Promotions & Offers",
+        //   link: "/dashboard/promotionsandoffers",
+        // },
       ],
     },
     // Facility Management
@@ -406,28 +406,28 @@ const Sidebar = () => {
           title: "Feedback",
           link: "/dashboard/feedbacks",
         },
-        {
-          icon: FaBoxOpen,
-          title: "Logs",
-          link: "/dashboard/logs",
-          subObj: [
-            {
-              icon: FaBoxOpen,
-              title: "Audit Logs",
-              link: "/dashboard/logs/auditlogs",
-            },
-            {
-              icon: FaBoxOpen,
-              title: "Auth Logs",
-              link: "/dashboard/logs/authlogs",
-            },
-            {
-              icon: FaBoxOpen,
-              title: "Error Logs",
-              link: "/dashboard/logs/errorlogs",
-            },
-          ],
-        },
+        // {
+        //   icon: FaBoxOpen,
+        //   title: "Logs",
+        //   link: "/dashboard/logs",
+        //   subObj: [
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Audit Logs",
+        //       link: "/dashboard/logs/auditlogs",
+        //     },
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Auth Logs",
+        //       link: "/dashboard/logs/authlogs",
+        //     },
+        //     {
+        //       icon: FaBoxOpen,
+        //       title: "Error Logs",
+        //       link: "/dashboard/logs/errorlogs",
+        //     },
+        //   ],
+        // },
         {
           icon: IoChatbubbleEllipsesSharp,
           title: "Ai Assistant",
@@ -561,8 +561,8 @@ const Sidebar = () => {
                           >
                             <div
                               className={`flex items-center ${isActive(item.link)
-                                  ? "text-indigo-600 dark:text-indigo-400"
-                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                ? "text-indigo-600 dark:text-indigo-400"
+                                : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                 }`}
                             >
                               <div className="relative">
@@ -599,8 +599,8 @@ const Sidebar = () => {
                           </AccordionTrigger>
                           <div
                             className={`ml-7 border-l-2 ${isActive(item.link)
-                                ? "border-indigo-300 dark:border-indigo-700"
-                                : "border-gray-200 dark:border-gray-700"
+                              ? "border-indigo-300 dark:border-indigo-700"
+                              : "border-gray-200 dark:border-gray-700"
                               }`}
                           >
                             {item.subObj.map((subItem, subIndex) => (
@@ -620,8 +620,8 @@ const Sidebar = () => {
                                       <div className="relative">
                                         <subItem.icon
                                           className={`w-4 h-4 ${isActive(subItem.link)
-                                              ? "text-indigo-600 dark:text-indigo-400"
-                                              : "text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                            ? "text-indigo-600 dark:text-indigo-400"
+                                            : "text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                             }`}
                                         />
                                       </div>
@@ -678,8 +678,8 @@ const Sidebar = () => {
                           >
                             <div
                               className={`flex items-center ${isActive(item.link)
-                                  ? "text-indigo-600 dark:text-indigo-400"
-                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                ? "text-indigo-600 dark:text-indigo-400"
+                                : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                 }`}
                             >
                               <div className="relative">
