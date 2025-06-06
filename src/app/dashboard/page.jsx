@@ -200,7 +200,7 @@ const AdminDashboard = () => {
           {/* Main Welcome Card */}
           <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-xl shadow-md group transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900">
             {/* Sleek gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-800/95 via-gray-900/95 to-black/95 dark:from-slate-900/95 dark:via-gray-950/95 dark:to-black/95 z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-indigo/75 to-purple-700/75 dark:from-blue-900/90 dark:via-indigo/75 dark:to-purple-700/75 z-10"></div>
 
             {/* Geometric pattern overlay */}
             <div className="absolute inset-0 opacity-5 z-10" style={{
@@ -256,7 +256,7 @@ const AdminDashboard = () => {
           {/* Quick Stats Card */}
           <Card className="lg:col-span-4 dark:border-none relative rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900 group">
             {/* Modern glass-morphism background */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-black/90 via-gray-600/70 to-neutral-600/90 z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-tr from-pink-900/90 via-blue-600/70 to-purple-600/90 z-10"></div>
 
             {/* Floating elements */}
             <div className="absolute inset-0 z-10">
