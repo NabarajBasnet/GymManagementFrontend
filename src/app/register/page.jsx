@@ -24,8 +24,136 @@ import {
     TrendingUp,
     CheckCircle
 } from 'lucide-react';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import {
+    GB,
+    US,
+    NP,
+    IN,
+    CN,
+    JP,
+    KR,
+    AU,
+    DE,
+    FR,
+    IT,
+    ES,
+    NL,
+    BE,
+    CH,
+    SE,
+    NO,
+    DK,
+    FI,
+    AT,
+    HU,
+    PL,
+    CZ,
+    SK,
+    HR,
+    SI,
+    RO,
+    BG,
+    GR,
+    PT,
+    BR,
+    AR,
+    CL,
+    CO,
+    VE,
+    EC,
+    PE,
+    MX,
+    CA,
+    ZA,
+    EG,
+    AE,
+    SA,
+    IL,
+    TR,
+    IR,
+    PK,
+    BD,
+    MM,
+    TH,
+    VN,
+    MY,
+    ID,
+    PH,
+    SG,
+    HK,
+    TW,
+    NZ,
+} from "country-flag-icons/react/3x2";
+
+const countryCodes = [
+    { code: "+977", country: "Nepal", flag: NP, iso: "NP" },
+    { code: "+91", country: "India", flag: IN, iso: "IN" },
+    { code: "+1", country: "United States", flag: US, iso: "US" },
+    { code: "+44", country: "United Kingdom", flag: GB, iso: "GB" },
+    { code: "+86", country: "China", flag: CN, iso: "CN" },
+    { code: "+81", country: "Japan", flag: JP, iso: "JP" },
+    { code: "+82", country: "South Korea", flag: KR, iso: "KR" },
+    { code: "+61", country: "Australia", flag: AU, iso: "AU" },
+    { code: "+49", country: "Germany", flag: DE, iso: "DE" },
+    { code: "+33", country: "France", flag: FR, iso: "FR" },
+    { code: "+39", country: "Italy", flag: IT, iso: "IT" },
+    { code: "+34", country: "Spain", flag: ES, iso: "ES" },
+    { code: "+31", country: "Netherlands", flag: NL, iso: "NL" },
+    { code: "+32", country: "Belgium", flag: BE, iso: "BE" },
+    { code: "+41", country: "Switzerland", flag: CH, iso: "CH" },
+    { code: "+46", country: "Sweden", flag: SE, iso: "SE" },
+    { code: "+47", country: "Norway", flag: NO, iso: "NO" },
+    { code: "+45", country: "Denmark", flag: DK, iso: "DK" },
+    { code: "+358", country: "Finland", flag: FI, iso: "FI" },
+    { code: "+43", country: "Austria", flag: AT, iso: "AT" },
+    { code: "+36", country: "Hungary", flag: HU, iso: "HU" },
+    { code: "+48", country: "Poland", flag: PL, iso: "PL" },
+    { code: "+420", country: "Czech Republic", flag: CZ, iso: "CZ" },
+    { code: "+421", country: "Slovakia", flag: SK, iso: "SK" },
+    { code: "+385", country: "Croatia", flag: HR, iso: "HR" },
+    { code: "+386", country: "Slovenia", flag: SI, iso: "SI" },
+    { code: "+40", country: "Romania", flag: RO, iso: "RO" },
+    { code: "+359", country: "Bulgaria", flag: BG, iso: "BG" },
+    { code: "+30", country: "Greece", flag: GR, iso: "GR" },
+    { code: "+351", country: "Portugal", flag: PT, iso: "PT" },
+    { code: "+55", country: "Brazil", flag: BR, iso: "BR" },
+    { code: "+54", country: "Argentina", flag: AR, iso: "AR" },
+    { code: "+56", country: "Chile", flag: CL, iso: "CL" },
+    { code: "+57", country: "Colombia", flag: CO, iso: "CO" },
+    { code: "+58", country: "Venezuela", flag: VE, iso: "VE" },
+    { code: "+593", country: "Ecuador", flag: EC, iso: "EC" },
+    { code: "+51", country: "Peru", flag: PE, iso: "PE" },
+    { code: "+52", country: "Mexico", flag: MX, iso: "MX" },
+    { code: "+1", country: "Canada", flag: CA, iso: "CA" },
+    { code: "+27", country: "South Africa", flag: ZA, iso: "ZA" },
+    { code: "+20", country: "Egypt", flag: EG, iso: "EG" },
+    { code: "+971", country: "UAE", flag: AE, iso: "AE" },
+    { code: "+966", country: "Saudi Arabia", flag: SA, iso: "SA" },
+    { code: "+972", country: "Israel", flag: IL, iso: "IL" },
+    { code: "+90", country: "Turkey", flag: TR, iso: "TR" },
+    { code: "+98", country: "Iran", flag: IR, iso: "IR" },
+    { code: "+92", country: "Pakistan", flag: PK, iso: "PK" },
+    { code: "+880", country: "Bangladesh", flag: BD, iso: "BD" },
+    { code: "+95", country: "Myanmar", flag: MM, iso: "MM" },
+    { code: "+66", country: "Thailand", flag: TH, iso: "TH" },
+    { code: "+84", country: "Vietnam", flag: VN, iso: "VN" },
+    { code: "+60", country: "Malaysia", flag: MY, iso: "MY" },
+    { code: "+62", country: "Indonesia", flag: ID, iso: "ID" },
+    { code: "+63", country: "Philippines", flag: PH, iso: "PH" },
+    { code: "+65", country: "Singapore", flag: SG, iso: "SG" },
+    { code: "+852", country: "Hong Kong", flag: HK, iso: "HK" },
+    { code: "+886", country: "Taiwan", flag: TW, iso: "TW" },
+    { code: "+64", country: "New Zealand", flag: NZ, iso: "NZ" },
+];
 
 export default function TenantSignUpPage() {
     const router = useRouter();
@@ -33,6 +161,7 @@ export default function TenantSignUpPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [acceptPrivacy, setAcceptPrivacy] = useState(false);
+    const [selectedCountryCode, setSelectedCountryCode] = useState("+1");
 
     const {
         register,
@@ -52,7 +181,7 @@ export default function TenantSignUpPage() {
         console.log("Data: ", data);
 
         try {
-            const response = await fetch('http://localhost:3000/api/tenant/register', {
+            const response = await fetch('http://localhost:3000/api/tenant/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -200,20 +329,62 @@ export default function TenantSignUpPage() {
                             error={errors.email}
                         />
 
-                        <FormField
-                            label="Phone Number"
-                            icon={Phone}
-                            type="tel"
-                            placeholder="Enter your phone number"
-                            registerProps={register('phone', {
-                                required: "Phone is required",
-                                pattern: {
-                                    value: /^[0-9+\-\s()]{10,15}$/,
-                                    message: "Please enter a valid phone number"
-                                }
-                            })}
-                            error={errors.phone}
-                        />
+                        <div className="space-y-2">
+                            <Label className="text-gray-700 font-medium text-sm">Phone Number</Label>
+                            <div className="flex space-x-2">
+                                <Select
+                                    value={selectedCountryCode}
+                                    onValueChange={(value) => {
+                                        setSelectedCountryCode(value);
+                                        const country = countryCodes.find((c) => c.code === value);
+                                        if (country) {
+                                            register("country").onChange({
+                                                target: { value: country.country },
+                                            });
+                                        }
+                                    }}
+                                >
+                                    <SelectTrigger className="w-[140px] bg-white border-2 border-gray-200 rounded-sm text-gray-900 h-12 pl-3 pr-8 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 hover:border-gray-300">
+                                        <SelectValue placeholder="Select country" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white border-2 border-gray-200 rounded-sm">
+                                        {countryCodes.map((country) => (
+                                            <SelectItem
+                                                key={country.code}
+                                                value={country.code}
+                                                className="hover:bg-gray-50 focus:bg-gray-50"
+                                            >
+                                                <div className="flex items-center space-x-2">
+                                                    <country.flag className="w-5 h-4" />
+                                                    <span className='text-black'>{country.code}</span>
+                                                </div>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                                <div className="relative flex-1">
+                                    <Phone className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                                    <Input
+                                        type="tel"
+                                        placeholder="Phone number"
+                                        className="pl-12 pr-4 py-6 bg-white border-2 border-gray-200 rounded-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 hover:border-gray-300 h-12"
+                                        {...register("phone", {
+                                            required: "Phone number is required",
+                                            pattern: {
+                                                value: /^[0-9]{10,15}$/,
+                                                message: "Please enter a valid phone number",
+                                            },
+                                        })}
+                                    />
+                                </div>
+                            </div>
+                            {errors.phone && (
+                                <p className="text-red-500 text-xs font-medium flex items-center mt-1">
+                                    <X className="w-4 h-4 mr-1" />
+                                    {errors.phone.message}
+                                </p>
+                            )}
+                        </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <FormField
