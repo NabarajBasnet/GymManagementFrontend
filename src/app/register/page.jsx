@@ -198,7 +198,7 @@ export default function TenantSignUpPage() {
             if (response.ok) {
                 toast.success('Account created successfully!');
                 reset();
-                router.push('/root/login');
+                router.push(responseBody.redirect);
             } else {
                 toast.error(responseBody.message || 'Failed to create account');
             }
