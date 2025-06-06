@@ -161,14 +161,15 @@ export default function TenantSignUpPage() {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [acceptTerms, setAcceptTerms] = useState(false);
     const [acceptPrivacy, setAcceptPrivacy] = useState(false);
-    const [selectedCountryCode, setSelectedCountryCode] = useState("+1");
+    const [selectedCountryCode, setSelectedCountryCode] = useState("+977");
 
     const {
         register,
         reset,
         handleSubmit,
         watch,
-        formState: { isSubmitting, errors }
+        formState: { isSubmitting, errors },
+        setValue
     } = useForm();
 
     const watchPassword = watch('password', '');
@@ -178,7 +179,11 @@ export default function TenantSignUpPage() {
             toast.error('Please accept the terms and privacy policy to continue');
             return;
         }
-        console.log("Data: ", data);
+        const completePhoneNumber = `${selectedCountryCode} ${data.phoneNumber}`;
+        const submissionData = {
+            ...data,
+            phone: completePhoneNumber,
+        };
 
         try {
             const response = await fetch('http://localhost:3000/api/tenant/signup', {
@@ -187,7 +192,7 @@ export default function TenantSignUpPage() {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
-                body: JSON.stringify(data),
+                body: JSON.stringify(submissionData),
             });
             const responseBody = await response.json();
             if (response.ok) {
@@ -336,12 +341,7 @@ export default function TenantSignUpPage() {
                                     value={selectedCountryCode}
                                     onValueChange={(value) => {
                                         setSelectedCountryCode(value);
-                                        const country = countryCodes.find((c) => c.code === value);
-                                        if (country) {
-                                            register("country").onChange({
-                                                target: { value: country.country },
-                                            });
-                                        }
+                                        setValue('countryCode', value);
                                     }}
                                 >
                                     <SelectTrigger className="w-[140px] bg-white border-2 border-gray-200 rounded-sm text-gray-900 h-12 pl-3 pr-8 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 hover:border-gray-300">
@@ -368,7 +368,7 @@ export default function TenantSignUpPage() {
                                         type="tel"
                                         placeholder="Phone number"
                                         className="pl-12 pr-4 py-6 bg-white border-2 border-gray-200 rounded-sm text-gray-900 placeholder-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-200 hover:border-gray-300 h-12"
-                                        {...register("phone", {
+                                        {...register("phoneNumber", {
                                             required: "Phone number is required",
                                             pattern: {
                                                 value: /^[0-9]{10,15}$/,
@@ -474,7 +474,7 @@ export default function TenantSignUpPage() {
 
                         <Button
                             type="submit"
-                            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full py-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-sm transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             disabled={isSubmitting || !acceptTerms || !acceptPrivacy}
                         >
                             {isSubmitting ? (
