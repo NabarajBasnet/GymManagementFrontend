@@ -64,6 +64,7 @@ export default function MainClientLayout({ children }) {
     pathname.startsWith("/dashboard") ||
     pathname.startsWith("/register") ||
     pathname.startsWith("/onboarding") ||
+    pathname.startsWith("/userlogin") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/auth/") ||

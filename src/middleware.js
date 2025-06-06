@@ -43,7 +43,7 @@ export const middleware = async (request) => {
 
     // 🧿 ADMIN/USER LOGIC
     if (!user && path.startsWith('/dashboard')) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      return NextResponse.redirect(new URL('/userlogin', request.url));
     }
 
     if (user && (path === '/login' || path === '/signup')) {

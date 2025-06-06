@@ -9,7 +9,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
@@ -22,9 +21,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { GiBiceps } from "react-icons/gi";
 import { FaUsers, FaBuilding } from "react-icons/fa6";
-import { RiServiceLine } from "react-icons/ri";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
 const StatCard = ({ icon: Icon, title, value, className, trend, subtitle }) => (
@@ -272,7 +269,7 @@ const TenantDashboard = () => {
                     <div className="flex flex-col space-y-3 pt-4">
                       <Button
                         variant="outline"
-                        className="w-full h-11 border-2 border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 group"
+                        className="w-full h-11 border-2  dark:border-none border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-700/20 transition-all duration-300 group"
                         onClick={() => { }}
                       >
                         <Settings className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />

@@ -106,9 +106,8 @@ export function LoginForm({ className, ...props }) {
         <Input
           id={name}
           type={type}
-          className={`pl-10 w-full py-6 bg-white dark:bg-white dark:text-gray-200 rounded-sm dark:text-gray-800 dark:border-gray-100 border-gray-300 transition-all duration-200 ${
-            error ? "border-red-500 focus:border-red-500" : ""
-          }`}
+          className={`pl-10 w-full py-6 bg-white dark:bg-white dark:text-gray-200 rounded-sm dark:text-gray-800 dark:border-gray-100 border-gray-300 transition-all duration-200 ${error ? "border-red-500 focus:border-red-500" : ""
+            }`}
           placeholder={placeholder}
           {...register(name, validation)}
         />
@@ -185,15 +184,6 @@ export function LoginForm({ className, ...props }) {
                 </div>
               </div>
 
-              <div className="pt-4 text-sm">
-                <p>Don't have an account?</p>
-                <Link
-                  href="/signup"
-                  className="inline-flex items-center mt-2 text-white font-medium hover:underline"
-                >
-                  Create a new account <ChevronRight className="ml-1 w-4 h-4" />
-                </Link>
-              </div>
             </motion.div>
           </div>
 

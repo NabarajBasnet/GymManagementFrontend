@@ -493,7 +493,7 @@ export default function TenantSignUpPage() {
                         <div className="text-center pt-4">
                             <p className="text-gray-600">
                                 Already have an account?{' '}
-                                <Link href="/auth/tenantlogin" className="text-blue-600 hover:text-blue-800 font-semibold">
+                                <Link href="/login" className="text-blue-600 hover:text-blue-800 font-semibold">
                                     Sign in here
                                 </Link>
                             </p>
