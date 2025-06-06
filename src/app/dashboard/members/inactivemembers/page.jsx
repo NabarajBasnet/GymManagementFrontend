@@ -2,7 +2,7 @@
 
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { TiHome } from "react-icons/ti";
-import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,7 +24,7 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast as notify } from "react-hot-toast";
-import { MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
+import { MdContentCopy } from "react-icons/md";
 import Box from '@mui/material/Box';
 import LinearProgress from '@mui/material/LinearProgress';
 import {
@@ -45,9 +45,8 @@ import { MdError } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { MdDone } from "react-icons/md";
 import { Button } from "@/components/ui/button.jsx";
-import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 import * as React from "react"
-import { MdEmail, MdClose } from "react-icons/md";
+import { MdEmail } from "react-icons/md";
 import { FaUserEdit } from "react-icons/fa";
 import { IoSearch } from "react-icons/io5";
 import {
@@ -81,11 +80,6 @@ const InactiveMembers = () => {
 
     const { user, loading } = useUser();
     const queryClient = useQueryClient();
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('');
-    const responseResultType = ['Success', 'Failure'];
     const [confirmDeleteMember, setConfirmDeleteMember] = useState(false);
     const [toDeleteMemberId, setToDeleteMemberId] = useState('');
     const [isMemberDeleting, setIsMemberDeleting] = useState('');
