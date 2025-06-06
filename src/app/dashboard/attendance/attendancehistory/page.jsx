@@ -1,5 +1,6 @@
 'use client';
 
+import { HiOutlineHome } from "react-icons/hi";
 import { useState, useEffect, useRef } from "react";
 import { Search, InfoIcon, CalendarIcon, Clock, User, UserCheck } from "lucide-react";
 import { format } from "date-fns";
@@ -45,15 +46,6 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import {
     Tabs,
     TabsContent,
     TabsList,
@@ -75,10 +67,14 @@ const AttendanceHistory = () => {
     const [body, setBody] = useState(null);
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
-        today.setDate(1);
+        today.setDate(0);
         return today;
     });
-    const [endDate, setEndDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(() => {
+        const date = new Date();
+        date.setDate(date.getDate() + 1);
+        return date.toISOString().split("T")[0];
+    });
     const [membershipType, setMembershipType] = useState('Members');
     const [id, setId] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
@@ -89,7 +85,7 @@ const AttendanceHistory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [persons, setPersons] = useState([]);
     const [activeTab, setActiveTab] = useState('filters');
-    const limit = 10; // Set limit for pagination
+    const limit = 10;
     const searchRef = useRef(null);
 
     // Fetch members data
@@ -138,7 +134,6 @@ const AttendanceHistory = () => {
         setSearchQuery(person.fullName);
         setId(person._id);
         setRenderDropdown(false);
-        // Don't switch tabs here anymore
     };
 
     // Fetch attendance history
@@ -155,7 +150,6 @@ const AttendanceHistory = () => {
 
             if (response.ok) {
                 setBody(responseBody);
-                // Switch to results tab only after successful fetch
                 setActiveTab('results');
             }
 
@@ -173,14 +167,12 @@ const AttendanceHistory = () => {
         }
     };
 
-    // Effect to fetch attendance history when dependencies change
     useEffect(() => {
         if (id) {
             fetchAttendanceHistory();
         }
     }, [id, membershipType, startDate, endDate, currentPage]);
 
-    // Handle click outside search dropdown
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (searchRef.current && !searchRef.current.contains(event.target)) {
@@ -193,14 +185,12 @@ const AttendanceHistory = () => {
         };
     }, [searchRef]);
 
-    // Calculate pagination details
     const startEntry = (currentPage - 1) * limit + 1;
     const totalEntries = membershipType === 'Members'
         ? memberHistory?.length || 0
         : staffHistory?.length || 0;
     const endEntry = Math.min(currentPage * limit, totalEntries);
 
-    // Format date for display
     const formatDateTime = (dateTime) => {
         if (!dateTime) return '';
         const date = new Date(dateTime);
@@ -213,31 +203,72 @@ const AttendanceHistory = () => {
 
     return (
         <div className="w-full min-h-screen bg-gray-50 dark:bg-gray-900 px-4 py-6">
-            <Card className="shadow-sm mb-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                <CardHeader className="pb-3">
-                    <div className="flex items-center pb-2">
-                        <Breadcrumb>
-                            <BreadcrumbList>
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink href="/" className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Home</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbLink className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Attendance</BreadcrumbLink>
-                                </BreadcrumbItem>
-                                <BreadcrumbSeparator />
-                                <BreadcrumbItem>
-                                    <BreadcrumbPage className="text-gray-700 dark:text-gray-300">Attendance History</BreadcrumbPage>
-                                </BreadcrumbItem>
-                            </BreadcrumbList>
-                        </Breadcrumb>
-                    </div>
+            <div className="mb-5 mt-1">
+                <Breadcrumb>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/" className="text-blue-600 flex items-center space-x-2 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                <HiOutlineHome className="mr-2 font-bold" />
+                                Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink className="text-blue-600 dark:text-blue-400 font-medium hover:text-blue-800 dark:hover:text-blue-300">Attendance</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage className="text-gray-700 font-medium dark:text-gray-300">Attendance History</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+            </div>
+            <Card className="shadow-sm bg-white dark:bg-gray-800 border-gray-200 font-medium dark:border-gray-700">
+                <CardHeader>
                     <CardTitle className="text-2xl font-bold text-gray-800 dark:text-gray-100">Attendance History</CardTitle>
                     <CardDescription className="text-gray-500 dark:text-gray-400">
                         View and track attendance records for staff and members
                     </CardDescription>
                 </CardHeader>
             </Card>
+
+            <div className="mb-6">
+                <Tabs
+                    value={membershipType}
+                    onValueChange={setMembershipType}
+                    className="w-full"
+                >
+                    <TabsList className="grid w-full grid-cols-2 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
+                        <TabsTrigger
+                            value="Members"
+                            className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
+                            onClick={() => {
+                                setMembershipType('Members');
+                                setId('');
+                                setSearchQuery('');
+                            }}
+                        >
+                            <div className="flex items-center gap-2">
+                                <User className="h-4 w-4" />
+                                Members
+                            </div>
+                        </TabsTrigger>
+                        <TabsTrigger
+                            value="Staffs"
+                            className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
+                            onClick={() => {
+                                setMembershipType('Staffs');
+                                setId('');
+                                setSearchQuery('');
+                            }}
+                        >
+                            <div className="flex items-center gap-2">
+                                <UserCheck className="h-4 w-4" />
+                                Staff
+                            </div>
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs>
+            </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="mb-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
@@ -247,8 +278,8 @@ const AttendanceHistory = () => {
                             Filters & Search
                         </div>
                     </TabsTrigger>
-                    <TabsTrigger 
-                        value="results" 
+                    <TabsTrigger
+                        value="results"
                         className="data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-gray-700"
                         disabled={!id}
                     >
@@ -270,7 +301,7 @@ const AttendanceHistory = () => {
                             </Alert>
                         </CardHeader>
                         <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {/* From Date */}
                                 <div className="space-y-2">
                                     <Label htmlFor="from-date" className="text-sm font-medium text-gray-700 dark:text-gray-300">From Date</Label>
@@ -317,7 +348,7 @@ const AttendanceHistory = () => {
                                                 {endDate ? format(endDate, "PPP") : "Select end date"}
                                             </Button>
                                         </PopoverTrigger>
-                                        <PopoverContent className="w-auto  p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" align="start">
+                                        <PopoverContent className="w-auto p-0 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700" align="start">
                                             <Calendar
                                                 mode="single"
                                                 selected={endDate}
@@ -327,27 +358,6 @@ const AttendanceHistory = () => {
                                             />
                                         </PopoverContent>
                                     </Popover>
-                                </div>
-
-                                {/* Membership Type */}
-                                <div className="space-y-2">
-                                    <Label htmlFor="membership-type" className="text-sm font-medium text-gray-700 dark:text-gray-300">Membership Type</Label>
-                                    <Select value={membershipType} onValueChange={(value) => {
-                                        setMembershipType(value);
-                                        setId('');
-                                        setSearchQuery('');
-                                    }}>
-                                        <SelectTrigger id="membership-type" className="w-full py-6 rounded-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-                                            <SelectValue placeholder="Select type" />
-                                        </SelectTrigger>
-                                        <SelectContent className="bg-white rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                                            <SelectGroup>
-                                                <SelectLabel className="text-gray-700 dark:text-gray-300">Select Type</SelectLabel>
-                                                <SelectItem value="Members" className="text-gray-900 dark:text-gray-100">Members</SelectItem>
-                                                <SelectItem value="Staffs" className="text-gray-900 dark:text-gray-100">Staff</SelectItem>
-                                            </SelectGroup>
-                                        </SelectContent>
-                                    </Select>
                                 </div>
 
                                 {/* Search Person */}
