@@ -3,8 +3,10 @@
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { ChevronRight, ChevronLeft, Upload, Check, Building2, MapPin, CreditCard, Crown, Settings, CheckCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export default function GymOnboarding() {
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState(1);
     const [formData, setFormData] = useState({
         // Step 1: Business Info
@@ -457,7 +459,7 @@ export default function GymOnboarding() {
                 </div>
             </div>
 
-            <button className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:from-indigo-600 hover:to-purple-700 transition-all transform hover:scale-105">
+            <button onClick={() => router.push('/clientarea/dashboard')} className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:from-indigo-600 hover:to-purple-700 transition-all transform hover:scale-105">
                 Go to Dashboard
             </button>
         </div>
@@ -497,7 +499,7 @@ export default function GymOnboarding() {
                     </div>
 
                     {/* Navigation Buttons */}
-                    {currentStep < 5 && (
+                    {currentStep < 4 && (
                         <div className="flex justify-between items-center">
                             <button
                                 onClick={handlePrevious}

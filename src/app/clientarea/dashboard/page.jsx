@@ -209,8 +209,8 @@ const TenantDashboard = () => {
                   {/* Avatar with Status */}
                   <div className="relative">
                     <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
-                      {loggedInTenant?.ownerName.split(" ")[0].charAt(0)}
-                      {loggedInTenant?.ownerName.split(" ")[1]?.charAt(0) || ""}
+                      {loggedInTenant?.fullName.split(" ")[0].charAt(0)}
+                      {loggedInTenant?.fullName.split(" ")[1]?.charAt(0) || ""}
                     </div>
                     <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full border-4 border-white dark:border-gray-800 flex items-center justify-center">
                       <div className="w-3 h-3 bg-white rounded-full animate-pulse" />
@@ -220,7 +220,7 @@ const TenantDashboard = () => {
                   {/* User Info */}
                   <div className="text-center space-y-2">
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {loggedInTenant?.ownerName}
+                      {loggedInTenant?.fullName}
                     </h2>
                     <p className="text-blue-600 dark:text-blue-400 font-medium">
                       {getGreeting()}
@@ -254,7 +254,7 @@ const TenantDashboard = () => {
                         <div className="text-center">
                           <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">Account</p>
                           <p className="text-sm font-bold text-green-700 dark:text-green-300">
-                            {loggedInTenant?.tenantStatus}
+                            {loggedInTenant?.tenantStatus || 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -262,7 +262,7 @@ const TenantDashboard = () => {
                         <div className="text-center">
                           <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Subscription</p>
                           <p className="text-sm font-bold text-blue-700 dark:text-blue-300">
-                            {loggedInTenant?.tenantSubscriptionStatus}
+                            {loggedInTenant?.tenantSubscriptionStatus || 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -364,16 +364,6 @@ const TenantDashboard = () => {
                           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <Shield className="w-6 h-6 text-white" />
                           </div>
-                          <div>
-                            <h3 className="text-2xl font-bold mb-1">
-                              {onFreeTrail
-                                ? "Free Trial Plan"
-                                : loggedInTenant?.tenantSubscription[0]?.subscriptionName || "No Active Subscription"}
-                            </h3>
-                            <p className="text-blue-100 font-medium">
-                              {loggedInTenant?.ownerName || "N/A"}
-                            </p>
-                          </div>
                         </div>
                       </div>
 
@@ -381,22 +371,22 @@ const TenantDashboard = () => {
                         <div className="flex items-center space-x-2 text-blue-100">
                           <Calendar className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            Start: {new Date(loggedInTenant?.tenantSubscriptionStartDate).toLocaleDateString()}
+                            Start: {new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2 text-blue-100">
                           <Calendar className="w-4 h-4" />
                           <span className="text-sm font-medium">
                             End: {onFreeTrail
-                              ? new Date(loggedInTenant?.tenantFreeTrialEndDate).toLocaleDateString()
-                              : new Date(loggedInTenant?.tenantSubscriptionEndDate).toLocaleDateString()}
+                              ? new Date(loggedInTenant?.freeTrialEndsAt).toLocaleDateString()
+                              : new Date(loggedInTenant?.subscriptionEndsAt).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
                           <Clock className="w-4 h-4" />
                           <span className="text-sm font-bold">
                             {onFreeTrail
-                              ? `${loggedInTenant?.tenantFreeTrailRemainingDays} days left`
+                              ? `${loggedInTenant?.tenantFreeTrailRemainingDays || 10} days left`
                               : `${calculateRemainingDays()} days remaining`}
                           </span>
                         </div>

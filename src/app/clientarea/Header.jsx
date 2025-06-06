@@ -3,10 +3,6 @@
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { WiStars } from "react-icons/wi";
-import { Loader2 } from "lucide-react";
-import { AiOutlineSchedule } from "react-icons/ai";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -57,9 +53,6 @@ import {
   Award,
   ShoppingCart,
 } from "lucide-react";
-import { FaTag } from "react-icons/fa";
-import { RiCustomerServiceFill } from "react-icons/ri";
-import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
@@ -75,10 +68,8 @@ const ClientAreaHeader = ({ activeTab }) => {
   const router = useRouter();
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
+  console.log(loggedInTenant);
 
-  const features = loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
-  const isOnTrail = loggedInTenant?.tenantOnFreeTrial;
-  const multiBranchSupport = features?.includes("Multi Branch Support");
 
   // Get the nav items based on features
   const navItems = [
@@ -176,7 +167,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   };
 
   // Safe access to tenant data
-  const ownerName = loggedInTenant?.ownerName || "";
+  const ownerName = loggedInTenant?.fullName || "";
 
   // Get subscription tier styling
   const getSubscriptionStyling = (status) => {
@@ -203,10 +194,6 @@ const ClientAreaHeader = ({ activeTab }) => {
         };
     }
   };
-
-  const subscriptionStyle = getSubscriptionStyling(
-    loggedInTenant?.tenantSubscriptionStatus
-  );
 
   // Theme handling
   useEffect(() => {
@@ -264,7 +251,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                         <div className="flex items-center space-x-4">
                           <div className="relative">
                             <div className="relative w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-lg font-bold text-white shadow-lg">
-                              {loggedInTenant?.organizationName
+                              {loggedInTenant?.fullName
                                 ?.split(" ")
                                 .map((word) => word[0])
                                 .join("")
@@ -277,7 +264,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg truncate">
-                              {loggedInTenant?.organizationName}
+                              {loggedInTenant?.fullName}
                             </h3>
                             <div className="flex items-center space-x-2 mt-1">
                               <div className="flex items-center space-x-1">
@@ -285,7 +272,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                   Account Status:
                                 </span>
                                 <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-md bg-emerald-100 dark:bg-emerald-900/30 text-emerald-800 dark:text-emerald-300">
-                                  {loggedInTenant?.tenantStatus}
+                                  {loggedInTenant?.freeTrailStatus}
                                 </span>
                               </div>
                             </div>
@@ -304,29 +291,26 @@ const ClientAreaHeader = ({ activeTab }) => {
                           <button
                             key={item.id}
                             onClick={() => handleNavClick(item.id)}
-                            className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                              activeTab === item.id
-                                ? "bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg transform scale-[1.02]"
-                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-indigo-700 dark:hover:text-indigo-400 hover:transform hover:scale-[1.01]"
-                            }`}
+                            className={`flex items-center w-full px-4 py-3.5 rounded-xl text-sm font-medium transition-all duration-200 group ${activeTab === item.id
+                              ? "bg-gradient-to-r from-indigo-600 to-purple-700 text-white shadow-lg transform scale-[1.02]"
+                              : "text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-800/80 hover:text-indigo-700 dark:hover:text-indigo-400 hover:transform hover:scale-[1.01]"
+                              }`}
                           >
                             <span
-                              className={`mr-4 p-1.5 rounded-lg ${
-                                activeTab === item.id
-                                  ? "bg-white/20"
-                                  : "bg-gray-100 dark:bg-gray-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30"
-                              }`}
+                              className={`mr-4 p-1.5 rounded-lg ${activeTab === item.id
+                                ? "bg-white/20"
+                                : "bg-gray-100 dark:bg-gray-800 group-hover:bg-indigo-100 dark:group-hover:bg-indigo-900/30"
+                                }`}
                             >
                               {item.icon}
                             </span>
                             <div className="flex-1 text-left">
                               <div className="font-semibold">{item.label}</div>
                               <div
-                                className={`text-xs ${
-                                  activeTab === item.id
-                                    ? "text-white/80"
-                                    : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-                                }`}
+                                className={`text-xs ${activeTab === item.id
+                                  ? "text-white/80"
+                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                  }`}
                               >
                                 {item.description}
                               </div>
@@ -365,8 +349,8 @@ const ClientAreaHeader = ({ activeTab }) => {
                             ))}
                           </div>
                         </div>
-                        <div className="w-full mb-1 flex flex-col items-start text-xs font-medium space-x-1">
-                          {loggedInTenant?.tenantOnFreeTrial && (
+                        {/* <div className="w-full mb-1 flex flex-col items-start text-xs font-medium space-x-1">
+                          {loggedInTenant?.freeTrailStatus && (
                             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1 flex items-center">
                               <Calendar size={12} className="mr-1" />
                               {
@@ -385,7 +369,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                               ).toLocaleDateString()}
                             </p>
                           )}
-                        </div>
+                        </div> */}
 
                         {/* <div className="w-full dark:border dark:border-gray-700 flex items-center bg-gray-100 dark:bg-gray-800 border-gray-200 border py-3 px-4 rounded-lg text-sm text-gray-600 dark:text-gray-400">
                           <User
@@ -403,7 +387,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                             {loggedInTenant && (
                               <>
                                 <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
-                                  {loggedInTenant?.organizationName
+                                  {loggedInTenant?.fullName
                                     ?.split(" ")
                                     .map((word) => word[0])
                                     .join("")
@@ -413,7 +397,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                                 </div>
                                 <div className="ml-3 flex-1 text-left">
                                   <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                    {ownerName}
+                                    {loggedInTenant?.fullName}
                                   </p>
                                   <p className="text-xs text-gray-500 dark:text-gray-400">
                                     Account Settings
@@ -525,18 +509,16 @@ const ClientAreaHeader = ({ activeTab }) => {
               >
                 <div className="relative w-5 h-5">
                   <Sun
-                    className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
-                      darkMode
-                        ? "opacity-0 rotate-90 scale-0"
-                        : "opacity-100 rotate-0 scale-100"
-                    }`}
+                    className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${darkMode
+                      ? "opacity-0 rotate-90 scale-0"
+                      : "opacity-100 rotate-0 scale-100"
+                      }`}
                   />
                   <Moon
-                    className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
-                      darkMode
-                        ? "opacity-100 rotate-0 scale-100"
-                        : "opacity-0 -rotate-90 scale-0"
-                    }`}
+                    className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${darkMode
+                      ? "opacity-100 rotate-0 scale-100"
+                      : "opacity-0 -rotate-90 scale-0"
+                      }`}
                   />
                 </div>
               </button>
@@ -547,7 +529,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                     {loggedInTenant && (
                       <>
                         <div className="relative w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white shadow-lg">
-                          {loggedInTenant?.organizationName
+                          {loggedInTenant?.fullName
                             ?.split(" ")
                             .map((word) => word[0])
                             .join("")
@@ -557,15 +539,15 @@ const ClientAreaHeader = ({ activeTab }) => {
                         </div>
                         <div className="hidden lg:block text-left">
                           <div className="text-sm font-semibold text-gray-900 dark:text-gray-100 group-hover:text-indigo-700 dark:group-hover:text-indigo-400 transition-colors">
-                            {loggedInTenant?.organizationName}
+                            {loggedInTenant?.fullName}
                           </div>
                           <div className="flex items-center space-x-2">
                             <span
-                              className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white ${subscriptionStyle.bg}`}
+                              className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white`}
                             >
-                              {subscriptionStyle.icon}
+                              {/* {subscriptionStyle.icon} */}
                               <span>
-                                {loggedInTenant?.tenantSubscriptionStatus}
+                                {loggedInTenant?.subscriptionStatus}
                               </span>
                             </span>
                           </div>
@@ -578,7 +560,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                   <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">
-                        {loggedInTenant?.organizationName
+                        {loggedInTenant?.fullName
                           ?.split(" ")
                           .map((word) => word[0])
                           .join("")
@@ -587,19 +569,19 @@ const ClientAreaHeader = ({ activeTab }) => {
                       </div>
                       <div>
                         <div className="font-semibold text-gray-800 dark:text-gray-200">
-                          {loggedInTenant?.organizationName}
+                          {loggedInTenant?.fullName}
                         </div>
                         <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                           <span
-                            className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white ${subscriptionStyle.bg} mr-2`}
+                            className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white mr-2`}
                           >
-                            {subscriptionStyle.icon}
+                            {/* {subscriptionStyle.icon} */}
                             <span>
-                              {loggedInTenant?.tenantSubscriptionStatus}
+                              {loggedInTenant?.subscriptionStatus}
                             </span>
                           </span>
                           <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                            {loggedInTenant?.tenantStatus}
+                            {loggedInTenant?.subscriptionStatus}
                           </span>
                         </div>
                       </div>
