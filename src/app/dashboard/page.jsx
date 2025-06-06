@@ -1,10 +1,9 @@
 'use client';
 
-import { FaUserCircle, FaUsers, FaChartLine } from 'react-icons/fa';
+import { FaUsers, FaChartLine } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
 import { RiUserShared2Fill } from 'react-icons/ri';
 import { ArrowUp } from 'lucide-react';
-import { User, Plus, LogOut } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import * as React from 'react';
 import { Card } from "@/components/ui/card";
@@ -93,12 +92,41 @@ const AdminDashboard = () => {
 
   const {
     totalMembers,
-    totalPages,
     totalActiveMembers,
     totalInactiveMembers,
-    renewdMembersLength,
-    newAdmissionsLength,
   } = data || {};
+
+  // Get New Members
+  const getNewMembers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
+
+  const { data: newMembers, isLoading: isNewMemberLoading } = useQuery({
+    queryKey: ['newmembers'],
+    queryFn: getNewMembers,
+  });
+
+  // Get Renewed Members
+  const getRenewedMembers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`);
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
+
+  const { data: renewedMembers, isLoading: isRenewedMembersLoading } = useQuery({
+    queryKey: ['renewedMembers'],
+    queryFn: getRenewedMembers
+  });
 
   const gridContents = [
     {
@@ -114,7 +142,7 @@ const AdminDashboard = () => {
     {
       icon: MdAutorenew,
       text: "Renewals",
-      value: `${numbersLoading ? '...' : renewdMembersLength || 0}`,
+      value: `${numbersLoading ? '...' : renewedMembers?.members?.length || 0}`,
       percentage: -1.5,
       trend: "down",
       color: 'text-green-600',
@@ -124,7 +152,7 @@ const AdminDashboard = () => {
     {
       icon: RiUserShared2Fill,
       text: "New Admissions",
-      value: `${numbersLoading ? '...' : newAdmissionsLength || 0}`,
+      value: `${numbersLoading ? '...' : newMembers?.members?.length || 0}`,
       percentage: 0.5,
       trend: "up",
       color: 'text-yellow-600',
@@ -162,38 +190,6 @@ const AdminDashboard = () => {
       border: 'border-red-300',
     },
   ];
-
-  // Get New Members
-  const getNewMembers = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
-      const responseBody = await response.json();
-      console.log('New Members Res: ', responseBody);
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  }
-
-  const { data: newMembers, isLoading: isNewMemberLoading } = useQuery({
-    queryKey: ['newmembers'],
-    queryFn: getNewMembers,
-  });
-
-  // Get Renewed Members
-  const getRenewedMembers = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`);
-      const responseBody = await response.json();
-      console.log('Renewed Members Res: ', responseBody);
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  }
-
-  const { data: renewedMembers, isLoading: isRenewedMembersLoading } = useQuery({
-    queryKey: ['renewedMembers'],
-    queryFn: getRenewedMembers
-  });
 
   return (
     <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">
@@ -285,8 +281,8 @@ const AdminDashboard = () => {
                 <div className="grid gap-3">
                   <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold text-white/90">👥 Active Members</p>
-                      <p className="text-2xl font-black text-white">{totalActiveMembers || 0}</p>
+                      <p className="text-xs font-semibold text-white/90">👥 New Members</p>
+                      <p className="text-2xl font-black text-white">{newMembers?.members?.length || 0}</p>
                       <div className="flex items-center gap-1">
                         <div className="flex items-center gap-1 bg-emerald-500/20 px-1.5 py-0.5 rounded-md">
                           <ArrowUp className="h-2.5 w-2.5 text-emerald-300" />
@@ -301,8 +297,8 @@ const AdminDashboard = () => {
 
                   <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
                     <div className="space-y-1">
-                      <p className="text-xs font-semibold text-white/90">✨ New Members</p>
-                      <p className="text-2xl font-black text-white">{newAdmissionsLength || 0}</p>
+                      <p className="text-xs font-semibold text-white/90">✨ Renewed Members</p>
+                      <p className="text-2xl font-black text-white">{renewedMembers?.members?.length || 0}</p>
                       <div className="flex items-center gap-1">
                         <div className="flex items-center gap-1 bg-amber-500/20 px-1.5 py-0.5 rounded-md">
                           <ArrowUp className="h-2.5 w-2.5 text-amber-300" />
@@ -468,11 +464,11 @@ const AdminDashboard = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
-            <RenewRadialChart />
+            <RenewRadialChart startDate={startDate} endDate={endDate} />
           </Card>
 
           <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
-            <NewRadialChart />
+            <NewRadialChart startDate={startDate} endDate={endDate} />
           </Card>
         </div>
 

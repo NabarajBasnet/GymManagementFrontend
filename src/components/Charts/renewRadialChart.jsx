@@ -1,7 +1,8 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { MdContentCopy } from "react-icons/md";
-import { toast as notify } from 'react-hot-toast'
+import { toast as notify } from 'react-hot-toast';
 import {
     Tooltip,
     TooltipContent,
@@ -20,17 +21,14 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import React from 'react';
 import { TrendingUp } from "lucide-react";
 import {
-    Label,
     PolarGrid,
     PolarRadiusAxis,
     RadialBar,
     RadialBarChart,
     ResponsiveContainer,
 } from "recharts";
-
 import {
     Card,
     CardContent,
@@ -45,51 +43,38 @@ const chartData = [
     { name: "Completed", value: 150, fill: "#77d496" },
 ];
 
-export function RenewRadialChart() {
+export function RenewRadialChart({ startDate, endDate }) {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
-    const [data, setData] = useState(null);
 
-    const [startDate, setStartDate] = useState(() => {
-        let start = new Date();
-        start.setDate(1);
-        return start;
-    });
-
-    const [endDate, setEndDate] = useState(() => {
-        const date = new Date();
-        date.setDate(date.getDate() + 1);
-        return date.toISOString().split('T')[0];
-    });
-
-    const getTotalMembers = async () => {
+    const getRenewedMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(
+                `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`
+            );
             const responseBody = await response.json();
-            if (responseBody.redirect) {
-                router.push(responseBody.redirect);
-            };
-            setData(responseBody);
             return responseBody;
         } catch (error) {
-            console.log("Error: ", error);
-        };
+            console.error("Error fetching renewed members:", error);
+            return { members: [] }; // Return default structure on error
+        }
     };
 
-    React.useEffect(() => {
-        getTotalMembers()
-    }, []);
+    const { data: renewedMembers = { members: [] }, isLoading: isRenewedMembersLoading } = useQuery({
+        queryKey: ['renewedMembers', startDate, endDate],
+        queryFn: getRenewedMembers
+    });
 
-    React.useEffect(() => {
-        getTotalMembers()
-    }, [startDate, endDate, currentPage]);
+    // Calculate completion percentage for the chart
+    const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
 
-    const {
-        renewdMembers,
-        renewdMembersLength,
-        totalRenewdMembersPages
-    } = data || {};
+    // Pagination logic
+    const totalMembers = renewedMembers.members?.length || 0;
+    const paginatedMembers = renewedMembers.members?.slice(
+        (currentPage - 1) * limit,
+        currentPage * limit
+    ) || [];
 
     const copyToClipboard = (_id) => {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
@@ -109,12 +94,12 @@ export function RenewRadialChart() {
                     notify.success(`Member ID ${_id} copied to clipboard`);
                 } else {
                     throw new Error();
-                };
+                }
             } catch (err) {
                 notify.error("Failed to copy ID");
-            };
+            }
             document.body.removeChild(textArea);
-        };
+        }
     };
 
     return (
@@ -122,7 +107,9 @@ export function RenewRadialChart() {
             <Card className="flex flex-col dark:border-gray-600 dark:bg-gray-800 border-none rounded-2xl">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
-                    <CardDescription className='text-xs font-medium'>January - June 2024</CardDescription>
+                    <CardDescription className='text-xs font-medium'>
+                        {startDate.toLocaleString('default', { month: 'long' })} - {endDate.toLocaleString('default', { month: 'long' })}
+                    </CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex pb-0">
@@ -166,10 +153,10 @@ export function RenewRadialChart() {
                 </CardContent>
                 <CardFooter className="flex-col gap-2 text-sm">
                     <div className="flex items-center gap-2 font-medium text-emerald-600 dark:text-gray-300 leading-none">
-                        New admission target reached 5.2% this month <TrendingUp className="h-4 w-4 dark:text-white" />
+                        Renewal target reached {completionPercentage}% this period <TrendingUp className="h-4 w-4 dark:text-white" />
                     </div>
                     <div className="leading-none text-muted-foreground dark:text-gray-400">
-                        Showing target progress for the last 1 month
+                        Showing target progress from {new Date(startDate).toLocaleDateString()} to {new Date(endDate).toLocaleDateString()}
                     </div>
                 </CardFooter>
             </Card>
@@ -178,17 +165,23 @@ export function RenewRadialChart() {
                 <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800 rounded-2xl'>
                     <TableHeader>
                         <TableRow>
-                            <TableHead className='text-emerald-600 text-xs font-medium'>Member Id</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Member ID</TableHead>
                             <TableHead className='text-emerald-600 text-xs font-medium'>Full Name</TableHead>
                             <TableHead className='text-emerald-600 text-xs font-medium'>Duration</TableHead>
-                            <TableHead className='text-emerald-600 text-xs font-medium'>Renew</TableHead>
+                            <TableHead className='text-emerald-600 text-xs font-medium'>Renew Date</TableHead>
                             <TableHead className='text-emerald-600 text-xs font-medium'>Contact No</TableHead>
                             <TableHead className='text-emerald-600 text-xs font-medium'>Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody className="rounded-2xl">
-                        {renewdMembers && renewdMembers.length > 0 ? (
-                            renewdMembers.map((member) => {
+                        {isRenewedMembersLoading ? (
+                            <TableRow>
+                                <TableCell colSpan={6} className="text-center py-4">
+                                    Loading members...
+                                </TableCell>
+                            </TableRow>
+                        ) : paginatedMembers.length > 0 ? (
+                            paginatedMembers.map(({ member }) => {
                                 const textColor =
                                     member.status === 'Active' ? 'text-black dark:text-white' :
                                         member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
@@ -202,11 +195,10 @@ export function RenewRadialChart() {
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <button
+                                                                onClick={() => copyToClipboard(member._id)}
                                                                 className="text-gray-400 hover:text-blue-600 transition-colors p-1"
                                                             >
-                                                                <MdContentCopy
-                                                                    onClick={() => copyToClipboard(member._id)}
-                                                                    size={14} />
+                                                                <MdContentCopy size={14} />
                                                             </button>
                                                         </TooltipTrigger>
                                                         <TooltipContent>
@@ -218,38 +210,47 @@ export function RenewRadialChart() {
                                         </TableCell>
                                         <TableCell className='text-xs font-medium'>{member.fullName}</TableCell>
                                         <TableCell className='text-xs font-medium'>{member.membershipDuration}</TableCell>
-                                        <TableCell className='text-xs font-medium'>{new Date(member.membershipRenewDate).toISOString().split("T")[0]}</TableCell>
+                                        <TableCell className='text-xs font-medium'>
+                                            {new Date(member.membershipRenewDate).toLocaleDateString()}
+                                        </TableCell>
                                         <TableCell className='text-xs font-medium'>{member.contactNo}</TableCell>
-                                        <TableCell className='text-xs font-medium'>{member.status.charAt(0).toUpperCase() + member.status.slice(1)}</TableCell>
+                                        <TableCell className='text-xs font-medium'>
+                                            {member.status.charAt(0).toUpperCase() + member.status.slice(1)}
+                                        </TableCell>
                                     </TableRow>
                                 );
                             })
                         ) : (
-                            <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900 dark:bg-gray-800 dark:hover:bg-emerald-100 dark:text-gray-200 dark:hover:text-gray-900'>
-                                <TableCell colSpan={6} className="text-center">
-                                    No members found.
+                            <TableRow>
+                                <TableCell colSpan={6} className="text-center py-4">
+                                    No renewed members found.
                                 </TableCell>
                             </TableRow>
                         )}
                     </TableBody>
                     <TableFooter className="rounded-2xl">
-                        <TableRow className='bg-white hover:bg-emerald-100 text-gray-800 hover:text-gray-900 dark:bg-gray-800 dark:hover:bg-emerald-100 dark:text-gray-200 dark:hover:text-gray-900'>
-                            <TableCell colSpan={5} className="text-left text-xs bg-gray-100 dark:bg-gray-800 font-medium hover:text-gray-300">Total Renewd Members</TableCell>
-                            <TableCell className="text-right hover:bg-transparent">{renewdMembersLength}</TableCell>
+                        <TableRow>
+                            <TableCell colSpan={5} className="text-left text-xs bg-gray-100 dark:bg-gray-800 font-medium">
+                                Total Renewed Members
+                            </TableCell>
+                            <TableCell className="text-right text-xs font-medium">
+                                {totalMembers}
+                            </TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
                 <div className="py-3 border-t dark:border-gray-600 dark:bg-gray-800 rounded-b-2xl">
                     <Pagination
-                        total={totalRenewdMembersPages}
-                        page={currentPage || 1}
+                        total={totalMembers}
+                        page={currentPage}
                         onChange={setCurrentPage}
                         withEdges={true}
                         siblings={1}
                         boundaries={1}
+                        limit={limit}
                     />
                 </div>
             </div>
         </div>
-    )
+    );
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { MdContentCopy } from "react-icons/md";
 import {
     Tooltip,
@@ -43,51 +44,26 @@ const chartData = [
     { name: "Completed", value: 75, fill: "#FF69B4" },
 ];
 
-export function NewRadialChart() {
+export function NewRadialChart({ startDate, endDate }) {
     const router = useRouter();
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
-    const [data, setData] = useState(null);
 
-    const [startDate, setStartDate] = useState(() => {
-        let start = new Date();
-        start.setDate(1);
-        return start;
-    });
-
-    const [endDate, setEndDate] = useState(() => {
-        const date = new Date();
-        date.setDate(date.getDate() + 1);
-        return date.toISOString().split('T')[0];
-    });
-
-    const getTotalMembers = async () => {
+    // Get New Members
+    const getNewMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
-            if (responseBody.redirect) {
-                router.push(responseBody.redirect);
-            };
-            setData(responseBody);
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-        };
-    };
+        }
+    }
 
-    React.useEffect(() => {
-        getTotalMembers()
-    }, []);
-
-    React.useEffect(() => {
-        getTotalMembers()
-    }, [startDate, endDate, currentPage]);
-
-    const {
-        newAdmissions,
-        newAdmissionsLength,
-        totalNewMembersPages
-    } = data || {};
+    const { data: newMembers, isLoading: isNewMemberLoading } = useQuery({
+        queryKey: ['newmembers', startDate, endDate],
+        queryFn: getNewMembers,
+    });
 
     const copyToClipboard = (_id) => {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
@@ -192,8 +168,14 @@ export function NewRadialChart() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {newAdmissions && newAdmissions.length > 0 ? (
-                                newAdmissions.map((member) => {
+                            {isNewMemberLoading ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="text-center py-4">
+                                        Loading...
+                                    </TableCell>
+                                </TableRow>
+                            ) : newMembers?.members?.length > 0 ? (
+                                newMembers.members.map(({ member }) => {
                                     const textColor =
                                         member.status === 'Active' ? 'text-black dark:text-white' :
                                             member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
@@ -243,7 +225,9 @@ export function NewRadialChart() {
                         <TableFooter className="bg-pink-50 dark:bg-gray-800">
                             <TableRow>
                                 <TableCell colSpan={5} className="text-left text-xs font-medium">Total New Members</TableCell>
-                                <TableCell className="text-right text-xs font-medium">{newAdmissionsLength || 0}</TableCell>
+                                <TableCell className="text-right text-xs font-medium">
+                                    {newMembers?.members?.length || 0}
+                                </TableCell>
                             </TableRow>
                         </TableFooter>
                     </Table>
@@ -251,7 +235,7 @@ export function NewRadialChart() {
 
                 <div className="py-3 px-4 border-t dark:border-gray-600 rounded-b-2xl dark:bg-gray-800">
                     <Pagination
-                        total={totalNewMembersPages}
+                        total={newMembers?.members?.length || 0}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}
