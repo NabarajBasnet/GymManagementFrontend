@@ -494,8 +494,8 @@ const AllMembers = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {members && members.length > 0 ? (
-                        members.map((member) => {
+                      {Array.isArray(members) && members?.length > 0 ? (
+                        members?.map((member) => {
                           const textColor =
                             member.status === "Active"
                               ? "text-black dark:text-white"
@@ -561,13 +561,13 @@ const AllMembers = () => {
                                   </TooltipProvider>
                                 </div>
                               </TableCell>
-                              <TableCell>{member.fullName}</TableCell>
+                              <TableCell>{member?.fullName}</TableCell>
                               <TableCell className="text-start">
-                                {member.membershipDuration}
+                                {member?.membershipDuration}
                               </TableCell>
                               <TableCell className="text-start">
-                                {member.membershipOption ||
-                                  member.membership.servicesIncluded.map(
+                                {member?.membershipOption ||
+                                  member?.membership?.servicesIncluded?.map(
                                     (service, index) => {
                                       return `${service} & `;
                                     }
@@ -736,7 +736,7 @@ const AllMembers = () => {
                     </TableBody>
                     <TableFooter className="text-center text-black dark:border-none dark:text-white p-4 dark:bg-gray-700">
                       <TableRow className="p-4">
-                        <TableCell className="text-left p-4" colSpan={1}>
+                        <TableCell className="text-left p-4" colSpan={3}>
                           Total Memberships
                         </TableCell>
                         <TableCell className="text-right p-4 rounded-r-md">
