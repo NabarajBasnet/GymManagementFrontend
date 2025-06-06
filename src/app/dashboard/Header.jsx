@@ -369,7 +369,7 @@ const Header = () => {
           subObj: [
             {
               icon: IoPeopleSharp,
-              title: "Staffs",
+              title: "Staff Management",
               link: "/dashboard/staffmanagement/staffs",
             },
             {
@@ -650,8 +650,8 @@ const Header = () => {
                                 >
                                   <div
                                     className={`flex items-center ${isActive(item.link)
-                                        ? "text-indigo-600 dark:text-indigo-400"
-                                        : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                      ? "text-indigo-600 dark:text-indigo-400"
+                                      : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                       }`}
                                   >
                                     <item.icon className="w-5 h-5" />
@@ -669,8 +669,8 @@ const Header = () => {
                                 </AccordionTrigger>
                                 <div
                                   className={`ml-7 border-l-2 ${isActive(item.link)
-                                      ? "border-indigo-300 dark:border-indigo-700"
-                                      : "border-gray-200 dark:border-gray-700"
+                                    ? "border-indigo-300 dark:border-indigo-700"
+                                    : "border-gray-200 dark:border-gray-700"
                                     }`}
                                 >
                                   {item.subObj.map((subItem, subIndex) => (
@@ -687,8 +687,8 @@ const Header = () => {
                                       >
                                         <subItem.icon
                                           className={`w-4 h-4 ${isActive(subItem.link)
-                                              ? "text-indigo-600 dark:text-indigo-400"
-                                              : "text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                            ? "text-indigo-600 dark:text-indigo-400"
+                                            : "text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                             }`}
                                         />
                                         <span className="ml-3 text-sm tracking-tight">
@@ -720,8 +720,8 @@ const Header = () => {
                             >
                               <div
                                 className={`flex items-center ${isActive(item.link)
-                                    ? "text-indigo-600 dark:text-indigo-400"
-                                    : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
+                                  ? "text-indigo-600 dark:text-indigo-400"
+                                  : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
                                   }`}
                               >
                                 <item.icon className="w-5 h-5" />
@@ -846,14 +846,14 @@ const Header = () => {
           <div className="relative w-5 h-5">
             <Sun
               className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${darkMode
-                  ? "opacity-0 rotate-90 scale-0"
-                  : "opacity-100 rotate-0 scale-100"
+                ? "opacity-0 rotate-90 scale-0"
+                : "opacity-100 rotate-0 scale-100"
                 }`}
             />
             <Moon
               className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${darkMode
-                  ? "opacity-100 rotate-0 scale-100"
-                  : "opacity-0 -rotate-90 scale-0"
+                ? "opacity-100 rotate-0 scale-100"
+                : "opacity-0 -rotate-90 scale-0"
                 }`}
             />
           </div>

@@ -18,8 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
 import { TiHome } from "react-icons/ti";
-import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from "lucide-react";
-import NewMemberRegistrationForm from "../newmember/page";
+import { ArrowUpDown } from "lucide-react";
 import { IoMdPersonAdd } from "react-icons/io";
 import { MdContentCopy, MdPrint, MdFileDownload } from "react-icons/md";
 import {
@@ -78,6 +77,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePagination, DOTS } from "@/hooks/Pagination";
 import AllMembersAreaChart from "./charts/allmembersareachart";
+import { useRouter } from "next/navigation";
 
 const AllMembers = () => {
   const { user, loading } = useUser();
@@ -87,6 +87,7 @@ const AllMembers = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [limit, setLimit] = useState(15);
   const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
 
   // Sorting States
   const [sortBy, setSortBy] = useState("");
@@ -290,7 +291,7 @@ const AllMembers = () => {
         <div className="bg-white dark:bg-gray-800 dark:text-gray-300 shadow-md my-4 rounded-md border-none">
           <div className="w-full flex p-4 justify-between items-center">
             <h1 className="font-bold text-xl">Members List</h1>
-            <Button onClick={() => setRenderNewMemberRegistration(true)}>
+            <Button onClick={() => router.push('/dashboard/newmember')}>
               {" "}
               <IoMdPersonAdd />
               Add New Member

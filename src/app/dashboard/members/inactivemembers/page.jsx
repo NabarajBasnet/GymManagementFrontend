@@ -272,7 +272,7 @@ const InactiveMembers = () => {
     const endEntry = Math.min(currentPage * limit, totalInactiveMembers);
 
     return (
-        <div className="w-full bg-gray-100">
+        <div className="w-full bg-gray-100 dark:bg-gray-900 min-h-screen">
             <div className='w-full px-4 pt-6 pb-3' onClick={() => {
                 setToast(false)
                 setEmailToast(false)
@@ -451,31 +451,31 @@ const InactiveMembers = () => {
                     <></>
                 )}
 
-                <div className="bg-white shadow-sm rounded-sm border px-4 py-5">
-                    <Breadcrumb>
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger className="flex items-center gap-1">
-                                        <BreadcrumbEllipsis className="h-4 w-4" />
-                                    </DropdownMenuTrigger>
-                                </DropdownMenu>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbPage>Inactive Members</BreadcrumbPage>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-                <h1 className="text-xl font-bold mt-3">Inactive Members</h1>
+                <Breadcrumb className='mb-6 mt-1'>
+                    <BreadcrumbList>
+                        <BreadcrumbItem>
+                            <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <DropdownMenu>
+                                <DropdownMenuTrigger className="flex items-center gap-1">
+                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                </DropdownMenuTrigger>
+                            </DropdownMenu>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbPage>Inactive Members</BreadcrumbPage>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
+                <div className="bg-white dark:bg-gray-800 shadow-sm rounded-sm border px-4 py-5">
+                    <h1 className="text-xl font-bold">Inactive Members</h1>
                 </div>
             </div>
 

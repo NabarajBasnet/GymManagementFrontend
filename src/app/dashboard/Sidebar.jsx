@@ -286,7 +286,7 @@ const Sidebar = () => {
           subObj: [
             {
               icon: IoPeopleSharp,
-              title: "Staffs",
+              title: "Staff Management",
               link: "/dashboard/staffmanagement/staffs",
             },
             {
@@ -446,8 +446,7 @@ const Sidebar = () => {
     <TooltipProvider delayDuration={200}>
       <motion.aside
         className={`fixed left-0 transition-all duration-300 bg-white dark:bg-gray-900 top-0 h-full 
-          ${
-            sidebarMinimized ? "w-20" : "w-60"
+          ${sidebarMinimized ? "w-20" : "w-60"
           } z-50 flex flex-col border-r dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
       >
         {/* Logo and Brand */}
@@ -553,39 +552,36 @@ const Sidebar = () => {
                         <AccordionItem value={`item-${categoryIndex}-${index}`}>
                           <AccordionTrigger
                             className={`group w-full flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                                                            ${
-                                                              isActive(
-                                                                item.link
-                                                              )
-                                                                ? "bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500"
-                                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60"
-                                                            }`}
+                                                            ${isActive(
+                              item.link
+                            )
+                                ? "bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                              }`}
                           >
                             <div
-                              className={`flex items-center ${
-                                isActive(item.link)
+                              className={`flex items-center ${isActive(item.link)
                                   ? "text-indigo-600 dark:text-indigo-400"
                                   : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-                              }`}
+                                }`}
                             >
                               <div className="relative">
                                 <item.icon
                                   className={`w-5 h-5 transition-all duration-200 
-                                                                ${
-                                                                  hoveredItem ===
-                                                                  `${categoryIndex}-${index}`
-                                                                    ? "scale-110"
-                                                                    : ""
-                                                                }`}
+                                                                ${hoveredItem ===
+                                      `${categoryIndex}-${index}`
+                                      ? "scale-110"
+                                      : ""
+                                    }`}
                                 />
                                 {hoveredItem ===
                                   `${categoryIndex}-${index}` && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
-                                  />
-                                )}
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
+                                    />
+                                  )}
                               </div>
                               {!sidebarMinimized && (
                                 <span className="ml-3.5 font-medium">
@@ -602,11 +598,10 @@ const Sidebar = () => {
                             </div>
                           </AccordionTrigger>
                           <div
-                            className={`ml-7 border-l-2 ${
-                              isActive(item.link)
+                            className={`ml-7 border-l-2 ${isActive(item.link)
                                 ? "border-indigo-300 dark:border-indigo-700"
                                 : "border-gray-200 dark:border-gray-700"
-                            }`}
+                              }`}
                           >
                             {item.subObj.map((subItem, subIndex) => (
                               <AccordionContent key={subIndex}>
@@ -615,25 +610,23 @@ const Sidebar = () => {
                                     <Link
                                       href={subItem.link}
                                       className={`group flex items-center px-3 py-1 text-sm font-medium transition-all duration-200 rounded-md
-                                                                                    ${
-                                                                                      isActive(
-                                                                                        subItem.link
-                                                                                      )
-                                                                                        ? "text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/60 dark:bg-indigo-900/10"
-                                                                                        : "text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800/40"
-                                                                                    }`}
+                                                                                    ${isActive(
+                                        subItem.link
+                                      )
+                                          ? "text-indigo-700 dark:text-indigo-400 font-medium bg-indigo-50/60 dark:bg-indigo-900/10"
+                                          : "text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-800/40"
+                                        }`}
                                     >
                                       <div className="relative">
                                         <subItem.icon
-                                          className={`w-4 h-4 ${
-                                            isActive(subItem.link)
+                                          className={`w-4 h-4 ${isActive(subItem.link)
                                               ? "text-indigo-600 dark:text-indigo-400"
                                               : "text-gray-500 dark:text-gray-500 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-                                          }`}
+                                            }`}
                                         />
                                       </div>
                                       {!sidebarMinimized && (
-                                        <span className="ml-3 my-1 text-xs font-medium tracking-tight">
+                                        <span className="ml-3 my-2 text-sm font-medium tracking-tight">
                                           {subItem.title}
                                         </span>
                                       )}
@@ -674,41 +667,38 @@ const Sidebar = () => {
                           <Link
                             href={item.link}
                             className={`group flex items-center px-4 py-2.5 rounded-xl text-sm transition-all duration-300
-                                                                ${
-                                                                  isActive(
-                                                                    item.link
-                                                                  )
-                                                                    ? "bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500"
-                                                                    : item.highlight
-                                                                    ? "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20"
-                                                                    : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60"
-                                                                }`}
+                                                                ${isActive(
+                              item.link
+                            )
+                                ? "bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 text-indigo-700 dark:text-indigo-400 font-medium border-l-4 border-indigo-600 dark:border-indigo-500"
+                                : item.highlight
+                                  ? "text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 dark:hover:from-indigo-900/20 dark:hover:to-blue-900/20"
+                                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800/60"
+                              }`}
                           >
                             <div
-                              className={`flex items-center ${
-                                isActive(item.link)
+                              className={`flex items-center ${isActive(item.link)
                                   ? "text-indigo-600 dark:text-indigo-400"
                                   : "text-gray-500 dark:text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400"
-                              }`}
+                                }`}
                             >
                               <div className="relative">
                                 <item.icon
                                   className={`w-5 h-5 transition-all duration-200 
-                                                                ${
-                                                                  hoveredItem ===
-                                                                  `${categoryIndex}-${index}`
-                                                                    ? "scale-110 rotate-3"
-                                                                    : ""
-                                                                }`}
+                                                                ${hoveredItem ===
+                                      `${categoryIndex}-${index}`
+                                      ? "scale-110 rotate-3"
+                                      : ""
+                                    }`}
                                 />
                                 {hoveredItem ===
                                   `${categoryIndex}-${index}` && (
-                                  <motion.div
-                                    initial={{ scale: 0 }}
-                                    animate={{ scale: 1 }}
-                                    className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
-                                  />
-                                )}
+                                    <motion.div
+                                      initial={{ scale: 0 }}
+                                      animate={{ scale: 1 }}
+                                      className="absolute -inset-1.5 bg-gray-100 dark:bg-gray-800 rounded-full -z-10"
+                                    />
+                                  )}
                               </div>
                               {!sidebarMinimized && (
                                 <span className="ml-3.5 font-medium tracking-tight">
@@ -803,9 +793,8 @@ const Sidebar = () => {
           <DropdownMenu className="border">
             <DropdownMenuTrigger asChild>
               <div
-                className={`flex items-center rounded-xl cursor-pointer p-2 ${
-                  sidebarMinimized ? "justify-center" : "px-3"
-                } hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}
+                className={`flex items-center rounded-xl cursor-pointer p-2 ${sidebarMinimized ? "justify-center" : "px-3"
+                  } hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}
               >
                 <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
                   <AvatarImage
