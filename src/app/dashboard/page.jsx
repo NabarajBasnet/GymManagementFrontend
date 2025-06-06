@@ -1,6 +1,7 @@
 'use client';
 
 import { FaUserCircle, FaUsers, FaChartLine } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
 import { RiUserShared2Fill } from 'react-icons/ri';
 import { ArrowUp } from 'lucide-react';
 import { User, Plus, LogOut } from 'lucide-react';
@@ -33,9 +34,16 @@ const AdminDashboard = () => {
   const limit = 3;
   const [numbersLoading, setNumberLoading] = React.useState(true);
 
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good Morning';
+    if (hour < 18) return 'Good Afternoon';
+    return 'Good Evening';
+  };
+
   const [startDate, setStartDate] = React.useState(() => {
     let start = new Date();
-    start.setDate(1);
+    start.setDate(0);
     return start.toISOString().split("T")[0];
   });
 
@@ -155,13 +163,37 @@ const AdminDashboard = () => {
     },
   ];
 
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good Morning';
-    if (hour < 18) return 'Good Afternoon';
-    return 'Good Evening';
-  };
+  // Get New Members
+  const getNewMembers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+      const responseBody = await response.json();
+      console.log('New Members Res: ', responseBody);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
 
+  const { data: newMembers, isLoading: isNewMemberLoading } = useQuery({
+    queryKey: ['newmembers'],
+    queryFn: getNewMembers,
+  });
+
+  // Get Renewed Members
+  const getRenewedMembers = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`);
+      const responseBody = await response.json();
+      console.log('Renewed Members Res: ', responseBody);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  }
+
+  const { data: renewedMembers, isLoading: isRenewedMembersLoading } = useQuery({
+    queryKey: ['renewedMembers'],
+    queryFn: getRenewedMembers
+  });
 
   return (
     <div className="min-h-screen w-full flex justify-center dark:bg-gray-900 bg-gray-50">

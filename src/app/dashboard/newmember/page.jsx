@@ -74,14 +74,14 @@ const NewMemberRegistrationForm = () => {
   const [status, setStatus] = useState(false);
 
   // Payment Details
-  const [finalAmmount, setFinalAmmount] = useState("");
-  const [discountAmmount, setDiscountAmmount] = useState("");
-  const [paidAmmount, setPaidAmmount] = useState("");
-  const [dueAmmount, setDueAmmount] = useState("");
+  const [finalAmmount, setFinalAmmount] = useState(0);
+  const [discountAmmount, setDiscountAmmount] = useState(0);
+  const [paidAmmount, setPaidAmmount] = useState(0);
+  const [dueAmmount, setDueAmmount] = useState(0);
   const [planId, setPlanId] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
   const [actionTaker, setActionTaker] = useState("");
-  const [admissionFee, setAdmissionFee] = useState("");
+  const [admissionFee, setAdmissionFee] = useState(0);
 
   // Membership details
   const [membershipDuration, setMembershipDuration] = useState("");
@@ -115,12 +115,22 @@ const NewMemberRegistrationForm = () => {
   // Calculate amounts
   const calculateDueAmmount = () => {
     const due = finalAmmount - paidAmmount;
-    setDueAmmount(due - discountAmmount);
+    setDueAmmount(due);
   };
 
   useEffect(() => {
     calculateDueAmmount();
   }, [finalAmmount, discountAmmount, paidAmmount]);
+
+  // Calculate final amount
+  const calculateFinalAmmount = () => {
+    const final = admissionFee + (selectedPlanDetails?.price || 0) - discountAmmount;
+    setFinalAmmount(parseInt(final));
+  };
+
+  useEffect(() => {
+    calculateFinalAmmount();
+  }, [discountAmmount, selectedPlanDetails, admissionFee]);
 
   // React Hook Form
   const {
@@ -230,8 +240,6 @@ const NewMemberRegistrationForm = () => {
         actionTaker,
         selectedPlanDetails,
       };
-
-      console.log("Final Data: ", membersFinalData);
 
       if (discountAmmount && !discountReason) {
         setError("discountReason", {
@@ -499,10 +507,9 @@ const NewMemberRegistrationForm = () => {
       plan.planName.toString().startsWith("Admission")
   );
   const admissionPrice = admissionCharge?.price;
-
   useEffect(() => {
-    setAdmissionFee(admissionCharge?.price);
-  }, []);
+    setAdmissionFee(parseInt(admissionPrice));
+  }, [admissionPrice, selectedPlanDetails]);
 
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 pt-10 md:py-8">
@@ -555,8 +562,8 @@ const NewMemberRegistrationForm = () => {
               {currentStep === 1
                 ? "Personal Information"
                 : currentStep === 2
-                ? "Membership Details"
-                : "Payment Information"}
+                  ? "Membership Details"
+                  : "Payment Information"}
             </CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit(onRegisterMember)}>
@@ -572,27 +579,25 @@ const NewMemberRegistrationForm = () => {
                       >
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center
-              ${
-                currentStep >= step
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
-              }`}
+              ${currentStep >= step
+                              ? "bg-indigo-600 text-white"
+                              : "bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400"
+                            }`}
                         >
                           {step}
                         </div>
                         <span
                           className={`mt-2 text-sm font-medium text-center
-              ${
-                currentStep >= step
-                  ? "text-indigo-600 dark:text-indigo-400"
-                  : "text-gray-500 dark:text-gray-400"
-              }`}
+              ${currentStep >= step
+                              ? "text-indigo-600 dark:text-indigo-400"
+                              : "text-gray-500 dark:text-gray-400"
+                            }`}
                         >
                           {step === 1
                             ? "Personal Info"
                             : step === 2
-                            ? "Membership"
-                            : "Payment"}
+                              ? "Membership"
+                              : "Payment"}
                         </span>
                       </div>
                     ))}
@@ -602,9 +607,8 @@ const NewMemberRegistrationForm = () => {
                       <div
                         className="h-full bg-indigo-600 transition-all duration-300"
                         style={{
-                          width: `${
-                            ((currentStep - 1) / (totalSteps - 1)) * 100
-                          }%`,
+                          width: `${((currentStep - 1) / (totalSteps - 1)) * 100
+                            }%`,
                         }}
                       ></div>
                     </div>
@@ -616,9 +620,8 @@ const NewMemberRegistrationForm = () => {
                 <TabsList className="grid w-full grid-cols-3 bg-gray-100 dark:bg-gray-700 border dark:border-gray-600">
                   <TabsTrigger
                     value="step1"
-                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
-                      currentStep === 1 ? "bg-white dark:bg-gray-800" : ""
-                    }`}
+                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 1 ? "bg-white dark:bg-gray-800" : ""
+                      }`}
                     onClick={() => setCurrentStep(1)}
                   >
                     <BiSolidUserDetail size={22} className="mr-2" />
@@ -626,9 +629,8 @@ const NewMemberRegistrationForm = () => {
                   </TabsTrigger>
                   <TabsTrigger
                     value="step2"
-                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
-                      currentStep === 2 ? "bg-white dark:bg-gray-800" : ""
-                    }`}
+                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 2 ? "bg-white dark:bg-gray-800" : ""
+                      }`}
                     onClick={() => setCurrentStep(2)}
                   >
                     <TiBusinessCard size={22} className="mr-2" />
@@ -638,9 +640,8 @@ const NewMemberRegistrationForm = () => {
                   </TabsTrigger>
                   <TabsTrigger
                     value="step3"
-                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${
-                      currentStep === 3 ? "bg-white dark:bg-gray-800" : ""
-                    }`}
+                    className={`data-[state=active]:bg-white dark:data-[state=active]:bg-gray-800 ${currentStep === 3 ? "bg-white dark:bg-gray-800" : ""
+                      }`}
                     onClick={() => setCurrentStep(3)}
                   >
                     <MdOutlinePayment size={22} className="mr-2" />
@@ -1005,11 +1006,10 @@ const NewMemberRegistrationForm = () => {
                                           convertDurationInMonths(plan.duration)
                                         );
                                       }}
-                                      className={`px-4 py-3 text-sm cursor-pointer transition-colors ${
-                                        index === highlightedIndex
-                                          ? "bg-blue-100 dark:bg-gray-900"
-                                          : "hover:bg-blue-50 dark:hover:bg-gray-900"
-                                      }`}
+                                      className={`px-4 py-3 text-sm cursor-pointer transition-colors ${index === highlightedIndex
+                                        ? "bg-blue-100 dark:bg-gray-900"
+                                        : "hover:bg-blue-50 dark:hover:bg-gray-900"
+                                        }`}
                                       key={plan._id}
                                     >
                                       {plan.planName} -{" "}
@@ -1067,7 +1067,7 @@ const NewMemberRegistrationForm = () => {
                                   className={cn(
                                     "w-full justify-start text-left font-normal bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100",
                                     !membershipRenewDate &&
-                                      "text-muted-foreground"
+                                    "text-muted-foreground"
                                   )}
                                 >
                                   <CalendarIcon className="mr-2 h-4 w-4" />
@@ -1210,7 +1210,7 @@ const NewMemberRegistrationForm = () => {
                               className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               value={discountAmmount}
                               onChange={(e) =>
-                                setDiscountAmmount(e.target.value)
+                                setDiscountAmmount(parseInt(e.target.value))
                               }
                               type="text"
                               placeholder="Discount Amount"
@@ -1269,7 +1269,7 @@ const NewMemberRegistrationForm = () => {
                               className="py-6 rounded-sm bg-white dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-900 dark:text-gray-100"
                               value={paidAmmount}
                               onChange={(e) => {
-                                setPaidAmmount(e.target.value);
+                                setPaidAmmount(parseInt(e.target.value));
                                 if (e.target.value) clearErrors("paidAmmount");
                               }}
                               placeholder="Paid Amount"
@@ -1346,7 +1346,7 @@ const NewMemberRegistrationForm = () => {
                                     Select
                                   </SelectItem>
                                   {Array.isArray(actionTakersDB) &&
-                                  actionTakersDB.length >= 1 ? (
+                                    actionTakersDB.length >= 1 ? (
                                     actionTakersDB.map((actionTaker) => (
                                       <div key={actionTaker._id}>
                                         <SelectItem
