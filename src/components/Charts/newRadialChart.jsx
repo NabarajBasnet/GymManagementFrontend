@@ -50,9 +50,10 @@ export function NewRadialChart({ startDate, endDate }) {
     const limit = 5;
 
     // Get New Members
-    const getNewMembers = async () => {
+    const getNewMembers = async ({ queryKey }) => {
+        const [, startDate, endDate, page, limit] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -61,9 +62,11 @@ export function NewRadialChart({ startDate, endDate }) {
     }
 
     const { data: newMembers, isLoading: isNewMemberLoading } = useQuery({
-        queryKey: ['newmembers', startDate, endDate],
+        queryKey: ['newmembers', startDate, endDate, currentPage, limit],
         queryFn: getNewMembers,
     });
+
+    const { totalPages } = newMembers || {};
 
     const copyToClipboard = (_id) => {
         if (navigator.clipboard && typeof navigator.clipboard.writeText === 'function') {
@@ -235,7 +238,7 @@ export function NewRadialChart({ startDate, endDate }) {
 
                 <div className="py-3 px-4 border-t dark:border-gray-600 rounded-b-2xl dark:bg-gray-800">
                     <Pagination
-                        total={newMembers?.members?.length || 0}
+                        total={totalPages || 0}
                         page={currentPage || 1}
                         onChange={setCurrentPage}
                         withEdges={true}

@@ -48,23 +48,25 @@ export function RenewRadialChart({ startDate, endDate }) {
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 5;
 
-    const getRenewedMembers = async () => {
+    const getRenewedMembers = async ({ queryKey }) => {
+        const [, startDate, endDate, page, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`
+                `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
             );
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
             console.error("Error fetching renewed members:", error);
-            return { members: [] }; // Return default structure on error
+            return { members: [] };
         }
     };
 
     const { data: renewedMembers = { members: [] }, isLoading: isRenewedMembersLoading } = useQuery({
-        queryKey: ['renewedMembers', startDate, endDate],
+        queryKey: ['renewedMembers', startDate, endDate, currentPage, limit],
         queryFn: getRenewedMembers
     });
+    const { totalPages } = renewedMembers || {}
 
     // Calculate completion percentage for the chart
     const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
@@ -234,14 +236,14 @@ export function RenewRadialChart({ startDate, endDate }) {
                                 Total Renewed Members
                             </TableCell>
                             <TableCell className="text-right text-xs font-medium">
-                                {totalMembers}
+                                {renewedMembers?.members?.length}
                             </TableCell>
                         </TableRow>
                     </TableFooter>
                 </Table>
                 <div className="py-3 border-t dark:border-gray-600 dark:bg-gray-800 rounded-b-2xl">
                     <Pagination
-                        total={totalMembers}
+                        total={totalPages || 0}
                         page={currentPage}
                         onChange={setCurrentPage}
                         withEdges={true}
