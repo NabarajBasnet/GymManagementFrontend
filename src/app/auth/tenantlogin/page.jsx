@@ -135,7 +135,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                       <p className="text-white/80 mb-4">
                         Don't have an account?
                       </p>
-                      <Link href="/auth/tenantsignup">
+                      <Link href="/register">
                         <div className="inline-flex items-center px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl border border-white/20 text-white font-medium transition-all duration-300 group">
                           Create Account
                           <ChevronRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
