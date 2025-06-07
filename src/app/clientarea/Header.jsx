@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -68,9 +67,16 @@ const ClientAreaHeader = ({ activeTab }) => {
   const router = useRouter();
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
-  console.log(loggedInTenant);
 
   const tenantOnTrail = loggedInTenant?.freeTrailStatus;
+  const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
+  const today = new Date();
+  const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
+  const todayDate = new Date(today.setHours(0, 0, 0, 0));
+
+  // Calculate difference in milliseconds
+  const diffTime = expireDate.getTime() - todayDate.getTime();
+  const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   // Get the nav items based on features
   const navItems = [
@@ -687,16 +693,9 @@ const ClientAreaHeader = ({ activeTab }) => {
             </div>
           </div>
 
-         
+
         </div>
       )}
-       <div className='w-full flex justify-center bg-blue-500 items-center text-center'>
-            <span>
-              {tenantOnTrail === 'Active' && (
-                <p>10 Days left on free trail, Upgrade now</p>
-              )}
-            </span>
-          </div>
     </header>
   );
 };

@@ -65,6 +65,16 @@ const TenantDashboard = () => {
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
 
+  const tenantOnTrail = loggedInTenant?.freeTrailStatus;
+  const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
+  const today = new Date();
+  const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
+  const todayDate = new Date(today.setHours(0, 0, 0, 0));
+
+  // Calculate difference in milliseconds
+  const diffTime = expireDate.getTime() - todayDate.getTime();
+  const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  console.log(remainingDaysOnFreeTrail);
   let [organizationDetailsSetupCompleted, setOrganizationDetailsSetupCompleted] = useState(false);
 
   useEffect(() => {
@@ -260,7 +270,7 @@ const TenantDashboard = () => {
                         <div className="text-center">
                           <p className="text-xs font-medium text-green-600 dark:text-green-400 mb-1">Account</p>
                           <p className="text-sm font-bold text-green-700 dark:text-green-300">
-                            {loggedInTenant?.tenantStatus || 'N/A'}
+                            {loggedInTenant?.status || 'N/A'}
                           </p>
                         </div>
                       </div>
@@ -370,6 +380,13 @@ const TenantDashboard = () => {
                           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <Shield className="w-6 h-6 text-white" />
                           </div>
+                          <div className="space-x-2 font-medium text-xl">
+                            <span>
+                              {
+                                tenantOnTrail ? 'Free Trail' : loggedInTenant?.subscription || 'N/A'
+                              }
+                            </span>
+                          </div>
                         </div>
                       </div>
 
@@ -377,22 +394,22 @@ const TenantDashboard = () => {
                         <div className="flex items-center space-x-2 text-blue-100">
                           <Calendar className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            Start: {new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()}
+                            Start: {tenantOnTrail ? new Date(loggedInTenant?.createdAt).toLocaleDateString() : new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="flex items-center space-x-2 text-blue-100">
                           <Calendar className="w-4 h-4" />
                           <span className="text-sm font-medium">
-                            End: {onFreeTrail
-                              ? new Date(loggedInTenant?.freeTrialEndsAt).toLocaleDateString()
+                            End: {tenantOnTrail
+                              ? new Date(loggedInTenant?.freeTrailEndsAt).toLocaleDateString()
                               : new Date(loggedInTenant?.subscriptionEndsAt).toLocaleDateString()}
                           </span>
                         </div>
                         <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
                           <Clock className="w-4 h-4" />
                           <span className="text-sm font-bold">
-                            {onFreeTrail
-                              ? `${loggedInTenant?.tenantFreeTrailRemainingDays || 10} days left`
+                            {tenantOnTrail
+                              ? `${remainingDaysOnFreeTrail} days left`
                               : `${calculateRemainingDays()} days remaining`}
                           </span>
                         </div>
@@ -405,115 +422,6 @@ const TenantDashboard = () => {
           </div>
         </div>
       </div>
-
-      {/* Enhanced Alert Dialog */}
-      <AlertDialog
-        open={createOrganizationAlertDialog}
-        onOpenChange={setCreateOrganizationAlertDialog}
-      >
-        <AlertDialogContent className="sm:max-w-[600px] border-0 shadow-2xl bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50 dark:from-blue-900/10 dark:to-purple-900/10 rounded-lg" />
-          <div className="relative">
-            <AlertDialogHeader className="space-y-4">
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Info className="w-6 h-6 text-white" />
-                </div>
-                <div>
-                  <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                    Complete Your Profile
-                  </AlertDialogTitle>
-                  <AlertDialogDescription className="text-gray-600 dark:text-gray-300 text-base">
-                    Please provide your organization's contact information for notifications and communication purposes.
-                  </AlertDialogDescription>
-                </div>
-              </div>
-            </AlertDialogHeader>
-
-            <form
-              onSubmit={async (e) => {
-                e.preventDefault();
-                const formData = new FormData(e.target);
-                try {
-                  const response = await fetch(
-                    `http://localhost:3000/api/tenant/email-phone-assign/${loggedInTenant?._id}`,
-                    {
-                      method: "PATCH",
-                      headers: {
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        organizationEmail: formData.get("organizationEmail"),
-                        organizationPhone: formData.get("organizationPhone"),
-                      }),
-                    }
-                  );
-
-                  const data = await response.json();
-                  if (response.ok) {
-                    toast.success(data.message);
-                    soonerToast.success(data.message);
-                    setCreateOrganizationAlertDialog(false);
-                    window.location.reload();
-                  } else {
-                    throw new Error(data.message || "Something went wrong");
-                  }
-                } catch (error) {
-                  soonerToast.error(error.message);
-                }
-              }}
-            >
-              <div className="space-y-6 py-6">
-                <div className="space-y-3">
-                  <label
-                    htmlFor="organizationEmail"
-                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2"
-                  >
-                    <User className="w-4 h-4" />
-                    <span>Organization Email</span>
-                  </label>
-                  <input
-                    id="organizationEmail"
-                    name="organizationEmail"
-                    type="email"
-                    placeholder="organization@example.com"
-                    className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
-                    required
-                  />
-                </div>
-                <div className="space-y-3">
-                  <label
-                    htmlFor="organizationPhone"
-                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 flex items-center space-x-2"
-                  >
-                    <FaBuilding className="w-4 h-4" />
-                    <span>Organization Phone</span>
-                  </label>
-                  <input
-                    id="organizationPhone"
-                    name="organizationPhone"
-                    type="tel"
-                    placeholder="+1 (555) 000-0000"
-                    className="w-full h-12 px-4 rounded-xl border-2 border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:border-blue-500 dark:focus:border-blue-400 focus:ring-4 focus:ring-blue-500/20 dark:focus:ring-blue-400/20 transition-all duration-300"
-                    required
-                  />
-                </div>
-              </div>
-              <AlertDialogFooter className="gap-3 pt-4">
-                <AlertDialogCancel className="h-11 px-6 rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-300">
-                  Cancel
-                </AlertDialogCancel>
-                <AlertDialogAction
-                  type="submit"
-                  className="h-11 px-6 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  Save Changes
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </form>
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 };
