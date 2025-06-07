@@ -675,10 +675,10 @@ const TenantSetting = () => {
                 <div className="dark:bg-gray-800 dark:border-none">
                   <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                     <Building2 className="w-6 h-6 text-primary" />
-                    <h2 className="text-2xl font-semibold">Basic Information</h2>
+                    <h2 className="text-2xl font-semibold">Organization Details</h2>
                   </div>
 
-                  <div className="grid space-y-6 p-6 grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid p-6 grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label>Organization Name *</Label>
                       <Input
@@ -736,17 +736,25 @@ const TenantSetting = () => {
                       />
                     </div>
                   </div>
+                  <div className="flex justify-start items-center">
+                    <Button
+                      className="bg-indigo-500 m-4 text-white hover:bg-green-700"
+                      type='submit'
+                    >
+                      Setup Organization
+                    </Button>
+                  </div>
                 </div>
               </Card>
 
               <Card className='w-9/12 rounded-2xl shadow-md'>
-                <div className="space-y-6">
+                <div>
                   <div className="space-y-6 dark:bg-gray-800 dark:border-none">
                     <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                       <MapPin className="w-6 h-6 text-primary" />
                       <h2 className="text-xl font-semibold">Location & Locale</h2>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid px-6 grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="country">Country *</Label>
                         <Select
@@ -819,15 +827,18 @@ const TenantSetting = () => {
                         </Select>
                       </div>
                     </div>
+
+                    <div className="flex justify-start items-center">
+                      <Button
+                        className="bg-indigo-500 m-4 text-white hover:bg-green-700"
+                        type='submit'
+                      >
+                        Submit Details
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </Card>
-              <Button
-                className="bg-green-600 hover:bg-green-700"
-                type='submit'
-              >
-                Submit Organization
-              </Button>
             </TabsContent>
 
             <TabsContent value='cards'>
