@@ -278,7 +278,7 @@ const TenantSetting = () => {
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border ${errors.firstName ? "border-red-300" : "border-gray-300"
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.firstName ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           {errors.firstName && (
@@ -302,7 +302,7 @@ const TenantSetting = () => {
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border ${errors.lastName ? "border-red-300" : "border-gray-300"
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.lastName ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           {errors.lastName && (
@@ -326,7 +326,7 @@ const TenantSetting = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border ${errors.email ? "border-red-300" : "border-gray-300"
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.email ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           {errors.email && (
@@ -350,7 +350,7 @@ const TenantSetting = () => {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border ${errors.phone ? "border-red-300" : "border-gray-300"
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.phone ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           {errors.phone && (
@@ -402,7 +402,7 @@ const TenantSetting = () => {
                             name="currentPassword"
                             value={passwordData.currentPassword}
                             onChange={handlePasswordChange}
-                            className={`block w-full p-2 py-3 border ${errors.currentPassword
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.currentPassword
                               ? "border-red-300"
                               : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
@@ -441,7 +441,7 @@ const TenantSetting = () => {
                             name="newPassword"
                             value={passwordData.newPassword}
                             onChange={handlePasswordChange}
-                            className={`block w-full p-2 py-3 border ${errors.newPassword ? "border-red-300" : "border-gray-300"
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.newPassword ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           <button
@@ -478,7 +478,7 @@ const TenantSetting = () => {
                             name="confirmPassword"
                             value={passwordData.confirmPassword}
                             onChange={handlePasswordChange}
-                            className={`block w-full p-2 py-3 border ${errors.confirmPassword
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.confirmPassword
                               ? "border-red-300"
                               : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
@@ -671,14 +671,14 @@ const TenantSetting = () => {
             </TabsContent>
 
             <TabsContent value='orgsetup' className='w-full flex flex-col items-center space-y-6'>
-              <Card className='w-9/12 dark:border-none shadow-lg'>
-                <div className="p-6 space-y-6 dark:bg-gray-800 dark:border-none">
-                  <div className="flex space-x-4">
+              <Card className='w-9/12 dark:border-none shadow-md rounded-2xl'>
+                <div className="dark:bg-gray-800 dark:border-none">
+                  <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                     <Building2 className="w-6 h-6 text-primary" />
                     <h2 className="text-2xl font-semibold">Basic Information</h2>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid space-y-6 p-6 grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label>Organization Name *</Label>
                       <Input
@@ -739,12 +739,10 @@ const TenantSetting = () => {
                 </div>
               </Card>
 
-              <Card className='w-9/12'>
+              <Card className='w-9/12 rounded-2xl shadow-md'>
                 <div className="space-y-6">
-
-                  <div className="p-6 space-y-6 dark:bg-gray-800 dark:border-none">
-
-                    <div className="flex space-x-4">
+                  <div className="space-y-6 dark:bg-gray-800 dark:border-none">
+                    <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                       <MapPin className="w-6 h-6 text-primary" />
                       <h2 className="text-xl font-semibold">Location & Locale</h2>
                     </div>
