@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -68,6 +69,8 @@ const ClientAreaHeader = ({ activeTab }) => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
   console.log(loggedInTenant);
+
+  const tenantOnTrail = loggedInTenant?.freeTrailStatus;
 
   // Get the nav items based on features
   const navItems = [
