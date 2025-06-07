@@ -1,5 +1,17 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { toast as sonnertoast } from "sonner";
 import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,8 +34,12 @@ const TenantSubscriptionPlansManagement = () => {
   const [selectedPlan, setSelectedPlan] = useState("annually");
   const [loadingButtons, setLoadingButtons] = useState({});
   const { tenant, loading: tenantLoading } = useTenant();
+  const router = useRouter();
+
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
+  const [orgSetupDialog, setOrgSetupDialog] = useState(false);
+  const [resBody, setResBody] = useState();
 
   const fetchPlans = async () => {
     try {
@@ -63,7 +79,10 @@ const TenantSubscriptionPlansManagement = () => {
       });
 
       const responseBody = await response.json();
-
+      if (response.status === 404 && responseBody.falseSetup) {
+        setOrgSetupDialog(true);
+        setResBody(responseBody);
+      };
       if (response.ok) {
         toast.success(responseBody.message);
         sonnertoast.success(responseBody.message)
@@ -83,6 +102,21 @@ const TenantSubscriptionPlansManagement = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <AlertDialog open={orgSetupDialog} onOpenChange={setOrgSetupDialog}>
+        <AlertDialogContent className='bg-blue-500 text-white dark:border-none'>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Important details must be completed</AlertDialogTitle>
+            <AlertDialogDescription className='text-white'>
+              {resBody?.message}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => router.push(resBody?.redirect)}>Continue</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       {tenantLoading || isLoading ? (
         <Loader />
       ) : Array.isArray(subscriptions) && subscriptions.length > 0 ? (
@@ -108,16 +142,16 @@ const TenantSubscriptionPlansManagement = () => {
                 <div className="inline-flex items-center bg-white dark:bg-gray-800 rounded-full p-1 border border-gray-200 dark:border-gray-700 shadow-sm">
                   <button
                     className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${selectedPlan === "monthly"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       }`}
                   >
                     Monthly
                   </button>
                   <button
                     className={`px-6 py-2 rounded-full text-sm font-medium transition-all relative ${selectedPlan === "annually"
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
                       }`}
                   >
                     Annually
@@ -209,8 +243,8 @@ const TenantSubscriptionPlansManagement = () => {
                           onClick={() => handleAddToCart(plan)}
                           disabled={loadingButtons[plan._id]}
                           className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${isPopular
-                              ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-                              : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
+                            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
                             } ${loadingButtons[plan._id]
                               ? "opacity-75 cursor-not-allowed"
                               : ""
