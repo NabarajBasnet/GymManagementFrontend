@@ -55,7 +55,7 @@ const LoggedInTenantProvider = ({ children }) => {
                                 🚀 Complete your organization setup to unlock full features.
                             </span>
                             <button
-                                onClick={() => router.push("/clientarea/orgsetup")}
+                                onClick={() => router.push("/clientarea/settings")}
                                 className="underline hover:text-blue-200 text-sm font-medium transition"
                             >
                                 Go to Settings

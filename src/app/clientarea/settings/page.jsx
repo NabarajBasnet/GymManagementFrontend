@@ -6,27 +6,18 @@ import { PiCardsThreeFill } from "react-icons/pi";
 import { FaBuilding } from "react-icons/fa6";
 import { RiUserSettingsFill } from "react-icons/ri";
 import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  User,
   MapPin,
   CreditCard,
-  Palette,
   Building2,
   Globe,
-  Clock,
-  Calendar,
-  Banknote,
   FileText,
-  Brush
 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card } from "@/components/ui/card"
 import { FaLock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Eye,
   EyeOff,
@@ -42,8 +33,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
 const TenantSetting = () => {
+  const tenant = useTenant();
+  const loggedInTenant = tenant?.tenant?.tenant;
+  console.log("Logged In Tenant: ", loggedInTenant);
+
+  // Populate Data
+  useEffect(()=>{
+    reset({
+      fullName:loggedInTenant?.fullName,
+      address:loggedInTenant?.address,
+      email:loggedInTenant?.email,
+      phone:loggedInTenant?.phone,
+    })
+  },[loggedInTenant]);
+
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -51,7 +57,7 @@ const TenantSetting = () => {
   const businessTypes = ["Gym", "CrossFit", "Yoga", "Fitness", "Martial Arts", "Other"]
 
   const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]
-  const currencies = ["USD", "EUR", "GBP", "CAD", "AUD"]
+  const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"]
   const languages = ["English", "Spanish", "French", "German", "Chinese"]
   const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"]
 
@@ -80,7 +86,7 @@ const TenantSetting = () => {
     confirmPassword: "",
   });
 
-  const [successMessage, setSuccessMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("Hello world");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -198,9 +204,18 @@ const TenantSetting = () => {
     }
   };
 
+  // Handle Organization Setup
+  const handleOrgSetup = async (data) => {
+    try {
+      console.log("Data: ", data);
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
   return (
     <div className="w-full flex justify-center dark:bg-gray-900 bg-gray-100 items-center">
-      <div className="w-full mt-4 p-8">
+      <div className="w-full py-4 px-8">
         <div className="flex items-center space-x-4 mx-2">
           <MdSettings className="w-10 h-10 dark:text-white" />
           <h1 className="text-3xl font-bold dark:text-white">Settings</h1>
@@ -229,30 +244,6 @@ const TenantSetting = () => {
           <Card className="w-full p-6 dark:bg-gray-800 dark:border-none">
             <TabsContent value='accountdetails'>
               <div className="w-11/12 lg:w-10/12 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {successMessage && (
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-start">
-                    <div className="flex-shrink-0">
-                      <svg
-                        className="h-5 w-5 text-green-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-medium text-green-800">
-                        {successMessage}
-                      </p>
-                    </div>
-                  </div>
-                )}
 
                 {/* Personal Information */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
@@ -267,42 +258,40 @@ const TenantSetting = () => {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label
-                            htmlFor="firstName"
+                            htmlFor="fullName"
                             className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
                           >
-                            First Name
+                            Full Name
                           </label>
                           <input
                             type="text"
-                            id="firstName"
-                            name="firstName"
-                            value={formData.firstName}
-                            onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border dark:border-none ${errors.firstName ? "border-red-300" : "border-gray-300"
+                            id="fullName"
+                            name="fullName"
+                            {...register('fullName')}
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.fullName ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
-                          {errors.firstName && (
+                          {errors.fullName && (
                             <p className="mt-1 text-sm text-red-600 flex items-center">
                               <AlertTriangle className="mr-1 h-4 w-4" />
-                              {errors.firstName}
+                              {errors.fullName}
                             </p>
                           )}
                         </div>
 
                         <div>
                           <label
-                            htmlFor="lastName"
+                            htmlFor="address"
                             className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
                           >
-                            Last Name
+                            Address
                           </label>
                           <input
                             type="text"
-                            id="lastName"
-                            name="lastName"
-                            value={formData.lastName}
-                            onChange={handleInputChange}
-                            className={`block w-full p-2 py-3 border dark:border-none ${errors.lastName ? "border-red-300" : "border-gray-300"
+                            id="address"
+                            name="address"
+                            {...register('address')}
+                            className={`block w-full p-2 py-3 border dark:border-none ${errors.address ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
                           {errors.lastName && (
@@ -324,8 +313,7 @@ const TenantSetting = () => {
                             type="email"
                             id="email"
                             name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
+                            {...register('email')}
                             className={`block w-full p-2 py-3 border dark:border-none ${errors.email ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
@@ -348,8 +336,7 @@ const TenantSetting = () => {
                             type="tel"
                             id="phone"
                             name="phone"
-                            value={formData.phone}
-                            onChange={handleInputChange}
+                            {...register('phone')}
                             className={`block w-full p-2 py-3 border dark:border-none ${errors.phone ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
@@ -400,8 +387,6 @@ const TenantSetting = () => {
                             type={showCurrentPassword ? "text" : "password"}
                             id="currentPassword"
                             name="currentPassword"
-                            value={passwordData.currentPassword}
-                            onChange={handlePasswordChange}
                             className={`block w-full p-2 py-3 border dark:border-none ${errors.currentPassword
                               ? "border-red-300"
                               : "border-gray-300"
@@ -439,8 +424,6 @@ const TenantSetting = () => {
                             type={showNewPassword ? "text" : "password"}
                             id="newPassword"
                             name="newPassword"
-                            value={passwordData.newPassword}
-                            onChange={handlePasswordChange}
                             className={`block w-full p-2 py-3 border dark:border-none ${errors.newPassword ? "border-red-300" : "border-gray-300"
                               } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
                           />
@@ -672,7 +655,7 @@ const TenantSetting = () => {
 
             <TabsContent value='orgsetup' className='w-full flex flex-col items-center space-y-6'>
               <Card className='w-9/12 dark:border-none shadow-md rounded-2xl'>
-                <div className="dark:bg-gray-800 dark:border-none">
+                <form className="dark:bg-gray-800 dark:border-none" onSubmit={handleSubmit(handleOrgSetup)}>
                   <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                     <Building2 className="w-6 h-6 text-primary" />
                     <h2 className="text-2xl font-semibold">Organization Details</h2>
@@ -694,7 +677,7 @@ const TenantSetting = () => {
                         <SelectTrigger className='rounded-sm dark:bg-gray-900 dark:border-none p-6'>
                           <SelectValue placeholder="Select business type" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className='dark:bg-gray-900'>
                           {businessTypes.map(type => (
                             <SelectItem key={type} value={type} className='hover:cursor-pointer hover:bg-blue-600 hover:text-white'>{type}</SelectItem>
                           ))}
@@ -738,13 +721,13 @@ const TenantSetting = () => {
                   </div>
                   <div className="flex justify-start items-center">
                     <Button
-                      className="bg-indigo-500 m-4 text-white hover:bg-green-700"
+                      className="bg-indigo-500 m-4 text-white hover:bg-indigo-600"
                       type='submit'
                     >
                       Setup Organization
                     </Button>
                   </div>
-                </div>
+                </form>
               </Card>
 
               <Card className='w-9/12 rounded-2xl shadow-md'>
@@ -757,17 +740,11 @@ const TenantSetting = () => {
                     <div className="grid px-6 grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="country">Country *</Label>
-                        <Select
-                        >
-                          <SelectTrigger className='py-6 dark:bg-gray-900 rounded-sm dark:border-none'>
-                            <SelectValue placeholder="Select country" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {countries.map(country => (
-                              <SelectItem key={country} value={country} className='cursor-pointer hover:bg-blue-500'>{country}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <Input
+                          id="country"
+                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
+                          placeholder="Country"
+                        />
                       </div>
 
                       <div className="space-y-2">
@@ -804,7 +781,7 @@ const TenantSetting = () => {
                           <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-900 bg-white'>
                             <SelectValue placeholder="Select currency" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className='dark:bg-gray-900 dark:border-none'>
                             {currencies.map(currency => (
                               <SelectItem key={currency} value={currency} className='cursor-pointer hover:bg-blue-500'>{currency}</SelectItem>
                             ))}
@@ -830,7 +807,7 @@ const TenantSetting = () => {
 
                     <div className="flex justify-start items-center">
                       <Button
-                        className="bg-indigo-500 m-4 text-white hover:bg-green-700"
+                        className="bg-indigo-600 m-4 text-white hover:bg-indigo-700"
                         type='submit'
                       >
                         Submit Details
