@@ -74,7 +74,6 @@ const TenantDashboard = () => {
   // Calculate difference in milliseconds
   const diffTime = expireDate.getTime() - todayDate.getTime();
   const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  console.log(remainingDaysOnFreeTrail);
   let [organizationDetailsSetupCompleted, setOrganizationDetailsSetupCompleted] = useState(false);
 
   useEffect(() => {
@@ -135,7 +134,7 @@ const TenantDashboard = () => {
             <p className="text-gray-600 dark:text-gray-300">Please sign in to access your dashboard</p>
           </div>
           <Button
-            onClick={() => router.push("/auth/tenantlogin")}
+            onClick={() => router.push("/login")}
             className="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             Sign In

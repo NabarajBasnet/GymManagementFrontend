@@ -46,6 +46,7 @@ const TenantCartManagement = () => {
       }
 
       const responseBody = await response.json();
+      console.log("Cart res body: ", responseBody);
       dispatch(setCartLength(responseBody?.cart?.totalItems));
       return responseBody;
     } catch (error) {
@@ -274,14 +275,14 @@ const TenantCartManagement = () => {
             <CardHeader>
               <CardTitle>Subscription Plans</CardTitle>
               <CardDescription>
-                {cart?.items?.length || 0} items in your cart
+                {cart?.[0]?.items?.length || 0} items in your cart
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {cart?.items?.map((cartItem) => (
+                {cart?.[0]?.items?.map((cartItem) => (
                   <div
-                    key={cartItem.item._id}
+                    key={cartItem._id}
                     className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
                   >
                     <div className="flex items-center space-x-4">
@@ -334,7 +335,7 @@ const TenantCartManagement = () => {
                       <div className="text-right">
                         <p className="font-semibold text-gray-900 dark:text-white">
                           {cartItem.price.toLocaleString()}{" "}
-                          {cart?.tenantId?.tenantCurrency}
+                          {cart?.[0]?.tenantId?.tenantCurrency}
                         </p>
                         <p className="text-sm text-gray-500">
                           {cartItem.item.subscriptionPrice} each
@@ -374,7 +375,7 @@ const TenantCartManagement = () => {
                     Total Items
                   </span>
                   <span className="font-semibold">
-                    {cart?.totalItems || 0} items
+                    {cart?.[0]?.totalItems || 0} items
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -382,16 +383,16 @@ const TenantCartManagement = () => {
                     Subtotal
                   </span>
                   <span className="font-semibold">
-                    {cart?.totalPrice?.toLocaleString()}{" "}
-                    {cart?.tenantId?.tenantCurrency}
+                    {cart?.[0]?.totalPrice?.toLocaleString()}{" "}
+                    {cart?.[0]?.tenantId?.tenantCurrency}
                   </span>
                 </div>
                 <div className="border-t pt-4 dark:border-gray-700">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      {cart?.totalPrice?.toLocaleString()}{" "}
-                      {cart?.tenantId?.tenantCurrency}
+                      {cart?.[0]?.totalPrice?.toLocaleString()}{" "}
+                      {cart?.[0]?.tenantId?.tenantCurrency}
                     </span>
                   </div>
                 </div>
@@ -400,7 +401,7 @@ const TenantCartManagement = () => {
             <CardFooter>
               <button
                 className="w-full flex items-center justify-center dark:bg-white dark:text-black py-3 rounded-md cursor-pointer bg-gray-900 text-white hover:bg-gray-800 hover:dark:bg-gray-200 transition-all duration-300 font-semibold"
-                onClick={() => handleCreateOrder(cart?._id, cart?.totalPrice)}
+                onClick={() => handleCreateOrder(cart?.[0]?._id, cart?.[0]?.totalPrice)}
               >
                 {ordering ? (
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />

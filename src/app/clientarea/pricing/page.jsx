@@ -1,5 +1,6 @@
 "use client";
 
+import { toast as sonnertoast } from "sonner";
 import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
@@ -65,6 +66,7 @@ const TenantSubscriptionPlansManagement = () => {
 
       if (response.ok) {
         toast.success(responseBody.message);
+        sonnertoast.success(responseBody.message)
         // Invalidate cart query to refresh cart data
         queryClient.invalidateQueries(["cart"]);
         dispatch(setCartLength(responseBody.cart.totalItems));
@@ -105,20 +107,18 @@ const TenantSubscriptionPlansManagement = () => {
                 {/* Billing Toggle */}
                 <div className="inline-flex items-center bg-white dark:bg-gray-800 rounded-full p-1 border border-gray-200 dark:border-gray-700 shadow-sm">
                   <button
-                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                      selectedPlan === "monthly"
+                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${selectedPlan === "monthly"
                         ? "bg-blue-600 text-white shadow-sm"
                         : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                    }`}
+                      }`}
                   >
                     Monthly
                   </button>
                   <button
-                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all relative ${
-                      selectedPlan === "annually"
+                    className={`px-6 py-2 rounded-full text-sm font-medium transition-all relative ${selectedPlan === "annually"
                         ? "bg-blue-600 text-white shadow-sm"
                         : "text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-                    }`}
+                      }`}
                   >
                     Annually
                     <span className="absolute -top-2 -right-2 bg-green-500 text-xs px-2 py-1 rounded-full text-white">
@@ -140,9 +140,8 @@ const TenantSubscriptionPlansManagement = () => {
                 return (
                   <div
                     key={plan._id}
-                    className={`relative group ${
-                      isPopular ? "scale-105 z-10" : "hover:scale-105"
-                    } transition-all my-4 md:my-0 duration-300`}
+                    className={`relative group ${isPopular ? "scale-105 z-10" : "hover:scale-105"
+                      } transition-all my-4 md:my-0 duration-300`}
                   >
                     {isPopular && (
                       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-20">
@@ -209,15 +208,13 @@ const TenantSubscriptionPlansManagement = () => {
                         <button
                           onClick={() => handleAddToCart(plan)}
                           disabled={loadingButtons[plan._id]}
-                          className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${
-                            isPopular
+                          className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${isPopular
                               ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
                               : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
-                          } ${
-                            loadingButtons[plan._id]
+                            } ${loadingButtons[plan._id]
                               ? "opacity-75 cursor-not-allowed"
                               : ""
-                          }`}
+                            }`}
                         >
                           {loadingButtons[plan._id] ? (
                             <Loader2 className="w-5 h-5 animate-spin" />

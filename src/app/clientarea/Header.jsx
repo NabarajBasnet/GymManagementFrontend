@@ -105,9 +105,9 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "My Subscriptions",
     },
     {
-      id: "/clientarea/store",
+      id: "/clientarea/pricing",
       icon: <CreditCard size={20} />,
-      label: "Store",
+      label: "Pricing",
       description: "View and purchase services & products",
     },
     {
