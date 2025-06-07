@@ -51,12 +51,20 @@ const TenantSetting = () => {
   const tenant = useTenant();
   const loggedInTenant = tenant?.tenant?.tenant;
 
+  console.log("Tenant: ", loggedInTenant);
+  // tenant onboarding steps
+
+  const onboardAt = loggedInTenant?.onboardingStep
+  console.log("Onboard At: ", onboardAt);
+
+  // Notification setting states
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotification: loggedInTenant?.emailNotification || false,
     smsNotification: loggedInTenant?.smsNotification || false,
     appNotification: loggedInTenant?.appNotification || false
   });
 
+  // React hook form
   const {
     register,
     handleSubmit,
@@ -89,6 +97,7 @@ const TenantSetting = () => {
     })
   }, [loggedInTenant, reset]);
 
+  // Populate notification states
   useEffect(() => {
     setNotificationSettings({
       emailNotification: loggedInTenant?.emailNotification || false,
@@ -97,34 +106,17 @@ const TenantSetting = () => {
     });
   }, [loggedInTenant]);
 
+  // Password toggle
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // constants
   const businessTypes = ["Gym", "CrossFit", "Yoga", "Fitness", "Martial Arts", "Other"]
-
   const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]
   const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"]
   const languages = ["English", "Spanish", "French", "German", "Chinese"]
   const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"]
-
-  const confirmAccountDeletion = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      // Handle account deletion
-      alert("Account deletion requested. This may take a few moments.");
-    }
-  };
-
-  const confirmMembershipCancellation = () => {
-    if (window.confirm("Are you sure you want to cancel your membership?")) {
-      // Handle membership cancellation
-      alert("Membership cancellation requested. We're sorry to see you go!");
-    }
-  };
 
   // Handle Organization Setup
   const handleOrgSetup = async (data) => {
@@ -134,7 +126,6 @@ const TenantSetting = () => {
       console.log("Error: ", error);
     };
   };
-
 
   // Change basic details
   const changePersonalDetails = async (data) => {
@@ -290,9 +281,9 @@ const TenantSetting = () => {
             <TabsTrigger value='billing' className='py-4 data-[state=active]:shadow-none data-[state=active]:bg-transparent'><FaMoneyBillWave className='w-5 h-5 mr-2' />Billing & Payment</TabsTrigger>
           </TabsList>
 
-          <Card className="w-full p-6 dark:bg-gray-800 dark:border-none">
+          <Card className="w-full p-3 md:p-6 dark:bg-gray-800 dark:border-none">
             <TabsContent value='accountdetails'>
-              <div className="w-11/12 lg:w-10/12 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+              <div className="w-11/12 lg:w-10/12 mx-auto px-4 sm:px-0 lg:px-8 py-8">
 
                 {/* Personal Information */}
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
@@ -853,7 +844,7 @@ const TenantSetting = () => {
             </TabsContent>
 
             <TabsContent value='orgsetup' className='w-full flex flex-col items-center space-y-6'>
-              <Card className='w-9/12 dark:border-none shadow-md rounded-2xl'>
+              <Card className='w-full md:w-9/12 dark:border-none shadow-md rounded-2xl'>
                 <form className="dark:bg-gray-800 dark:border-none" onSubmit={handleSubmit(handleOrgSetup)}>
                   <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
                     <Building2 className="w-6 h-6 text-primary" />
@@ -919,17 +910,25 @@ const TenantSetting = () => {
                     </div>
                   </div>
                   <div className="flex justify-start items-center">
-                    <Button
-                      className="bg-indigo-500 m-4 text-white hover:bg-indigo-600"
-                      type='submit'
-                    >
-                      Setup Organization
-                    </Button>
+                    {onboardAt === 'Business Info' ?
+                      <Button
+                        className="bg-indigo-500 m-4 text-white hover:bg-indigo-600"
+                        type='submit'
+                      >
+                        Setup Organization
+                      </Button> :
+                      <Button
+                        className="bg-indigo-500 m-4 text-white hover:bg-indigo-600"
+                        type='submit'
+                      >
+                        Change Details
+                      </Button>}
+
                   </div>
                 </form>
               </Card>
 
-              <Card className='w-9/12 rounded-2xl shadow-md'>
+              <Card className='w-full md:w-9/12 rounded-2xl shadow-md'>
                 <div>
                   <div className="space-y-6 dark:bg-gray-800 dark:border-none">
                     <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
