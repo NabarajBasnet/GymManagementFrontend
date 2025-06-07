@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -19,7 +18,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import { MdCardMembership } from "react-icons/md";
 import {
   Sheet,
   SheetClose,
@@ -69,6 +67,7 @@ const ClientAreaHeader = ({ activeTab }) => {
   const router = useRouter();
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
+  console.log(loggedInTenant);
 
   // Get the nav items based on features
   const navItems = [
@@ -220,7 +219,6 @@ const ClientAreaHeader = ({ activeTab }) => {
 
   return (
     <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-lg py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 sticky top-0 z-40">
-
       {loading ? (
         <Loader />
       ) : (

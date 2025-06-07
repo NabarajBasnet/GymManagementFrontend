@@ -1,625 +1,823 @@
-"use client";
+"use client"
 
-import { FaLock } from "react-icons/fa";
-import { FaUser } from "react-icons/fa6";
-import { useState } from "react";
+import { useState, useEffect } from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
+import { Button } from "@/components/ui/button"
 import {
-  Eye,
-  EyeOff,
-  AlertTriangle,
-  Info,
-  Bell,
-  BellOff,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  User,
+  MapPin,
+  CreditCard,
+  Palette,
+  Building2,
   Mail,
-  Phone,
-  Trash2,
-} from "lucide-react";
+  Globe,
+  Clock,
+  Calendar,
+  Banknote,
+  FileText,
+  Brush
+} from "lucide-react"
 
-const TenantSetting = () => {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const businessTypes = [
+  "Retail",
+  "Hospitality",
+  "Healthcare",
+  "Professional Services",
+  "Technology",
+  "Education",
+  "Non-profit",
+  "Other"
+]
+
+const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]
+const currencies = ["USD", "EUR", "GBP", "CAD", "AUD"]
+const languages = ["English", "Spanish", "French", "German", "Chinese"]
+const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"]
+
+const daysOfWeek = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday"
+]
+
+export default function OrganizationSetupForm() {
   const [formData, setFormData] = useState({
-    firstName: "Alex",
-    lastName: "Johnson",
-    email: "alex.johnson@example.com",
-    phone: "(555) 123-4567",
-    notifications: {
-      email: true,
-      sms: false,
-      app: true,
+    basicInfo: {
+      tenant: '',
+      name: '',
+      businessType: '',
+      businessEmail: '',
+      websiteUrl: '',
+      logoUrl: '',
     },
-  });
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-  const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const toggleNotification = (type) => {
-    setFormData((prev) => ({
-      ...prev,
-      notifications: {
-        ...prev.notifications,
-        [type]: !prev.notifications[type],
+    location: {
+      country: '',
+      state: '',
+      city: '',
+      timezone: '',
+      currency: '',
+      language: '',
+    },
+    billing: {
+      billingAddress: {
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        zipCode: '',
+        country: '',
       },
-    }));
-  };
+      taxId: '',
+      invoiceEmail: '',
+      paymentProvider: '',
+      paymentAccountId: '',
+    },
+    branding: {
+      brandColor: '#3b82f6',
+      logo: '',
+      businessHours: {},
+    },
+  })
 
-  const validatePersonalInfo = () => {
-    const newErrors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+  const [currentTab, setCurrentTab] = useState('basic')
+  const [completedTabs, setCompletedTabs] = useState({
+    basic: false,
+    location: false,
+    billing: false,
+    branding: false,
+  })
+
+  // Calculate progress
+  const completedCount = Object.values(completedTabs).filter(Boolean).length
+  const progress = (completedCount / Object.keys(completedTabs).length) * 100
+
+  const setCompletedTab = (tab, isComplete) => {
+    setCompletedTabs(prev => ({
+      ...prev,
+      [tab]: isComplete,
+    }))
+  }
+
+  // Tab validation effects
+  useEffect(() => {
+    const isComplete = !!formData.basicInfo.name &&
+      !!formData.basicInfo.businessType &&
+      !!formData.basicInfo.businessEmail
+    setCompletedTab('basic', isComplete)
+  }, [formData.basicInfo])
+
+  useEffect(() => {
+    const isComplete = !!formData.location.country &&
+      !!formData.location.state &&
+      !!formData.location.city &&
+      !!formData.location.currency &&
+      !!formData.location.language
+    setCompletedTab('location', isComplete)
+  }, [formData.location])
+
+  useEffect(() => {
+    const isComplete = !!formData.billing.billingAddress.addressLine1 &&
+      !!formData.billing.billingAddress.city &&
+      !!formData.billing.billingAddress.state &&
+      !!formData.billing.billingAddress.zipCode &&
+      !!formData.billing.billingAddress.country &&
+      !!formData.billing.invoiceEmail &&
+      !!formData.billing.paymentProvider &&
+      !!formData.billing.paymentAccountId
+    setCompletedTab('billing', isComplete)
+  }, [formData.billing])
+
+  useEffect(() => {
+    const isComplete = !!formData.branding.brandColor
+    setCompletedTab('branding', isComplete)
+  }, [formData.branding])
+
+  const handleChange = (section, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [field]: value
+      }
+    }))
+  }
+
+  const handleNestedChange = (section, parentField, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [section]: {
+        ...prev[section],
+        [parentField]: {
+          ...prev[section][parentField],
+          [field]: value
+        }
+      }
+    }))
+  }
+
+  const handleBusinessHoursChange = (day, field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      branding: {
+        ...prev.branding,
+        businessHours: {
+          ...prev.branding.businessHours,
+          [day]: {
+            ...prev.branding.businessHours[day],
+            [field]: value
+          }
+        }
+      }
+    }))
+  }
+
+  const handleNext = () => {
+    const tabs = [
+      { id: 'basic', label: 'Basic Info' },
+      { id: 'location', label: 'Location' },
+      { id: 'billing', label: 'Billing' },
+      { id: 'branding', label: 'Branding' },
+      { id: 'review', label: 'Review' },
+    ]
+    const currentIndex = tabs.findIndex(tab => tab.id === currentTab)
+    if (currentIndex < tabs.length - 1) {
+      setCurrentTab(tabs[currentIndex + 1].id)
     }
-    if (!formData.phone.trim()) {
-      newErrors.phone = "Phone number is required";
-    } else if (
-      !/^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
-        formData.phone
-      )
-    ) {
-      newErrors.phone = "Please enter a valid phone number";
+  }
+
+  const handlePrev = () => {
+    const tabs = [
+      { id: 'basic', label: 'Basic Info' },
+      { id: 'location', label: 'Location' },
+      { id: 'billing', label: 'Billing' },
+      { id: 'branding', label: 'Branding' },
+      { id: 'review', label: 'Review' },
+    ]
+    const currentIndex = tabs.findIndex(tab => tab.id === currentTab)
+    if (currentIndex > 0) {
+      setCurrentTab(tabs[currentIndex - 1].id)
     }
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  const handleSubmit = () => {
+    console.log("Form submitted:", formData)
+    alert("Organization setup completed successfully!")
+  }
 
-  const validatePasswordChange = () => {
-    const newErrors = {};
-    if (!passwordData.currentPassword)
-      newErrors.currentPassword = "Current password is required";
-    if (!passwordData.newPassword) {
-      newErrors.newPassword = "New password is required";
-    } else if (passwordData.newPassword.length < 8) {
-      newErrors.newPassword = "Password must be at least 8 characters";
-    }
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      newErrors.confirmPassword = "Passwords do not match";
-    }
+  const BasicInfoTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Building2 className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-semibold">Basic Information</h2>
+      </div>
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+      <Card className="p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="name">Organization Name *</Label>
+            <Input
+              id="name"
+              value={formData.basicInfo.name}
+              onChange={(e) => handleChange('basicInfo', 'name', e.target.value)}
+              placeholder="Acme Inc."
+            />
+          </div>
 
-  const handlePersonalInfoSubmit = (e) => {
-    e.preventDefault();
-    if (!validatePersonalInfo()) return;
+          <div className="space-y-2">
+            <Label htmlFor="businessType">Business Type *</Label>
+            <Select
+              value={formData.basicInfo.businessType}
+              onValueChange={(value) => handleChange('basicInfo', 'businessType', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select business type" />
+              </SelectTrigger>
+              <SelectContent>
+                {businessTypes.map(type => (
+                  <SelectItem key={type} value={type}>{type}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Personal information updated successfully!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }, 1000);
-  };
+          <div className="space-y-2">
+            <Label htmlFor="businessEmail">Business Email *</Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="businessEmail"
+                type="email"
+                className="pl-9"
+                value={formData.basicInfo.businessEmail}
+                onChange={(e) => handleChange('basicInfo', 'businessEmail', e.target.value)}
+                placeholder="contact@acme.com"
+              />
+            </div>
+          </div>
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    if (!validatePasswordChange()) return;
+          <div className="space-y-2">
+            <Label htmlFor="websiteUrl">Website URL</Label>
+            <div className="relative">
+              <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="websiteUrl"
+                className="pl-9"
+                value={formData.basicInfo.websiteUrl}
+                onChange={(e) => handleChange('basicInfo', 'websiteUrl', e.target.value)}
+                placeholder="https://acme.com"
+              />
+            </div>
+          </div>
 
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Password changed successfully!");
-      setPasswordData({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }, 1000);
-  };
+          <div className="space-y-2">
+            <Label htmlFor="logoUrl">Logo URL</Label>
+            <Input
+              id="logoUrl"
+              value={formData.basicInfo.logoUrl}
+              onChange={(e) => handleChange('basicInfo', 'logoUrl', e.target.value)}
+              placeholder="https://acme.com/logo.png"
+            />
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
 
-  const handleNotificationsSubmit = (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Notification preferences saved!");
-      setTimeout(() => setSuccessMessage(""), 3000);
-    }, 800);
-  };
+  const LocationTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <MapPin className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-semibold">Location & Locale</h2>
+      </div>
 
-  const confirmAccountDeletion = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      // Handle account deletion
-      alert("Account deletion requested. This may take a few moments.");
-    }
-  };
+      <Card className="p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="country">Country *</Label>
+            <Select
+              value={formData.location.country}
+              onValueChange={(value) => handleChange('location', 'country', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select country" />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map(country => (
+                  <SelectItem key={country} value={country}>{country}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-  const confirmMembershipCancellation = () => {
-    if (window.confirm("Are you sure you want to cancel your membership?")) {
-      // Handle membership cancellation
-      alert("Membership cancellation requested. We're sorry to see you go!");
-    }
-  };
+          <div className="space-y-2">
+            <Label htmlFor="state">State/Province *</Label>
+            <Input
+              id="state"
+              value={formData.location.state}
+              onChange={(e) => handleChange('location', 'state', e.target.value)}
+              placeholder="California"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="city">City *</Label>
+            <Input
+              id="city"
+              value={formData.location.city}
+              onChange={(e) => handleChange('location', 'city', e.target.value)}
+              placeholder="San Francisco"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="timezone">Timezone</Label>
+            <Input
+              id="timezone"
+              value={formData.location.timezone}
+              onChange={(e) => handleChange('location', 'timezone', e.target.value)}
+              placeholder="PST (UTC-8)"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="currency">Currency *</Label>
+            <Select
+              value={formData.location.currency}
+              onValueChange={(value) => handleChange('location', 'currency', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map(currency => (
+                  <SelectItem key={currency} value={currency}>{currency}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Language *</Label>
+            <Select
+              value={formData.location.language}
+              onValueChange={(value) => handleChange('location', 'language', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {languages.map(language => (
+                  <SelectItem key={language} value={language}>{language}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+
+  const BillingTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <CreditCard className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-semibold">Billing & Payments</h2>
+      </div>
+
+      <Card className="p-6 space-y-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <FileText className="w-5 h-5 text-primary" />
+            <h3 className="font-medium">Billing Address</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <Label htmlFor="addressLine1">Address Line 1 *</Label>
+              <Input
+                id="addressLine1"
+                value={formData.billing.billingAddress.addressLine1}
+                onChange={(e) => handleNestedChange('billing', 'billingAddress', 'addressLine1', e.target.value)}
+                placeholder="123 Main St"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="addressLine2">Address Line 2</Label>
+              <Input
+                id="addressLine2"
+                value={formData.billing.billingAddress.addressLine2}
+                onChange={(e) => handleNestedChange('billing', 'billingAddress', 'addressLine2', e.target.value)}
+                placeholder="Apt 4B"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="billingCity">City *</Label>
+              <Input
+                id="billingCity"
+                value={formData.billing.billingAddress.city}
+                onChange={(e) => handleNestedChange('billing', 'billingAddress', 'city', e.target.value)}
+                placeholder="San Francisco"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="billingState">State *</Label>
+              <Input
+                id="billingState"
+                value={formData.billing.billingAddress.state}
+                onChange={(e) => handleNestedChange('billing', 'billingAddress', 'state', e.target.value)}
+                placeholder="CA"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="zipCode">ZIP/Postal Code *</Label>
+              <Input
+                id="zipCode"
+                value={formData.billing.billingAddress.zipCode}
+                onChange={(e) => handleNestedChange('billing', 'billingAddress', 'zipCode', e.target.value)}
+                placeholder="94105"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="billingCountry">Country *</Label>
+              <Select
+                value={formData.billing.billingAddress.country}
+                onValueChange={(value) => handleNestedChange('billing', 'billingAddress', 'country', value)}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {countries.map(country => (
+                    <SelectItem key={country} value={country}>{country}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="taxId">Tax ID</Label>
+            <Input
+              id="taxId"
+              value={formData.billing.taxId}
+              onChange={(e) => handleChange('billing', 'taxId', e.target.value)}
+              placeholder="123-45-6789"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="invoiceEmail">Invoice Email *</Label>
+            <Input
+              id="invoiceEmail"
+              type="email"
+              value={formData.billing.invoiceEmail}
+              onChange={(e) => handleChange('billing', 'invoiceEmail', e.target.value)}
+              placeholder="billing@acme.com"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="paymentProvider">Payment Provider *</Label>
+            <Select
+              value={formData.billing.paymentProvider}
+              onValueChange={(value) => handleChange('billing', 'paymentProvider', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select provider" />
+              </SelectTrigger>
+              <SelectContent>
+                {paymentProviders.map(provider => (
+                  <SelectItem key={provider} value={provider}>{provider}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="paymentAccountId">Payment Account ID *</Label>
+            <Input
+              id="paymentAccountId"
+              value={formData.billing.paymentAccountId}
+              onChange={(e) => handleChange('billing', 'paymentAccountId', e.target.value)}
+              placeholder="acct_123456789"
+            />
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+
+  const BrandingTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Palette className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-semibold">Branding & Preferences</h2>
+      </div>
+
+      <Card className="p-6 space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <Label htmlFor="brandColor">Brand Color</Label>
+            <div className="flex items-center gap-4">
+              <input
+                type="color"
+                id="brandColor"
+                value={formData.branding.brandColor}
+                onChange={(e) => handleChange('branding', 'brandColor', e.target.value)}
+                className="w-12 h-12 rounded-md cursor-pointer"
+              />
+              <Input
+                value={formData.branding.brandColor}
+                onChange={(e) => handleChange('branding', 'brandColor', e.target.value)}
+                placeholder="#3b82f6"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="logo">Logo URL</Label>
+            <Input
+              id="logo"
+              value={formData.branding.logo}
+              onChange={(e) => handleChange('branding', 'logo', e.target.value)}
+              placeholder="https://acme.com/logo.png"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center gap-3">
+            <Clock className="w-5 h-5 text-primary" />
+            <h3 className="font-medium">Business Hours</h3>
+          </div>
+
+          <div className="space-y-4">
+            {daysOfWeek.map(day => (
+              <div key={day} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <Label className="font-normal">{day}</Label>
+                <Input
+                  type="time"
+                  value={formData.branding.businessHours[day]?.open || ''}
+                  onChange={(e) => handleBusinessHoursChange(day, 'open', e.target.value)}
+                  placeholder="09:00"
+                />
+                <Input
+                  type="time"
+                  value={formData.branding.businessHours[day]?.close || ''}
+                  onChange={(e) => handleBusinessHoursChange(day, 'close', e.target.value)}
+                  placeholder="17:00"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+
+  const ReviewTab = () => (
+    <div className="space-y-6">
+      <div className="flex items-center gap-3">
+        <Check className="w-6 h-6 text-primary" />
+        <h2 className="text-xl font-semibold">Review & Submit</h2>
+      </div>
+
+      <Card className="p-6 space-y-6">
+        <div className="space-y-4">
+          <h3 className="font-medium flex items-center gap-2">
+            <Building2 className="w-5 h-5" />
+            Basic Information
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Organization Name</p>
+              <p>{formData.basicInfo.name || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Business Type</p>
+              <p>{formData.basicInfo.businessType || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Business Email</p>
+              <p>{formData.basicInfo.businessEmail || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Website URL</p>
+              <p>{formData.basicInfo.websiteUrl || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="font-medium flex items-center gap-2">
+            <MapPin className="w-5 h-5" />
+            Location & Locale
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Country</p>
+              <p>{formData.location.country || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">State/Province</p>
+              <p>{formData.location.state || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">City</p>
+              <p>{formData.location.city || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Timezone</p>
+              <p>{formData.location.timezone || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Currency</p>
+              <p>{formData.location.currency || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Language</p>
+              <p>{formData.location.language || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="font-medium flex items-center gap-2">
+            <CreditCard className="w-5 h-5" />
+            Billing & Payments
+          </h3>
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Billing Address</p>
+              <p>
+                {formData.billing.billingAddress.addressLine1 || <span className="text-muted-foreground">Not provided</span>}
+                {formData.billing.billingAddress.addressLine2 && (
+                  <span>, {formData.billing.billingAddress.addressLine2}</span>
+                )}
+              </p>
+              <p>
+                {formData.billing.billingAddress.city && `${formData.billing.billingAddress.city}, `}
+                {formData.billing.billingAddress.state} {formData.billing.billingAddress.zipCode}
+              </p>
+              <p>{formData.billing.billingAddress.country}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm text-muted-foreground">Tax ID</p>
+                <p>{formData.billing.taxId || <span className="text-muted-foreground">Not provided</span>}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Invoice Email</p>
+                <p>{formData.billing.invoiceEmail || <span className="text-muted-foreground">Not provided</span>}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Payment Provider</p>
+                <p>{formData.billing.paymentProvider || <span className="text-muted-foreground">Not provided</span>}</p>
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">Payment Account ID</p>
+                <p>{formData.billing.paymentAccountId || <span className="text-muted-foreground">Not provided</span>}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <h3 className="font-medium flex items-center gap-2">
+            <Palette className="w-5 h-5" />
+            Branding & Preferences
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm text-muted-foreground">Brand Color</p>
+              <div className="flex items-center gap-2">
+                <div
+                  className="w-4 h-4 rounded-full border"
+                  style={{ backgroundColor: formData.branding.brandColor }}
+                />
+                <p>{formData.branding.brandColor}</p>
+              </div>
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">Logo URL</p>
+              <p>{formData.branding.logo || <span className="text-muted-foreground">Not provided</span>}</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="text-sm text-muted-foreground mb-2">Business Hours</p>
+            <div className="space-y-2">
+              {daysOfWeek.map(day => (
+                <div key={day} className="flex items-center gap-4">
+                  <p className="w-24">{day}</p>
+                  <p>
+                    {formData.branding.businessHours[day]?.open
+                      ? `${formData.branding.businessHours[day].open} - ${formData.branding.businessHours[day].close}`
+                      : <span className="text-muted-foreground">Not set</span>}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+
+  const tabs = [
+    { id: 'basic', label: 'Basic Info', icon: <User className="w-4 h-4 mr-2" />, component: <BasicInfoTab /> },
+    { id: 'location', label: 'Location', icon: <MapPin className="w-4 h-4 mr-2" />, component: <LocationTab /> },
+    { id: 'billing', label: 'Billing', icon: <CreditCard className="w-4 h-4 mr-2" />, component: <BillingTab /> },
+    { id: 'branding', label: 'Branding', icon: <Palette className="w-4 h-4 mr-2" />, component: <BrandingTab /> },
+    { id: 'review', label: 'Review', icon: <Check className="w-4 h-4 mr-2" />, component: <ReviewTab /> },
+  ]
 
   return (
-    <div className="w-full flex justify-center dark:bg-gray-900 bg-gray-100 items-center">
-      <div className="w-11/12 lg:w-10/12 mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {successMessage && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6 flex items-start">
-            <div className="flex-shrink-0">
-              <svg
-                className="h-5 w-5 text-green-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+    <div className="w-full p-8 dark:text-white dark:bg-gray-900">
+      <h1 className="text-2xl font-bold mb-4">Organization Setup</h1>
+
+      <div className="space-y-2">
+        <div className="flex justify-between text-sm">
+          <span>Setup Progress</span>
+          <span>{Math.round(progress)}%</span>
+        </div>
+        <Progress value={progress} className="h-2" />
+      </div>
+
+      <div className="mt-4">
+        <Tabs value={currentTab} onValueChange={setCurrentTab}>
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            {tabs.map(tab => (
+              <TabsTrigger
+                key={tab.id}
+                value={tab.id}
+                className="flex items-center justify-center"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-green-800">
-                {successMessage}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Personal Information */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 dark:bg-gray-800 bg-gray-50">
-            <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
-              <FaUser className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-200" />
-              Personal Information
-            </h3>
-          </div>
-          <div className="p-6">
-            <form onSubmit={handlePersonalInfoSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label
-                    htmlFor="firstName"
-                    className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                  >
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.firstName ? "border-red-300" : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 dark:text-gray-200 bg-gray-50 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  {errors.firstName && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertTriangle className="mr-1 h-4 w-4" />
-                      {errors.firstName}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="lastName"
-                    className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                  >
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.lastName ? "border-red-300" : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  {errors.lastName && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertTriangle className="mr-1 h-4 w-4" />
-                      {errors.lastName}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                  >
-                    Email Address
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.email ? "border-red-300" : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  {errors.email && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertTriangle className="mr-1 h-4 w-4" />
-                      {errors.email}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm dark:text-gray-200 font-medium text-gray-700 mb-1"
-                  >
-                    Phone Number
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.phone ? "border-red-300" : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  {errors.phone && (
-                    <p className="mt-1 text-sm text-red-600 flex items-center">
-                      <AlertTriangle className="mr-1 h-4 w-4" />
-                      {errors.phone}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`px-4 py-2 rounded-md text-white ${
-                    isSubmitting
-                      ? "bg-indigo-400"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                >
-                  {isSubmitting ? "Saving..." : "Update Information"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Change Password */}
-        <div className="bg-gray-100 dark:bg-gray-900 rounded-xl shadow-md overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-800">
-            <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
-              <FaLock className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-200" />
-              Change Password
-            </h3>
-          </div>
-          <div className="p-6 bg-white dark:bg-gray-800">
-            <form onSubmit={handlePasswordSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="currentPassword"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                >
-                  Current Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    id="currentPassword"
-                    name="currentPassword"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.currentPassword
-                        ? "border-red-300"
-                        : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {showCurrentPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {errors.currentPassword && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertTriangle className="mr-1 h-4 w-4" />
-                    {errors.currentPassword}
-                  </p>
+                {completedTabs[tab.id] ? (
+                  <Check className="w-4 h-4 mr-2 text-green-500" />
+                ) : (
+                  tab.icon
                 )}
-              </div>
+                <span className='hidden md:flex'>
+                  {tab.label}
+                </span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
 
-              <div>
-                <label
-                  htmlFor="newPassword"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
+          <Card className="p-6">
+            {tabs.map(tab => (
+              <TabsContent key={tab.id} value={tab.id}>
+                {tab.component}
+              </TabsContent>
+            ))}
+
+            <div className="flex justify-between mt-8">
+              <Button
+                variant="outline"
+                onClick={handlePrev}
+                disabled={currentTab === 'basic'}
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Previous
+              </Button>
+              {currentTab !== 'review' ? (
+                <Button onClick={handleNext}>
+                  Next
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <Button
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={handleSubmit}
                 >
-                  New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showNewPassword ? "text" : "password"}
-                    id="newPassword"
-                    name="newPassword"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.newPassword ? "border-red-300" : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {errors.newPassword && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertTriangle className="mr-1 h-4 w-4" />
-                    {errors.newPassword}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="confirmPassword"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1"
-                >
-                  Confirm New Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    className={`block w-full p-2 py-3 border ${
-                      errors.confirmPassword
-                        ? "border-red-300"
-                        : "border-gray-300"
-                    } rounded-sm shadow-sm dark:border-gray-500 bg-gray-50 dark:text-gray-200 dark:bg-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500`}
-                  />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400" />
-                    ) : (
-                      <Eye className="h-5 w-5 text-gray-400" />
-                    )}
-                  </button>
-                </div>
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-600 flex items-center">
-                    <AlertTriangle className="mr-1 h-4 w-4" />
-                    {errors.confirmPassword}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`px-4 py-2 rounded-md text-white ${
-                    isSubmitting
-                      ? "bg-indigo-400"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                >
-                  {isSubmitting ? "Updating..." : "Change Password"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Notification Settings */}
-        <div className="bg-gray-100 dark:bg-gray-900 rounded-xl shadow-md overflow-hidden mb-8">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 bg-gray-50 dark:bg-gray-800">
-            <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
-              <Bell className="mr-2 h-5 w-5 text-gray-500 dark:text-gray-200" />
-              Notification Settings
-            </h3>
-          </div>
-          <div className="p-6 bg-white dark:bg-gray-800">
-            <form onSubmit={handleNotificationsSubmit}>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center">
-                    <Mail className="h-5 w-5 text-gray-500 dark:text-gray-300 mr-3" />
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-200">
-                        Email Notifications
-                      </h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Receive updates via email
-                      </p>
-                    </div>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={formData.notifications.email}
-                      onChange={() => toggleNotification("email")}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center">
-                    <Phone className="h-5 w-5 text-gray-500 dark:text-gray-300 mr-3" />
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-200">
-                        SMS Notifications
-                      </h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Receive updates via text message
-                      </p>
-                    </div>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={formData.notifications.sms}
-                      onChange={() => toggleNotification("sms")}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                  </label>
-                </div>
-
-                <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  <div className="flex items-center">
-                    <Bell className="h-5 w-5 text-gray-500 dark:text-gray-300 mr-3" />
-                    <div>
-                      <h4 className="font-medium text-gray-900 dark:text-gray-200">
-                        App Notifications
-                      </h4>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Receive in-app notifications
-                      </p>
-                    </div>
-                  </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input
-                      type="checkbox"
-                      className="sr-only peer"
-                      checked={formData.notifications.app}
-                      onChange={() => toggleNotification("app")}
-                    />
-                    <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
-                  </label>
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className={`px-4 py-2 rounded-md text-white ${
-                    isSubmitting
-                      ? "bg-indigo-400"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500`}
-                >
-                  {isSubmitting ? "Saving..." : "Save Notification Settings"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Danger Zone */}
-        <div className="bg-gray-100 dark:bg-gray-900 rounded-xl shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-500 bg-red-50 dark:bg-red-900">
-            <h3 className="font-medium text-red-800 dark:text-red-200 flex items-center">
-              <AlertTriangle className="mr-2 h-5 w-5 text-red-600 dark:text-red-400" />
-              Danger Zone
-            </h3>
-          </div>
-          <div className="p-6 bg-white dark:bg-gray-800">
-            <div className="space-y-4">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-red-50 dark:bg-red-900/50 rounded-lg">
-                <div className="mb-3 md:mb-0">
-                  <h4 className="font-medium text-red-800 dark:text-red-200">
-                    Delete Account
-                  </h4>
-                  <p className="text-sm text-red-600 dark:text-red-300">
-                    Permanently delete your account and all associated data.
-                    This action cannot be undone.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={confirmAccountDeletion}
-                  className="px-4 py-2 border border-red-600 text-red-600 dark:border-red-500 dark:text-red-500 rounded-md hover:bg-white dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
-                >
-                  <Trash2 className="inline mr-2 h-4 w-4" />
-                  Delete Account
-                </button>
-              </div>
-
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-red-50 dark:bg-red-900/50 rounded-lg">
-                <div className="mb-3 md:mb-0">
-                  <h4 className="font-medium text-red-800 dark:text-red-200">
-                    Cancel Membership
-                  </h4>
-                  <p className="text-sm text-red-600 dark:text-red-300">
-                    Cancel your premium membership. You'll lose access to
-                    premium features immediately.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={confirmMembershipCancellation}
-                  className="px-4 py-2 border border-red-600 text-red-600 dark:border-red-500 dark:text-red-500 rounded-md hover:bg-white dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
-                >
-                  Cancel Membership
-                </button>
-              </div>
+                  Submit Organization
+                </Button>
+              )}
             </div>
-          </div>
-        </div>
+          </Card>
+        </Tabs>
       </div>
     </div>
-  );
-};
-
-export default TenantSetting;
+  )
+}
