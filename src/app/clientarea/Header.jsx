@@ -686,8 +686,17 @@ const ClientAreaHeader = ({ activeTab }) => {
               </DropdownMenu>
             </div>
           </div>
+
+         
         </div>
       )}
+       <div className='w-full flex justify-center bg-blue-500 items-center text-center'>
+            <span>
+              {tenantOnTrail === 'Active' && (
+                <p>10 Days left on free trail, Upgrade now</p>
+              )}
+            </span>
+          </div>
     </header>
   );
 };
