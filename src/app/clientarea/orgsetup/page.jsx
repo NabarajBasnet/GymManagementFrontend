@@ -1,5 +1,8 @@
 "use client"
 
+import { LiaMoneyBillWaveSolid } from "react-icons/lia";
+import { MdLocationOn } from "react-icons/md";
+import { PiBuildingOfficeBold } from "react-icons/pi";
 import { useForm } from 'react-hook-form'
 import { useState, useEffect } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -108,17 +111,16 @@ export default function OrganizationSetupForm() {
             </div>
 
             <form className="mt-4" onSubmit={handleSubmit(onSubmitData)}>
-                <Tabs value={currentTab} onValueChange={setCurrentTab}>
-                    <TabsList className="grid w-full py-0 grid-cols-4 mb-6 px-0">
-                        <TabsTrigger value={'basic'} className='py-4'>Basic Information</TabsTrigger>
-                        <TabsTrigger value={'location'} className='py-4'>Location & Locale</TabsTrigger>
+                <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full flex">
+                    <TabsList className="w-2/12 mb-6 px-0 flex flex-col items-start">
+                        <TabsTrigger value={'orgsetup'} className='py-4'>Organization Setup</TabsTrigger>
+                        <TabsTrigger value={'view'} className='py-4'>View Organization Details</TabsTrigger>
                         <TabsTrigger value={'billing'} className='py-4'>Billing & Payment</TabsTrigger>
                         <TabsTrigger value={'review'} className='py-4'>Review & Submit</TabsTrigger>
                     </TabsList>
 
-                    <Card className="p-6 dark:bg-gray-800 dark:border-none">
-
-                        <TabsContent value={'basic'}>
+                    <Card className="w-10/12 p-6 dark:bg-gray-800 dark:border-none">
+                        <TabsContent value={'orgsetup'}>
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <Building2 className="w-6 h-6 text-primary" />
@@ -186,9 +188,7 @@ export default function OrganizationSetupForm() {
                                     </div>
                                 </Card>
                             </div>
-                        </TabsContent>
 
-                        <TabsContent value={'location'}>
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <MapPin className="w-6 h-6 text-primary" />
@@ -271,9 +271,7 @@ export default function OrganizationSetupForm() {
                                     </div>
                                 </Card>
                             </div>
-                        </TabsContent>
 
-                        <TabsContent value={'billing'}>
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <CreditCard className="w-6 h-6 text-primary" />
@@ -396,9 +394,7 @@ export default function OrganizationSetupForm() {
                                     </div>
                                 </Card>
                             </div>
-                        </TabsContent>
 
-                        <TabsContent value={'review'}>
                             <div className="space-y-6">
                                 <div className="flex items-center gap-3">
                                     <Check className="w-6 h-6 text-primary" />
@@ -505,31 +501,14 @@ export default function OrganizationSetupForm() {
 
                                 </Card>
                             </div>
-                        </TabsContent>
 
-                        <div className="flex justify-between mt-8">
                             <Button
-                                variant="outline"
-                                onClick={handlePrev}
-                                disabled={currentTab === 'basic'}
+                                className="bg-green-600 hover:bg-green-700"
+                                type='submit'
                             >
-                                <ArrowLeft className="w-4 h-4 mr-2" />
-                                Previous
+                                Submit Organization
                             </Button>
-                            {currentTab !== 'review' ? (
-                                <Button onClick={handleNext}>
-                                    Next
-                                    <ArrowRight className="w-4 h-4 ml-2" />
-                                </Button>
-                            ) : (
-                                <Button
-                                    className="bg-green-600 hover:bg-green-700"
-                                    type='submit'
-                                >
-                                    Submit Organization
-                                </Button>
-                            )}
-                        </div>
+                        </TabsContent>
                     </Card>
                 </Tabs>
             </form>

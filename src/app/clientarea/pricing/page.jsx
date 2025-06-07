@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertTriangle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   AlertDialog,
@@ -84,7 +85,7 @@ const TenantSubscriptionPlansManagement = () => {
         setResBody(responseBody);
       };
       if (response.ok) {
-        toast.success(responseBody.message);
+        // toast.success(responseBody.message);
         sonnertoast.success(responseBody.message)
         // Invalidate cart query to refresh cart data
         queryClient.invalidateQueries(["cart"]);
@@ -103,16 +104,29 @@ const TenantSubscriptionPlansManagement = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <AlertDialog open={orgSetupDialog} onOpenChange={setOrgSetupDialog}>
-        <AlertDialogContent className='bg-blue-500 text-white dark:border-none'>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Important details must be completed</AlertDialogTitle>
-            <AlertDialogDescription className='text-white'>
-              {resBody?.message}
-            </AlertDialogDescription>
+        <AlertDialogContent className="bg-white dark:bg-blue-950 border-none rounded-xl shadow-xl max-w-md text-gray-900 dark:text-white">
+          <AlertDialogHeader className="flex items-start gap-3">
+            <AlertTriangle className="text-yellow-500 w-6 h-6 mt-1" />
+            <div>
+              <AlertDialogTitle className="text-lg font-semibold">
+                Complete Your Organization Setup
+              </AlertDialogTitle>
+              <AlertDialogDescription className="text-sm mt-1 text-gray-600 dark:text-gray-300">
+                {resBody?.message || "To access all features and start managing your gym efficiently, please complete the remaining onboarding steps."}
+              </AlertDialogDescription>
+            </div>
           </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => router.push(resBody?.redirect)}>Continue</AlertDialogAction>
+
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogCancel className="bg-gray-100 text-gray-700 dark:border-none hover:bg-gray-200 dark:bg-blue-900 dark:text-white">
+              Not Now
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => router.push(resBody?.redirect)}
+              className="bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Complete Setup
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
