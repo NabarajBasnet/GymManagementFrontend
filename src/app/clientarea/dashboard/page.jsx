@@ -1,5 +1,6 @@
 "use client";
 
+import { IoIosClose } from "react-icons/io";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -64,6 +65,16 @@ const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
+
+  let [organizationDetailsSetupCompleted, setOrganizationDetailsSetupCompleted] = useState(false);
+
+  useEffect(() => {
+    if (loggedInTenant?.onboardingCompleted !== undefined) {
+      setOrganizationDetailsSetupCompleted(loggedInTenant?.onboardingCompleted);
+    }
+  }, [loggedInTenant]);
+
+  console.log(organizationDetailsSetupCompleted);
 
   const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] =
     useState(false);
@@ -161,6 +172,28 @@ const TenantDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {!organizationDetailsSetupCompleted && (
+        <div className="fixed bottom-20 left-1/2 transform z-50 -translate-x-1/2 w-full max-w-xl px-4">
+          <div className="bg-red-600 text-white shadow-xl rounded-2xl flex items-center justify-between px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-medium">
+                🚀 Complete your organization setup to unlock full features.
+              </span>
+              <button
+                onClick={() => router.push("/clientarea/settings")}
+                className="underline hover:text-blue-200 text-sm font-medium transition"
+              >
+                Go to Settings
+              </button>
+            </div>
+            <IoIosClose
+              className="w-4 h-4 cursor-pointer text-white"
+              onClick={() => setOrganizationDetailsSetupCompleted(true)}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.1),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)]" />
