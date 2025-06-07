@@ -1,5 +1,7 @@
 "use client";
 
+import { toast as hotToast } from "react-hot-toast";
+import { toast as sonnerToast } from "sonner";
 import { MdSettings } from "react-icons/md";
 import { FaMoneyBillWave } from "react-icons/fa";
 import { PiCardsThreeFill } from "react-icons/pi";
@@ -38,17 +40,16 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 const TenantSetting = () => {
   const tenant = useTenant();
   const loggedInTenant = tenant?.tenant?.tenant;
-  console.log("Logged In Tenant: ", loggedInTenant);
 
   // Populate Data
-  useEffect(()=>{
+  useEffect(() => {
     reset({
-      fullName:loggedInTenant?.fullName,
-      address:loggedInTenant?.address,
-      email:loggedInTenant?.email,
-      phone:loggedInTenant?.phone,
+      fullName: loggedInTenant?.fullName,
+      address: loggedInTenant?.address,
+      email: loggedInTenant?.email,
+      phone: loggedInTenant?.phone,
     })
-  },[loggedInTenant]);
+  }, [loggedInTenant]);
 
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -213,6 +214,34 @@ const TenantSetting = () => {
     };
   };
 
+
+  // Change basic details
+  const changePersonalDetails = async (data) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tenant/change-personal-details`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+      const responseBody = await response.json();
+      console.log("Response body: ", responseBody);
+      if (response.ok) {
+        sonnerToast.success(responseBody.message)
+        hotToast.success(responseBody.message)
+      } else {
+        sonnerToast.error(responseBody.message)
+        hotToast.error(responseBody.message)
+      }
+      console.log("Data: ", data);
+    } catch (error) {
+      console.log("Error: ", error);
+      sonnerToast.error(error.message)
+      hotToast.error(error.message)
+    };
+  };
+
   return (
     <div className="w-full flex justify-center dark:bg-gray-900 bg-gray-100 items-center">
       <div className="w-full py-4 px-8">
@@ -254,7 +283,7 @@ const TenantSetting = () => {
                     </h3>
                   </div>
                   <div className="p-6">
-                    <form onSubmit={handlePersonalInfoSubmit}>
+                    <form onSubmit={handleSubmit(changePersonalDetails)}>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                           <label
