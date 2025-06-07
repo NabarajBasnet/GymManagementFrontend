@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
 import { MdSettings } from "react-icons/md";
@@ -63,6 +73,11 @@ const TenantSetting = () => {
       [type]: !prev[type]
     }));
   };
+
+  // State for dialogs
+  const [showDeleteRequestDialog, setShowDeleteRequestDialog] = useState(false);
+  const [showCancelMembershipDialog, setShowCancelMembershipDialog] = useState(false);
+  const [submitting, setIsSubmitting] = useState(false);
 
   // Populate Data
   useEffect(() => {
@@ -201,6 +216,51 @@ const TenantSetting = () => {
     }
   };
 
+  // Handle delete account request
+  const requestAccountDeletion = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/account/request-deletion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        sonnerToast.success("Deletion request submitted. Our team will contact you shortly.");
+      } else {
+        throw new Error("Failed to submit deletion request");
+      }
+    } catch (error) {
+      sonnerToast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+      setShowDeleteRequestDialog(false);
+    }
+  };
+
+  // Handle membership cancellation
+  const cancelMembership = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/membership/cancel', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include'
+      });
+
+      if (response.ok) {
+        sonnerToast.success("Membership cancelled successfully");
+      } else {
+        throw new Error("Failed to cancel membership");
+      }
+    } catch (error) {
+      sonnerToast.error(error.message);
+    } finally {
+      setIsSubmitting(false);
+      setShowCancelMembershipDialog(false);
+    }
+  };
 
   return (
     <div className="w-full flex justify-center dark:bg-gray-900 bg-gray-100 items-center">
@@ -600,39 +660,39 @@ const TenantSetting = () => {
                   </div>
                   <div className="p-6 bg-white dark:bg-gray-800">
                     <div className="space-y-4">
+                      {/* Delete Account Request */}
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-red-50 dark:bg-red-900/50 rounded-lg">
                         <div className="mb-3 md:mb-0">
                           <h4 className="font-medium text-red-800 dark:text-red-200">
-                            Delete Account
+                            Request Account Deletion
                           </h4>
                           <p className="text-sm text-red-600 dark:text-red-300">
-                            Permanently delete your account and all associated data.
-                            This action cannot be undone.
+                            Submit a request to permanently delete your account and all associated data.
                           </p>
                         </div>
                         <button
                           type="button"
-                          onClick={confirmAccountDeletion}
+                          onClick={() => setShowDeleteRequestDialog(true)}
                           className="px-4 py-2 border border-red-600 text-red-600 dark:border-red-500 dark:text-red-500 rounded-md hover:bg-white dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
                         >
                           <Trash2 className="inline mr-2 h-4 w-4" />
-                          Delete Account
+                          Request Deletion
                         </button>
                       </div>
 
+                      {/* Cancel Membership */}
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-red-50 dark:bg-red-900/50 rounded-lg">
                         <div className="mb-3 md:mb-0">
                           <h4 className="font-medium text-red-800 dark:text-red-200">
                             Cancel Membership
                           </h4>
                           <p className="text-sm text-red-600 dark:text-red-300">
-                            Cancel your premium membership. You'll lose access to
-                            premium features immediately.
+                            Immediately cancel your premium membership and lose access to all premium features.
                           </p>
                         </div>
                         <button
                           type="button"
-                          onClick={confirmMembershipCancellation}
+                          onClick={() => setShowCancelMembershipDialog(true)}
                           className="px-4 py-2 border border-red-600 text-red-600 dark:border-red-500 dark:text-red-500 rounded-md hover:bg-white dark:hover:bg-gray-700 transition-colors whitespace-nowrap"
                         >
                           Cancel Membership
@@ -641,6 +701,154 @@ const TenantSetting = () => {
                     </div>
                   </div>
                 </div>
+
+                {/* Delete Account Request Dialog */}
+                <AlertDialog open={showDeleteRequestDialog} onOpenChange={setShowDeleteRequestDialog}>
+                  <AlertDialogContent className="max-w-md rounded-xl border-0 bg-gradient-to-br from-white to-gray-50 shadow-xl dark:from-gray-900 dark:to-gray-800 dark:border dark:border-gray-700">
+                    <AlertDialogHeader className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-full bg-red-100 p-2 dark:bg-red-900/30">
+                          <Trash2 className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                          Request Account Deletion
+                        </AlertDialogTitle>
+                      </div>
+
+                      <AlertDialogDescription className="space-y-4 text-gray-600 dark:text-gray-300">
+                        <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+                          <p className="font-medium text-red-600 dark:text-red-400">
+                            ⚠️ This action cannot be undone
+                          </p>
+                        </div>
+
+                        <ul className="space-y-3">
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>All data including member records, payments, and settings will be <span className="font-semibold text-red-600 dark:text-red-400">permanently deleted</span></span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>Your gym locations and staff accounts will be <span className="font-semibold">affected</span></span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>Process may take <span className="font-semibold">up to 7 business days</span></span>
+                          </li>
+                        </ul>
+
+                        <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+                          <p className="flex items-start gap-2 text-blue-600 dark:text-blue-300">
+                            <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                            <span>Our support team will contact you to confirm this request</span>
+                          </p>
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter className="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                      <AlertDialogCancel className="mt-0 rounded-lg border-gray-300 bg-transparent px-4 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                        Cancel
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={requestAccountDeletion}
+                        className="rounded-lg bg-gradient-to-r from-red-600 to-red-500 px-4 py-2 text-white shadow-md hover:from-red-700 hover:to-red-600 focus-visible:ring-red-500 dark:from-red-700 dark:to-red-600 dark:hover:from-red-800 dark:hover:to-red-700"
+                        disabled={submitting}
+                      >
+                        {submitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Submitting...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            <Trash2 className="h-4 w-4" />
+                            Request Deletion
+                          </span>
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+
+                {/* Cancel Membership Dialog */}
+                <AlertDialog open={showCancelMembershipDialog} onOpenChange={setShowCancelMembershipDialog}>
+                  <AlertDialogContent className="max-w-md rounded-xl border-0 bg-gradient-to-br from-white to-gray-50 shadow-xl dark:from-gray-900 dark:to-gray-800 dark:border dark:border-gray-700">
+                    <AlertDialogHeader className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="rounded-full bg-red-100 p-2 dark:bg-red-900/30">
+                          <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                        </div>
+                        <AlertDialogTitle className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                          Cancel Membership
+                        </AlertDialogTitle>
+                      </div>
+
+                      <AlertDialogDescription className="space-y-4 text-gray-600 dark:text-gray-300">
+                        <div className="rounded-lg bg-red-50 p-4 dark:bg-red-900/20">
+                          <p className="font-medium text-red-600 dark:text-red-400">
+                            ⚠️ WARNING: This action has immediate effect!
+                          </p>
+                        </div>
+
+                        <ul className="space-y-3">
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>All premium features will be <span className="font-semibold text-red-600 dark:text-red-400">disabled immediately</span></span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>Your billing cycle will <span className="font-semibold">end today</span></span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>No refunds for current billing period</span>
+                          </li>
+                          <li className="flex items-start gap-2">
+                            <span className="mt-0.5 flex-shrink-0 text-red-500 dark:text-red-400">•</span>
+                            <span>Member access to premium features revoked</span>
+                          </li>
+                        </ul>
+
+                        <div className="rounded-lg bg-amber-50 p-4 dark:bg-amber-900/20">
+                          <p className="flex items-start gap-2 text-amber-600 dark:text-amber-300">
+                            <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
+                            <span>Consider downgrading instead to retain basic functionality</span>
+                          </p>
+                        </div>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+
+                    <AlertDialogFooter className="mt-4 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                      <AlertDialogCancel className="mt-0 rounded-lg border-gray-300 bg-transparent px-4 py-2 text-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700">
+                        Go Back
+                      </AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={cancelMembership}
+                        className="rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 px-4 py-2 text-white shadow-md hover:from-amber-700 hover:to-amber-600 focus-visible:ring-amber-500 dark:from-amber-700 dark:to-amber-600 dark:hover:from-amber-800 dark:hover:to-amber-700"
+                        disabled={submitting}
+                      >
+                        {submitting ? (
+                          <span className="flex items-center gap-2">
+                            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4" />
+                            Cancel Membership
+                          </span>
+                        )}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </div>
             </TabsContent>
 
