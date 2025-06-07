@@ -40,6 +40,7 @@ import {
   Mail,
   Phone,
   Trash2,
+  ChevronRight
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Label } from "@/components/ui/label"
@@ -254,31 +255,66 @@ const TenantSetting = () => {
   };
 
   return (
-    <div className="w-full flex justify-center dark:bg-gray-900 bg-gray-100 items-center">
-      <div className="w-full py-4 px-8">
-        <div className="flex items-center space-x-4 mx-2">
-          <MdSettings className="w-10 h-10 dark:text-white" />
-          <h1 className="text-3xl font-bold dark:text-white">Settings</h1>
+    <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Header Section */}
+        <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-4">
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+              <MdSettings className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                Account Settings
+              </h1>
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Portal
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Client Area
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="text-blue-600 dark:text-blue-400 font-medium">
+                  Settings
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="dark:text-white text-sm flex space-x-4 font-medium mt-4 mx-2">
-          <span>
-            Portal /
-          </span>
 
-          <span>
-            Client Area /
-          </span>
-          <span className="text-blue-600">
-            Settings
-          </span>
-        </div>
-
-        <Tabs defaultValue='accountdetails' className="w-full items-start">
-          <TabsList className="w-full px-0 bg-transparent items-start">
-            <TabsTrigger value='accountdetails' className='py-4 data-[state=active]:shadow-none data-[state=active]:bg-transparent'><RiUserSettingsFill className='w-5 h-5 mr-2' />Personal Details</TabsTrigger>
-            <TabsTrigger value='orgsetup' className='py-4 data-[state=active]:shadow-none data-[state=active]:bg-transparent'><FaBuilding className='w-5 h-5 mr-2' /> Organization Details</TabsTrigger>
-            <TabsTrigger value='cards' className='py-4 data-[state=active]:shadow-none data-[state=active]:bg-transparent'><PiCardsThreeFill className='w-5 h-5 mr-2' />Cards</TabsTrigger>
-            <TabsTrigger value='billing' className='py-4 data-[state=active]:shadow-none data-[state=active]:bg-transparent'><FaMoneyBillWave className='w-5 h-5 mr-2' />Billing & Payment</TabsTrigger>
+        {/* Tabs Section */}
+        <Tabs defaultValue="accountdetails" className="w-full mt-6">
+          <TabsList className="w-full flex justify-center gap-1 p-1 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+            <TabsTrigger
+              value="accountdetails"
+              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+            >
+              <RiUserSettingsFill className="w-5 h-5 mr-2" />
+              <span>Personal Details</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="orgsetup"
+              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+            >
+              <FaBuilding className="w-5 h-5 mr-2" />
+              <span>Organization</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="cards"
+              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+            >
+              <PiCardsThreeFill className="w-5 h-5 mr-2" />
+              <span>Payment Cards</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="billing"
+              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+            >
+              <FaMoneyBillWave className="w-5 h-5 mr-2" />
+              <span>Billing</span>
+            </TabsTrigger>
           </TabsList>
 
           <Card className="w-full p-3 md:p-6 dark:bg-gray-800 dark:border-none">
