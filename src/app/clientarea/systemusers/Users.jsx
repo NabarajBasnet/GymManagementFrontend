@@ -74,16 +74,29 @@ const Users = () => {
   const subscriptionFeatures = loggedInTenant?.subscription?.subscriptionFeatures || [];
 
   // Check if multi-branch feature is enabled
-  const hasMultiBranchSupport =
-    isOnFreeTrial || // Free trial gets all features
-    (hasSubscription && subscriptionFeatures.includes("Multi Branch Support"));
+  const multiBranchSupport = subscriptionFeatures?.includes("Multi Branch Support");
 
   // Get branches only if multi-branch is supported
-  const branches = hasMultiBranchSupport ? loggedInTenant?.organizationBranch || [] : [];
+  const getOrganizationBranch = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log('Error: ', error)
+    }
+  }
+
+  const { data: branchDetails, isLoading: isBranchLoading, refetch } = useQuery({
+    queryKey: ['organizationbranches'],
+    queryFn: getOrganizationBranch,
+  })
+
+  const { branches } = branchDetails || {};
 
   const getBranchName = (branchId) => {
-    if (!hasMultiBranchSupport) return "N/A";
-    const branch = branches.find((branch) => branch._id.toString() === branchId.toString());
+    if (!multiBranchSupport && !isOnFreeTrial) return "N/A";
+    const branch = branches.find((branch) => branch?._id.toString() === branchId.toString());
     return branch?.orgBranchName || "Unassigned";
   };
 
@@ -144,12 +157,11 @@ const Users = () => {
         toast.error(responseBody.message);
       }
       if (response.status === 200 && response.ok) {
-        soonerToast.success(responseBody.message);
         reset({
           firstName: responseBody.user.firstName,
           lastName: responseBody.user.lastName,
           role: responseBody.user.role,
-          companyBranch: responseBody.user.companyBranch,
+          orgBranch: responseBody.user.orgBranch,
           status: responseBody.user.status,
           email: responseBody.user.email,
           phoneNumber: responseBody.user.phoneNumber,
@@ -162,7 +174,7 @@ const Users = () => {
       }
       return responseBody;
     } catch (error) {
-      toast.error(error);
+      toast.error(error.message);
       console.log("Error: ", error);
     }
   };
@@ -177,7 +189,7 @@ const Users = () => {
         phoneNumber,
         dob,
         address,
-        companyBranch: hasMultiBranchSupport ? userBranch : undefined,
+        orgBranch: !isOnFreeTrial && !multiBranchSupport ? undefined : userBranch,
         role,
         status,
       };
@@ -475,11 +487,11 @@ const Users = () => {
                           </div>
                         </div>
 
-                        {hasMultiBranchSupport || isOnFreeTrial && (
+                        {multiBranchSupport || isOnFreeTrial && (
                           <div>
                             <Label className="dark:text-gray-200">Branch</Label>
                             <Controller
-                              name="companyBranch"
+                              name="orgBranch"
                               control={control}
                               render={({ field }) => (
                                 <Select
@@ -498,7 +510,7 @@ const Users = () => {
                                         key={branch._id}
                                         value={branch._id}
                                       >
-                                        {branch.gymBranchName}
+                                        {branch.orgBranchName}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>
@@ -628,7 +640,7 @@ const Users = () => {
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Role
                       </TableHead>
-                      {hasMultiBranchSupport && (
+                      {multiBranchSupport || isOnFreeTrial && (
                         <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Branch
                         </TableHead>
@@ -652,7 +664,7 @@ const Users = () => {
                   </TableHeader>
                   <TableBody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     {Array.isArray(users) && users.length > 0 ? (
-                      users.map((user) => (
+                      users?.map((user) => (
                         <TableRow
                           key={user._id}
                           className="hover:bg-gray-50 dark:hover:bg-gray-700"
@@ -678,10 +690,10 @@ const Users = () => {
                               {user.role}
                             </div>
                           </TableCell>
-                          {hasMultiBranchSupport && (
+                          {multiBranchSupport || isOnFreeTrial && (
                             <TableCell className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900 dark:text-gray-100">
-                                {getBranchName(user.companyBranch?._id)}
+                                {getBranchName(user.organizationBranch?._id)}
                               </div>
                             </TableCell>
                           )}
@@ -768,7 +780,7 @@ const Users = () => {
                     ) : (
                       <TableRow>
                         <TableCell
-                          colSpan={hasMultiBranchSupport ? 8 : 7}
+                          colSpan={multiBranchSupport || isOnFreeTrial ? 8 : 7}
                           className="px-6 py-4 text-center"
                         >
                           <div className="text-gray-500 py-8">
