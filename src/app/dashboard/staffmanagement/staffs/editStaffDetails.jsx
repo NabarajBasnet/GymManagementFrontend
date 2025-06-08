@@ -1,15 +1,6 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from "@/components/ui/select";
 import { MdContactEmergency } from "react-icons/md";
 import { MdSecurity } from "react-icons/md";
 import { TbListDetails } from "react-icons/tb";
@@ -46,41 +37,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
   ]);
   const numberOfShifts = watch("numberOfShifts") || 1;
   const { user, loading } = useUser();
-
-  const checkMultiBranchSupport = user?.user?.companyBranch;
-  const [selectedBranch, setSelectedBranch] = useState("");
-  const [currentStaffBranch, setCurrentStaffBranch] = useState(null);
-
-  const getUserRelatedBranch = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
-      );
-      const responseBody = await response.json();
-      return responseBody;
-    } catch (error) {
-      console.log("Error: ", error);
-      toastMessage.error(error.message);
-    }
-  };
-
-  const { data: userRelatedBranch } = useQuery({
-    queryKey: ["userRelatedBranch"],
-    queryFn: getUserRelatedBranch,
-    enabled: !!user?.user?.company?._id,
-  });
-
-  const { branches } = userRelatedBranch || {};
-
-  useEffect(() => {
-    if (staff?.staff?.organizationBranch) {
-      const branchName = branches.find(
-        (branch) =>
-          branch?._id?.toString() === staff.staff.organizationBranch.toString()
-      );
-      setCurrentStaffBranch(branchName?.gymBranchName);
-    }
-  }, [staff, branches]);
 
   // Populate staff details
   useEffect(() => {
@@ -282,9 +238,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     };
 
     // Add selectedBranch conditionally
-    if (checkMultiBranchSupport) {
-      finalData.selectedBranch = selectedBranch;
-    }
 
     try {
       const url = `http://localhost:3000/api/staffsmanagement/changedetails/${staff.staff._id}`;
@@ -350,9 +303,8 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                         <div
                           onClick={() => setCurrentStep(idx + 1)}
                           key={idx}
-                          className={`flex items-center cursor-pointer ${
-                            idx + 1 <= currentStep ? "text-indigo-600" : ""
-                          }`}
+                          className={`flex items-center cursor-pointer ${idx + 1 <= currentStep ? "text-indigo-600" : ""
+                            }`}
                         >
                           <CheckCircle2 size={16} className="mr-1" />
                           Step {idx + 1}
@@ -825,38 +777,6 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                             )}
                           </div>
 
-                          {checkMultiBranchSupport && (
-                            <div>
-                              <Label className="dark:text-white">Branch</Label>
-                              <Select
-                                onValueChange={(value) =>
-                                  setSelectedBranch(value)
-                                }
-                              >
-                                <SelectTrigger className="w-full py-6 dark:border-none rounded-sm dark:bg-gray-800 dark:text-white">
-                                  <SelectValue
-                                    placeholder={
-                                      currentStaffBranch || "Select Branch"
-                                    }
-                                  />
-                                </SelectTrigger>
-                                <SelectContent className="w-full dark:border-none rounded-sm dark:bg-gray-800 dark:text-white">
-                                  <SelectGroup>
-                                    <SelectLabel>Branches</SelectLabel>
-                                    {branches?.map((branch) => (
-                                      <SelectItem
-                                        className="cursor-pointer hover:bg-blue-600"
-                                        value={branch._id}
-                                        key={branch._id}
-                                      >
-                                        {branch.gymBranchName}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectGroup>
-                                </SelectContent>
-                              </Select>
-                            </div>
-                          )}
                         </div>
 
                         {/* Dynamic Shifts Section */}
@@ -1224,11 +1144,10 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                     disabled={currentStep === 1}
                     type="button"
                     className={`flex items-center px-4 py-2 dark:text-white rounded-sm transition-colors duration-100 
-                                                            ${
-                                                              currentStep === 1
-                                                                ? "cursor-not-allowed text-gray-400"
-                                                                : "cursor-pointer hover:bg-gray-100 text-black"
-                                                            }`}
+                                                            ${currentStep === 1
+                        ? "cursor-not-allowed text-gray-400"
+                        : "cursor-pointer hover:bg-gray-100 text-black"
+                      }`}
                   >
                     <ChevronLeft />
                     Previous

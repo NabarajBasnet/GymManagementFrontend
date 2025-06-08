@@ -3,15 +3,6 @@
 import { AiOutlineHome } from "react-icons/ai";
 import { Badge } from "@/components/ui/badge";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-  SelectGroup,
-  SelectLabel,
-} from "@/components/ui/select";
-import {
   Breadcrumb,
   BreadcrumbEllipsis,
   BreadcrumbItem,
@@ -72,14 +63,13 @@ import * as React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { PlusCircle } from "lucide-react";
-import { TiUserAdd } from "react-icons/ti";
 import Loader from "@/components/Loader/Loader.jsx";
 import { useRouter } from "next/navigation.js";
 import { useEffect } from "react";
 import EditStaffDetails from "./editStaffDetails";
 
 const StaffManagement = () => {
- 
+
   const {
     register,
     reset,
@@ -161,8 +151,6 @@ const StaffManagement = () => {
   };
 
   const { user, loading } = useUser();
-  const checkMultiBranchSupport = user?.user?.companyBranch;
-  const [selectedBranch, setSelectedBranch] = useState("");
   const router = useRouter();
 
   // States
@@ -194,35 +182,6 @@ const StaffManagement = () => {
     if (currentStep > 1) {
       setCurrentStep((prev) => prev - 1);
     }
-  };
-
-  const getUserRelatedBranch = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/gymbranch/tenant/${user?.user?.company?._id}`
-      );
-      const responseBody = await response.json();
-      return responseBody;
-    } catch (error) {
-      console.log("Error: ", error);
-      toastMessage.error(error.message);
-    }
-  };
-
-  const { data: userRelatedBranch } = useQuery({
-    queryKey: ["userRelatedBranch"],
-    queryFn: getUserRelatedBranch,
-    enabled: !!user?.user?.company?._id,
-  });
-
-  const { branches } = userRelatedBranch || {};
-
-  // Get branch name
-  const getBranchName = (staffId) => {
-    const branch = branches.find((branch) =>
-      branch.gymBranchStaffs?.includes(staffId)
-    );
-    return branch?.gymBranchName || "N/A";
   };
 
   const getBadge = (status) => {
@@ -354,7 +313,6 @@ const StaffManagement = () => {
       emergencyContactName,
       emergencyContactNo,
       relationship,
-      selectedBranch,
     };
 
     try {
@@ -712,11 +670,6 @@ const StaffManagement = () => {
                                           <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
                                             Contact Info
                                           </TableHead>
-                                          {branches && (
-                                            <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
-                                              Branch
-                                            </TableHead>
-                                          )}
                                           <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
                                             Address
                                           </TableHead>
@@ -736,7 +689,7 @@ const StaffManagement = () => {
                                             Role
                                           </TableHead>
                                           {user &&
-                                          user.user.role === "Gym Admin" ? (
+                                            user.user.role === "Gym Admin" ? (
                                             <></>
                                           ) : (
                                             <TableHead className="text-gray-700 dark:text-gray-300 font-semibold py-4 text-center">
@@ -747,7 +700,7 @@ const StaffManagement = () => {
                                       </TableHeader>
                                       <TableBody>
                                         {Array.isArray(staffs) &&
-                                        staffs.length > 0 ? (
+                                          staffs.length > 0 ? (
                                           staffs?.map((staff, index) => (
                                             <TableRow
                                               key={staff._id}
@@ -812,13 +765,6 @@ const StaffManagement = () => {
                                                   </div>
                                                 </div>
                                               </TableCell>
-                                              {branches && (
-                                                <TableCell className="py-4 text-center">
-                                                  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                                                    {getBranchName(staff._id)}
-                                                  </span>
-                                                </TableCell>
-                                              )}
                                               <TableCell className="py-4 text-center">
                                                 <button
                                                   onClick={() =>
@@ -883,7 +829,7 @@ const StaffManagement = () => {
                                               <TableCell className="py-4">
                                                 <div className="flex items-center justify-center gap-2">
                                                   {user &&
-                                                  user.user.role ===
+                                                    user.user.role ===
                                                     "Gym Admin" ? (
                                                     <></>
                                                   ) : (
@@ -976,7 +922,7 @@ const StaffManagement = () => {
                                           <TableCell
                                             colSpan={
                                               user &&
-                                              user.user.role === "Gym Admin"
+                                                user.user.role === "Gym Admin"
                                                 ? 10
                                                 : 11
                                             }
@@ -1434,17 +1380,17 @@ const StaffManagement = () => {
                                         Duration:{" "}
                                         {shift.checkIn && shift.checkOut
                                           ? (() => {
-                                              const start = new Date(
-                                                `2000-01-01T${shift.checkIn}`
-                                              );
-                                              const end = new Date(
-                                                `2000-01-01T${shift.checkOut}`
-                                              );
-                                              const diff =
-                                                (end - start) /
-                                                (1000 * 60 * 60);
-                                              return `${diff} hours`;
-                                            })()
+                                            const start = new Date(
+                                              `2000-01-01T${shift.checkIn}`
+                                            );
+                                            const end = new Date(
+                                              `2000-01-01T${shift.checkOut}`
+                                            );
+                                            const diff =
+                                              (end - start) /
+                                              (1000 * 60 * 60);
+                                            return `${diff} hours`;
+                                          })()
                                           : "Not calculated"}
                                       </span>
                                       <div className="flex items-center gap-2">
@@ -1510,9 +1456,8 @@ const StaffManagement = () => {
                                       <div
                                         className="h-full bg-indigo-600 rounded-full transition-all duration-300"
                                         style={{
-                                          width: `${
-                                            (currentStep / totalSteps) * 100
-                                          }%`,
+                                          width: `${(currentStep / totalSteps) * 100
+                                            }%`,
                                         }}
                                       />
                                     </div>
@@ -1524,11 +1469,10 @@ const StaffManagement = () => {
                                               setCurrentStep(idx + 1)
                                             }
                                             key={idx}
-                                            className={`flex items-center cursor-pointer ${
-                                              idx + 1 <= currentStep
-                                                ? "text-black dark:text-white"
-                                                : ""
-                                            }`}
+                                            className={`flex items-center cursor-pointer ${idx + 1 <= currentStep
+                                              ? "text-black dark:text-white"
+                                              : ""
+                                              }`}
                                           >
                                             <CheckCircle2
                                               size={16}
@@ -1729,13 +1673,13 @@ const StaffManagement = () => {
                                                 />
                                                 {errors.currentAddress
                                                   ?.street && (
-                                                  <p className="text-red-600 font-semibold text-sm">
-                                                    {
-                                                      errors.currentAddress
-                                                        .street.message
-                                                    }
-                                                  </p>
-                                                )}
+                                                    <p className="text-red-600 font-semibold text-sm">
+                                                      {
+                                                        errors.currentAddress
+                                                          .street.message
+                                                      }
+                                                    </p>
+                                                  )}
                                               </div>
                                               <div>
                                                 <Label>City</Label>
@@ -2054,37 +1998,6 @@ const StaffManagement = () => {
                                               </p>
                                             )}
                                           </div>
-
-                                          {checkMultiBranchSupport && (
-                                            <div>
-                                              <Label>Branch</Label>
-                                              <Select
-                                                onValueChange={(value) =>
-                                                  setSelectedBranch(value)
-                                                }
-                                              >
-                                                <SelectTrigger className="w-full dark:border-none py-6 dark:bg-gray-800 rounded-sm">
-                                                  <SelectValue placeholder="Select Branch" />
-                                                </SelectTrigger>
-                                                <SelectContent className="dark:bg-gray-800 rounded-sm dark:border-none">
-                                                  <SelectGroup>
-                                                    <SelectLabel>
-                                                      Branches
-                                                    </SelectLabel>
-                                                    {branches?.map((branch) => (
-                                                      <SelectItem
-                                                        className="hover:cursor-pointer hover:bg-blue-600"
-                                                        value={branch._id}
-                                                        key={branch._id}
-                                                      >
-                                                        {branch.gymBranchName}
-                                                      </SelectItem>
-                                                    ))}
-                                                  </SelectGroup>
-                                                </SelectContent>
-                                              </Select>
-                                            </div>
-                                          )}
                                         </div>
 
                                         {/* Dynamic Shifts Section */}
@@ -2111,9 +2024,8 @@ const StaffManagement = () => {
                                                   <div>
                                                     <Label>Shift Role</Label>
                                                     <Controller
-                                                      name={`shift_${
-                                                        index + 1
-                                                      }_role`}
+                                                      name={`shift_${index + 1
+                                                        }_role`}
                                                       control={control}
                                                       defaultValue={shift.role}
                                                       render={({ field }) => (
@@ -2169,24 +2081,22 @@ const StaffManagement = () => {
                                                     {errors[
                                                       `shift_${index + 1}_role`
                                                     ] && (
-                                                      <p className="text-red-600 font-semibold text-sm">
-                                                        {
-                                                          errors[
-                                                            `shift_${
-                                                              index + 1
-                                                            }_role`
-                                                          ].message
-                                                        }
-                                                      </p>
-                                                    )}
+                                                        <p className="text-red-600 font-semibold text-sm">
+                                                          {
+                                                            errors[
+                                                              `shift_${index + 1
+                                                              }_role`
+                                                            ].message
+                                                          }
+                                                        </p>
+                                                      )}
                                                   </div>
 
                                                   <div>
                                                     <Label>Shift Type</Label>
                                                     <Controller
-                                                      name={`shift_${
-                                                        index + 1
-                                                      }_type`}
+                                                      name={`shift_${index + 1
+                                                        }_type`}
                                                       control={control}
                                                       defaultValue={shift.type}
                                                       render={({ field }) => (
@@ -2224,24 +2134,22 @@ const StaffManagement = () => {
                                                     {errors[
                                                       `shift_${index + 1}_type`
                                                     ] && (
-                                                      <p className="text-red-600 font-semibold text-sm">
-                                                        {
-                                                          errors[
-                                                            `shift_${
-                                                              index + 1
-                                                            }_type`
-                                                          ].message
-                                                        }
-                                                      </p>
-                                                    )}
+                                                        <p className="text-red-600 font-semibold text-sm">
+                                                          {
+                                                            errors[
+                                                              `shift_${index + 1
+                                                              }_type`
+                                                            ].message
+                                                          }
+                                                        </p>
+                                                      )}
                                                   </div>
 
                                                   <div>
                                                     <Label>Check In</Label>
                                                     <Controller
-                                                      name={`shift_${
-                                                        index + 1
-                                                      }_checkIn`}
+                                                      name={`shift_${index + 1
+                                                        }_checkIn`}
                                                       control={control}
                                                       defaultValue={
                                                         shift.checkIn
@@ -2263,28 +2171,25 @@ const StaffManagement = () => {
                                                       )}
                                                     />
                                                     {errors[
-                                                      `shift_${
-                                                        index + 1
+                                                      `shift_${index + 1
                                                       }_checkIn`
                                                     ] && (
-                                                      <p className="text-red-600 font-semibold text-sm">
-                                                        {
-                                                          errors[
-                                                            `shift_${
-                                                              index + 1
-                                                            }_checkIn`
-                                                          ].message
-                                                        }
-                                                      </p>
-                                                    )}
+                                                        <p className="text-red-600 font-semibold text-sm">
+                                                          {
+                                                            errors[
+                                                              `shift_${index + 1
+                                                              }_checkIn`
+                                                            ].message
+                                                          }
+                                                        </p>
+                                                      )}
                                                   </div>
 
                                                   <div>
                                                     <Label>Check Out</Label>
                                                     <Controller
-                                                      name={`shift_${
-                                                        index + 1
-                                                      }_checkOut`}
+                                                      name={`shift_${index + 1
+                                                        }_checkOut`}
                                                       control={control}
                                                       defaultValue={
                                                         shift.checkOut
@@ -2306,20 +2211,18 @@ const StaffManagement = () => {
                                                       )}
                                                     />
                                                     {errors[
-                                                      `shift_${
-                                                        index + 1
+                                                      `shift_${index + 1
                                                       }_checkOut`
                                                     ] && (
-                                                      <p className="text-red-600 font-semibold text-sm">
-                                                        {
-                                                          errors[
-                                                            `shift_${
-                                                              index + 1
-                                                            }_checkOut`
-                                                          ].message
-                                                        }
-                                                      </p>
-                                                    )}
+                                                        <p className="text-red-600 font-semibold text-sm">
+                                                          {
+                                                            errors[
+                                                              `shift_${index + 1
+                                                              }_checkOut`
+                                                            ].message
+                                                          }
+                                                        </p>
+                                                      )}
                                                   </div>
                                                 </div>
                                               </div>
@@ -2504,10 +2407,9 @@ const StaffManagement = () => {
                                     disabled={currentStep === 1}
                                     type="button"
                                     className={`flex items-center dark:text-white px-4 py-2 rounded-sm transition-colors duration-100 
-                                      ${
-                                        currentStep === 1
-                                          ? "cursor-not-allowed text-gray-400"
-                                          : "cursor-pointer hover:bg-gray-100 text-black"
+                                      ${currentStep === 1
+                                        ? "cursor-not-allowed text-gray-400"
+                                        : "cursor-pointer hover:bg-gray-100 text-black"
                                       }`}
                                   >
                                     <ChevronLeft />
