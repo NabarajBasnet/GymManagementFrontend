@@ -297,18 +297,18 @@ const TenantSetting = () => {
               <span>Organization</span>
             </TabsTrigger>
             <TabsTrigger
-              value="cards"
-              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
-            >
-              <PiCardsThreeFill className="w-5 h-5 mr-2" />
-              <span>Cards</span>
-            </TabsTrigger>
-            <TabsTrigger
               value="billing"
               className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
             >
               <FaMoneyBillWave className="w-5 h-5 mr-2" />
               <span>Billing</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="cards"
+              className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+            >
+              <PiCardsThreeFill className="w-5 h-5 mr-2" />
+              <span>Cards</span>
             </TabsTrigger>
           </TabsList>
 

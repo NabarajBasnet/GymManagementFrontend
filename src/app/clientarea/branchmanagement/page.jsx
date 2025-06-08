@@ -62,14 +62,6 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Switch } from "@/components/ui/switch";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
 
 const BranchManagement = () => {
@@ -110,7 +102,7 @@ const BranchManagement = () => {
   const onSubmit = async (data) => {
     const tenantId = loggedInTenant?._id;
     try {
-      const response = await fetch(`http://localhost:3000/api/gymbranch`, {
+      const response = await fetch(`http://localhost:3000/api/organizationbranch`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -119,6 +111,8 @@ const BranchManagement = () => {
       });
 
       const responseBody = await response.json();
+      console.log(responseBody);
+
       if (response.ok && response.status === 200) {
         toast.success(responseBody.message);
         queryClient.invalidateQueries({ queryKey: ["branches"] });
@@ -141,12 +135,12 @@ const BranchManagement = () => {
     setIsEditing(true);
 
     // Set form values
-    setValue("gymBranchName", branch.gymBranchName);
-    setValue("gymBranchAddress", branch.gymBranchAddress);
-    setValue("gymBranchPhone", branch.gymBranchPhone);
-    setValue("gymBranchEmail", branch.gymBranchEmail);
-    setValue("gymBranchWebsite", branch.gymBranchWebsite);
-    setValue("gymBranchStatus", branch.gymBranchStatus);
+    setValue("orgBranchName", branch.orgBranchName);
+    setValue("orgBranchAddress", branch.orgBranchAddress);
+    setValue("orgBranchPhone", branch.orgBranchPhone);
+    setValue("orgBranchEmail", branch.orgBranchEmail);
+    setValue("orgBranchWebsite", branch.orgBranchWebsite);
+    setValue("orgBranchStatus", branch.orgBranchStatus);
 
     // Switch to register tab
     setActiveTab("register");
@@ -162,7 +156,7 @@ const BranchManagement = () => {
   const handleDeleteBranch = async (branchId) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/gymbranch/${branchId}`,
+        `http://localhost:3000/api/organizationbranch/${branchId}`,
         {
           method: "DELETE",
         }
@@ -185,7 +179,7 @@ const BranchManagement = () => {
     const [, page, sortBy, sortOrderDesc, searchQuery] = queryKey;
     try {
       const response = await fetch(
-        `http://localhost:3000/api/gymbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
+        `http://localhost:3000/api/organizationbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
           searchQuery
         )}`
       );
@@ -334,24 +328,23 @@ const BranchManagement = () => {
                       {/* Branch Name */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchName"
+                          htmlFor="orgBranchName"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Branch Name *
                         </Label>
                         <Input
-                          id="gymBranchName"
+                          id="orgBranchName"
                           placeholder="Enter branch name"
-                          {...register("gymBranchName", {
+                          {...register("orgBranchName", {
                             required: "Branch name is required",
                           })}
-                          className={`py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${
-                            errors.gymBranchName ? "border-red-500" : ""
-                          }`}
+                          className={`py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchName ? "border-red-500" : ""
+                            }`}
                         />
-                        {errors.gymBranchName && (
+                        {errors.orgBranchName && (
                           <p className="text-red-500 text-sm mt-1">
-                            {errors.gymBranchName.message}
+                            {errors.orgBranchName.message}
                           </p>
                         )}
                       </div>
@@ -359,7 +352,7 @@ const BranchManagement = () => {
                       {/* Branch Address */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchAddress"
+                          htmlFor="orgBranchAddress"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Address *
@@ -367,19 +360,18 @@ const BranchManagement = () => {
                         <div className="relative">
                           <FiMapPin className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <Input
-                            id="gymBranchAddress"
+                            id="orgBranchAddress"
                             placeholder="Enter full address"
-                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${
-                              errors.gymBranchAddress ? "border-red-500" : ""
-                            }`}
-                            {...register("gymBranchAddress", {
+                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchAddress ? "border-red-500" : ""
+                              }`}
+                            {...register("orgBranchAddress", {
                               required: "Address is required",
                             })}
                           />
                         </div>
-                        {errors.gymBranchAddress && (
+                        {errors.orgBranchAddress && (
                           <p className="text-red-500 text-sm mt-1">
-                            {errors.gymBranchAddress.message}
+                            {errors.orgBranchAddress.message}
                           </p>
                         )}
                       </div>
@@ -387,7 +379,7 @@ const BranchManagement = () => {
                       {/* Phone */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchPhone"
+                          htmlFor="orgBranchPhone"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Phone *
@@ -395,12 +387,11 @@ const BranchManagement = () => {
                         <div className="relative">
                           <FiPhone className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <Input
-                            id="gymBranchPhone"
+                            id="orgBranchPhone"
                             placeholder="Enter phone number"
-                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${
-                              errors.gymBranchPhone ? "border-red-500" : ""
-                            }`}
-                            {...register("gymBranchPhone", {
+                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchPhone ? "border-red-500" : ""
+                              }`}
+                            {...register("orgBranchPhone", {
                               required: "Phone is required",
                               pattern: {
                                 value: /^[0-9]{10,15}$/,
@@ -409,9 +400,9 @@ const BranchManagement = () => {
                             })}
                           />
                         </div>
-                        {errors.gymBranchPhone && (
+                        {errors.orgBranchPhone && (
                           <p className="text-red-500 text-sm mt-1">
-                            {errors.gymBranchPhone.message}
+                            {errors.orgBranchPhone.message}
                           </p>
                         )}
                       </div>
@@ -419,7 +410,7 @@ const BranchManagement = () => {
                       {/* Email */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchEmail"
+                          htmlFor="orgBranchEmail"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Email *
@@ -427,13 +418,12 @@ const BranchManagement = () => {
                         <div className="relative">
                           <FiMail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <Input
-                            id="gymBranchEmail"
+                            id="orgBranchEmail"
                             type="email"
                             placeholder="Enter email address"
-                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${
-                              errors.gymBranchEmail ? "border-red-500" : ""
-                            }`}
-                            {...register("gymBranchEmail", {
+                            className={`py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm ${errors.gymBranchEmail ? "border-red-500" : ""
+                              }`}
+                            {...register("orgBranchEmail", {
                               required: "Email is required",
                               pattern: {
                                 value:
@@ -443,9 +433,9 @@ const BranchManagement = () => {
                             })}
                           />
                         </div>
-                        {errors.gymBranchEmail && (
+                        {errors.orgBranchEmail && (
                           <p className="text-red-500 text-sm mt-1">
-                            {errors.gymBranchEmail.message}
+                            {errors.orgBranchEmail.message}
                           </p>
                         )}
                       </div>
@@ -453,7 +443,7 @@ const BranchManagement = () => {
                       {/* Website */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchWebsite"
+                          htmlFor="orgBranchWebsite"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Website
@@ -461,10 +451,10 @@ const BranchManagement = () => {
                         <div className="relative">
                           <FiGlobe className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
                           <Input
-                            id="gymBranchWebsite"
+                            id="orgBranchWebsite"
                             placeholder="Enter website URL"
                             className="py-6 pl-12 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm"
-                            {...register("gymBranchWebsite")}
+                            {...register("orgBranchWebsite")}
                           />
                         </div>
                       </div>
@@ -472,13 +462,13 @@ const BranchManagement = () => {
                       {/* Status */}
                       <div className="space-y-2">
                         <Label
-                          htmlFor="gymBranchStatus"
+                          htmlFor="orgBranchStatus"
                           className="text-sm font-medium text-gray-700 dark:text-gray-300"
                         >
                           Status
                         </Label>
                         <Controller
-                          name="gymBranchStatus"
+                          name="orgBranchStatus"
                           control={control}
                           defaultValue="Active"
                           render={({ field }) => (
@@ -574,12 +564,11 @@ const BranchManagement = () => {
                                 <div className="flex items-center">
                                   Branch Name
                                   <ArrowUpDown
-                                    onClick={() => handleSort("gymBranchName")}
-                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
-                                      sortBy === "gymBranchName"
+                                    onClick={() => handleSort("orgBranchName")}
+                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchName"
                                         ? "text-blue-600"
                                         : ""
-                                    }`}
+                                      }`}
                                   />
                                 </div>
                               </TableHead>
@@ -588,13 +577,12 @@ const BranchManagement = () => {
                                   Address
                                   <ArrowUpDown
                                     onClick={() =>
-                                      handleSort("gymBranchAddress")
+                                      handleSort("orgBranchAddress")
                                     }
-                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
-                                      sortBy === "gymBranchAddress"
+                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchAddress"
                                         ? "text-blue-600"
                                         : ""
-                                    }`}
+                                      }`}
                                   />
                                 </div>
                               </TableHead>
@@ -602,12 +590,11 @@ const BranchManagement = () => {
                                 <div className="flex items-center">
                                   Contact
                                   <ArrowUpDown
-                                    onClick={() => handleSort("gymBranchPhone")}
-                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
-                                      sortBy === "gymBranchPhone"
+                                    onClick={() => handleSort("orgBranchPhone")}
+                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchPhone"
                                         ? "text-blue-600"
                                         : ""
-                                    }`}
+                                      }`}
                                   />
                                 </div>
                               </TableHead>
@@ -616,13 +603,12 @@ const BranchManagement = () => {
                                   Status
                                   <ArrowUpDown
                                     onClick={() =>
-                                      handleSort("gymBranchStatus")
+                                      handleSort("orgBranchStatus")
                                     }
-                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
-                                      sortBy === "gymBranchStatus"
+                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchStatus"
                                         ? "text-blue-600"
                                         : ""
-                                    }`}
+                                      }`}
                                   />
                                 </div>
                               </TableHead>
@@ -631,11 +617,10 @@ const BranchManagement = () => {
                                   Created
                                   <ArrowUpDown
                                     onClick={() => handleSort("createdAt")}
-                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${
-                                      sortBy === "createdAt"
+                                    className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "createdAt"
                                         ? "text-blue-600"
                                         : ""
-                                    }`}
+                                      }`}
                                   />
                                 </div>
                               </TableHead>
@@ -653,14 +638,14 @@ const BranchManagement = () => {
                                 <TableCell className="font-medium">
                                   <div className="flex items-center">
                                     <MdOutlineSportsGymnastics className="h-5 w-5 mr-2 text-blue-600" />
-                                    {branch.gymBranchName}
+                                    {branch.orgBranchName}
                                   </div>
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center">
                                     <FiMapPin className="h-4 w-4 mr-2 text-gray-400" />
                                     <span className="truncate max-w-[200px]">
-                                      {branch.gymBranchAddress}
+                                      {branch.orgBranchAddress}
                                     </span>
                                   </div>
                                 </TableCell>
@@ -668,23 +653,23 @@ const BranchManagement = () => {
                                   <div className="space-y-1">
                                     <div className="flex items-center">
                                       <FiPhone className="h-4 w-4 mr-2 text-gray-400" />
-                                      {branch.gymBranchPhone}
+                                      {branch.orgBranchPhone}
                                     </div>
                                     <div className="flex items-center">
                                       <FiMail className="h-4 w-4 mr-2 text-gray-400" />
                                       <span className="truncate max-w-[180px]">
-                                        {branch.gymBranchEmail}
+                                        {branch.orgBranchEmail}
                                       </span>
                                     </div>
                                   </div>
                                 </TableCell>
                                 <TableCell>
-                                  {branch.gymBranchStatus === "Active" ? (
+                                  {branch.orgBranchStatus === "Active" ? (
                                     <Badge className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400 px-3 py-1 rounded-full">
                                       <FiCheck className="h-3 w-3 mr-1" />
                                       Active
                                     </Badge>
-                                  ) : branch.gymBranchStatus === "Inactive" ? (
+                                  ) : branch.orgBranchStatus === "Inactive" ? (
                                     <Badge
                                       variant="destructive"
                                       className="px-3 py-1 rounded-full"
@@ -700,7 +685,7 @@ const BranchManagement = () => {
                                 </TableCell>
                                 <TableCell>
                                   {new Date(
-                                    branch.gymBranchCreatedAt
+                                    branch.orgBranchCreatedAt
                                   ).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell className="text-right">
