@@ -226,10 +226,8 @@ const BranchManagement = () => {
 
   const handleSort = (column) => {
     if (sortBy === column) {
-      // If clicking the same column, toggle sort order
       setSortOrderDesc(!sortOrderDesc);
     } else {
-      // If clicking a new column, set it as sort column and default to ascending
       setSortBy(column);
       setSortOrderDesc(false);
     }
@@ -242,40 +240,53 @@ const BranchManagement = () => {
       ) : (
         <div className="w-full mx-auto">
 
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8 dark:bg-gray-800 p-5 rounded-sm">
-            <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
-                Branch Management
-              </h1>
-              <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                Manage your gym branches efficiently
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <div className="relative">
-                <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                  placeholder="Search branches..."
-                  className="py-6 pl-12 dark:text-white w-[300px] bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm shadow-sm"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
+          {/* Header - Branch Management */}
+          <header className="bg-white dark:bg-gray-800 shadow-sm rounded-sm mb-8">
+            <div className="px-4 py-5 sm:px-6 lg:px-8">
+              <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
+                {/* Title Section */}
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                    Branch Management
+                  </h1>
+                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                    Manage your gym branches efficiently
+                  </p>
+                </div>
+
+                {/* Actions Section */}
+                <div className="flex flex-col space-y-3 sm:space-y-0 sm:flex-row justify-between sm:space-x-4">
+                  {/* Search Input */}
+                  <div className="relative flex-grow max-w-xs">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiSearch className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <Input
+                      type="search"
+                      placeholder="Search branches..."
+                      className="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-sm bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Add Branch Button */}
+                  <Button
+                    onClick={() => {
+                      setActiveTab("register");
+                      setIsEditing(false);
+                      setEditingBranch(null);
+                      reset();
+                    }}
+                    className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-sm text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  >
+                    <FiPlus className="-ml-1 mr-2 h-5 w-5" />
+                    Add Branch
+                  </Button>
+                </div>
               </div>
-              <Button
-                onClick={() => {
-                  setActiveTab("register");
-                  setIsEditing(false);
-                  setEditingBranch(null);
-                  reset();
-                }}
-                className="h-12 px-6 dark:text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 rounded-sm shadow-lg"
-              >
-                <FiPlus className="mr-2 h-5 w-5" />
-                Add Branch
-              </Button>
             </div>
-          </div>
+          </header>
 
           {/* Tabs */}
           <Tabs
