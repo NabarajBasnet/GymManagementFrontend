@@ -86,14 +86,14 @@ const OrgDetailsForm = () => {
     useEffect(() => {
         if (loggedInTenant?.organization) {
             reset({
-                name: loggedInTenant.organization.name || "",
-                businessType: loggedInTenant.organization.businessType || "",
-                businessEmail: loggedInTenant.organization.businessEmail || "",
-                websiteUrl: loggedInTenant.organization.websiteUrl || "",
-                logoUrl: loggedInTenant.organization.logoUrl || ""
+                name: loggedInTenant?.organization?.name || "",
+                businessType: loggedInTenant?.organization?.businessType || "",
+                businessEmail: loggedInTenant?.organization?.businessEmail || "",
+                websiteUrl: loggedInTenant?.organization?.websiteUrl || "",
+                logoUrl: loggedInTenant?.organization?.logoUrl || ""
             });
         }
-    }, [loggedInTenant?.organization, reset]);
+    }, [loggedInTenant?.organization, reset, loggedInTenant]);
 
     // Handle Organization Setup
     const onSubmit = async (data) => {

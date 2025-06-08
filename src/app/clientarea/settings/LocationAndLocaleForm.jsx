@@ -34,6 +34,7 @@ const LocationAndLocaleForm = () => {
     const onboardAt = loggedInTenant?.onboardingStep;
 
     // React hook form
+
     const {
         register,
         handleSubmit,
@@ -52,34 +53,32 @@ const LocationAndLocaleForm = () => {
         }
     });
 
-    // State for loading
     const [isLoading, setIsLoading] = useState(false);
 
-    // Populate form with existing data
     useEffect(() => {
-        if (loggedInTenant?.location) {
+        if (loggedInTenant?.organization) {
             reset({
-                country: loggedInTenant.location.country || "",
-                state: loggedInTenant.location.state || "",
-                city: loggedInTenant.location.city || "",
-                timezone: loggedInTenant.location.timezone || "",
-                currency: loggedInTenant.location.currency || "",
-                language: loggedInTenant.location.language || ""
+                country: loggedInTenant.organization.country || "",
+                state: loggedInTenant.organization.state || "",
+                city: loggedInTenant.organization.city || "",
+                timezone: loggedInTenant.organization.timezone || "",
+                currency: loggedInTenant.organization.currency || "",
+                language: loggedInTenant.organization.language || ""
             });
         }
-    }, [loggedInTenant?.location, reset]);
+    }, [loggedInTenant?.organization, reset]);
 
     const onSubmit = async (data) => {
         try {
             setIsLoading(true);
-            // Your submission logic here
-            // Example:
-            const response = await fetch('/api/location/update', {
-                method: 'POST',
+
+            const response = await fetch('http://localhost:3000/api/organization/update-location-details', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}` // Add auth header
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify(data)
             });
 
             const result = await response.json();
@@ -87,6 +86,16 @@ const LocationAndLocaleForm = () => {
             if (response.ok) {
                 sonnerToast.success(result.message || "Location details saved successfully");
                 hotToast.success(result.message || "Location details saved successfully");
+
+                // Update the tenant context with new organization data
+                // if (result.organization && updateTenant) {
+                //     updateTenant({
+                //         tenant: {
+                //             ...loggedInTenant,
+                //             organization: result.organization
+                //         }
+                //     });
+                // }
             } else {
                 sonnerToast.error(result.message || "Failed to save location details");
                 hotToast.error(result.message || "Failed to save location details");
