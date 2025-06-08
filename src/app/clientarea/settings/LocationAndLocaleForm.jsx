@@ -1,339 +1,302 @@
 "use client";
 
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
-import { MdSettings } from "react-icons/md";
-import { FaMoneyBillWave } from "react-icons/fa";
-import { PiCardsThreeFill } from "react-icons/pi";
-import { FaBuilding } from "react-icons/fa6";
-import { RiUserSettingsFill } from "react-icons/ri";
-import {
-    MapPin,
-    CreditCard,
-    Building2,
-    Globe,
-    FileText,
-} from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card"
-import { FaLock } from "react-icons/fa";
-import { FaUser } from "react-icons/fa6";
-import { useEffect, useState } from "react";
-import {
-    Eye,
-    EyeOff,
-    AlertTriangle,
-    Info,
-    Bell,
-    BellOff,
-    Mail,
-    Phone,
-    Trash2,
-    ChevronRight
-} from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { MapPin, Globe } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState, useEffect } from "react";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
-import OrgDetailsForm from "./OrgDetailsForm";
-import BillingAndPaymentForm from "./BillingAndPaymentForm";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Define validation schema
+const locationSchema = z.object({
+    country: z.string().min(1, "Country is required"),
+    state: z.string().min(1, "State/Province is required"),
+    city: z.string().min(1, "City is required"),
+    timezone: z.string().min(1, "Timezone is required"),
+    currency: z.string().min(1, "Currency is required"),
+    language: z.string().min(1, "Language is required")
+});
+
+const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"];
+const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"];
+const languages = ["English", "Spanish", "French", "German", "Chinese"];
+const timezones = ["PST (UTC-8)", "EST (UTC-5)", "CST (UTC-6)", "GMT (UTC+0)", "CET (UTC+1)"];
 
 const LocationAndLocaleForm = () => {
-
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
-
-    // console.log("Tenant: ", loggedInTenant);
-    // tenant onboarding steps
-
-    const onboardAt = loggedInTenant?.onboardingStep
-
-    // Notification setting states
-    const [notificationSettings, setNotificationSettings] = useState({
-        emailNotification: loggedInTenant?.emailNotification || false,
-        smsNotification: loggedInTenant?.smsNotification || false,
-        appNotification: loggedInTenant?.appNotification || false
-    });
+    const onboardAt = loggedInTenant?.onboardingStep;
 
     // React hook form
     const {
         register,
         handleSubmit,
-        formState: { isSubmitting, errors },
+        formState: { isSubmitting, errors, isSubmitSuccessful },
         reset,
-        watch,
-        setValue,
         control
-    } = useForm()
+    } = useForm({
+        resolver: zodResolver(locationSchema),
+        defaultValues: {
+            country: "",
+            state: "",
+            city: "",
+            timezone: "",
+            currency: "",
+            language: ""
+        }
+    });
 
-    // Toggle notifications
-    const toggleNotification = (type) => {
-        setNotificationSettings(prev => ({
-            ...prev,
-            [type]: !prev[type]
-        }));
-    };
+    // State for loading
+    const [isLoading, setIsLoading] = useState(false);
 
-    // State for dialogs
-    const [showDeleteRequestDialog, setShowDeleteRequestDialog] = useState(false);
-    const [showCancelMembershipDialog, setShowCancelMembershipDialog] = useState(false);
-    const [submitting, setIsSubmitting] = useState(false);
-
-    // Populate Data
+    // Populate form with existing data
     useEffect(() => {
-        reset({
-            fullName: loggedInTenant?.fullName,
-            address: loggedInTenant?.address,
-            email: loggedInTenant?.email,
-            phone: loggedInTenant?.phone,
-        })
-    }, [loggedInTenant, reset]);
+        if (loggedInTenant?.location) {
+            reset({
+                country: loggedInTenant.location.country || "",
+                state: loggedInTenant.location.state || "",
+                city: loggedInTenant.location.city || "",
+                timezone: loggedInTenant.location.timezone || "",
+                currency: loggedInTenant.location.currency || "",
+                language: loggedInTenant.location.language || ""
+            });
+        }
+    }, [loggedInTenant?.location, reset]);
 
-    // Populate notification states
-    useEffect(() => {
-        setNotificationSettings({
-            emailNotification: loggedInTenant?.emailNotification || false,
-            smsNotification: loggedInTenant?.smsNotification || false,
-            appNotification: loggedInTenant?.appNotification || false
-        });
-    }, [loggedInTenant]);
-
-    // Password toggle
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-    // constants
-    const businessTypes = ["Gym", "CrossFit", "Yoga", "Fitness", "Martial Arts", "Other"]
-    const countries = ["United States", "Canada", "United Kingdom", "Australia", "Germany", "France"]
-    const currencies = ["USD", "EUR", "GBP", "CAD", "AUD", "NPR", "INR", "YAN"]
-    const languages = ["English", "Spanish", "French", "German", "Chinese"]
-    const paymentProviders = ["Stripe", "PayPal", "Square", "Authorize.net"]
-
-    // Change basic details
-    const changePersonalDetails = async (data) => {
+    const onSubmit = async (data) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/tenant/change-personal-details`, {
-                method: "PATCH",
+            setIsLoading(true);
+            // Your submission logic here
+            // Example:
+            const response = await fetch('/api/location/update', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(data),
             });
-            const responseBody = await response.json();
-            if (response.ok) {
-                sonnerToast.success(responseBody.message)
-                hotToast.success(responseBody.message)
-            } else {
-                sonnerToast.error(responseBody.message)
-                hotToast.error(responseBody.message)
-            }
-        } catch (error) {
-            console.log("Error: ", error);
-            sonnerToast.error(error.message)
-            hotToast.error(error.message)
-        };
-    };
 
-    // Change basic details
-    const changePassword = async (data) => {
-        try {
-            const response = await fetch(`http://localhost:3000/api/tenant/change-password`, {
-                method: "PATCH",
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            const responseBody = await response.json();
-            console.log("Response body: ", responseBody);
-            if (response.ok) {
-                sonnerToast.success(responseBody.message)
-                hotToast.success(responseBody.message)
-            } else {
-                sonnerToast.error(responseBody.message)
-                hotToast.error(responseBody.message)
-            }
-        } catch (error) {
-            console.log("Error: ", error);
-            sonnerToast.error(error.message)
-            hotToast.error(error.message)
-        };
-    };
-
-    // Handle nofitication submit
-    const handleNotificationsSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await fetch('http://localhost:3000/api/tenant/save-notification-settings', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify(notificationSettings),
-            });
-
-            const responseData = await response.json();
+            const result = await response.json();
 
             if (response.ok) {
-                sonnerToast.success(responseData.message);
-                hotToast.success(responseData.message);
+                sonnerToast.success(result.message || "Location details saved successfully");
+                hotToast.success(result.message || "Location details saved successfully");
             } else {
-                sonnerToast.error(responseData.message);
-                hotToast.error(responseData.message);
+                sonnerToast.error(result.message || "Failed to save location details");
+                hotToast.error(result.message || "Failed to save location details");
             }
         } catch (error) {
             console.error("Error:", error);
-            sonnerToast.error("Failed to save notification settings");
-            hotToast.error("Failed to save notification settings");
-        }
-    };
-
-    // Handle delete account request
-    const requestAccountDeletion = async () => {
-        setIsSubmitting(true);
-        try {
-            const response = await fetch('/api/account/request-deletion', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                sonnerToast.success("Deletion request submitted. Our team will contact you shortly.");
-            } else {
-                throw new Error("Failed to submit deletion request");
-            }
-        } catch (error) {
-            sonnerToast.error(error.message);
+            sonnerToast.error("An error occurred while saving location details");
+            hotToast.error("An error occurred while saving location details");
         } finally {
-            setIsSubmitting(false);
-            setShowDeleteRequestDialog(false);
-        }
-    };
-
-    // Handle membership cancellation
-    const cancelMembership = async () => {
-        setIsSubmitting(true);
-        try {
-            const response = await fetch('/api/membership/cancel', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include'
-            });
-
-            if (response.ok) {
-                sonnerToast.success("Membership cancelled successfully");
-            } else {
-                throw new Error("Failed to cancel membership");
-            }
-        } catch (error) {
-            sonnerToast.error(error.message);
-        } finally {
-            setIsSubmitting(false);
-            setShowCancelMembershipDialog(false);
+            setIsLoading(false);
         }
     };
 
     return (
-        <div>
-            <div className="space-y-6 dark:bg-gray-800 dark:border-none">
-                <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
-                    <MapPin className="w-6 h-6 text-primary" />
-                    <h2 className="text-xl font-semibold">Location & Locale</h2>
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex items-center space-x-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-6 border-b border-gray-200 dark:border-gray-700 rounded-t-xl">
+                <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
+                    <MapPin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="grid px-6 grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                        <Label htmlFor="country">Country *</Label>
-                        <Input
-                            id="country"
-                            className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                            placeholder="Country"
-                        />
-                    </div>
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+                    {onboardAt === 'Location' ? 'Setup Your Location & Locale' : 'Location & Locale'}
+                </h2>
+            </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="state">State/Province *</Label>
-                        <Input
-                            id="state"
-                            className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                            placeholder="California"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="city">City *</Label>
-                        <Input
-                            id="city"
-                            className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                            placeholder="San Francisco"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="timezone">Timezone</Label>
-                        <Input
-                            id="timezone"
-                            className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                            placeholder="PST (UTC-8)"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="currency">Currency *</Label>
-                        <Select
-                        >
-                            <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-900 bg-white'>
-                                <SelectValue placeholder="Select currency" />
-                            </SelectTrigger>
-                            <SelectContent className='dark:bg-gray-900 dark:border-none'>
-                                {currencies.map(currency => (
-                                    <SelectItem key={currency} value={currency} className='cursor-pointer hover:bg-blue-500'>{currency}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="language">Language *</Label>
-                        <Select
-                        >
-                            <SelectTrigger className='py-6 rounded-sm dark:bg-gray-900 bg-white dark:border-none'>
-                                <SelectValue placeholder="Select language" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {languages.map(language => (
-                                    <SelectItem key={language} value={language} className='cursor-pointer hover:bg-blue-500'>{language}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+            <div className="grid p-6 grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Country */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">Country *</Label>
+                    <Controller
+                        name="country"
+                        control={control}
+                        render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-900 dark:text-white border-gray-300 dark:border-none focus:ring-2 focus:ring-blue-500">
+                                    <SelectValue placeholder="Select country" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-sm dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
+                                    {countries.map(country => (
+                                        <SelectItem
+                                            key={country}
+                                            value={country}
+                                            className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer focus:bg-blue-50 dark:focus:bg-gray-700"
+                                        >
+                                            {country}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.country && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.country.message}
+                        </p>
+                    )}
                 </div>
 
-                <div className="flex justify-start items-center">
-                    <Button
-                        className="bg-indigo-600 m-4 text-white hover:bg-indigo-700"
-                        type='submit'
-                    >
-                        Submit Details
-                    </Button>
+                {/* State/Province */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">State/Province *</Label>
+                    <Input
+                        {...register("state")}
+                        placeholder="California"
+                        className="py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    {errors.state && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.state.message}
+                        </p>
+                    )}
+                </div>
+
+                {/* City */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">City *</Label>
+                    <Input
+                        {...register("city")}
+                        placeholder="San Francisco"
+                        className="py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    {errors.city && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.city.message}
+                        </p>
+                    )}
+                </div>
+
+                {/* Timezone */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">Timezone *</Label>
+                    <Controller
+                        name="timezone"
+                        control={control}
+                        render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-900 dark:text-white border-gray-300 dark:border-none focus:ring-2 focus:ring-blue-500">
+                                    <SelectValue placeholder="Select timezone" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-sm dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
+                                    {timezones.map(tz => (
+                                        <SelectItem
+                                            key={tz}
+                                            value={tz}
+                                            className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer focus:bg-blue-50 dark:focus:bg-gray-700"
+                                        >
+                                            {tz}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.timezone && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.timezone.message}
+                        </p>
+                    )}
+                </div>
+
+                {/* Currency */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">Currency *</Label>
+                    <Controller
+                        name="currency"
+                        control={control}
+                        render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-900 dark:text-white border-gray-300 dark:border-none focus:ring-2 focus:ring-blue-500">
+                                    <SelectValue placeholder="Select currency" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-sm dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
+                                    {currencies.map(currency => (
+                                        <SelectItem
+                                            key={currency}
+                                            value={currency}
+                                            className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer focus:bg-blue-50 dark:focus:bg-gray-700"
+                                        >
+                                            {currency}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.currency && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.currency.message}
+                        </p>
+                    )}
+                </div>
+
+                {/* Language */}
+                <div className="space-y-2">
+                    <Label className="text-gray-700 dark:text-gray-300 font-medium">Language *</Label>
+                    <Controller
+                        name="language"
+                        control={control}
+                        render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-900 dark:text-white border-gray-300 dark:border-none focus:ring-2 focus:ring-blue-500">
+                                    <SelectValue placeholder="Select language" />
+                                </SelectTrigger>
+                                <SelectContent className="rounded-sm dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
+                                    {languages.map(language => (
+                                        <SelectItem
+                                            key={language}
+                                            value={language}
+                                            className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer focus:bg-blue-50 dark:focus:bg-gray-700"
+                                        >
+                                            {language}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        )}
+                    />
+                    {errors.language && (
+                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                            {errors.language.message}
+                        </p>
+                    )}
                 </div>
             </div>
-        </div>
-    )
-}
+
+            <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                    Fields marked with * are required
+                </div>
+                <Button
+                    type="submit"
+                    disabled={isLoading}
+                    className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed"
+                >
+                    {isLoading ? (
+                        <span className="flex items-center gap-2">
+                            <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            {onboardAt === 'Location' ? 'Setting Up...' : 'Saving...'}
+                        </span>
+                    ) : (
+                        <span className="flex items-center gap-2">
+                            {onboardAt === 'Location' ? 'Setup Location' : 'Save Changes'}
+                        </span>
+                    )}
+                </Button>
+            </div>
+        </form>
+    );
+};
 
 export default LocationAndLocaleForm;

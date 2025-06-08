@@ -58,7 +58,7 @@ const OrgDetailsForm = () => {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
     const onboardAt = loggedInTenant?.onboardingStep;
-
+    console.log(loggedInTenant)
     // React hook form
     const {
         register,

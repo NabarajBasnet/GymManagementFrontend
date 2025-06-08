@@ -878,7 +878,7 @@ const TenantSetting = () => {
                 <OrgDetailsForm />
               </Card>
 
-              <Card className='w-full md:w-9/12 rounded-2xl shadow-md'>
+              <Card className='w-full md:w-9/12 rounded-2xl shadow-md dark:bg-gray-800'>
                 <LocationAndLocaleForm />
               </Card>
             </TabsContent>
