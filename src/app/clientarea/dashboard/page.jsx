@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
-import { User, Settings, LogOut, X, Info, Calendar, Clock, Shield, Activity } from "lucide-react";
+import { User, Settings, LogOut, X, Info, Calendar, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
@@ -20,7 +20,7 @@ import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { GiBiceps } from "react-icons/gi";
-import { FaUsers, FaBuilding } from "react-icons/fa6";
+import { FaUsers, FaBuilding, FaDumbbell, FaChartLine, FaCreditCard } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
@@ -30,11 +30,12 @@ const StatCard = ({ icon: Icon, title, value, className, trend, subtitle }) => (
     animate={{ opacity: 1, y: 0 }}
     transition={{ duration: 0.3 }}
     whileHover={{ y: -2 }}
+    className="h-full" // Added h-full to make all stat cards equal height
   >
-    <Card className="relative overflow-hidden border-0 shadow-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group">
+    <Card className="relative overflow-hidden border-0 shadow-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group h-full">
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/10" />
-      <CardContent className="p-6 relative">
-        <div className="flex items-center justify-between">
+      <CardContent className="p-6 relative h-full flex flex-col">
+        <div className="flex items-center justify-between flex-grow">
           <div className="space-y-2">
             <div className={`inline-flex p-3 rounded-xl ${className} transition-all duration-300 group-hover:scale-110`}>
               <Icon className="w-6 h-6" />
@@ -60,6 +61,25 @@ const StatCard = ({ icon: Icon, title, value, className, trend, subtitle }) => (
   </motion.div>
 );
 
+const FeatureBadge = ({ feature }) => (
+  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 mr-2 mb-2">
+    <CheckCircle className="w-3 h-3 mr-1" />
+    {feature}
+  </span>
+);
+
+const DetailItem = ({ icon: Icon, label, value, className }) => (
+  <div className="flex items-start space-x-3 py-2">
+    <div className={`p-2 rounded-lg ${className || 'bg-gray-100 dark:bg-gray-700/50'}`}>
+      <Icon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+    </div>
+    <div className="flex-1">
+      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 break-words">{value || 'N/A'}</p>
+    </div>
+  </div>
+);
+
 const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
@@ -71,7 +91,6 @@ const TenantDashboard = () => {
   const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
   const todayDate = new Date(today.setHours(0, 0, 0, 0));
 
-  // Calculate difference in milliseconds
   const diffTime = expireDate.getTime() - todayDate.getTime();
   const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   let [organizationDetailsSetupCompleted, setOrganizationDetailsSetupCompleted] = useState(false);
@@ -82,8 +101,7 @@ const TenantDashboard = () => {
     }
   }, [loggedInTenant]);
 
-  const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] =
-    useState(false);
+  const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] = useState(false);
   const [onFreeTrail, setOnFreeTrail] = useState(false);
 
   useEffect(() => {
@@ -93,10 +111,7 @@ const TenantDashboard = () => {
     const checkOnFreeTrail = loggedInTenant?.tenantOnFreeTrial;
     setOnFreeTrail(checkOnFreeTrail);
 
-    if (
-      checkOrganizationEmailExists === null ||
-      checkOrganizationPhoneExists === null
-    ) {
+    if (checkOrganizationEmailExists === null || checkOrganizationPhoneExists === null) {
       setCreateOrganizationAlertDialog(true);
     } else {
       setCreateOrganizationAlertDialog(false);
@@ -153,15 +168,12 @@ const TenantDashboard = () => {
 
   const logOutTenant = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/tenant/auth/logout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`http://localhost:3000/api/tenant/auth/logout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const responseBody = await response.json();
       if (response.ok) {
@@ -177,11 +189,12 @@ const TenantDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-
-      {/* Background Pattern */}
-      <div className="absolute min-h-screen inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)]" />
-      <div className="absolute inset-0 min-h-screen bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.1),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)]" />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-gray-50 dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900">
+      {/* Full-width background elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.02),transparent)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.02),transparent)]" />
+      </div>
 
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
@@ -217,10 +230,10 @@ const TenantDashboard = () => {
             animate={{ opacity: 1, x: 0 }}
             className="w-full xl:w-80 flex-shrink-0"
           >
-            <Card className="overflow-hidden border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
+            <Card className="overflow-hidden border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm h-full">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/5 to-transparent" />
-              <CardContent className="p-8 relative">
-                <div className="flex flex-col items-center space-y-6">
+              <CardContent className="p-8 relative h-full flex flex-col">
+                <div className="flex flex-col items-center space-y-6 flex-grow">
                   {/* Avatar with Status */}
                   <div className="relative">
                     <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold shadow-lg">
@@ -243,7 +256,7 @@ const TenantDashboard = () => {
                   </div>
 
                   {/* Contact Details */}
-                  <div className="w-full space-y-4">
+                  <div className="w-full space-y-4 flex-grow">
                     <div className="space-y-3 p-4 bg-gray-50/50 dark:bg-gray-700/30 rounded-xl">
                       <div className="flex items-center space-x-3">
                         <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
@@ -287,7 +300,7 @@ const TenantDashboard = () => {
                     <div className="flex flex-col space-y-3 pt-4">
                       <Button
                         variant="outline"
-                        className="w-full h-11 border-2  dark:border-none border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-700/20 transition-all duration-300 group"
+                        className="w-full h-11 border-2 dark:border-none border-gray-200 dark:border-gray-600 hover:border-blue-300 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-700/20 transition-all duration-300 group"
                         onClick={() => { }}
                       >
                         <Settings className="w-4 h-4 mr-2 group-hover:rotate-90 transition-transform duration-300" />
@@ -345,74 +358,264 @@ const TenantDashboard = () => {
               />
             </div>
 
-            {/* Enhanced Active Services Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-            >
-              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
-                        Current Subscription
-                      </CardTitle>
-                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
-                        Your active service plan and details
-                      </p>
+            {/* Organization and Subscription Details */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Organization Details Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                className="h-full"
+              >
+                <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden h-full">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                          Organization Details
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                          Your business information
+                        </p>
+                      </div>
+                      <div className="p-2 bg-purple-100 dark:bg-purple-900/30 rounded-lg">
+                        <FaBuilding className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      </div>
                     </div>
-                    <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
-                      <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  </CardHeader>
+                  <CardContent className="h-[calc(100%-72px)] overflow-y-auto">
+                    <div className="space-y-4">
+                      <DetailItem
+                        icon={FaBuilding}
+                        label="Business Name"
+                        value={loggedInTenant?.organization?.name}
+                        className="bg-purple-100 dark:bg-purple-900/30"
+                      />
+                      <DetailItem
+                        icon={FaDumbbell}
+                        label="Business Type"
+                        value={loggedInTenant?.organization?.businessType}
+                        className="bg-orange-100 dark:bg-orange-900/30"
+                      />
+                      <DetailItem
+                        icon={Mail}
+                        label="Business Email"
+                        value={loggedInTenant?.organization?.businessEmail}
+                        className="bg-blue-100 dark:bg-blue-900/30"
+                      />
+                      <DetailItem
+                        icon={Globe}
+                        label="Website"
+                        value={loggedInTenant?.organization?.websiteUrl}
+                        className="bg-green-100 dark:bg-green-900/30"
+                      />
+                      <DetailItem
+                        icon={MapPin}
+                        label="Location"
+                        value={`${loggedInTenant?.organization?.city}, ${loggedInTenant?.organization?.state}, ${loggedInTenant?.organization?.country}`}
+                        className="bg-red-100 dark:bg-red-900/30"
+                      />
+                      <DetailItem
+                        icon={DollarSign}
+                        label="Currency"
+                        value={loggedInTenant?.organization?.currency}
+                        className="bg-yellow-100 dark:bg-yellow-900/30"
+                      />
+                      <DetailItem
+                        icon={FileText}
+                        label="Tax ID"
+                        value={loggedInTenant?.organization?.taxId}
+                        className="bg-indigo-100 dark:bg-indigo-900/30"
+                      />
                     </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <div className="relative p-8 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-2xl text-white overflow-hidden">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent)]" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.05),transparent)]" />
+                  </CardContent>
+                </Card>
+              </motion.div>
 
-                    <div className="relative flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                      <div className="space-y-3">
+              {/* Enhanced Active Services Card */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="h-full"
+              >
+                <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm overflow-hidden h-full">
+                  <CardHeader className="pb-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                          Current Subscription
+                        </CardTitle>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                          Your active service plan and details
+                        </p>
+                      </div>
+                      <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg">
+                        <Activity className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0 h-[calc(100%-72px)] overflow-y-auto">
+                    <div className="relative p-6 bg-gradient-to-br from-blue-600 via-blue-700 to-purple-700 rounded-xl text-white overflow-hidden">
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1),transparent)]" />
+                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(255,255,255,0.05),transparent)]" />
+
+                      <div className="relative space-y-4">
                         <div className="flex items-center space-x-3">
                           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
                             <Shield className="w-6 h-6 text-white" />
                           </div>
-                          <div className="space-x-2 font-medium text-xl">
-                            <span>
-                              {
-                                tenantOnTrail ? 'Free Trail' : loggedInTenant?.subscription || 'N/A'
-                              }
-                            </span>
+                          <div>
+                            <h3 className="font-bold text-xl">
+                              {tenantOnTrail ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName || 'N/A'}
+                            </h3>
+                            <p className="text-blue-100 text-sm">
+                              {loggedInTenant?.subscription?.subscriptionDescription}
+                            </p>
                           </div>
                         </div>
-                      </div>
 
-                      <div className="space-y-3 text-right">
-                        <div className="flex items-center space-x-2 text-blue-100">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            Start: {tenantOnTrail ? new Date(loggedInTenant?.createdAt).toLocaleDateString() : new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()}
-                          </span>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div>
+                            <p className="text-blue-100 text-xs mb-1">Start Date</p>
+                            <p className="font-medium">
+                              {tenantOnTrail ?
+                                new Date(loggedInTenant?.createdAt).toLocaleDateString() :
+                                new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()
+                              }
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-blue-100 text-xs mb-1">End Date</p>
+                            <p className="font-medium">
+                              {tenantOnTrail
+                                ? new Date(loggedInTenant?.freeTrailEndsAt).toLocaleDateString()
+                                : new Date(loggedInTenant?.subscriptionEndsAt).toLocaleDateString()
+                              }
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-blue-100 text-xs mb-1">Duration</p>
+                            <p className="font-medium">
+                              {loggedInTenant?.subscription?.subscriptionDuration} days
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-blue-100 text-xs mb-1">Price</p>
+                            <p className="font-medium">
+                              {loggedInTenant?.subscription?.subscriptionPrice ?
+                                `${loggedInTenant?.organization?.currency} ${loggedInTenant?.subscription?.subscriptionPrice}` :
+                                'N/A'
+                              }
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex items-center space-x-2 text-blue-100">
-                          <Calendar className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            End: {tenantOnTrail
-                              ? new Date(loggedInTenant?.freeTrailEndsAt).toLocaleDateString()
-                              : new Date(loggedInTenant?.subscriptionEndsAt).toLocaleDateString()}
-                          </span>
-                        </div>
+
                         <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
                           <Clock className="w-4 h-4" />
                           <span className="text-sm font-bold">
                             {tenantOnTrail
                               ? `${remainingDaysOnFreeTrail} days left`
-                              : `${calculateRemainingDays()} days remaining`}
+                              : `${calculateRemainingDays()} days remaining`
+                            }
                           </span>
                         </div>
                       </div>
+                    </div>
+
+                    {/* Subscription Features */}
+                    <div className="mt-6">
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Included Features</h4>
+                      <div className="flex flex-wrap">
+                        {loggedInTenant?.subscription?.subscriptionFeatures?.map((feature, index) => (
+                          <FeatureBadge key={index} feature={feature} />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Payment Information */}
+                    <div className="mt-6 space-y-4">
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Payment Information</h4>
+                      <DetailItem
+                        icon={FaCreditCard}
+                        label="Payment Provider"
+                        value={loggedInTenant?.organization?.paymentProvider}
+                      />
+                      <DetailItem
+                        icon={CreditCard}
+                        label="Payment Account"
+                        value={loggedInTenant?.organization?.paymentAccountId}
+                      />
+                      <DetailItem
+                        icon={Mail}
+                        label="Invoice Email"
+                        value={loggedInTenant?.organization?.invoiceEmail}
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </div>
+
+            {/* Billing Address Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm h-full">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">
+                        Billing Address
+                      </CardTitle>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                        Your business billing information
+                      </p>
+                    </div>
+                    <div className="p-2 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg">
+                      <MapPin className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Primary Address</h4>
+                      <DetailItem
+                        icon={MapPin}
+                        label="Address Line 1"
+                        value={loggedInTenant?.organization?.billingAddress?.addressLine1}
+                      />
+                      <DetailItem
+                        icon={MapPin}
+                        label="Address Line 2"
+                        value={loggedInTenant?.organization?.billingAddress?.addressLine2}
+                      />
+                      <DetailItem
+                        icon={MapPin}
+                        label="City"
+                        value={loggedInTenant?.organization?.billingAddress?.city}
+                      />
+                    </div>
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Additional Details</h4>
+                      <DetailItem
+                        icon={MapPin}
+                        label="State/Province"
+                        value={loggedInTenant?.organization?.billingAddress?.state}
+                      />
+                      <DetailItem
+                        icon={Globe}
+                        label="Country"
+                        value={loggedInTenant?.organization?.billingAddress?.country}
+                      />
+                      <DetailItem
+                        icon={FileText}
+                        label="ZIP/Postal Code"
+                        value={loggedInTenant?.organization?.billingAddress?.zipCode}
+                      />
                     </div>
                   </div>
                 </CardContent>
