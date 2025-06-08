@@ -133,6 +133,17 @@ const Navbar = () => {
                         <a
                             href="/login"
                             className={cn(
+                                "px-4 py-2 rounded-full font-medium hover:bg-transparent dark:hover:bg-transparent flex items-center transition-all duration-300",
+                                scrolled
+                                    ? "hover:bg-indigo-700 text-white"
+                                    : "bg-transparent hover:bg-gray-100 text-white"
+                            )}
+                        >
+                            Login
+                        </a>
+                        <a
+                            href="/register"
+                            className={cn(
                                 "px-6 py-2 rounded-full font-medium shadow-lg flex items-center transition-all duration-300",
                                 scrolled
                                     ? "bg-indigo-600 hover:bg-indigo-700 text-white"

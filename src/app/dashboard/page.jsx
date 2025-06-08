@@ -136,7 +136,7 @@ const AdminDashboard = () => {
       percentage: 1.1,
       trend: "up",
       color: 'text-blue-600',
-      bg: 'bg-blue-100',
+      bg: 'bg-blue-100 dark:bg-blue-700/20',
       border: 'border-blue-300',
     },
     {
@@ -146,7 +146,7 @@ const AdminDashboard = () => {
       percentage: -1.5,
       trend: "down",
       color: 'text-green-600',
-      bg: 'bg-green-100',
+      bg: 'bg-green-100 dark:bg-green-700/20',
       border: 'border-green-300',
     },
     {
@@ -156,7 +156,7 @@ const AdminDashboard = () => {
       percentage: 0.5,
       trend: "up",
       color: 'text-yellow-600',
-      bg: 'bg-yellow-100',
+      bg: 'bg-yellow-100 dark:bg-yellow-700/20',
       border: 'border-yellow-300',
     },
     {
@@ -166,7 +166,7 @@ const AdminDashboard = () => {
       percentage: -0.2,
       trend: "down",
       color: 'text-green-600',
-      bg: 'bg-green-100',
+      bg: 'bg-green-100 dark:bg-green-700/20',
       border: 'border-green-300',
     },
     {
@@ -176,7 +176,7 @@ const AdminDashboard = () => {
       percentage: 3.9,
       trend: "up",
       color: 'text-blue-600',
-      bg: 'bg-blue-100',
+      bg: 'bg-blue-100 dark:bg-blue-700/20',
       border: 'border-blue-300',
     },
     {
@@ -186,7 +186,7 @@ const AdminDashboard = () => {
       percentage: -4.5,
       trend: "down",
       color: 'text-red-600',
-      bg: 'bg-red-100',
+      bg: 'bg-red-100 dark:bg-red-700/20',
       border: 'border-red-300',
     },
   ];
@@ -421,24 +421,33 @@ const AdminDashboard = () => {
           {gridContents.map((item) => (
             <Card
               key={item.text}
-              className={`overflow-hidden dark:bg-gray-800 rounded-2xl shadow-md dark:border dark:border-none border ${item.border}`}>
+              className={`
+    overflow-hidden 
+    rounded-2xl 
+    shadow-md 
+    border 
+    dark:border-none
+    bg-gradient-to-br from-gray-100 via-gray-50 to-white
+    dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-800 dark:to-gray-900
+    ${item.border}
+  `}
+            >
               <div className="p-5 py-6">
                 <div className="flex justify-between items-start">
                   <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-500 dark:text-gray-300">{item.text}</p>
+                    <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{item.text}</p>
                     <div className="flex items-baseline">
-                      <h3 className={`text-4xl pt-6 pb-2 text-streamline font-bold ${item.color}`}>
+                      <h3 className={`text-4xl pt-6 pb-2 font-bold ${item.color}`}>
                         {item.value.toLocaleString()}
                       </h3>
-                      <span className={`ml-2 text-sm font-medium ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                        }`}>
+                      <span className={`ml-2 text-sm font-medium ${item.trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
                         <span className="flex items-center">
                           {item.trend === 'up' ? (
                             <TrendingUp className="h-4 w-4 mr-1" />
                           ) : (
                             <TrendingDown className="h-4 w-4 mr-1" />
                           )}
-                          {Math.abs(item.percentage)}%  This Month
+                          {Math.abs(item.percentage)}% This Month
                         </span>
                       </span>
                     </div>

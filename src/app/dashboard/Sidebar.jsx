@@ -85,6 +85,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Sidebar = () => {
   const { user, loading: userLoading } = useUser();
+  console.log("User in sidebar: ", user);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
