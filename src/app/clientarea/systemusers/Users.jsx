@@ -68,7 +68,7 @@ const Users = () => {
 
   // Determine tenant status and features
   const isOnFreeTrial = loggedInTenant?.freeTrailStatus === "Active";
-  const hasSubscription = loggedInTenant?.subscription;
+  const subscription = loggedInTenant?.subscription;
 
   // Get subscription features if available
   const subscriptionFeatures = loggedInTenant?.subscription?.subscriptionFeatures || [];

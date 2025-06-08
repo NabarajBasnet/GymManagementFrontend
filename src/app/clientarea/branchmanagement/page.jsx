@@ -74,7 +74,7 @@ const BranchManagement = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
-  const [sortBy, setSortBy] = useState("gymBranchName");
+  const [sortBy, setSortBy] = useState("orgBranchName");
   const [sortOrderDesc, setSortOrderDesc] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");

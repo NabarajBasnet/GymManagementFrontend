@@ -277,7 +277,7 @@ const TenantDashboard = () => {
                         <div className="text-center">
                           <p className="text-xs font-medium text-blue-600 dark:text-blue-400 mb-1">Subscription</p>
                           <p className="text-sm font-bold text-blue-700 dark:text-blue-300">
-                            {loggedInTenant?.tenantSubscriptionStatus || 'N/A'}
+                            {loggedInTenant?.subscriptionStatus || 'N/A'}
                           </p>
                         </div>
                       </div>
