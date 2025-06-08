@@ -85,7 +85,7 @@ const TenantSubscriptionPlansManagement = () => {
         setResBody(responseBody);
       };
       if (response.ok) {
-        // toast.success(responseBody.message);
+        toast.success(responseBody.message);
         sonnertoast.success(responseBody.message)
         // Invalidate cart query to refresh cart data
         queryClient.invalidateQueries(["cart"]);

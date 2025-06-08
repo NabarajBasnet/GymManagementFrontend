@@ -46,9 +46,9 @@ export const middleware = async (request) => {
     //   return NextResponse.redirect(new URL('/userlogin', request.url));
     // }
 
-    if (user && (path === '/login' || path === '/signup')) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
+    // if (user && (path === '/login' || path === '/signup')) {
+    //   return NextResponse.redirect(new URL('/dashboard', request.url));
+    // }
 
     if (user?.role === 'Gym Admin' && (
       path.includes('/users') || path.includes('/staffmanagement/staffs')

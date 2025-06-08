@@ -227,18 +227,12 @@ const Navbar = () => {
                                 <a
                                     href="/login"
                                     className="block w-full text-center px-6 py-3 rounded-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white font-medium shadow-sm"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                    }}
                                 >
                                     Login
                                 </a>
                                 <a
                                     href="/register"
                                     className="btn-primary w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                    }}
                                 >
                                     Get Started
                                     <ArrowRight size={16} className="ml-2" />

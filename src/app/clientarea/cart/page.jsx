@@ -26,6 +26,7 @@ import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { setCartLength } from "@/state/slicer";
+import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 
 const TenantCartManagement = () => {
   const [ordering, setOrdering] = useState(false);
@@ -34,6 +35,9 @@ const TenantCartManagement = () => {
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
 
+  const tenant = useTenant();
+  const loggedInTenant = tenant?.tenant
+
   const getCartItems = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/cart/`, {
@@ -41,13 +45,12 @@ const TenantCartManagement = () => {
       });
 
       if (response.status === 401) {
-        router.push("/auth/tenantlogin");
+        router.push("/login");
         throw new Error("Unauthorized");
       }
 
       const responseBody = await response.json();
-      console.log("Cart res body: ", responseBody);
-      dispatch(setCartLength(responseBody?.cart?.totalItems));
+      dispatch(setCartLength(responseBody?.cart?.[0].totalItems));
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
@@ -63,6 +66,8 @@ const TenantCartManagement = () => {
   });
 
   const { cart } = data || {};
+
+  // console.log("Cart: ", cart?.[0]?.items);
 
   const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
@@ -239,7 +244,7 @@ const TenantCartManagement = () => {
         </p>
       </div>
 
-      {cart?.items?.length === 0 ? (
+      {cart?.[0]?.items?.length === 0 ? (
         <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
           <CardHeader className="text-center pb-2">
             <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center">
@@ -256,7 +261,7 @@ const TenantCartManagement = () => {
           <CardContent className="pt-2 pb-6">
             <div className="text-center">
               <Button
-                onClick={() => router.push("/clientarea/store")}
+                onClick={() => router.push("/clientarea/pricing")}
                 className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-sm hover:shadow-md"
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
