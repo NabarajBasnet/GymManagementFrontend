@@ -264,7 +264,7 @@ const BranchManagement = () => {
                     <Input
                       type="search"
                       placeholder="Search branches..."
-                      className="block w-full pl-10 pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-sm bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                      className="block w-full pl-10 dark:text-white pr-3 py-2 border border-gray-200 dark:border-gray-700 rounded-sm bg-white dark:bg-gray-800 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                     />

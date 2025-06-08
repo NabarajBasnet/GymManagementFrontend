@@ -22,11 +22,11 @@ const SystemUsers = () => {
       <h1 className="text-2xl font-bold dark:text-gray-100">System Users</h1>
       <div className="w-full py-6">
         <Tabs defaultValue="users">
-          <TabsList className="w-full gap-2 py-2 rounded-sm">
-            <TabsTrigger value="users" className="w-full py-2">
+          <TabsList className="w-full gap-2 py-2 rounded-sm dark:bg-gray-800">
+            <TabsTrigger value="users" className="w-full py-2 dark:bg-gray-800">
               <User size={16} className="mr-2" /> System Users
             </TabsTrigger>
-            <TabsTrigger value="adduser" className="w-full py-2">
+            <TabsTrigger value="adduser" className="w-full py-2 dark:bg-gray-800">
               <UserPlus size={16} className="mr-2" /> Add User
             </TabsTrigger>
           </TabsList>

@@ -35,6 +35,7 @@ import {
   Star,
 } from "lucide-react";
 import { useTenant } from "../../../components/Providers/LoggedInTenantProvider";
+import { useQuery } from "@tanstack/react-query";
 
 const CreateUsers = () => {
   const {
@@ -51,19 +52,17 @@ const CreateUsers = () => {
   const { tenant } = useTenant();
   const loggedInTenant = tenant?.tenant;
 
-  const branches = loggedInTenant?.organizationBranch;
-
   // Check if tenant has selected features
-  const selectedFeatures =
-    loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
+  const selectedFeatures = loggedInTenant?.subscription?.subscriptionFeatures;
   const multiBranchSupport = selectedFeatures?.includes("Multi Branch Support");
+  const onFreeTrail = loggedInTenant?.freeTrailStatus === 'Active';
 
   const handleRoleSelect = (value) => {
     setValue("role", value);
   };
 
   const handleBranchSelect = (value) => {
-    setValue("companyBranch", value);
+    setValue("orgBranch", value);
   };
 
   const createSystemUser = async (data) => {
@@ -146,6 +145,39 @@ const CreateUsers = () => {
       ],
     },
   ];
+
+  const getOrganizationDetails = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/organization`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log('Error: ', error)
+    }
+  }
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['organization'],
+    queryFn: getOrganizationDetails
+  })
+
+  const getOrganizationBranch = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log('Error: ', error)
+    }
+  }
+
+  const { data: branchDetails, isLoading: isBranchLoading } = useQuery({
+    queryKey: ['organizationbranches'],
+    queryFn: getOrganizationBranch,
+    enabled: !!multiBranchSupport || onFreeTrail
+  })
+
+  const { branches } = branchDetails || {};
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-950 dark:via-slate-900 dark:to-gray-900 transition-all duration-300">
@@ -484,7 +516,7 @@ const CreateUsers = () => {
                           </p>
                         )}
 
-                        {multiBranchSupport && (
+                        {multiBranchSupport || onFreeTrail && (
                           <div className="space-y-2">
                             <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                               Company Branch
@@ -505,7 +537,7 @@ const CreateUsers = () => {
                                       value={branch._id}
                                       className="text-gray-900 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg font-medium"
                                     >
-                                      {branch.gymBranchName}
+                                      {branch.orgBranchName}
                                     </SelectItem>
                                   ))}
                                 </SelectContent>

@@ -1,7 +1,6 @@
 "use client";
 
 import { toast as soonerToast } from "sonner";
-import { TiHome } from "react-icons/ti";
 import { IoClose } from "react-icons/io5";
 import { LuLoaderCircle } from "react-icons/lu";
 import { FiUsers } from "react-icons/fi";
@@ -33,19 +32,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Breadcrumb,
-  BreadcrumbEllipsis,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -53,7 +39,6 @@ import { useEffect, useState } from "react";
 import Loader from "@/components/Loader/Loader";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { usePagination } from "@/hooks/Pagination";
 import {
   Select,
   SelectContent,
@@ -81,16 +66,25 @@ const Users = () => {
   const { tenant } = useTenant();
   const loggedInTenant = tenant?.tenant;
 
-  const branches = loggedInTenant?.organizationBranch;
+  // Determine tenant status and features
+  const isOnFreeTrial = loggedInTenant?.freeTrailStatus === "Active";
+  const hasSubscription = loggedInTenant?.subscription;
 
-  // Check if tenant has selected features
-  const selectedFeatures =
-    loggedInTenant?.tenantSubscription[0]?.subscriptionFeatures;
-  const multiBranchSupport = selectedFeatures?.includes("Multi Branch Support");
+  // Get subscription features if available
+  const subscriptionFeatures = loggedInTenant?.subscription?.subscriptionFeatures || [];
+
+  // Check if multi-branch feature is enabled
+  const hasMultiBranchSupport =
+    isOnFreeTrial || // Free trial gets all features
+    (hasSubscription && subscriptionFeatures.includes("Multi Branch Support"));
+
+  // Get branches only if multi-branch is supported
+  const branches = hasMultiBranchSupport ? loggedInTenant?.organizationBranch || [] : [];
 
   const getBranchName = (branchId) => {
+    if (!hasMultiBranchSupport) return "N/A";
     const branch = branches.find((branch) => branch._id.toString() === branchId.toString());
-    return branch?.gymBranchName.toString();
+    return branch?.orgBranchName || "Unassigned";
   };
 
   const {
@@ -183,7 +177,7 @@ const Users = () => {
         phoneNumber,
         dob,
         address,
-        companyBranch: userBranch,
+        companyBranch: hasMultiBranchSupport ? userBranch : undefined,
         role,
         status,
       };
@@ -251,7 +245,7 @@ const Users = () => {
   return (
     <div className="w-full bg-gray-100 dark:bg-gray-900 flex justify-center">
       <div className="w-full">
-        {isDeleting ? (
+        {isDeleting && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="absolute inset-0 bg-black opacity-50"></div>
             <div
@@ -268,11 +262,9 @@ const Users = () => {
               </div>
             </div>
           </div>
-        ) : (
-          <></>
         )}
 
-        {editForm ? (
+        {editForm && (
           <div className="fixed inset-0 bg-gray-900/80 backdrop-blur-sm flex rounded-md items-center justify-center z-50 p-4">
             <div className="flex justify-center w-full max-w-2xl rounded-md">
               <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full flex flex-col max-h-[90vh]">
@@ -483,7 +475,7 @@ const Users = () => {
                           </div>
                         </div>
 
-                        {multiBranchSupport && (
+                        {hasMultiBranchSupport || isOnFreeTrial && (
                           <div>
                             <Label className="dark:text-gray-200">Branch</Label>
                             <Controller
@@ -573,7 +565,7 @@ const Users = () => {
               </div>
             </div>
           </div>
-        ) : null}
+        )}
 
         <div className="w-full space-y-4">
           {/* Controls Section */}
@@ -636,7 +628,7 @@ const Users = () => {
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Role
                       </TableHead>
-                      {multiBranchSupport && (
+                      {hasMultiBranchSupport && (
                         <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Branch
                         </TableHead>
@@ -663,7 +655,7 @@ const Users = () => {
                       users.map((user) => (
                         <TableRow
                           key={user._id}
-                          className="hover:bg-gray-50 dark:bg-gray-900"
+                          className="hover:bg-gray-50 dark:hover:bg-gray-700"
                         >
                           <TableCell className="px-3 py-4 whitespace-nowrap">
                             <div className="flex items-center">
@@ -686,10 +678,10 @@ const Users = () => {
                               {user.role}
                             </div>
                           </TableCell>
-                          {multiBranchSupport && (
+                          {hasMultiBranchSupport && (
                             <TableCell className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900 dark:text-gray-100">
-                                {getBranchName(user.companyBranch._id)}
+                                {getBranchName(user.companyBranch?._id)}
                               </div>
                             </TableCell>
                           )}
@@ -712,17 +704,16 @@ const Users = () => {
                           </TableCell>
                           <TableCell className="px-6 py-4 whitespace-nowrap">
                             <span
-                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                user.status === "Active"
-                                  ? "bg-green-100 text-green-800"
-                                  : user.status === "Pending"
+                              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${user.status === "Active"
+                                ? "bg-green-100 text-green-800"
+                                : user.status === "Pending"
                                   ? "bg-yellow-100 text-yellow-800"
                                   : user.status === "Inactive"
-                                  ? "bg-red-100 text-red-800"
-                                  : user.status === "Blocked"
-                                  ? "bg-gray-100 text-gray-800"
-                                  : "bg-blue-100 text-blue-800"
-                              }`}
+                                    ? "bg-red-100 text-red-800"
+                                    : user.status === "Blocked"
+                                      ? "bg-gray-100 text-gray-800"
+                                      : "bg-blue-100 text-blue-800"
+                                }`}
                             >
                               {user.status}
                             </span>
@@ -777,7 +768,7 @@ const Users = () => {
                     ) : (
                       <TableRow>
                         <TableCell
-                          colSpan={8}
+                          colSpan={hasMultiBranchSupport ? 8 : 7}
                           className="px-6 py-4 text-center"
                         >
                           <div className="text-gray-500 py-8">
