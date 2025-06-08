@@ -1,7 +1,5 @@
 "use client";
 
-import { LiaShippingFastSolid } from "react-icons/lia";
-import { TbTruckDelivery } from "react-icons/tb";
 import toast from "react-hot-toast";
 import {
   Table,
@@ -241,7 +239,7 @@ const MyOrders = () => {
                           <TableCell className="font-medium text-slate-800 dark:text-slate-200">
                             <div className="flex items-center gap-2">
                               <Building2 className="w-4 h-4 text-slate-500" />
-                              {order?.tenantId?.organizationName || "N/A"}
+                              {order?.organization?.name || "N/A"}
                             </div>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">
@@ -367,7 +365,7 @@ const MyOrders = () => {
                           Organization
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder?.tenantId?.organizationName || "N/A"}
+                          {selectedOrder?.organization?.name || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -474,7 +472,7 @@ const MyOrders = () => {
                           Contact Person
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder?.tenantId?.ownerName || "N/A"}
+                          {selectedOrder?.tenantId?.fullName || "N/A"}
                         </p>
                       </div>
                       <div className="space-y-1">
@@ -490,8 +488,7 @@ const MyOrders = () => {
                           Phone
                         </p>
                         <p className="font-semibold text-slate-900 dark:text-slate-100">
-                          {selectedOrder?.tenantId?.phone?.countryCode || "N/A"}{" "}
-                          {selectedOrder?.tenantId?.phone?.number || "N/A"}
+                          {selectedOrder?.tenantId?.phone || "N/A"}{" "}
                         </p>
                       </div>
                       <div className="space-y-1">

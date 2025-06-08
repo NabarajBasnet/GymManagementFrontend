@@ -516,7 +516,7 @@ const CreateUsers = () => {
                           </p>
                         )}
 
-                        {multiBranchSupport || onFreeTrail && (
+                        {(multiBranchSupport || onFreeTrail) && (
                           <div className="space-y-2">
                             <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
                               Company Branch

@@ -188,16 +188,17 @@ const BranchManagement = () => {
         )}`
       );
       const responseBody = await response.json();
-      console.log(responseBody);
+
       if (response.status === 201) {
+        router.push(responseBody.redirect);
         toast.error(responseBody.message);
         soonerToast.error(responseBody.message);
-        router.push(responseBody.redirect);
         return { branches: [], totalPages: 0, totalBranches: 0 };
       }
       if (response.ok && response.status === 200) {
         return responseBody;
       } else {
+        router.push(responseBody.redirect);
         toast.error(responseBody.message);
         return { branches: [], totalPages: 0, totalBranches: 0 };
       }

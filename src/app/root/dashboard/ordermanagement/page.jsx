@@ -253,7 +253,7 @@ const OrderManagement = () => {
   };
 
   const handleAttachSubscription = async (orderId) => {
-    try{
+    try {
       const response = await fetch(`http://localhost:3000/api/order/attach-order-to-tenant/${orderId}`, {
         method: "PATCH",
         credentials: "include",
@@ -263,19 +263,19 @@ const OrderManagement = () => {
       });
       const responseBody = await response.json();
       console.log("Response: ", responseBody);
-      if(response.ok){
+      if (response.ok) {
         toast.success(responseBody.message);
         queryClient.invalidateQueries({ queryKey: ["orders"] });
-        soonerToast(responseBody.message, { 
+        soonerToast(responseBody.message, {
           description: "Order attached to tenant successfully",
         });
-      }else{
+      } else {
         toast.error(responseBody.error);
         soonerToast(responseBody.error, {
           description: "Error attaching order to tenant",
         });
       }
-    }catch(error){
+    } catch (error) {
       console.log("Error: ", error);
       toast.error(error.error);
     }
@@ -284,9 +284,8 @@ const OrderManagement = () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
       <div
-        className={`max-w-full mx-auto p-6 ${
-          isPaymentDetailsFormOpen ? "space-y-0" : "space-y-8"
-        }`}
+        className={`max-w-full mx-auto p-6 ${isPaymentDetailsFormOpen ? "space-y-0" : "space-y-8"
+          }`}
       >
         {/* Header Section */}
         <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 p-8 shadow-lg shadow-slate-900/5">
@@ -407,7 +406,7 @@ const OrderManagement = () => {
                           <TableCell className="font-medium text-slate-800 dark:text-slate-200">
                             <div className="flex items-center gap-2">
                               <Building2 className="w-4 h-4 text-slate-500" />
-                              {order?.tenantId?.organizationName || "N/A"}
+                              {order?.organization?.name || "N/A"}
                             </div>
                           </TableCell>
                           <TableCell className="text-slate-700 dark:text-slate-300">

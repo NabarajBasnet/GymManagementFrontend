@@ -180,8 +180,8 @@ const TenantDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
 
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.1),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)]" />
+      <div className="absolute min-h-screen inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.1),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)]" />
+      <div className="absolute inset-0 min-h-screen bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.1),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)]" />
 
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}

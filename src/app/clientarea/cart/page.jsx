@@ -67,8 +67,6 @@ const TenantCartManagement = () => {
 
   const { cart } = data || {};
 
-  // console.log("Cart: ", cart?.[0]?.items);
-
   const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {

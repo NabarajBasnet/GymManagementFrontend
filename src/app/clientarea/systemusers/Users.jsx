@@ -488,7 +488,7 @@ const Users = () => {
                           </div>
                         </div>
 
-                        {multiBranchSupport || isOnFreeTrial && (
+                        {(multiBranchSupport || isOnFreeTrial) && (
                           <div>
                             <Label className="dark:text-gray-200">Branch</Label>
                             <Controller
@@ -648,7 +648,7 @@ const Users = () => {
                       <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                         Role
                       </TableHead>
-                      {multiBranchSupport || isOnFreeTrial && (
+                      {(multiBranchSupport || isOnFreeTrial) && (
                         <TableHead className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                           Branch
                         </TableHead>
@@ -698,7 +698,7 @@ const Users = () => {
                               {user.role}
                             </div>
                           </TableCell>
-                          {multiBranchSupport || isOnFreeTrial && (
+                          {(multiBranchSupport || isOnFreeTrial) && (
                             <TableCell className="px-6 py-4 whitespace-nowrap">
                               <div className="text-sm text-gray-900 dark:text-gray-100">
                                 {getBranchName(user.organizationBranch?._id)}
