@@ -50,6 +50,7 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import OrgDetailsForm from "./OrgDetailsForm";
 import LocationAndLocaleForm from "./LocationAndLocaleForm";
 import BillingAndPaymentForm from "./BillingAndPaymentForm";
+import TenantDetailsCard from "./DetailsCard";
 
 const TenantSetting = () => {
   const tenant = useTenant();
@@ -884,6 +885,7 @@ const TenantSetting = () => {
             </TabsContent>
 
             <TabsContent value='cards'>
+              <TenantDetailsCard tenantData={loggedInTenant} />
             </TabsContent>
 
             <TabsContent value='billing' className='w-full flex justify-center items-center space-y-6'>
