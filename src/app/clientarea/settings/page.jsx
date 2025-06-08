@@ -301,7 +301,7 @@ const TenantSetting = () => {
               className="px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
             >
               <PiCardsThreeFill className="w-5 h-5 mr-2" />
-              <span>Payment Cards</span>
+              <span>Cards</span>
             </TabsTrigger>
             <TabsTrigger
               value="billing"
