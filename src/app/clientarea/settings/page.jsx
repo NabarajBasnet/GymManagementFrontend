@@ -47,6 +47,9 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
+import OrgDetailsForm from "./OrgDetailsForm";
+import LocationAndLocaleForm from "./LocationAndLocaleForm";
+import BillingAndPaymentForm from "./BillingAndPaymentForm";
 
 const TenantSetting = () => {
   const tenant = useTenant();
@@ -245,47 +248,6 @@ const TenantSetting = () => {
     }
   };
 
-  // Organization data states
-  const [settingUpOrg, setSettingUpOrg] = useState(false);
-  const [name, setOrgName] = useState('')
-  const [businessType, setBusinessType] = useState('')
-  const [businessEmail, setBusinessEmail] = useState('')
-  const [websiteUrl, setWebsiteUrl] = useState('')
-  const [logoUrl, setLogoUrl] = useState('')
-
-  // Handle Organization Setup
-  const handleOrgSetup = async () => {
-    try {
-      setSettingUpOrg(true);
-      const organizationData = { name, businessType, businessEmail, websiteUrl, logoUrl };
-
-      const response = await fetch('http://localhost:3000/api/organization/register-organization', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(organizationData),
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        setSettingUpOrg(false);
-        sonnerToast.success(result.message || "Organization details saved successfully");
-        hotToast.success(result.message || "Organization details saved successfully");
-      } else {
-        setSettingUpOrg(false);
-        sonnerToast.error(result.message || "Failed to save organization details");
-        hotToast.error(result.message || "Failed to save organization details");
-      }
-    } catch (error) {
-      setSettingUpOrg(false);
-      console.error("Error:", error);
-      sonnerToast.error("An error occurred while saving organization details");
-      hotToast.error("An error occurred while saving organization details");
-    }
-  };
-
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -317,7 +279,7 @@ const TenantSetting = () => {
         </div>
 
         {/* Tabs Section */}
-        <Tabs defaultValue="accountdetails" className="w-full mt-6">
+        <Tabs defaultValue="orgsetup" className="w-full mt-6">
           <TabsList className="w-full flex justify-center gap-1 p-1 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <TabsTrigger
               value="accountdetails"
@@ -913,234 +875,11 @@ const TenantSetting = () => {
 
             <TabsContent value='orgsetup' className='w-full flex flex-col items-center space-y-6'>
               <Card className='w-full md:w-10/12 lg:w-9/12 dark:border-none dark:bg-gray-800 shadow-lg rounded-xl border border-gray-200 dark:border-gray-700'>
-                <div onSubmit={handleSubmit(handleOrgSetup)}>
-                  <div className="flex items-center space-x-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 p-6 border-b border-gray-200 dark:border-gray-700 rounded-t-xl">
-                    <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/30">
-                      <Building2 className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
-                      {onboardAt === 'Business Info' ? 'Setup Your Organization' : 'Organization Details'}
-                    </h2>
-                  </div>
-
-                  <div className="grid p-6 grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Organization Name */}
-                    <div className="space-y-2">
-                      <Label className="text-gray-700 dark:text-gray-300 font-medium">Organization Name *</Label>
-                      <Input
-                        value={name}
-                        onChange={(e) => setOrgName(e.target.value)}
-                        placeholder="Acme Inc."
-                        className="py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                      />
-                      {errors.organizationName && (
-                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.organizationName.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Business Type */}
-                    <div className="space-y-2">
-                      <Label className="text-gray-700 dark:text-gray-300 font-medium">Business Type *</Label>
-                      <Controller
-                        name="businessType"
-                        control={control}
-                        rules={{ required: "Business type is required" }}
-                        render={({ field }) => (
-                          <Select onValueChange={(value) => setBusinessType(value)}>
-                            <SelectTrigger className="py-6 rounded-sm bg-white dark:bg-gray-900 dark:text-white border-gray-300 dark:border-none focus:ring-2 focus:ring-blue-500">
-                              <SelectValue placeholder="Select business type" />
-                            </SelectTrigger>
-                            <SelectContent className="rounded-sm dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
-                              {businessTypes.map(type => (
-                                <SelectItem
-                                  key={type}
-                                  value={type}
-                                  className="hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer focus:bg-blue-50 dark:focus:bg-gray-700"
-                                >
-                                  {type}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                      {errors.businessType && (
-                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.businessType.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Business Email */}
-                    <div className="space-y-2">
-                      <Label className="text-gray-700 dark:text-gray-300 font-medium">Business Email *</Label>
-                      <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                        <Input
-                          value={businessEmail}
-                          onChange={(e) => setBusinessEmail(e.target.value)}
-                          type="email"
-                          className="pl-10 py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="contact@acme.com"
-                        />
-                      </div>
-                      {errors.businessEmail && (
-                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.businessEmail.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Website URL */}
-                    <div className="space-y-2">
-                      <Label className="text-gray-700 dark:text-gray-300 font-medium">Website URL</Label>
-                      <div className="relative">
-                        <Globe className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 dark:text-gray-500" />
-                        <Input
-                          value={websiteUrl}
-                          onChange={(e) => setWebsiteUrl(e.target.value)}
-                          className="pl-10 py-6 rounded-sm dark:border-none bg-white dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                          placeholder="https://acme.com"
-                        />
-                      </div>
-                      {errors.websiteUrl && (
-                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.websiteUrl.message}
-                        </p>
-                      )}
-                    </div>
-
-                    {/* Logo URL */}
-                    <div className="space-y-2">
-                      <Label className="text-gray-700 dark:text-gray-300 font-medium">Logo URL</Label>
-                      <Input
-                        value={logoUrl}
-                        onChange={(e) => setLogoUrl(e.target.value)}
-                        className="py-6 rounded-sm dark:border-none dark:bg-gray-900 dark:text-white border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                        placeholder="https://acme.com/logo.png"
-                      />
-                      {errors.logoUrl && (
-                        <p className="text-sm text-red-600 dark:text-red-400 mt-1">
-                          {errors.logoUrl.message}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="flex justify-between items-center p-6 border-t border-gray-200 dark:border-gray-700">
-                    <div className="text-sm text-gray-500 dark:text-gray-400">
-                      Fields marked with * are required
-                    </div>
-                    <Button
-                      type="submit"
-                      className="px-6 py-3 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all duration-200 transform hover:-translate-y-0.5"
-                      onClick={() => handleOrgSetup()}
-                    >
-                      {settingUpOrg ? (
-                        <span className="flex items-center gap-2">
-                          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          {onboardAt === 'Business Info' ? 'Setting Up...' : 'Saving...'}
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-2">
-                          {onboardAt === 'Business Info' ? 'Setup Organization' : 'Save Changes'}
-                        </span>
-                      )}
-                    </Button>
-                  </div>
-                </div>
+                <OrgDetailsForm />
               </Card>
 
               <Card className='w-full md:w-9/12 rounded-2xl shadow-md'>
-                <div>
-                  <div className="space-y-6 dark:bg-gray-800 dark:border-none">
-                    <div className="flex space-x-4 bg-gray-100 dark:bg-gray-700 p-5 border-b dark:border-gray-500 rounded-t-2xl">
-                      <MapPin className="w-6 h-6 text-primary" />
-                      <h2 className="text-xl font-semibold">Location & Locale</h2>
-                    </div>
-                    <div className="grid px-6 grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="country">Country *</Label>
-                        <Input
-                          id="country"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="Country"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="state">State/Province *</Label>
-                        <Input
-                          id="state"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="California"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="city">City *</Label>
-                        <Input
-                          id="city"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="San Francisco"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="timezone">Timezone</Label>
-                        <Input
-                          id="timezone"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="PST (UTC-8)"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="currency">Currency *</Label>
-                        <Select
-                        >
-                          <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-900 bg-white'>
-                            <SelectValue placeholder="Select currency" />
-                          </SelectTrigger>
-                          <SelectContent className='dark:bg-gray-900 dark:border-none'>
-                            {currencies.map(currency => (
-                              <SelectItem key={currency} value={currency} className='cursor-pointer hover:bg-blue-500'>{currency}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="language">Language *</Label>
-                        <Select
-                        >
-                          <SelectTrigger className='py-6 rounded-sm dark:bg-gray-900 bg-white dark:border-none'>
-                            <SelectValue placeholder="Select language" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {languages.map(language => (
-                              <SelectItem key={language} value={language} className='cursor-pointer hover:bg-blue-500'>{language}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-start items-center">
-                      <Button
-                        className="bg-indigo-600 m-4 text-white hover:bg-indigo-700"
-                        type='submit'
-                      >
-                        Submit Details
-                      </Button>
-                    </div>
-                  </div>
-                </div>
+                <LocationAndLocaleForm />
               </Card>
             </TabsContent>
 
@@ -1148,128 +887,7 @@ const TenantSetting = () => {
             </TabsContent>
 
             <TabsContent value='billing'>
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <CreditCard className="w-6 h-6 text-primary" />
-                  <h2 className="text-xl font-semibold">Billing & Payments</h2>
-                </div>
-
-                <Card className="p-6 space-y-6 dark:bg-gray-800 dark:border-none">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-primary" />
-                      <h3 className="font-medium">Billing Address</h3>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="addressLine1">Address Line 1 *</Label>
-                        <Input
-                          id="addressLine1"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="123 Main St"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="addressLine2">Address Line 2</Label>
-                        <Input
-                          id="addressLine2"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="Apt 4B"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="billingCity">City *</Label>
-                        <Input
-                          id="billingCity"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="San Francisco"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="billingState">State *</Label>
-                        <Input
-                          id="billingState"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="CA"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="zipCode">ZIP/Postal Code *</Label>
-                        <Input
-                          id="zipCode"
-                          className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                          placeholder="94105"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="billingCountry">Country *</Label>
-                        <Select
-                        >
-                          <SelectTrigger className='py-6 dark:border-none dark:bg-gray-900'>
-                            <SelectValue placeholder="Select country" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {countries.map(country => (
-                              <SelectItem key={country} value={country} className='hover:bg-blue-500 cursor-pointer'>{country}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="taxId">Tax ID</Label>
-                      <Input
-                        id="taxId"
-                        className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                        placeholder="123-45-6789"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="invoiceEmail">Invoice Email *</Label>
-                      <Input
-                        id="invoiceEmail"
-                        type="email"
-                        className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                        placeholder="billing@acme.com"
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="paymentProvider">Payment Provider *</Label>
-                      <Select
-                      >
-                        <SelectTrigger className='py-6 dark:border-none dark:bg-gray-900'>
-                          <SelectValue placeholder="Select provider" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {paymentProviders.map(provider => (
-                            <SelectItem className='hover:bg-blue-500 cursor-pointer' key={provider} value={provider}>{provider}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="paymentAccountId">Payment Account ID *</Label>
-                      <Input
-                        id="paymentAccountId"
-                        className='py-6 rounded-sm dark:text-white bg-white dark:bg-gray-900 dark:border-none'
-                        placeholder="acct_123456789"
-                      />
-                    </div>
-                  </div>
-                </Card>
-              </div>
+              <BillingAndPaymentForm />
             </TabsContent>
           </Card>
         </Tabs>
