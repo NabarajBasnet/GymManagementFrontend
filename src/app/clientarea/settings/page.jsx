@@ -886,8 +886,10 @@ const TenantSetting = () => {
             <TabsContent value='cards'>
             </TabsContent>
 
-            <TabsContent value='billing'>
-              <BillingAndPaymentForm />
+            <TabsContent value='billing' className='w-full flex justify-center items-center space-y-6'>
+              <Card className='w-full md:w-9/12 rounded-2xl shadow-md dark:bg-gray-800'>
+                <BillingAndPaymentForm />
+              </Card>
             </TabsContent>
           </Card>
         </Tabs>
