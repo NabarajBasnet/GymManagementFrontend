@@ -131,11 +131,11 @@ const Navbar = () => {
 
                         {/* CTA Button with Icon */}
                         <a
-                            href="/auth/tenantlogin"
+                            href="/login"
                             className={cn(
                                 "px-6 py-2 rounded-full font-medium shadow-lg flex items-center transition-all duration-300",
-                                scrolled 
-                                    ? "bg-indigo-600 hover:bg-indigo-700 text-white" 
+                                scrolled
+                                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
                                     : "bg-white hover:bg-gray-100 text-indigo-600"
                             )}
                         >
@@ -225,7 +225,7 @@ const Navbar = () => {
                             {/* Mobile Login & CTA Buttons */}
                             <div className="pt-2 space-y-3">
                                 <a
-                                    href="/auth/tenantlogin"
+                                    href="/login"
                                     className="block w-full text-center px-6 py-3 rounded-full border border-gray-300 dark:border-gray-700 text-gray-900 dark:text-white font-medium shadow-sm"
                                     onClick={(e) => {
                                         e.preventDefault();
@@ -234,7 +234,7 @@ const Navbar = () => {
                                     Login
                                 </a>
                                 <a
-                                    href="auth/tenantsignup"
+                                    href="/register"
                                     className="btn-primary w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
                                     onClick={(e) => {
                                         e.preventDefault();

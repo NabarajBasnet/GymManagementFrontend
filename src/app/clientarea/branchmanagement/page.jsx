@@ -102,8 +102,14 @@ const BranchManagement = () => {
   const onSubmit = async (data) => {
     const tenantId = loggedInTenant?._id;
     try {
-      const response = await fetch(`http://localhost:3000/api/organizationbranch`, {
-        method: "POST",
+      const url = isEditing
+        ? `http://localhost:3000/api/organizationbranch/${editingBranch._id}`
+        : `http://localhost:3000/api/organizationbranch`;
+
+      const method = isEditing ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -111,11 +117,14 @@ const BranchManagement = () => {
       });
 
       const responseBody = await response.json();
-      console.log(responseBody);
-
       if (response.ok && response.status === 200) {
         toast.success(responseBody.message);
         queryClient.invalidateQueries({ queryKey: ["branches"] });
+        // Reset form and state
+        reset();
+        setEditingBranch(null);
+        setIsEditing(false);
+        setActiveTab("view");
       } else {
         toast.error(responseBody.message);
       }
@@ -123,11 +132,6 @@ const BranchManagement = () => {
       console.log("Error: ", error);
       toast.error("Error: ", error.error);
     }
-    // Reset form and state
-    reset();
-    setEditingBranch(null);
-    setIsEditing(false);
-    setActiveTab("view");
   };
 
   const handleEditBranch = (branch) => {
@@ -184,6 +188,7 @@ const BranchManagement = () => {
         )}`
       );
       const responseBody = await response.json();
+      console.log(responseBody);
       if (response.status === 201) {
         toast.error(responseBody.message);
         soonerToast.error(responseBody.message);
@@ -198,7 +203,7 @@ const BranchManagement = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("Error fetching branches");
+      toast.error(error.message);
       return { branches: [], totalPages: 0, totalBranches: 0 };
     }
   };
@@ -566,8 +571,8 @@ const BranchManagement = () => {
                                   <ArrowUpDown
                                     onClick={() => handleSort("orgBranchName")}
                                     className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchName"
-                                        ? "text-blue-600"
-                                        : ""
+                                      ? "text-blue-600"
+                                      : ""
                                       }`}
                                   />
                                 </div>
@@ -580,8 +585,8 @@ const BranchManagement = () => {
                                       handleSort("orgBranchAddress")
                                     }
                                     className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchAddress"
-                                        ? "text-blue-600"
-                                        : ""
+                                      ? "text-blue-600"
+                                      : ""
                                       }`}
                                   />
                                 </div>
@@ -592,8 +597,8 @@ const BranchManagement = () => {
                                   <ArrowUpDown
                                     onClick={() => handleSort("orgBranchPhone")}
                                     className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchPhone"
-                                        ? "text-blue-600"
-                                        : ""
+                                      ? "text-blue-600"
+                                      : ""
                                       }`}
                                   />
                                 </div>
@@ -606,8 +611,8 @@ const BranchManagement = () => {
                                       handleSort("orgBranchStatus")
                                     }
                                     className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "gymBranchStatus"
-                                        ? "text-blue-600"
-                                        : ""
+                                      ? "text-blue-600"
+                                      : ""
                                       }`}
                                   />
                                 </div>
@@ -618,8 +623,8 @@ const BranchManagement = () => {
                                   <ArrowUpDown
                                     onClick={() => handleSort("createdAt")}
                                     className={`ml-2 h-4 w-4 cursor-pointer hover:text-gray-700 transition-color duration-500 ${sortBy === "createdAt"
-                                        ? "text-blue-600"
-                                        : ""
+                                      ? "text-blue-600"
+                                      : ""
                                       }`}
                                   />
                                 </div>
@@ -689,55 +694,48 @@ const BranchManagement = () => {
                                   ).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell className="text-right">
-                                  <div className="flex justify-end space-x-2">
-                                    <Button
-                                      variant="outline"
-                                      size="sm"
-                                      className="h-9 dark:border-none rounded-lg"
+                                  <div className="flex justify-end items-center space-x-2">
+                                    <FiEdit
+                                      className='h-4 w-4 bg-transparent hover:bg-transparent cursor-pointer'
                                       onClick={() => handleEditBranch(branch)}
-                                    >
-                                      <FiEdit className="h-4 w-4 mr-1" />
-                                      Edit
-                                    </Button>
+                                    />
 
-                                    <AlertDialog className="dark:bg-gray-900">
+                                    <AlertDialog>
                                       <AlertDialogTrigger asChild>
                                         <Button
                                           variant="destructive"
-                                          size="sm"
-                                          className="h-9 rounded-lg bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
+                                          size="icon"
+                                          className='bg-transparent hover:text-red-600 hover:bg-transparent'
                                         >
                                           <FiTrash2 className="h-4 w-4 mr-1" />
-                                          Delete
                                         </Button>
                                       </AlertDialogTrigger>
-                                      <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                          <AlertDialogTitle className="text-red-600 dark:text-red-500">
-                                            Are you absolutely sure?
-                                          </AlertDialogTitle>
-                                          <AlertDialogDescription>
-                                            This action cannot be undone. This
-                                            will permanently delete your account
-                                            and remove your data from our
-                                            servers.
+                                      <AlertDialogContent className="dark:bg-gray-900 border border-red-500 shadow-lg dark:shadow-red-800/20 transition-all duration-300 rounded-xl">
+                                        <AlertDialogHeader className="flex items-center gap-2">
+                                          <div className="flex items-center gap-2 text-red-600 dark:text-red-500">
+                                            <FiTrash2 className="h-6 w-6" />
+                                            <AlertDialogTitle className="text-lg font-semibold">
+                                              Are you absolutely sure?
+                                            </AlertDialogTitle>
+                                          </div>
+                                          <AlertDialogDescription className="mt-2 text-sm text-gray-700 dark:text-gray-300">
+                                            This action <span className="font-semibold text-red-600">cannot be undone</span>. It will permanently delete this branch and all associated data from our servers.
                                           </AlertDialogDescription>
                                         </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                          <AlertDialogCancel className="text-gray-800 dark:text-white dark:bg-gray-500 dark:hover:bg-gray-600 dark:border-none">
+                                        <AlertDialogFooter className="mt-4 flex justify-end gap-3">
+                                          <AlertDialogCancel className="px-4 py-2 rounded-lg text-gray-800 dark:text-white dark:bg-gray-700 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600">
                                             Cancel
                                           </AlertDialogCancel>
                                           <AlertDialogAction
-                                            className="bg-red-500 hover:bg-red-600 text-white dark:bg-red-500 dark:hover:bg-red-600"
-                                            onClick={() =>
-                                              handleDeleteBranch(branch._id)
-                                            }
+                                            className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white dark:bg-red-600 dark:hover:bg-red-700 font-semibold shadow-md"
+                                            onClick={() => handleDeleteBranch(branch._id)}
                                           >
-                                            Continue
+                                            Yes, delete permanently
                                           </AlertDialogAction>
                                         </AlertDialogFooter>
                                       </AlertDialogContent>
                                     </AlertDialog>
+
                                   </div>
                                 </TableCell>
                               </TableRow>
