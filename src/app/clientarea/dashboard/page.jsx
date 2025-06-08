@@ -189,18 +189,12 @@ const TenantDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/30 via-purple-50/20 to-gray-50 dark:from-gray-900 dark:via-gray-800/80 dark:to-gray-900">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Full-width background elements */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.05),transparent)] dark:bg-[radial-gradient(circle_at_25%_25%,rgba(59,130,246,0.02),transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.05),transparent)] dark:bg-[radial-gradient(circle_at_75%_75%,rgba(147,51,234,0.02),transparent)]" />
-      </div>
 
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
+        <div
           className="mb-8"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -221,11 +215,11 @@ const TenantDashboard = () => {
               <span>{new Date().toLocaleDateString()}</span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         <div className="flex flex-col xl:flex-row gap-8">
           {/* Enhanced Profile Card */}
-          <motion.div
+          <div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="w-full xl:w-80 flex-shrink-0"
@@ -318,7 +312,7 @@ const TenantDashboard = () => {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
 
           {/* Main Content */}
           <div className="flex-1 space-y-8">
@@ -361,7 +355,7 @@ const TenantDashboard = () => {
             {/* Organization and Subscription Details */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Organization Details Card */}
-              <motion.div
+              <div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
@@ -430,10 +424,10 @@ const TenantDashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
 
               {/* Enhanced Active Services Card */}
-              <motion.div
+              <div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2 }}
@@ -467,10 +461,10 @@ const TenantDashboard = () => {
                           </div>
                           <div>
                             <h3 className="font-bold text-xl">
-                              {tenantOnTrail ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName || 'N/A'}
+                              {tenantOnTrail === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName || 'N/A'}
                             </h3>
                             <p className="text-blue-100 text-sm">
-                              {loggedInTenant?.subscription?.subscriptionDescription}
+                              {tenantOnTrail === 'Active' ? `${loggedInTenant?.freeTrailStatus}` : `${loggedInTenant?.subscriptionStatus}`}
                             </p>
                           </div>
                         </div>
@@ -554,11 +548,11 @@ const TenantDashboard = () => {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             </div>
 
             {/* Billing Address Section */}
-            <motion.div
+            <div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
@@ -620,7 +614,7 @@ const TenantDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
