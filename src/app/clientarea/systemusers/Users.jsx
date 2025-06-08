@@ -157,6 +157,7 @@ const Users = () => {
         toast.error(responseBody.message);
       }
       if (response.status === 200 && response.ok) {
+        setUserBranch(responseBody.user.organizationBranch);
         reset({
           firstName: responseBody.user.firstName,
           lastName: responseBody.user.lastName,
@@ -501,18 +502,25 @@ const Users = () => {
                                     field.onChange(value);
                                   }}
                                 >
-                                  <SelectTrigger className="mt-1 rounded-md py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100">
-                                    <SelectValue placeholder="Select Branch" />
+                                  <SelectTrigger className="mt-1 rounded-md py-6 bg-white dark:bg-gray-900 border-gray-300 dark:border-gray-700 dark:text-gray-100 cursor-pointer">
+                                    <SelectValue placeholder={getBranchName(userBranch) || 'Select User'} />
                                   </SelectTrigger>
+
                                   <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                                    {branches?.map((branch) => (
-                                      <SelectItem
-                                        key={branch._id}
-                                        value={branch._id}
-                                      >
-                                        {branch.orgBranchName}
-                                      </SelectItem>
-                                    ))}
+                                    <SelectGroup>
+                                      <SelectLabel>
+                                        Select
+                                      </SelectLabel>
+                                      {branches?.map((branch) => (
+                                        <SelectItem
+                                          className='cursor-pointer'
+                                          key={branch._id}
+                                          value={branch._id}
+                                        >
+                                          {branch?.orgBranchName}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
                                   </SelectContent>
                                 </Select>
                               )}
