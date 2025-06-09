@@ -1,5 +1,6 @@
 "use client";
 
+import { FaLockOpen } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -115,6 +116,12 @@ const ClientAreaHeader = ({ activeTab }) => {
       icon: <User size={20} />,
       label: "System Users",
       description: "Manage System Users",
+    },
+    {
+      id: "/clientarea/lockermanagement",
+      icon: < FaLockOpen size={20} />,
+      label: "Locker Management",
+      description: "Manage Lockers",
     },
     {
       id: "/clientarea/myorders",
@@ -560,7 +567,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-72" align="end">
+                <DropdownMenuContent className="w-72 dark:bg-gray-900 dark:border-gray-700" align="end">
                   <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center text-sm font-bold text-white">

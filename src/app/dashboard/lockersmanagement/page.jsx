@@ -5,7 +5,7 @@ import { toast as sonnerToast } from 'sonner';
 import { LiaHomeSolid } from "react-icons/lia";
 import { MdAdd } from "react-icons/md";
 import { RiResetRightFill } from "react-icons/ri";
-import { MdError, MdClose, MdDone } from "react-icons/md";
+import { FaLockOpen } from "react-icons/fa";
 import Badge from '@mui/material/Badge';
 import {
     Tooltip,
@@ -330,7 +330,7 @@ const Lockers = () => {
                     </BreadcrumbItem>
                     <BreadcrumbSeparator className={'font-medium'} />
                     <BreadcrumbItem>
-                        <BreadcrumbPage className='font-medium'>Lockers</BreadcrumbPage>
+                        <BreadcrumbLink className='font-medium'>Lockers</BreadcrumbLink>
                     </BreadcrumbItem>
                 </BreadcrumbList>
             </Breadcrumb>
@@ -779,10 +779,10 @@ const Lockers = () => {
                                         Lockers.map((locker) => (
                                             <div
                                                 key={locker.lockerNumber}
-                                                className="relative group rounded-2xl overflow-hidden my-4 md:my-0 transition-all duration-500 hover:duration-300 hover:-translate-y-1"
+                                                className="relative group rounded-2xl overflow-hidden my-4 md:my-0 transition-all duration-500 hover:duration-300"
                                             >
                                                 {/* Sophisticated gray gradient background */}
-                                                <div className="absolute inset-0 bg-gradient-to-br opacity-20 group-hover:opacity-30 transition-opacity duration-300 dark:opacity-15 dark:group-hover:opacity-25
+                                                <div className="absolute inset-0 bg-white border dark:border-none dark:bg-gradient-to-br opacity-20 group-hover:opacity-30 transition-opacity duration-300 dark:opacity-15 dark:group-hover:opacity-25
           from-gray-600 via-gray-700 to-gray-800" />
 
                                                 <div className="relative backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border border-white/40 dark:border-gray-700/60 rounded-2xl overflow-hidden">

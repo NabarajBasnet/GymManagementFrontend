@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card"
+import { Card } from "@/components/ui/card";
 import { FaLock } from "react-icons/fa";
 import { FaUser } from "react-icons/fa6";
 import { useEffect, useState } from "react";

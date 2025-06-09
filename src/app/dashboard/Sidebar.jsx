@@ -794,7 +794,7 @@ const Sidebar = () => {
           {userLoading ? (
             <Loader />
           ) : (
-            <DropdownMenu className="border">
+            <DropdownMenu className="border dark:border-none dark:bg-gray-800">
               <DropdownMenuTrigger asChild>
                 <div
                   className={`flex items-center rounded-xl cursor-pointer p-2 ${sidebarMinimized ? "justify-center" : "px-3"
@@ -830,7 +830,7 @@ const Sidebar = () => {
               </DropdownMenuTrigger>
 
               <DropdownMenuContent
-                className="w-64 p-0 rounded-xl shadow-2xl shadow-gray-200/70 dark:shadow-none border border-gray-100 dark:border-gray-800"
+                className="w-64 p-0 rounded-xl shadow-2xl dark:border-none dark:bg-gray-900 shadow-gray-200/70 dark:shadow-none border border-gray-100 dark:border-gray-800"
                 side={sidebarMinimized ? "right" : "top"}
                 align={sidebarMinimized ? "start" : "end"}
                 alignOffset={10}

@@ -9,16 +9,6 @@ import Footer from "@/components/Website/Footer/Footer";
 import { ThemeProvider } from "@/components/Providers/ThemeProvider";
 import { Toaster as Sooner } from "@/components/ui/sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export default function MainClientLayout({ children }) {
   const pathname = usePathname();
   const lenisRef = useRef(null);
