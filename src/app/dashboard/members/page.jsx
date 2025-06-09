@@ -539,7 +539,7 @@ const AllMembers = () => {
                                 sx={{ width: "120px", maxWidth: "120px" }}
                               >
                                 <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
-                                  <span className="truncate text-center font-mono text-xs">
+                                  <span className="truncate text-center font-mono text-sm">
                                     {member._id}
                                   </span>
                                   <TooltipProvider>

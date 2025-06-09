@@ -180,19 +180,19 @@ export function NewRadialChart({ startDate, endDate }) {
                             ) : newMembers?.members?.length > 0 ? (
                                 newMembers.members.map(({ member }) => {
                                     const textColor =
-                                        member.status === 'Active' ? 'text-black dark:text-white' :
-                                            member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
+                                        member?.status === 'Active' ? 'text-black dark:text-white' :
+                                            member?.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
                                                 'text-red-500 dark:text-red-500';
                                     return (
-                                        <TableRow key={member._id} className={`${textColor} hover:bg-pink-50 dark:hover:bg-gray-800`}>
+                                        <TableRow key={member?._id} className={`${textColor} hover:bg-pink-50 dark:hover:bg-gray-800`}>
                                             <TableCell>
                                                 <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
-                                                    <span className="truncate text-center text-xs font-medium">{member._id}</span>
+                                                    <span className="truncate text-center text-xs font-medium">{member?._id || 'N/A'}</span>
                                                     <TooltipProvider>
                                                         <Tooltip>
                                                             <TooltipTrigger asChild>
                                                                 <button
-                                                                    onClick={() => copyToClipboard(member._id)}
+                                                                    onClick={() => copyToClipboard(member?._id || 'N/A')}
                                                                     className="text-gray-400 hover:text-blue-600 transition-colors p-1"
                                                                 >
                                                                     <MdContentCopy size={14} />
@@ -205,14 +205,14 @@ export function NewRadialChart({ startDate, endDate }) {
                                                     </TooltipProvider>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className='text-xs font-medium'>{member.fullName}</TableCell>
-                                            <TableCell className='text-xs font-medium'>{member.membershipDuration}</TableCell>
+                                            <TableCell className='text-xs font-medium'>{member?.fullName || 'N/A'}</TableCell>
+                                            <TableCell className='text-xs font-medium'>{member?.membershipDuration || 'N/A'}</TableCell>
                                             <TableCell className='text-xs font-medium'>
-                                                {new Date(member.membershipRenewDate).toLocaleDateString()}
+                                                {new Date(member?.membershipRenewDate).toLocaleDateString()}
                                             </TableCell>
-                                            <TableCell className='text-xs font-medium'>{member.contactNo}</TableCell>
+                                            <TableCell className='text-xs font-medium'>{member?.contactNo}</TableCell>
                                             <TableCell className='text-xs font-medium'>
-                                                {member.status.charAt(0).toUpperCase() + member.status.slice(1)}
+                                                {member?.status?.charAt(0).toUpperCase() + member?.status.slice(1)}
                                             </TableCell>
                                         </TableRow>
                                     );
