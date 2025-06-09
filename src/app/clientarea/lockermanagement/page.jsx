@@ -44,22 +44,12 @@ const LockerManagement = () => {
                 </div>
             </div>
 
-            {/* Title and Add Button */}
-            <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border'>
-                <div className='w-full flex justify-between items-center'>
-                    <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
-                    <Button className='rounded-sm hover:bg-blue-500 bg-blue-600 dark:text-white'>
-                        <MdAdd className='w-4 h-4' />Add Lockers
-                    </Button>
-                </div>
-            </div>
-
             {/* Main Tabs Component */}
             <Tabs defaultValue="lockers" className="w-full mt-6">
                 <div className="flex flex-col md:flex-row gap-4">
                     {/* Left Side - Tabs List */}
                     <div className="w-full md:w-2/12">
-                        <Card className='h-ful dark:bg-gray-800 dark:border-none'>
+                        <Card className='h-full dark:bg-gray-800 dark:border-none'>
                             <TabsList className="w-full h-full flex flex-col items-start justify-start p-4 gap-1 space-y-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
                                 <TabsTrigger
                                     value="lockers"
