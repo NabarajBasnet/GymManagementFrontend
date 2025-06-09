@@ -1,5 +1,7 @@
 'use client';
 
+import { toast as hotToast } from 'react-hot-toast';
+import { toast as sonnerToast } from 'sonner';
 import { LiaHomeSolid } from "react-icons/lia";
 import { MdAdd } from "react-icons/md";
 import { RiResetRightFill } from "react-icons/ri";
@@ -385,114 +387,117 @@ const Lockers = () => {
 
             {
                 lockerFormState && data?.Lockers ? (
-                    <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
-                        <div className="bg-white md:rounded-lg rounded-none shadow-xl p-10 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
-                            <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
-                            <form className="space-y-3 h-full" onSubmit={handleSubmit(registerLocker)}>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Locker Number</Label>
+                    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
+                        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
+                            {/* Header with gradient border */}
+                            <div className="border-b-2 border-transparent bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-600 dark:to-gray-500 h-1 rounded-full mb-6"></div>
+
+                            <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                                <FaLock className="text-gray-600 dark:text-gray-300" />
+                                <span>Locker #{lockerNumber} Details</span>
+                            </h1>
+
+                            <form className="space-y-5" onSubmit={handleSubmit(registerLocker)}>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    {/* Locker Number */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Locker Number</Label>
                                         <Input
                                             {...register('lockerNumber')}
                                             disabled
-                                            className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                            className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                             placeholder="Locker Number"
                                         />
                                         {errors.lockerNumber && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.lockerNumber.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.lockerNumber.message}
+                                            </p>
                                         )}
                                     </div>
 
-                                    <div>
-                                        <Label>Member Name</Label>
-
-                                        <div ref={searchRef} className="w-full flex justify-center">
-                                            <div className="relative w-full">
-                                                <div className="w-full">
-                                                    <Controller
-                                                        name="memberName"
-                                                        control={control}
-                                                        render={({ field }) => (
-                                                            <Input
-                                                                {...field}
-                                                                autoComplete="off"
-                                                                value={searchQuery}
-                                                                onChange={(e) => {
-                                                                    setSearchQuery(e.target.value);
-                                                                    field.onChange(e);
-                                                                }}
-                                                                onFocus={handleSearchFocus}
-                                                                className="w-full rounded-lg"
-                                                                placeholder="Search members..."
-                                                            />
-                                                        )}
+                                    {/* Member Search */}
+                                    <div className="space-y-1" ref={searchRef}>
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Member Name</Label>
+                                        <div className="relative">
+                                            <Controller
+                                                name="memberName"
+                                                control={control}
+                                                render={({ field }) => (
+                                                    <Input
+                                                        {...field}
+                                                        autoComplete="off"
+                                                        value={searchQuery}
+                                                        onChange={(e) => {
+                                                            setSearchQuery(e.target.value);
+                                                            field.onChange(e);
+                                                        }}
+                                                        onFocus={handleSearchFocus}
+                                                        className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
+                                                        placeholder="Search members..."
                                                     />
-                                                    {errors.memberName && (
-                                                        <p className="text-sm font-semibold text-red-600">
-                                                            {errors.memberName.message}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                                {renderDropdown && (
-                                                    <div className="w-full absolute bg-white shadow-2xl h-80 overflow-y-auto z-10">
-                                                        {members
-                                                            ?.filter((member) => {
-                                                                const matchByName = member.fullName
-                                                                    .toLowerCase()
-                                                                    .includes(searchQuery.toLowerCase());
-                                                                return matchByName;
-                                                            })
-                                                            .map((member) => (
-                                                                <p
-                                                                    onClick={() => {
-                                                                        setMemberName(member.fullName);
-                                                                        setSearchQuery(member.fullName);
-                                                                        setMemberId(member._id);
-                                                                        setRenderDropdown(false);
-                                                                    }}
-                                                                    className="px-4 py-2 cursor-pointer hover:bg-gray-100"
-                                                                    key={member._id}
-                                                                    value={member._id}
-                                                                >
-                                                                    {member.fullName}
-                                                                </p>
-                                                            ))}
-                                                    </div>
                                                 )}
-                                            </div>
+                                            />
+                                            {renderDropdown && (
+                                                <div className="absolute z-10 mt-1 w-full bg-white dark:bg-gray-700 shadow-lg rounded-lg max-h-60 overflow-y-auto border border-gray-200 dark:border-gray-600">
+                                                    {members
+                                                        ?.filter((member) => member.fullName.toLowerCase().includes(searchQuery.toLowerCase()))
+                                                        .map((member) => (
+                                                            <div
+                                                                key={member._id}
+                                                                onClick={() => {
+                                                                    setMemberName(member.fullName);
+                                                                    setSearchQuery(member.fullName);
+                                                                    setMemberId(member._id);
+                                                                    setRenderDropdown(false);
+                                                                }}
+                                                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-white"
+                                                            >
+                                                                {member.fullName}
+                                                            </div>
+                                                        ))}
+                                                </div>
+                                            )}
                                         </div>
+                                        {errors.memberName && (
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.memberName.message}
+                                            </p>
+                                        )}
                                     </div>
-
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Renew Date</Label>
+                                {/* Dates and Duration */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    {/* Renew Date */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Renew Date</Label>
                                         <Controller
                                             name='renewDate'
                                             control={control}
                                             render={({ field }) => (
                                                 <Input
                                                     {...field}
-                                                    {...register('renewDate')}
+                                                    type="date"
                                                     value={field.value}
                                                     onChange={(e) => {
                                                         setRenewDate(e.target.value);
                                                         field.onChange(e);
                                                         clearErrors('renewDate');
                                                     }}
-                                                    type="date"
-                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                                 />
                                             )}
                                         />
                                         {errors.renewDate && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.renewDate.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.renewDate.message}
+                                            </p>
                                         )}
                                     </div>
 
-                                    <div>
-                                        <Label>Duration</Label>
+                                    {/* Duration */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Duration</Label>
                                         <Controller
                                             name='duration'
                                             control={control}
@@ -504,74 +509,79 @@ const Lockers = () => {
                                                         setDuration(e.target.value)
                                                         field.onChange(e)
                                                     }}
-                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 p-2.5 bg-white dark:bg-gray-700 shadow-sm focus:ring-2 focus:ring-gray-500 focus:outline-none dark:text-white"
                                                 >
-                                                    <option>Select</option>
-                                                    <option value='1 Month'>1 Month</option>
-                                                    <option value='3 Months'>3 Months</option>
-                                                    <option value='6 Months'>6 Months</option>
-                                                    <option value='12 Months'>12 Months</option>
+                                                    <option className="dark:bg-gray-700">Select</option>
+                                                    <option className="dark:bg-gray-700" value='1 Month'>1 Month</option>
+                                                    <option className="dark:bg-gray-700" value='3 Months'>3 Months</option>
+                                                    <option className="dark:bg-gray-700" value='6 Months'>6 Months</option>
+                                                    <option className="dark:bg-gray-700" value='12 Months'>12 Months</option>
                                                 </select>
                                             )}
                                         />
                                         {errors.duration && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.duration.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.duration.message}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Expire Date</Label>
+                                {/* Expire Date and Fee */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    {/* Expire Date */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Expire Date</Label>
                                         <Controller
                                             name='expireDate'
                                             control={control}
                                             render={({ field }) => (
                                                 <Input
                                                     {...field}
-                                                    {...register('expireDate')}
+                                                    type="date"
                                                     value={expireDate}
                                                     onChange={(e) => {
                                                         setExpireDate(e.target.value);
                                                         field.onChange(e);
                                                         clearErrors('expireDate');
                                                     }}
-                                                    type="date"
-                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                                 />
                                             )}
                                         />
                                         {errors.expireDate && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.expireDate.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.expireDate.message}
+                                            </p>
                                         )}
                                     </div>
 
-                                    <div>
-                                        <Label>Fee</Label>
+                                    {/* Fee */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Fee</Label>
                                         <Controller
                                             name='fee'
                                             control={control}
                                             render={({ field }) => (
                                                 <Input
                                                     {...field}
-                                                    {...register('fee')}
-                                                    value={field.value}
-                                                    onChange={(e) => {
-                                                        field.onChange(e);
-                                                    }}
-                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                                 />
                                             )}
                                         />
                                         {errors.fee && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.fee.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.fee.message}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div>
-                                        <Label>Payment Method</Label>
+                                {/* Payment Details */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    {/* Payment Method */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Payment Method</Label>
                                         <Controller
                                             name='paymentMethod'
                                             control={control}
@@ -583,23 +593,26 @@ const Lockers = () => {
                                                         setPaymentMethod(e.target.value);
                                                         field.onChange(e)
                                                     }}
-                                                    className="w-full rounded-md border border-gray-300 p-2 text-gray-700 bg-white shadow-sm cursor-pointer focus:outline-none focus:ring- focus:ring-blue-600"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 p-2.5 bg-white dark:bg-gray-700 shadow-sm focus:ring-2 focus:ring-gray-500 focus:outline-none dark:text-white"
                                                 >
-                                                    <option>Select</option>
-                                                    <option value='Fonepay'>Fonepay</option>
-                                                    <option value='Cash'>Cash</option>
-                                                    <option value='Card'>Card</option>
+                                                    <option className="dark:bg-gray-700">Select</option>
+                                                    <option className="dark:bg-gray-700" value='Fonepay'>Fonepay</option>
+                                                    <option className="dark:bg-gray-700" value='Cash'>Cash</option>
+                                                    <option className="dark:bg-gray-700" value='Card'>Card</option>
                                                 </select>
                                             )}
                                         />
                                         {errors.paymentMethod && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.paymentMethod.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.paymentMethod.message}
+                                            </p>
                                         )}
                                     </div>
 
+                                    {/* Conditional Reference Code */}
                                     {paymentMethod === 'Fonepay' && (
-                                        <div>
-                                            <Label>Reference Code</Label>
+                                        <div className="space-y-1">
+                                            <Label className="text-gray-700 dark:text-gray-300 font-medium">Reference Code</Label>
                                             <Controller
                                                 control={control}
                                                 name='referenceCode'
@@ -607,72 +620,82 @@ const Lockers = () => {
                                                     <Input
                                                         {...field}
                                                         value={field.value}
-                                                        {...register('referenceCode')}
                                                         onChange={(e) => field.onChange(e)}
-                                                        className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                        className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                                     />
                                                 )}
                                             />
-
                                             {errors.referenceCode && (
-                                                <p className="text-sm font-semibold text-red-600">{errors.referenceCode.message}</p>
+                                                <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                    {errors.referenceCode.message}
+                                                </p>
                                             )}
                                         </div>
                                     )}
 
-                                    <div>
-                                        <Label>Receipt No</Label>
+                                    {/* Receipt No */}
+                                    <div className="space-y-1">
+                                        <Label className="text-gray-700 dark:text-gray-300 font-medium">Receipt No</Label>
                                         <Controller
                                             name='receiptNo'
                                             control={control}
                                             render={({ field }) => (
                                                 <Input
                                                     {...field}
-                                                    {...register('receiptNo')}
                                                     value={field.value}
                                                     onChange={(e) => field.onChange(e)}
-                                                    className="rounded-lg border-gray-300 bg-gray-50 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                                    className="w-full rounded-lg border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:ring-2 focus:ring-gray-500 focus:border-transparent dark:text-white"
                                                 />
                                             )}
                                         />
                                         {errors.receiptNo && (
-                                            <p className="text-sm font-semibold text-red-600">{errors.receiptNo.message}</p>
+                                            <p className="text-sm font-medium text-red-500 dark:text-red-400 mt-1">
+                                                {errors.receiptNo.message}
+                                            </p>
                                         )}
                                     </div>
                                 </div>
 
-                                <div className="w-full flex justify-center mt-8 space-x-4">
-                                    <Button type='submit' className="bg-green-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-green-600 transition-all">
-                                        {isSubmitting ? 'Submitting...' : "Submit"}
-                                    </Button>
+                                {/* Form Actions */}
+                                <div className="flex flex-wrap justify-end gap-3 pt-6 border-t border-gray-200 dark:border-gray-700">
+                                    {fetchedLocker && (
+                                        <Button
+                                            type='button'
+                                            onClick={() => resetLocker(fetchedLocker._id)}
+                                            className="px-6 py-2.5 rounded-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors shadow-sm"
+                                        >
+                                            Reset
+                                        </Button>
+                                    )}
+
                                     <Button
                                         type='button'
                                         onClick={() => setLockerFormState(false)}
-                                        className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 transition-all"
+                                        className="px-6 py-2.5 rounded-lg font-medium bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors shadow-sm"
                                     >
                                         Close
                                     </Button>
-                                    {
-                                        fetchedLocker ? (
-                                            <Button
-                                                type='button'
-                                                onClick={() => resetLocker(fetchedLocker._id)}
-                                                className="bg-red-500 text-white font-semibold rounded-lg px-6 py-2 shadow-md hover:bg-red-600 hover:text-white transition-all">
-                                                Reset
-                                            </Button>
-                                        ) : (
-                                            <>
-                                            </>
-                                        )
-                                    }
+
+                                    <Button
+                                        type='submit'
+                                        className="px-6 py-2.5 rounded-lg font-medium bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-600 dark:to-gray-500 text-white hover:from-gray-600 hover:to-gray-500 dark:hover:from-gray-500 dark:hover:to-gray-400 transition-all shadow-md"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? (
+                                            <span className="flex items-center gap-2">
+                                                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                </svg>
+                                                Processing...
+                                            </span>
+                                        ) : "Submit"}
+                                    </Button>
                                 </div>
                             </form>
                         </div>
                     </div>
-                ) : (
-                    <>
-                    </>
-                )
+                ) : null
             }
 
             <div className="min-h-screen">
