@@ -1,5 +1,6 @@
 'use client';
 
+import { LiaHomeSolid } from "react-icons/lia";
 import { MdAdd } from "react-icons/md";
 import { RiResetRightFill } from "react-icons/ri";
 import { MdError, MdClose, MdDone } from "react-icons/md";
@@ -350,34 +351,35 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 py-7 px-4" onClick={() => setToast(false)}>
-            <div className='w-full bg-white p-6 rounded-md shadow-dm border' onClick={() => setToast(false)}>
+        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4" onClick={() => setToast(false)}>
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/">Home</BreadcrumbLink>
+                            <BreadcrumbLink className='flex items-center font-medium' href="/"> <LiaHomeSolid className="mr-2 w-4 h-4"/> Home</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className={'font-medium'}/>
                         <BreadcrumbItem>
                             <DropdownMenu>
                                 <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
+                                    <BreadcrumbEllipsis className="h-4 w-4 font-medium" />
                                 </DropdownMenuTrigger>
                             </DropdownMenu>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className={'font-medium'} />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                            <BreadcrumbLink href="/dashboard" className='font-medium'>Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator />
+                        <BreadcrumbSeparator className={'font-medium'}/>
                         <BreadcrumbItem>
-                            <BreadcrumbPage>Lockers</BreadcrumbPage>
+                            <BreadcrumbPage className='font-medium'>Lockers</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
+
+            <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border' onClick={() => setToast(false)}>
                 <div className='w-full flex justify-between items-center'>
-                    <h1 className="text-xl font-bold mt-3">Lockers</h1>
-                    <Button className='rounded-md' disabled><MdAdd className='w-4 h-4' />Add Lockers</Button>
+                    <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
+                    <Button className='rounded-sm hover:bg-blue-500 bg-blue-600 dark:text-white'><MdAdd className='w-4 h-4' />Add Lockers</Button>
                 </div>
             </div>
 

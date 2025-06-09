@@ -345,8 +345,8 @@ const Sidebar = () => {
       items: [
         {
           icon: GiLockers,
-          title: "Lockers",
-          link: "/dashboard/lockers",
+          title: "Locker Management",
+          link: "/dashboard/lockersmanagement",
         },
         {
           icon: GiBiceps,
