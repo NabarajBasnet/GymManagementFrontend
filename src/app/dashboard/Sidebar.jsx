@@ -1,9 +1,7 @@
 "use client";
 
+import Loader from "@/components/Loader/Loader";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
-import { FaMoneyBillAlt } from "react-icons/fa";
-import { IoReceiptSharp } from "react-icons/io5";
-import { AiFillProduct } from "react-icons/ai";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -11,7 +9,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { motion } from "framer-motion";
-import { TbListDetails } from "react-icons/tb";
 
 // Icons
 import { FaDumbbell } from "react-icons/fa6";
@@ -33,7 +30,6 @@ import {
   MdAutoGraph,
   MdAttachMoney,
 } from "react-icons/md";
-import { LuLogs } from "react-icons/lu";
 import { GiLockers, GiBiceps } from "react-icons/gi";
 import { TiUserAdd } from "react-icons/ti";
 import { AiOutlineSchedule } from "react-icons/ai";
@@ -41,7 +37,7 @@ import { HiUsers } from "react-icons/hi2";
 import { FaUsersGear, FaUsersRays } from "react-icons/fa6";
 import { IoPeopleSharp } from "react-icons/io5";
 import { FcParallelTasks } from "react-icons/fc";
-import { PiUsersFourFill, PiUsersThreeBold, PiStarFour } from "react-icons/pi";
+import { PiUsersFourFill, PiUsersThreeBold } from "react-icons/pi";
 import {
   LogOut,
   Settings,
@@ -85,7 +81,6 @@ import { Badge } from "@/components/ui/badge";
 
 const Sidebar = () => {
   const { user, loading: userLoading } = useUser();
-  console.log("User in sidebar: ", user);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -451,70 +446,75 @@ const Sidebar = () => {
           } z-50 flex flex-col border-r dark:shadow-[5px_0_30px_rgba(0,0,0,0.2)]`}
       >
         {/* Logo and Brand */}
-        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-2 py-5">
-          <Link href={"/dashboard"} className="flex items-center">
-            <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z"
-                  fill="white"
-                />
-                <path
-                  d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z"
-                  fill="white"
-                />
-                <path
-                  d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z"
-                  fill="white"
-                />
-                <path
-                  d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z"
-                  fill="white"
-                />
-                <path
-                  d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z"
-                  fill="white"
-                />
-                <path
-                  d="M13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7C12.5523 7 13 7.44772 13 8Z"
-                  fill="white"
-                />
-                <path
-                  d="M9 8C9 8.55228 8.55228 9 8 9C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7C8.55228 7 9 7.44772 9 8Z"
-                  fill="white"
-                />
-              </svg>
-              <div
-                className="absolute inset-0 bg-white opacity-10 rounded-xl animate-pulse"
-                style={{ animationDuration: "3s" }}
-              ></div>
-            </div>
-            {!sidebarMinimized && (
-              <div className="ml-3.5">
-                <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">
-                  Revive Fitness
-                </p>
-                <div className="flex items-center gap-1.5">
-                  <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
-                    Fitness Center
-                  </p>
-                  <Badge
-                    variant="outline"
-                    className="text-[9px] py-0 h-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 font-medium"
-                  >
-                    Pro
-                  </Badge>
-                </div>
+        {userLoading ? (
+          <Loader />
+        ) : (
+          <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-2 py-5">
+            <Link href={"/dashboard"} className="flex items-center">
+              <div className="relative flex items-center justify-center w-10 h-10 rounded-xl overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-blue-500 text-white shadow-md shadow-indigo-200 dark:shadow-indigo-900/20">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M13 12C13 12.5523 12.5523 13 12 13C11.4477 13 11 12.5523 11 12C11 11.4477 11.4477 11 12 11C12.5523 11 13 11.4477 13 12Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M9 12C9 12.5523 8.55228 13 8 13C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11C8.55228 11 9 11.4477 9 12Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M17 12C17 12.5523 16.5523 13 16 13C15.4477 13 15 12.5523 15 12C15 11.4477 15.4477 11 16 11C16.5523 11 17 11.4477 17 12Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M13 16C13 16.5523 12.5523 17 12 17C11.4477 17 11 16.5523 11 16C11 15.4477 11.4477 15 12 15C12.5523 15 13 15.4477 13 16Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M9 16C9 16.5523 8.55228 17 8 17C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15C8.55228 15 9 15.4477 9 16Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7C12.5523 7 13 7.44772 13 8Z"
+                    fill="white"
+                  />
+                  <path
+                    d="M9 8C9 8.55228 8.55228 9 8 9C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7C8.55228 7 9 7.44772 9 8Z"
+                    fill="white"
+                  />
+                </svg>
+                <div
+                  className="absolute inset-0 bg-white opacity-10 rounded-xl animate-pulse"
+                  style={{ animationDuration: "3s" }}
+                ></div>
               </div>
-            )}
-          </Link>
-        </div>
+              {!sidebarMinimized && (
+                <div className="ml-3.5">
+                  <p className="font-bold text-gray-900 dark:text-white text-lg tracking-tight">
+                    {user?.user?.organization?.name}
+                  </p>
+                  <div className="flex items-center gap-1.5">
+                    <p className="text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                      {user?.user?.organization?.businessType}
+                    </p>
+                    <Badge
+                      variant="outline"
+                      className="text-[9px] py-0 h-4 bg-gradient-to-r from-indigo-50 to-blue-50 dark:from-indigo-900/30 dark:to-blue-900/30 border-indigo-100 dark:border-indigo-800 text-indigo-600 dark:text-indigo-400 font-medium"
+                    >
+                      {user?.user?.organizationBranch ? `${user?.user?.organizationBranch?.orgBranchName}` : `${user?.user?.organization?.name}`}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+            </Link>
+          </div>
+        )}
+
 
         {/* Sidebar Content */}
         <div className="flex-grow overflow-y-auto px-3 py-5 scrollbar-background-white scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
@@ -791,107 +791,101 @@ const Sidebar = () => {
             </div>
           )}
 
-          <DropdownMenu className="border">
-            <DropdownMenuTrigger asChild>
-              <div
-                className={`flex items-center rounded-xl cursor-pointer p-2 ${sidebarMinimized ? "justify-center" : "px-3"
-                  } hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}
-              >
-                <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
-                  <AvatarImage
-                    src={user?.user?.avatarUrl || ""}
-                    alt={user?.user?.firstName || ""}
-                  />
-                  <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
-                    {user?.user?.firstName?.charAt(0) || "U"}
-                  </AvatarFallback>
-                </Avatar>
+          {userLoading ? (
+            <Loader />
+          ) : (
+            <DropdownMenu className="border">
+              <DropdownMenuTrigger asChild>
+                <div
+                  className={`flex items-center rounded-xl cursor-pointer p-2 ${sidebarMinimized ? "justify-center" : "px-3"
+                    } hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors duration-200`}
+                >
+                  <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm">
+                    <AvatarImage
+                      src={user?.user?.avatarUrl || ""}
+                      alt={user?.user?.firstName || ""}
+                    />
+                    <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
+                      {user?.user?.firstName?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
 
-                {!sidebarMinimized && (
-                  <div className="ml-3 overflow-hidden">
-                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight">
-                      {(user &&
-                        user?.user?.firstName + " " + user?.user?.lastName) ||
-                        "Admin"}
-                    </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-                      {(user && user?.user?.email) || ""}
-                    </p>
-                  </div>
-                )}
-
-                {!sidebarMinimized && (
-                  <ChevronRight className="ml-auto h-4 w-4 text-gray-400" />
-                )}
-              </div>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent
-              className="w-64 p-0 rounded-xl shadow-2xl shadow-gray-200/70 dark:shadow-none border border-gray-100 dark:border-gray-800"
-              side={sidebarMinimized ? "right" : "top"}
-              align={sidebarMinimized ? "start" : "end"}
-              alignOffset={10}
-            >
-              <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-                {userLoading ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <div className="flex items-center">
-                    <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm mr-3">
-                      <AvatarImage
-                        src={user?.user?.avatarUrl || ""}
-                        alt={user?.user?.firstName || ""}
-                      />
-                      <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
-                        {user?.user?.firstName?.charAt(0) || "U"}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-semibold text-gray-800 dark:text-gray-200">
-                        {user?.user?.firstName + " " + user?.user?.lastName}
+                  {!sidebarMinimized && (
+                    <div className="ml-3 overflow-hidden">
+                      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 tracking-tight">
+                        {(user &&
+                          user?.user?.firstName + " " + user?.user?.lastName) ||
+                          "Admin"}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {user && user?.user?.email}
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
+                        {(user && user?.user?.email) || ""}
                       </p>
                     </div>
-                  </div>
-                )}
-              </DropdownMenuLabel>
+                  )}
 
-              <DropdownMenuGroup className="p-1.5">
-                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
-                  <User className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span>Profile</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
-                  <Settings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
-                  <span>Settings</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
-                  <Crown className="mr-2 h-4 w-4 text-amber-500" />
-                  <span>Upgrade to Premium</span>
-                  <Badge
-                    variant="outline"
-                    className="ml-auto text-[10px] bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border-amber-100 dark:border-amber-800 text-amber-600 dark:text-amber-400"
+                  {!sidebarMinimized && (
+                    <ChevronRight className="ml-auto h-4 w-4 text-gray-400" />
+                  )}
+                </div>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                className="w-64 p-0 rounded-xl shadow-2xl shadow-gray-200/70 dark:shadow-none border border-gray-100 dark:border-gray-800"
+                side={sidebarMinimized ? "right" : "top"}
+                align={sidebarMinimized ? "start" : "end"}
+                alignOffset={10}
+              >
+                <DropdownMenuLabel className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                  {userLoading ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <div className="flex items-center">
+                      <Avatar className="h-10 w-10 border-2 border-indigo-100 dark:border-indigo-900/50 shadow-sm mr-3">
+                        <AvatarImage
+                          src={user?.user?.avatarUrl || ""}
+                          alt={user?.user?.firstName || ""}
+                        />
+                        <AvatarFallback className="bg-gradient-to-br from-indigo-500 to-purple-500 text-white font-medium">
+                          {user?.user?.firstName?.charAt(0) || "U"}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-semibold text-gray-800 dark:text-gray-200">
+                          {user?.user?.firstName + " " + user?.user?.lastName}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                          {user && user?.user?.email}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </DropdownMenuLabel>
+
+                <DropdownMenuGroup className="p-1.5">
+                  <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
+                    <User className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="px-3 py-2.5 rounded-lg focus:bg-gray-50 dark:focus:bg-gray-800/60 cursor-pointer">
+                    <Settings className="mr-2 h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-800" />
+
+                <DropdownMenuGroup className="p-1.5">
+                  <DropdownMenuItem
+                    onClick={logoutUser}
+                    className="px-3 py-2.5 rounded-lg focus:bg-red-50 dark:focus:bg-red-900/20 cursor-pointer text-red-600 dark:text-red-400"
                   >
-                    PRO
-                  </Badge>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-
-              <DropdownMenuSeparator className="my-1 bg-gray-100 dark:bg-gray-800" />
-
-              <DropdownMenuGroup className="p-1.5">
-                <DropdownMenuItem
-                  onClick={logoutUser}
-                  className="px-3 py-2.5 rounded-lg focus:bg-red-50 dark:focus:bg-red-900/20 cursor-pointer text-red-600 dark:text-red-400"
-                >
-                  <LogOut className="mr-2 h-4 w-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
       </motion.aside>
     </TooltipProvider>

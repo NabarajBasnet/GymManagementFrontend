@@ -468,7 +468,7 @@ const ClientAreaHeader = ({ activeTab }) => {
             </div>
 
             {/* Enhanced Logo */}
-            <div className="hidden md:flex justify-center ml-52 items-center space-x-4">
+            {/* <div className="hidden md:flex justify-center ml-52 items-center space-x-4">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-600 to-purple-700 flex items-center justify-center shadow-lg">
                   <Building2 className="w-6 h-6 text-white" />
@@ -482,7 +482,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* Enhanced User Profile */}
             <div className="flex items-center space-x-4">
@@ -692,7 +692,6 @@ const ClientAreaHeader = ({ activeTab }) => {
               </DropdownMenu>
             </div>
           </div>
-
 
         </div>
       )}

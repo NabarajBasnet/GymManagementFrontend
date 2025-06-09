@@ -1,84 +1,18 @@
 "use client";
 
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
-import { User, Settings, LogOut, X, Info, Calendar, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
+import { User, Settings, LogOut, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
 import { Button } from "@/components/ui/button";
 import * as React from "react";
-import { useState, useEffect } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { GiBiceps } from "react-icons/gi";
-import { FaUsers, FaBuilding, FaDumbbell, FaChartLine, FaCreditCard } from "react-icons/fa6";
+import { FaUsers, FaBuilding, FaDumbbell, FaCreditCard } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
-
-const StatCard = ({ icon: Icon, title, value, className, trend, subtitle }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.3 }}
-    whileHover={{ y: -2 }}
-    className="h-full" // Added h-full to make all stat cards equal height
-  >
-    <Card className="relative overflow-hidden border-0 shadow-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group h-full">
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/10" />
-      <CardContent className="p-6 relative h-full flex flex-col">
-        <div className="flex items-center justify-between flex-grow">
-          <div className="space-y-2">
-            <div className={`inline-flex p-3 rounded-xl ${className} transition-all duration-300 group-hover:scale-110`}>
-              <Icon className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</h3>
-              <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{title}</p>
-              {subtitle && (
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
-              )}
-            </div>
-          </div>
-          {trend && (
-            <div className="text-right">
-              <span className="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
-                {trend}
-              </span>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  </motion.div>
-);
-
-const FeatureBadge = ({ feature }) => (
-  <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 mr-2 mb-2">
-    <CheckCircle className="w-3 h-3 mr-1" />
-    {feature}
-  </span>
-);
-
-const DetailItem = ({ icon: Icon, label, value, className }) => (
-  <div className="flex items-start space-x-3 py-2">
-    <div className={`p-2 rounded-lg ${className || 'bg-gray-100 dark:bg-gray-700/50'}`}>
-      <Icon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-    </div>
-    <div className="flex-1">
-      <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
-      <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 break-words">{value || 'N/A'}</p>
-    </div>
-  </div>
-);
+import { useQuery } from "@tanstack/react-query";
 
 const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
@@ -93,30 +27,6 @@ const TenantDashboard = () => {
 
   const diffTime = expireDate.getTime() - todayDate.getTime();
   const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  let [organizationDetailsSetupCompleted, setOrganizationDetailsSetupCompleted] = useState(false);
-
-  useEffect(() => {
-    if (loggedInTenant?.onboardingCompleted !== undefined) {
-      setOrganizationDetailsSetupCompleted(loggedInTenant?.onboardingCompleted);
-    }
-  }, [loggedInTenant]);
-
-  const [createOrganizationAlertDialog, setCreateOrganizationAlertDialog] = useState(false);
-  const [onFreeTrail, setOnFreeTrail] = useState(false);
-
-  useEffect(() => {
-    const checkOrganizationEmailExists = loggedInTenant?.organizationEmail;
-    const checkOrganizationPhoneExists = loggedInTenant?.organizationPhone;
-
-    const checkOnFreeTrail = loggedInTenant?.tenantOnFreeTrial;
-    setOnFreeTrail(checkOnFreeTrail);
-
-    if (checkOrganizationEmailExists === null || checkOrganizationPhoneExists === null) {
-      setCreateOrganizationAlertDialog(true);
-    } else {
-      setCreateOrganizationAlertDialog(false);
-    }
-  }, [loggedInTenant]);
 
   const calculateRemainingDays = () => {
     const endDate = new Date(loggedInTenant?.tenantSubscriptionEndDate);
@@ -187,6 +97,132 @@ const TenantDashboard = () => {
       toast.error(error.message);
     }
   };
+
+  // Get staffs by tenant
+  const getStaffsByTenant = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/staffsmanagement/by-tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
+  const { data: staffsData, isLoading: isStaffsLoading } = useQuery({
+    queryKey: ['staffs'],
+    queryFn: getStaffsByTenant,
+  });
+  const { staffs, totalStaffs } = staffsData || {};
+
+  // Get System Users by tenant
+  const getSystemUsersByTenant = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/systemusers/system-users-by-tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
+  const { data: usersData, isLoading: isUsersLoading } = useQuery({
+    queryKey: ['users'],
+    queryFn: getSystemUsersByTenant,
+  });
+  const { users, totalUsers } = usersData || {};
+
+  // Get members by tenant
+  const getMembersByTenant = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/members/members-by-tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
+  const { data: membersData, isLoading: isMembersLoading } = useQuery({
+    queryKey: ['members'],
+    queryFn: getMembersByTenant,
+  });
+  const { members, totalMembers } = membersData || {};
+
+  // Get branches by tenant
+  const getBranchessByTenant = async () => {
+    try {
+      const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
+      const responseBody = await request.json();
+      return responseBody;
+    } catch (error) {
+      console.log("Error: ", error);
+    };
+  };
+
+  const { data: branchessData, isLoading: isBranchessLoading } = useQuery({
+    queryKey: ['branches'],
+    queryFn: getBranchessByTenant,
+  });
+  const { branches, totalBranches } = branchessData || {};
+
+  // RUC
+  const StatCard = ({ icon: Icon, title, value, className, trend, subtitle, link }) => (
+    <motion.div
+      onClick={() => router.push(link)}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      whileHover={{ y: -2 }}
+      className="h-full cursor-pointer"
+    >
+      <Card className="relative overflow-hidden border-0 shadow-lg bg-white dark:bg-gray-800/50 backdrop-blur-sm hover:shadow-xl transition-all duration-300 group h-full">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent dark:from-white/10" />
+        <CardContent className="p-6 relative h-full flex flex-col">
+          <div className="flex items-center justify-between flex-grow">
+            <div className="space-y-2">
+              <div className={`inline-flex p-3 rounded-xl ${className} transition-all duration-300 group-hover:scale-110`}>
+                <Icon className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{value}</h3>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{title}</p>
+                {subtitle && (
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{subtitle}</p>
+                )}
+              </div>
+            </div>
+            {trend && (
+              <div className="text-right">
+                <span className="text-xs font-medium text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-500/10 px-2 py-1 rounded-full">
+                  {trend}
+                </span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+
+  const FeatureBadge = ({ feature }) => (
+    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 mr-2 mb-2">
+      <CheckCircle className="w-3 h-3 mr-1" />
+      {feature}
+    </span>
+  );
+
+  const DetailItem = ({ icon: Icon, label, value, className }) => (
+    <div className="flex items-start space-x-3 py-2">
+      <div className={`p-2 rounded-lg ${className || 'bg-gray-100 dark:bg-gray-700/50'}`}>
+        <Icon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+      </div>
+      <div className="flex-1">
+        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</p>
+        <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 break-words">{value || 'N/A'}</p>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -321,34 +357,38 @@ const TenantDashboard = () => {
               <StatCard
                 icon={FaUsers}
                 title="Staff Members"
-                value={loggedInTenant?.staffs?.length || 0}
-                className="bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400"
+                value={isStaffsLoading ? '0' : totalStaffs || 0}
+                className="cursor-pointer bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/30 dark:to-blue-800/30 text-blue-600 dark:text-blue-400"
                 trend="+12%"
                 subtitle="Active employees"
+                link={'/clientarea/staffs'}
               />
               <StatCard
                 icon={FaBuilding}
                 title="Branches"
-                value={loggedInTenant?.tenantSubscription?.branches?.length || 0}
-                className="bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 text-purple-600 dark:text-purple-400"
+                value={isBranchessLoading ? '0' : totalBranches || 0}
+                className="cursor-pointer bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/30 dark:to-purple-800/30 text-purple-600 dark:text-purple-400"
                 trend="+5%"
                 subtitle="Business locations"
+                link={'/clientarea/branches'}
               />
               <StatCard
                 icon={FaUsers}
                 title="System Users"
-                value={loggedInTenant?.tenantSubscription?.users?.length || 0}
-                className="bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-600 dark:text-green-400"
+                value={isUsersLoading ? '0' : totalUsers || 0}
+                className="cursor-pointer bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900/30 dark:to-green-800/30 text-green-600 dark:text-green-400"
                 trend="+8%"
                 subtitle="Platform access"
+                link={'/clientarea/systemusers'}
               />
               <StatCard
                 icon={GiBiceps}
                 title="Members"
-                value={loggedInTenant?.tenantSubscription?.members?.length || 0}
-                className="bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-600 dark:text-orange-400"
+                value={isMembersLoading ? '0' : totalMembers || 0}
+                className="cursor-pointer bg-gradient-to-br from-orange-100 to-orange-200 dark:from-orange-900/30 dark:to-orange-800/30 text-orange-600 dark:text-orange-400"
                 trend="+23%"
-                subtitle="Registered members"
+                subtitle="Total members"
+                link={'/clientarea/members'}
               />
             </div>
 

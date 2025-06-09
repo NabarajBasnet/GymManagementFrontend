@@ -1210,11 +1210,6 @@ const Header = () => {
 
             <div className="p-2">
               <DropdownMenuGroup>
-                <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:from-blue-700 dark:to-indigo-700 dark:hover:from-blue-600 dark:hover:to-indigo-600 transition-all cursor-pointer mb-2">
-                  <PiStarFour className="mr-2 h-4 w-4" />
-                  <span>Upgrade Plan</span>
-                </DropdownMenuItem>
-
                 <DropdownMenuItem className="px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700/50 transition-colors cursor-pointer">
                   <User className="mr-2 h-4 w-4 text-blue-600 dark:text-blue-400" />
                   <span>Profile</span>
