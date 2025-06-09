@@ -864,12 +864,12 @@ const Lockers = () => {
                                                             }}
                                                             className={`w-full mt-2 py-3 px-4 rounded-xl font-medium text-white relative overflow-hidden transition-all duration-300 shadow-md
               ${locker.status === 'Expired'
-                                                                    ? 'bg-gradient-to-r from-gray-700 to-rose-700 hover:shadow-rose-700/20'
+                                                                    ? 'bg-red-600 hover:shadow-rose-700/20'
                                                                     : locker.status === 'Booked'
-                                                                        ? 'bg-gradient-to-r from-gray-700 to-emerald-700 hover:shadow-emerald-700/20'
+                                                                        ? 'bg-green-500 hover:shadow-emerald-700/20'
                                                                         : locker.status === 'Empty'
-                                                                            ? 'bg-gradient-to-r from-gray-700 to-amber-600 hover:shadow-amber-600/20'
-                                                                            : 'bg-gradient-to-r from-gray-700 to-blue-700 hover:shadow-blue-700/20'
+                                                                            ? 'bg-blue-600 hover:shadow-amber-600/20'
+                                                                            : 'bg-gradient-to-r from-gray-700 to-gray-600 hover:shadow-blue-700/20'
                                                                 }`}
                                                         >
                                                             <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-300" />
