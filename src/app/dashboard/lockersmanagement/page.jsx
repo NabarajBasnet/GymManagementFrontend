@@ -51,12 +51,6 @@ const Lockers = () => {
 
     const queryClient = useQueryClient()
     const [lockerFormState, setLockerFormState] = useState(false);
-    const [responseMessage, setResponseMessage] = useState('');
-    const [toast, setToast] = useState(false);
-    const [successMessage, setSuccessMessage] = useState({ icon: MdDone, message: '' });
-    const [errorMessage, setErrorMessage] = useState({ icon: MdError, message: '' });
-    const [responseType, setResponseType] = useState('')
-    const responseResultType = ['Success', 'Failure'];
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const searchRef = React.useRef(null)
@@ -106,6 +100,8 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
+            hotToast.error(error.message || 'Unexpected error');
+            sonnerToast.error(error.message || 'Unexpected error');
             throw error;
         };
     };
@@ -125,6 +121,8 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
+            hotToast.error(error.message || 'Unexpected error');
+            sonnerToast.error(error.message || 'Unexpected error');
             throw error;
         };
     };
@@ -205,8 +203,11 @@ const Lockers = () => {
                 body: JSON.stringify(finalData),
                 credentials: 'include',
             });
+            const responseBody = await response.json();
 
             if (response.ok) {
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
                 window.location.reload();
                 queryClient.invalidateQueries(
                     {
@@ -216,19 +217,9 @@ const Lockers = () => {
                 );
             };
 
-            const responseBody = await response.json();
-            setResponseMessage(responseBody.message);
-
             if (response.status === 500) {
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action',
-                });
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
                 queryClient.invalidateQueries({
                     queryKey: ['lockers'],
                     exact: true
@@ -236,29 +227,15 @@ const Lockers = () => {
             };
 
             if (!response.status === 200) {
-                setResponseType(responseResultType[1]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setErrorMessage({
-                    icon: MdError,
-                    message: responseBody.message || 'Unauthorized action'
-                });
+                hotToast.error(responseBody.message);
+                sonnerToast.error(responseBody.message);
                 queryClient.invalidateQueries({
                     queryKey: ['lockers'],
                     exact: true
                 });
             } else {
-                setResponseType(responseResultType[0]);
-                setToast(true);
-                setTimeout(() => {
-                    setToast(false)
-                }, 10000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
-                });
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
                 setLockerFormState(false);
                 queryClient.invalidateQueries({
                     queryKey: ['lockers'],
@@ -268,15 +245,8 @@ const Lockers = () => {
 
         } catch (error) {
             console.log("Error: ", error);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message || 'Unauthorized action'
-            });
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
             queryClient.invalidateQueries({
                 queryKey: ['lockers'],
                 exact: true
@@ -304,6 +274,8 @@ const Lockers = () => {
             }
             return responseBody;
         } catch (error) {
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
             console.log('Error: ', error);
         }
     };
@@ -323,28 +295,13 @@ const Lockers = () => {
                     }
                 );
                 setLockerFormState(false);
-                setToast(true)
-                setResponseType(responseResultType[0]);
-                setTimeout(() => {
-                    setToast(false)
-                }, 7000);
-                setSuccessMessage({
-                    icon: MdDone,
-                    message: responseBody.message || 'Unauthorized action'
-                });
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
             }
-            setResponseMessage(responseBody.message);
         } catch (error) {
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
             console.log("Error: ", error);
-            setResponseType(responseResultType[1]);
-            setToast(true);
-            setTimeout(() => {
-                setToast(false)
-            }, 10000);
-            setErrorMessage({
-                icon: MdError,
-                message: responseBody.message || 'Unauthorized action'
-            });
             queryClient.invalidateQueries({
                 queryKey: ['lockers'],
                 exact: true
@@ -353,7 +310,7 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4" onClick={() => setToast(false)}>
+        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
@@ -378,7 +335,7 @@ const Lockers = () => {
                 </BreadcrumbList>
             </Breadcrumb>
 
-            <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border' onClick={() => setToast(false)}>
+            <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border'>
                 <div className='w-full flex justify-between items-center'>
                     <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
                     <Button className='rounded-sm hover:bg-blue-500 bg-blue-600 dark:text-white'><MdAdd className='w-4 h-4' />Add Lockers</Button>
