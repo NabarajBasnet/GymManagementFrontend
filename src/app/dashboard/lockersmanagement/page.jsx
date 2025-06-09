@@ -352,29 +352,29 @@ const Lockers = () => {
 
     return (
         <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4" onClick={() => setToast(false)}>
-                <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink className='flex items-center font-medium' href="/"> <LiaHomeSolid className="mr-2 w-4 h-4"/> Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className={'font-medium'}/>
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4 font-medium" />
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className={'font-medium'} />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard" className='font-medium'>Dashboard</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator className={'font-medium'}/>
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className='font-medium'>Lockers</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>
+            <Breadcrumb>
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink className='flex items-center font-medium' href="/"> <LiaHomeSolid className="mr-2 w-4 h-4" /> Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className={'font-medium'} />
+                    <BreadcrumbItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center gap-1">
+                                <BreadcrumbEllipsis className="h-4 w-4 font-medium" />
+                            </DropdownMenuTrigger>
+                        </DropdownMenu>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className={'font-medium'} />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/dashboard" className='font-medium'>Dashboard</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator className={'font-medium'} />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage className='font-medium'>Lockers</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
 
             <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border' onClick={() => setToast(false)}>
                 <div className='w-full flex justify-between items-center'>
@@ -383,79 +383,8 @@ const Lockers = () => {
                 </div>
             </div>
 
-            {toast && (
-                <>
-                    <div
-                        className="fixed inset-0 bg-black/30 backdrop-blur-sm z-50 animate-fade-in"
-                        onClick={() => setToast(false)}
-                    ></div>
-
-                    <div className="fixed top-4 right-4 z-50 animate-slide-in">
-                        <div className={`relative flex items-start gap-3 px-4 py-3 bg-white shadow-lg border-l-[5px] rounded-xl
-                            transition-all duration-300 ease-in-out w-80
-                            ${responseType === 'Success' ? 'border-emerald-500' : 'border-rose-500'}`}>
-
-                            <div className={`flex items-center justify-center p-2 rounded-full 
-                                    ${responseType === 'Success' ? 'bg-emerald-100' : 'bg-rose-100'}`}>
-                                {responseType === 'Success' ? (
-                                    <MdDone className="text-xl text-emerald-600" />
-                                ) : (
-                                    <MdError className="text-xl text-rose-600" />
-                                )}
-                            </div>
-
-                            <div className="flex-1">
-                                <h3 className={`text-base font-semibold mb-1
-                                    ${responseType === 'Success' ? 'text-emerald-800' : 'text-rose-800'}`}>
-                                    {responseType === 'Success' ? "Successfully sent!" : "Action required"}
-                                </h3>
-
-                                <p className="text-sm text-gray-600 leading-relaxed">
-                                    {responseType === 'Success'
-                                        ? (
-                                            <>
-                                                <p>{successMessage.message}</p>
-                                            </>
-                                        )
-                                        :
-                                        (
-                                            <>
-                                                <p>{errorMessage.message}</p>
-                                            </>
-                                        )
-                                    }
-                                </p>
-
-                                <div className="mt-3 flex items-center gap-2">
-                                    {responseType === 'Success' ? (
-                                        <button className="text-xs font-medium text-emerald-700 hover:text-emerald-900 underline">
-                                            Done
-                                        </button>
-                                    ) : (
-                                        <button className="text-xs font-medium text-rose-700 hover:text-rose-900 underline">
-                                            Retry Now
-                                        </button>
-                                    )}
-                                    <span className="text-gray-400">|</span>
-                                    <button
-                                        className="text-xs font-medium text-gray-500 hover:text-gray-700 underline"
-                                        onClick={() => setToast(false)}>
-                                        Dismiss
-                                    </button>
-                                </div>
-                            </div>
-
-                            <MdClose
-                                onClick={() => setToast(false)}
-                                className="cursor-pointer text-lg text-gray-400 hover:text-gray-600 transition mt-0.5"
-                            />
-                        </div>
-                    </div>
-                </>
-            )}
-
             {
-                lockerFormState && data.Lockers ? (
+                lockerFormState && data?.Lockers ? (
                     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-500 ease-out opacity-100">
                         <div className="bg-white md:rounded-lg rounded-none shadow-xl p-10 md:w-1/2 w-11/12 max-h-screen overflow-y-auto">
                             <h1 className="text-2xl font-bold text-gray-800 mb-6">Locker Details</h1>
@@ -755,47 +684,47 @@ const Lockers = () => {
                     <div className="w-full">
                         {!isLoading && (
                             <div className="max-w-full">
-                                <div className="bg-white rounded-xl mt-4 shadow-sm border p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
+                                <div className="bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 dark:border-none rounded-xl mt-4 shadow-sm border p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
                                     <div className="flex-1">
-                                        <Label className="text-sm font-semibold text-gray-600 mb-2 block">
+                                        <Label className="text-sm font-semibold text-gray-600 dark:text-gray-200 mb-2 block">
                                             Locker Number
                                         </Label>
                                         <Select value={lockerOrder} onValueChange={setLockerOrder}>
-                                            <SelectTrigger className="w-full rounded-sm">
+                                            <SelectTrigger className="w-full rounded-sm dark:bg-gray-800 dark:border-none dark:text-white">
                                                 <SelectValue placeholder="Sort by order" />
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                                 <SelectGroup>
                                                     <SelectLabel>Order</SelectLabel>
-                                                    <SelectItem value="asc">Ascending</SelectItem>
-                                                    <SelectItem value="desc">Descending</SelectItem>
+                                                    <SelectItem value="asc" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Ascending</SelectItem>
+                                                    <SelectItem value="desc" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Descending</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     <div className="flex-1">
-                                        <Label className="text-sm font-semibold text-gray-600 mb-2 block">
+                                        <Label className="text-sm font-semibold text-gray-600 dark:text-gray-200 mb-2 block">
                                             Status
                                         </Label>
                                         <Select value={lockerStatus} onValueChange={setLockerStatus}>
-                                            <SelectTrigger className="w-full rounded-sm">
+                                            <SelectTrigger className="w-full rounded-sm dark:bg-gray-800 dark:border-none dark:text-white">
                                                 <SelectValue placeholder="Select status" />
                                             </SelectTrigger>
-                                            <SelectContent>
+                                            <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                                 <SelectGroup>
                                                     <SelectLabel>Status</SelectLabel>
-                                                    <SelectItem value="Empty">Empty</SelectItem>
-                                                    <SelectItem value="Booked">Booked</SelectItem>
-                                                    <SelectItem value="Expired">Expired</SelectItem>
-                                                    <SelectItem value="Under Maintenance">Under Maintenance</SelectItem>
+                                                    <SelectItem value="Empty" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Empty</SelectItem>
+                                                    <SelectItem value="Booked" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Booked</SelectItem>
+                                                    <SelectItem value="Expired" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Expired</SelectItem>
+                                                    <SelectItem value="Under Maintenance" className='dark:text-white hover:cursor-pointer hover:bg-blue-500'>Under Maintenance</SelectItem>
                                                 </SelectGroup>
                                             </SelectContent>
                                         </Select>
                                     </div>
 
                                     <Button
-                                        className="bg-red-600 hover:bg-red-600 cursor-pointer flex items-center justify-around"
+                                        className="bg-red-600 hover:bg-red-600 cursor-pointer flex items-center dark:text-white justify-around"
                                         onClick={() => {
                                             setLockerOrder('');
                                             setLockerStatus('');
@@ -805,7 +734,7 @@ const Lockers = () => {
                                     </Button>
 
                                     <div className="flex-shrink-0">
-                                        <Label className="text-sm font-semibold text-gray-600 mb-2 block">
+                                        <Label className="text-sm font-semibold text-gray-600 dark:text-gray-200 mb-2 block">
                                             Lockers Status
                                         </Label>
                                         <div className="flex gap-3">
@@ -853,7 +782,7 @@ const Lockers = () => {
                                                 <Tooltip>
                                                     <TooltipTrigger asChild>
                                                         <Badge badgeContent={underMaintenanceLockers ? underMaintenanceLockers : 0} color="primary">
-                                                            <FaLock className="h-5 w-5 text-blue-600 cursor-pointer" />
+                                                            <FaLock className="h-5 w-5 text-blue-600 dark:text-blue-500 cursor-pointer" />
                                                         </Badge>
                                                     </TooltipTrigger>
                                                     <TooltipContent>
@@ -870,77 +799,122 @@ const Lockers = () => {
                                         Lockers.map((locker) => (
                                             <div
                                                 key={locker.lockerNumber}
-                                                className="bg-white rounded-xl overflow-hidden my-4 md:my-0 shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-300"
+                                                className="relative group rounded-2xl overflow-hidden my-4 md:my-0 transition-all duration-500 hover:duration-300 hover:-translate-y-1"
                                             >
-                                                <div
-                                                    className={`h-2 ${locker.status === 'Expired'
-                                                        ? 'bg-red-600'
+                                                {/* Sophisticated gray gradient background */}
+                                                <div className="absolute inset-0 bg-gradient-to-br opacity-20 group-hover:opacity-30 transition-opacity duration-300 dark:opacity-15 dark:group-hover:opacity-25
+          from-gray-600 via-gray-700 to-gray-800" />
+
+                                                <div className="relative backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 border border-white/40 dark:border-gray-700/60 rounded-2xl overflow-hidden">
+                                                    {/* Status bar with gray-based gradients */}
+                                                    <div className={`h-1.5 ${locker.status === 'Expired'
+                                                        ? 'bg-gradient-to-r from-gray-600 to-rose-700'
                                                         : locker.status === 'Booked'
-                                                            ? 'bg-green-600'
+                                                            ? 'bg-gradient-to-r from-gray-600 to-emerald-600'
                                                             : locker.status === 'Empty'
-                                                                ? 'bg-yellow-400'
-                                                                : 'bg-blue-600'
+                                                                ? 'bg-gradient-to-r from-gray-600 to-amber-600'
+                                                                : 'bg-gradient-to-r from-gray-600 to-blue-600'
                                                         }`}
-                                                />
-                                                <div className="p-5">
-                                                    <div className="flex justify-between items-start mb-4">
-                                                        <h2 className="text-xl font-bold text-gray-800">
-                                                            Locker {locker.lockerNumber}
-                                                        </h2>
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-semibold ${locker.status === 'Expired'
-                                                            ? 'bg-red-100 text-red-800'
-                                                            : locker.status === 'Booked'
-                                                                ? 'bg-green-100 text-green-800'
-                                                                : locker.status === 'Empty'
-                                                                    ? 'bg-yellow-100 text-yellow-800'
-                                                                    : 'bg-blue-100 text-blue-800'
-                                                            }`}>
-                                                            {locker.status}
-                                                        </span>
-                                                    </div>
+                                                    />
 
-                                                    <div className="space-y-2 text-sm">
-                                                        {[
-                                                            ['Member ID', locker.memberId],
-                                                            ['Member Name', locker.memberName],
-                                                            ['Renew Date', new Date(locker.renewDate).toLocaleDateString()],
-                                                            ['Duration', locker.duration],
-                                                            ['Expire Date', new Date(locker.expireDate).toLocaleDateString()],
-                                                            ['Fee', locker.fee],
-                                                            ['Assignment', locker.isAssigned ? 'Assigned' : 'Not Assigned']
-                                                        ].map(([label, value]) => (
-                                                            <div key={label} className="flex justify-between">
-                                                                <span className="text-gray-600">{label}</span>
-                                                                <span className="font-medium text-gray-900">{value}</span>
+                                                    <div className="p-5">
+                                                        <div className="flex justify-between items-start mb-4">
+                                                            <div>
+                                                                <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+                                                                    Locker <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-400 dark:to-gray-300">
+                                                                        #{locker.lockerNumber}
+                                                                    </span>
+                                                                </h2>
+                                                                <div className="flex items-center mt-1">
+                                                                    <span className={`w-2 h-2 rounded-full mr-2 ${locker.status === 'Expired'
+                                                                        ? 'bg-rose-600'
+                                                                        : locker.status === 'Booked'
+                                                                            ? 'bg-emerald-600'
+                                                                            : locker.status === 'Empty'
+                                                                                ? 'bg-amber-500'
+                                                                                : 'bg-blue-600'
+                                                                        }`} />
+                                                                    <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                                                                        {locker.isAssigned ? 'Assigned' : 'Not Assigned'}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                        ))}
-                                                    </div>
 
-                                                    <Button
-                                                        onClick={() => {
-                                                            setCurrentLockerNumber(locker.lockerNumber);
-                                                            setLockerFormState(true);
-                                                            setLockerId(locker._id);
-                                                            getSingleLockerInfo(locker._id);
-                                                        }}
-                                                        className={`w-full mt-6 gap-2 ${locker.status === 'Expired'
-                                                            ? 'bg-red-600 hover:bg-red-700'
-                                                            : locker.status === 'Booked'
-                                                                ? 'bg-green-600 hover:bg-green-700'
-                                                                : locker.status === 'Empty'
-                                                                    ? 'bg-yellow-500 hover:bg-yellow-600'
-                                                                    : 'bg-blue-600 hover:bg-blue-700'
-                                                            }`}
-                                                    >
-                                                        <FaLock className="text-xl" />
-                                                        Manage Locker
-                                                    </Button>
+                                                            <span className={`px-3 py-1 rounded-full text-xs font-semibold backdrop-blur-md ${locker.status === 'Expired'
+                                                                ? 'bg-rose-600/10 text-rose-800 dark:text-rose-300 border border-rose-600/20'
+                                                                : locker.status === 'Booked'
+                                                                    ? 'bg-emerald-600/10 text-emerald-800 dark:text-emerald-300 border border-emerald-600/20'
+                                                                    : locker.status === 'Empty'
+                                                                        ? 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border border-amber-500/20'
+                                                                        : 'bg-blue-600/10 text-blue-800 dark:text-blue-300 border border-blue-600/20'
+                                                                }`}>
+                                                                {locker.status}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Locker details with subtle hover effect */}
+                                                        <div className="space-y-3 text-sm mb-4">
+                                                            {[
+                                                                ['Member ID', locker.memberId],
+                                                                ['Member Name', locker.memberName],
+                                                                ['Renew Date', new Date(locker.renewDate).toLocaleDateString()],
+                                                                ['Duration', locker.duration],
+                                                                ['Expire Date', new Date(locker.expireDate).toLocaleDateString()],
+                                                                ['Fee', `$${locker.fee}`]
+                                                            ].map(([label, value]) => (
+                                                                <div
+                                                                    key={label}
+                                                                    className="flex justify-between py-2 px-3 -mx-3 rounded-lg hover:bg-gray-100/70 dark:hover:bg-gray-700/50 transition-colors"
+                                                                >
+                                                                    <span className="text-gray-700 dark:text-gray-300">{label}</span>
+                                                                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                                                                        {value || '-'}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+
+                                                        {/* Button with gray-based gradient */}
+                                                        <button
+                                                            onClick={() => {
+                                                                setCurrentLockerNumber(locker.lockerNumber);
+                                                                setLockerFormState(true);
+                                                                setLockerId(locker._id);
+                                                                getSingleLockerInfo(locker._id);
+                                                            }}
+                                                            className={`w-full mt-2 py-3 px-4 rounded-xl font-medium text-white relative overflow-hidden transition-all duration-300 shadow-md
+              ${locker.status === 'Expired'
+                                                                    ? 'bg-gradient-to-r from-gray-700 to-rose-700 hover:shadow-rose-700/20'
+                                                                    : locker.status === 'Booked'
+                                                                        ? 'bg-gradient-to-r from-gray-700 to-emerald-700 hover:shadow-emerald-700/20'
+                                                                        : locker.status === 'Empty'
+                                                                            ? 'bg-gradient-to-r from-gray-700 to-amber-600 hover:shadow-amber-600/20'
+                                                                            : 'bg-gradient-to-r from-gray-700 to-blue-700 hover:shadow-blue-700/20'
+                                                                }`}
+                                                        >
+                                                            <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-all duration-300" />
+                                                            <div className="relative flex items-center justify-center gap-2">
+                                                                <FaLock className="text-lg" />
+                                                                <span>Manage Locker</span>
+                                                            </div>
+                                                        </button>
+                                                    </div>
                                                 </div>
+
+                                                {/* Subtle decorative elements */}
+                                                <div className="absolute top-0 right-0 w-32 h-32 -mr-10 -mt-10 bg-gray-600/10 rounded-full filter blur-xl" />
+                                                <div className="absolute bottom-0 left-0 w-32 h-32 -ml-10 -mb-10 bg-gray-700/10 rounded-full filter blur-xl" />
                                             </div>
                                         ))
                                     ) : (
                                         <div className="col-span-full text-center py-12">
-                                            <div className="text-gray-500">No lockers found</div>
+                                            <div className="text-gray-600 dark:text-gray-400">
+                                                <div className="inline-block p-5 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-2xl border border-gray-200/60 dark:border-gray-700/60">
+                                                    <FaLockOpen className="mx-auto text-4xl text-gray-500 dark:text-gray-400 mb-3" />
+                                                    <p className="text-lg text-gray-800 dark:text-gray-200">No lockers available</p>
+                                                    <p className="text-sm mt-1 text-gray-600 dark:text-gray-400">Create a new locker to get started</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
