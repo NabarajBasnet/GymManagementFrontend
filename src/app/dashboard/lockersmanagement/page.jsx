@@ -338,7 +338,6 @@ const Lockers = () => {
             <div className='w-full dark:border-none bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 mt-4 p-6 rounded-md shadow-dm border'>
                 <div className='w-full flex justify-between items-center'>
                     <h1 className="text-2xl font-bold dark:text-white">Lockers</h1>
-                    <Button className='rounded-sm hover:bg-blue-500 bg-blue-600 dark:text-white'><MdAdd className='w-4 h-4' />Add Lockers</Button>
                 </div>
             </div>
 
