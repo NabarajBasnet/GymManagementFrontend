@@ -23,13 +23,6 @@ import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { useForm } from "react-hook-form";
 import { useQuery } from '@tanstack/react-query';
 
-const branches = [
-    { id: "westside", name: "Westside Branch" },
-    { id: "downtown", name: "Downtown Branch" },
-    { id: "uptown", name: "Uptown Branch" },
-    { id: "eastside", name: "Eastside Branch" },
-];
-
 const lockerSizes = [
     { id: "Small", name: "Small" },
     { id: "Medium", name: "Medium" },
@@ -38,9 +31,9 @@ const lockerSizes = [
 ];
 
 const statusOptions = [
-    { id: "available", name: "Available", icon: Lock, color: "bg-green-100 text-green-800" },
-    { id: "maintenance", name: "Maintenance", icon: Wrench, color: "bg-yellow-100 text-yellow-800" },
-    { id: "disabled", name: "Disabled", icon: CircleOff, color: "bg-red-100 text-red-800" },
+    { id: "Available", name: "Available", icon: Lock, color: "bg-green-100 text-green-800" },
+    { id: "Maintenance", name: "Maintenance", icon: Wrench, color: "bg-yellow-100 text-yellow-800" },
+    { id: "Disabled", name: "Disabled", icon: CircleOff, color: "bg-red-100 text-red-800" },
 ];
 
 const CreateLocker = () => {
@@ -60,8 +53,6 @@ const CreateLocker = () => {
     const [selectedBranch, setSelectedBranch] = useState();
     const [lockerStatus, setLockerStatus] = useState("available");
     const noOfLockers = watch('numberOfLockers') || 1;
-    const startingNumber = watch('startingNumber');
-    const numberPattern = watch('numberPattern') || "LKR-{num}";
     const lockerSize = watch('lockerSize');
 
     // Get Organization Branches If Applicable
@@ -109,12 +100,9 @@ const CreateLocker = () => {
     };
 
     const generatePreviewNumbers = () => {
-        const startNum = parseInt(startingNumber) || 100;
         const count = Math.min(noOfLockers, 5);
-
         return Array.from({ length: count }, (_, i) => {
-            const num = startNum + i;
-            return numberPattern.replace("{num}", num.toString());
+            return `LKR-${i + 1}`;
         });
     };
 
@@ -206,8 +194,23 @@ const CreateLocker = () => {
                             </div>
                         </div>
 
-                        <Button type="submit" className="w-full py-6 rounded-sm dark:bg-blue-500 dark:text-white" size="lg">
-                            Create {noOfLockers} Lockers
+                        <Button
+                            type="submit"
+                            className="w-full py-6 rounded-sm dark:bg-blue-500 dark:text-white disabled:opacity-50"
+                            size="lg"
+                            disabled={isSubmitting}
+                        >
+                            {isSubmitting ? (
+                                <div className="flex items-center justify-center gap-2">
+                                    <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                                    </svg>
+                                    Creating...
+                                </div>
+                            ) : (
+                                `Create ${noOfLockers} Lockers`
+                            )}
                         </Button>
                     </form>
                 </CardContent>
@@ -222,55 +225,45 @@ const CreateLocker = () => {
                     </p>
                 </CardHeader>
                 <CardContent>
-                    {!startingNumber ? (
-                        <div className="flex flex-col items-center justify-center h-64 dark:bg-blue-500 bg-gray-50 rounded-lg">
-                            <Box className="h-10 w-10 text-gray-400 dark:text-white mb-4" />
-                            <p className="text-gray-500 dark:text-white">Enter starting number to see locker preview</p>
-                        </div>
-                    ) : (
-                        <div className="space-y-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {generatePreviewNumbers().map((lockerNumber, index) => (
-                                    <Card key={index} className="hover:shadow-md transition-shadow">
-                                        <CardContent className="p-4">
-                                            <div className="flex items-center justify-between">
-                                                <div>
-                                                    <p className="font-medium">{lockerNumber}</p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {lockerSize || "No size specified"}
-                                                    </p>
-                                                </div>
-                                                <Badge className={selectedStatus.color}>
-                                                    <StatusIcon className="h-3 w-3 mr-1" />
-                                                    {selectedStatus.name}
-                                                </Badge>
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {generatePreviewNumbers().map((lockerNumber, index) => (
+                                <Card key={index} className="hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-none">
+                                    <CardContent className="p-4">
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="font-medium">{lockerNumber}</p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {lockerSize || "No size specified"}
+                                                </p>
                                             </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+                                            <Badge className={selectedStatus.color}>
+                                                <StatusIcon className="h-3 w-3 mr-1" />
+                                                {selectedStatus.name}
+                                            </Badge>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
 
-                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 dark:bg-blue-900 dark:border-blue-800">
-                                <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Creation Summary</h4>
-                                <div className="grid grid-cols-2 gap-2 text-sm">
-                                    <div className="text-muted-foreground">Branch:</div>
-                                    <div>{selectedBranch ? orgBranches?.find(b => b._id === selectedBranch)?.orgBranchName : "Not selected"}</div>
+                        <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 dark:bg-blue-700 dark:border-blue-800">
+                            <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Creation Summary</h4>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div className="text-muted-foreground dark:text-gray-200">Branch:</div>
+                                <div>{selectedBranch ? orgBranches?.find(b => b._id === selectedBranch)?.orgBranchName : "Not selected"}</div>
 
-                                    <div className="text-muted-foreground">Total Lockers:</div>
-                                    <div>{noOfLockers}</div>
+                                <div className="text-muted-foreground dark:text-gray-200">Total Lockers:</div>
+                                <div>{noOfLockers}</div>
 
-                                    <div className="text-muted-foreground">Number Pattern:</div>
-                                    <div>{numberPattern}</div>
+                                <div className="text-muted-foreground dark:text-gray-200">Locker Size:</div>
+                                <div>{lockerSize || "Not selected"}</div>
 
-                                    <div className="text-muted-foreground">Locker Size:</div>
-                                    <div>{lockerSize || "Not selected"}</div>
-
-                                    <div className="text-muted-foreground">Initial Status:</div>
-                                    <div>{selectedStatus.name}</div>
-                                </div>
+                                <div className="text-muted-foreground dark:text-gray-200">Initial Status:</div>
+                                <div>{selectedStatus.name}</div>
                             </div>
                         </div>
-                    )}
+                    </div>
                 </CardContent>
             </Card>
         </div>
