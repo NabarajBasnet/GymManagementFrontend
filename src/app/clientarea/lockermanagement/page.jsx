@@ -50,34 +50,42 @@ const LockerManagement = () => {
                     {/* Left Side - Tabs List */}
                     <div className="w-full md:w-2/12">
                         <Card className='h-full dark:bg-gray-800 dark:border-none'>
-                            <TabsList className="w-full h-full flex flex-col items-start justify-start p-4 gap-1 space-y-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <TabsList className="w-full h-full flex md:flex-col items-start justify-start p-4 gap-1 space-y-0 md:space-y-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
                                 <TabsTrigger
                                     value="lockers"
                                     className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <FaLock className="mr-2 h-4 w-4" />
-                                    Lockers
+                                    <span className='hidden md:flex'>
+                                        Lockers
+                                    </span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="register"
                                     className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <IoMdAdd className="mr-2 h-4 w-4" />
-                                    Register Lockers
+                                    <span className='hidden md:flex'>
+                                        Register Lockers
+                                    </span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="logs"
                                     className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <IoDocumentTextOutline className="mr-2 h-4 w-4" />
-                                    Logs
+                                    <span className='hidden md:flex'>
+                                        Logs
+                                    </span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="documentation"
                                     className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <LuLogs className="mr-2 h-4 w-4" />
-                                    Documentation
+                                    <span className='hidden md:flex'>
+                                        Documentation
+                                    </span>
                                 </TabsTrigger>
                             </TabsList>
                         </Card>

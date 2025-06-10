@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Table,
     TableBody,
@@ -45,6 +47,7 @@ import {
     Building2,
     Box
 } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 
 const statuses = {
     available: { text: "Available", icon: CircleCheck, color: "bg-green-100 text-green-800" },
@@ -71,6 +74,28 @@ const lockers = Array.from({ length: 10 }).map((_, i) => ({
 }));
 
 const LockersOverview = () => {
+
+    // Get all lockers of every branch and tenant
+    const getAllLockers = async () => {
+        try {
+            const req = await fetch(`http://localhost:3000/api/lockers/by-tenant`);
+            const res = await req.json();
+            console.log('Res: ', res);
+            return res;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['lockers'],
+        queryFn: getAllLockers
+    });
+
+    const { lockers: tenantLockers } = data || {};
+    console.log("Lockers: ", tenantLockers);
+
+
     return (
         <div className="space-y-6">
             <Tabs defaultValue="grid">
@@ -141,7 +166,7 @@ const LockersOverview = () => {
 
                 <TabsContent value="grid">
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {lockers.map((locker, index) => {
+                        {lockers?.map((locker, index) => {
                             const status = statuses[locker.status] || statuses.unknown;
                             const StatusIcon = status.icon || Circle;
 
@@ -201,7 +226,7 @@ const LockersOverview = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {lockers.map((locker) => {
+                                    {lockers?.map((locker) => {
                                         const status = statuses[locker.status] || statuses.unknown;
                                         const StatusIcon = status.icon || Circle;
 

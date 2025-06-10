@@ -42,13 +42,13 @@ export const middleware = async (request) => {
     }
 
     // 🧿 ADMIN/USER LOGIC
-    // if (!user && path.startsWith('/dashboard')) {
-    //   return NextResponse.redirect(new URL('/userlogin', request.url));
-    // }
+    if (!user && path.startsWith('/dashboard')) {
+      return NextResponse.redirect(new URL('/userlogin', request.url));
+    }
 
-    // if (user && (path === '/login' || path === '/signup')) {
-    //   return NextResponse.redirect(new URL('/dashboard', request.url));
-    // }
+    if (user && (path === '/userlogin' || path === '/register')) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
 
     if (user?.role === 'Gym Admin' && (
       path.includes('/users') || path.includes('/staffmanagement/staffs')

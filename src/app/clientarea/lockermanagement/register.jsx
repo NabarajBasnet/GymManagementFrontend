@@ -31,10 +31,10 @@ const branches = [
 ];
 
 const lockerSizes = [
-    { id: "small", name: "Small" },
-    { id: "medium", name: "Medium" },
-    { id: "large", name: "Large" },
-    { id: "xlarge", name: "Extra Large" },
+    { id: "Small", name: "Small" },
+    { id: "Medium", name: "Medium" },
+    { id: "Large", name: "Large" },
+    { id: "Extra Large", name: "Extra Large" },
 ];
 
 const statusOptions = [
@@ -44,17 +44,6 @@ const statusOptions = [
 ];
 
 const CreateLocker = () => {
-
-    const { tenant } = useTenant()
-    const loggedInTenant = tenant?.tenant;
-
-    const onTrail = loggedInTenant?.freeTrailStatus==='Active';
-    console.log("On Trail: ", onTrail);
-
-    // States
-    const [selectedBranch, setSelectedBranch] = useState();
-
-    // React hook form
     const {
         register,
         handleSubmit,
@@ -62,6 +51,18 @@ const CreateLocker = () => {
         watch,
         setValue,
     } = useForm();
+
+    const { tenant } = useTenant()
+    const loggedInTenant = tenant?.tenant;
+    const onTrail = loggedInTenant?.freeTrailStatus === 'Active';
+
+    // States
+    const [selectedBranch, setSelectedBranch] = useState();
+    const [lockerStatus, setLockerStatus] = useState("available");
+    const noOfLockers = watch('numberOfLockers') || 1;
+    const startingNumber = watch('startingNumber');
+    const numberPattern = watch('numberPattern') || "LKR-{num}";
+    const lockerSize = watch('lockerSize');
 
     // Get Organization Branches If Applicable
     const getBranches = async () => {
@@ -83,19 +84,8 @@ const CreateLocker = () => {
     });
 
     const { branches: orgBranches } = data || {};
-    console.log(orgBranches);
-
-    const [formData, setFormData] = useState({
-        branch: "",
-        numberOfLockers: 1,
-        startingNumber: "",
-        numberPattern: "LKR-{num}",
-        lockerType: "",
-        status: "available",
-    });
 
     const onSubmitLockers = async (data) => {
-        console.log("Data: ", data);
         try {
             const request = await fetch(`http://localhost:3000/api/lockers`, {
                 method: "POST",
@@ -106,7 +96,6 @@ const CreateLocker = () => {
             });
 
             const responseBody = await request.json();
-            console.log("Response body: ", responseBody);
 
             if (request.ok) {
                 hotToast.success(responseBody.message);
@@ -120,19 +109,18 @@ const CreateLocker = () => {
     };
 
     const generatePreviewNumbers = () => {
-        if (!formData.startingNumber) return [];
-
-        const startNum = parseInt(formData.startingNumber) || 100;
-        const count = Math.min(formData.numberOfLockers, 5);
+        const startNum = parseInt(startingNumber) || 100;
+        const count = Math.min(noOfLockers, 5);
 
         return Array.from({ length: count }, (_, i) => {
             const num = startNum + i;
-            return formData.numberPattern.replace("{num}", num.toString());
+            return numberPattern.replace("{num}", num.toString());
         });
     };
 
-    const selectedStatus = statusOptions.find(s => s.id === formData.status) || statusOptions[0];
+    const selectedStatus = statusOptions.find(s => s.id === lockerStatus) || statusOptions[0];
     const StatusIcon = selectedStatus.icon;
+
     return (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Form Section */}
@@ -145,9 +133,12 @@ const CreateLocker = () => {
                         {onTrail && (
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Select Branch</Label>
-                                <Select onValueChange={(value) => setSelectedBranch(value)}>
+                                <Select onValueChange={(value) => {
+                                    setSelectedBranch(value);
+                                    setValue('branch', value);
+                                }}>
                                     <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
-                                        <SelectValue placeholder="Select a fruit" />
+                                        <SelectValue placeholder="Select a branch" />
                                     </SelectTrigger>
                                     <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                         <SelectGroup>
@@ -158,7 +149,6 @@ const CreateLocker = () => {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-
                             </div>
                         )}
 
@@ -168,6 +158,7 @@ const CreateLocker = () => {
                                 {...register('numberOfLockers')}
                                 className='py-6 rounded-sm dark:bg-gray-700 dark:text-white dark:border-none'
                                 type="number"
+                                defaultValue={1}
                                 id="numberOfLockers"
                                 name="numberOfLockers"
                                 min="1"
@@ -205,14 +196,18 @@ const CreateLocker = () => {
                                     {selectedStatus.name}
                                 </Badge>
                                 <Switch
-                                    checked
-                                    onCheckedChange={(e) => setValue('status', e.target.value)}
+                                    checked={lockerStatus === "available"}
+                                    onCheckedChange={(checked) => {
+                                        const newStatus = checked ? "available" : "disabled";
+                                        setLockerStatus(newStatus);
+                                        setValue('status', newStatus);
+                                    }}
                                 />
                             </div>
                         </div>
 
                         <Button type="submit" className="w-full py-6 rounded-sm dark:bg-blue-500 dark:text-white" size="lg">
-                            Create {formData.numberOfLockers} Lockers
+                            Create {noOfLockers} Lockers
                         </Button>
                     </form>
                 </CardContent>
@@ -223,14 +218,14 @@ const CreateLocker = () => {
                 <CardHeader>
                     <CardTitle className="text-2xl">Locker Preview</CardTitle>
                     <p className="text-sm text-muted-foreground">
-                        Preview of the first {Math.min(formData.numberOfLockers, 5)} lockers to be created
+                        Preview of the first {Math.min(noOfLockers, 5)} lockers to be created
                     </p>
                 </CardHeader>
                 <CardContent>
-                    {!formData.startingNumber ? (
+                    {!startingNumber ? (
                         <div className="flex flex-col items-center justify-center h-64 dark:bg-blue-500 bg-gray-50 rounded-lg">
                             <Box className="h-10 w-10 text-gray-400 dark:text-white mb-4" />
-                            <p className="text-gray-500 dark:text-white">Enter details to see locker preview</p>
+                            <p className="text-gray-500 dark:text-white">Enter starting number to see locker preview</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -242,9 +237,7 @@ const CreateLocker = () => {
                                                 <div>
                                                     <p className="font-medium">{lockerNumber}</p>
                                                     <p className="text-sm text-muted-foreground">
-                                                        {formData.lockerType
-                                                            ? lockerTypes.find(t => t.id === formData.lockerType)?.name.split(" ")[0]
-                                                            : "No type"}
+                                                        {lockerSize || "No size specified"}
                                                     </p>
                                                 </div>
                                                 <Badge className={selectedStatus.color}>
@@ -257,20 +250,20 @@ const CreateLocker = () => {
                                 ))}
                             </div>
 
-                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                                <h4 className="font-medium text-blue-800 mb-2">Creation Summary</h4>
+                            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 dark:bg-blue-900 dark:border-blue-800">
+                                <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2">Creation Summary</h4>
                                 <div className="grid grid-cols-2 gap-2 text-sm">
                                     <div className="text-muted-foreground">Branch:</div>
-                                    <div>{formData.branch ? branches.find(b => b.id === formData.branch)?.name : "Not selected"}</div>
+                                    <div>{selectedBranch ? orgBranches?.find(b => b._id === selectedBranch)?.orgBranchName : "Not selected"}</div>
 
                                     <div className="text-muted-foreground">Total Lockers:</div>
-                                    <div>{formData.numberOfLockers}</div>
+                                    <div>{noOfLockers}</div>
 
                                     <div className="text-muted-foreground">Number Pattern:</div>
-                                    <div>{formData.numberPattern}</div>
+                                    <div>{numberPattern}</div>
 
-                                    <div className="text-muted-foreground">Locker Type:</div>
-                                    <div>{formData.lockerType ? lockerTypes.find(t => t.id === formData.lockerType)?.name : "Not selected"}</div>
+                                    <div className="text-muted-foreground">Locker Size:</div>
+                                    <div>{lockerSize || "Not selected"}</div>
 
                                     <div className="text-muted-foreground">Initial Status:</div>
                                     <div>{selectedStatus.name}</div>
