@@ -16,6 +16,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Box, Lock, Wrench, CircleOff } from "lucide-react";
+import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
+import { useForm } from "react-hook-form";
 
 const branches = [
     { id: "westside", name: "Westside Branch" },
@@ -25,10 +27,10 @@ const branches = [
 ];
 
 const lockerTypes = [
-    { id: "small", name: "Small (12x12x18 in)" },
-    { id: "medium", name: "Medium (18x18x24 in)" },
-    { id: "large", name: "Large (24x24x36 in)" },
-    { id: "xlarge", name: "Extra Large (36x36x48 in)" },
+    { id: "small", name: "Small" },
+    { id: "medium", name: "Medium" },
+    { id: "large", name: "Large" },
+    { id: "xlarge", name: "Extra Large" },
 ];
 
 const statusOptions = [
@@ -38,6 +40,22 @@ const statusOptions = [
 ];
 
 const CreateLocker = () => {
+
+    const { tenant } = useTenant()
+    const loggedInTenant = tenant?.tenant;
+
+    const onTrail = loggedInTenant?.freeTrailStatus;
+    console.log("On Trail: ", onTrail);
+
+    // React hook form
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isSubmitting },
+        watch,
+        setValue,
+    } = useForm();
+
     const [formData, setFormData] = useState({
         branch: "",
         numberOfLockers: 1,
@@ -47,26 +65,28 @@ const CreateLocker = () => {
         status: "available",
     });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: name === "numberOfLockers" ? Math.max(1, parseInt(value) || 1) : value
-        }));
-    };
+    const handleChange = async (data) => {
+        try {
+            const request = await fetch(`http://localhost:3000/api/lockers`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        // Submit logic here
-        console.log("Form submitted:", formData);
-        alert(`${formData.numberOfLockers} lockers created successfully!`);
+            const responseBody = await request.json();
+            console.log("Response body: ", responseBody);
+        } catch (error) {
+            console.log("Error: ", error);
+        };
     };
 
     const generatePreviewNumbers = () => {
         if (!formData.startingNumber) return [];
 
         const startNum = parseInt(formData.startingNumber) || 100;
-        const count = Math.min(formData.numberOfLockers, 5); // Show max 5 in preview
+        const count = Math.min(formData.numberOfLockers, 5);
 
         return Array.from({ length: count }, (_, i) => {
             const num = startNum + i;
@@ -86,26 +106,28 @@ const CreateLocker = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="space-y-2">
-                            <Label htmlFor="branch">Select Branch</Label>
-                            <Select
-                                value={formData.branch}
-                                onValueChange={(value) => setFormData({ ...formData, branch: value })}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select a branch" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        {branches.map((branch) => (
-                                            <SelectItem key={branch.id} value={branch.id}>
-                                                {branch.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </div>
+                        {onTrail && (
+                            <div className="space-y-2">
+                                <Label htmlFor="branch">Select Branch</Label>
+                                <Select
+                                    value={formData.branch}
+                                    onValueChange={(value) => setFormData({ ...formData, branch: value })}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a branch" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            {branches.map((branch) => (
+                                                <SelectItem key={branch.id} value={branch.id}>
+                                                    {branch.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                        )}
 
                         <div className="space-y-2">
                             <Label htmlFor="numberOfLockers">Number of Lockers</Label>
@@ -114,42 +136,12 @@ const CreateLocker = () => {
                                 id="numberOfLockers"
                                 name="numberOfLockers"
                                 min="1"
-                                value={formData.numberOfLockers}
-                                onChange={handleChange}
                             />
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="startingNumber">Starting Number</Label>
-                                <Input
-                                    type="text"
-                                    id="startingNumber"
-                                    name="startingNumber"
-                                    placeholder="e.g. 100"
-                                    value={formData.startingNumber}
-                                    onChange={handleChange}
-                                />
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="numberPattern">Number Pattern</Label>
-                                <Input
-                                    type="text"
-                                    id="numberPattern"
-                                    name="numberPattern"
-                                    placeholder="e.g. LKR-{num}"
-                                    value={formData.numberPattern}
-                                    onChange={handleChange}
-                                />
-                            </div>
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="lockerType">Locker Type</Label>
                             <Select
-                                value={formData.lockerType}
-                                onValueChange={(value) => setFormData({ ...formData, lockerType: value })}
                             >
                                 <SelectTrigger>
                                     <SelectValue placeholder="Select locker type" />
@@ -179,10 +171,6 @@ const CreateLocker = () => {
                                     {selectedStatus.name}
                                 </Badge>
                                 <Switch
-                                    checked={formData.status === "available"}
-                                    onCheckedChange={(checked) =>
-                                        setFormData({ ...formData, status: checked ? "available" : "maintenance" })
-                                    }
                                 />
                             </div>
                         </div>
