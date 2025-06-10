@@ -144,7 +144,7 @@ const CreateLocker = () => {
                             <Label htmlFor="numberOfLockers">Number of Lockers</Label>
                             <Input
                                 {...register('numberOfLockers')}
-                                className='py-6 rounded-sm dark:bg-gray-700 dark:text-white dark:border-none'
+                                className='py-6 bg-transparent rounded-sm dark:bg-gray-700 dark:text-white dark:border-none'
                                 type="number"
                                 defaultValue={1}
                                 id="numberOfLockers"

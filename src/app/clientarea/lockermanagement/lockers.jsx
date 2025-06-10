@@ -1,5 +1,7 @@
 'use client';
 
+import Pagination from '@/components/ui/CustomPagination';
+import { useState } from "react";
 import {
     Table,
     TableBody,
@@ -59,10 +61,16 @@ const statuses = {
 };
 
 const LockersOverview = () => {
+
+    // Pagination states
+    const limit = 15;
+    const [currentPage, setCurrentPage] = useState(1);
+
     // Get all lockers of every branch and tenant
-    const getAllLockers = async () => {
+    const getAllLockers = async ({ queryKey }) => {
+        const [, page, limit] = queryKey
         try {
-            const req = await fetch(`http://localhost:3000/api/lockers/by-tenant`);
+            const req = await fetch(`http://localhost:3000/api/lockers/by-tenant?page=${page}&limit=${limit}`);
             const res = await req.json();
             return res;
         } catch (error) {
@@ -72,11 +80,11 @@ const LockersOverview = () => {
     };
 
     const { data, isLoading } = useQuery({
-        queryKey: ['lockers'],
-        queryFn: getAllLockers
+        queryKey: ['lockers', currentPage, limit],
+        queryFn: getAllLockers,
     });
 
-    const { lockers: tenantLockers = [] } = data || {};
+    const { lockers: tenantLockers = [], totalPages, totalLockers } = data || {};
 
     // Extract unique branches from the locker data
     const branches = tenantLockers.reduce((acc, locker) => {
@@ -156,7 +164,7 @@ const LockersOverview = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-6">
                         {Object.entries({
-                            total: { count: lockerStats.total, label: "Total Lockers" },
+                            total: { count: totalLockers, label: "Total Lockers" },
                             available: { count: lockerStats.available, label: "Available" },
                             occupied: { count: lockerStats.occupied, label: "Occupied" },
                             maintenance: { count: lockerStats.maintenance, label: "Maintenance" },
@@ -241,13 +249,30 @@ const LockersOverview = () => {
                                         </Button>
                                     </CardFooter>
                                 </Card>
+
+
                             );
                         })}
+                    </div>
+                    <div className='w-full flex justify-end my-4'>
+                        <Pagination
+                            total={totalPages || 1}
+                            page={currentPage || 1}
+                            onChange={setCurrentPage}
+                            withEdges={true}
+                            siblings={1}
+                            boundaries={1}
+                            classNames={{
+                                item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
+                                active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
+                                dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                            }}
+                        />
                     </div>
                 </TabsContent>
 
                 <TabsContent value="table">
-                    <Card>
+                    <Card className='dark:bg-gray-900 dark:border-none'>
                         <CardHeader>
                             <CardTitle>Locker Inventory</CardTitle>
                             <CardDescription>Detailed view of all locker units</CardDescription>
@@ -306,6 +331,21 @@ const LockersOverview = () => {
                                     </TableRow>
                                 </TableFooter>
                             </Table>
+                            <div className='w-full flex justify-end my-4'>
+                                <Pagination
+                                    total={totalPages || 1}
+                                    page={currentPage || 1}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                    classNames={{
+                                        item: "bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 relative inline-flex items-center px-4 py-2 text-sm font-medium",
+                                        active: "z-10 bg-blue-600 border-blue-600 text-white hover:bg-blue-700",
+                                        dots: "relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+                                    }}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
