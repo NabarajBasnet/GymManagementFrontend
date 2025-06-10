@@ -1,14 +1,17 @@
 'use client'
 
+import { toast as hotToast } from 'react-hot-toast';
+import { toast as sonnerToast } from 'sonner';
 import { useState } from "react";
 import {
     Select,
     SelectContent,
     SelectGroup,
     SelectItem,
+    SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +21,7 @@ import { Badge } from "@/components/ui/badge";
 import { Box, Lock, Wrench, CircleOff } from "lucide-react";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { useForm } from "react-hook-form";
+import { useQuery } from '@tanstack/react-query';
 
 const branches = [
     { id: "westside", name: "Westside Branch" },
@@ -26,7 +30,7 @@ const branches = [
     { id: "eastside", name: "Eastside Branch" },
 ];
 
-const lockerTypes = [
+const lockerSizes = [
     { id: "small", name: "Small" },
     { id: "medium", name: "Medium" },
     { id: "large", name: "Large" },
@@ -44,8 +48,11 @@ const CreateLocker = () => {
     const { tenant } = useTenant()
     const loggedInTenant = tenant?.tenant;
 
-    const onTrail = loggedInTenant?.freeTrailStatus;
+    const onTrail = loggedInTenant?.freeTrailStatus==='Active';
     console.log("On Trail: ", onTrail);
+
+    // States
+    const [selectedBranch, setSelectedBranch] = useState();
 
     // React hook form
     const {
@@ -55,6 +62,28 @@ const CreateLocker = () => {
         watch,
         setValue,
     } = useForm();
+
+    // Get Organization Branches If Applicable
+    const getBranches = async () => {
+        try {
+            const request = await fetch(`http://localhost:3000/api/organizationbranch/tenant`);
+            const resBody = await request.json();
+            return resBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
+        }
+    }
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['branches'],
+        queryFn: getBranches,
+        enabled: !!onTrail
+    });
+
+    const { branches: orgBranches } = data || {};
+    console.log(orgBranches);
 
     const [formData, setFormData] = useState({
         branch: "",
@@ -78,8 +107,15 @@ const CreateLocker = () => {
 
             const responseBody = await request.json();
             console.log("Response body: ", responseBody);
+
+            if (request.ok) {
+                hotToast.success(responseBody.message);
+                sonnerToast.success(responseBody.message);
+            }
         } catch (error) {
             console.log("Error: ", error);
+            hotToast.error(error.message);
+            sonnerToast.error(error.message);
         };
     };
 
@@ -97,7 +133,6 @@ const CreateLocker = () => {
 
     const selectedStatus = statusOptions.find(s => s.id === formData.status) || statusOptions[0];
     const StatusIcon = selectedStatus.icon;
-
     return (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Form Section */}
@@ -110,29 +145,27 @@ const CreateLocker = () => {
                         {onTrail && (
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Select Branch</Label>
-                                <Select
-                                    value={formData.branch}
-                                    onValueChange={(value) => setFormData({ ...formData, branch: value })}
-                                >
+                                <Select onValueChange={(value) => setSelectedBranch(value)}>
                                     <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
-                                        <SelectValue placeholder="Select a branch" />
+                                        <SelectValue placeholder="Select a fruit" />
                                     </SelectTrigger>
                                     <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                         <SelectGroup>
-                                            {branches.map((branch) => (
-                                                <SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={branch.id} value={branch.id}>
-                                                    {branch.name}
-                                                </SelectItem>
+                                            <SelectLabel>Select</SelectLabel>
+                                            {orgBranches?.map((branch) =>
+                                            (<SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={branch._id} value={branch._id}>{branch.orgBranchName}</SelectItem>
                                             ))}
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
+
                             </div>
                         )}
 
                         <div className="space-y-2">
                             <Label htmlFor="numberOfLockers">Number of Lockers</Label>
                             <Input
+                                {...register('numberOfLockers')}
                                 className='py-6 rounded-sm dark:bg-gray-700 dark:text-white dark:border-none'
                                 type="number"
                                 id="numberOfLockers"
@@ -142,15 +175,14 @@ const CreateLocker = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="lockerType">Locker Type</Label>
-                            <Select
-                            >
+                            <Label htmlFor="lockerType">Locker Size</Label>
+                            <Select onValueChange={(value) => setValue('lockerSize', value)}>
                                 <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
-                                    <SelectValue placeholder="Select locker type" />
+                                    <SelectValue placeholder="Select locker size" />
                                 </SelectTrigger>
                                 <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                     <SelectGroup>
-                                        {lockerTypes.map((type) => (
+                                        {lockerSizes.map((type) => (
                                             <SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={type.id} value={type.id}>
                                                 {type.name}
                                             </SelectItem>
@@ -173,6 +205,8 @@ const CreateLocker = () => {
                                     {selectedStatus.name}
                                 </Badge>
                                 <Switch
+                                    checked
+                                    onCheckedChange={(e) => setValue('status', e.target.value)}
                                 />
                             </div>
                         </div>
