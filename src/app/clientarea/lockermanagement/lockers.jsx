@@ -212,7 +212,7 @@ const LockersOverview = () => {
     }
 
     return (
-        <div className="space-y-8 p-6 bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 min-h-screen">
+        <div className="space-y-8 p-6 rounded-md bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 min-h-screen">
             {/* Header Card with Stats */}
             <Card className="dark:border-gray-700/50 shadow-xl mb-8 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 backdrop-blur-sm">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between p-8 space-y-6 md:space-y-0">
@@ -224,34 +224,34 @@ const LockersOverview = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-6 p-8 pt-0">
-                    {Object.entries({
-                        total: { count: totalLockers, label: "Total Lockers", gradient: "from-violet-500 to-purple-600" },
-                        available: { count: lockerStats.available, label: "Available", gradient: "from-emerald-500 to-green-600" },
-                        occupied: { count: lockerStats.occupied, label: "Occupied", gradient: "from-blue-500 to-indigo-600" },
-                        maintenance: { count: lockerStats.maintenance, label: "Maintenance", gradient: "from-amber-500 to-orange-600" },
-                        disabled: { count: lockerStats.disabled, label: "Disabled", gradient: "from-red-500 to-rose-600" },
-                    }).map(([key, { count, label, gradient }]) => {
-                        const status = statuses[key] || statuses.unknown;
-                        const Icon = status.icon || Circle;
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 md:p-8">
+    {Object.entries({
+        total: { count: totalLockers, label: "Total Lockers", gradient: "from-violet-500 to-purple-600" },
+        available: { count: lockerStats.available, label: "Available", gradient: "from-emerald-500 to-green-600" },
+        occupied: { count: lockerStats.occupied, label: "Occupied", gradient: "from-blue-500 to-indigo-600" },
+        maintenance: { count: lockerStats.maintenance, label: "Maintenance", gradient: "from-amber-500 to-orange-600" },
+        disabled: { count: lockerStats.disabled, label: "Disabled", gradient: "from-red-500 to-rose-600" },
+    }).map(([key, { count, label, gradient }]) => {
+        const status = statuses[key] || statuses.unknown;
+        const Icon = status.icon || Circle;
 
-                        return (
-                            <Card key={key} className="shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 transition-all duration-300 hover:scale-105 group">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center justify-between">
-                                        <div className="space-y-2">
-                                            <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">{label}</p>
-                                            <h2 className="text-3xl font-bold text-gray-900 dark:text-white group-hover:scale-110 transition-transform duration-300">{count}</h2>
-                                        </div>
-                                        <div className={`p-4 rounded-2xl bg-gradient-to-br ${gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110`}>
-                                            <Icon className="h-6 w-6 text-white" />
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
+        return (
+            <Card key={key} className="shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 transition-all duration-300 hover:scale-[1.02] group min-w-0">
+                <CardContent className="p-4 md:p-6">
+                    <div className="flex items-center justify-between space-x-4">
+                        <div className="space-y-1 min-w-0">
+                            <p className="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider truncate">{label}</p>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white truncate">{count}</h2>
+                        </div>
+                        <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0`}>
+                            <Icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    })}
+</div>
             </Card>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
