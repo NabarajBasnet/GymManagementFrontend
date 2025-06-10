@@ -65,7 +65,8 @@ const CreateLocker = () => {
         status: "available",
     });
 
-    const handleChange = async (data) => {
+    const onSubmitLockers = async (data) => {
+        console.log("Data: ", data);
         try {
             const request = await fetch(`http://localhost:3000/api/lockers`, {
                 method: "POST",
@@ -100,12 +101,12 @@ const CreateLocker = () => {
     return (
         <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Form Section */}
-            <Card>
+            <Card className='dark:bg-gray-900 dark:border-none'>
                 <CardHeader>
                     <CardTitle className="text-2xl">Register New Lockers</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit(onSubmitLockers)} className="space-y-6">
                         {onTrail && (
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Select Branch</Label>
@@ -113,13 +114,13 @@ const CreateLocker = () => {
                                     value={formData.branch}
                                     onValueChange={(value) => setFormData({ ...formData, branch: value })}
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
                                         <SelectValue placeholder="Select a branch" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                         <SelectGroup>
                                             {branches.map((branch) => (
-                                                <SelectItem key={branch.id} value={branch.id}>
+                                                <SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={branch.id} value={branch.id}>
                                                     {branch.name}
                                                 </SelectItem>
                                             ))}
@@ -132,6 +133,7 @@ const CreateLocker = () => {
                         <div className="space-y-2">
                             <Label htmlFor="numberOfLockers">Number of Lockers</Label>
                             <Input
+                                className='py-6 rounded-sm dark:bg-gray-700 dark:text-white dark:border-none'
                                 type="number"
                                 id="numberOfLockers"
                                 name="numberOfLockers"
@@ -143,13 +145,13 @@ const CreateLocker = () => {
                             <Label htmlFor="lockerType">Locker Type</Label>
                             <Select
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
                                     <SelectValue placeholder="Select locker type" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className='dark:bg-gray-800 dark:border-none'>
                                     <SelectGroup>
                                         {lockerTypes.map((type) => (
-                                            <SelectItem key={type.id} value={type.id}>
+                                            <SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={type.id} value={type.id}>
                                                 {type.name}
                                             </SelectItem>
                                         ))}
@@ -158,10 +160,10 @@ const CreateLocker = () => {
                             </Select>
                         </div>
 
-                        <div className="flex items-center justify-between space-y-2 p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between space-y-2 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                             <div>
                                 <Label htmlFor="status">Initial Status</Label>
-                                <p className="text-sm text-muted-foreground">
+                                <p className="text-sm dark:text-gray-200">
                                     Set the initial status for all new lockers
                                 </p>
                             </div>
@@ -175,7 +177,7 @@ const CreateLocker = () => {
                             </div>
                         </div>
 
-                        <Button type="submit" className="w-full" size="lg">
+                        <Button type="submit" className="w-full py-6 rounded-sm dark:bg-blue-500 dark:text-white" size="lg">
                             Create {formData.numberOfLockers} Lockers
                         </Button>
                     </form>
@@ -183,7 +185,7 @@ const CreateLocker = () => {
             </Card>
 
             {/* Preview Section */}
-            <Card>
+            <Card className='dark:bg-gray-900 dark:border-none'>
                 <CardHeader>
                     <CardTitle className="text-2xl">Locker Preview</CardTitle>
                     <p className="text-sm text-muted-foreground">
@@ -192,9 +194,9 @@ const CreateLocker = () => {
                 </CardHeader>
                 <CardContent>
                     {!formData.startingNumber ? (
-                        <div className="flex flex-col items-center justify-center h-64 bg-gray-50 rounded-lg">
-                            <Box className="h-10 w-10 text-gray-400 mb-4" />
-                            <p className="text-gray-500">Enter details to see locker preview</p>
+                        <div className="flex flex-col items-center justify-center h-64 dark:bg-blue-500 bg-gray-50 rounded-lg">
+                            <Box className="h-10 w-10 text-gray-400 dark:text-white mb-4" />
+                            <p className="text-gray-500 dark:text-white">Enter details to see locker preview</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
