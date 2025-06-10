@@ -1,71 +1,59 @@
 'use client';
 
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { SearchIcon, FilterIcon, DownloadIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const logsData = [
-    {
-        id: "LOG001",
-        action: "Locker Created",
-        lockerId: "LKR-101",
-        user: "admin@example.com",
-        timestamp: "2023-05-15 10:30:45",
-        details: "Created new locker with size Medium"
-    },
-    {
-        id: "LOG002",
-        action: "Status Changed",
-        lockerId: "LKR-042",
-        user: "staff@example.com",
-        timestamp: "2023-05-15 09:15:22",
-        details: "Changed status from Available to Maintenance"
-    },
-    {
-        id: "LOG003",
-        action: "Locker Assigned",
-        lockerId: "LKR-078",
-        user: "client@example.com",
-        timestamp: "2023-05-14 16:45:10",
-        details: "Assigned to Client ID: CLT-556"
-    },
-    {
-        id: "LOG004",
-        action: "Locker Released",
-        lockerId: "LKR-033",
-        user: "system",
-        timestamp: "2023-05-14 14:20:33",
-        details: "Automatically released after 24 hours"
-    },
-    {
-        id: "LOG005",
-        action: "Access Denied",
-        lockerId: "LKR-112",
-        user: "client@example.com",
-        timestamp: "2023-05-13 11:05:17",
-        details: "Invalid access attempt"
-    },
-    {
-        id: "LOG006",
-        action: "Maintenance Complete",
-        lockerId: "LKR-042",
-        user: "staff@example.com",
-        timestamp: "2023-05-13 10:15:09",
-        details: "Completed maintenance work"
-    },
-    {
-        id: "LOG007",
-        action: "Locker Disabled",
-        lockerId: "LKR-089",
-        user: "admin@example.com",
-        timestamp: "2023-05-12 17:30:41",
-        details: "Disabled due to damage"
+// Fetch function
+const fetchLockerLogs = async ({ page, search, action }) => {
+    const response = await fetch(
+        `/api/locker-logs?page=${page}&search=${search}&action=${action}`
+    );
+    
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
     }
-];
+    
+    const data = await response.json();
+    return data.data;
+};
 
 const LockerLogs = () => {
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [action, setAction] = useState("all");
+
+    // Using React Query
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+        isFetching
+    } = useQuery({
+        queryKey: ['lockerLogs', page, search, action],
+        queryFn: () => fetchLockerLogs({ page, search, action }),
+        keepPreviousData: true, // Keep previous data while fetching new data
+        staleTime: 5000, // Consider data fresh for 5 seconds
+    });
+
+    // Debounced search handler
+    const handleSearch = (value) => {
+        setPage(1); // Reset to first page on new search
+        setSearch(value);
+    };
+
+    // Action filter handler
+    const handleActionFilter = (value) => {
+        setPage(1); // Reset to first page on new filter
+        setAction(value);
+    };
+
     return (
         <Card className="w-full">
             <CardHeader>
@@ -77,67 +65,113 @@ const LockerLogs = () => {
                             <Input
                                 placeholder="Search logs..."
                                 className="pl-9 w-full sm:w-[200px]"
+                                value={search}
+                                onChange={(e) => handleSearch(e.target.value)}
                             />
                         </div>
-                        <Button variant="outline">
-                            <FilterIcon className="mr-2 h-4 w-4" />
-                            Filters
-                        </Button>
-                        <Button variant="outline">
-                            <DownloadIcon className="mr-2 h-4 w-4" />
-                            Export
-                        </Button>
+                        <Select value={action} onValueChange={handleActionFilter}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="Filter by action" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Actions</SelectItem>
+                                <SelectItem value="Created">Created</SelectItem>
+                                <SelectItem value="Assigned">Assigned</SelectItem>
+                                <SelectItem value="Released">Released</SelectItem>
+                                <SelectItem value="Status Changed">Status Changed</SelectItem>
+                                <SelectItem value="Maintenance">Maintenance</SelectItem>
+                                <SelectItem value="Reset">Reset</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </div>
             </CardHeader>
             <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Log ID</TableHead>
-                            <TableHead>Action</TableHead>
-                            <TableHead>Locker ID</TableHead>
-                            <TableHead>User</TableHead>
-                            <TableHead>Timestamp</TableHead>
-                            <TableHead>Details</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {logsData.map((log) => (
-                            <TableRow key={log.id}>
-                                <TableCell className="font-medium">{log.id}</TableCell>
-                                <TableCell>
-                                    <span className={`px-2 py-1 rounded-full text-xs ${log.action.includes('Created') ? 'bg-blue-100 text-blue-800' :
-                                        log.action.includes('Changed') ? 'bg-purple-100 text-purple-800' :
-                                            log.action.includes('Assigned') ? 'bg-green-100 text-green-800' :
-                                                log.action.includes('Denied') ? 'bg-red-100 text-red-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {log.action}
-                                    </span>
-                                </TableCell>
-                                <TableCell>{log.lockerId}</TableCell>
-                                <TableCell>{log.user}</TableCell>
-                                <TableCell>{log.timestamp}</TableCell>
-                                <TableCell className="max-w-[200px] truncate">{log.details}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-
-                <div className="flex items-center justify-between mt-4">
-                    <p className="text-sm text-gray-600">
-                        Showing 1 to {logsData.length} of {logsData.length} entries
-                    </p>
-                    <div className="flex gap-2">
-                        <Button variant="outline" disabled>
-                            Previous
-                        </Button>
-                        <Button variant="outline">
-                            Next
-                        </Button>
+                {isError ? (
+                    <div className="text-center text-red-500 py-4">
+                        Error: {error.message}
                     </div>
-                </div>
+                ) : (
+                    <>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Locker ID</TableHead>
+                                    <TableHead>Action</TableHead>
+                                    <TableHead>User</TableHead>
+                                    <TableHead>Timestamp</TableHead>
+                                    <TableHead>Details</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {isLoading ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center">
+                                            Loading...
+                                        </TableCell>
+                                    </TableRow>
+                                ) : data?.logs?.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="text-center">
+                                            No logs found
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    data?.logs?.map((log) => (
+                                        <TableRow key={log._id}>
+                                            <TableCell>{log.lockerId}</TableCell>
+                                            <TableCell>
+                                                <span className={`px-2 py-1 rounded-full text-xs ${
+                                                    log.action === 'Created' ? 'bg-blue-100 text-blue-800' :
+                                                    log.action === 'Assigned' ? 'bg-green-100 text-green-800' :
+                                                    log.action === 'Released' ? 'bg-yellow-100 text-yellow-800' :
+                                                    log.action === 'Status Changed' ? 'bg-purple-100 text-purple-800' :
+                                                    'bg-gray-100 text-gray-800'
+                                                }`}>
+                                                    {log.action}
+                                                </span>
+                                            </TableCell>
+                                            <TableCell>{log.user}</TableCell>
+                                            <TableCell>{new Date(log.timestamp).toLocaleString()}</TableCell>
+                                            <TableCell className="max-w-[200px] truncate">{log.details}</TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+
+                        {data?.pagination && (
+                            <div className="flex items-center justify-between mt-4">
+                                <p className="text-sm text-gray-600">
+                                    Showing {((page - 1) * data.pagination.limit) + 1} to {Math.min(page * data.pagination.limit, data.pagination.total)} of {data.pagination.total} entries
+                                </p>
+                                <div className="flex gap-2">
+                                    <Button
+                                        variant="outline"
+                                        disabled={page === 1 || isLoading}
+                                        onClick={() => setPage(old => Math.max(old - 1, 1))}
+                                    >
+                                        Previous
+                                    </Button>
+                                    <Button
+                                        variant="outline"
+                                        disabled={page === data.pagination.pages || isLoading}
+                                        onClick={() => setPage(old => Math.min(old + 1, data.pagination.pages))}
+                                    >
+                                        Next
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Loading overlay for subsequent fetches */}
+                        {isFetching && !isLoading && (
+                            <div className="absolute inset-0 bg-white/50 flex items-center justify-center">
+                                Loading...
+                            </div>
+                        )}
+                    </>
+                )}
             </CardContent>
         </Card>
     );
