@@ -54,36 +54,20 @@ const statuses = {
     occupied: { text: "Occupied", icon: Lock, color: "bg-blue-100 text-blue-800" },
     maintenance: { text: "Maintenance", icon: Wrench, color: "bg-yellow-100 text-yellow-800" },
     disabled: { text: "Disabled", icon: CircleOff, color: "bg-red-100 text-red-800" },
-    unknown: { text: "Unknown", icon: CircleHelp, color: "bg-gray-100 text-gray-800" }
+    unknown: { text: "Unknown", icon: CircleHelp, color: "bg-gray-100 text-gray-800" },
+    empty: { text: "Empty", icon: Circle, color: "bg-gray-100 text-gray-800" }
 };
 
-const branches = [
-    { id: "all", name: "All Branches" },
-    { id: "downtown", name: "Downtown" },
-    { id: "uptown", name: "Uptown" },
-    { id: "westside", name: "Westside" },
-    { id: "eastside", name: "Eastside" },
-];
-
-const lockers = Array.from({ length: 10 }).map((_, i) => ({
-    id: `LKR${100 + i}`,
-    branch: branches[Math.floor(Math.random() * branches.length)].name,
-    status: Object.keys(statuses)[Math.floor(Math.random() * Object.keys(statuses).length)],
-    size: ["Small", "Medium", "Large"][Math.floor(Math.random() * 3)],
-    lastUsed: new Date(Date.now() - Math.floor(Math.random() * 30) * 24 * 60 * 60 * 1000).toLocaleDateString(),
-}));
-
 const LockersOverview = () => {
-
     // Get all lockers of every branch and tenant
     const getAllLockers = async () => {
         try {
             const req = await fetch(`http://localhost:3000/api/lockers/by-tenant`);
             const res = await req.json();
-            console.log('Res: ', res);
             return res;
         } catch (error) {
             console.log("Error: ", error);
+            return { lockers: [] };
         };
     };
 
@@ -92,9 +76,45 @@ const LockersOverview = () => {
         queryFn: getAllLockers
     });
 
-    const { lockers: tenantLockers } = data || {};
-    console.log("Lockers: ", tenantLockers);
+    const { lockers: tenantLockers = [] } = data || {};
 
+    // Extract unique branches from the locker data
+    const branches = tenantLockers.reduce((acc, locker) => {
+        if (!acc.some(b => b.id === locker.organizationBranch._id)) {
+            acc.push({
+                id: locker.organizationBranch._id,
+                name: locker.organizationBranch.orgBranchName
+            });
+        }
+        return acc;
+    }, [{ id: "all", name: "All Branches" }]);
+
+    // Calculate locker statistics
+    const lockerStats = tenantLockers.reduce((stats, locker) => {
+        stats.total++;
+
+        if (locker.status === "Empty") {
+            stats.available++;
+        } else if (locker.isAssigned) {
+            stats.occupied++;
+        } else if (locker.status === "Maintenance") {
+            stats.maintenance++;
+        } else if (locker.status === "Disabled") {
+            stats.disabled++;
+        }
+
+        return stats;
+    }, {
+        total: 0,
+        available: 0,
+        occupied: 0,
+        maintenance: 0,
+        disabled: 0
+    });
+
+    if (isLoading) {
+        return <div>Loading lockers...</div>;
+    }
 
     return (
         <div className="space-y-6">
@@ -136,11 +156,11 @@ const LockersOverview = () => {
 
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 p-6">
                         {Object.entries({
-                            total: { count: 180, label: "Total Lockers" },
-                            available: { count: 80, label: "Available" },
-                            occupied: { count: 60, label: "Occupied" },
-                            maintenance: { count: 25, label: "Maintenance" },
-                            disabled: { count: 15, label: "Disabled" },
+                            total: { count: lockerStats.total, label: "Total Lockers" },
+                            available: { count: lockerStats.available, label: "Available" },
+                            occupied: { count: lockerStats.occupied, label: "Occupied" },
+                            maintenance: { count: lockerStats.maintenance, label: "Maintenance" },
+                            disabled: { count: lockerStats.disabled, label: "Disabled" },
                         }).map(([key, { count, label }]) => {
                             const status = statuses[key] || statuses.unknown;
                             const Icon = status.icon || Circle;
@@ -165,18 +185,21 @@ const LockersOverview = () => {
                 </Card>
 
                 <TabsContent value="grid">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                        {lockers?.map((locker, index) => {
-                            const status = statuses[locker.status] || statuses.unknown;
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-6">
+                        {tenantLockers.map((locker) => {
+                            const statusKey = locker.isAssigned ? "occupied" :
+                                locker.status.toLowerCase() in statuses ?
+                                    locker.status.toLowerCase() : "unknown";
+                            const status = statuses[statusKey] || statuses.unknown;
                             const StatusIcon = status.icon || Circle;
 
                             return (
-                                <Card key={index} className="hover:shadow-md transition-shadow">
+                                <Card key={locker._id} className="hover:shadow-md transition-shadow">
                                     <CardHeader className="pb-2">
                                         <div className="flex justify-between items-start">
                                             <div>
-                                                <CardTitle className="text-lg">Locker {locker.id}</CardTitle>
-                                                <CardDescription>{locker.branch}</CardDescription>
+                                                <CardTitle className="text-lg">Locker {locker.lockerId}</CardTitle>
+                                                <CardDescription>{locker.organizationBranch.orgBranchName}</CardDescription>
                                             </div>
                                             <Badge variant="outline" className={status.color}>
                                                 <StatusIcon className="h-3 w-3 mr-1" />
@@ -188,12 +211,28 @@ const LockersOverview = () => {
                                         <div className="space-y-2">
                                             <div className="flex justify-between">
                                                 <span className="text-sm text-muted-foreground">Size:</span>
-                                                <span className="text-sm font-medium">{locker.size}</span>
+                                                <span className="text-sm font-medium">{locker.lockerSize}</span>
                                             </div>
                                             <div className="flex justify-between">
-                                                <span className="text-sm text-muted-foreground">Last Used:</span>
-                                                <span className="text-sm font-medium">{locker.lastUsed}</span>
+                                                <span className="text-sm text-muted-foreground">Assigned to:</span>
+                                                <span className="text-sm font-medium">
+                                                    {locker.memberName || "None"}
+                                                </span>
                                             </div>
+                                             <div className="flex justify-between">
+                                                <span className="text-sm text-muted-foreground">Locker Number:</span>
+                                                <span className="text-sm font-medium">
+                                                    {locker.lockerNumber || "None"}
+                                                </span>
+                                            </div>
+                                            {locker.expireDate && (
+                                                <div className="flex justify-between">
+                                                    <span className="text-sm text-muted-foreground">Expires:</span>
+                                                    <span className="text-sm font-medium">
+                                                        {new Date(locker.expireDate).toLocaleDateString()}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     </CardContent>
                                     <CardFooter className="flex justify-end">
@@ -221,27 +260,36 @@ const LockersOverview = () => {
                                         <TableHead>Branch</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Size</TableHead>
-                                        <TableHead>Last Used</TableHead>
+                                        <TableHead>Assigned To</TableHead>
+                                        <TableHead>Expiration</TableHead>
                                         <TableHead className="text-right">Actions</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {lockers?.map((locker) => {
-                                        const status = statuses[locker.status] || statuses.unknown;
+                                    {tenantLockers.map((locker) => {
+                                        const statusKey = locker.isAssigned ? "occupied" :
+                                            locker.status.toLowerCase() in statuses ?
+                                                locker.status.toLowerCase() : "unknown";
+                                        const status = statuses[statusKey] || statuses.unknown;
                                         const StatusIcon = status.icon || Circle;
 
                                         return (
-                                            <TableRow key={locker.id}>
-                                                <TableCell className="font-medium">{locker.id}</TableCell>
-                                                <TableCell>{locker.branch}</TableCell>
+                                            <TableRow key={locker._id}>
+                                                <TableCell className="font-medium">{locker.lockerId}</TableCell>
+                                                <TableCell>{locker.organizationBranch.orgBranchName}</TableCell>
                                                 <TableCell>
                                                     <Badge variant="outline" className={status.color}>
                                                         <StatusIcon className="h-3 w-3 mr-1" />
                                                         {status.text}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell>{locker.size}</TableCell>
-                                                <TableCell>{locker.lastUsed}</TableCell>
+                                                <TableCell>{locker.lockerSize}</TableCell>
+                                                <TableCell>{locker.memberName || "None"}</TableCell>
+                                                <TableCell>
+                                                    {locker.expireDate ?
+                                                        new Date(locker.expireDate).toLocaleDateString() :
+                                                        "N/A"}
+                                                </TableCell>
                                                 <TableCell className="text-right">
                                                     <Button variant="ghost" size="sm">
                                                         Manage
@@ -253,8 +301,8 @@ const LockersOverview = () => {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan={5}>Total Lockers</TableCell>
-                                        <TableCell className="text-right">{lockers.length}</TableCell>
+                                        <TableCell colSpan={6}>Total Lockers</TableCell>
+                                        <TableCell className="text-right">{tenantLockers.length}</TableCell>
                                     </TableRow>
                                 </TableFooter>
                             </Table>

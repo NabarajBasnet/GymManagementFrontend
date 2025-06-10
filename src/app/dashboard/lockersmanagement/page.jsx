@@ -95,7 +95,7 @@ const Lockers = () => {
 
     const getAllLockers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/lockers?order=${lockerOrder}&status=${lockerStatus}`);
+            const response = await fetch(`http://localhost:3000/api/lockers/by-org-branch`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -111,7 +111,7 @@ const Lockers = () => {
         queryFn: getAllLockers,
     });
 
-    const { Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
+    const { lockers: Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
 
     // Pululate lockers data
     const getAllMembers = async () => {
@@ -798,7 +798,7 @@ const Lockers = () => {
                                                     />
 
                                                     <div className="p-5">
-                                                        <div className="flex justify-between items-start mb-4">
+                                                        <div className="flex justify-between items-start mb-2">
                                                             <div>
                                                                 <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">
                                                                     Locker <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-700 to-gray-600 dark:from-gray-400 dark:to-gray-300">
@@ -833,14 +833,16 @@ const Lockers = () => {
                                                         </div>
 
                                                         {/* Locker details with subtle hover effect */}
-                                                        <div className="space-y-3 text-sm mb-4">
+                                                        <div className="space-y-0 text-sm mb-0">
                                                             {[
+                                                                ['Locker ID', locker.lockerId],
                                                                 ['Member ID', locker.memberId],
                                                                 ['Member Name', locker.memberName],
                                                                 ['Renew Date', new Date(locker.renewDate).toLocaleDateString()],
                                                                 ['Duration', locker.duration],
                                                                 ['Expire Date', new Date(locker.expireDate).toLocaleDateString()],
-                                                                ['Fee', `$${locker.fee}`]
+                                                                ['Fee', `$${locker.fee}`],
+                                                                ['Size', `${locker.lockerSize}`]
                                                             ].map(([label, value]) => (
                                                                 <div
                                                                     key={label}
