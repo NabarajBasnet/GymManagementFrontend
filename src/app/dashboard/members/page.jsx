@@ -103,7 +103,7 @@ const AllMembers = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+        `http://localhost:3000/api/org-members/by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
       );
       const resBody = await response.json();
       return resBody;
@@ -569,7 +569,7 @@ const AllMembers = () => {
                                 {member?.membershipOption ||
                                   member?.membership?.servicesIncluded?.map(
                                     (service, index) => {
-                                      return `${service} & `;
+                                      return `${service}`;
                                     }
                                   )}
                               </TableCell>
