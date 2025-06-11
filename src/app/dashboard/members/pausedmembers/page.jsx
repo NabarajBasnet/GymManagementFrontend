@@ -102,7 +102,7 @@ const PausedMembers = () => {
         const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://localhost:3000/api/members/pausedmembers?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+                `http://localhost:3000/api/org-members/onhold-by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;

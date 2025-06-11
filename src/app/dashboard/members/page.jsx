@@ -73,19 +73,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePagination, DOTS } from "@/hooks/Pagination";
 import AllMembersAreaChart from "./charts/allmembersareachart";
 import { useRouter } from "next/navigation";
 
 const AllMembers = () => {
-  const { user, loading } = useUser();
   const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(15);
+  const [limit, setLimit] = useState(1);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 
@@ -99,7 +97,7 @@ const AllMembers = () => {
   }, [searchQuery, limit]);
 
   const getAllMembers = async ({ queryKey }) => {
-    const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
+    const [, page, limit, searchQuery, sortBy, sortOrderDesc] = queryKey;
 
     try {
       const response = await fetch(
@@ -118,10 +116,10 @@ const AllMembers = () => {
     queryKey: [
       "members",
       currentPage,
+      limit,
       debouncedSearchQuery,
       sortBy,
       sortOrderDesc,
-      limit,
     ],
     queryFn: getAllMembers,
     keepPreviousData: true,

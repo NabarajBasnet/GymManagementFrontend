@@ -55,7 +55,7 @@ const AdminDashboard = () => {
   const getTotalMembers = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
+        `http://localhost:3000/api/org-members/by-branch?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`
       );
       const responseBody = await response.json();
 
@@ -94,6 +94,8 @@ const AdminDashboard = () => {
     totalMembers,
     totalActiveMembers,
     totalInactiveMembers,
+    activeMembers,
+    InactiveMembers
   } = data || {};
 
   // Get New Members
@@ -162,7 +164,7 @@ const AdminDashboard = () => {
     {
       icon: GiBiceps,
       text: "Active Members",
-      value: `${numbersLoading ? '...' : totalActiveMembers || 0}`,
+      value: `${numbersLoading ? '...' : activeMembers?.length || 0}`,
       percentage: -0.2,
       trend: "down",
       color: 'text-green-600',
@@ -182,7 +184,7 @@ const AdminDashboard = () => {
     {
       icon: PiUsersFourFill,
       text: "Inactive Members",
-      value: `${numbersLoading ? '...' : totalInactiveMembers || 0}`,
+      value: `${numbersLoading ? '...' : InactiveMembers?.length || 0}`,
       percentage: -4.5,
       trend: "down",
       color: 'text-red-600',

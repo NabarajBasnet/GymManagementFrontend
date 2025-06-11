@@ -358,11 +358,6 @@ const Header = () => {
       category: "Staff Management",
       items: [
         {
-          icon: HiUsers,
-          title: "System Users",
-          link: "/dashboard/users",
-        },
-        {
           icon: FaUsersGear,
           title: "Staff Management",
           link: "/dashboard/staffmanagement",

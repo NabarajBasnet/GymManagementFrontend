@@ -271,11 +271,6 @@ const Sidebar = () => {
       category: "Staff",
       items: [
         {
-          icon: HiUsers,
-          title: "System Users",
-          link: "/dashboard/users",
-        },
-        {
           icon: FaUsersGear,
           title: "Staff Management",
           link: "/dashboard/staffmanagement",
