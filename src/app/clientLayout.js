@@ -2,8 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import Lenis from "@studio-freight/lenis";
-import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Website/Navbar/Navbar";
 import Footer from "@/components/Website/Footer/Footer";
 import { ThemeProvider } from "@/components/Providers/ThemeProvider";

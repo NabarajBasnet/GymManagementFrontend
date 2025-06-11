@@ -1,7 +1,6 @@
 "use client";
 
 import './styles/landing.css';
-import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronDown } from 'lucide-react';
 import FeaturesSection from '@/components/Website/FeaturesSection/FeaturesSection';
