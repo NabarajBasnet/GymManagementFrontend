@@ -3,7 +3,6 @@
 import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { LiaHomeSolid } from "react-icons/lia";
-import { MdAdd } from "react-icons/md";
 import { RiResetRightFill } from "react-icons/ri";
 import { FaLockOpen } from "react-icons/fa";
 import Badge from '@mui/material/Badge';
@@ -51,6 +50,7 @@ const Lockers = () => {
 
     const queryClient = useQueryClient()
     const [lockerFormState, setLockerFormState] = useState(false);
+
     const [renderDropdown, setRenderDropdown] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const searchRef = React.useRef(null)
@@ -92,11 +92,16 @@ const Lockers = () => {
     // Locker filteration states
     const [lockerStatus, setLockerStatus] = useState('');
     const [lockerOrder, setLockerOrder] = useState('');
+    const [Lockers, setLockers] = useState();
 
     const getAllLockers = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/lockers/by-org-branch`);
             const responseBody = await response.json();
+            if (response.ok) {
+                setLockers(responseBody.lockers);
+                return responseBody;
+            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -109,9 +114,12 @@ const Lockers = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['lockers', lockerOrder, lockerStatus],
         queryFn: getAllLockers,
+        onSuccess: (data) => {
+            setLockers(data?.lockers);
+        }
     });
 
-    const { lockers: Lockers, totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
+    const { totalLockers, assignedLockers, notAssignedLockers, bookedLockers, emptyLockers, expiredLockers, underMaintenanceLockers } = data || {}
 
     // Pululate lockers data
     const getAllMembers = async () => {
@@ -155,6 +163,10 @@ const Lockers = () => {
                 newLockerExpireDate.setMonth(newLockerExpireDate.getMonth() + 6);
                 break;
 
+            case '9 Months':
+                newLockerExpireDate.setMonth(newLockerExpireDate.getMonth() + 9);
+                break;
+
             case '12 Months':
                 newLockerExpireDate.setFullYear(newLockerExpireDate.getFullYear() + 1)
                 break;
@@ -173,23 +185,17 @@ const Lockers = () => {
     const registerLocker = async (data) => {
         try {
             if (!renewDate) {
-                setError(
-                    "renewDate",
-                    {
-                        type: 'manual',
-                        message: 'Please select renew date'
-                    }
-                )
+                setError("renewDate", {
+                    type: 'manual',
+                    message: 'Please select renew date'
+                });
             };
 
             if (!expireDate) {
-                setError(
-                    "expireDate",
-                    {
-                        type: 'manual',
-                        message: 'Please select expire date'
-                    }
-                )
+                setError("expireDate", {
+                    type: 'manual',
+                    message: 'Please select expire date'
+                });
             };
 
             const { fee, referenceCode, receiptNo } = data;
@@ -208,51 +214,26 @@ const Lockers = () => {
             if (response.ok) {
                 hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
-                window.location.reload();
-                queryClient.invalidateQueries(
-                    {
-                        queryKey: ['lockers'],
-                        exact: true
-                    }
-                );
-            };
-
-            if (response.status === 500) {
-                hotToast.success(responseBody.message);
-                sonnerToast.success(responseBody.message);
-                queryClient.invalidateQueries({
-                    queryKey: ['lockers'],
-                    exact: true
-                });
-            };
-
-            if (!response.status === 200) {
-                hotToast.error(responseBody.message);
-                sonnerToast.error(responseBody.message);
+                setLockerFormState(false);
+                const updatedLockers = await getAllLockers();
+                setLockers(updatedLockers.lockers);
                 queryClient.invalidateQueries({
                     queryKey: ['lockers'],
                     exact: true
                 });
             } else {
-                hotToast.success(responseBody.message);
-                sonnerToast.success(responseBody.message);
+                hotToast.error(responseBody.message);
+                sonnerToast.error(responseBody.message);
                 setLockerFormState(false);
-                queryClient.invalidateQueries({
-                    queryKey: ['lockers'],
-                    exact: true
-                });
             };
 
         } catch (error) {
             console.log("Error: ", error);
             hotToast.error(error.message);
             sonnerToast.error(error.message);
-            queryClient.invalidateQueries({
-                queryKey: ['lockers'],
-                exact: true
-            });
         }
     };
+
 
     const getSingleLockerInfo = async (id) => {
         try {
@@ -287,25 +268,21 @@ const Lockers = () => {
             })
             const responseBody = await response.json();
             if (response.ok) {
-                window.location.reload();
-                queryClient.invalidateQueries(
-                    {
-                        queryKey: ['lockers'],
-                        exact: true
-                    }
-                );
+                setLockerFormState(false);
+                const updatedLockers = await getAllLockers();
+                setLockers(updatedLockers.lockers);
                 setLockerFormState(false);
                 hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
+                queryClient.invalidateQueries({
+                    queryKey: ['lockers'],
+                    exact: true
+                });
             }
         } catch (error) {
             hotToast.error(error.message);
             sonnerToast.error(error.message);
             console.log("Error: ", error);
-            queryClient.invalidateQueries({
-                queryKey: ['lockers'],
-                exact: true
-            });
         }
     };
 
@@ -342,7 +319,7 @@ const Lockers = () => {
             </div>
 
             {
-                lockerFormState && data?.Lockers ? (
+                lockerFormState && Lockers ? (
                     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
                         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-6 md:p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700">
                             {/* Header with gradient border */}
@@ -471,6 +448,7 @@ const Lockers = () => {
                                                     <option className="dark:bg-gray-700" value='1 Month'>1 Month</option>
                                                     <option className="dark:bg-gray-700" value='3 Months'>3 Months</option>
                                                     <option className="dark:bg-gray-700" value='6 Months'>6 Months</option>
+                                                    <option className="dark:bg-gray-700" value='9 Months'>9 Months</option>
                                                     <option className="dark:bg-gray-700" value='12 Months'>12 Months</option>
                                                 </select>
                                             )}
@@ -835,7 +813,6 @@ const Lockers = () => {
                                                         <div className="space-y-0 text-sm mb-0">
                                                             {[
                                                                 ['Locker ID', locker.lockerId],
-                                                                ['Member ID', locker.memberId],
                                                                 ['Member Name', locker.memberName],
                                                                 ['Renew Date', new Date(locker.renewDate).toLocaleDateString()],
                                                                 ['Duration', locker.duration],
