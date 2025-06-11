@@ -68,7 +68,7 @@ const lockerSizes = ["Small", "Medium", "Large", "Extra Large"];
 
 const LockersOverview = () => {
     const { tenant } = useTenant();
-    
+
     // Filter and pagination states
     const limit = 15;
     const [currentPage, setCurrentPage] = useState(1);
@@ -98,7 +98,7 @@ const LockersOverview = () => {
                 sortOrder,
                 lockerSize: selectedSize
             });
-            
+
             const req = await fetch(`http://localhost:3000/api/lockers/by-tenant?${queryParams}`);
             const res = await req.json();
             return res;
@@ -128,7 +128,7 @@ const LockersOverview = () => {
                     />
                 </div>
             </div>
-            
+
             <Select value={selectedBranch} onValueChange={setSelectedBranch}>
                 <SelectTrigger className="w-full md:w-[220px] h-12 dark:border-gray-600/50 rounded-xl cursor-pointer dark:bg-gray-700/70 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 border-gray-200 focus:border-blue-400 dark:focus:border-blue-500">
                     <SelectValue placeholder="Select branch" />
@@ -168,8 +168,8 @@ const LockersOverview = () => {
                     onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
                     className="h-12 w-12 rounded-xl dark:bg-gray-700/70 bg-white/80 backdrop-blur-sm shadow-sm hover:shadow-md transition-all duration-300 border-gray-200 dark:border-gray-600/50 hover:border-blue-400 dark:hover:border-blue-500 group"
                 >
-                    {sortOrder === 'asc' ? 
-                        <SortAsc className="h-5 w-5 group-hover:text-blue-600 transition-colors duration-200" /> : 
+                    {sortOrder === 'asc' ?
+                        <SortAsc className="h-5 w-5 group-hover:text-blue-600 transition-colors duration-200" /> :
                         <SortDesc className="h-5 w-5 group-hover:text-blue-600 transition-colors duration-200" />
                     }
                 </Button>
@@ -225,33 +225,33 @@ const LockersOverview = () => {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 md:p-8">
-    {Object.entries({
-        total: { count: totalLockers, label: "Total Lockers", gradient: "from-violet-500 to-purple-600" },
-        available: { count: lockerStats.available, label: "Available", gradient: "from-emerald-500 to-green-600" },
-        occupied: { count: lockerStats.occupied, label: "Occupied", gradient: "from-blue-500 to-indigo-600" },
-        maintenance: { count: lockerStats.maintenance, label: "Maintenance", gradient: "from-amber-500 to-orange-600" },
-        disabled: { count: lockerStats.disabled, label: "Disabled", gradient: "from-red-500 to-rose-600" },
-    }).map(([key, { count, label, gradient }]) => {
-        const status = statuses[key] || statuses.unknown;
-        const Icon = status.icon || Circle;
+                    {Object.entries({
+                        total: { count: totalLockers, label: "Total Lockers", gradient: "from-violet-500 to-purple-600" },
+                        available: { count: lockerStats.available, label: "Available", gradient: "from-emerald-500 to-green-600" },
+                        occupied: { count: lockerStats.occupied, label: "Occupied", gradient: "from-blue-500 to-indigo-600" },
+                        maintenance: { count: lockerStats.maintenance, label: "Maintenance", gradient: "from-amber-500 to-orange-600" },
+                        disabled: { count: lockerStats.disabled, label: "Disabled", gradient: "from-red-500 to-rose-600" },
+                    }).map(([key, { count, label, gradient }]) => {
+                        const status = statuses[key] || statuses.unknown;
+                        const Icon = status.icon || Circle;
 
-        return (
-            <Card key={key} className="shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 transition-all duration-300 hover:scale-[1.02] group min-w-0">
-                <CardContent className="p-4 md:p-6">
-                    <div className="flex items-center justify-between space-x-4">
-                        <div className="space-y-1 min-w-0">
-                            <p className="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider truncate">{label}</p>
-                            <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white truncate">{count}</h2>
-                        </div>
-                        <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0`}>
-                            <Icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-        );
-    })}
-</div>
+                        return (
+                            <Card key={key} className="shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 transition-all duration-300 hover:scale-[1.02] group min-w-0">
+                                <CardContent className="p-4 md:p-6">
+                                    <div className="flex items-center justify-between space-x-4">
+                                        <div className="space-y-1 min-w-0">
+                                            <p className="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider truncate">{label}</p>
+                                            <h2 className="text-lg md:text-xl font-bold text-gray-900 dark:text-white truncate">{count}</h2>
+                                        </div>
+                                        <div className={`p-2 md:p-3 rounded-xl bg-gradient-to-br ${gradient} shadow-lg group-hover:shadow-xl transition-all duration-300 flex-shrink-0`}>
+                                            <Icon className="h-4 w-4 md:h-5 md:w-5 text-white" />
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
             </Card>
 
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
@@ -260,13 +260,13 @@ const LockersOverview = () => {
                         <FilterToolbar />
                     </div>
                     <TabsList className="grid grid-cols-2 w-full md:w-[240px] dark:bg-gray-800/70 bg-white/80 backdrop-blur-sm shadow-lg rounded-2xl p-2 border border-gray-200/50 dark:border-gray-700/50">
-                        <TabsTrigger 
-                            value="grid" 
+                        <TabsTrigger
+                            value="grid"
                             className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
                         >
                             <Box className="h-4 w-4 mr-2" /> Grid
                         </TabsTrigger>
-                        <TabsTrigger 
+                        <TabsTrigger
                             value="table"
                             className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
                         >
@@ -285,12 +285,12 @@ const LockersOverview = () => {
                             const StatusIcon = status.icon || Circle;
 
                             return (
-                                <Card 
-                                    key={locker._id} 
-                                    className="hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 dark:border-gray-700/50 border-gray-200/50 group overflow-hidden relative"
+                                <Card
+                                    key={locker._id}
+                                    className="hover:shadow-2xl shadow-lg transform hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 dark:border-gray-700/50 border-gray-200/50 group overflow-hidden relative"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                    
+
                                     <CardHeader className="pb-4 relative z-10">
                                         <div className="flex justify-between items-start">
                                             <div className="space-y-1">
@@ -307,7 +307,7 @@ const LockersOverview = () => {
                                             </Badge>
                                         </div>
                                     </CardHeader>
-                                    
+
                                     <CardContent className="relative z-10 space-y-4">
                                         <div className="space-y-3">
                                             <div className="flex justify-between items-center p-2 rounded-lg bg-gray-50 dark:bg-gray-800/50">
@@ -338,11 +338,11 @@ const LockersOverview = () => {
                                             )}
                                         </div>
                                     </CardContent>
-                                    
+
                                     <CardFooter className="flex justify-end relative z-10 pt-4">
-                                        <Button 
-                                            variant="outline" 
-                                            size="sm" 
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
                                             className='dark:border-gray-600/50 dark:bg-gray-800/70 bg-white/80 backdrop-blur-sm hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white hover:border-transparent transition-all duration-300 rounded-xl shadow-sm hover:shadow-lg font-semibold'
                                         >
                                             Manage
@@ -383,11 +383,10 @@ const LockersOverview = () => {
                                             const StatusIcon = status.icon || Circle;
 
                                             return (
-                                                <TableRow 
-                                                    key={locker._id} 
-                                                    className={`hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 transition-all duration-300 ${
-                                                        index % 2 === 0 ? 'bg-white dark:bg-gray-900/50' : 'bg-gray-50/50 dark:bg-gray-800/30'
-                                                    } border-b border-gray-100 dark:border-gray-800`}
+                                                <TableRow
+                                                    key={locker._id}
+                                                    className={`hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 transition-all duration-300 ${index % 2 === 0 ? 'bg-white dark:bg-gray-900/50' : 'bg-gray-50/50 dark:bg-gray-800/30'
+                                                        } border-b border-gray-100 dark:border-gray-800`}
                                                 >
                                                     <TableCell className="font-bold text-gray-900 dark:text-white py-4 px-6">{locker.lockerId}</TableCell>
                                                     <TableCell className="text-gray-700 dark:text-gray-300 py-4 px-6 font-medium">{locker.organizationBranch.orgBranchName}</TableCell>
@@ -405,8 +404,8 @@ const LockersOverview = () => {
                                                             "N/A"}
                                                     </TableCell>
                                                     <TableCell className="text-right py-4 px-6">
-                                                        <Button 
-                                                            variant="ghost" 
+                                                        <Button
+                                                            variant="ghost"
                                                             size="sm"
                                                             className="hover:bg-gradient-to-r hover:from-blue-500 hover:to-indigo-600 hover:text-white transition-all duration-300 rounded-xl font-semibold"
                                                         >

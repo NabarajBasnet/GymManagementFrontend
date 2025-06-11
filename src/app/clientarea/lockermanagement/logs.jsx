@@ -29,11 +29,17 @@ const LockerLogs = () => {
     // Fetch function
     const fetchLockerLogs = async ({ queryKey }) => {
         const [, page, limit, search, action] = queryKey;
-        const res = await fetch(
-            `http://localhost:3000/api/locker-logs?page=${page}&limit=${limit}&search=${search}&action=${action}`
-        );
-        const resBody = await res.json();
-        return resBody;
+        try {
+            const res = await fetch(
+                `http://localhost:3000/api/locker-logs?page=${page}&limit=${limit}&search=${search}&action=${action}`
+            );
+            const resBody = await res.json();
+            return resBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            hotToast.error(error.error)
+            sonnerToast.error(error.message);
+        };
     };
 
     // Using React Query
@@ -51,12 +57,6 @@ const LockerLogs = () => {
 
     const { logs, totalPages, total } = data || {};
 
-    // Debounced search handler
-    const handleSearch = (value) => {
-        setPage(1);
-        setSearch(value);
-    };
-
     // Action filter handler
     const handleActionFilter = (value) => {
         setPage(1);
@@ -73,9 +73,9 @@ const LockerLogs = () => {
                             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                             <Input
                                 placeholder="Search logs..."
-                                className="pl-9 w-full py-6 rounded-sm dark:bg-gray-900 dark:border-none sm:w-[200px]"
+                                className="pl-9 w-full py-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none sm:w-[200px]"
                                 value={search}
-                                onChange={(e) => handleSearch(e.target.value)}
+                                onChange={(e) => setSearch(e.target.value)}
                             />
                         </div>
                         <Select value={action} onValueChange={handleActionFilter}>
