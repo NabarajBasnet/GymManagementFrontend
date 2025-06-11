@@ -1,31 +1,26 @@
 import { cookies } from 'next/headers';
-import AdminDashboard from "./dashboard"
+import AdminDashboard from "./dashboard";
 
-export async function generateMetadata(parent) {
+export async function generateMetadata() {
   const cookieStore = cookies();
-  const token = cookieStore.get('tenantLoginToken')?.value;
+  const token = cookieStore.get('loginToken')?.value;
 
-  const res = await fetch(`http://localhost:3000/api/tenant/details`, {
+  const res = await fetch(`http://localhost:3000/api/auth/me`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
     cache: 'no-store',
   });
 
-  const tenant = await res.json();
-  const previousImages = (await parent).openGraph?.images || [];
+  const data = await res.json();
 
   return {
-    title: tenant?.tenant?.organization?.name ?? 'Dashboard',
-    openGraph: {
-      images: ['/some-specific-page-image.jpg', ...previousImages],
-    },
+    title: data?.user?.organization?.name ?? 'Dashboard',
   };
 }
 
 const Dashboard = () => {
-  return (
-    <AdminDashboard />
-  )
-}
+  return <AdminDashboard />;
+};
+
 export default Dashboard;
