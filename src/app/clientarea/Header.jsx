@@ -129,6 +129,12 @@ const ClientAreaHeader = ({ activeTab }) => {
       label: "My Orders",
       description: "My Orders",
     },
+       {
+      id: "/clientarea/membershipplans",
+      icon: <Package size={20} />,
+      label: "Membership Plans",
+      description: "Gym Membership Plans",
+    },
     {
       id: "/clientarea/settings",
       icon: <Settings size={20} />,
