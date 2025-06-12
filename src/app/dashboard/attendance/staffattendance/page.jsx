@@ -39,7 +39,6 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
-import { usePagination } from "@/hooks/Pagination";
 
 const StaffAttendance = () => {
 
@@ -87,7 +86,7 @@ const StaffAttendance = () => {
             });
 
             const responseBody = await response.json();
-
+            console.log(responseBody);
             if (response.status === 201 && responseBody.type === 'QrExpired') {
                 toast.error(responseBody.message);
                 return;
@@ -112,25 +111,37 @@ const StaffAttendance = () => {
 
     const checkoutStaff = async (iv, tv) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/validate-staff/check-out-staff`, {
-                method: "PATCH",
+            const response = await fetch(`http://localhost:3000/api/validate-staff/checkout`, {
+                method: "POST",
                 headers: {
-                    'Content-Type': "application/json"
+                    'Content-Type': "application/json",
+                    'Accept': 'application/json'
                 },
                 body: JSON.stringify({ iv, tv })
             });
 
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const responseBody = await response.json();
-            if (response.ok) {
-                setConfirmCheckInState(false);
+
+            if (responseBody.success) {
                 setConfirmCheckOutState(false);
                 setSuccessfulMessage(responseBody.message);
                 setSuccessfulAlert(true);
-            };
+                toast.success(responseBody.message);
+                setTimeout(() => window.location.reload(), 1000);
+            } else {
+                toast.error(responseBody.message || "Checkout failed");
+            }
         } catch (error) {
-            console.error("Error during checkout: ", error);
-            alert("Failed to check out staff. Please try again.");
-        };
+            console.error("Checkout error:", error);
+            console.log("Error: ", error)
+            toast.error("Failed to checkout staff. Please try again.");
+        }
     };
 
     useEffect(() => {
@@ -167,27 +178,35 @@ const StaffAttendance = () => {
             debounceTimeout = setTimeout(async () => {
                 try {
                     const parsedData = JSON.parse(data);
-                    let { iv, tv } = parsedData;
+                    const { iv, tv } = parsedData;
 
                     if (iv && tv && iv.length >= 24) {
                         setQrDetails(parsedData);
-                        const isCheckedIn = await checkIfStaffCheckedIn(iv, tv);
-                        if (!isCheckedIn) {
-                            setConfirmCheckInState(true);
-                        };
-                        if (isCheckedIn) {
+                        const response = await fetch(`http://localhost:3000/api/validate-staff/checkedin`, {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': "application/json"
+                            },
+                            body: JSON.stringify({ iv, tv })
+                        });
+
+                        const responseData = await response.json();
+
+                        if (responseData.checkedIn) {
                             setConfirmCheckOutState(true);
-                        };
-                    };
+                        } else {
+                            setConfirmCheckInState(true);
+                        }
+                    }
                 } catch (error) {
                     console.error('Error parsing JSON:', error);
-                    alert(error.message);
-                };
+                    toast.error("Invalid QR code");
+                }
             }, 300);
         } catch (err) {
             console.error('Error in handleInputChange:', err);
-            alert(err.message);
-        };
+            toast.error("Error processing input");
+        }
     };
 
     return (
@@ -331,35 +350,35 @@ const StaffAttendance = () => {
             )}
 
             <Breadcrumb>
-                    <BreadcrumbList>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="dark:text-gray-200 font-medium flex items-center gap-2"><Home className="h-4 w-4" /> Home</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1">
-                                    <BreadcrumbEllipsis className="h-4 w-4 dark:text-gray-200" />
-                                </DropdownMenuTrigger>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink className="dark:text-gray-200 font-medium">Attendance</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="dark:text-gray-200 font-medium">Staff Attendance</BreadcrumbPage>
-                        </BreadcrumbItem>
-                    </BreadcrumbList>
-                </Breadcrumb>   
+                <BreadcrumbList>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href="/" className="dark:text-gray-200 font-medium flex items-center gap-2"><Home className="h-4 w-4" /> Home</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger className="flex items-center gap-1">
+                                <BreadcrumbEllipsis className="h-4 w-4 dark:text-gray-200" />
+                            </DropdownMenuTrigger>
+                        </DropdownMenu>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbLink className="dark:text-gray-200 font-medium">Attendance</BreadcrumbLink>
+                    </BreadcrumbItem>
+                    <BreadcrumbSeparator />
+                    <BreadcrumbItem>
+                        <BreadcrumbPage className="dark:text-gray-200 font-medium">Staff Attendance</BreadcrumbPage>
+                    </BreadcrumbItem>
+                </BreadcrumbList>
+            </Breadcrumb>
 
-                <div className='w-full bg-white mt-4 dark:bg-gray-800 p-4 border dark:border-none rounded-md'>
+            <div className='w-full bg-white mt-4 dark:bg-gray-800 p-4 border dark:border-none rounded-md'>
                 <div className='w-full md:flex items-center justify-between'>
                     <div className="md:w-6/12 w-full">
-                    <h1 className="w-full text-xl font-bold mt-2 dark:text-gray-200">Staff Attendance</h1>
-                    <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
-                        Daily staff check-in and check-out records.</p>
+                        <h1 className="w-full text-xl font-bold mt-2 dark:text-gray-200">Staff Attendance</h1>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">
+                            Daily staff check-in and check-out records.</p>
                     </div>
                     <div className="md:w-6/12 w-full flex justify-center p-2">
                         <div className="w-full px-4 flex justify-between border border-gray-300 bg-white dark:bg-gray-800 dark:border-gray-500 rounded-sm items-center">
@@ -422,32 +441,14 @@ const StaffAttendance = () => {
                                         {Array.isArray(TemporaryAttendanceHistory) && TemporaryAttendanceHistory.length > 0 ? (
                                             TemporaryAttendanceHistory.map((attendance) => (
                                                 <TableRow key={attendance._id}>
-                                                    <TableCell className="font-medium text-sm dark:text-gray-200">{attendance.staffId}</TableCell>
-                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.fullName}</TableCell>
+                                                    <TableCell className="font-medium text-xs dark:text-gray-200">{attendance.staff._id}</TableCell>
+                                                    <TableCell className="text-sm dark:text-gray-200">{attendance.staff.fullName}</TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">{attendance.role}</TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">
-                                                        {attendance.checkIn ?
-                                                            `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
-                                                            new Date(attendance.checkIn).toLocaleTimeString('en-US', {
-                                                                hour12: true,
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                second: '2-digit',
-                                                                timeZone: 'UTC'
-                                                            })
-                                                        : ''}
+                                                        {attendance.checkIn ? new Date(attendance.checkIn).toLocaleTimeString() : 'N/A'}
                                                     </TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">
-                                                        {attendance.checkOut ?
-                                                            `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
-                                                            new Date(attendance.checkOut).toLocaleTimeString('en-US', {
-                                                                hour12: true,
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                second: '2-digit',
-                                                                timeZone: 'UTC'
-                                                            })
-                                                        : ''}
+                                                        {attendance.checkOut ? new Date(attendance.checkOut).toLocaleTimeString() : 'N/A'}
                                                     </TableCell>
                                                     <TableCell className="text-sm dark:text-gray-200">{attendance.remark}</TableCell>
                                                 </TableRow>
