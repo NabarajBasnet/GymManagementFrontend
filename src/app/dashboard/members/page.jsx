@@ -83,7 +83,7 @@ const AllMembers = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(1);
+  const [limit, setLimit] = useState(15);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
 

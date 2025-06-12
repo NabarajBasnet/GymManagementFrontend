@@ -677,7 +677,7 @@ const InactiveMembers = () => {
                                             })
                                         ) : (
                                             <TableRow>
-                                                <TableCell colSpan={13} className="text-center">
+                                                <TableCell colSpan={13} className="text-center dark:text-white font-medium text-xs">
                                                     No memberships found.
                                                 </TableCell>
                                             </TableRow>

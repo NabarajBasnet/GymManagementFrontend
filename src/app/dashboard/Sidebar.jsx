@@ -125,7 +125,7 @@ const Sidebar = () => {
             secondary: "#10B981",
           },
         });
-        router.push("/login");
+        router.push("/userlogin");
         window.location.reload();
       }
     } catch (error) {

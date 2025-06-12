@@ -108,27 +108,29 @@ const MemberAttendance = () => {
             if (responseBody.type === 'DayShiftAlert' && response.status === 403) {
                 hotToast.error(responseBody.message)
                 sonnerToast.error(responseBody.message)
-                setTextAreaColor('text-red-800');
+                setTextAreaColor('text-red-500');
             }
 
             if (response.status === 200) {
-                setTextAreaColor('text-green-800');
+                setTextAreaColor('text-green-600');
                 hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
             }
 
             if (response.status === 403 && responseBody.member?.status === 'OnHold') {
                 setMembershipHoldToggle(true);
-                setTextAreaColor('text-yellow-800');
+                setTextAreaColor('text-yellow-600');
             }
 
             if (response.status !== 403 && response.status !== 200) {
                 hotToast.error(responseBody.message);
                 sonnerToast.error(responseBody.message);
+                setTextAreaColor('text-red-600');
             }
             return response;
         } catch (error) {
             console.log('Error: ', error);
+            setTextAreaColor('text-red-600');
             hotToast.error(error.message);
             sonnerToast.error(error.message);
         }
@@ -380,7 +382,7 @@ const MemberAttendance = () => {
                                         value={memberId}
                                         onChange={(e) => setMemberId(e.target.value)}
                                         autoFocus
-                                        className="pl-10 pr-3 py-6 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
+                                        className="pl-10 pr-3 py-6 bg-white dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
                                         onKeyPress={(e) => {
                                             if (e.key === 'Enter') {
                                                 e.preventDefault();
@@ -428,21 +430,21 @@ const MemberAttendance = () => {
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Membership Option</Label>
                                             <Input
-                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
+                                                className="bg-white dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={validationResult?.member?.membershipOption || "—"}
                                             />
                                         </div>
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Start Date</Label>
                                             <Input
-                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
+                                                className="bg-white dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipDate)}
                                             />
                                         </div>
                                         <div>
                                             <Label className="text-xs text-gray-600 block mb-1 dark:text-gray-200">Expire Date</Label>
                                             <Input
-                                                className="dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
+                                                className="bg-white dark:bg-gray-800 py-6 rounded-sm dark:text-gray-200 dark:border-gray-600"
                                                 value={formatDate(validationResult?.member?.membershipExpireDate)}
 
                                             />
@@ -459,11 +461,11 @@ const MemberAttendance = () => {
                                         {validationResult && (
                                             <div className={`flex items-start ${textareaColor}`}>
                                                 <div className="flex-shrink-0 mt-0.5">
-                                                    {textareaColor === 'text-green-800' ? (
+                                                    {textareaColor === 'text-green-600' ? (
                                                         <CheckCircle className="h-5 w-5 text-green-600" />
-                                                    ) : textareaColor === 'text-red-800' ? (
+                                                    ) : textareaColor === 'text-red-600' ? (
                                                         <AlertCircle className="h-5 w-5 text-red-600" />
-                                                    ) : textareaColor === 'text-yellow-800' ? (
+                                                    ) : textareaColor === 'text-yellow-600' ? (
                                                         <FaExclamationTriangle className="h-5 w-5 text-yellow-600" />
                                                     ) : (
                                                         <Info className="h-5 w-5 text-slate-600" />
@@ -518,7 +520,7 @@ const MemberAttendance = () => {
                                         placeholder="Search by name or member ID..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="pl-10 pr-3 py-6 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
+                                        className="bg-white pl-10 pr-3 py-6 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600 border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm rounded-sm"
                                     />
                                 </div>
                             </div>

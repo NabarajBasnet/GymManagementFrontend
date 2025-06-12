@@ -235,7 +235,7 @@ const Header = () => {
         soonerToast.success(responseBody.message, {
           description: "Logout successful",
         });
-        router.push("/login");
+        router.push("/userlogin");
         window.location.reload();
       }
     } catch (error) {
