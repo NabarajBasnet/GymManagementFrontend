@@ -412,7 +412,7 @@ const NewMemberRegistrationForm = () => {
   const GetMembershipPlans = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/membershipplans/`
+        `http://localhost:3000/api/membershipplans/by-org`
       );
       const responseBody = await response.json();
       return responseBody;
