@@ -6,6 +6,7 @@ import SecondStep from "./secondstep";
 import ThirdStep from "./thirdstep";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
 
 const ClientOnboardingPage = () => {
     const totalSteps = 3;
@@ -17,7 +18,7 @@ const ClientOnboardingPage = () => {
             setCurrentStep(prev => prev + 1);
         } else {
             // mark onboarding complete (e.g., API call) then redirect
-            router.push('/clientarea/dashboard'); // or wherever you want
+            router.push('/clientarea/dashboard');
         }
     };
 
@@ -32,27 +33,54 @@ const ClientOnboardingPage = () => {
     };
 
     return (
-        <div className="max-w-xl mx-auto py-10">
-            {currentStep === 1 && <FirstStep />}
-            {currentStep === 2 && <SecondStep />}
-            {currentStep === 3 && <ThirdStep />}
+        <div className="max-w-2xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">🎉 Welcome to Liftora</h1>
+                <p className="text-sm font-medium text-gray-600">Let's get your organization set up in just a few steps</p>
+            </div>
 
-            <div className="mt-8 flex justify-between">
-                <Button
-                    onClick={goPrevious}
-                    disabled={currentStep === 1}
-                    variant="outline"
-                >
-                    Previous
-                </Button>
+            <div className="mb-8">
+                <div className="flex justify-between mb-2">
+                    <span className="text-sm font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
+                    <span className="text-sm font-medium text-primary">{Math.round((currentStep / totalSteps) * 100)}% complete</span>
+                </div>
+                <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
+            </div>
 
-                <Button variant="ghost" onClick={skipOnboarding}>
-                    Skip for now
-                </Button>
+            <div className="bg-white rounded-lg shadow-md p-6 sm:p-8">
+                {currentStep === 1 && <FirstStep />}
+                {currentStep === 2 && <SecondStep />}
+                {currentStep === 3 && <ThirdStep />}
 
-                <Button onClick={goNext}>
-                    {currentStep === totalSteps ? 'Finish' : 'Next'}
-                </Button>
+                <div className="mt-8 flex justify-between">
+                    <Button
+                        onClick={goPrevious}
+                        disabled={currentStep === 1}
+                        variant="outline"
+                        className="w-24"
+                    >
+                        Previous
+                    </Button>
+
+                    <Button
+                        variant="ghost"
+                        onClick={skipOnboarding}
+                        className="text-gray-600 hover:text-gray-800"
+                    >
+                        Skip setup
+                    </Button>
+
+                    <Button
+                        onClick={goNext}
+                        className="w-24"
+                    >
+                        {currentStep === totalSteps ? 'Finish' : 'Next'}
+                    </Button>
+                </div>
+            </div>
+
+            <div className="mt-6 text-center text-sm text-gray-500">
+                Need help? <a href="#" className="text-primary hover:underline">Contact support</a>
             </div>
         </div>
     );
