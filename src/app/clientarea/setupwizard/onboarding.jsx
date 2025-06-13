@@ -76,7 +76,7 @@ const ClientOnboardingPage = () => {
                         <Button
                             variant="ghost"
                             onClick={skipOnboarding}
-                            className="text-gray-600 dark:text-gray-200 hover:text-gray-800"
+                            className="text-gray-600 dark:bg-gray-900 dark:text-gray-200 hover:text-gray-800"
                         >
                             Skip setup
                         </Button>
@@ -90,7 +90,7 @@ const ClientOnboardingPage = () => {
                     </div>
                 </div>
 
-                <div className="mt-6 text-center text-sm text-gray-500">
+                <div className="mt-6 text-center text-sm text-gray-500 dark:text-gray-400">
                     Need help? <a href="#" className="text-primary hover:underline">Contact support</a>
                 </div>
             </div>

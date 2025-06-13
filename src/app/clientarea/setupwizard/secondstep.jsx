@@ -176,18 +176,18 @@ const SecondStep = () => {
     return (
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">Location & Preferences</h2>
-                <p className="text-gray-600 mb-6">Configure your regional settings for proper scheduling and billing.</p>
+                <h2 className="text-xl font-semibold dark:text-gray-200 text-gray-900 mb-3">Location & Preferences</h2>
+                <p className="text-gray-600 mb-6 dark:text-gray-200 font-medium">Configure your regional settings for proper scheduling and billing.</p>
             </div>
 
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div className="space-y-2">
-                    <Label htmlFor="country">Country *</Label>
-                    <Select 
-                        onValueChange={(value) => setValue('country', value)} 
+                    <Label htmlFor="country" className='dark:text-gray-200'>Country *</Label>
+                    <Select
+                        onValueChange={(value) => setValue('country', value)}
                         required
                     >
-                        <SelectTrigger className="py-6 dark:bg-gray-800 rounded-sm dark:text-white">
+                        <SelectTrigger className="py-6 dark:bg-gray-900 dark:border-none rounded-sm dark:text-white">
                             <SelectValue placeholder="Select your country" />
                         </SelectTrigger>
                         <SelectContent>
@@ -203,7 +203,7 @@ const SecondStep = () => {
                             </div>
                             <SelectGroup>
                                 {filteredCountries.map((country) => (
-                                    <SelectItem key={country.value} value={country.value}>
+                                    <SelectItem className='cursor-pointer hover:bg-blue-500' key={country.value} value={country.value}>
                                         <div className="flex items-center">
                                             <CountryFlag countryCode={country.flag} />
                                             {country.label}
@@ -216,10 +216,10 @@ const SecondStep = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="state">State/Province *</Label>
+                    <Label htmlFor="state" className='dark:text-gray-200'>State/Province *</Label>
                     <Input
                         {...register('state')}
-                        className="py-6 rounded-sm"
+                        className="py-6 rounded-sm dark:bg-gray-900 dark:border-none dark:text-white"
                         id="state"
                         placeholder="e.g. California"
                         required
@@ -227,10 +227,10 @@ const SecondStep = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="city">City *</Label>
+                    <Label htmlFor="city" className='dark:text-gray-200'>City *</Label>
                     <Input
                         {...register('city')}
-                        className="py-6 rounded-sm"
+                        className="py-6 rounded-sm dark:bg-gray-900 dark:border-none dark:text-white"
                         id="city"
                         placeholder="e.g. Los Angeles"
                         required
@@ -238,12 +238,12 @@ const SecondStep = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="timezone">Timezone *</Label>
-                    <Select 
-                        onValueChange={(value) => setValue('timezone', value)} 
+                    <Label htmlFor="timezone" className='dark:text-gray-200'>Timezone *</Label>
+                    <Select
+                        onValueChange={(value) => setValue('timezone', value)}
                         required
                     >
-                        <SelectTrigger className="py-6 dark:bg-gray-800 rounded-sm dark:text-white">
+                        <SelectTrigger className="py-6 dark:bg-gray-900 dark:border-none rounded-sm dark:text-white">
                             <SelectValue placeholder="Select your timezone" />
                         </SelectTrigger>
                         <SelectContent>
@@ -259,7 +259,7 @@ const SecondStep = () => {
                             </div>
                             <SelectGroup>
                                 {filteredTimezones.map((tz) => (
-                                    <SelectItem key={tz.value} value={tz.value}>
+                                    <SelectItem className='cursor-pointer hover:bg-blue-500' key={tz.value} value={tz.value}>
                                         <div className="flex items-center">
                                             {tz.country && <CountryFlag countryCode={tz.country} />}
                                             {tz.label}
@@ -269,16 +269,16 @@ const SecondStep = () => {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <p className="text-xs text-gray-500">Affects class scheduling and reminders</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-200">Affects class scheduling and reminders</p>
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="currency">Currency *</Label>
-                    <Select 
-                        onValueChange={(value) => setValue('currency', value)} 
+                    <Label htmlFor="currency" className='dark:text-gray-200'>Currency *</Label>
+                    <Select
+                        onValueChange={(value) => setValue('currency', value)}
                         required
                     >
-                        <SelectTrigger className="py-6 dark:bg-gray-800 rounded-sm dark:text-white">
+                        <SelectTrigger className="py-6 dark:bg-gray-900 dark:border-none rounded-sm dark:text-white">
                             <SelectValue placeholder="Select your currency" />
                         </SelectTrigger>
                         <SelectContent>
@@ -294,7 +294,7 @@ const SecondStep = () => {
                             </div>
                             <SelectGroup>
                                 {filteredCurrencies.map((curr) => (
-                                    <SelectItem key={curr.value} value={curr.value}>
+                                    <SelectItem className='hover:bg-blue-500 cursor-pointer' key={curr.value} value={curr.value}>
                                         <div className="flex items-center">
                                             {curr.country && <CountryFlag countryCode={curr.country} />}
                                             <span className="mr-2">{curr.symbol}</span>
@@ -308,12 +308,12 @@ const SecondStep = () => {
                 </div>
 
                 <div className="space-y-2">
-                    <Label htmlFor="language">Language *</Label>
-                    <Select 
-                        onValueChange={(value) => setValue('language', value)} 
+                    <Label htmlFor="language" className='dark:text-gray-200'>Language *</Label>
+                    <Select
+                        onValueChange={(value) => setValue('language', value)}
                         required
                     >
-                        <SelectTrigger className="py-6 dark:bg-gray-800 rounded-sm dark:text-white">
+                        <SelectTrigger className="py-6 dark:bg-gray-900 dark:border-none rounded-sm dark:text-white">
                             <SelectValue placeholder="Select your language" />
                         </SelectTrigger>
                         <SelectContent>
@@ -329,7 +329,7 @@ const SecondStep = () => {
                             </div>
                             <SelectGroup>
                                 {filteredLanguages.map((lang) => (
-                                    <SelectItem key={lang.value} value={lang.value}>
+                                    <SelectItem className='hover:bg-blue-500 cursor-pointer' key={lang.value} value={lang.value}>
                                         <div className="flex items-center">
                                             {lang.country && <CountryFlag countryCode={lang.country} />}
                                             {lang.label}
@@ -339,7 +339,7 @@ const SecondStep = () => {
                             </SelectGroup>
                         </SelectContent>
                     </Select>
-                    <p className="text-xs text-gray-500">Affects your admin interface language</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-200">Affects your admin interface language</p>
                 </div>
 
             </div>
