@@ -20,7 +20,7 @@ const ThirdStep = () => {
                 <ul className="space-y-3">
                     <li className="flex items-start">
                         <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white mr-3 mt-0.5">1</span>
-                        <span className="text-gray-700">Add your staff members</span>
+                        <span className="text-gray-700">Add your staffs</span>
                     </li>
                     <li className="flex items-start">
                         <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white mr-3 mt-0.5">2</span>
@@ -29,6 +29,10 @@ const ThirdStep = () => {
                     <li className="flex items-start">
                         <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white mr-3 mt-0.5">3</span>
                         <span className="text-gray-700">Import or add your members</span>
+                    </li>
+                    <li className="flex items-start">
+                        <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white mr-3 mt-0.5">3</span>
+                        <span className="text-gray-700">Create branches and users</span>
                     </li>
                 </ul>
             </div>

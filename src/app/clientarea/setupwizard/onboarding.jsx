@@ -28,8 +28,18 @@ const ClientOnboardingPage = () => {
         }
     };
 
-    const skipOnboarding = () => {
-        router.push('/clientarea/dashboard');
+    const skipOnboarding =async() => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/organization/skip-onboarding`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        if (response.ok) {
+            router.push('/clientarea/dashboard');
+        } else {
+            console.error('Failed to skip onboarding');
+        }
     };
 
     return (
