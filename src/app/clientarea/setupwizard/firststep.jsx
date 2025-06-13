@@ -1,5 +1,6 @@
 'use client';
 
+import { BiLoaderCircle } from "react-icons/bi";
 import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { FiSave } from "react-icons/fi";
@@ -29,8 +30,22 @@ const FirstStep = () => {
 
     const onSubmit = async (data) => {
         try {
-            console.log("Data: ", data);
+            const response = await fetch(`http://localhost:3000/api/organization/first-step`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
 
+            const resBody = await response.json();
+            if (response.ok) {
+                hotToast.success(resBody.message)
+                sonnerToast.success(resBody.message)
+            } else {
+                hotToast.error(resBody.message)
+                sonnerToast.error(resBody.message)
+            }
         } catch (error) {
             console.log("Error: ", error);
             hotToast.error(error.message);
@@ -48,19 +63,23 @@ const FirstStep = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                     <div className="space-y-2">
-                        <Label htmlFor="organizationName">Organization Name *</Label>
+                        <Label htmlFor="name">Organization Name *</Label>
                         <Input
+                            {...register('name')}
                             className='py-6 rounded-sm'
-                            id="organizationName"
+                            id="name"
                             placeholder="e.g. Peak Performance Gym"
                             required
                         />
+                        {errors.name && (
+                            <span className='text-xs font-medium text-red-600'>{`${errors.name.message}`}</span>
+                        )}
                         <p className="text-xs text-gray-500">This will appear on your client-facing materials</p>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="businessType">Business Type *</Label>
-                        <Select required>
+                        <Select required onValueChange={(value) => setValue(value, 'businessType')}>
                             <SelectTrigger className='py-6 dark:bg-gray-800 rounded-sm dark:text-white'>
                                 <SelectValue placeholder="Select your business type" />
                             </SelectTrigger>
@@ -74,43 +93,59 @@ const FirstStep = () => {
                                 </SelectGroup>
                             </SelectContent>
                         </Select>
+                        {errors.businessType && (
+                            <span className='text-xs font-medium text-red-600'>{`${errors.businessType.message}`}</span>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="businessEmail">Business Email *</Label>
                         <Input
+                            {...register('businessEmail')}
                             className='py-6 rounded-sm'
                             id="businessEmail"
                             type="email"
                             placeholder="contact@yourgym.com"
                             required
                         />
+                        {errors.businessEmail && (
+                            <span className='text-xs font-medium text-red-600'>{`${errors.businessEmail.message}`}</span>
+                        )}
                         <p className="text-xs text-gray-500">We'll use this for important notifications</p>
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="phoneNumber">Phone Number</Label>
                         <Input
+                            {...register('phoneNumber')}
                             className='py-6 rounded-sm'
                             id="phoneNumber"
                             type="tel"
                             placeholder="+1 (555) 123-4567"
                         />
+                        {errors.phoneNumber && (
+                            <span className='text-xs font-medium text-red-600'>{`${errors.phoneNumber.message}`}</span>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="websiteUrl">Website URL</Label>
                         <Input
+                            {...register('websiteUrl')}
                             className='py-6 rounded-sm'
                             id="websiteUrl"
                             type="url"
                             placeholder="https://yourgym.com"
                         />
+                        {errors.websiteUrl && (
+                            <span className='text-xs font-medium text-red-600'>{`${errors.websiteUrl.message}`}</span>
+                        )}
                     </div>
 
                     <div className="space-y-2">
                         <Label htmlFor="logoUrl">Logo URL</Label>
                         <Input
+                            {...register('logoUrl')}
                             className='py-6 rounded-sm'
                             id="logoUrl"
                             type="url"
@@ -119,9 +154,23 @@ const FirstStep = () => {
                         <p className="text-xs text-gray-500">We'll display this on your client portal</p>
                     </div>
                 </div>
-                <Button className='w-full py-6 rounded-sm'>
-                    <FiSave />
-                    Submit Details
+                <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-6 mt-4 rounded-sm flex items-center justify-center gap-2 ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""
+                        }`}
+                >
+                    {isSubmitting ? (
+                        <>
+                            <BiLoaderCircle className="animate-spin text-xl" />
+                            Submitting...
+                        </>
+                    ) : (
+                        <>
+                            <FiSave className="text-xl" />
+                            Submit Details
+                        </>
+                    )}
                 </Button>
             </form>
         </div>

@@ -47,7 +47,7 @@ const ClientOnboardingPage = () => {
                 <Progress value={(currentStep / totalSteps) * 100} className="h-2" />
             </div>
 
-            <div className="bg-white rounded-lg shadow-md p-6 sm:p-8">
+            <div className="bg-white rounded-lg shadow-xl p-6 sm:p-8">
                 {currentStep === 1 && <FirstStep />}
                 {currentStep === 2 && <SecondStep />}
                 {currentStep === 3 && <ThirdStep />}
