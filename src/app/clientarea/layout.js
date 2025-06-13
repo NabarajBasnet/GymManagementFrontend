@@ -8,7 +8,7 @@ import { usePathname } from "next/navigation";
 const ClientAreaLayout = ({ children }) => {
   const pathname = usePathname();
 
-  const hideHeader = pathname === "/clientarea/onboarding";
+  const hideHeader = pathname === "/clientarea/setupwizard";
 
   return (
     <div className="w-full">

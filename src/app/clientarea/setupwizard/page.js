@@ -1,8 +1,8 @@
 import ClientOnboardingPage from "./onboarding";
 
-export async function generateMetadate() {
+export async function generateMetadata() {
   return {
-    title: "Setup & Wizard | Liftora",
+    title: "Welcome & Setup Wizard | Liftora",
   };
 }
 
