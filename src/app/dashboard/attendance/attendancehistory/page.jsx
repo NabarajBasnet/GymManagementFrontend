@@ -501,8 +501,8 @@ const AttendanceHistory = () => {
                                                 {staffHistory && staffHistory.length > 0 ? (
                                                     staffHistory.map((attendance) => (
                                                         <TableRow key={attendance._id} className="hover:bg-gray-50 dark:hover:bg-gray-800">
-                                                            <TableCell className="font-medium text-gray-900 dark:text-gray-100">{attendance.staffId}</TableCell>
-                                                            <TableCell className="text-gray-900 dark:text-gray-100">{attendance.fullName}</TableCell>
+                                                            <TableCell className="font-medium text-gray-900 dark:text-gray-100">{attendance.staff._id}</TableCell>
+                                                            <TableCell className="text-gray-900 dark:text-gray-100">{attendance.staff.fullName}</TableCell>
                                                             <TableCell className="text-gray-900 dark:text-gray-100">{attendance.role}</TableCell>
                                                             <TableCell className="text-gray-900 dark:text-gray-100">
                                                                 {attendance.checkIn ? (
@@ -510,30 +510,12 @@ const AttendanceHistory = () => {
                                                                         <Tooltip>
                                                                             <TooltipTrigger asChild>
                                                                                 <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
-                                                                                    {attendance.checkIn ?
-                                                                                        `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
-                                                                                        new Date(attendance.checkIn).toLocaleTimeString('en-US', {
-                                                                                            hour12: true,
-                                                                                            hour: 'numeric',
-                                                                                            minute: '2-digit',
-                                                                                            second: '2-digit',
-                                                                                            timeZone: 'UTC'
-                                                                                        })
-                                                                                        : ''}
+                                                                                    {attendance.checkIn ? new Date(attendance.checkIn).toLocaleTimeString() : 'N/A'}
                                                                                 </span>
                                                                             </TooltipTrigger>
                                                                             <TooltipContent>
                                                                                 <p>
-                                                                                    {attendance.checkIn ?
-                                                                                        `${new Date(attendance.checkIn).toISOString().split('T')[0]} - ` +
-                                                                                        new Date(attendance.checkIn).toLocaleTimeString('en-US', {
-                                                                                            hour12: true,
-                                                                                            hour: 'numeric',
-                                                                                            minute: '2-digit',
-                                                                                            second: '2-digit',
-                                                                                            timeZone: 'UTC'
-                                                                                        })
-                                                                                        : ''}
+                                                                                    {attendance.checkIn ? new Date(attendance.checkIn).toLocaleString() : 'N/A'}
                                                                                 </p>
                                                                             </TooltipContent>
                                                                         </Tooltip>
@@ -548,30 +530,12 @@ const AttendanceHistory = () => {
                                                                         <Tooltip>
                                                                             <TooltipTrigger asChild>
                                                                                 <span className="text-sm cursor-help underline decoration-dotted underline-offset-2">
-                                                                                    {attendance.checkOut ?
-                                                                                        `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
-                                                                                        new Date(attendance.checkOut).toLocaleTimeString('en-US', {
-                                                                                            hour12: true,
-                                                                                            hour: 'numeric',
-                                                                                            minute: '2-digit',
-                                                                                            second: '2-digit',
-                                                                                            timeZone: 'UTC'
-                                                                                        })
-                                                                                        : ''}
+                                                                                    {attendance.checkOut ? new Date(attendance.checkOut).toLocaleTimeString() : 'N/A'}
                                                                                 </span>
                                                                             </TooltipTrigger>
                                                                             <TooltipContent>
                                                                                 <p>
-                                                                                    {attendance.checkOut ?
-                                                                                        `${new Date(attendance.checkOut).toISOString().split('T')[0]} - ` +
-                                                                                        new Date(attendance.checkOut).toLocaleTimeString('en-US', {
-                                                                                            hour12: true,
-                                                                                            hour: 'numeric',
-                                                                                            minute: '2-digit',
-                                                                                            second: '2-digit',
-                                                                                            timeZone: 'UTC'
-                                                                                        })
-                                                                                        : ''}
+                                                                                    {attendance.checkOut ? new Date(attendance.checkOut).toLocaleString() : 'N/A'}
                                                                                 </p>
                                                                             </TooltipContent>
                                                                         </Tooltip>

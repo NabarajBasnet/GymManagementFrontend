@@ -55,6 +55,10 @@ const TenantLoginForm = ({ className, ...props }) => {
 
       const responseBody = await response.json();
 
+      if (response.status === 200 && responseBody.type === "Onboarding") {
+        router.push(responseBody.redirectUrl);
+      }
+
       if (response.ok) {
         toast.success(responseBody.message || "Login successful!");
         soonerToast.success(responseBody.message || "Login successful!");
@@ -63,6 +67,7 @@ const TenantLoginForm = ({ className, ...props }) => {
       } else {
         toast.error(responseBody.message);
         soonerToast.error(responseBody.message || "Login failed!");
+        router.push(responseBody.redirectUrl);
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");

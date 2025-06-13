@@ -47,7 +47,7 @@ const LoggedInTenantProvider = ({ children }) => {
 
     return (
         <TenantContext.Provider value={{ tenant, loading }}>
-            {!organizationDetailsSetupCompleted && (
+            {/* {!organizationDetailsSetupCompleted && (
                 <div className="fixed bottom-20 left-1/2 transform z-50 -translate-x-1/2 w-full max-w-xl px-4">
                     <div className="bg-red-600 text-white shadow-xl rounded-2xl flex items-center justify-between px-4 py-3">
                         <div className="flex items-center gap-3">
@@ -67,7 +67,7 @@ const LoggedInTenantProvider = ({ children }) => {
                         />
                     </div>
                 </div>
-            )}
+            )} */}
             {children}
         </TenantContext.Provider>
     );
