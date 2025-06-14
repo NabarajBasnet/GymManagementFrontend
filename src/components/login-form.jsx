@@ -67,7 +67,7 @@ export function LoginForm({ className, ...props }) {
       if (response.status === 200) {
         toast.success(responseBody.message || "Login successful!");
         reset();
-        router.push("/dashboard");
+        window.location.href = responseBody.redirect;
       } else {
         toast.error(responseBody.message);
       }
