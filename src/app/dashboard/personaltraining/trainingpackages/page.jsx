@@ -208,7 +208,7 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     return (
-        <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6'>
             {/* Breadcrumb with arrows */}
             <div className='w-full mb-4'>
                 <Breadcrumb className="mb-4">
@@ -238,10 +238,10 @@ const CreatePersonalTrainingPackages = () => {
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-6 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+                <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-4 py-6 border border-gray-200 dark:border-none shadow-sm rounded-md md:items-center gap-4">
                     <div>
-                        <h1 className="text-2xl font-bold">Personal Training Packages</h1>
-                        <p className="text-sm text-gray-500">
+                        <h1 className="text-2xl font-bold dark:text-gray-100">Personal Training Packages</h1>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
                             Create and manage your personal training packages.
                         </p>
                     </div>
@@ -256,37 +256,38 @@ const CreatePersonalTrainingPackages = () => {
             </div>
 
             {/* Filter Section */}
-            <Card className="mb-4">
+            <Card className="mb-4 dark:bg-gray-800 dark:border-none">
                 <CardContent className="p-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <Label htmlFor="search">Search</Label>
+                            <Label htmlFor="search" className="dark:text-gray-200">Search</Label>
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 id="search"
                                 placeholder="Search by name or description..."
+                                className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                             />
                         </div>
                         <div>
-                            <Label htmlFor="status">Status</Label>
+                            <Label htmlFor="status" className="dark:text-gray-200">Status</Label>
                             <Select
                                 onValueChange={(value) => setStatus(value)}
                             >
-                                <SelectTrigger>
+                                <SelectTrigger className="dark:bg-gray-900 dark:border-none dark:text-gray-100">
                                     <SelectValue placeholder="Filter by status" />
                                 </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="all">All Status</SelectItem>
-                                    <SelectItem value="Active">Active</SelectItem>
-                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                <SelectContent className="dark:bg-gray-900 dark:border-none">
+                                    <SelectItem value="all" className="dark:text-gray-100">All Status</SelectItem>
+                                    <SelectItem value="Active" className="dark:text-gray-100">Active</SelectItem>
+                                    <SelectItem value="Inactive" className="dark:text-gray-100">Inactive</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="flex items-end">
                             <Button
                                 variant="outline"
-                                className="w-full"
+                                className="w-full dark:border-none dark:bg-gray-900 dark:text-gray-100"
                                 onClick={() => {
                                     setSearch('');
                                     setStatus('');
@@ -304,11 +305,11 @@ const CreatePersonalTrainingPackages = () => {
             {/* Package Form Modal */}
             {showForm && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 px-16 lg:px-32 z-50">
-                    <Card className="w-full">
+                    <Card className="w-full dark:bg-gray-800 dark:border-none">
                         <CardHeader>
-                            <CardTitle className="flex justify-between items-center">
+                            <CardTitle className="flex justify-between items-center dark:text-gray-100">
                                 {isEditing ? "Edit Package" : "Create New Package"}
-                                <button onClick={() => resetForm()} className="text-gray-500 hover:text-gray-700">
+                                <button onClick={() => resetForm()} className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                                     <FiX className="h-5 w-5" />
                                 </button>
                             </CardTitle>
@@ -316,12 +317,13 @@ const CreatePersonalTrainingPackages = () => {
                         <CardContent>
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                 <div>
-                                    <Label htmlFor="packagename">Package Name *</Label>
+                                    <Label htmlFor="packagename" className="dark:text-gray-200">Package Name *</Label>
                                     <Input
                                         id="packagename"
                                         {...register("packagename", { required: true })}
                                         placeholder="e.g., Premium Package"
                                         required
+                                        className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                                     />
                                 </div>
 
@@ -335,6 +337,7 @@ const CreatePersonalTrainingPackages = () => {
                                             placeholder="e.g., 12"
                                             min="1"
                                             required
+                                            className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                                         />
                                     </div>
                                     <div>
@@ -346,6 +349,7 @@ const CreatePersonalTrainingPackages = () => {
                                             placeholder="e.g., 30"
                                             min="1"
                                             required
+                                            className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                                         />
                                     </div>
                                 </div>
@@ -360,6 +364,7 @@ const CreatePersonalTrainingPackages = () => {
                                         min="0"
                                         step="0.01"
                                         required
+                                        className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                                     />
                                 </div>
 
@@ -369,6 +374,7 @@ const CreatePersonalTrainingPackages = () => {
                                         id="description"
                                         {...register("description")}
                                         placeholder="Describe the package benefits..."
+                                        className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
                                         rows={3}
                                     />
                                 </div>
@@ -379,21 +385,21 @@ const CreatePersonalTrainingPackages = () => {
                                         value={packageStatus}
                                         onValueChange={(value) => setPackageStatus(value)}
                                     >
-                                        <SelectTrigger>
+                                        <SelectTrigger className='dark:rounded-sm bg-gray-900 dark:border-none dark:text-gray-100'>
                                             <SelectValue placeholder={`${packageStatus ? packageStatus : 'Select Status'}`} />
                                         </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="Active">Active</SelectItem>
-                                            <SelectItem value="Inactive">Inactive</SelectItem>
+                                        <SelectContent className="dark:bg-gray-900 dark:border-none">
+                                            <SelectItem value="Active" className="dark:text-gray-100 cursor-pointer bg-blue-500 hover:bg-blue-600">Active</SelectItem>
+                                            <SelectItem value="Inactive" className="dark:text-gray-100 cursor-pointer bg-red-500 hover:bg-red-600">Inactive</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
 
                                 <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
-                                    <Button variant="outline" onClick={() => resetForm()}>
+                                    <Button variant="outline" onClick={() => resetForm()} className="dark:border-none dark:bg-gray-900 dark:text-gray-100">
                                         Cancel
                                     </Button>
-                                    <Button type="submit" className="bg-blue-600 hover:bg-blue-700" disabled={isSubmitting}>
+                                    <Button type="submit" className="bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={isSubmitting}>
                                         {isSubmitting ? "Submitting..." : (isEditing ? "Update Package" : "Create Package")}
                                     </Button>
                                 </CardFooter>
@@ -404,10 +410,10 @@ const CreatePersonalTrainingPackages = () => {
             )}
 
             {/* Packages Table */}
-            <Card>
+            <Card className="dark:bg-gray-800 dark:border-none">
                 <CardHeader>
-                    <CardTitle>Current Packages</CardTitle>
-                    <p className="text-xs font-medium text-gray-600">
+                    <CardTitle className="dark:text-gray-100">Current Packages</CardTitle>
+                    <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
                         This table shows all the packages that are currently available.
                     </p>
                 </CardHeader>
@@ -416,23 +422,23 @@ const CreatePersonalTrainingPackages = () => {
                         <Loader />
                     ) : isError ? (
                         <div className="text-center py-8">
-                            <FiInfo className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">Error loading packages</h3>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <FiInfo className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">Error loading packages</h3>
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Please try again later
                             </p>
                         </div>
                     ) : packages.length === 0 ? (
                         <div className="text-center py-8">
-                            <FiInfo className="mx-auto h-12 w-12 text-gray-400" />
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">No packages found</h3>
-                            <p className="mt-1 text-sm text-gray-500">
+                            <FiInfo className="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" />
+                            <h3 className="mt-2 text-sm font-medium text-gray-900 dark:text-gray-100">No packages found</h3>
+                            <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                 Get started by creating a new package
                             </p>
                             <div className="mt-6">
                                 <Button
                                     onClick={() => setShowForm(true)}
-                                    className="bg-blue-600 hover:bg-blue-700"
+                                    className="bg-blue-600 hover:bg-blue-700 dark:text-white"
                                 >
                                     <FiPlus className="h-4 w-4 mr-2" />
                                     New Package
@@ -444,27 +450,27 @@ const CreatePersonalTrainingPackages = () => {
                             <div className="overflow-x-auto">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Package Name</TableHead>
-                                            <TableHead>Sessions</TableHead>
-                                            <TableHead>Duration</TableHead>
-                                            <TableHead>Price</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">Actions</TableHead>
+                                        <TableRow className="dark:border-gray-700">
+                                            <TableHead className="dark:text-gray-100">Package Name</TableHead>
+                                            <TableHead className="dark:text-gray-100">Sessions</TableHead>
+                                            <TableHead className="dark:text-gray-100">Duration</TableHead>
+                                            <TableHead className="dark:text-gray-100">Price</TableHead>
+                                            <TableHead className="dark:text-gray-100">Status</TableHead>
+                                            <TableHead className="text-right dark:text-gray-100">Actions</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {packages.map((pkg) => (
-                                            <TableRow key={pkg._id}>
-                                                <TableCell className="font-medium">
+                                            <TableRow key={pkg._id} className="dark:border-gray-700">
+                                                <TableCell className="font-medium dark:text-gray-100">
                                                     {pkg.packagename}
                                                     {pkg.description && (
-                                                        <p className="text-sm text-gray-500 mt-1">{pkg.description}</p>
+                                                        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{pkg.description}</p>
                                                     )}
                                                 </TableCell>
-                                                <TableCell>{pkg.sessions}</TableCell>
-                                                <TableCell>{pkg.duration} days</TableCell>
-                                                <TableCell>$ {pkg.price.toFixed(2)}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{pkg.sessions}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{pkg.duration} days</TableCell>
+                                                <TableCell className="dark:text-gray-100">$ {pkg.price.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={pkg.packageStatus === "Active" ? "green" : "destructive"}>
                                                         {pkg.packageStatus}
@@ -520,7 +526,7 @@ const CreatePersonalTrainingPackages = () => {
                     )}
                     {/* Pagination */}
                     <div className="w-full md:flex justify-center my-4 lg:justify-between">
-                        <p className="text-xs font-medium text-gray-600">
+                        <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
                             Showing {packages?.length || 0} packages out of {totalPackages || 0}
                         </p>
                         <Pagination
