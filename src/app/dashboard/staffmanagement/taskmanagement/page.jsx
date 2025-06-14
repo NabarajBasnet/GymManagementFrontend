@@ -54,91 +54,6 @@ import Loader from '@/components/Loader/Loader';
 import Deleteing from "@/components/Deleting/Deleting";
 import EditTaskDetails from "./editTaskDetails";
 
-const INITIAL_TASKS = [
-    {
-        id: 1,
-        title: 'Clean and Sanitize Gym Equipment',
-        description: 'Thoroughly clean all equipment in the weight room and cardio area',
-        assignedTo: 'John Doe',
-        status: 'In Progress',
-        priority: 'High',
-        category: 'Maintenance',
-        dueDate: '2024-03-25',
-        created: '2024-03-20',
-        comments: [
-            { id: 1, user: 'Sarah Manager', text: 'Focus on the cardio machines first', time: '2h ago' }
-        ]
-    },
-    {
-        id: 2,
-        title: 'Restock Protein Shakes',
-        description: 'Check and restock protein shakes in the nutrition bar',
-        assignedTo: 'Jane Smith',
-        status: 'Pending',
-        priority: 'Medium',
-        category: 'Inventory',
-        dueDate: '2024-03-23',
-        created: '2024-03-20',
-        comments: []
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    },
-    {
-        id: 3,
-        title: 'Member Orientation Session',
-        description: 'Conduct orientation for new gym members',
-        assignedTo: 'Mike Johnson',
-        status: 'Completed',
-        priority: 'High',
-        category: 'Training',
-        dueDate: '2024-03-21',
-        created: '2024-03-19',
-        comments: [
-            { id: 2, user: 'Mike Johnson', text: 'All 5 new members attended', time: '1d ago' }
-        ]
-    }
-];
-
 const CATEGORIES = [
     'Maintenance',
     'Inventory',
@@ -230,16 +145,6 @@ const StaffTaskManagement = () => {
 
     const { totalPages, tasks: satffTasks, totalTasks } = data || {};
 
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
-
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearchQuery(searchQuery), 300);
         return () => { clearTimeout(handler) }
@@ -327,23 +232,6 @@ const StaffTaskManagement = () => {
         };
     };
 
-    const [tasks, setTasks] = useState(INITIAL_TASKS);
-    const [newTask, setNewTask] = useState({
-        title: '',
-        description: '',
-        assignedTo: '',
-        status: 'Pending',
-        priority: 'Medium',
-        category: '',
-        dueDate: '',
-    });
-    const [filters, setFilters] = useState({
-        status: 'all',
-        priority: 'all',
-        category: 'all',
-        search: '',
-    });
-
     const getPriorityColor = (priority) => {
         switch (priority.toLowerCase()) {
             case 'high': return 'bg-red-100 text-red-800';
@@ -361,17 +249,6 @@ const StaffTaskManagement = () => {
             default: return 'bg-gray-100 text-gray-800';
         }
     };
-
-    const filteredTasks = tasks.filter(task => {
-        return (
-            (filters.status === 'all' || task.status.toLowerCase() === filters.status) &&
-            (filters.priority === 'all' || task.priority.toLowerCase() === filters.priority) &&
-            (filters.category === 'all' || task.category === filters.category) &&
-            (task.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-                task.description.toLowerCase().includes(filters.search.toLowerCase()) ||
-                task.assignedTo.toLowerCase().includes(filters.search.toLowerCase()))
-        );
-    });
 
     const formatTo12Hour = (timeStr) => {
         const [hour, minute] = timeStr.split(":").map(Number);
@@ -412,21 +289,21 @@ const StaffTaskManagement = () => {
         <div className="w-full bg-gray-100 dark:bg-gray-900">
             <div className="w-full px-4 py-7">
                 {/* Header Section */}
-                  <Breadcrumb className="w-full sm:w-auto overflow-x-auto mb-4">
-                        <BreadcrumbList className="flex-nowrap">
-                            <BreadcrumbItem>
-                                <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink>Staff Management</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator />
-                            <BreadcrumbItem>
-                                <BreadcrumbLink>Tasks</BreadcrumbLink>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
+                <Breadcrumb className="w-full sm:w-auto overflow-x-auto mb-4">
+                    <BreadcrumbList className="flex-nowrap">
+                        <BreadcrumbItem>
+                            <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink>Staff Management</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                            <BreadcrumbLink>Tasks</BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </BreadcrumbList>
+                </Breadcrumb>
 
                 <div className="flex flex-col bg-white dark:bg-gray-800 dark:border-none p-4 border rounded-md sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <Button
@@ -457,7 +334,7 @@ const StaffTaskManagement = () => {
                                 <Input
                                     type="text"
                                     placeholder="Search tasks..."
-                                    className="w-full dark:text-white dark:border-none bg-gray-900 pl-10 pr-4 py-3 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full dark:text-white dark:border-none bg-white dark:bg-gray-900 pl-10 pr-4 py-3 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     value={searchQuery}
                                     onChange={(e) => {
                                         setCurrentPage(1);
@@ -472,27 +349,28 @@ const StaffTaskManagement = () => {
                                 <></>
                             ) : (
                                 <AlertDialog>
-                                    <AlertDialogTrigger asChild>
+                                    <AlertDialogTrigger asChild className="dark:bg-gray-800 dark:border-none">
                                         <Button
                                             variant="destructive"
                                             disabled={selectedTasks.length === 0}
+                                            className='dark:bg-red-600 dark:text-white dark:border-none'
                                         >
                                             <Trash2 className="h-4 w-4" />
                                             Delete Selected ({selectedTasks.length})
                                         </Button>
                                     </AlertDialogTrigger>
-                                    <AlertDialogContent>
+                                    <AlertDialogContent className="dark:bg-gray-800 dark:border-none">
                                         <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
+                                            <AlertDialogTitle className='dark:text-white'>Are you absolutely sure?</AlertDialogTitle>
+                                            <AlertDialogDescription className='dark:text-gray-200'>
                                                 This action cannot be undone. This will permanently delete the assigned task
                                                 and remove data from servers.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <AlertDialogCancel className='dark:text-white dark:border-none dark:hover:bg-gray-900'>Cancel</AlertDialogCancel>
                                             <AlertDialogAction
-                                                className='bg-red-600 hover:bg-red-700'
+                                                className='bg-red-600 hover:bg-red-700 dark:text-white'
                                                 onClick={() => deleteSelectedTask()}
                                             >
                                                 Delete
@@ -537,7 +415,6 @@ const StaffTaskManagement = () => {
                 </div>
 
                 {/* Task List */}
-
                 <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         {isLoading ? (
@@ -566,7 +443,7 @@ const StaffTaskManagement = () => {
                                         data.tasks.map((task) => (
                                             <TableRow
                                                 key={task._id}
-                                                className={selectedTasks.includes(task._id) ? 'bg-blue-50 hover:bg-blue-100 dark:hover:bg-gray-900' : 'hover:bg-gray-50 dark:hover:bg-gray-900 dark:border-none'}
+                                                className={selectedTasks.includes(task._id) ? 'bg-blue-50 hover:bg-blue-100 dark:hover:bg-gray-900 dark:bg-gray-800' : 'dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-900 dark:border-none'}
                                             >
                                                 <TableCell>
                                                     <Checkbox
@@ -666,18 +543,18 @@ const StaffTaskManagement = () => {
                                                                         <Trash2 className="h-4 w-4" />
                                                                     </Button>
                                                                 </AlertDialogTrigger>
-                                                                <AlertDialogContent>
+                                                                <AlertDialogContent className='dark:border-none dark:bg-gray-800'>
                                                                     <AlertDialogHeader>
-                                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
+                                                                        <AlertDialogTitle className='dark:text-white'>Are you absolutely sure?</AlertDialogTitle>
+                                                                        <AlertDialogDescription className='dark:text-gray-200'>
                                                                             This action cannot be undone. This will permanently delete the assigned task
                                                                             and remove data from servers.
                                                                         </AlertDialogDescription>
                                                                     </AlertDialogHeader>
                                                                     <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogCancel className='dark:bg-gray-900 dark:text-white dark:border-none'>Cancel</AlertDialogCancel>
                                                                         <AlertDialogAction
-                                                                            className='bg-red-600 hover:bg-red-700'
+                                                                            className='bg-red-600 text-white hover:bg-red-700'
                                                                             onClick={() => deleteSingleTask(task._id)}
                                                                         >
                                                                             Delete

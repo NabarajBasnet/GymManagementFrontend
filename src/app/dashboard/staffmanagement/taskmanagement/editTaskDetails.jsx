@@ -2,9 +2,9 @@
 
 import { IoCloseSharp } from "react-icons/io5";
 import { useQueryClient } from '@tanstack/react-query';
-import toast, { Toaster } from 'react-hot-toast';
-import { useForm, Controller } from "react-hook-form";
-import { useQuery, QueryClient } from "@tanstack/react-query";
+import { toast } from 'react-hot-toast';
+import { useForm } from "react-hook-form";
+import { useQuery } from "@tanstack/react-query";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
