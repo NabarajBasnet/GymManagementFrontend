@@ -266,7 +266,7 @@ const ScheduleManagement = () => {
     }
 
     return (
-        <div className='w-full bg-gray-100 flex justify-center min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
                 <div className='w-full mb-4'>
@@ -291,16 +291,20 @@ const ScheduleManagement = () => {
                         </BreadcrumbList>
                     </Breadcrumb>
 
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row justify-between items-start bg-white p-5 py-5 border border-gray-200 shadow-sm rounded-sm md:items-center gap-4">
+                    {/* Header with dark mode support */}
+                    <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-5 py-5 border border-gray-200 dark:border-gray-700 shadow-sm rounded-sm md:items-center gap-4">
                         <div>
-                            <h1 className="text-xl font-bold mb-2">Class Schedule Management</h1>
-                            <p className="text-xs text-gray-500 font-medium">
+                            <h1 className="text-xl font-bold mb-2 dark:text-gray-100">Class Schedule Management</h1>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                 Create and manage class schedules
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" onClick={() => window.location.reload()}>
+                            <Button 
+                                variant="outline" 
+                                onClick={() => window.location.reload()}
+                                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >
                                 <FiRefreshCcw className="mr-2" />
                                 Refresh
                             </Button>
@@ -308,10 +312,13 @@ const ScheduleManagement = () => {
                     </div>
                 </div>
 
-                {/* Tabs */}
+                {/* Improved Tabs with dark mode */}
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-gray-800 via-stone-600 to-neutral-700 mb-6 text-white">
-                        <TabsTrigger value="create" className="flex items-center gap-2">
+                    <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-gray-800 via-stone-600 to-neutral-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 mb-6 text-white">
+                        <TabsTrigger 
+                            value="create" 
+                            className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                        >
                             {isEditing ? (
                                 <>
                                     <FiEdit className="h-4 w-4" />
@@ -324,7 +331,10 @@ const ScheduleManagement = () => {
                                 </>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger value="view" className="flex items-center gap-2">
+                        <TabsTrigger 
+                            value="view" 
+                            className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                        >
                             <FiEye className="h-4 w-4" />
                             View Schedules
                         </TabsTrigger>
@@ -332,9 +342,9 @@ const ScheduleManagement = () => {
 
                     {/* Create/Edit Tab */}
                     <TabsContent value="create">
-                        <Card>
+                        <Card className="dark:bg-gray-800 dark:border-none">
                             <CardHeader>
-                                <CardTitle>
+                                <CardTitle className="dark:text-gray-100">
                                     {isEditing ? 'Edit Class Schedule' : 'Create New Class Schedule'}
                                 </CardTitle>
                             </CardHeader>
@@ -342,18 +352,19 @@ const ScheduleManagement = () => {
                                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="className">Class Name *</Label>
+                                            <Label htmlFor="className" className="dark:text-gray-300">Class Name *</Label>
                                             <Input
                                                 id="className"
                                                 name="className"
                                                 {...register('className', { required: 'Class Name is required' })}
                                                 placeholder="e.g., Morning Yoga, HIIT Training"
                                                 required
+                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
-                                            {errors.className && <p className="text-red-500">{errors.className.message}</p>}
+                                            {errors.className && <p className="text-red-500 dark:text-red-400">{errors.className.message}</p>}
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="trainer">Trainer *</Label>
+                                            <Label htmlFor="trainer" className="dark:text-gray-300">Trainer *</Label>
                                             <div className='space-y-1.5'>
                                                 <div ref={trainerSearchRef} className="relative">
                                                     <Controller
@@ -371,23 +382,23 @@ const ScheduleManagement = () => {
                                                                         setTrainerName('');
                                                                     }}
                                                                     onFocus={handleTrainerSearchFocus}
-                                                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm px-4 py-2.5 pl-10 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
                                                                     placeholder="Search staff..."
                                                                 />
-                                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                                                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
                                                                     <FiSearch className="h-5 w-5" />
                                                                 </div>
                                                             </div>
                                                         )}
                                                     />
                                                     {errors.trainerName && (
-                                                        <p className="mt-1.5 text-sm font-medium text-red-600">
+                                                        <p className="mt-1.5 text-sm font-medium text-red-600 dark:text-red-400">
                                                             {errors.trainerName.message}
                                                         </p>
                                                     )}
 
                                                     {renderTrainerDropdown && (
-                                                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                                        <div className="absolute w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                                                             {staffs?.length > 0 ? (
                                                                 staffs
                                                                     .filter((staff) => {
@@ -403,14 +414,16 @@ const ScheduleManagement = () => {
                                                                                 setTrainerId(staff._id);
                                                                                 setRenderTrainerDropdown(false);
                                                                             }}
-                                                                            className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                                                            className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
                                                                             key={staff._id}
                                                                         >
                                                                             {staff.fullName}
                                                                         </div>
                                                                     ))
                                                             ) : (
-                                                                <div className="px-4 py-3 text-sm text-gray-500">{staffsLoading ? 'Loading...' : 'No staff found'}</div>
+                                                                <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">
+                                                                    {staffsLoading ? 'Loading...' : 'No staff found'}
+                                                                </div>
                                                             )}
                                                         </div>
                                                     )}
@@ -421,24 +434,24 @@ const ScheduleManagement = () => {
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="room">Room *</Label>
+                                            <Label htmlFor="room" className="dark:text-gray-300">Room *</Label>
                                             <Select onValueChange={(value)=>setSelectedRoom(value)} value={selectedRoom}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
                                                     <SelectValue placeholder="Select Room" />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="Studio A">Studio A</SelectItem>
-                                                    <SelectItem value="Studio B">Studio B</SelectItem>
-                                                    <SelectItem value="Gym Floor">Gym Floor</SelectItem>
-                                                    <SelectItem value="Cardio Room">Cardio Room</SelectItem>
-                                                    <SelectItem value="Weight Room">Weight Room</SelectItem>
-                                                    <SelectItem value="Yoga Room">Yoga Room</SelectItem>
+                                                <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                    <SelectItem value="Studio A" className="dark:text-gray-300 dark:hover:bg-gray-700">Studio A</SelectItem>
+                                                    <SelectItem value="Studio B" className="dark:text-gray-300 dark:hover:bg-gray-700">Studio B</SelectItem>
+                                                    <SelectItem value="Gym Floor" className="dark:text-gray-300 dark:hover:bg-gray-700">Gym Floor</SelectItem>
+                                                    <SelectItem value="Cardio Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Cardio Room</SelectItem>
+                                                    <SelectItem value="Weight Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Weight Room</SelectItem>
+                                                    <SelectItem value="Yoga Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Yoga Room</SelectItem>
                                                 </SelectContent>
                                             </Select>
-                                            {errors.room && <p className="text-red-500">{errors.room.message}</p>}
+                                            {errors.room && <p className="text-red-500 dark:text-red-400">{errors.room.message}</p>}
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="capacity">Capacity *</Label>
+                                            <Label htmlFor="capacity" className="dark:text-gray-300">Capacity *</Label>
                                             <Input
                                                 type="number"
                                                 id="capacity"
@@ -448,33 +461,36 @@ const ScheduleManagement = () => {
                                                 min="1"
                                                 max="100"
                                                 required
+                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
-                                            {errors.capacity && <p className="text-red-500">{errors.capacity.message}</p>}
+                                            {errors.capacity && <p className="text-red-500 dark:text-red-400">{errors.capacity.message}</p>}
                                         </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
-                                            <Label htmlFor="startTime">Start Time *</Label>
+                                            <Label htmlFor="startTime" className="dark:text-gray-300">Start Time *</Label>
                                             <Input
                                                 type="datetime-local"
                                                 id="startTime"
                                                 name="startTime"
                                                 {...register('startTime', { required: 'Start Time is required' })}
                                                 required
+                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
                                             />
-                                            {errors.startTime && <p className="text-red-500">{errors.startTime.message}</p>}
+                                            {errors.startTime && <p className="text-red-500 dark:text-red-400">{errors.startTime.message}</p>}
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="endTime">End Time *</Label>
+                                            <Label htmlFor="endTime" className="dark:text-gray-300">End Time *</Label>
                                             <Input
                                                 type="datetime-local"
                                                 id="endTime"
                                                 name="endTime"
                                                 {...register('endTime', { required: 'End Time is required' })}
                                                 required
+                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
                                             />
-                                            {errors.endTime && <p className="text-red-500">{errors.endTime.message}</p>}
+                                            {errors.endTime && <p className="text-red-500 dark:text-red-400">{errors.endTime.message}</p>}
                                         </div>
                                     </div>
 
@@ -484,6 +500,7 @@ const ScheduleManagement = () => {
                                                 type="button"
                                                 variant="outline"
                                                 onClick={handleCancelEdit}
+                                                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                             >
                                                 Cancel Edit
                                             </Button>
@@ -501,10 +518,15 @@ const ScheduleManagement = () => {
                                                 setIsEditing(false);
                                                 setEditingScheduleId(null);
                                             }}
+                                            className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                         >
                                             Reset
                                         </Button>
-                                        <Button type="submit" disabled={isSubmitting}>
+                                        <Button 
+                                            type="submit" 
+                                            disabled={isSubmitting}
+                                            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+                                        >
                                             {isSubmitting ? (
                                                 <FiLoader className="animate-spin" />
                                             ) : isEditing ? (
@@ -571,7 +593,11 @@ const ScheduleManagement = () => {
                                                         <TableCell>
                                                             <Dialog>
                                                                 <DialogTrigger asChild>
-                                                                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                                                    <Button 
+                                                                        variant="outline" 
+                                                                        size="sm" 
+                                                                        className="flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                                                    >
                                                                         <TiEye className="h-4 w-4" />
                                                                         <span>{schedule.members?.length || 0}</span>
                                                                     </Button>
@@ -615,6 +641,7 @@ const ScheduleManagement = () => {
                                                                     size="sm"
                                                                     variant="outline"
                                                                     onClick={() => handleEdit(schedule)}
+                                                                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                                                 >
                                                                     <FiEdit className="h-4 w-4" />
                                                                 </Button>
@@ -623,20 +650,24 @@ const ScheduleManagement = () => {
                                                                         <Button
                                                                             size="sm"
                                                                             variant="destructive"
+                                                                            className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
                                                                         >
                                                                             <FiTrash2 className="h-4 w-4" />
                                                                         </Button>
                                                                     </AlertDialogTrigger>
-                                                                    <AlertDialogContent>
+                                                                    <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
                                                                         <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
+                                                                            <AlertDialogTitle className="dark:text-gray-100">Are you absolutely sure?</AlertDialogTitle>
+                                                                            <AlertDialogDescription className="dark:text-gray-400">
                                                                                 This action cannot be undone. This will permanently delete the schedule.
                                                                             </AlertDialogDescription>
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction onClick={() => deleteSchedule(schedule._id)}>
+                                                                            <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction 
+                                                                                onClick={() => deleteSchedule(schedule._id)}
+                                                                                className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
+                                                                            >
                                                                                 Continue
                                                                             </AlertDialogAction>
                                                                         </AlertDialogFooter>
