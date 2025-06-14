@@ -566,7 +566,7 @@ const StaffTaskManagement = () => {
                                         data.tasks.map((task) => (
                                             <TableRow
                                                 key={task._id}
-                                                className={selectedTasks.includes(task._id) ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'}
+                                                className={selectedTasks.includes(task._id) ? 'bg-blue-50 hover:bg-blue-100 dark:hover:bg-gray-900' : 'hover:bg-gray-50 dark:hover:bg-gray-900 dark:border-none'}
                                             >
                                                 <TableCell>
                                                     <Checkbox
@@ -577,8 +577,8 @@ const StaffTaskManagement = () => {
 
                                                 <TableCell>
                                                     <div className="flex flex-col space-y-2">
-                                                        <span className="font-semibold text-gray-900">{task.title}</span>
-                                                        <span className="text-sm text-gray-500 line-clamp-2">{task.description}</span>
+                                                        <span className="font-semibold dark:text-gray-200 text-gray-900">{task.title}</span>
+                                                        <span className="text-sm text-gray-500 dark:text-gray-200 line-clamp-2">{task.description}</span>
                                                         {task.comments.length > 0 && (
                                                             <div className="mt-2 text-sm text-gray-600 bg-gray-100 p-3 rounded-md">
                                                                 <p className="font-medium text-gray-900">{task.comments[0].user}</p>
@@ -606,7 +606,7 @@ const StaffTaskManagement = () => {
                                                                 );
                                                             })()}
                                                         </div>
-                                                        <span className="text-sm font-medium text-gray-900 hover:cursor-pointer">
+                                                        <span className="text-sm dark:text-gray-200 font-medium text-gray-900 hover:cursor-pointer">
                                                             {(() => {
                                                                 const assignedStaff = staffs.find((staff) => staff._id === task.assignedTo);
                                                                 return assignedStaff ? assignedStaff.fullName : "Unknown Staff";
@@ -626,9 +626,9 @@ const StaffTaskManagement = () => {
                                                     </span>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex flex-col text-gray-500 text-sm">
+                                                    <div className="flex flex-col dark:text-gray-200 text-gray-500 text-sm">
                                                         <div className="flex items-center">
-                                                            <Calendar size={16} className="mr-2 text-gray-400" />
+                                                            <Calendar size={16} className="mr-2 dark:text-gray-200 text-gray-400" />
                                                             {new Date(task.dueDate).toISOString().split('T')[0]}
                                                         </div>
                                                         <div className="flex items-center">
@@ -647,10 +647,10 @@ const StaffTaskManagement = () => {
                                                         <Button
                                                             variant="ghost"
                                                             size="sm"
-                                                            className="transition-opacity hover:bg-gray-100"
+                                                            className="transition-opacity dark:hover:bg-transparent hover:bg-gray-100"
                                                             onClick={() => getSingleTask(task._id)}
                                                         >
-                                                            <TiEdit className="h-4 w-4 text-gray-600 hover:text-gray-800" />
+                                                            <TiEdit className="h-4 dark:text-gray-200 w-4 text-gray-600 hover:text-gray-800" />
                                                         </Button>
 
                                                         {user && user.user.role === 'Gym Admin' ? (
@@ -661,7 +661,7 @@ const StaffTaskManagement = () => {
                                                                     <Button
                                                                         variant="ghost"
                                                                         size="sm"
-                                                                        className="transition-opacity text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                                        className="transition-opacity dark:hover:bg-transparent text-red-600 hover:text-red-700 hover:bg-red-50"
                                                                     >
                                                                         <Trash2 className="h-4 w-4" />
                                                                     </Button>
@@ -705,7 +705,7 @@ const StaffTaskManagement = () => {
                             </Table>
                         )}
 
-                        <div className='border-t border-gray-300'>
+                        <div className='border-t border-gray-300 dark:border-gray-500'>
                             <div className="my-2 px-4 md:flex justify-between items-center">
                                 <p className="dark:text-gray-200 font-medium text-center text-sm font-gray-700">
                                     Showing <span className="font-semibold text-sm font-gray-700 dark:text-gray-200">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalTasks}</span> entries
