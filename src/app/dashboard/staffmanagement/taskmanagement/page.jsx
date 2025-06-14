@@ -409,25 +409,26 @@ const StaffTaskManagement = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100">
+        <div className="w-full bg-gray-100 dark:bg-gray-900">
             <div className="w-full px-4 py-7">
                 {/* Header Section */}
-                <div className="flex flex-col bg-white p-4 border rounded-md sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
-                    <Breadcrumb className="w-full sm:w-auto overflow-x-auto">
+                  <Breadcrumb className="w-full sm:w-auto overflow-x-auto mb-4">
                         <BreadcrumbList className="flex-nowrap">
                             <BreadcrumbItem>
                                 <TiHome className="w-4 h-4" /><BreadcrumbLink href="/">Home</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/dashboard/staffmanagement">Staff Management</BreadcrumbLink>
+                                <BreadcrumbLink>Staff Management</BreadcrumbLink>
                             </BreadcrumbItem>
                             <BreadcrumbSeparator />
                             <BreadcrumbItem>
-                                <BreadcrumbLink href="/dashboard/staffmanagement/staffs">Tasks</BreadcrumbLink>
+                                <BreadcrumbLink>Tasks</BreadcrumbLink>
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
+
+                <div className="flex flex-col bg-white dark:bg-gray-800 dark:border-none p-4 border rounded-md sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
                     <Button
                         onClick={() => setIsAddingTask(true)}
                         className="w-full rounded-sm sm:w-auto flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 hover:bg-blue-700 transition-colors"
@@ -448,7 +449,7 @@ const StaffTaskManagement = () => {
                 )}
 
                 {/* Filters and Search */}
-                <div className="bg-white p-4 rounded-md shadow-sm mb-6">
+                <div className="bg-white dark:bg-gray-800 p-4 rounded-md shadow-sm mb-6">
                     <div className="flex flex-col space-y-4 lg:space-y-0 lg:flex-row lg:items-center lg:space-x-4">
                         <div className="flex-1">
                             <div className="relative">
@@ -456,7 +457,7 @@ const StaffTaskManagement = () => {
                                 <Input
                                     type="text"
                                     placeholder="Search tasks..."
-                                    className="w-full pl-10 pr-4 py-2 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    className="w-full dark:text-white dark:border-none bg-gray-900 pl-10 pr-4 py-3 border rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                                     value={searchQuery}
                                     onChange={(e) => {
                                         setCurrentPage(1);
@@ -502,7 +503,7 @@ const StaffTaskManagement = () => {
 
                             )}
                             <select
-                                className="w-full border rounded-sm px-3 py-2 bg-white"
+                                className="w-full border dark:bg-gray-900 dark:border-none dark:text-white rounded-sm px-3 py-2 bg-white"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
@@ -512,7 +513,7 @@ const StaffTaskManagement = () => {
                                 <option value="Completed">Completed</option>
                             </select>
                             <select
-                                className="w-full border rounded-sm px-3 py-2 bg-white"
+                                className="w-full border dark:bg-gray-900 dark:border-none dark:text-white rounded-sm px-3 py-2 bg-white"
                                 value={priority}
                                 onChange={(e) => setPriority(e.target.value)}
                             >
@@ -522,7 +523,7 @@ const StaffTaskManagement = () => {
                                 <option value="Low">Low</option>
                             </select>
                             <select
-                                className="w-full border rounded-sm px-3 py-2 bg-white"
+                                className="w-full border dark:bg-gray-900 dark:border-none dark:text-white rounded-sm px-3 py-2 bg-white"
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                             >
@@ -537,13 +538,13 @@ const StaffTaskManagement = () => {
 
                 {/* Task List */}
 
-                <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
                     <div className="overflow-x-auto">
                         {isLoading ? (
                             <Loader />
                         ) : (
-                            <Table className='bg-white border'>
-                                <TableHeader className="bg-white">
+                            <Table className='bg-white dark:bg-gray-800 border dark:border-none'>
+                                <TableHeader className="bg-white dark:bg-gray-800">
                                     <TableRow>
                                         <TableHead>
                                             <Checkbox
@@ -694,8 +695,8 @@ const StaffTaskManagement = () => {
                                         <TableRow>
                                             <TableCell colSpan="8" className="text-center py-8">
                                                 <div className="flex flex-col items-center justify-center space-y-2">
-                                                    <p className="text-lg font-semibold text-gray-600">No tasks found</p>
-                                                    <p className="text-sm text-gray-500">Create a new task to get started</p>
+                                                    <p className="text-lg font-semibold text-gray-600 dark:text-gray-200">No tasks found</p>
+                                                    <p className="text-sm text-gray-500 dark:text-gray-200">Create a new task to get started</p>
                                                 </div>
                                             </TableCell>
                                         </TableRow>
@@ -706,8 +707,8 @@ const StaffTaskManagement = () => {
 
                         <div className='border-t border-gray-300'>
                             <div className="my-2 px-4 md:flex justify-between items-center">
-                                <p className="font-medium text-center text-sm font-gray-700">
-                                    Showing <span className="font-semibold text-sm font-gray-700">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalTasks}</span> entries
+                                <p className="dark:text-gray-200 font-medium text-center text-sm font-gray-700">
+                                    Showing <span className="font-semibold text-sm font-gray-700 dark:text-gray-200">{startEntry}</span> to <span className="font-semibold text-sm font-gray-700">{endEntry}</span> of <span className="font-semibold">{totalTasks}</span> entries
                                 </p>
                                 <Pagination
                                     total={totalPages}
@@ -727,42 +728,42 @@ const StaffTaskManagement = () => {
             {
                 isAddingTask && (
                     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-                        <form onSubmit={handleSubmit(addNewTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                        <form onSubmit={handleSubmit(addNewTask)} className="bg-white dark:bg-gray-800 rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                             <div className="flex items-center justify-between mb-6">
-                                <h2 className="text-2xl font-bold">Add New Task</h2>
-                                <IoCloseSharp className="cursor-pointer w-5 h-5" onClick={() => setIsAddingTask(false)} />
+                                <h2 className="text-2xl font-bold dark:text-white">Add New Task</h2>
+                                <IoCloseSharp className="cursor-pointer w-5 h-5 dark:text-white" onClick={() => setIsAddingTask(false)} />
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="col-span-1 md:col-span-2">
-                                    <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
+                                    <Label htmlFor="title" className="dark:text-gray-100 text-sm font-medium text-gray-700">Title</Label>
                                     <Input
                                         id="title"
                                         type="text"
                                         name="title"
                                         {...register('title')}
-                                        className="mt-1"
+                                        className="mt-1 bg-white dark:bg-gray-900 dark:border-none py-6 rounded-sm dark:text-white"
                                         placeholder="Enter task title"
                                     />
                                 </div>
                                 <div className="col-span-1 md:col-span-2">
-                                    <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                                    <Label htmlFor="description" className="dark:text-gray-100 text-sm font-medium text-gray-700">Description</Label>
                                     <Textarea
                                         id="description"
                                         name="description"
                                         {...register('description')}
-                                        className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
+                                        className="dark:bg-gray-900 dark:border-none dark:text-white focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
 
                                         placeholder="Enter task description"
                                     />
                                 </div>
                                 <div>
-                                    <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
+                                    <Label htmlFor="assignedTo" className="dark:text-gray-100 text-sm font-medium text-gray-700">Assigned To</Label>
                                     {taskMode === 'Edit' ? (
                                         <select
                                             id="assignedTo"
                                             name="assignedTo"
                                             {...register("assignedTo", { required: "Please select a staff member" })}
-                                            className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            className="mt-1 bg-white block w-full py-4 dark:bg-gray-900 dark:text-white dark:border-none rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         >
                                             <option value="">Select Staff</option>
                                             {STAFF_MEMBERS?.staffs?.length > 0 ? (
@@ -780,7 +781,7 @@ const StaffTaskManagement = () => {
                                             id="assignedTo"
                                             name="assignedTo"
                                             {...register("assignedTo", { required: "Please select a staff member" })}
-                                            className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                            className="mt-1 bg-white py-4 dark:bg-gray-900 dark:text-white dark:border-none block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                         >
                                             <option value="">Select Staff</option>
                                             {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
@@ -793,12 +794,12 @@ const StaffTaskManagement = () => {
 
                                 </div>
                                 <div>
-                                    <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
+                                    <Label htmlFor="category" className="dark:text-gray-100 text-sm font-medium text-gray-700">Category</Label>
                                     <select
                                         id="category"
                                         name="category"
                                         {...register("category", { required: "Please select a staff member" })}
-                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        className="mt-1 bg-white block py-4 dark:bg-gray-900 dark:text-white dark:border-none w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     >
                                         <option value="">Select Category</option>
                                         {CATEGORIES.map(category => (
@@ -807,12 +808,12 @@ const StaffTaskManagement = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
+                                    <Label htmlFor="priority" className="dark:text-gray-100 text-sm font-medium text-gray-700">Priority</Label>
                                     <select
                                         id="priority"
                                         name="priority"
                                         {...register("priority", { required: "Please select a staff member" })}
-                                        className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                        className="mt-1 bg-white block w-full py-4 dark:bg-gray-900 dark:text-white dark:border-none rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                     >
                                         <option value="Low">Low</option>
                                         <option value="Medium">Medium</option>
@@ -820,21 +821,21 @@ const StaffTaskManagement = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date</Label>
-                                    <div className="flex items-center">
+                                    <Label htmlFor="dueDate" className="dark:text-gray-100 text-sm font-medium text-gray-700">Due Date</Label>
+                                    <div className="flex items-center space-x-4">
                                         <Input
                                             id="dueDate"
                                             type="date"
                                             name="dueDate"
                                             {...register('dueDate')}
-                                            className="mt-1 rounded-sm"
+                                            className="mt-1 bg-white py-6 dark:bg-gray-900 dark:text-white dark:border-none rounded-sm"
                                         />
                                         <Input
                                             id="dueDate"
                                             type="time"
                                             name="dueTime"
                                             {...register('dueTime')}
-                                            className="mt-1 rounded-sm"
+                                            className="mt-1 bg-white py-6 dark:bg-gray-900 dark:text-white dark:border-none rounded-sm"
                                         />
                                     </div>
                                 </div>
@@ -843,7 +844,7 @@ const StaffTaskManagement = () => {
                                 <Button
                                     variant="outline"
                                     onClick={() => setIsAddingTask(false)}
-                                    className="w-full rounded-sm sm:w-auto"
+                                    className="w-full rounded-sm dark:bg-gray-900 dark:text-white dark:border-none sm:w-auto"
                                 >
                                     Cancel
                                 </Button>
