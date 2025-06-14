@@ -338,7 +338,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   onChange={(e) => {
                                     field.onChange(e);
                                   }}
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Full Name"
                                 />
                               )}
@@ -366,7 +366,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("dob")}
                                   type="date"
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               )}
                             />
@@ -422,7 +422,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     field.onChange(e);
                                   }}
                                   {...register("contactNo")}
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Contact Number"
                                 />
                               )}
@@ -447,7 +447,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   onChange={(e) => {
                                     field.onChange(e);
                                   }}
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Email address"
                                 />
                               )}
@@ -490,7 +490,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                     <Input
                                       {...field}
                                       placeholder="Enter street address"
-                                      className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                      className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                     />
                                   )}
                                 />
@@ -506,7 +506,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("currentAddress.city")}
                                   placeholder="Enter city"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -515,7 +515,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("currentAddress.state")}
                                   placeholder="Enter state"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -526,7 +526,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("currentAddress.postalCode")}
                                   placeholder="Enter postal code"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div className="md:col-span-2">
@@ -535,7 +535,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("currentAddress.country")}
                                   placeholder="Enter country"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -555,7 +555,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("permanentAddress.street")}
                                   placeholder="Enter street address"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -564,7 +564,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("permanentAddress.city")}
                                   placeholder="Enter city"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -573,7 +573,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("permanentAddress.state")}
                                   placeholder="Enter state"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -584,7 +584,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("permanentAddress.postalCode")}
                                   placeholder="Enter postal code"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                               <div className="md:col-span-2">
@@ -595,7 +595,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   {...register("permanentAddress.country")}
                                   placeholder="Enter country"
                                   required
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -673,7 +673,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("joinedDate")}
                                   type="date"
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                 />
                               )}
                             />
@@ -698,7 +698,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   min="1"
                                   max="5"
                                   placeholder="Enter Number Of Shifts"
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   onChange={(e) => {
                                     const value = Math.min(
                                       Math.max(
@@ -734,7 +734,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
                                   }}
                                   {...register("salary")}
                                   type="text"
-                                  className="rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
+                                  className="bg-white rounded-md py-6 dark:text-white dark:bg-gray-800 rounded-sm dark:border-none focus:outline-none"
                                   placeholder="Salary"
                                 />
                               )}
