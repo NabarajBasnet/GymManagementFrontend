@@ -507,7 +507,7 @@ const PersonalTrainingBooking = () => {
   };
 
   return (
-    <div className='w-full bg-gray-50 min-h-screen p-4 md:p-6'>
+    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6'>
       {/* Breadcrumb with arrows */}
       <div className='w-full mb-4'>
         <Breadcrumb className="mb-4">
@@ -537,15 +537,15 @@ const PersonalTrainingBooking = () => {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-6 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+        <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-4 py-6 border border-gray-200 dark:border-none shadow-sm rounded-md md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold">Personal Training Bookings</h1>
-            <p className="text-sm text-gray-500">
+            <h1 className="text-2xl font-bold dark:text-gray-100">Personal Training Bookings</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
               Register and manage your personal training bookings.
             </p>
           </div>
           <Button
-            className="rounded-sm"
+            className="rounded-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
             onClick={() => setTabValue('Register Training')}
           >
             <FiPlus className="h-4 w-4 mr-2" />
@@ -554,30 +554,48 @@ const PersonalTrainingBooking = () => {
         </div>
       </div>
 
-      {/* Tabs */}
+      {/* Tabs with improved styling */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-6 border border-gray-300 overflow-y-hidden">
-          <TabsTrigger value="View Bookings" className="whitespace-nowrap">
+        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-6 border border-gray-300 dark:border-gray-700 overflow-y-hidden bg-white dark:bg-gray-800 p-1 rounded-lg">
+          <TabsTrigger 
+            value="View Bookings" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
             <span className="hidden md:inline">View Bookings</span>
           </TabsTrigger>
-          <TabsTrigger value="Register Training" className="whitespace-nowrap">
+          <TabsTrigger 
+            value="Register Training" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <FiPlus className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Register Training</span>
           </TabsTrigger>
-          <TabsTrigger value="Reports" className="whitespace-nowrap">
+          <TabsTrigger 
+            value="Reports" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <FiBarChart className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Reports</span>
           </TabsTrigger>
-          <TabsTrigger value="Settings" className="whitespace-nowrap">
+          <TabsTrigger 
+            value="Settings" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <FiSettings className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Settings</span>
           </TabsTrigger>
-          <TabsTrigger value="Notifications" className="whitespace-nowrap">
+          <TabsTrigger 
+            value="Notifications" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <FiBell className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Notifications</span>
           </TabsTrigger>
-          <TabsTrigger value="Support" className="whitespace-nowrap">
+          <TabsTrigger 
+            value="Support" 
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          >
             <FiHelpCircle className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Support</span>
           </TabsTrigger>
@@ -585,25 +603,26 @@ const PersonalTrainingBooking = () => {
 
         <TabsContent value="View Bookings">
           {/* Filter Section */}
-          <Card className="my-2">
+          <Card className="my-2 dark:bg-gray-800 dark:border-none">
             <CardContent className="p-4">
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <div>
-                  <Label htmlFor="search">Search</Label>
+                  <Label htmlFor="search" className="dark:text-gray-200">Search</Label>
                   <Input
                     value={serachTraining}
                     onChange={(e) => setSearchTraining(e.target.value)}
                     id="search"
                     placeholder="Search here..."
+                    className="dark:bg-gray-900 bg-white dark:border-none dark:text-gray-100"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="status">Status</Label>
+                  <Label htmlFor="status" className="dark:text-gray-200">Status</Label>
                   <Select onValueChange={(value) => setPackageStatus(value)}>
-                    <SelectTrigger className="rounded-md">
+                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-none dark:text-gray-100">
                       <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="dark:bg-gray-900 dark:border-none">
                       <SelectItem value="all">All Status</SelectItem>
                       <SelectItem value="Active">Active</SelectItem>
                       <SelectItem value="Inactive">Inactive</SelectItem>
@@ -617,12 +636,12 @@ const PersonalTrainingBooking = () => {
                   </Select>
                 </div>
                 <div>
-                  <Label htmlFor="paymentStatus">Payment Status</Label>
+                  <Label htmlFor="paymentStatus" className="dark:text-gray-200">Payment Status</Label>
                   <Select onValueChange={(value) => setPaymentStatus(value)}>
-                    <SelectTrigger className="rounded-md">
+                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-none dark:text-gray-100">
                       <SelectValue placeholder="Filter by payment status" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="dark:bg-gray-900 dark:border-none">
                       <SelectItem value="all">All Status</SelectItem>
                       <SelectItem value="Full Paid">Full Paid</SelectItem>
                       <SelectItem value="Unpaid">Unpaid</SelectItem>
@@ -639,7 +658,7 @@ const PersonalTrainingBooking = () => {
                 <div className="flex items-end">
                   <Button
                     variant="outline"
-                    className="w-full"
+                    className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => {
                       setSearch('');
                       setPackageStatus('');
@@ -654,25 +673,25 @@ const PersonalTrainingBooking = () => {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="dark:bg-gray-800 dark:border-none">
             <CardHeader>
-              <CardTitle className="text-2xl font-bold">All Bookings</CardTitle>
-              <CardDescription className="text-xs text-gray-500 font-medium">
+              <CardTitle className="text-2xl font-bold dark:text-gray-100">All Bookings</CardTitle>
+              <CardDescription className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                 Showing {personalTrainings?.length} training sessions out of {totalPersonalTrainings} total training sessions
               </CardDescription>
             </CardHeader>
 
             {/* Table Section */}
             <CardContent className="space-y-2">
-              <div className="overflow-x-auto rounded-lg border">
+              <div className="overflow-x-auto rounded-lg border dark:border-gray-700">
                 {personalTrainingBookingsLoading ? (
                   <Loader />
                 ) : (
                   <>
                     {Array.isArray(personalTrainings) && personalTrainings.length > 0 ? (
                       <Table>
-                        <TableHeader className="bg-gray-50">
-                          <TableRow className="whitespace-nowrap">
+                        <TableHeader className="bg-gray-50 dark:bg-gray-900">
+                          <TableRow className="whitespace-nowrap dark:border-gray-700">
                             {/* Trainer Name */}
                             <TableHead className="py-3 cursor-pointer">
                               <div className="flex items-center gap-1">
@@ -797,28 +816,31 @@ const PersonalTrainingBooking = () => {
 
                         <TableBody>
                           {personalTrainings.map((personalTraining) => (
-                            <TableRow key={personalTraining._id}>
-                              <TableCell className="py-3">{personalTraining.trainerId.fullName}</TableCell>
-                              <TableCell className="py-3">{personalTraining.memberId.fullName}</TableCell>
-                              <TableCell className="py-3">{personalTraining?.packageId?.packagename}</TableCell>
-                              <TableCell className="py-3">{new Date(personalTraining.startDate).toISOString().split('T')[0]}</TableCell>
-                              <TableCell className="py-3">{new Date(personalTraining.endDate).toISOString().split('T')[0]}</TableCell>
-                              <TableCell className="py-3">
+                            <TableRow key={personalTraining._id} className="dark:border-gray-700">
+                              <TableCell className="py-3 dark:text-gray-100">{personalTraining.trainerId.fullName}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">{personalTraining.memberId.fullName}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">{personalTraining?.packageId?.packagename}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">{new Date(personalTraining.startDate).toISOString().split('T')[0]}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">{new Date(personalTraining.endDate).toISOString().split('T')[0]}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">
                                 <Badge variant="outline" className={getStatusColor(personalTraining.status)}>
                                   {personalTraining.status}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="text-center py-3">${personalTraining.totalAmount}</TableCell>
-                              <TableCell className="py-3">{personalTraining.branchId}</TableCell>
-                              <TableCell className="py-3">
+                              <TableCell className="text-center py-3 dark:text-gray-100">${personalTraining.totalAmount}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">{personalTraining.branchId}</TableCell>
+                              <TableCell className="py-3 dark:text-gray-100">
                                 <Badge className={`${getPaymentStatusColor(personalTraining.paymentStatus)} text-center hover:bg-transparent`}>
                                   {personalTraining.paymentStatus}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="py-3 text-right space-x-1">
+                              <TableCell className="py-3 text-right space-x-1 dark:text-gray-100">
                                 <Button
                                   onClick={() => handleEditTraining(personalTraining._id)}
-                                  variant="ghost" size="sm" className="h-8 w-8 p-0">
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-8 w-8 p-0 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                >
                                   <FiEdit className="h-4 w-4" />
                                 </Button>
                                 <AlertDialog>
@@ -826,21 +848,24 @@ const PersonalTrainingBooking = () => {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50"
+                                      className="h-8 w-8 p-0 text-red-600 hover:text-red-800 hover:bg-red-50 dark:text-red-400 dark:hover:text-red-300 dark:hover:bg-gray-700"
                                     >
                                       <FiTrash2 className="h-4 w-4" />
                                     </Button>
                                   </AlertDialogTrigger>
-                                  <AlertDialogContent>
+                                  <AlertDialogContent className="dark:bg-gray-800 dark:border-gray-700">
                                     <AlertDialogHeader>
-                                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                      <AlertDialogDescription>
+                                      <AlertDialogTitle className="dark:text-gray-100">Are you absolutely sure?</AlertDialogTitle>
+                                      <AlertDialogDescription className="dark:text-gray-400">
                                         This action cannot be undone. This will permanently delete your training session.
                                       </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => deletePersonalTrainingBooking(personalTraining._id)} className="bg-red-600 hover:bg-red-700">
+                                      <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Cancel</AlertDialogCancel>
+                                      <AlertDialogAction 
+                                        onClick={() => deletePersonalTrainingBooking(personalTraining._id)} 
+                                        className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
+                                      >
                                         Continue
                                       </AlertDialogAction>
                                     </AlertDialogFooter>
@@ -882,10 +907,10 @@ const PersonalTrainingBooking = () => {
 
         <TabsContent value="Register Training">
           <div className="lg:flex space-y-4 mt-4 lg:space-y-0 lg:space-x-2 gap-4">
-            <Card className="rounded-xl w-full lg:w-3/12">
+            <Card className="rounded-xl w-full lg:w-3/12 dark:bg-gray-800 dark:border-none">
               <CardHeader>
                 <div className='flex justify-between items-center'>
-                  <p className='text-lg font-bold'>{isEditMode ? 'Edit Training' : 'New Training'}</p>
+                  <p className='text-lg font-bold dark:text-gray-100'>{isEditMode ? 'Edit Training' : 'New Training'}</p>
                   <Badge className={getStatusColor(status)}>
                     {status || 'New'}
                   </Badge>
@@ -901,8 +926,8 @@ const PersonalTrainingBooking = () => {
                 <div className='flex flex-col mt-4 gap-2'>
                   <div className='flex items-center gap-2'>
                     <div>
-                      <h1 className='text-lg font-bold'>Email Notification</h1>
-                      <p className='text-xs font-medium text-gray-500'>Send email notifications to the client when a training session is booked.</p>
+                      <h1 className='text-lg font-bold dark:text-gray-100'>Email Notification</h1>
+                      <p className='text-xs font-medium text-gray-500 dark:text-gray-400'>Send email notifications to the client when a training session is booked.</p>
                     </div>
                     <Switch
                       checked={sendEmailNotification}
@@ -915,8 +940,8 @@ const PersonalTrainingBooking = () => {
                 <div className='flex flex-col mt-4 gap-2'>
                   <div className='flex items-center gap-2'>
                     <div>
-                      <h1 className='text-lg font-bold'>Send Payment Information</h1>
-                      <p className='text-xs font-medium text-gray-500'>Send payment information to the client when a training session is booked.</p>
+                      <h1 className='text-lg font-bold dark:text-gray-100'>Send Payment Information</h1>
+                      <p className='text-xs font-medium text-gray-500 dark:text-gray-400'>Send payment information to the client when a training session is booked.</p>
                     </div>
                     <Switch
                       checked={sendPaymentInfo}
@@ -930,7 +955,7 @@ const PersonalTrainingBooking = () => {
               </CardFooter>
             </Card>
 
-            <Card className="rounded-xl w-full lg:my-2 lg:w-9/12">
+            <Card className="rounded-xl w-full lg:my-2 lg:w-9/12 dark:bg-gray-800 dark:border-none">
               <CardContent className="space-y-2">
                 <form onSubmit={handleSubmit(onSubmit)} className="px-2 space-y-4 py-6">
 
@@ -938,7 +963,7 @@ const PersonalTrainingBooking = () => {
                   <div className='grid grid-cols-2 gap-4'>
                     <div>
                       <div className='space-y-1.5'>
-                        <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Trainer</Label>
+                        <Label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-200">Select Trainer</Label>
                         <div ref={staffSearchRef} className="relative">
                           <Controller
                             name="staffName"
@@ -955,7 +980,7 @@ const PersonalTrainingBooking = () => {
                                     setStaffName('');
                                   }}
                                   onFocus={handleStaffSearchFocus}
-                                  className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                  className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
                                   placeholder="Search staff..."
                                 />
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -971,7 +996,7 @@ const PersonalTrainingBooking = () => {
                           )}
 
                           {renderStaffDropdown && (
-                            <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                            <div className="absolute w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                               {staffs?.length > 0 ? (
                                 staffs
                                   .filter((staff) => {
@@ -1002,7 +1027,7 @@ const PersonalTrainingBooking = () => {
                       </div>
                     </div>
                     <div className='space-y-1.5'>
-                      <Label className="block text-sm font-medium text-gray-700">Select Member</Label>
+                      <Label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Select Member</Label>
                       <div ref={memberSearchRef} className="relative">
                         <Controller
                           name="memberName"
@@ -1019,7 +1044,7 @@ const PersonalTrainingBooking = () => {
                                   setMemberName('');
                                 }}
                                 onFocus={handleMemberSearchFocus}
-                                className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
+                                className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
                                 placeholder="Search members..."
                               />
                               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -1035,7 +1060,7 @@ const PersonalTrainingBooking = () => {
                         )}
 
                         {renderMemberDropdown && (
-                          <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                          <div className="absolute w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                             {members?.length > 0 ? (
                               members
                                 .filter((member) => {
@@ -1069,7 +1094,7 @@ const PersonalTrainingBooking = () => {
                   {/* Second Row */}
                   <div className='grid grid-cols-2 gap-4'>
                     <div className='space-y-1.5'>
-                      <Label className="block text-sm font-medium mb-1.5 text-gray-700">Select Package</Label>
+                      <Label className="block text-sm font-medium mb-1.5 text-gray-700 dark:text-gray-200">Select Package</Label>
                       <div ref={packageSearchRef} className="relative">
                         <Controller
                           name="packageName"
@@ -1086,7 +1111,7 @@ const PersonalTrainingBooking = () => {
                                   setPackageName('');
                                 }}
                                 onFocus={handlePackageSearchFocus}
-                                className="w-full p-6 rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
                                 placeholder="Search package..."
                               />
                               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -1102,7 +1127,7 @@ const PersonalTrainingBooking = () => {
                         )}
 
                         {renderPackageDropdown && (
-                          <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                          <div className="absolute w-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                             {packagesLoading ? (
                               <div className="px-4 py-3 text-sm text-gray-500">Loading packages...</div>
                             ) : packages.length > 0 ? (
@@ -1134,12 +1159,12 @@ const PersonalTrainingBooking = () => {
                     </div>
 
                     <div>
-                      <Label htmlFor="address">Status</Label>
+                      <Label htmlFor="address" className="dark:text-gray-200">Status</Label>
                       <Select onValueChange={(value) => setPackageStatus(value)}>
-                        <SelectTrigger className="rounded-md p-6">
+                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Status" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="dark:bg-gray-900 dark:border-none">
                           <SelectItem value="Active">Active</SelectItem>
                           <SelectItem value="Inactive">Inactive</SelectItem>
                           <SelectItem value="Cancelled">Cancelled</SelectItem>
@@ -1160,7 +1185,7 @@ const PersonalTrainingBooking = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         id="startDate"
-                        className="p-6"
+                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="date"
                       />
                     </div>
@@ -1174,7 +1199,7 @@ const PersonalTrainingBooking = () => {
                             setIsEndDateAuto(false);
                           }}
                           id="endDate"
-                          className="p-6"
+                          className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                           type="date"
                         />
                         {!isEndDateAuto && (
@@ -1208,7 +1233,7 @@ const PersonalTrainingBooking = () => {
                         id="paidAmount"
                         {...register("paidAmount", { required: "Paid Amount is required" })}
                         placeholder='Paid amount'
-                        className="p-6"
+                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                     <div>
@@ -1217,7 +1242,7 @@ const PersonalTrainingBooking = () => {
                         id="discount"
                         {...register("discount")}
                         placeholder='Discount amount'
-                        className="p-6"
+                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                   </div>
@@ -1229,14 +1254,14 @@ const PersonalTrainingBooking = () => {
                         id="totalAmount"
                         {...register("totalAmount", { required: "Total Amount is required" })}
                         placeholder='Total amount'
-                        className="p-6"
+                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                     <div>
                       <Label htmlFor="user">Register By</Label>
                       <Input
                         id="user"
-                        className="p-6"
+                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         {...register("registerBy", { required: "Register By is required" })}
                         placeholder='Your name'
                         type="text" />
@@ -1248,10 +1273,10 @@ const PersonalTrainingBooking = () => {
                     <div>
                       <Label htmlFor="branch">Branch</Label>
                       <Select onValueChange={(value) => setBranchId(value)}>
-                        <SelectTrigger className="rounded-md p-6">
+                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Branch" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="dark:bg-gray-900 dark:border-none">
                           <SelectItem value="all">All Branch</SelectItem>
                           <SelectItem value="Branch One">Branch One</SelectItem>
                           <SelectItem value="Branch Two">Branch Two</SelectItem>
@@ -1262,10 +1287,10 @@ const PersonalTrainingBooking = () => {
                     <div>
                       <Label htmlFor="paymentStatus">Payment Status</Label>
                       <Select onValueChange={(value) => setPaymentStatus(value)}>
-                        <SelectTrigger className="rounded-md p-6">
+                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Payment Status" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="dark:bg-gray-900 dark:border-none">
                           <SelectItem value="all">All Payment Status</SelectItem>
                           <SelectItem value="Full Paid">Full Paid</SelectItem>
                           <SelectItem value="Partial Paid">Partial Paid</SelectItem>
@@ -1285,13 +1310,13 @@ const PersonalTrainingBooking = () => {
                       type="button"
                       variant="outline"
                       onClick={handleResetForm}
-                      className="bg-gray-100 hover:bg-gray-200 rounded-md p-6"
+                      className="bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-300 dark:border-gray-700 rounded-md p-6"
                     >
                       Reset
                     </Button>
                     <Button
                       type="submit"
-                      className="bg-blue-600 hover:bg-blue-700 rounded-md p-6"
+                      className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white rounded-md p-6"
                     >
                       {isSubmitting ? <FiLoader className="animate-spin" /> : <FiSave />}
                       {isSubmitting ? 'Submitting...' : isEditMode ? 'Update Training' : 'Submit & Save'}
@@ -1304,7 +1329,7 @@ const PersonalTrainingBooking = () => {
         </TabsContent>
 
         <TabsContent value="Reports">
-          <div className="p-4">
+          <div className="p-4 dark:text-gray-100">
             <h2>Reports Content</h2>
           </div>
         </TabsContent>
