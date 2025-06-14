@@ -21,12 +21,6 @@ import {
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
@@ -77,7 +71,6 @@ const PaymentHistory = () => {
     const tableRef = useRef(null);
 
     const limit = 10;
-    const queryClient = useQueryClient();
 
     const { control, formState: { errors } } = useForm();
 
@@ -389,7 +382,7 @@ const PaymentHistory = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-b shadow-sm sticky top-0 z-10">
+            <div className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-b dark:border-gray-700 shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>
@@ -616,9 +609,9 @@ const PaymentHistory = () => {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className='dark:bg-gray-800 dark:border-gray-700'>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-lg text-gray-700">Total Amount</CardTitle>
+                                <CardTitle className="text-lg text-gray-700 dark:text-gray-100">Total Amount</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center">
@@ -640,9 +633,9 @@ const PaymentHistory = () => {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className='dark:bg-gray-800 dark:border-gray-700'>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-lg text-gray-700">Latest Payment</CardTitle>
+                                <CardTitle className="text-lg text-gray-700 dark:text-gray-100">Latest Payment</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center">
@@ -657,9 +650,9 @@ const PaymentHistory = () => {
                             </CardContent>
                         </Card>
 
-                        <Card>
+                        <Card className='dark:bg-gray-800 dark:border-gray-700'>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-lg text-gray-700">Common Method</CardTitle>
+                                <CardTitle className="text-lg text-gray-700 dark:text-gray-100">Common Method</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center">
@@ -677,10 +670,10 @@ const PaymentHistory = () => {
                 )}
 
                 {/* Payment History Table */}
-                <Card>
+                <Card className='dark:bg-gray-800 dark:border-gray-700'>
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-lg">Payment Records</CardTitle>
-                        <CardDescription>
+                        <CardTitle className="text-lg dark:text-gray-100">Payment Records</CardTitle>
+                        <CardDescription className="dark:text-gray-400">
                             {memberName ?
                                 `Showing payment history for ${memberName}` :
                                 "Select a member to view payment history"
