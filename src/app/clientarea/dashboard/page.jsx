@@ -17,7 +17,6 @@ import { useQuery } from "@tanstack/react-query";
 const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
-  console.log('Logged in tenant: ', loggedInTenant);
   const router = useRouter();
 
   const tenantOnTrail = loggedInTenant?.freeTrailStatus;

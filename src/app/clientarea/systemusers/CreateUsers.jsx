@@ -80,6 +80,10 @@ const CreateUsers = () => {
         toast.success(responseBody.message);
         soonerToast.success(responseBody.message);
         reset();
+      } else if(responseBody.redirect){
+        window.location.href = responseBody.redirectUrl;
+        toast.error(responseBody.message);
+        soonerToast.error(responseBody.message);
       } else {
         toast.error(responseBody.message || "Failed to create account");
         soonerToast.error(responseBody.message || "Failed to create account");
