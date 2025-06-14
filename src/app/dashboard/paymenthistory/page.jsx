@@ -484,7 +484,7 @@ const PaymentHistory = () => {
                                     )}
 
                                     {renderDropdown && (
-                                        <div className="absolute w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
+                                        <div className="absolute w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-80 overflow-y-auto z-20 top-full left-0 mt-1">
                                             {isLoading ? (
                                                 <div className="flex justify-center py-4">
                                                     <BiLoaderCircle className="h-6 w-6 text-blue-600 animate-spin" />
@@ -504,20 +504,20 @@ const PaymentHistory = () => {
                                                                 setMemberId(member._id);
                                                                 setRenderDropdown(false);
                                                             }}
-                                                            className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors flex justify-between items-center"
+                                                            className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-gray-700 cursor-pointer transition-colors flex justify-between items-center"
                                                             key={member._id}
                                                             value={member._id}
                                                         >
                                                             <span>{member.fullName}</span>
                                                             {member.membershipId && (
-                                                                <span className="text-gray-500 text-xs">
+                                                                <span className="text-gray-500 dark:text-gray-400 text-xs">
                                                                     ID: {member.membershipId}
                                                                 </span>
                                                             )}
                                                         </div>
                                                     ))
                                             ) : (
-                                                <div className="px-4 py-3 text-sm text-gray-500">No members found</div>
+                                                <div className="px-4 py-3 text-sm text-gray-500 dark:text-gray-400">No members found</div>
                                             )}
                                         </div>
                                     )}
