@@ -107,7 +107,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members`);
+            const response = await fetch(`http://localhost:3000/api/org-members/by-branch`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);

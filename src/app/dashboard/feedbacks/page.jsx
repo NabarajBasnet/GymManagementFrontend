@@ -240,7 +240,7 @@ const AdminFeedBackManagement = () => {
                                     placeholder="Search feedbacks..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                    className="dark:bg-gray-900 bg-white dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                 />
                             </div>
                             <div>
