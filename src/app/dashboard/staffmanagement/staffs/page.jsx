@@ -1511,7 +1511,7 @@ const StaffManagement = () => {
                                                   onChange={(e) => {
                                                     field.onChange(e);
                                                   }}
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Full Name"
                                                 />
                                               )}
@@ -1538,7 +1538,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("dob")}
                                                   type="date"
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               )}
                                             />
@@ -1601,7 +1601,7 @@ const StaffManagement = () => {
                                                     field.onChange(e);
                                                   }}
                                                   {...register("contactNo")}
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Contact Number"
                                                 />
                                               )}
@@ -1626,7 +1626,7 @@ const StaffManagement = () => {
                                                   onChange={(e) => {
                                                     field.onChange(e);
                                                   }}
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Email address"
                                                 />
                                               )}
@@ -1667,7 +1667,7 @@ const StaffManagement = () => {
                                                     <Input
                                                       {...field}
                                                       placeholder="Enter street address"
-                                                      className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                      className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     />
                                                   )}
                                                 />
@@ -1688,7 +1688,7 @@ const StaffManagement = () => {
                                                     "currentAddress.city"
                                                   )}
                                                   placeholder="Enter city"
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   required
                                                 />
                                               </div>
@@ -1700,7 +1700,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter state"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1711,7 +1711,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter postal code"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div className="md:col-span-2">
@@ -1722,7 +1722,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter country"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                             </div>
@@ -1742,7 +1742,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter street address"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1753,7 +1753,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter city"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1764,7 +1764,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter state"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div>
@@ -1775,7 +1775,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter postal code"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                               <div className="md:col-span-2">
@@ -1786,7 +1786,7 @@ const StaffManagement = () => {
                                                   )}
                                                   placeholder="Enter country"
                                                   required
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               </div>
                                             </div>
@@ -1880,7 +1880,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("joinedDate")}
                                                   type="date"
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 />
                                               )}
                                             />
@@ -1903,7 +1903,7 @@ const StaffManagement = () => {
                                                   min="1"
                                                   max="5"
                                                   placeholder="Enter Number Of Shifts"
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   onChange={(e) => {
                                                     const value = Math.min(
                                                       Math.max(
@@ -1944,7 +1944,7 @@ const StaffManagement = () => {
                                                   }}
                                                   {...register("salary")}
                                                   type="text"
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Salary"
                                                 />
                                               )}
@@ -2166,7 +2166,7 @@ const StaffManagement = () => {
                                                             );
                                                             field.onChange(e);
                                                           }}
-                                                          className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                          className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                         />
                                                       )}
                                                     />
@@ -2206,7 +2206,7 @@ const StaffManagement = () => {
                                                             );
                                                             field.onChange(e);
                                                           }}
-                                                          className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                          className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                         />
                                                       )}
                                                     />
@@ -2255,7 +2255,7 @@ const StaffManagement = () => {
                                                 }}
                                                 {...register("username")}
                                                 type="text"
-                                                className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 placeholder="Username"
                                               />
                                             )}
@@ -2281,7 +2281,7 @@ const StaffManagement = () => {
                                                 }}
                                                 {...register("password")}
                                                 type="password"
-                                                className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                 placeholder="Password"
                                               />
                                             )}
@@ -2322,7 +2322,7 @@ const StaffManagement = () => {
                                                   {...register(
                                                     "emergencyContactName"
                                                   )}
-                                                  className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                  className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                   placeholder="Emergency Contact Name"
                                                 />
                                               )}
@@ -2353,7 +2353,7 @@ const StaffManagement = () => {
                                                     {...register(
                                                       "emergencyContactNo"
                                                     )}
-                                                    className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                    className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     placeholder="Emergency Contact No"
                                                   />
                                                 )}
@@ -2383,7 +2383,7 @@ const StaffManagement = () => {
                                                     {...register(
                                                       "relationship"
                                                     )}
-                                                    className="rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
+                                                    className="bg-white rounded-sm py-6 dark:bg-gray-800 dark:border-none focus:outline-none"
                                                     placeholder="Relationship"
                                                   />
                                                 )}
