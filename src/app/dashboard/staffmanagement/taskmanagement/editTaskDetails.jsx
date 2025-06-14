@@ -103,42 +103,42 @@ const EditTaskDetails = ({ task, id }) => {
     return (
         <div className="min-h-screen w-full bg-gray-50">
             <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-                <form onSubmit={handleSubmit(editTask)} className="bg-white rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                <form onSubmit={handleSubmit(editTask)} className="bg-white dark:bg-gray-800 rounded-sm p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                     <div className="flex items-center justify-between mb-6">
-                        <h2 className="text-2xl font-bold">Edit Task Details</h2>
-                        <IoCloseSharp className="cursor-pointer w-5 h-5" onClick={() => window.location.reload()} />
+                        <h2 className="text-2xl font-bold dark:text-white">Edit Task Details</h2>
+                        <IoCloseSharp className="cursor-pointer w-5 h-5 dark:text-white" onClick={() => window.location.reload()} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="col-span-1 md:col-span-2">
-                            <Label htmlFor="title" className="text-sm font-medium text-gray-700">Title</Label>
+                            <Label htmlFor="title" className="text-sm font-medium dark:text-white text-gray-700">Title</Label>
                             <Input
                                 id="title"
                                 type="text"
                                 name="title"
                                 {...register('title')}
-                                className="mt-1"
+                                className="mt-1 py-6 rounded-sm dark:text-white dark:bg-gray-900 dark:border-none bg-white"
                                 placeholder="Enter task title"
                             />
                         </div>
                         <div className="col-span-1 md:col-span-2">
-                            <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
+                            <Label htmlFor="description" className="text-sm dark:text-white font-medium text-gray-700">Description</Label>
                             <Textarea
                                 id="description"
                                 name="description"
                                 {...register('description')}
-                                className="focus-visible:ring-0 focus:ring-none mt-1 focus:outline-none rounded-sm"
+                                className="focus-visible:ring-0 dark:bg-gray-900 dark:text-white dark:border-none focus:ring-none mt-1 focus:outline-none rounded-sm"
 
                                 placeholder="Enter task description"
                             />
                         </div>
                         <div>
-                            <Label htmlFor="assignedTo" className="text-sm font-medium text-gray-700">Assigned To</Label>
+                            <Label htmlFor="assignedTo" className="dark:text-white text-sm font-medium text-gray-700">Assigned To</Label>
                             {taskMode === 'Edit' ? (
                                 <select
                                     id="assignedTo"
                                     name="assignedTo"
                                     {...register("assignedTo", { required: "Please select a staff member" })}
-                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    className="mt-1 block py-4 dark:border-none dark:bg-gray-900 dark:text-white w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Staff</option>
                                     {STAFF_MEMBERS?.staffs?.length > 0 ? (
@@ -156,7 +156,7 @@ const EditTaskDetails = ({ task, id }) => {
                                     id="assignedTo"
                                     name="assignedTo"
                                     {...register("assignedTo", { required: "Please select a staff member" })}
-                                    className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    className="mt-1 py-4 dark:border-none dark:bg-gray-900 dark:text-white block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                                 >
                                     <option value="">Select Staff</option>
                                     {STAFF_MEMBERS ? STAFF_MEMBERS.staffs.map(staff => (
@@ -169,12 +169,12 @@ const EditTaskDetails = ({ task, id }) => {
 
                         </div>
                         <div>
-                            <Label htmlFor="category" className="text-sm font-medium text-gray-700">Category</Label>
+                            <Label htmlFor="category" className="dark:text-white text-sm font-medium text-gray-700">Category</Label>
                             <select
                                 id="category"
                                 name="category"
                                 {...register("category", { required: "Please select a staff member" })}
-                                className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="mt-1 py-4 dark:border-none dark:bg-gray-900 dark:text-white block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             >
                                 <option value="">Select Category</option>
                                 {CATEGORIES.map(category => (
@@ -183,12 +183,12 @@ const EditTaskDetails = ({ task, id }) => {
                             </select>
                         </div>
                         <div>
-                            <Label htmlFor="priority" className="text-sm font-medium text-gray-700">Priority</Label>
+                            <Label htmlFor="priority" className="dark:text-white text-sm font-medium text-gray-700">Priority</Label>
                             <select
                                 id="priority"
                                 name="priority"
                                 {...register("priority", { required: "Please select a staff member" })}
-                                className="mt-1 block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="mt-1 py-4 dark:border-none dark:bg-gray-900 dark:text-white block w-full rounded-sm border border-gray-300 py-2 px-3 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                             >
                                 <option value="Low">Low</option>
                                 <option value="Medium">Medium</option>
@@ -196,21 +196,21 @@ const EditTaskDetails = ({ task, id }) => {
                             </select>
                         </div>
                         <div>
-                            <Label htmlFor="dueDate" className="text-sm font-medium text-gray-700">Due Date & Time</Label>
-                            <div className="flex items-center">
+                            <Label htmlFor="dueDate" className="dark:text-white text-sm font-medium text-gray-700">Due Date & Time</Label>
+                            <div className="flex items-center space-x-4">
                                 <Input
                                     id="dueDate"
                                     type="date"
                                     name="dueDate"
                                     {...register('dueDate')}
-                                    className="mt-1 rounded-sm"
+                                    className="mt-1 py-6 dark:border-none dark:bg-gray-900 dark:text-white rounded-sm"
                                 />
                                 <Input
                                     id="dueDate"
                                     type="time"
                                     name="dueTime"
                                     {...register('dueTime')}
-                                    className="mt-1 rounded-sm"
+                                    className="mt-1 py-6 dark:border-none dark:bg-gray-900 dark:text-white rounded-sm"
                                 />
                             </div>
                         </div>
