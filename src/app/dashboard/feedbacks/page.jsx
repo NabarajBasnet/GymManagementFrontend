@@ -15,7 +15,7 @@ import { RiCustomerService2Line } from "react-icons/ri";
 import { HiMiniUsers } from "react-icons/hi2";
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave, FiCheck, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiX, FiSave, FiInfo, FiEye, FiLoader, FiFilter, FiRefreshCcw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
@@ -184,7 +184,7 @@ const AdminFeedBackManagement = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100 flex justify-center min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
                 <div className='w-full mb-4'>
@@ -209,16 +209,20 @@ const AdminFeedBackManagement = () => {
                         </BreadcrumbList>
                     </Breadcrumb>
 
-                    {/* Header */}
-                    <div className="flex flex-col md:flex-row justify-between items-start bg-white p-4 py-4 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
+                    {/* Header with dark mode */}
+                    <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-4 py-4 border border-gray-200 dark:border-gray-700 shadow-sm rounded-md md:items-center gap-4">
                         <div>
-                            <h1 className="text-xl font-bold mb-2">Feedback Management</h1>
-                            <p className="text-xs text-gray-500 font-medium">
+                            <h1 className="text-xl font-bold mb-2 dark:text-gray-100">Feedback Management</h1>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                                 Manage and respond to member feedbacks
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button variant="outline" onClick={() => window.location.reload()}>
+                            <Button 
+                                variant="outline" 
+                                onClick={() => window.location.reload()}
+                                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                            >
                                 <FiRefreshCcw className="mr-2" />
                                 Refresh
                             </Button>
@@ -226,60 +230,66 @@ const AdminFeedBackManagement = () => {
                     </div>
                 </div>
 
-                {/* Filters */}
-                <Card className="mb-6">
+                {/* Filters Card with dark mode */}
+                <Card className="mb-6 dark:bg-gray-800 dark:border-none">
                     <CardContent className="p-4">
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <div>
-                                <Label>Search</Label>
+                                <Label className="dark:text-gray-300">Search</Label>
                                 <Input
                                     placeholder="Search feedbacks..."
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                 />
                             </div>
                             <div>
-                                <Label>Status</Label>
+                                <Label className="dark:text-gray-300">Status</Label>
                                 <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                                    <SelectTrigger className="rounded-md">
+                                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Status</SelectItem>
-                                        <SelectItem value="Pending">Pending</SelectItem>
-                                        <SelectItem value="In Progress">In Progress</SelectItem>
-                                        <SelectItem value="Resolved">Resolved</SelectItem>
-                                        <SelectItem value="Closed">Closed</SelectItem>
+                                    <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                        <SelectItem value="all" className="dark:text-gray-300 dark:hover:bg-gray-700">All Status</SelectItem>
+                                        <SelectItem value="Pending" className="dark:text-gray-300 dark:hover:bg-gray-700">Pending</SelectItem>
+                                        <SelectItem value="In Progress" className="dark:text-gray-300 dark:hover:bg-gray-700">In Progress</SelectItem>
+                                        <SelectItem value="Resolved" className="dark:text-gray-300 dark:hover:bg-gray-700">Resolved</SelectItem>
+                                        <SelectItem value="Closed" className="dark:text-gray-300 dark:hover:bg-gray-700">Closed</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div>
-                                <Label>Category</Label>
+                                <Label className="dark:text-gray-300">Category</Label>
                                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                                    <SelectTrigger className="rounded-md">
+                                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
                                         <SelectValue placeholder="Select category" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Categories</SelectItem>
-                                        <SelectItem value="Equipment">Equipment</SelectItem>
-                                        <SelectItem value="Facility">Facility</SelectItem>
-                                        <SelectItem value="Staff">Staff</SelectItem>
-                                        <SelectItem value="Classes">Classes</SelectItem>
-                                        <SelectItem value="Membership">Membership</SelectItem>
-                                        <SelectItem value="Cleanliness">Cleanliness</SelectItem>
-                                        <SelectItem value="Safety">Safety</SelectItem>
-                                        <SelectItem value="Other">Other</SelectItem>
+                                    <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                        <SelectItem value="all" className="dark:text-gray-300 dark:hover:bg-gray-700">All Categories</SelectItem>
+                                        <SelectItem value="Equipment" className="dark:text-gray-300 dark:hover:bg-gray-700">Equipment</SelectItem>
+                                        <SelectItem value="Facility" className="dark:text-gray-300 dark:hover:bg-gray-700">Facility</SelectItem>
+                                        <SelectItem value="Staff" className="dark:text-gray-300 dark:hover:bg-gray-700">Staff</SelectItem>
+                                        <SelectItem value="Classes" className="dark:text-gray-300 dark:hover:bg-gray-700">Classes</SelectItem>
+                                        <SelectItem value="Membership" className="dark:text-gray-300 dark:hover:bg-gray-700">Membership</SelectItem>
+                                        <SelectItem value="Cleanliness" className="dark:text-gray-300 dark:hover:bg-gray-700">Cleanliness</SelectItem>
+                                        <SelectItem value="Safety" className="dark:text-gray-300 dark:hover:bg-gray-700">Safety</SelectItem>
+                                        <SelectItem value="Other" className="dark:text-gray-300 dark:hover:bg-gray-700">Other</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
                             <div className="flex items-center justify-end">
-                            <Button onClick={() => {
-                                setSearchQuery("");
-                                setSelectedStatus("");
-                                setSelectedCategory("");
-                                setLimit(10);
-                                setCurrentPage(1);
-                            }}>Reset Filters</Button>
+                                <Button 
+                                    onClick={() => {
+                                        setSearchQuery("");
+                                        setSelectedStatus("");
+                                        setSelectedCategory("");
+                                        setLimit(10);
+                                        setCurrentPage(1);
+                                    }}
+                                    className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                >
+                                    Reset Filters
+                                </Button>
                             </div>
                         </div>
                     </CardContent>
@@ -287,9 +297,19 @@ const AdminFeedBackManagement = () => {
 
                 {/* Feedbacks Section */}
                 <Tabs defaultValue="Graph" className="w-full">
-                    <TabsList className="grid w-full bg-gradient-to-r from-gray-700 via-neutral-800 to-stone-600 text-white grid-cols-2">
-                        <TabsTrigger value="Graph">Graph</TabsTrigger>
-                        <TabsTrigger value="Table">Table</TabsTrigger>
+                    <TabsList className="grid w-full bg-gradient-to-r from-gray-700 via-neutral-800 to-stone-600 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white grid-cols-2">
+                        <TabsTrigger 
+                            value="Graph"
+                            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                        >
+                            Graph
+                        </TabsTrigger>
+                        <TabsTrigger 
+                            value="Table"
+                            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
+                        >
+                            Table
+                        </TabsTrigger>
                     </TabsList>
                     <TabsContent value="Graph">
                         <FeedbackChart />
@@ -297,54 +317,54 @@ const AdminFeedBackManagement = () => {
 
                     <TabsContent value="Table">
                         {isLoading ? <Loader /> : (
-                        <Card>
+                        <Card className="dark:bg-gray-800 dark:border-none">
                             <CardContent className="p-0">
                                 <div className="p-4">
                                     <div className="flex items-center gap-2">
-                                        <p className="text-sm font-medium text-gray-500">Display</p>
+                                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Display</p>
                                         <Select 
                                             value={limit} 
                                             onValueChange={(value) => setLimit(Number(value))}
                                         >
-                                            <SelectTrigger className="rounded-md w-20 border">
+                                            <SelectTrigger className="rounded-md w-20 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
                                                 <SelectValue>
                                                     {limit === totalFeedbacks ? 'All' : limit}
                                                 </SelectValue>
                                             </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="15">15</SelectItem>
-                                                <SelectItem value="25">25</SelectItem>
-                                                <SelectItem value="50">50</SelectItem>
-                                                <SelectItem value={totalFeedbacks}>All</SelectItem>
+                                            <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                <SelectItem value="15" className="dark:text-gray-300 dark:hover:bg-gray-700">15</SelectItem>
+                                                <SelectItem value="25" className="dark:text-gray-300 dark:hover:bg-gray-700">25</SelectItem>
+                                                <SelectItem value="50" className="dark:text-gray-300 dark:hover:bg-gray-700">50</SelectItem>
+                                                <SelectItem value={totalFeedbacks} className="dark:text-gray-300 dark:hover:bg-gray-700">All</SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <p>feedbacks.</p>
+                                        <p className="dark:text-gray-400">feedbacks.</p>
                                     </div>
                                 </div>
                                 <div className="w-full overflow-x-auto">
                                     {Array.isArray(feedbacks) && feedbacks.length > 0 ? (
                                         <Table>
                                             <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="lg:min-w-[120px]">Category</TableHead>
-                                                    <TableHead className="lg:min-w-[200px]">Subject</TableHead>
-                                                    <TableHead className="lg:min-w-[150px]">Member</TableHead>
-                                                    <TableHead className="lg:min-w-[120px]">Rating</TableHead>
-                                                    <TableHead className="lg:min-w-[120px]">Status</TableHead>
-                                                    <TableHead className="lg:min-w-[120px]">Date</TableHead>
-                                                    <TableHead className="lg:min-w-[120px] text-center">Actions</TableHead>
+                                                <TableRow className="dark:border-gray-700">
+                                                    <TableHead className="dark:text-gray-300">Category</TableHead>
+                                                    <TableHead className="dark:text-gray-300">Subject</TableHead>
+                                                    <TableHead className="dark:text-gray-300">Member</TableHead>
+                                                    <TableHead className="dark:text-gray-300">Rating</TableHead>
+                                                    <TableHead className="dark:text-gray-300">Status</TableHead>
+                                                    <TableHead className="dark:text-gray-300">Date</TableHead>
+                                                    <TableHead className="dark:text-gray-300 text-center">Actions</TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody>
                                                 {feedbacks.map((feedback) => (
-                                                    <TableRow key={feedback._id}>
-                                                        <TableCell className="lg:min-w-[150px]">
+                                                    <TableRow key={feedback._id} className="dark:border-gray-700">
+                                                        <TableCell className="dark:text-gray-300">
                                                             <div className="flex items-center gap-2">
                                                                 <span>{getCategoryIcon(feedback.category)}</span>
                                                                 <span className="truncate">{feedback.category}</span>
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[200px] max-w-[120px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                         <TooltipProvider>
                                                                 <Tooltip>
                                                                     <TooltipTrigger asChild>
@@ -358,33 +378,34 @@ const AdminFeedBackManagement = () => {
                                                                 </Tooltip>
                                                             </TooltipProvider>
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[150px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                             {feedback.isAnonymous ? (
                                                                 <Badge variant="secondary">Anonymous</Badge>
                                                             ) : (
                                                                 <span className="truncate block">{feedback.memberId?.fullName || 'N/A'}</span>
                                                             )}
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[100px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                             <div className="flex items-center">
                                                                 {Array.from({ length: feedback.rating }).map((_, i) => (
                                                                     <span key={i} className="text-yellow-400">★</span>
                                                                 ))}
                                                             </div>
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[120px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                             <Badge className={getStatusColor(feedback.status)}>
                                                                 {feedback.status}
                                                             </Badge>
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[120px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                             {format(new Date(feedback.createdAt), 'MMM d, yyyy')}
                                                         </TableCell>
-                                                        <TableCell className="lg:min-w-[120px]">
+                                                        <TableCell className="dark:text-gray-300">
                                                             <div className="flex items-center">
                                                                 <Button
                                                                     variant="ghost"
                                                                     size="icon"
+                                                                    className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                                                     onClick={() => {
                                                                         setSelectedFeedback(feedback);
                                                                         setIsViewModalOpen(true);
@@ -396,19 +417,19 @@ const AdminFeedBackManagement = () => {
                                                                     value={feedback.status}
                                                                     onValueChange={(value) => handleStatusUpdate(feedback._id, value)}
                                                                 >
-                                                                    <SelectTrigger className="w-28 rounded-sm">
+                                                                    <SelectTrigger className="w-28 rounded-sm dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
                                                                         <SelectValue placeholder="Update Status" />
                                                                     </SelectTrigger>
-                                                                    <SelectContent>
-                                                                        <SelectItem value="Pending">Pending</SelectItem>
-                                                                        <SelectItem value="In Progress">In Progress</SelectItem>
-                                                                        <SelectItem value="Resolved">Resolved</SelectItem>
-                                                                        <SelectItem value="Closed">Closed</SelectItem>
+                                                                    <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                                        <SelectItem value="Pending" className="dark:text-gray-300 dark:hover:bg-gray-700">Pending</SelectItem>
+                                                                        <SelectItem value="In Progress" className="dark:text-gray-300 dark:hover:bg-gray-700">In Progress</SelectItem>
+                                                                        <SelectItem value="Resolved" className="dark:text-gray-300 dark:hover:bg-gray-700">Resolved</SelectItem>
+                                                                        <SelectItem value="Closed" className="dark:text-gray-300 dark:hover:bg-gray-700">Closed</SelectItem>
                                                                     </SelectContent>
                                                                 </Select>
                                                                 <AlertDialog>
                                                                     <AlertDialogTrigger asChild>
-                                                                        <Button variant="ghost" size="icon">
+                                                                        <Button variant="ghost" size="icon" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
                                                                             <FiTrash2 className="h-4 w-4 text-red-500" />
                                                                         </Button>
                                                                     </AlertDialogTrigger>
@@ -423,7 +444,7 @@ const AdminFeedBackManagement = () => {
                                                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                                             <AlertDialogAction
                                                                                 onClick={() => handleDelete(feedback._id)}
-                                                                                className="bg-red-500 hover:bg-red-600"
+                                                                                className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
                                                                             >
                                                                                 Delete
                                                                             </AlertDialogAction>
@@ -463,9 +484,9 @@ const AdminFeedBackManagement = () => {
                         </Card>
                     )}
 
-                    {/* Pagination */}
+                    {/* Pagination with dark mode */}
                     <div className="lg:flex justify-center my-4 items-center space-y-3 lg:space-y-0 lg:justify-between">
-                        <p className="text-sm text-center lg:text-left font-medium text-gray-500">
+                        <p className="text-sm text-center lg:text-left font-medium text-gray-500 dark:text-gray-400">
                             Showing {feedbacks?.length || 0} out of {totalFeedbacks?.totalFeedbacks} feedbacks
                         </p>
                         <Pagination
@@ -481,46 +502,46 @@ const AdminFeedBackManagement = () => {
                     </Tabs>
 
 
-                {/* View Feedback Modal */}
+                {/* View Feedback Modal with dark mode */}
                 <AlertDialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-                    <AlertDialogContent className="max-w-5xl w-full">
+                    <AlertDialogContent className="max-w-5xl w-full dark:bg-gray-800 dark:border-gray-700">
                         <AlertDialogHeader>
-                            <AlertDialogTitle>Feedback Details</AlertDialogTitle>
+                            <AlertDialogTitle className="dark:text-gray-100">Feedback Details</AlertDialogTitle>
                         </AlertDialogHeader>
                         {selectedFeedback && (
                             <div className="space-y-4">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <Label>Category</Label>
-                                        <p className="text-sm">{selectedFeedback.category}</p>
+                                        <Label className="dark:text-gray-300">Category</Label>
+                                        <p className="text-sm dark:text-gray-400">{selectedFeedback.category}</p>
                                     </div>
                                     <div>
-                                        <Label>Status</Label>
+                                        <Label className="dark:text-gray-300">Status</Label>
                                         <Badge className={getStatusColor(selectedFeedback.status)}>
                                             {selectedFeedback.status}
                                         </Badge>
                                     </div>
                                     <div>
-                                        <Label>Subject</Label>
-                                        <p className="text-sm">{selectedFeedback.subject}</p>
+                                        <Label className="dark:text-gray-300">Subject</Label>
+                                        <p className="text-sm dark:text-gray-400">{selectedFeedback.subject}</p>
                                     </div>
                                     <div>
-                                        <Label>Member</Label>
-                                        <p className="text-sm">
+                                        <Label className="dark:text-gray-300">Member</Label>
+                                        <p className="text-sm dark:text-gray-400">
                                             {selectedFeedback.isAnonymous ? 'Anonymous' : selectedFeedback.memberId?.name}
                                         </p>
                                     </div>
                                 </div>
                                 <div>
-                                    <Label>Message</Label>
-                                    <p className="text-sm mt-1">{selectedFeedback.message}</p>
+                                    <Label className="dark:text-gray-300">Message</Label>
+                                    <p className="text-sm dark:text-gray-400 mt-1">{selectedFeedback.message}</p>
                                 </div>
                                 <div>
-                                    <Label>Detailed Ratings</Label>
+                                    <Label className="dark:text-gray-300">Detailed Ratings</Label>
                                     <div className="grid grid-cols-2 gap-2 mt-1">
                                         {Object.entries(selectedFeedback.detailedRatings).map(([key, value]) => (
                                             <div key={key} className="flex items-center justify-between">
-                                                <span className="text-sm capitalize">{key}</span>
+                                                <span className="text-sm capitalize dark:text-gray-400">{key}</span>
                                                 <div className="flex">
                                                     {Array.from({ length: value }).map((_, i) => (
                                                         <span key={i} className="text-yellow-400">★</span>
@@ -532,8 +553,8 @@ const AdminFeedBackManagement = () => {
                                 </div>
                                 {selectedFeedback.staffDetails?.staffName && (
                                     <div>
-                                        <Label>Staff Details</Label>
-                                        <p className="text-sm mt-1">
+                                        <Label className="dark:text-gray-300">Staff Details</Label>
+                                        <p className="text-sm dark:text-gray-400 mt-1">
                                             {selectedFeedback.staffDetails.staffName} - {selectedFeedback.staffDetails.interactionType}
                                         </p>
                                     </div>
@@ -553,10 +574,10 @@ const AdminFeedBackManagement = () => {
                             </div>
                         )}
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Close</AlertDialogCancel>
+                            <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Close</AlertDialogCancel>
                             <AlertDialogAction
-                            disabled
-                                onClick={() => handleRespond(selectedFeedback._id, selectedFeedback.actionTaken)}
+                                disabled
+                                className="dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
                             >
                                 Save Response
                             </AlertDialogAction>
