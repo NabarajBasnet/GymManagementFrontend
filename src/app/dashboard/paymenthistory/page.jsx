@@ -373,7 +373,7 @@ const PaymentHistory = () => {
     };
 
     return (
-        <div className="w-full bg-gray-50 min-h-screen">
+        <div className="w-full bg-gray-50 dark:bg-gray-900 min-h-screen">
             {/* Loading States */}
             {(isPrinting || isExporting) && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -389,38 +389,24 @@ const PaymentHistory = () => {
             )}
 
             {/* Header Section */}
-            <div className="w-full p-6 bg-gray-50 border-b shadow-sm sticky top-0 z-10">
+            <div className="w-full p-6 bg-gray-50 dark:bg-gray-900 border-b shadow-sm sticky top-0 z-10">
                 <Breadcrumb>
                     <BreadcrumbList className="text-sm">
                         <BreadcrumbItem>
-                            <TiHome className="w-4 h-4" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600">Home</BreadcrumbLink>
+                            <TiHome className="w-4 h-4 font-medium dark:text-gray-200" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-200">Home</BreadcrumbLink>
+                        </BreadcrumbItem>
+                        <BreadcrumbSeparator className={'font-medium dark:text-gray-200'}/>
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href="/dashboard" className="text-gray-600 font-medium dark:text-gray-200 hover:text-blue-600">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger className="flex items-center gap-1 text-gray-600 hover:text-blue-600">
-                                    <BreadcrumbEllipsis className="h-4 w-4" />
-                                    <span className="sr-only">Toggle menu</span>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="start" className="rounded-lg shadow-lg">
-                                    <DropdownMenuItem className="hover:bg-gray-100">Documentation</DropdownMenuItem>
-                                    <DropdownMenuItem className="hover:bg-gray-100">Members</DropdownMenuItem>
-                                    <DropdownMenuItem className="hover:bg-gray-100">Reports</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/dashboard" className="text-gray-600 hover:text-blue-600">Dashboard</BreadcrumbLink>
-                        </BreadcrumbItem>
-                        <BreadcrumbSeparator />
-                        <BreadcrumbItem>
-                            <BreadcrumbPage className="font-medium text-blue-600">Payment History</BreadcrumbPage>
+                            <BreadcrumbPage className="font-medium text-blue-600 font-medium dark:text-gray-200">Payment History</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between mt-2">
-                    <h1 className="text-2xl font-bold text-gray-900">Payment History</h1>
+                    <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-200">Payment History</h1>
                     <div className="flex space-x-2 mt-4 md:mt-0">
                         <TooltipProvider>
                             <Tooltip>
@@ -430,7 +416,7 @@ const PaymentHistory = () => {
                                         size="sm"
                                         onClick={exportToExcel}
                                         disabled={!paymenthistories || paymenthistories.length === 0}
-                                        className="text-gray-700 border-gray-300"
+                                        className="text-gray-700 dark:bg-white dark:border-none border-gray-300"
                                     >
                                         <MdFileDownload className="mr-1 h-4 w-4" />
                                         Excel
@@ -448,7 +434,7 @@ const PaymentHistory = () => {
                                         size="sm"
                                         onClick={generatePDF}
                                         disabled={!paymenthistories || paymenthistories.length === 0}
-                                        className="text-gray-700 border-gray-300"
+                                        className="text-gray-700 dark:border-none dark:bg-white border-gray-300"
                                     >
                                         <MdPrint className="mr-1 h-4 w-4" />
                                         PDF
@@ -464,16 +450,16 @@ const PaymentHistory = () => {
             {/* Main Content */}
             <div className="w-full mx-auto p-4 md:p-6">
                 {/* Search and Filters */}
-                <Card className="mb-6">
+                <Card className="mb-6 dark:bg-gray-800 dark:border-gray-700">
                     <CardHeader className="pb-3">
-                        <CardTitle className="text-lg">Payment History Filters</CardTitle>
-                        <CardDescription>Search for a member and filter payment records</CardDescription>
+                        <CardTitle className="text-lg dark:text-gray-100">Payment History Filters</CardTitle>
+                        <CardDescription className="dark:text-gray-400">Search for a member and filter payment records</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                             {/* Member Search - 5 columns */}
                             <div className="md:col-span-5">
-                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">Member Name</Label>
+                                <Label className="block dark:text-white text-sm font-medium mb-1.5 text-gray-700">Member Name</Label>
                                 <div ref={searchRef} className="relative">
                                     <Controller
                                         name="memberName"
@@ -489,7 +475,7 @@ const PaymentHistory = () => {
                                                         field.onChange(e);
                                                     }}
                                                     onFocus={handleSearchFocus}
-                                                    className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
+                                                    className="w-full py-6 rounded-sm dark:border-none dark:bg-gray-900 dark:text-white bg-white border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm px-4 py-2.5 pl-10"
                                                     placeholder="Search by member name..."
                                                 />
                                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -547,28 +533,28 @@ const PaymentHistory = () => {
 
                             {/* Time Period Select - 3 columns */}
                             <div className="md:col-span-3">
-                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">Time Period</Label>
+                                <Label className="block text-sm dark:text-white font-medium mb-1.5 text-gray-700">Time Period</Label>
                                 <Select
                                     value={timeframe}
                                     onValueChange={setTimeframe}
                                 >
-                                    <SelectTrigger className="w-full rounded-md border-gray-300">
+                                    <SelectTrigger className="w-full dark:border-none dark:bg-gray-900 rounded-md border-gray-300">
                                         <SelectValue placeholder="Select period" />
                                     </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectItem value="all">All Time</SelectItem>
-                                        <SelectItem value="today">Today</SelectItem>
-                                        <SelectItem value="thisWeek">This Week</SelectItem>
-                                        <SelectItem value="thisMonth">This Month</SelectItem>
-                                        <SelectItem value="lastMonth">Last Month</SelectItem>
-                                        <SelectItem value="custom">Custom Range</SelectItem>
+                                    <SelectContent className='dark:bg-gray-900 dark:border-none'>
+                                        <SelectItem value="all" className='cursor-pointer hover:bg-blue-500'>All Time</SelectItem>
+                                        <SelectItem value="today" className='cursor-pointer hover:bg-blue-500'>Today</SelectItem>
+                                        <SelectItem value="thisWeek" className='cursor-pointer hover:bg-blue-500'>This Week</SelectItem>
+                                        <SelectItem value="thisMonth" className='cursor-pointer hover:bg-blue-500'>This Month</SelectItem>
+                                        <SelectItem value="lastMonth" className='cursor-pointer hover:bg-blue-500'>Last Month</SelectItem>
+                                        <SelectItem value="custom" className='cursor-pointer hover:bg-blue-500'>Custom Range</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
                             {/* Start Date - 2 columns */}
                             <div className="md:col-span-2">
-                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">Start Date</Label>
+                                <Label className="block dark:text-white text-sm font-medium mb-1.5 text-gray-700">Start Date</Label>
                                 <div className="relative">
                                     <Input
                                         type="date"
@@ -577,14 +563,14 @@ const PaymentHistory = () => {
                                             setTimeframe("custom");
                                             setStartDate(e.target.value);
                                         }}
-                                        className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        className="w-full rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                     />
                                 </div>
                             </div>
 
                             {/* End Date - 2 columns */}
                             <div className="md:col-span-2">
-                                <Label className="block text-sm font-medium mb-1.5 text-gray-700">End Date</Label>
+                                <Label className="block text-sm dark:text-white font-medium mb-1.5 text-gray-700">End Date</Label>
                                 <div className="relative">
                                     <Input
                                         type="date"
@@ -593,7 +579,7 @@ const PaymentHistory = () => {
                                             setTimeframe("custom");
                                             setEndDate(e.target.value);
                                         }}
-                                        className="w-full rounded-md border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        className="w-full rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                     />
                                 </div>
                             </div>
@@ -613,18 +599,18 @@ const PaymentHistory = () => {
                 {/* Summary Cards */}
                 {paymenthistories && paymenthistories.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <Card>
+                        <Card className='dark:bg-gray-800 dark:border-gray-700'>
                             <CardHeader className="pb-2">
-                                <CardTitle className="text-lg text-gray-700">Total Payments</CardTitle>
+                                <CardTitle className="text-lg text-gray-700 dark:text-gray-100">Total Payments</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="flex items-center">
-                                    <div className="mr-3 bg-blue-100 p-2 rounded-full">
-                                        <MdReceipt className="h-6 w-6 text-blue-600" />
+                                    <div className="mr-3 bg-blue-100 dark:bg-blue-900 p-2 rounded-full">
+                                        <MdReceipt className="h-6 w-6 text-blue-600 dark:text-blue-400" />
                                     </div>
                                     <div>
-                                        <p className="text-2xl font-bold">{total}</p>
-                                        <p className="text-sm text-gray-500">Records found</p>
+                                        <p className="text-2xl font-bold dark:text-gray-100">{total}</p>
+                                        <p className="text-sm text-gray-500 dark:text-gray-400">Records found</p>
                                     </div>
                                 </div>
                             </CardContent>
@@ -708,25 +694,25 @@ const PaymentHistory = () => {
                             </div>
                         ) : paymenthistories && paymenthistories.length > 0 ? (
                             <div className="overflow-x-auto">
-                                <Table ref={tableRef}>
+                                <Table ref={tableRef} className="dark:border-gray-700">
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Receipt No</TableHead>
-                                            <TableHead>Payment Date</TableHead>
-                                            <TableHead className='text-center'>Membership</TableHead>
-                                            <TableHead>Duration</TableHead>
-                                            <TableHead>Renewal Date</TableHead>
-                                            <TableHead>Expiry Date</TableHead>
-                                            <TableHead>Amount</TableHead>
-                                            <TableHead className='text-center'>Discount</TableHead>
-                                            <TableHead className='text-center'>Payment Method</TableHead>
-                                            <TableHead className='text-center'>Staff</TableHead>
+                                        <TableRow className="dark:border-gray-700">
+                                            <TableHead className="dark:text-gray-100">Receipt No</TableHead>
+                                            <TableHead className="dark:text-gray-100">Payment Date</TableHead>
+                                            <TableHead className='text-center dark:text-gray-100'>Membership</TableHead>
+                                            <TableHead className="dark:text-gray-100">Duration</TableHead>
+                                            <TableHead className="dark:text-gray-100">Renewal Date</TableHead>
+                                            <TableHead className="dark:text-gray-100">Expiry Date</TableHead>
+                                            <TableHead className="dark:text-gray-100">Amount</TableHead>
+                                            <TableHead className='text-center dark:text-gray-100'>Discount</TableHead>
+                                            <TableHead className='text-center dark:text-gray-100'>Payment Method</TableHead>
+                                            <TableHead className='text-center dark:text-gray-100'>Staff</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
                                         {paymenthistories.map((payment) => (
-                                            <TableRow key={payment._id}>
-                                                <TableCell className="font-medium flex items-center justify-between">
+                                            <TableRow key={payment._id} className="dark:border-gray-700">
+                                                <TableCell className="font-medium flex items-center justify-between dark:text-gray-100">
                                                     {payment.receiptNo || 'N/A'}
                                                     <TooltipProvider className='flex justify-end'>
                                                         <Tooltip>
@@ -747,23 +733,23 @@ const PaymentHistory = () => {
                                                         </Tooltip>
                                                     </TooltipProvider>
                                                 </TableCell>
-                                                <TableCell>{formatDate(payment.paymentDate)}</TableCell>
-                                                <TableCell className='text-center'>{payment.membershipOption || 'N/A'}</TableCell>
-                                                <TableCell>{payment.membershipDuration || 'N/A'}</TableCell>
-                                                <TableCell>{formatDate(payment.membershipRenewDate)}</TableCell>
-                                                <TableCell>{formatDate(payment.membershipExpireDate)}</TableCell>
-                                                <TableCell className="font-medium">
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment.paymentDate)}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment.membershipOption || 'N/A'}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{payment.membershipDuration || 'N/A'}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment.membershipRenewDate)}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{formatDate(payment.membershipExpireDate)}</TableCell>
+                                                <TableCell className="font-medium dark:text-gray-100">
                                                     {formatAmount(payment.paidAmmount)}
                                                 </TableCell>
-                                                <TableCell className='text-center'>
+                                                <TableCell className='text-center dark:text-gray-100'>
                                                     {payment.discount ? formatAmount(payment.discount) : 'N/A'}
                                                 </TableCell>
-                                                <TableCell className='text-center'>
+                                                <TableCell className='text-center dark:text-gray-100'>
                                                     <span className={`px-2 py-1 rounded-full text-xs ${getPaymentMethodStyle(payment.paymentMethod)}`}>
                                                         {payment.paymentMethod || 'N/A'}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className='text-center'>{payment.actionTaker || 'N/A'}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment.actionTaker || 'N/A'}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -771,13 +757,13 @@ const PaymentHistory = () => {
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center py-12">
-                                <div className="bg-gray-100 p-4 rounded-full mb-4">
-                                    <FiCreditCard className="h-8 w-8 text-gray-400" />
+                                <div className="bg-gray-100 dark:bg-gray-700 p-4 rounded-full mb-4">
+                                    <FiCreditCard className="h-8 w-8 text-gray-400 dark:text-gray-300" />
                                 </div>
-                                <h3 className="text-lg font-medium text-gray-900 mb-1">
+                                <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">
                                     {memberId ? 'No payment records found' : 'Select a member to view payment history'}
                                 </h3>
-                                <p className="text-sm text-gray-500 text-center max-w-md">
+                                <p className="text-sm text-gray-500 dark:text-gray-400 text-center max-w-md">
                                     {memberId ?
                                         'This member has no payment records for the selected period.' :
                                         'Search and select a member from the filters above to view their payment history.'
@@ -787,13 +773,13 @@ const PaymentHistory = () => {
                         )}
                     </CardContent>
                     {paymenthistories && paymenthistories.length > 0 && (
-                        <CardFooter className="flex justify-between border-t pt-4">
-                            <div className="text-sm text-gray-500">
-                                Showing <span className="font-medium">{(currentPage - 1) * limit + 1}</span> to{' '}
-                                <span className="font-medium">
+                        <CardFooter className="flex justify-between border-t pt-4 dark:border-gray-700">
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                                Showing <span className="font-medium dark:text-gray-100">{(currentPage - 1) * limit + 1}</span> to{' '}
+                                <span className="font-medium dark:text-gray-100">
                                     {Math.min(currentPage * limit, total)}
                                 </span>{' '}
-                                of <span className="font-medium">{total}</span> results
+                                of <span className="font-medium dark:text-gray-100">{total}</span> results
                             </div>
                             <Pagination
                                 range={range}

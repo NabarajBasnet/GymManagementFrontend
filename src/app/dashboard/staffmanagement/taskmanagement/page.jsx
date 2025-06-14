@@ -467,22 +467,6 @@ const StaffTaskManagement = () => {
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center space-x-3">
-                                                        <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                                            {(() => {
-                                                                const assignedStaff = staffs.find((staff) => staff._id === task.assignedTo);
-                                                                return assignedStaff ? (
-                                                                    <img
-                                                                        src={`http://http://localhost:3000:5000${assignedStaff.imageUrl}`}
-                                                                        alt={assignedStaff.name}
-                                                                        className="w-16 hover:cursor-pointer h-8 rounded-full"
-                                                                    />
-                                                                ) : (
-                                                                    <span className="text-sm hover:cursor-pointer font-medium text-blue-800">
-                                                                        {task.assignedTo?.split(" ").map((n) => n[0]).join("")}
-                                                                    </span>
-                                                                );
-                                                            })()}
-                                                        </div>
                                                         <span className="text-sm dark:text-gray-200 font-medium text-gray-900 hover:cursor-pointer">
                                                             {(() => {
                                                                 const assignedStaff = staffs.find((staff) => staff._id === task.assignedTo);
