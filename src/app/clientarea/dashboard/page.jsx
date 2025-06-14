@@ -17,6 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
+  console.log('Logged in tenant: ', loggedInTenant);
   const router = useRouter();
 
   const tenantOnTrail = loggedInTenant?.freeTrailStatus;
@@ -501,10 +502,10 @@ const TenantDashboard = () => {
                           </div>
                           <div>
                             <h3 className="font-bold text-xl">
-                              {tenantOnTrail === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName || 'N/A'}
+                              {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName || 'N/A'}
                             </h3>
                             <p className="text-blue-100 text-sm">
-                              {tenantOnTrail === 'Active' ? `${loggedInTenant?.freeTrailStatus}` : `${loggedInTenant?.subscriptionStatus}`}
+                              {loggedInTenant?.freeTrailStatus === 'Active' ? `${loggedInTenant?.freeTrailStatus}` : `${loggedInTenant?.subscriptionStatus}`}
                             </p>
                           </div>
                         </div>
@@ -530,9 +531,12 @@ const TenantDashboard = () => {
                           </div>
                           <div>
                             <p className="text-blue-100 text-xs mb-1">Duration</p>
-                            <p className="font-medium">
-                              {loggedInTenant?.subscription?.subscriptionDuration} days
-                            </p>
+                            <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
+                          <Clock className="w-4 h-4" />
+                          <span className="text-sm font-bold">
+                          {loggedInTenant?.freeTrailStatus  === 'Active' ? `${loggedInTenant?.freeTrailRemainingDays} days` : `${loggedInTenant?.subscriptionRemainingDays} days left`}
+                          </span>
+                        </div>
                           </div>
                           <div>
                             <p className="text-blue-100 text-xs mb-1">Price</p>
@@ -545,15 +549,7 @@ const TenantDashboard = () => {
                           </div>
                         </div>
 
-                        <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-sm font-bold">
-                            {tenantOnTrail
-                              ? `${remainingDaysOnFreeTrail} days left`
-                              : `${calculateRemainingDays()} days remaining`
-                            }
-                          </span>
-                        </div>
+                      
                       </div>
                     </div>
 
