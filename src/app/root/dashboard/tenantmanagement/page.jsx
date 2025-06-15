@@ -1,15 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   FiChevronRight,
   FiTrash2,
   FiEdit,
   FiPlus,
   FiEye,
-  FiLoader,
-  FiRefreshCcw,
   FiSearch,
   FiMail,
   FiPhone,
@@ -27,7 +25,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardFooter,
   CardDescription,
 } from "@/components/ui/card";
 import {
@@ -60,20 +57,14 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useForm, Controller } from "react-hook-form";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import Pagination from "@/components/ui/CustomPagination.jsx";
-import Loader from "@/components/Loader/Loader";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -81,16 +72,11 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import Loader from "@/components/Loader/Loader";
 
 const TenantManagement = () => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [limit, setLimit] = useState(6);
-  const [activeTab, setActiveTab] = useState("all");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [selectedTenant, setSelectedTenant] = useState(null);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
-  const queryClient = useQueryClient();
 
   const getAllTenants = async () => {
     try {
@@ -103,7 +89,7 @@ const TenantManagement = () => {
     }
   };
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["tenants"],
     queryFn: getAllTenants,
   });
@@ -113,19 +99,31 @@ const TenantManagement = () => {
   // Get status badge variant
   const getStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
-      case "Active":
+      case "onsubscription":
+        return (
+          <Badge variant="default" className="bg-green-100 text-green-600">
+            On Subscription
+          </Badge>
+        );
+      case "ontrail":
+        return (
+          <Badge variant="default" className="bg-blue-100 text-blue-600">
+            On Trial
+          </Badge>
+        );
+      case "active":
         return (
           <Badge variant="default" className="bg-green-100 text-green-600">
             Active
           </Badge>
         );
-      case "Pending":
+      case "pending":
         return (
           <Badge variant="secondary" className="bg-yellow-100 text-yellow-600">
             Pending
           </Badge>
         );
-      case "Suspended":
+      case "suspended":
         return <Badge variant="destructive">Suspended</Badge>;
       default:
         return <Badge variant="outline">{status}</Badge>;
@@ -134,10 +132,16 @@ const TenantManagement = () => {
 
   // Get trial status badge
   const getTrialStatusBadge = (tenant) => {
-    if (tenant.tenantOnFreeTrial) {
+    if (tenant.freeTrailStatus === "Active") {
       return (
         <Badge variant="outline" className="bg-blue-100 text-blue-800">
-          Free Trial
+          Free Trial ({tenant.freeTrailRemainingDays} days)
+        </Badge>
+      );
+    } else if (tenant.freeTrailStatus === "Expired") {
+      return (
+        <Badge variant="outline" className="bg-gray-100 text-gray-800">
+          Trial Expired
         </Badge>
       );
     }
@@ -224,6 +228,18 @@ const TenantManagement = () => {
                       All Status
                     </SelectItem>
                     <SelectItem
+                      value="onsubscription"
+                      className="focus:bg-slate-50 dark:focus:bg-slate-700"
+                    >
+                      On Subscription
+                    </SelectItem>
+                    <SelectItem
+                      value="ontrail"
+                      className="focus:bg-slate-50 dark:focus:bg-slate-700"
+                    >
+                      On Trial
+                    </SelectItem>
+                    <SelectItem
                       value="active"
                       className="focus:bg-slate-50 dark:focus:bg-slate-700"
                     >
@@ -234,12 +250,6 @@ const TenantManagement = () => {
                       className="focus:bg-slate-50 dark:focus:bg-slate-700"
                     >
                       Pending
-                    </SelectItem>
-                    <SelectItem
-                      value="suspended"
-                      className="focus:bg-slate-50 dark:focus:bg-slate-700"
-                    >
-                      Suspended
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -273,15 +283,14 @@ const TenantManagement = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                    Active Tenants
+                    On Subscription
                   </p>
-                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
-                    {tenants?.filter((t) => t.tenantStatus === "Active")
-                      .length || 0}
+                  <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                    {tenants?.filter((t) => t.status === "OnSubscription").length || 0}
                   </p>
                 </div>
-                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/20 rounded-full">
-                  <div className="h-8 w-8 bg-emerald-600 dark:bg-emerald-400 rounded-full"></div>
+                <div className="p-2 bg-green-100 dark:bg-green-900/20 rounded-full">
+                  <FiDollarSign className="h-8 w-8 text-green-600 dark:text-green-400" />
                 </div>
               </div>
             </CardContent>
@@ -292,10 +301,10 @@ const TenantManagement = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                    On Free Trial
+                    On Trial
                   </p>
                   <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-                    {tenants?.filter((t) => t.tenantOnFreeTrial).length || 0}
+                    {tenants?.filter((t) => t.status === "OnTrail").length || 0}
                   </p>
                 </div>
                 <div className="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-full">
@@ -313,8 +322,7 @@ const TenantManagement = () => {
                     Pending
                   </p>
                   <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">
-                    {tenants?.filter((t) => t.tenantStatus === "Pending")
-                      .length || 0}
+                    {tenants?.filter((t) => t.status === "Pending").length || 0}
                   </p>
                 </div>
                 <div className="p-2 bg-amber-100 dark:bg-amber-900/20 rounded-full">
@@ -332,7 +340,7 @@ const TenantManagement = () => {
               Tenant List
             </CardTitle>
             <CardDescription className="text-slate-600 dark:text-slate-400">
-              Showing {tenants.length} of {tenants?.length || 0} tenants
+              Showing {tenants?.length} of {tenants?.length || 0} tenants
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -353,13 +361,10 @@ const TenantManagement = () => {
                       End Date
                     </TableHead>
                     <TableHead className="text-slate-700 dark:text-slate-300">
-                      Contact
-                    </TableHead>
-                    <TableHead className="text-slate-700 dark:text-slate-300">
                       Status
                     </TableHead>
                     <TableHead className="text-slate-700 dark:text-slate-300">
-                      Trial Days
+                      Trial Status
                     </TableHead>
                     <TableHead className="text-slate-700 dark:text-slate-300 text-center">
                       Created
@@ -370,7 +375,7 @@ const TenantManagement = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {tenants.map((tenant) => (
+                  {tenants?.map((tenant) => (
                     <TableRow
                       key={tenant._id}
                       className="border-slate-200 dark:border-slate-800"
@@ -378,73 +383,59 @@ const TenantManagement = () => {
                       <TableCell>
                         <div>
                           <p className="font-medium text-slate-900 dark:text-slate-100">
-                            {tenant.organizationName} -{" "}
+                            {tenant.organization?.name || "N/A"} -{" "}
                             <span className="text-sm text-blue-500 dark:text-blue-400">
-                              {tenant.businessType}
+                              {tenant.organization?.businessType || "N/A"}
                             </span>
                           </p>
                           <p className="text-sm text-slate-500 dark:text-slate-400 flex items-center">
                             <FiMapPin className="mr-1 h-3 w-3" />
-                            {tenant.address}, {tenant.country}
+                            {tenant.address}, {tenant.organization?.country || "N/A"}
                           </p>
                         </div>
                       </TableCell>
                       <TableCell>
                         <p className="font-medium text-slate-900 dark:text-slate-100">
-                          {tenant.ownerName}
+                          {tenant.fullName}
                         </p>
                       </TableCell>
                       <TableCell>
-                        {tenant?.tenantSubscription.map(
-                          (subscription, index) => {
-                            return (
-                              <p
-                                key={index}
-                                className="text-sm text-slate-500 dark:text-slate-400"
-                              >
-                                {" "}
-                                {index + 1}. {subscription.subscriptionName}
-                              </p>
-                            );
-                          }
+                        {tenant.subscription ? (
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                              {tenant.subscription.subscriptionName}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              {tenant.subscription.subscriptionPrice} {tenant.organization?.currency}
+                            </p>
+                          </div>
+                        ) : (
+                          <Badge variant="outline">No Subscription</Badge>
                         )}
                       </TableCell>
                       <TableCell>
-                        <p className="text-sm text-slate-500 dark:text-slate-400">
-                          {" "}
-                          {new Date(
-                            tenant?.tenantSubscriptionEndDate
-                          ).toLocaleString()}
-                        </p>
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <p className="text-sm flex items-center text-slate-700 dark:text-slate-300">
-                            <FiMail className="mr-1 h-3 w-3" />
-                            {tenant.email}
-                          </p>
-                          <p className="text-sm flex items-center text-slate-700 dark:text-slate-300">
-                            <FiPhone className="mr-1 h-3 w-3" />
-                            {tenant.phone?.countryCode} {tenant.phone?.number}
-                          </p>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(tenant.tenantSubscriptionStatus)}
-                      </TableCell>
-                      <TableCell>
-                        <div className="space-y-1">
-                          {getTrialStatusBadge(tenant)}
-                          {tenant.tenantOnFreeTrial ? (
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                              {tenant.tenantFreeTrialDays} days
+                        {tenant.subscriptionEndsAt ? (
+                          <div className="space-y-1">
+                            <p className="text-sm text-slate-900 dark:text-slate-100">
+                              {format(new Date(tenant.subscriptionEndsAt), "MMM dd, yyyy")}
                             </p>
-                          ) : (
                             <p className="text-xs text-slate-500 dark:text-slate-400">
-                              N/A
+                              {tenant.subscriptionRemainingDays} days remaining
                             </p>
-                          )}
-                        </div>
+                          </div>
+                        ) : tenant.freeTrailEndsAt ? (
+                          <p className="text-sm text-slate-500 dark:text-slate-400">
+                            Trial ends {format(new Date(tenant.freeTrailEndsAt), "MMM dd, yyyy")}
+                          </p>
+                        ) : (
+                          <p className="text-sm text-slate-500 dark:text-slate-400">N/A</p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {getStatusBadge(tenant.status)}
+                      </TableCell>
+                      <TableCell>
+                        {getTrialStatusBadge(tenant)}
                       </TableCell>
                       <TableCell className="text-center">
                         <p className="text-sm text-slate-700 dark:text-slate-300">
@@ -488,7 +479,7 @@ const TenantManagement = () => {
                                 </AlertDialogTitle>
                                 <AlertDialogDescription className="text-slate-600 dark:text-slate-400">
                                   Are you sure you want to delete{" "}
-                                  {tenant.organizationName}? This action cannot
+                                  {tenant.organization?.name || "this tenant"}? This action cannot
                                   be undone.
                                 </AlertDialogDescription>
                               </AlertDialogHeader>
@@ -528,7 +519,7 @@ const TenantManagement = () => {
                 Tenant Details
               </DialogTitle>
               <DialogDescription className="text-slate-600 dark:text-slate-400">
-                Detailed information about {selectedTenant?.organizationName}
+                Detailed information about {selectedTenant?.organization?.name || "this tenant"}
               </DialogDescription>
             </DialogHeader>
 
@@ -536,23 +527,15 @@ const TenantManagement = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold mb-3 text-slate-900 dark:text-slate-100">
-                    Organization Information
+                    Basic Information
                   </h3>
                   <div className="space-y-2">
                     <div>
                       <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Organization Name
+                        Full Name
                       </Label>
                       <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.organizationName}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Owner Name
-                      </Label>
-                      <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.ownerName}
+                        {selectedTenant.fullName}
                       </p>
                     </div>
                     <div>
@@ -568,8 +551,7 @@ const TenantManagement = () => {
                         Phone
                       </Label>
                       <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.phone?.countryCode}{" "}
-                        {selectedTenant.phone?.number}
+                        {selectedTenant.phone}
                       </p>
                     </div>
                     <div>
@@ -577,7 +559,45 @@ const TenantManagement = () => {
                         Address
                       </Label>
                       <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.address}, {selectedTenant.country}
+                        {selectedTenant.address}
+                      </p>
+                    </div>
+                  </div>
+
+                  <h3 className="font-semibold mb-3 mt-6 text-slate-900 dark:text-slate-100">
+                    Organization Information
+                  </h3>
+                  <div className="space-y-2">
+                    <div>
+                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Organization Name
+                      </Label>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {selectedTenant.organization?.name || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Business Type
+                      </Label>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {selectedTenant.organization?.businessType || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Business Email
+                      </Label>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {selectedTenant.organization?.businessEmail || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                        Website
+                      </Label>
+                      <p className="text-sm text-slate-900 dark:text-slate-100">
+                        {selectedTenant.organization?.websiteUrl || "N/A"}
                       </p>
                     </div>
                   </div>
@@ -593,66 +613,81 @@ const TenantManagement = () => {
                         Status
                       </Label>
                       <div className="mt-1">
-                        {getStatusBadge(selectedTenant.tenantStatus)}
+                        {getStatusBadge(selectedTenant.status)}
                       </div>
                     </div>
                     <div>
                       <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Free Trial
+                        Free Trial Status
                       </Label>
                       <div className="mt-1">
-                        {selectedTenant.tenantOnFreeTrial ? (
-                          <Badge
-                            variant="outline"
-                            className="bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300"
-                          >
-                            Active ({selectedTenant.tenantFreeTrialDays} days)
-                          </Badge>
-                        ) : (
-                          <Badge
-                            variant="outline"
-                            className="bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-300"
-                          >
-                            Not Active
-                          </Badge>
-                        )}
+                        {getTrialStatusBadge(selectedTenant)}
                       </div>
                     </div>
-                    <div>
-                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Currency
-                      </Label>
-                      <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.tenantCurrency}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Language
-                      </Label>
-                      <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.tenantLanguage}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Timezone
-                      </Label>
-                      <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {selectedTenant.tenantTimezone}
-                      </p>
-                    </div>
-                    <div>
-                      <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                        Created
-                      </Label>
-                      <p className="text-sm text-slate-900 dark:text-slate-100">
-                        {format(
-                          new Date(selectedTenant.createdAt),
-                          "MMM dd, yyyy HH:mm"
-                        )}
-                      </p>
-                    </div>
+
+                    {selectedTenant.subscription ? (
+                      <>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Subscription Plan
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscription.subscriptionName}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Price
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscription.subscriptionPrice} {selectedTenant.organization?.currency}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Duration
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscription.subscriptionDuration} days
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Subscription Status
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscriptionStatus || "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Ends At
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscriptionEndsAt ? 
+                              format(new Date(selectedTenant.subscriptionEndsAt), "MMM dd, yyyy HH:mm") : 
+                              "N/A"}
+                          </p>
+                        </div>
+                        <div>
+                          <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                            Days Remaining
+                          </Label>
+                          <p className="text-sm text-slate-900 dark:text-slate-100">
+                            {selectedTenant.subscriptionRemainingDays || 0} days
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <div>
+                        <Label className="text-sm font-medium text-slate-600 dark:text-slate-400">
+                          Subscription
+                        </Label>
+                        <p className="text-sm text-slate-900 dark:text-slate-100">
+                          No active subscription
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

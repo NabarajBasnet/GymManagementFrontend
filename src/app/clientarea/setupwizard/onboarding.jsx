@@ -18,7 +18,7 @@ const ClientOnboardingPage = () => {
             setCurrentStep(prev => prev + 1);
         } else {
             // mark onboarding complete (e.g., API call) then redirect
-            router.push('/clientarea/dashboard');
+            window.location.href = '/clientarea/dashboard';
         }
     };
 

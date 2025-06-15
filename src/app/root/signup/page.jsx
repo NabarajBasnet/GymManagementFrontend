@@ -277,7 +277,7 @@ export default function RootSignUpPage() {
                                     </div>
 
                                     <FormField
-                                        label="Gym Address"
+                                        label="Address"
                                         icon={MapPin}
                                         placeholder="123 Fitness Street, City, State"
                                         registerProps={register('address', {

@@ -519,7 +519,7 @@ const OrderManagement = () => {
                                     <CheckCircle className="w-4 h-4 text-green-600" />
                                   </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent>
+                                <AlertDialogContent className="dark:border-none dark:bg-gray-800">
                                   <AlertDialogHeader>
                                     <AlertDialogTitle className="text-gray-900 dark:text-gray-200">
                                       Are you absolutely sure?
@@ -534,7 +534,7 @@ const OrderManagement = () => {
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel className="text-gray-900 dark:text-gray-200">
+                                    <AlertDialogCancel className="text-gray-900 dark:border-none dark:text-gray-200">
                                       Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction
