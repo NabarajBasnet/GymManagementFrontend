@@ -100,7 +100,7 @@ const MemberDetails = ({ memberId }) => {
 
   // Populate Data
   useEffect(() => {
-    if (data) {
+    if (member) {
       reset({
         fullName: member.fullName,
         contactNo: member.contactNo,
@@ -402,6 +402,7 @@ const MemberDetails = ({ memberId }) => {
   // Plan search states
   const [planSearchQuery, setPlanSearchQuery] = useState("");
   const [selectedPlanName, setPlanName] = useState("");
+
   const [renderMembershipPlanDropdown, setRenderMembershipPlanDropdown] =
     useState(false);
   const planSearchRef = useRef(null);

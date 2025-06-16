@@ -47,7 +47,6 @@ const AllMembersAreaChart = () => {
     try {
         const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
         const data = await response.json();
-        // Handle both array response and object with newMembers property
         return Array.isArray(data) ? data : (data?.newMembers || []);
     } catch (error) {
         console.log("Error: ", error);
@@ -75,9 +74,6 @@ const AllMembersAreaChart = () => {
       queryKey: ['renewedMembers'],
       queryFn: getRenewedMembers
   });
-
-  console.log("New Members: ", newMembers);
-  console.log("Renewed Members: ", renewedMembers);
 
   const [timeRange, setTimeRange] = React.useState("12m");
 
