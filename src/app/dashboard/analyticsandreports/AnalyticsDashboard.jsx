@@ -55,8 +55,8 @@ const AnalyticsDashboard = () => {
   return (
     <div className="w-full">
       {/* Header */}
-      <Card className="mb-6">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+      <Card className="mb-6 rounded-lg dark:border-none shadow-md dark:bg-gray-800 dark:text-white">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <div>
             <CardTitle className="text-2xl font-bold flex items-center">
               <FaChartLine className="mr-2 text-primary" /> Analytics & Reports
