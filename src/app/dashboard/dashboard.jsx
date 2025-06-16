@@ -20,6 +20,7 @@ import { NewRadialChart } from "@/components/Charts/newRadialChart";
 import { NewMembersLineChart } from "@/components/Charts/NewMembersLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
+import { ActiveInactiveMemberChart } from "@/components/Charts/ActiveInactiveMemberChart";
 
 const AdminDashboard = () => {
 
@@ -482,6 +483,10 @@ const AdminDashboard = () => {
             <NewRadialChart startDate={startDate} endDate={endDate} />
           </Card>
         </div>
+
+        <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg mb-6">
+          <ActiveInactiveMemberChart />
+        </Card>
 
         <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
           <BarChartInterActive />

@@ -106,7 +106,7 @@ export function RenewRadialChart({ startDate, endDate }) {
 
     return (
         <div className="w-full border-none dark:border-none dark:bg-gray-800 rounded-2xl">
-            <Card className="flex flex-col dark:border-gray-600 dark:bg-gray-800 border-none rounded-2xl">
+            {/* <Card className="flex flex-col dark:border-gray-600 dark:bg-gray-800 border-none rounded-2xl">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-emerald-600'>Target Renews</CardTitle>
                     <CardDescription className='text-xs font-medium'>
@@ -161,7 +161,7 @@ export function RenewRadialChart({ startDate, endDate }) {
                         Showing target progress from {new Date(startDate).toLocaleDateString()} to {new Date(endDate).toLocaleDateString()}
                     </div>
                 </CardFooter>
-            </Card>
+            </Card> */}
 
             <div className="mt-6 overflow-x-auto">
                 <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800 rounded-2xl'>

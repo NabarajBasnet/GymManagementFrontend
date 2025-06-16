@@ -99,7 +99,7 @@ export function NewRadialChart({ startDate, endDate }) {
 
     return (
         <div className="w-full border-none dark:border-none dark:bg-gray-800 rounded-2xl">
-            <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800 rounded-2xl">
+            {/* <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800 rounded-2xl">
                 <CardHeader className="items-center pb-0">
                     <CardTitle className='text-pink-600'>Target New Admissions</CardTitle>
                     <CardDescription className='text-xs font-medium'>
@@ -155,7 +155,7 @@ export function NewRadialChart({ startDate, endDate }) {
                         Showing target progress for {startDate.toLocaleString('default', { month: 'long' })}
                     </div>
                 </CardFooter>
-            </Card>
+            </Card> */}
 
             <div className="bg-white dark:bg-gray-800 rounded-2xl mt-6 overflow-hidden">
                 <div className="overflow-x-auto">

@@ -106,7 +106,7 @@ export function BarChartInterActive() {
                 <CardHeader className="flex flex-col items-stretch space-y-0 border-b border-gray-200 dark:border-gray-400 p-0 sm:flex-row">
                     <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                         <CardDescription>
-                            Showing average member attendance in months
+                            Showing active and inactive members in months
                         </CardDescription>
                     </div>
                     <div className="flex dark:border-gray-400 dark:bg-gray-600">
