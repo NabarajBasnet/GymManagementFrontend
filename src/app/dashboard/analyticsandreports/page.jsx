@@ -34,63 +34,35 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import MemberExpiryReport from "./MemberExpiryReport";
+import LockerExpiryReport from "./LockerExpiryReport";
+import AnalyticsDashboard from "./AnalyticsDashboard";
 
 const  AnalyticsAndReports =()=> {
   return (
     <div className="p-4 bg-gray-100 min-h-screen dark:bg-gray-900"> 
-    <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/dashboard" className="flex items-center gap-1"> <TbHome className="size-4" /> Home</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1">
-              <BreadcrumbEllipsis className="size-4" />
-              <span className="sr-only">Toggle menu</span>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start">
-              <DropdownMenuItem>Member Expiry</DropdownMenuItem>
-              <DropdownMenuItem>Locker Expiry</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-        <BreadcrumbLink asChild>
-            <Link href="/dashboard/analyticsandreports">Analytics & Reports</Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
+
 
     <div className="mt-4">
         <h1 className="text-2xl font-bold dark:text-white flex items-center gap-2"><TbReportAnalytics className="size-12 text-blue-500 bg-blue-500/10 p-2 rounded-md" /> Analytics & Reports</h1>
         <div className="mt-4">
-            <Tabs defaultValue="members" className="w-full bg-transparent">
+            <Tabs defaultValue="analyticsdashboard" className="w-full bg-transparent">
                 <TabsList className="bg-transparent border-b border-gray-200 dark:border-gray-700">
+                    <TabsTrigger value="analyticsdashboard" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">Analytics Dashboard</TabsTrigger>
                     <TabsTrigger value="members" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">Members Expiry Report</TabsTrigger>
                     <TabsTrigger value="lockers" className="data-[state=active]:bg-blue-500 data-[state=active]:text-white">Locker Expiry Report</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="members">  
-                    <div className="mt-4">
-                        <h2 className="text-lg font-bold dark:text-white">Members Expiry Report</h2>
-                    </div>
+                <TabsContent value="analyticsdashboard">  
+                    <AnalyticsDashboard />
                 </TabsContent>
+
+                <TabsContent value="members">  
+                    <MemberExpiryReport />
+                </TabsContent>
+                
                 <TabsContent value="lockers">  
-                    <div className="mt-4">
-                        <h2 className="text-lg font-bold dark:text-white">Locker Expiry Report</h2>
-                    </div>
+                    <LockerExpiryReport />
                 </TabsContent>
             </Tabs>
         </div>
