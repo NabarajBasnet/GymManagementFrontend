@@ -40,7 +40,6 @@ export function BarChartMultiple() {
         try {
             const response = await fetch(`http://localhost:3000/api/graphdata/renewedmembers`);
             const data = await response.json();
-            // Handle both array response and object with renewedMembers property
             return Array.isArray(data) ? data : (data?.renewedMembers || []);
         } catch (error) {
             console.log("Error: ", error);

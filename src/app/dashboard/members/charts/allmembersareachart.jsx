@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import * as React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 
@@ -25,99 +26,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-const chartData = [
-  { date: "2024-04-01", new_admission: 222, renewal: 150 },
-  { date: "2024-04-02", new_admission: 97, renewal: 180 },
-  { date: "2024-04-03", new_admission: 167, renewal: 120 },
-  { date: "2024-04-04", new_admission: 242, renewal: 260 },
-  { date: "2024-04-05", new_admission: 373, renewal: 290 },
-  { date: "2024-04-06", new_admission: 301, renewal: 340 },
-  { date: "2024-04-07", new_admission: 245, renewal: 180 },
-  { date: "2024-04-08", new_admission: 409, renewal: 320 },
-  { date: "2024-04-09", new_admission: 59, renewal: 110 },
-  { date: "2024-04-10", new_admission: 261, renewal: 190 },
-  { date: "2024-04-11", new_admission: 327, renewal: 350 },
-  { date: "2024-04-12", new_admission: 292, renewal: 210 },
-  { date: "2024-04-13", new_admission: 342, renewal: 380 },
-  { date: "2024-04-14", new_admission: 137, renewal: 220 },
-  { date: "2024-04-15", new_admission: 120, renewal: 170 },
-  { date: "2024-04-16", new_admission: 138, renewal: 190 },
-  { date: "2024-04-17", new_admission: 446, renewal: 360 },
-  { date: "2024-04-18", new_admission: 364, renewal: 410 },
-  { date: "2024-04-19", new_admission: 243, renewal: 180 },
-  { date: "2024-04-20", new_admission: 89, renewal: 150 },
-  { date: "2024-04-21", new_admission: 137, renewal: 200 },
-  { date: "2024-04-22", new_admission: 224, renewal: 170 },
-  { date: "2024-04-23", new_admission: 138, renewal: 230 },
-  { date: "2024-04-24", new_admission: 387, renewal: 290 },
-  { date: "2024-04-25", new_admission: 215, renewal: 250 },
-  { date: "2024-04-26", new_admission: 75, renewal: 130 },
-  { date: "2024-04-27", new_admission: 383, renewal: 420 },
-  { date: "2024-04-28", new_admission: 122, renewal: 180 },
-  { date: "2024-04-29", new_admission: 315, renewal: 240 },
-  { date: "2024-04-30", new_admission: 454, renewal: 380 },
-  { date: "2024-05-01", new_admission: 165, renewal: 220 },
-  { date: "2024-05-02", new_admission: 293, renewal: 310 },
-  { date: "2024-05-03", new_admission: 247, renewal: 190 },
-  { date: "2024-05-04", new_admission: 385, renewal: 420 },
-  { date: "2024-05-05", new_admission: 481, renewal: 390 },
-  { date: "2024-05-06", new_admission: 498, renewal: 520 },
-  { date: "2024-05-07", new_admission: 388, renewal: 300 },
-  { date: "2024-05-08", new_admission: 149, renewal: 210 },
-  { date: "2024-05-09", new_admission: 227, renewal: 180 },
-  { date: "2024-05-10", new_admission: 293, renewal: 330 },
-  { date: "2024-05-11", new_admission: 335, renewal: 270 },
-  { date: "2024-05-12", new_admission: 197, renewal: 240 },
-  { date: "2024-05-13", new_admission: 197, renewal: 160 },
-  { date: "2024-05-14", new_admission: 448, renewal: 490 },
-  { date: "2024-05-15", new_admission: 473, renewal: 380 },
-  { date: "2024-05-16", new_admission: 338, renewal: 400 },
-  { date: "2024-05-17", new_admission: 499, renewal: 420 },
-  { date: "2024-05-18", new_admission: 315, renewal: 350 },
-  { date: "2024-05-19", new_admission: 235, renewal: 180 },
-  { date: "2024-05-20", new_admission: 177, renewal: 230 },
-  { date: "2024-05-21", new_admission: 82, renewal: 140 },
-  { date: "2024-05-22", new_admission: 81, renewal: 120 },
-  { date: "2024-05-23", new_admission: 252, renewal: 290 },
-  { date: "2024-05-24", new_admission: 294, renewal: 220 },
-  { date: "2024-05-25", new_admission: 201, renewal: 250 },
-  { date: "2024-05-26", new_admission: 213, renewal: 170 },
-  { date: "2024-05-27", new_admission: 420, renewal: 460 },
-  { date: "2024-05-28", new_admission: 233, renewal: 190 },
-  { date: "2024-05-29", new_admission: 78, renewal: 130 },
-  { date: "2024-05-30", new_admission: 340, renewal: 280 },
-  { date: "2024-05-31", new_admission: 178, renewal: 230 },
-  { date: "2024-06-01", new_admission: 178, renewal: 200 },
-  { date: "2024-06-02", new_admission: 470, renewal: 410 },
-  { date: "2024-06-03", new_admission: 103, renewal: 160 },
-  { date: "2024-06-04", new_admission: 439, renewal: 380 },
-  { date: "2024-06-05", new_admission: 88, renewal: 140 },
-  { date: "2024-06-06", new_admission: 294, renewal: 250 },
-  { date: "2024-06-07", new_admission: 323, renewal: 370 },
-  { date: "2024-06-08", new_admission: 385, renewal: 320 },
-  { date: "2024-06-09", new_admission: 438, renewal: 480 },
-  { date: "2024-06-10", new_admission: 155, renewal: 200 },
-  { date: "2024-06-11", new_admission: 92, renewal: 150 },
-  { date: "2024-06-12", new_admission: 492, renewal: 420 },
-  { date: "2024-06-13", new_admission: 81, renewal: 130 },
-  { date: "2024-06-14", new_admission: 426, renewal: 380 },
-  { date: "2024-06-15", new_admission: 307, renewal: 350 },
-  { date: "2024-06-16", new_admission: 371, renewal: 310 },
-  { date: "2024-06-17", new_admission: 475, renewal: 520 },
-  { date: "2024-06-18", new_admission: 107, renewal: 170 },
-  { date: "2024-06-19", new_admission: 341, renewal: 290 },
-  { date: "2024-06-20", new_admission: 408, renewal: 450 },
-  { date: "2024-06-21", new_admission: 169, renewal: 210 },
-  { date: "2024-06-22", new_admission: 317, renewal: 270 },
-  { date: "2024-06-23", new_admission: 480, renewal: 530 },
-  { date: "2024-06-24", new_admission: 132, renewal: 180 },
-  { date: "2024-06-25", new_admission: 141, renewal: 190 },
-  { date: "2024-06-26", new_admission: 434, renewal: 380 },
-  { date: "2024-06-27", new_admission: 448, renewal: 490 },
-  { date: "2024-06-28", new_admission: 149, renewal: 200 },
-  { date: "2024-06-29", new_admission: 103, renewal: 160 },
-  { date: "2024-06-30", new_admission: 446, renewal: 400 },
-];
 
 const chartConfig = {
   visitors: {
@@ -134,21 +42,113 @@ const chartConfig = {
 };
 
 const AllMembersAreaChart = () => {
-  const [timeRange, setTimeRange] = React.useState("90d");
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date);
-    const referenceDate = new Date("2024-06-30");
-    let daysToSubtract = 90;
-    if (timeRange === "30d") {
-      daysToSubtract = 30;
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7;
+  const getNewMembers = async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
+        const data = await response.json();
+        // Handle both array response and object with newMembers property
+        return Array.isArray(data) ? data : (data?.newMembers || []);
+    } catch (error) {
+        console.log("Error: ", error);
+        return [];
     }
-    const startDate = new Date(referenceDate);
-    startDate.setDate(startDate.getDate() - daysToSubtract);
-    return date >= startDate;
+  };
+
+  const { data: newMembers = [] } = useQuery({
+      queryKey: ['newMembers'],
+      queryFn: getNewMembers
   });
+
+  const getRenewedMembers = async () => {
+      try {
+          const response = await fetch(`http://localhost:3000/api/graphdata/renewedmembers`);
+          const data = await response.json();
+          return Array.isArray(data) ? data : (data?.renewedMembers || []);
+      } catch (error) {
+          console.log("Error: ", error);
+          return [];
+      }
+  };
+
+  const { data: renewedMembers = [] } = useQuery({
+      queryKey: ['renewedMembers'],
+      queryFn: getRenewedMembers
+  });
+
+  console.log("New Members: ", newMembers);
+  console.log("Renewed Members: ", renewedMembers);
+
+  const [timeRange, setTimeRange] = React.useState("12m");
+
+  // Combine the data from both APIs
+  const chartData = React.useMemo(() => {
+    if (!newMembers.length && !renewedMembers.length) return [];
+    
+    // Create a map to combine data by month
+    const dataMap = new Map();
+    
+    // Add new members data
+    newMembers.forEach(item => {
+      if (item.month && typeof item.value === 'number') {
+        dataMap.set(item.month, {
+          month: item.month,
+          new_admission: item.value,
+          renewal: 0
+        });
+      }
+    });
+    
+    // Add renewed members data
+    renewedMembers.forEach(item => {
+      if (item.month && typeof item.value === 'number') {
+        const existing = dataMap.get(item.month) || { 
+          month: item.month, 
+          new_admission: 0, 
+          renewal: 0 
+        };
+        existing.renewal = item.value;
+        dataMap.set(item.month, existing);
+      }
+    });
+    
+    // Convert to array and sort by month order
+    const monthOrder = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    return Array.from(dataMap.values()).sort((a, b) => {
+      return monthOrder.indexOf(a.month) - monthOrder.indexOf(b.month);
+    });
+  }, [newMembers, renewedMembers]);
+
+  const filteredData = React.useMemo(() => {
+    if (!chartData.length) return [];
+    
+    const monthOrder = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    
+    const currentMonth = new Date().getMonth(); // 0-based index
+    let monthsToShow = 12;
+    
+    if (timeRange === "6m") {
+      monthsToShow = 6;
+    } else if (timeRange === "3m") {
+      monthsToShow = 3;
+    }
+    
+    // Get the months to show based on selection
+    const relevantMonths = [];
+    for (let i = monthsToShow - 1; i >= 0; i--) {
+      const monthIndex = (currentMonth - i + 12) % 12;
+      relevantMonths.push(monthOrder[monthIndex]);
+    }
+    
+    return chartData.filter(item => relevantMonths.includes(item.month));
+  }, [chartData, timeRange]);
 
   return (
     <Card className="dark:bg-gray-800 dark:text-gray-300 border-none">
@@ -156,7 +156,7 @@ const AllMembersAreaChart = () => {
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle className="font-bold">All Members</CardTitle>
           <CardDescription>
-            Showing total renewals and new admissions for the last 3 months
+            Showing total renewals and new admissions by month
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
@@ -164,17 +164,17 @@ const AllMembersAreaChart = () => {
             className="w-[160px] rounded-lg sm:ml-auto"
             aria-label="Select a value"
           >
-            <SelectValue placeholder="Last 3 months" />
+            <SelectValue placeholder="Last 12 months" />
           </SelectTrigger>
           <SelectContent className="rounded-xl">
-            <SelectItem value="90d" className="rounded-lg">
+            <SelectItem value="12m" className="rounded-lg">
+              Last 12 months
+            </SelectItem>
+            <SelectItem value="6m" className="rounded-lg">
+              Last 6 months
+            </SelectItem>
+            <SelectItem value="3m" className="rounded-lg">
               Last 3 months
-            </SelectItem>
-            <SelectItem value="30d" className="rounded-lg">
-              Last 30 days
-            </SelectItem>
-            <SelectItem value="7d" className="rounded-lg">
-              Last 7 days
             </SelectItem>
           </SelectContent>
         </Select>
@@ -219,29 +219,21 @@ const AllMembersAreaChart = () => {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey="month"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                });
+                // Show abbreviated month names
+                return value.substring(0, 3);
               }}
             />
             <ChartTooltip
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                    });
-                  }}
+                  labelFormatter={(value) => value}
                   indicator="dot"
                 />
               }
