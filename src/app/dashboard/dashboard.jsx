@@ -211,7 +211,7 @@ const AdminDashboard = () => {
           {/* Main Welcome Card */}
           <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-xl shadow-md group transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900">
             {/* Sleek gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-indigo/75 to-purple-700/75 dark:from-blue-900/90 dark:via-indigo/75 dark:to-purple-700/75 z-10"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-indigo/75 to-neutral-900 z-10"></div>
 
             {/* Geometric pattern overlay */}
             <div className="absolute inset-0 opacity-5 z-10" style={{
@@ -280,7 +280,7 @@ const AdminDashboard = () => {
                 <div className="flex items-center justify-between">
                   <div className="space-y-1">
                     <h3 className="text-lg font-bold text-white tracking-tight">
-                      <span className="mr-2">📊</span>Analytics
+                      <span className="mr-2"></span>Analytics
                     </h3>
                     <p className="text-xs text-white/80 font-medium">Real-time insights</p>
                   </div>
@@ -322,21 +322,6 @@ const AdminDashboard = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between p-3 bg-white/10 hover:bg-white/15 backdrop-blur-sm rounded-xl transition-all duration-300 shadow-sm hover:shadow-md transform hover:scale-[1.01] border border-white/10">
-                    <div className="space-y-1">
-                      <p className="text-xs font-semibold text-white/90">📈 Attendance</p>
-                      <p className="text-2xl font-black text-white">78%</p>
-                      <div className="flex items-center gap-1">
-                        <div className="flex items-center gap-1 bg-green-500/20 px-1.5 py-0.5 rounded-md">
-                          <ArrowUp className="h-2.5 w-2.5 text-green-300" />
-                          <p className="text-[10px] font-bold text-green-300">+5%</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-2.5 bg-gradient-to-br from-green-400/20 to-emerald-500/20 backdrop-blur-sm border border-green-400/30 rounded-xl shadow-md">
-                      <FaChartLine className="h-5 w-5 text-green-300" />
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -433,15 +418,15 @@ const AdminDashboard = () => {
             <Card
               key={item.id}
               className={`
-    overflow-hidden 
-    rounded-2xl 
-    shadow-md 
-    border 
-    dark:border-none
-    bg-gradient-to-br from-gray-100 via-gray-50 to-white
-    dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-800 dark:to-gray-900
-    ${item.border}
-  `}
+                overflow-hidden 
+                rounded-2xl 
+                shadow-md 
+                border 
+                dark:border-none
+                bg-gradient-to-br from-gray-100 via-gray-50 to-white
+                dark:bg-gradient-to-br dark:from-gray-700 dark:via-gray-800 dark:to-gray-900
+                ${item.border}
+              `}
             >
               <div className="p-5 py-6">
                 <div className="flex justify-between items-start">
