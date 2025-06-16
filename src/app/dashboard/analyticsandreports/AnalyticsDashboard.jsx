@@ -221,6 +221,7 @@ const {data} = useQuery({
                 <TableHead>DOB</TableHead>
                 <TableHead>Signup Date</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Paid Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="dark:border-none">
@@ -232,6 +233,7 @@ const {data} = useQuery({
                   <TableCell>{new Date(member.member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                   <TableCell>{new Date(member.member.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
                   <TableCell className="dark:border-none">{getStatusBadge(member.member.status)}</TableCell>
+                  <TableCell className="font-medium text-center"> {loggedInuser?.organization?.currency} - {member.member.paidAmmount}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
