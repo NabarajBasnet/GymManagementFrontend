@@ -93,8 +93,6 @@ const AdminDashboard = () => {
 
   const {
     totalMembers,
-    totalActiveMembers,
-    totalInactiveMembers,
     activeMembers,
     InactiveMembers
   } = data || {};
@@ -116,20 +114,23 @@ const AdminDashboard = () => {
   });
 
   // Get Renewed Members
-  const getRenewedMembers = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`);
-      const responseBody = await response.json();
-      console.log("Renewed Members: ", responseBody);
-      return responseBody;
-    } catch (error) {
-      console.log("Error: ", error);
-    }
-  }
+  const getRenewedMembers = async ({ queryKey }) => {
+    const [, startDate, endDate, page, limit] = queryKey;
+      try {
+          const response = await fetch(
+              `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
+          );
+          const responseBody = await response.json();
+          return responseBody;
+      } catch (error) {
+          console.error("Error fetching renewed members:", error);
+          return { members: [] };
+      }
+  };
 
-  const { data: renewedMembers, isLoading: isRenewedMembersLoading } = useQuery({
-    queryKey: ['renewedMembers'],
-    queryFn: getRenewedMembers
+  const { data: renewedMembers = { members: [] }, isLoading: isRenewedMembersLoading } = useQuery({
+      queryKey: ['renewedMembers', startDate, endDate, currentPage, limit],
+      queryFn: getRenewedMembers
   });
 
   const gridContents = [

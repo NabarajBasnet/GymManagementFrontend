@@ -66,6 +66,7 @@ export function RenewRadialChart({ startDate, endDate }) {
         queryKey: ['renewedMembers', startDate, endDate, currentPage, limit],
         queryFn: getRenewedMembers
     });
+
     const { totalPages } = renewedMembers || {}
 
     // Calculate completion percentage for the chart
@@ -183,13 +184,13 @@ export function RenewRadialChart({ startDate, endDate }) {
                                 </TableCell>
                             </TableRow>
                         ) : paginatedMembers.length > 0 ? (
-                            paginatedMembers.map(({ member }) => {
+                            paginatedMembers.map(({ member }, index) => {
                                 const textColor =
                                     member.status === 'Active' ? 'text-black dark:text-white' :
                                         member.status === 'OnHold' ? 'text-yellow-600 dark:text-yellow-500' :
                                             'text-red-500 dark:text-red-500';
                                 return (
-                                    <TableRow key={member._id} className={textColor}>
+                                    <TableRow key={index} className={textColor}>
                                         <TableCell>
                                             <div className="flex items-center justify-end text-center space-x-1 max-w-[100px]">
                                                 <span className="truncate text-center font-medium text-xs">{member._id}</span>
