@@ -115,8 +115,8 @@ const MemberExpiryReport = () => {
       <div className="bg-transparent rounded-lg space-y-4 border-none dark:text-white">
         <Card className="rounded-lg dark:border-none shadow-md dark:bg-gray-800 dark:text-white p-4">
           <CardTitle>Member Expiry Report</CardTitle>
-          <CardDescription>
-            View and manage memberships that are expiring soon or have expired
+          <CardDescription className="text-sm mt-4">
+            View and manage memberships that are expiring soon or have expired. By default reports will be generated daily.
           </CardDescription>
         </Card>
 

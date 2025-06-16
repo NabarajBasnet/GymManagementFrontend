@@ -11,8 +11,66 @@ import {
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { useUser } from "@/components/Providers/LoggedInUserProvider"
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 const AnalyticsDashboard = () => {
+
+  const [startDate, setStartDate] = useState(() => {
+    let start = new Date();
+    start.setDate(0);
+    return start.toISOString().split("T")[0];
+  });
+
+  const [endDate, setEndDate] = useState(() => {
+    const date = new Date();
+    date.setDate(date.getDate() + 1);
+    return date.toISOString().split("T")[0];
+  });
+
+  const {user} = useUser();
+  const loggedInuser = user?.user;
+
+const getTotalMembers = async()=>{
+  try{
+    const response = await fetch(`http://localhost:3000/api/org-members/by-branch`);
+    const responseBody = await response.json();
+return  responseBody;
+  }catch(error){
+    console.log("Error: ",error);
+  }
+};
+
+const {data} = useQuery({
+  queryKey: ["total-members"],
+  queryFn: getTotalMembers,
+  staleTime: 1000 * 60 * 5,
+  refetchOnWindowFocus: true,
+  refetchOnMount: true,
+  refetchOnReconnect: true,
+  refetchInterval: 1000 * 60 * 5,
+  enabled: !!loggedInuser,
+})
+
+  
+  const {members, totalMembers} = data || {};
+
+  const getNewMembers = async()=>{
+    try{
+      const response = await fetch(`http://localhost:3000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}`);
+      const resBody = await response.json();
+      return resBody;
+    }catch(error){
+      console.log("Error: ",error);
+    }
+  }
+
+  const {data:newMembers} = useQuery({
+    queryKey:['newmembers'],
+    queryFn:getNewMembers
+  });
+
   // Sample data
   const promotions = [
     {
@@ -77,7 +135,7 @@ const AnalyticsDashboard = () => {
             <FaUsers className="h-4 w-4 text-muted-foreground text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">230</div>
+            <div className="text-2xl font-bold">{totalMembers?totalMembers:0}</div>
             <p className="text-xs text-muted-foreground">+12% from last month</p>
           </CardContent>
         </Card>
@@ -87,7 +145,7 @@ const AnalyticsDashboard = () => {
             <FaCalendarAlt className="h-4 w-4 text-muted-foreground text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">45</div>
+            <div className="text-2xl font-bold">{newMembers?.members.length}</div>
             <p className="text-xs text-muted-foreground">+5 from last month</p>
           </CardContent>
         </Card>
