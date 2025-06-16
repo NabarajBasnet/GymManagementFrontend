@@ -120,6 +120,7 @@ const AdminDashboard = () => {
     try {
       const response = await fetch(`http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}`);
       const responseBody = await response.json();
+      console.log("Renewed Members: ", responseBody);
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
@@ -133,6 +134,7 @@ const AdminDashboard = () => {
 
   const gridContents = [
     {
+      id: 'total-membership',
       icon: FaUsers,
       text: "Total Membership",
       value: `${numbersLoading ? '...' : totalMembers || 0}`,
@@ -143,6 +145,7 @@ const AdminDashboard = () => {
       border: 'border-blue-300',
     },
     {
+      id: 'renewals',
       icon: MdAutorenew,
       text: "Renewals",
       value: `${numbersLoading ? '...' : renewedMembers?.members?.length || 0}`,
@@ -153,6 +156,7 @@ const AdminDashboard = () => {
       border: 'border-green-300',
     },
     {
+      id: 'new-admissions',
       icon: RiUserShared2Fill,
       text: "New Admissions",
       value: `${numbersLoading ? '...' : newMembers?.members?.length || 0}`,
@@ -163,6 +167,7 @@ const AdminDashboard = () => {
       border: 'border-yellow-300',
     },
     {
+      id: 'active-members',
       icon: GiBiceps,
       text: "Active Members",
       value: `${numbersLoading ? '...' : activeMembers?.length || 0}`,
@@ -173,6 +178,7 @@ const AdminDashboard = () => {
       border: 'border-green-300',
     },
     {
+      id: 'average-active',
       icon: FaUsers,
       text: "Average Active",
       value: `${numbersLoading ? '...' : averageActiveMembers || 0}`,
@@ -183,6 +189,7 @@ const AdminDashboard = () => {
       border: 'border-blue-300',
     },
     {
+      id: 'inactive-members',
       icon: PiUsersFourFill,
       text: "Inactive Members",
       value: `${numbersLoading ? '...' : InactiveMembers?.length || 0}`,
@@ -423,7 +430,7 @@ const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
           {gridContents.map((item) => (
             <Card
-              key={item.text}
+              key={item.id}
               className={`
     overflow-hidden 
     rounded-2xl 
