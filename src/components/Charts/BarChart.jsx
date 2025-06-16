@@ -19,41 +19,62 @@ import {
 } from "@/components/ui/chart";
 import { useQuery } from "@tanstack/react-query";
 
-
 export function BarChartMultiple() {
-
     const getNewMembers = async () => {
         try {
             const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
-            const responseBody = await response.json();
-            return responseBody;
+            const data = await response.json();
+            // Handle both array response and object with newMembers property
+            return Array.isArray(data) ? data : (data?.newMembers || []);
         } catch (error) {
             console.log("Error: ", error);
+            return [];
         }
     };
 
-    const { data } = useQuery({
+    const { data: newMembers = [] } = useQuery({
         queryKey: ['newMembers'],
         queryFn: getNewMembers
     });
 
-    const { newMembers } = data || {};
+    const getRenewedMembers = async () => {
+        try {
+            const response = await fetch(`http://localhost:3000/api/graphdata/renewedmembers`);
+            const data = await response.json();
+            // Handle both array response and object with renewedMembers property
+            return Array.isArray(data) ? data : (data?.renewedMembers || []);
+        } catch (error) {
+            console.log("Error: ", error);
+            return [];
+        }
+    };
 
-    
-    
-    const chartData = [
-        { month: "January", Renew: 186, NewAdmission: 80 },
-        { month: "February", Renew: 305, NewAdmission: 200 },
-        { month: "March", Renew: 237, NewAdmission: 120 },
-        { month: "April", Renew: 73, NewAdmission: 190 },
-        { month: "May", Renew: 209, NewAdmission: 130 },
-        { month: "June", Renew: 200, NewAdmission: 140 },
-        { month: "July", Renew: 214, NewAdmission: 180 },
-        { month: "September", Renew: 214, NewAdmission: 140 },
-        { month: "October", Renew: 200, NewAdmission: 100 },
-        { month: "November", Renew: 245, NewAdmission: 150 },
-        { month: "December", Renew: 190, NewAdmission: 170 },
-    ];
+    const { data: renewedMembers = [] } = useQuery({
+        queryKey: ['renewedMembers'],
+        queryFn: getRenewedMembers
+    });
+
+    // Create month names array
+    const monthNames = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"];
+
+    // Create chart data - ensure we always have all months
+    const chartData = monthNames.map(month => {
+        // Safely find data for each month
+        const newCount = Array.isArray(newMembers) 
+            ? (newMembers.find(m => m?.month === month)?.value || 0)
+            : 0;
+            
+        const renewCount = Array.isArray(renewedMembers) 
+            ? (renewedMembers.find(m => m?.month === month)?.value || 0)
+            : 0;
+        
+        return {
+            month,
+            Renew: renewCount,
+            NewAdmission: newCount
+        };
+    });
 
     const chartConfig = {
         Renew: {
@@ -64,10 +85,9 @@ export function BarChartMultiple() {
             label: "NewAdmission",
             color: "hsl(var(--chart-2))",
         },
-    }
+    };
 
     const date = new Date();
-
     const fromStartingMonth = new Date();
     fromStartingMonth.setMonth(0);
     fromStartingMonth.setDate(1);
