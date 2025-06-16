@@ -1,5 +1,6 @@
 "use client";
 
+import { TbReport } from "react-icons/tb";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -457,16 +458,16 @@ const Header = () => {
     },
     // Analytics & Support
     {
-      category: "Reports & Support",
+      category: "Reports & Analytics",
       items: [
         {
           icon: FaChartLine,
-          title: "Analytics & Reports",
-          link: "/dashboard/analytics",
+          title: "Reports & Analytics",
+          link: "/dashboard/analyticsandreports",
         },
         {
           icon: MdFeedback,
-          title: "Members Feedback",
+          title: "Feedback",
           link: "/dashboard/feedbacks",
         },
         // {

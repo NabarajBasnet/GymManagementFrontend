@@ -104,13 +104,13 @@ export function ActiveInactiveMemberChart() {
           </CardDescription>
         </div>
         <Select value={timeRange} onValueChange={setTimeRange}>
-          <SelectTrigger className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex">
+          <SelectTrigger className="hidden w-[160px] rounded-lg sm:ml-auto sm:flex dark:bg-gray-900 dark:border-none">
             <SelectValue placeholder={`Last ${timeRange === "7d" ? "week" : timeRange === "30d" ? "month" : "3 months"}`} />
           </SelectTrigger>
-          <SelectContent className="rounded-xl">
-            <SelectItem value="90d">Last 3 months</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="7d">Last 7 days</SelectItem>
+          <SelectContent className="rounded-xl dark:bg-gray-900 dark:border-none">
+            <SelectItem value="90d" className="dark:text-white cursor-pointer">Last 3 months</SelectItem>
+            <SelectItem value="30d" className="dark:text-white cursor-pointer">Last 30 days</SelectItem>
+            <SelectItem value="7d" className="dark:text-white cursor-pointer">Last 7 days</SelectItem>
           </SelectContent>
         </Select>
       </CardHeader>

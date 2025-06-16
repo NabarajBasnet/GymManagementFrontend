@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import AdminDashboard from "./dashboard";
 
 export async function generateMetadata() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get('loginToken')?.value;
 
   const res = await fetch(`http://localhost:3000/api/auth/me`, {

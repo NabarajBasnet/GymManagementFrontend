@@ -556,7 +556,7 @@ const PersonalTrainingBooking = () => {
 
       {/* Tabs with improved styling */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-6 border border-gray-300 dark:border-gray-700 overflow-y-hidden bg-white dark:bg-gray-800 p-1 rounded-lg">
+        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-3 border border-gray-300 dark:border-gray-700 overflow-y-hidden bg-white dark:bg-gray-800 p-1 rounded-lg">
           <TabsTrigger 
             value="View Bookings" 
             className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
@@ -577,27 +577,6 @@ const PersonalTrainingBooking = () => {
           >
             <FiBarChart className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Reports</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="Settings" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
-          >
-            <FiSettings className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Settings</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="Notifications" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
-          >
-            <FiBell className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Notifications</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="Support" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
-          >
-            <FiHelpCircle className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Support</span>
           </TabsTrigger>
         </TabsList>
 
