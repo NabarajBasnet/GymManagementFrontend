@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { BarChartMultiple } from "@/components/Charts/BarChart";
 import { BarChartInterActive } from "@/components/Charts/barChartInteractive";
 import { NewRadialChart } from "@/components/Charts/newRadialChart";
-import { ShadSmallLineChart } from "@/components/Charts/ShadSmallLineChart";
+import { NewMembersLineChart } from "@/components/Charts/NewMembersLineChart";
 import { RenewRadialChart } from "@/components/Charts/renewRadialChart";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
@@ -469,7 +469,7 @@ const AdminDashboard = () => {
           </Card>
 
           <Card className="border dark:border-none rounded-2xl dark:bg-gray-800 shadow-lg">
-            <ShadSmallLineChart />
+            <NewMembersLineChart />
           </Card>
         </div>
 
