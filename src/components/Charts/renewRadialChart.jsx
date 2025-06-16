@@ -163,7 +163,7 @@ export function RenewRadialChart({ startDate, endDate }) {
                 </CardFooter>
             </Card> */}
 
-            <div className="mt-6 overflow-x-auto">
+            <div className="bg-white flex flex-col justify-between dark:bg-gray-800 rounded-2xl mt-6 min-h-[250px]">
                 <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800 rounded-2xl'>
                     <TableHeader>
                         <TableRow>
@@ -241,7 +241,7 @@ export function RenewRadialChart({ startDate, endDate }) {
                         </TableRow>
                     </TableFooter>
                 </Table>
-                <div className="py-3 border-t dark:border-gray-600 dark:bg-gray-800 rounded-b-2xl">
+                <div className="py-3 border-t flex flex-col justify-end dark:border-gray-600 dark:bg-gray-800 rounded-b-2xl">
                     <Pagination
                         total={totalPages || 0}
                         page={currentPage}

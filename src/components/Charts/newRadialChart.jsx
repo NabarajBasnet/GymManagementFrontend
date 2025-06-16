@@ -94,9 +94,6 @@ export function NewRadialChart({ startDate, endDate }) {
         };
     };
 
-    // Calculate completion percentage
-    const completionPercentage = Math.round((chartData[1].value / chartData[0].value) * 100);
-
     return (
         <div className="w-full border-none dark:border-none dark:bg-gray-800 rounded-2xl">
             {/* <Card className="flex flex-col border-none shadow-sm dark:border-gray-600 dark:bg-gray-800 rounded-2xl">
@@ -157,10 +154,10 @@ export function NewRadialChart({ startDate, endDate }) {
                 </CardFooter>
             </Card> */}
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl mt-6 overflow-hidden">
+            <div className="bg-white flex flex-col justify-between dark:bg-gray-800 rounded-2xl mt-6 min-h-[250px]">
                 <div className="overflow-x-auto">
                     <Table className='min-w-full dark:border-gray-600 dark:bg-gray-800'>
-                        <TableHeader className="bg-pink-50 dark:bg-gray-800">
+                        <TableHeader className="dark:bg-gray-800">
                             <TableRow>
                                 <TableHead className='text-pink-600 text-xs font-medium'>Member ID</TableHead>
                                 <TableHead className='text-pink-600 text-xs font-medium'>Full Name</TableHead>
