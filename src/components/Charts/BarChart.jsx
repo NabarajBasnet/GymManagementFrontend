@@ -22,24 +22,10 @@ import { useQuery } from "@tanstack/react-query";
 
 export function BarChartMultiple() {
 
-    const [currentPage, setCurrentPage] = useState(1);
-    const limit = 3;
-    const [startDate, setStartDate] = useState(() => {
-        const startDate = new Date();
-        const calculatedStartYear = startDate.getFullYear();
-        startDate.setFullYear(calculatedStartYear, 0, 1);
-        return startDate;
-    });
-
-    const [endDate, setEndDate] = useState(new Date());
-
-    const getTotalMembers = async () => {
+    const getNewMembers = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}&limit=${limit}&page=${currentPage}`);
+            const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
             const responseBody = await response.json();
-            if (responseBody.redirect) {
-                router.push(responseBody.redirect);
-            };
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
@@ -47,22 +33,14 @@ export function BarChartMultiple() {
     };
 
     const { data } = useQuery({
-        queryKey: ['membersLength'],
-        queryFn: getTotalMembers
+        queryKey: ['newMembers'],
+        queryFn: getNewMembers
     });
 
-    const { members,
-        totalMembers,
-        totalPages,
-        inactiveMembers,
-        totalActiveMembers,
-        totalInactiveMembers,
-        dailyAverageActiveMembers,
-        renewdMembers,
-        renewdMembersLength,
-        newAdmissions,
-        newAdmissionsLength } = data || {};
+    const { newMembers } = data || {};
 
+    
+    
     const chartData = [
         { month: "January", Renew: 186, NewAdmission: 80 },
         { month: "February", Renew: 305, NewAdmission: 200 },
