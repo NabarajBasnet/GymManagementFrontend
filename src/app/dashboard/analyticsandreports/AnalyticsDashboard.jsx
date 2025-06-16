@@ -71,6 +71,8 @@ const {data} = useQuery({
     queryFn:getNewMembers
   });
 
+  console.log(newMembers);
+
   // Sample data
   const promotions = [
     {
@@ -103,10 +105,10 @@ const {data} = useQuery({
   ];
 
   const getStatusBadge = (status) => {
-    if (status === "active") {
-      return <Badge variant="success">Active</Badge>;
+    if (status === "Active") {
+      return <Badge variant="green">Active</Badge>;
     } else {
-      return <Badge variant="outline">Completed</Badge>;
+      return <Badge variant="destructive">Inactive</Badge>;
     }
   };
 
@@ -205,31 +207,31 @@ const {data} = useQuery({
       <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
         <CardHeader>
           <CardTitle className="flex items-center">
-            <FaChartLine className="mr-2 text-primary" /> Promotion Performance
+            <FaChartLine className="mr-2 text-primary" /> New Member Signups
           </CardTitle>
-          <CardDescription>Effectiveness of your marketing campaigns</CardDescription>
+          <CardDescription>New member signups</CardDescription>
         </CardHeader>
         <CardContent>
           <Table className="rounded-lg dark:border-none shadow-md dark:text-white">
             <TableHeader className="dark:border-none">
               <TableRow className="dark:border-none">
-                <TableHead>Promotion</TableHead>
-                <TableHead>Discount</TableHead>
-                <TableHead>Start Date</TableHead>
-                <TableHead>End Date</TableHead>
-                <TableHead>Signups</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>DOB</TableHead>
+                <TableHead>Signup Date</TableHead>
                 <TableHead>Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody className="dark:border-none">
-              {promotions.map((promotion) => (
-                <TableRow key={promotion.id} className="dark:border-none">
-                  <TableCell className="font-medium">{promotion.name}</TableCell>
-                  <TableCell>{promotion.discount}</TableCell>
-                  <TableCell>{promotion.startDate}</TableCell>
-                  <TableCell>{promotion.endDate}</TableCell>
-                  <TableCell>{promotion.signups}</TableCell>
-                  <TableCell className="dark:border-none">{getStatusBadge(promotion.status)}</TableCell>
+                {newMembers?.members.map((member) => (
+                <TableRow key={member.id} className="dark:border-none">
+                  <TableCell className="font-medium">{member.member.fullName}</TableCell>
+                  <TableCell>{member.member.email}</TableCell>
+                    <TableCell>{member.member.contactNo}</TableCell>
+                  <TableCell>{new Date(member.member.dob).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
+                  <TableCell>{new Date(member.member.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</TableCell>
+                  <TableCell className="dark:border-none">{getStatusBadge(member.member.status)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
