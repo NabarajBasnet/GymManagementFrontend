@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { useUser } from "@/components/Providers/LoggedInUserProvider"
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import NewMemberGrowthChart from "./DashboardsChartOne";
 
 const AnalyticsDashboard = () => {
 
@@ -147,7 +148,7 @@ const {data} = useQuery({
             <FaCalendarAlt className="h-4 w-4 text-muted-foreground text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{newMembers?.members.length}</div>
+            <div className="text-2xl font-bold">{newMembers?.members?.length}</div>
             <p className="text-xs text-muted-foreground">+5 from last month</p>
           </CardContent>
         </Card>
@@ -175,32 +176,8 @@ const {data} = useQuery({
 
       {/* Analytics Charts */}
       <div className="grid gap-4 md:grid-cols-2 mb-6">
-        <Card className="h-[350px] bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaChartPie className="mr-2 text-primary" /> Member Growth
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="h-[calc(100%-60px)] flex items-center justify-center">
-            <div className="text-muted-foreground text-center">
-              <p>Member growth chart visualization</p>
-              <p className="text-sm">(Monthly new members and churn rate)</p>
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="h-[350px] bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <FaChartPie className="mr-2 text-primary" /> Attendance Trends
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="h-[calc(100%-60px)] flex items-center justify-center">
-            <div className="text-muted-foreground text-center">
-              <p>Attendance trends visualization</p>
-              <p className="text-sm">(Peak hours and daily/weekly patterns)</p>
-            </div>
-          </CardContent>
-        </Card>
+        <NewMemberGrowthChart />
+        <NewMemberGrowthChart />
       </div>
 
       {/* Promotion Performance Table */}
@@ -225,8 +202,8 @@ const {data} = useQuery({
               </TableRow>
             </TableHeader>
             <TableBody className="dark:border-none">
-                {newMembers?.members.map((member) => (
-                <TableRow key={member.id} className="dark:border-none">
+                {newMembers?.members?.map((member) => (
+                <TableRow key={member?.id} className="dark:border-none">
                   <TableCell className="font-medium">{member.member.fullName}</TableCell>
                   <TableCell>{member.member.email}</TableCell>
                     <TableCell>{member.member.contactNo}</TableCell>
