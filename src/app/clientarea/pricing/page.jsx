@@ -44,7 +44,6 @@ const TenantSubscriptionPlansManagement = () => {
   const { tenant, loading: tenantLoading } = useTenant();
   const router = useRouter();
   const loggedInTenant = tenant?.tenant;
-  console.log(loggedInTenant);
 
   const queryClient = useQueryClient();
   const dispatch = useDispatch();
@@ -59,7 +58,7 @@ const TenantSubscriptionPlansManagement = () => {
       const responseBody = await response.json();
       return responseBody;
     } catch (error) {
-      toast.error("Error fetching plans:", error.error);
+      sonnertoast.error("Error fetching plans:", error.error);
       console.error("Error fetching plans:", error);
     }
   };
@@ -94,17 +93,16 @@ const TenantSubscriptionPlansManagement = () => {
         setResBody(responseBody);
       };
       if (response.ok) {
-        toast.success(responseBody.message);
         sonnertoast.success(responseBody.message)
         // Invalidate cart query to refresh cart data
         queryClient.invalidateQueries(["cart"]);
         dispatch(setCartLength(responseBody.cart.totalItems));
       } else {
-        toast.error(responseBody.message);
+        sonnertoast.error(responseBody.message);
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      toast.error("Error adding to cart");
+      sonnertoast.error("Error adding to cart");
     } finally {
       setLoadingButtons((prev) => ({ ...prev, [plan._id]: false }));
     }
