@@ -15,6 +15,7 @@ import { useUser } from "@/components/Providers/LoggedInUserProvider"
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import NewMemberGrowthChart from "./DashboardsChartOne";
+import ChartPieStacked from "./DashboardsChartTwo";
 
 const AnalyticsDashboard = () => {
 
@@ -202,7 +203,7 @@ const {data} = useQuery({
       {/* Analytics Charts */}
       <div className="grid gap-4 md:grid-cols-2 mb-6">
         <NewMemberGrowthChart />
-        <NewMemberGrowthChart />
+        <ChartPieStacked />
       </div>
 
       {/* Promotion Performance Table */}
