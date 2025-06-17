@@ -39,6 +39,8 @@ const TenantSubscriptionPlansManagement = () => {
   const [selectedPlan, setSelectedPlan] = useState();
   const [selectedPlanDuration, setSelectedPlanDuration] = useState();
   const [selectedPlanQuantity, setSelectedPlanQuantity] = useState();
+  const [nextExpireDate, setNextExpireDate] = useState(new Date());
+  const [quantity, setQuantity] = useState(1);
 
   const [loadingButtons, setLoadingButtons] = useState({});
   const { tenant, loading: tenantLoading } = useTenant();
@@ -49,6 +51,28 @@ const TenantSubscriptionPlansManagement = () => {
   const dispatch = useDispatch();
   const [orgSetupDialog, setOrgSetupDialog] = useState(false);
   const [resBody, setResBody] = useState();
+
+
+  const calculateNextExpireDate = (duration) => {
+    switch(duration) {
+      case '1 Month':
+        return new Date(new Date().setMonth(new Date().getMonth() + 1 * quantity));
+      case '3 Months':
+        return new Date(new Date().setMonth(new Date().getMonth() + 3 * quantity));
+      case '6 Months':
+        return new Date(new Date().setMonth(new Date().getMonth() + 6 * quantity));
+      case '9 Months':
+        return new Date(new Date().setMonth(new Date().getMonth() + 9 * quantity));
+      case '12 Months':
+        return new Date(new Date().setMonth(new Date().getMonth() + 12 * quantity));
+    }
+  };
+
+  useEffect(() => {
+    if(selectedPlanDuration) {
+      setNextExpireDate(calculateNextExpireDate(selectedPlanDuration));
+    }
+  }, [selectedPlanDuration, selectedPlan, quantity]);
 
   const fetchPlans = async () => {
     try {
@@ -236,7 +260,6 @@ const TenantSubscriptionPlansManagement = () => {
                             <AlertDialogTrigger asChild className="w-full dark:border-none">
                             <button
                           onClick={() => {
-                            handleAddToCart(plan)
                             setSelectedPlan(plan)
                           }}
                           disabled={loadingButtons[plan._id]}
@@ -281,8 +304,8 @@ const TenantSubscriptionPlansManagement = () => {
                                 <div>
                                   <Label>Quantity</Label>
                                   <Input 
-                                  value={selectedPlanQuantity}
-                                  onChange={(e) => setSelectedPlanQuantity(e.target.value)}
+                                  value={quantity}
+                                  onChange={(e) => setQuantity(e.target.value)}
                                   type="number" placeholder="Enter quantity" className="bg-gray-100 py-6 rounded-md dark:bg-gray-900 dark:border-none" />
                                 </div>
                               </div>
@@ -294,13 +317,14 @@ const TenantSubscriptionPlansManagement = () => {
                               <h1>{selectedPlan?.subscriptionName}</h1>
                               <p>{selectedPlan?.subscriptionPrice}</p>
                               <p>{selectedPlanDuration}</p>
-                              <p>{selectedPlanQuantity}</p>
+                              <p>{quantity}</p>
+                              <p>{new Date(nextExpireDate).toISOString().split('T')[0]}</p>
                             </div>
                           </div>
 
                               </form>
                               <AlertDialogCancel className="bg-gray-100 text-gray-700 dark:border-none hover:bg-gray-200 dark:bg-blue-900 dark:text-white">Cancel</AlertDialogCancel>
-                              <AlertDialogAction className="bg-blue-600 text-white hover:bg-blue-700">Confirm Plan</AlertDialogAction>
+                              <AlertDialogAction className="bg-blue-600 text-white hover:bg-blue-700" onClick={() => handleAddToCart(plan)}>Add to Cart</AlertDialogAction>
                             </AlertDialogContent>
                           </AlertDialog>
 
