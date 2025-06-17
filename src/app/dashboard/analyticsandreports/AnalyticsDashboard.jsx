@@ -72,38 +72,24 @@ const {data} = useQuery({
     queryFn:getNewMembers
   });
 
-  console.log(newMembers);
-
-  // Sample data
-  const promotions = [
-    {
-      id: 1,
-      name: "New Year Discount",
-      discount: "20%",
-      startDate: "2024-01-01",
-      endDate: "2024-01-15",
-      signups: 50,
-      status: "completed"
-    },
-    {
-      id: 2,
-      name: "Summer Special",
-      discount: "15%",
-      startDate: "2024-06-01",
-      endDate: "2024-06-30",
-      signups: 30,
-      status: "active"
-    },
-    {
-      id: 3,
-      name: "Black Friday Deal",
-      discount: "30%",
-      startDate: "2023-11-24",
-      endDate: "2023-11-30",
-      signups: 75,
-      status: "completed"
+  const getMemberAttendance = async () => {
+    try {
+        const response = await fetch("http://localhost:3000/api/graphdata/memberattendance")
+        if (!response.ok) throw new Error("Network response was not ok")
+        const data = await response.json()
+        return data;
+    } catch (error) {
+        console.error("Error fetching attendance data:", error)
+        return []
     }
-  ];
+}
+
+  const { data: attendancesData } = useQuery({
+    queryKey: ["memberAttendance"],
+    queryFn: getMemberAttendance,
+  })
+
+  const {memberAttendance, growthPercentage} = attendancesData || {};
 
   const getStatusBadge = (status) => {
     if (status === "Active") {
@@ -158,8 +144,8 @@ const {data} = useQuery({
             <FaChartLine className="h-4 w-4 text-muted-foreground text-green-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">87%</div>
-            <p className="text-xs text-muted-foreground">+2.1% from last month</p>
+            <div className="text-2xl font-bold">{growthPercentage?growthPercentage:0}%</div>
+            <p className="text-xs text-muted-foreground">{growthPercentage?growthPercentage:0}% from last month</p>
           </CardContent>
         </Card>
         <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
