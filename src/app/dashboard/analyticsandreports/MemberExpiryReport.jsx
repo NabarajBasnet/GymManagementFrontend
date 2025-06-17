@@ -28,13 +28,16 @@ import {
 import { CalendarIcon, Download, Search, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
+import Pagination from "@/components/ui/CustomPagination";
 
 const MemberExpiryReport = () => {
   const [dateRange, setDateRange] = useState({
     from: new Date(new Date().setDate(new Date().getDate() - 7)),
     to: new Date(new Date().setDate(new Date().getDate() + 7)),
   });
-  const [selectedBranch, setSelectedBranch] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const limit = 10;
+
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
@@ -280,25 +283,14 @@ const MemberExpiryReport = () => {
               </TableBody>
             </Table>
           </div>
-
+         
           {/* Pagination */}
-          <div className="flex items-center justify-between p-4 border-t dark:border-none">
-            <div className="text-sm text-muted-foreground">
-              Showing <span className="font-medium">1</span> to{" "}
-              <span className="font-medium">{filteredMemberData.length}</span> of{" "}
-              <span className="font-medium">{filteredMemberData.length}</span> entries
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                Previous
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                1
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                Next
-              </Button>
-            </div>
+          <div className="flex items-center justify-end p-4 border-t dark:border-none">
+          <Pagination
+            totalPages={1}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
           </div>
         </Card>
       </div>
