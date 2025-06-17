@@ -25,77 +25,62 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
 import { CalendarIcon, Download, Search, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
 
 const MemberExpiryReport = () => {
   const [dateRange, setDateRange] = useState({
-    from: undefined,
-    to: undefined,
+    from: new Date(new Date().setDate(new Date().getDate() - 7)),
+    to: new Date(new Date().setDate(new Date().getDate() + 7)),
   });
   const [selectedBranch, setSelectedBranch] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
 
-  // Sample data
-  const memberData = [
-    {
-      id: 1,
-      name: "John Doe",
-      contact: "+1 555-123-4567",
-      plan: "Premium Annual",
-      startDate: "2023-01-15",
-      expiryDate: "2024-01-15",
-      daysLeft: 15,
-      status: "expiring",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      contact: "+1 555-987-6543",
-      plan: "Basic Monthly",
-      startDate: "2023-11-01",
-      expiryDate: "2023-12-01",
-      daysLeft: -5,
-      status: "expired",
-    },
-    {
-      id: 3,
-      name: "Mike Johnson",
-      contact: "+1 555-456-7890",
-      plan: "Standard Quarterly",
-      startDate: "2023-09-01",
-      expiryDate: "2023-12-01",
-      daysLeft: 10,
-      status: "expiring",
-    },
-    {
-      id: 4,
-      name: "Sarah Williams",
-      contact: "+1 555-789-0123",
-      plan: "Premium Annual",
-      startDate: "2023-03-15",
-      expiryDate: "2024-03-15",
-      daysLeft: 90,
-      status: "active",
-    },
-  ];
+  // Get Member Expiry Report
+  const getMemberExpiryReport = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/reports/memberexiryreport?from=${dateRange.from.toISOString()}&to=${dateRange.to.toISOString()}`
+      );
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      return {
+        expiredCount: 0,
+        expiredMembers: [],
+        expiringCount: 0,
+        expiringMembers: [],
+      };
+    }
+  };
 
-  const getStatusBadge = (status, daysLeft) => {
-    if (status === "expired" || daysLeft < 0) {
+  const { data: memberExpiryReportData, isLoading } = useQuery({
+    queryKey: ["memberExpiryReport", dateRange.from, dateRange.to],
+    queryFn: getMemberExpiryReport,
+  });
+
+  const getStatusBadge = (status, expiryDate) => {
+    const today = new Date();
+    const expiry = new Date(expiryDate);
+    const daysLeft = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
+
+    if (status === "Inactive" || daysLeft < 0) {
       return <Badge variant="destructive">Expired</Badge>;
-    } else if (status === "expiring" || daysLeft <= 14) {
+    } else if (daysLeft <= 14) {
       return <Badge variant="warning">Expiring Soon</Badge>;
     } else {
       return <Badge variant="success">Active</Badge>;
     }
+  };
+
+  const getDaysLeft = (expiryDate) => {
+    const today = new Date();
+    const expiry = new Date(expiryDate);
+    const daysLeft = Math.floor((expiry - today) / (1000 * 60 * 60 * 24));
+    return daysLeft > 0 ? daysLeft : 0;
   };
 
   const handleSendReminder = (id) => {
@@ -103,30 +88,53 @@ const MemberExpiryReport = () => {
     // Implement actual reminder logic here
   };
 
-  const filteredMemberData = memberData.filter((member) => {
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  // Combine expired and expiring members
+  const allMembers = [
+    ...(memberExpiryReportData?.expiredMembers || []),
+    ...(memberExpiryReportData?.expiringMembers || []),
+  ];
+
+  const filteredMemberData = allMembers.filter((member) => {
     const matchesSearch =
-      member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.contact.includes(searchQuery);
+      member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      member.contactNo.includes(searchQuery);
+    
+    if (selectedStatus === "all") return matchesSearch;
+    if (selectedStatus === "Expired") return matchesSearch && member.status === "Inactive";
+    if (selectedStatus === "Expiring") {
+      const daysLeft = getDaysLeft(member.membershipExpireDate);
+      return matchesSearch && daysLeft <= 14 && member.status === "Active";
+    }
+    if (selectedStatus === "Active") {
+      const daysLeft = getDaysLeft(member.membershipExpireDate);
+      return matchesSearch && daysLeft > 14 && member.status === "Active";
+    }
+    
     return matchesSearch;
   });
 
   return (
     <div className="w-full bg-transparent">
       <div className="bg-transparent rounded-lg space-y-4 border-none dark:text-white">
-        <Card className="rounded-lg dark:border-none shadow-md dark:bg-gray-800 dark:text-white p-4">
+        <Card className="rounded-lg dark:border-none shadow-md dark:bg-gray-800 dark:text-white p-6">
           <CardTitle>Member Expiry Report</CardTitle>
-          <CardDescription className="text-sm mt-4">
+          <CardDescription className="text-sm mt-1 mb-6">
             View and manage memberships that are expiring soon or have expired. By default reports will be generated daily.
           </CardDescription>
-        </Card>
 
-        <Card className="rounded-lg dark:border-none shadow-md dark:bg-gray-800 dark:text-white p-4">
           {/* Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <Card className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
               <CardHeader className="pb-2">
                 <CardDescription>Expiring Members</CardDescription>
-                <CardTitle className="text-2xl text-yellow-600">12</CardTitle>
+                <CardTitle className="text-2xl text-yellow-600">
+                  {memberExpiryReportData?.expiringCount || 0}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
@@ -137,7 +145,9 @@ const MemberExpiryReport = () => {
             <Card className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
               <CardHeader className="pb-2">
                 <CardDescription>Expired Members</CardDescription>
-                <CardTitle className="text-2xl text-red-600">3</CardTitle>
+                <CardTitle className="text-2xl text-red-600">
+                  {memberExpiryReportData?.expiredCount || 0}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
@@ -148,81 +158,26 @@ const MemberExpiryReport = () => {
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
             <div className="col-span-1 md:col-span-2 space-y-1">
               <label className="text-sm font-medium leading-none">
                 Date Range
               </label>
               <div className="flex items-center gap-2">
-                <Popover>
-                  <PopoverTrigger asChild className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.from ? (
-                        format(dateRange.from, "PPP")
-                      ) : (
-                        <span>From</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.from}
-                      onSelect={(date) =>
-                        setDateRange({ ...dateRange, from: date })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Input
+                  type="date"
+                  value={dateRange.from.toISOString().split('T')[0]}
+                  onChange={(e) => setDateRange({ ...dateRange, from: new Date(e.target.value) })}
+                  className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                />
                 <span className="text-sm text-muted-foreground">to</span>
-                <Popover>
-                  <PopoverTrigger asChild className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.to ? (
-                        format(dateRange.to, "PPP")
-                      ) : (
-                        <span>To</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.to}
-                      onSelect={(date) =>
-                        setDateRange({ ...dateRange, to: date })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Input
+                  type="date"
+                  value={dateRange.to.toISOString().split('T')[0]}
+                  className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                  onChange={(e) => setDateRange({ ...dateRange, to: new Date(e.target.value) })}
+                />
               </div>
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium leading-none">Branch</label>
-              <Select
-                value={selectedBranch}
-                onValueChange={setSelectedBranch}
-              >
-                <SelectTrigger className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                  <SelectValue placeholder="Select branch" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                  <SelectItem value="all" className="dark:text-white cursor-pointer">All Branches</SelectItem>
-                  <SelectItem value="downtown" className="dark:text-white cursor-pointer">Downtown</SelectItem>
-                  <SelectItem value="uptown" className="dark:text-white cursor-pointer">Uptown</SelectItem>
-                  <SelectItem value="westside" className="dark:text-white cursor-pointer">Westside</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium leading-none">Status</label>
@@ -283,31 +238,45 @@ const MemberExpiryReport = () => {
                 </TableRow>
               </TableHeader>
               <TableBody className="dark:border-none">
-                {filteredMemberData.map((member) => (
-                  <TableRow key={member.id} className="dark:border-none">
-                    <TableCell className="font-medium">{member.name}</TableCell>
-                    <TableCell>{member.contact}</TableCell>
-                    <TableCell>{member.plan}</TableCell>
-                    <TableCell>{member.startDate}</TableCell>
-                    <TableCell>{member.expiryDate}</TableCell>
-                    <TableCell>
-                      {member.daysLeft > 0 ? member.daysLeft : 0}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(member.status, member.daysLeft)}
-                    </TableCell>
-                    <TableCell className="text-right dark:border-none">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSendReminder(member.id)}
-                      >
-                        <Send className="mr-2 h-4 w-4" />
-                        Remind
-                      </Button>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center">
+                      Loading...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : filteredMemberData.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center">
+                      No members found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredMemberData.map((member) => (
+                    <TableRow key={member._id} className="dark:border-none">
+                      <TableCell className="font-medium">{member.fullName}</TableCell>
+                      <TableCell>{member.contactNo}</TableCell>
+                      <TableCell>{member.membershipType}</TableCell>
+                      <TableCell>{formatDate(member.membershipDate)}</TableCell>
+                      <TableCell>{formatDate(member.membershipExpireDate)}</TableCell>
+                      <TableCell>
+                        {getDaysLeft(member.membershipExpireDate)}
+                      </TableCell>
+                      <TableCell>
+                        {getStatusBadge(member.status, member.membershipExpireDate)}
+                      </TableCell>
+                      <TableCell className="text-right dark:border-none">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleSendReminder(member._id)}
+                        >
+                          <Send className="mr-2 h-4 w-4" />
+                          Remind
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>
@@ -316,8 +285,8 @@ const MemberExpiryReport = () => {
           <div className="flex items-center justify-between p-4 border-t dark:border-none">
             <div className="text-sm text-muted-foreground">
               Showing <span className="font-medium">1</span> to{" "}
-              <span className="font-medium">10</span> of{" "}
-              <span className="font-medium">100</span> entries
+              <span className="font-medium">{filteredMemberData.length}</span> of{" "}
+              <span className="font-medium">{filteredMemberData.length}</span> entries
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
@@ -325,12 +294,6 @@ const MemberExpiryReport = () => {
               </Button>
               <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
                 1
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                2
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                3
               </Button>
               <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
                 Next
