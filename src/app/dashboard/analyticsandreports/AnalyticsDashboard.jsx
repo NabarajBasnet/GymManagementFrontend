@@ -72,6 +72,26 @@ const {data} = useQuery({
     queryFn:getNewMembers
   });
 
+  const getNewMembersGrowthPercentage = async()=>{
+    try{
+      const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
+      const resBody = await response.json();
+      return resBody;
+    }catch(error){
+      console.log("Error: ",error);
+    }
+  }
+
+  const {data:newMembersGrowthPercentageData} = useQuery({
+    queryKey:['newmembersgrowthpercentage'],
+    queryFn:getNewMembersGrowthPercentage
+  });
+
+  const {  newMembers: months,
+    growthPercentage:newMembersGrowthPercentage,
+    currentCount,
+    previousCount, } = newMembersGrowthPercentageData || {};
+
   const getMemberAttendance = async () => {
     try {
         const response = await fetch("http://localhost:3000/api/graphdata/memberattendance")
@@ -134,8 +154,8 @@ const {data} = useQuery({
             <FaCalendarAlt className="h-4 w-4 text-muted-foreground text-yellow-500" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{newMembers?.members?.length}</div>
-            <p className="text-xs text-muted-foreground">+5 from last month</p>
+            <div className="text-2xl font-bold">{currentCount?currentCount:0}</div>
+            <p className="text-xs text-muted-foreground">+{newMembersGrowthPercentage?newMembersGrowthPercentage:0}% from last month</p>
           </CardContent>
         </Card>
         <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
