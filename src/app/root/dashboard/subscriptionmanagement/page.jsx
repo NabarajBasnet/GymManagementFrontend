@@ -1,12 +1,10 @@
 'use client';
 
-import { TiEye } from "react-icons/ti";
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader,  FiRefreshCcw, FiSearch } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
-import { format } from 'date-fns';
 import { Checkbox } from "@/components/ui/checkbox";
 import { Check } from "lucide-react";
 
@@ -16,17 +14,10 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
-    CardFooter,
-    CardDescription
 } from "@/components/ui/card";
 import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table";
+    Badge
+} from "@/components/ui/badge";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -38,7 +29,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -50,8 +40,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useForm, Controller } from "react-hook-form";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useForm } from "react-hook-form";
 import Loader from "@/components/Loader/Loader";
 import {
     Dialog,
@@ -64,6 +53,28 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 
+const currencies = [
+    {
+        name: "USD",
+        symbol: "$",
+    },
+    {
+        name: "NPR",
+        symbol: "₨",
+    },
+    {
+        name: "INR",
+        symbol: "₹",
+    },
+    {
+        name: "AUD",
+        symbol: "A$",
+    },
+    {
+        name: "CAD",
+        symbol: "C$",
+    },
+]
 const SubscriptionManagement = () => {
 
     const queryClient = useQueryClient();
@@ -141,7 +152,7 @@ const SubscriptionManagement = () => {
                 body: JSON.stringify({
                     ...data,
                     subscriptionPrice: Number(data.subscriptionPrice),
-                    subscriptionDuration: Number(data.subscriptionDuration),
+                    currency: data.currency,
                     subscriptionFeatures: selectedFeatures
                 }),
             });
@@ -170,7 +181,7 @@ const SubscriptionManagement = () => {
             subscriptionName: subscription.subscriptionName,
             subscriptionDescription: subscription.subscriptionDescription,
             subscriptionPrice: subscription.subscriptionPrice,
-            subscriptionDuration: subscription.subscriptionDuration,
+            currency: subscription.currency,
         });
         setIsDialogOpen(true);
     };
@@ -300,16 +311,31 @@ const SubscriptionManagement = () => {
                                             </div>
 
                                             <div className="space-y-2">
-                                                <Label htmlFor="subscriptionDuration" className="text-gray-700 dark:text-gray-300">Duration (months)</Label>
-                                                <Input
-                                                    id="subscriptionDuration"
-                                                    type="number"
-                                                    className='py-6 rounded-sm bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100'
-                                                    {...register('subscriptionDuration', { required: 'Duration is required' })}
-                                                    placeholder="Enter duration"
-                                                />
-                                                {errors.subscriptionDuration && (
-                                                    <p className="text-sm text-red-500 dark:text-red-400">{errors.subscriptionDuration.message}</p>
+                                                <Label htmlFor="currency" className="text-gray-700 dark:text-gray-300">
+                                                    Currency
+                                                </Label>
+                                                <Select {...register('currency', { required: 'Currency is required' })}>
+                                                    <SelectTrigger className="bg-white py-6 rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+                                                    <SelectValue placeholder="Select a currency" />
+                                                    </SelectTrigger>
+
+                                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
+                                                    {currencies.map((currency) => (
+                                                        <SelectItem
+                                                        key={currency.symbol}
+                                                        className="text-gray-900 dark:text-gray-100 cursor-pointer hover:bg-blue-900/30"
+                                                        value={currency.symbol}
+                                                        >
+                                                        {currency.name} ({currency.symbol})
+                                                        </SelectItem>
+                                                    ))}
+                                                    </SelectContent>
+                                                </Select>
+
+                                                {errors.currency && (
+                                                    <p className="text-sm text-red-500 dark:text-red-400">
+                                                    {errors.currency.message}
+                                                    </p>
                                                 )}
                                             </div>
                                         </div>
@@ -388,15 +414,15 @@ const SubscriptionManagement = () => {
                                                         <FiTrash2 className="h-4 w-4" />
                                                     </Button>
                                                 </AlertDialogTrigger>
-                                                <AlertDialogContent className="bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700">
+                                                <AlertDialogContent className="bg-red-900 border-red-600">
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle className="text-gray-900 dark:text-gray-100">Are you absolutely sure?</AlertDialogTitle>
-                                                        <AlertDialogDescription className="text-gray-500 dark:text-gray-400">
+                                                        <AlertDialogTitle className="text-white">Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription className="text-white dark:text-white">
                                                             This action cannot be undone. This will permanently delete the subscription plan.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
-                                                        <AlertDialogCancel className="border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
+                                                        <AlertDialogCancel className="border-gray-200 dark:border-none border-none text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">Cancel</AlertDialogCancel>
                                                         <AlertDialogAction 
                                                             onClick={() => handleDelete(subscription._id)}
                                                             className="bg-red-600 dark:text-gray-100 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700"
