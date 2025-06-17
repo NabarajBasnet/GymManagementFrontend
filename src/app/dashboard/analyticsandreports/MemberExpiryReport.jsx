@@ -45,7 +45,7 @@ const MemberExpiryReport = () => {
   const getMemberExpiryReport = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3000/api/reports/memberexiryreport?from=${dateRange.from.toISOString()}&to=${dateRange.to.toISOString()}`
+        `http://localhost:3000/api/reports/memberexiryreport?from=${dateRange.from.toISOString()}&to=${dateRange.to.toISOString()}&page=${currentPage}&limit=${limit}`
       );
       const resBody = await response.json();
       return resBody;
@@ -56,14 +56,17 @@ const MemberExpiryReport = () => {
         expiredMembers: [],
         expiringCount: 0,
         expiringMembers: [],
+        totalPages: 0,
       };
     }
   };
 
   const { data: memberExpiryReportData, isLoading } = useQuery({
-    queryKey: ["memberExpiryReport", dateRange.from, dateRange.to],
+    queryKey: ["memberExpiryReport", dateRange.from, dateRange.to, currentPage, limit],
     queryFn: getMemberExpiryReport,
   });
+
+  const { totalPages } = memberExpiryReportData || {};
 
   const getStatusBadge = (status, expiryDate) => {
     const today = new Date();
@@ -287,9 +290,9 @@ const MemberExpiryReport = () => {
           {/* Pagination */}
           <div className="flex items-center justify-end p-4 border-t dark:border-none">
           <Pagination
-            totalPages={1}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
+            total={totalPages ? totalPages : 1}
+            page={currentPage}
+            onChange={setCurrentPage}
           />
           </div>
         </Card>
