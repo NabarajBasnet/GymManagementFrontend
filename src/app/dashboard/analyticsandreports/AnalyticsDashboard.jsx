@@ -111,6 +111,25 @@ const {data} = useQuery({
 
   const {memberAttendance, growthPercentage} = attendancesData || {};
 
+  const getActiveInactiveMembers = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/graphdata/activeinactivemembers")
+      if (!response.ok) throw new Error("Network response was not ok")
+      const data = await response.json()
+      return data;
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      return []
+    }
+  }
+
+  const { data: activeInactiveMembersData = [], isLoading } = useQuery({
+    queryKey: ["activeinactivemembers"],
+    queryFn: getActiveInactiveMembers,
+  })
+
+  const { activeInactiveMembers,currentMonthStats, previousMonthStats, growth  } = activeInactiveMembersData || {};
+
   const getStatusBadge = (status) => {
     if (status === "Active") {
       return <Badge variant="green">Active</Badge>;
@@ -144,8 +163,8 @@ const {data} = useQuery({
             <FaUsers className="h-4 w-4 text-muted-foreground text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{totalMembers?totalMembers:0}</div>
-            <p className="text-xs text-muted-foreground">+12% from last month</p>
+            <div className="text-2xl font-bold">{activeInactiveMembers?activeInactiveMembers.length:0}</div>
+            <p className="text-xs text-muted-foreground">+{growth?growth.activeMembersGrowth:0}% </p>
           </CardContent>
         </Card>
         <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
