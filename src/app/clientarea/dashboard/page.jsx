@@ -228,10 +228,10 @@ const TenantDashboard = () => {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
       {/* Full-width background elements */}
 
-      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative z-10 w-full px-4 sm:px-6 lg:px-4 py-4">
         {/* Header */}
         <div
-          className="mb-8"
+          className="mb-4"
         >
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
@@ -253,7 +253,7 @@ const TenantDashboard = () => {
           </div>
         </div>
 
-        <div className="flex flex-col xl:flex-row gap-8">
+        <div className="flex flex-col xl:flex-row gap-4">
           {/* Enhanced Profile Card */}
           <div
             initial={{ opacity: 0, x: -20 }}
@@ -351,9 +351,9 @@ const TenantDashboard = () => {
           </div>
 
           {/* Main Content */}
-          <div className="flex-1 space-y-8">
+          <div className="flex-1 space-y-4">
             {/* Enhanced Stats Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <StatCard
                 icon={FaUsers}
                 title="Staff Members"
@@ -393,7 +393,7 @@ const TenantDashboard = () => {
             </div>
 
             {/* Organization and Subscription Details */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Organization Details Card */}
               <div
                 initial={{ opacity: 0, y: 20 }}

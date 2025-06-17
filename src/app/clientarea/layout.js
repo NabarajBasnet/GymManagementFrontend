@@ -20,7 +20,9 @@ const ClientAreaLayout = ({ children }) => {
             {clientSidebar && <ClientAreaSidebar />}
             <div className={`w-full ${clientSidebar ? "pl-[280px]" : "pl-0"}`}>
               {!hideHeader && <ClientAreaHeader />}
-              {children}
+              <div className="w-full">
+                {children}
+              </div>
             </div>
           </div>
         </ReactQueryClientProvider>

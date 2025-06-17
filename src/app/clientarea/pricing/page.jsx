@@ -314,7 +314,7 @@ const TenantSubscriptionPlansManagement = () => {
 
                             <div>
                               <h1>Plan: {selectedPlan?.subscriptionName}</h1>
-                              <p>Price: {selectedPlan?.currency} {selectedPlan?.subscriptionPrice / parseInt(selectedPlanDuration.split(' ')[0]) * quantity} per {selectedPlanDuration}</p>
+                              <p>Price: {selectedPlan?.currency} {selectedPlan?.subscriptionPrice}</p>
                               <p>Duration: {selectedPlanDuration}</p>
                               <p>Quantity: {quantity}</p>
                               <p>Next Expire Date: {new Date(nextExpireDate).toISOString().split('T')[0]}</p>

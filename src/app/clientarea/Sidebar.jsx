@@ -308,7 +308,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
       </div>
 
       {/* Navigation Menu */}
-      <nav className="mt-4 px-2">
+      <nav className="mt-4 px-2 overflow-y-auto">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.id}>
