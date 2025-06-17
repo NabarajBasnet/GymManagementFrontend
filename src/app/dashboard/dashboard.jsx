@@ -133,6 +133,45 @@ const AdminDashboard = () => {
       queryFn: getRenewedMembers
   });
 
+  const getActiveInactiveMembers = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/graphdata/activeinactivemembers")
+      const data = await response.json()
+      return data;
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      return []
+    }
+  }
+
+  const { data: activeInactiveMembersData , isLoading } = useQuery({
+    queryKey: ["activeinactivemembers"],
+    queryFn: getActiveInactiveMembers,
+  })
+
+  const { growth  } = activeInactiveMembersData || {};
+  const { activeMembersGrowth, inactiveMembersGrowth } = growth || {};
+
+  const getNewMembersGrowthPercentage = async()=>{
+    try{
+      const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
+      const resBody = await response.json();
+      return resBody;
+    }catch(error){
+      console.log("Error: ",error);
+    }
+  }
+
+  const {data:newMembersGrowthPercentageData} = useQuery({
+    queryKey:['newmembersgrowthpercentage'],
+    queryFn:getNewMembersGrowthPercentage
+  });
+
+  const {  newMembers: months,
+    growthPercentage:newMembersGrowthPercentage,
+    currentCount,
+    previousCount, } = newMembersGrowthPercentageData || {};
+
   const gridContents = [
     {
       id: 'total-membership',
@@ -161,8 +200,8 @@ const AdminDashboard = () => {
       icon: RiUserShared2Fill,
       text: "New Admissions",
       value: `${numbersLoading ? '...' : newMembers?.members?.length || 0}`,
-      percentage: 0.5,
-      trend: "up",
+      percentage: newMembersGrowthPercentage ? newMembersGrowthPercentage : 0,
+      trend: newMembersGrowthPercentage > 0 ? "up" : "down",
       color: 'text-yellow-600',
       bg: 'bg-yellow-100 dark:bg-yellow-700/20',
       border: 'border-yellow-300',
@@ -172,8 +211,8 @@ const AdminDashboard = () => {
       icon: GiBiceps,
       text: "Active Members",
       value: `${numbersLoading ? '...' : activeMembers?.length || 0}`,
-      percentage: -0.2,
-      trend: "down",
+      percentage: activeMembersGrowth ? activeMembersGrowth : 0,
+      trend: activeMembersGrowth > 0 ? "up" : "down",
       color: 'text-green-600',
       bg: 'bg-green-100 dark:bg-green-700/20',
       border: 'border-green-300',
@@ -194,8 +233,8 @@ const AdminDashboard = () => {
       icon: PiUsersFourFill,
       text: "Inactive Members",
       value: `${numbersLoading ? '...' : InactiveMembers?.length || 0}`,
-      percentage: -4.5,
-      trend: "down",
+      percentage: inactiveMembersGrowth ? inactiveMembersGrowth : 0,
+      trend: inactiveMembersGrowth > 0 ? "down" : "up",
       color: 'text-red-600',
       bg: 'bg-red-100 dark:bg-red-700/20',
       border: 'border-red-300',
