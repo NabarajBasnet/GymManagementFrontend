@@ -294,11 +294,8 @@ const TenantCartManagement = () => {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {cartItem.item.subscriptionName}
-                        </h3>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">
-                          Duration: {cartItem.item.subscriptionDuration} days
-                        </p>
+                          {cartItem?.item?.subscriptionName}
+                        </h3> 
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -309,11 +306,11 @@ const TenantCartManagement = () => {
                           className="dark:border-none dark:outline-none"
                           onClick={() =>
                             handleDecreaseQuantity(
-                              cartItem.item._id,
-                              cartItem.item.subscriptionPrice
+                              cartItem?.item?._id,
+                              cartItem?.item?.subscriptionPrice
                             )
                           }
-                          disabled={processing[cartItem.item._id]}
+                          disabled={processing[cartItem?.item?._id]}
                         >
                           <Minus className="w-4 h-4" />
                         </Button>
@@ -326,22 +323,21 @@ const TenantCartManagement = () => {
                           className="dark:border-none dark:outline-none"
                           onClick={() =>
                             handleIncreaseQuantity(
-                              cartItem.item._id,
-                              cartItem.item.subscriptionPrice
+                              cartItem?.item?._id,
+                              cartItem?.item?.subscriptionPrice
                             )
                           }
-                          disabled={processing[cartItem.item._id]}
+                          disabled={processing[cartItem?.item?._id]}
                         >
                           <Plus className="w-4 h-4" />
                         </Button>
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-gray-900 dark:text-white">
-                          {cartItem.price.toLocaleString()}{" "}
-                          {cart?.[0]?.tenantId?.tenantCurrency}
+                          {cartItem?.item?.currency} {cartItem?.price?.toLocaleString()}
                         </p>
                         <p className="text-sm text-gray-500">
-                          {cartItem.item.subscriptionPrice} each
+                          {cartItem?.item?.currency} {cartItem?.item?.subscriptionPrice} each
                         </p>
                       </div>
                       <Button
@@ -350,11 +346,11 @@ const TenantCartManagement = () => {
                         className="dark:border-none dark:outline-none"
                         onClick={() =>
                           handleRemoveItem(
-                            cartItem.item._id,
-                            cartItem.item.subscriptionPrice
+                            cartItem?.item?._id,
+                            cartItem?.item?.subscriptionPrice
                           )
                         }
-                        disabled={processing[cartItem.item._id]}
+                        disabled={processing[cartItem?.item?._id]}
                       >
                         <Trash2 className="w-5 h-5 text-red-500" />
                       </Button>
@@ -386,16 +382,14 @@ const TenantCartManagement = () => {
                     Subtotal
                   </span>
                   <span className="font-semibold">
-                    {cart?.[0]?.totalPrice?.toLocaleString()}{" "}
-                    {cart?.[0]?.tenantId?.tenantCurrency}
+                    $ {cart[0].totalPrice?.toLocaleString()}
                   </span>
                 </div>
                 <div className="border-t pt-4 dark:border-gray-700">
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      {cart?.[0]?.totalPrice?.toLocaleString()}{" "}
-                      {cart?.[0]?.tenantId?.tenantCurrency}
+                      $ {cart[0].totalPrice?.toLocaleString()}
                     </span>
                   </div>
                 </div>

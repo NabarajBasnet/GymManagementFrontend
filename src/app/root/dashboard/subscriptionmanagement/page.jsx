@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader,  FiRefreshCcw, FiSearch } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiRefreshCcw } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
-import toast from "react-hot-toast";
+import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Check } from "lucide-react";
 
@@ -92,6 +92,7 @@ const SubscriptionManagement = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingSubscription, setEditingSubscription] = useState(null);
     const [selectedFeatures, setSelectedFeatures] = useState([]);
+    const [selectedCurrency, setSelectedCurrency] = useState();
 
     // Fetch all subscriptions
     const { data: subscriptions, isLoading } = useQuery({
@@ -152,7 +153,7 @@ const SubscriptionManagement = () => {
                 body: JSON.stringify({
                     ...data,
                     subscriptionPrice: Number(data.subscriptionPrice),
-                    currency: data.currency,
+                    currency: selectedCurrency,
                     subscriptionFeatures: selectedFeatures
                 }),
             });
@@ -170,7 +171,8 @@ const SubscriptionManagement = () => {
                 toast.error(responseData.message);
             }
         } catch (error) {
-            toast.error('An error occurred while saving the subscription');
+            console.log(error);
+            toast.error(error.message);
         }
     };
 
@@ -214,27 +216,6 @@ const SubscriptionManagement = () => {
             <div className="w-full max-w-7xl">
                 {/* Breadcrumb */}
                 <div className='w-full mb-6'>
-                    <Breadcrumb className="mb-4">
-                        <BreadcrumbList>
-                            <BreadcrumbItem>
-                                <MdHome className='w-4 h-4' />
-                                <BreadcrumbLink href="/" className="ml-2 font-semibold text-gray-600 dark:text-gray-300">Home</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4 text-gray-400" />
-                            </BreadcrumbSeparator>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold text-gray-600 dark:text-gray-300">Dashboard</BreadcrumbLink>
-                            </BreadcrumbItem>
-                            <BreadcrumbSeparator>
-                                <FiChevronRight className="h-4 w-4 text-gray-400" />
-                            </BreadcrumbSeparator>
-                            <BreadcrumbItem>
-                                <BreadcrumbLink className="font-semibold text-gray-900 dark:text-gray-100">Subscription Management</BreadcrumbLink>
-                            </BreadcrumbItem>
-                        </BreadcrumbList>
-                    </Breadcrumb>
-
                     {/* Header */}
                     <div className="flex flex-col md:flex-row justify-between items-start bg-white dark:bg-gray-800 p-6 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm md:items-center gap-4">
                         <div>
@@ -314,7 +295,7 @@ const SubscriptionManagement = () => {
                                                 <Label htmlFor="currency" className="text-gray-700 dark:text-gray-300">
                                                     Currency
                                                 </Label>
-                                                <Select {...register('currency', { required: 'Currency is required' })}>
+                                                <Select onValueChange={(value) => setSelectedCurrency(value)}>
                                                     <SelectTrigger className="bg-white py-6 rounded-sm dark:bg-gray-800 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100">
                                                     <SelectValue placeholder="Select a currency" />
                                                     </SelectTrigger>
@@ -441,13 +422,13 @@ const SubscriptionManagement = () => {
                                         <div className="flex justify-between items-center">
                                             <div>
                                                 <p className="text-3xl font-bold text-gray-900 dark:text-gray-100">
-                                                    ${subscription.subscriptionPrice}
+                                                    {subscription.currency} {subscription.subscriptionPrice}
                                                 </p>
                                                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                                                    per {subscription.subscriptionDuration} months
+                                                    Per {subscription.subscriptionDuration} Year
                                                 </p>
                                             </div>
-                                            <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-400">
+                                            <Badge variant="green" className="text-white">
                                                 Active
                                             </Badge>
                                         </div>

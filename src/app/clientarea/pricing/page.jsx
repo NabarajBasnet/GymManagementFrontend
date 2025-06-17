@@ -202,7 +202,7 @@ const TenantSubscriptionPlansManagement = () => {
                         <div className="mb-4">
                           <div className="flex items-baseline">
                             <span className="text-5xl font-bold text-gray-900 dark:text-white">
-                              {plan.subscriptionPrice}
+                              {plan.currency} {plan.subscriptionPrice}
                             </span>
                             <span className="text-gray-500 dark:text-gray-400 ml-2">
                               / per year
