@@ -67,8 +67,6 @@ const TenantCartManagement = () => {
 
   const { cart } = data || {};
 
-  console.log('Cart: ',cart);
-
   const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
@@ -217,21 +215,6 @@ const TenantCartManagement = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-            Authentication Required
-          </h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
-            Please log in to view your cart
-          </p>
-          <Button onClick={() => router.push("/login")}>Go to Login</Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -244,7 +227,7 @@ const TenantCartManagement = () => {
         </p>
       </div>
 
-      {cart?.[0]?.items?.length === 0 ? (
+      {cart?.[0]?.items?.length === 0 || !cart ? (
         <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
           <CardHeader className="text-center pb-2">
             <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center">
@@ -387,20 +370,20 @@ const TenantCartManagement = () => {
                     Subtotal
                   </span>
                   <span className="font-semibold">
-                    $ {cart[0].totalPrice?.toLocaleString()}
+                    $ {cart?.[0]?.totalPrice?.toLocaleString()}
                   </span>
                 </div>
                 <div className="border-t pt-4 dark:border-gray-700">
                 <div className="flex justify-between">
                     <span className="text-lg font-semibold">Next Expire Date</span>
                     <span className="text-sm font-bold">
-                      {new Date(cart[0].nextExpireDate).toLocaleDateString()}
+                      {new Date(cart?.[0]?.nextExpireDate).toLocaleDateString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      $ {cart[0].totalPrice?.toLocaleString()}
+                      $ {cart?.[0]?.totalPrice?.toLocaleString()}
                     </span>
                   </div>
                 </div>

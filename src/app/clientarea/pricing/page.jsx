@@ -359,7 +359,7 @@ const TenantSubscriptionPlansManagement = () => {
                                 <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
                                   <span className="text-gray-600 dark:text-gray-400">Total:</span>
                                   <span className="font-bold text-blue-600 dark:text-blue-400">
-                                    {selectedPlan?.currency} {(selectedPlan?.subscriptionPrice * (quantity || 0)).toFixed(2)}
+                                    {selectedPlan?.currency} {(selectedPlan?.subscriptionPrice * quantity).toFixed(2)}
                                   </span>
                                 </div>
                               </div>
