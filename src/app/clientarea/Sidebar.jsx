@@ -243,7 +243,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
   if (loading) return <Loader />;
 
   return (
-    <div className="bg-white/95 w-[280px] min-h-screen dark:bg-gray-900/95 py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
+    <div className="bg-white dark:bg-gray-800 w-[280px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
       {/* Fixed Header Section */}
       <div className="flex-shrink-0">
         {/* Tenant Profile Section */}
@@ -273,7 +273,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
         </div>
 
         {/* Quick Actions */}
-        <div className="px-4 py-3 flex space-x-2 border-b border-gray-200 dark:border-gray-700">
+        {/* <div className="px-4 py-3 flex space-x-2 border-b border-gray-200 dark:border-gray-700">
           {quickActions.map((action, index) => (
             <button
               key={index}
@@ -289,7 +289,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
               )}
             </button>
           ))}
-        </div>
+        </div> */}
       </div>
 
       {/* Scrollable Navigation Section */}
@@ -329,8 +329,8 @@ const ClientAreaSidebar = ({ activeTab }) => {
             <DropdownMenuTrigger asChild>
               <div className="flex justify-between items-center">
                 <div>
-                  <h1 className="text-sm font-medium text-white">{loggedInTenant?.fullName}</h1>
-                  <p className='text-xs font-medium text-white'>{loggedInTenant?.email}</p>
+                  <h1 className="text-sm font-medium dark:text-white text-gray-700">{loggedInTenant?.fullName}</h1>
+                  <p className='text-xs font-medium dark:text-white text-gray-700'>{loggedInTenant?.email}</p>
                 </div>
                 <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
                   <Settings size={20} />

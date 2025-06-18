@@ -67,6 +67,8 @@ const TenantCartManagement = () => {
 
   const { cart } = data || {};
 
+  console.log('Cart: ',cart);
+
   const handleRemoveItem = async (itemId) => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
@@ -292,10 +294,13 @@ const TenantCartManagement = () => {
                       <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
                         <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
                       </div>
-                      <div>
+                      <div className="flex space-x-3 items-center">
                         <h3 className="font-semibold text-gray-900 dark:text-white">
                           {cartItem?.item?.subscriptionName}
-                        </h3> 
+                        </h3>
+                        <p className="text-xs font-medium text-gray-200">
+                          {cartItem?.selectedPlanDuration}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center space-x-4">
@@ -386,6 +391,12 @@ const TenantCartManagement = () => {
                   </span>
                 </div>
                 <div className="border-t pt-4 dark:border-gray-700">
+                <div className="flex justify-between">
+                    <span className="text-lg font-semibold">Next Expire Date</span>
+                    <span className="text-sm font-bold">
+                      {new Date(cart[0].nextExpireDate).toLocaleDateString()}
+                    </span>
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-lg font-semibold">Total</span>
                     <span className="text-lg font-bold text-blue-600 dark:text-blue-400">

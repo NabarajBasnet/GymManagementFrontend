@@ -106,7 +106,12 @@ const TenantSubscriptionPlansManagement = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ plan }),
+        body: JSON.stringify({ 
+          selectedPlan: selectedPlan,
+          quantity: quantity,
+          selectedPlanDuration: selectedPlanDuration,
+          nextExpireDate: nextExpireDate,
+         }),
         credentials: "include",
       });
 
@@ -256,77 +261,124 @@ const TenantSubscriptionPlansManagement = () => {
                       {/* CTA Button and Guarantee - Always at bottom */}
                       <div className="mt-auto pt-6">
                       <AlertDialog>
-                            <AlertDialogTrigger asChild className="w-full dark:border-none">
-                            <button
-                          onClick={() => {
-                            setSelectedPlan(plan)
-                          }}
-                          disabled={loadingButtons[plan._id]}
-                          className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${isPopular
-                            ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
-                            : "bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-600"
-                            } ${loadingButtons[plan._id]
-                              ? "opacity-75 cursor-not-allowed"
-                              : ""
+                        <AlertDialogTrigger asChild className="w-full rounded-xl">
+                          <button
+                            onClick={() => setSelectedPlan(plan)}
+                            disabled={loadingButtons[plan._id]}
+                            className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${
+                              isPopular
+                                ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg"
+                                : "bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700"
+                            } ${
+                              loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""
                             }`}
-                        >
-                          {loadingButtons[plan._id] ? (
-                            <Loader2 className="w-5 h-5 animate-spin" />
-                          ) : (
-                            <>
-                              Pick Plan
-                              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                            </>
-                          )}
-                        </button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent className="bg-white dark:bg-blue-950 border-none rounded-xl shadow-xl max-w-md text-gray-900 dark:text-white">
-                              <form className="space-y-4">
-                              
-                              <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                  <Label>Duration</Label>
-                                  <Select onValueChange={(value) => setSelectedPlanDuration(value)}>
-                                    <SelectTrigger className="bg-gray-100 py-6 rounded-md dark:bg-gray-900 dark:border-none">
-                                      <SelectValue placeholder="Select a duration" />
-                                    </SelectTrigger>
-                                    <SelectContent className="bg-gray-100 dark:bg-gray-900 dark:border-none">
-                                        <SelectItem value='1 Month' className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 cursor-pointer dark:hover:bg-blue-900/30">1 Month</SelectItem>
-                                        <SelectItem value='3 Months' className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 cursor-pointer dark:hover:bg-blue-900/30">3 Months</SelectItem>
-                                        <SelectItem value='6 Months' className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 cursor-pointer dark:hover:bg-blue-900/30">6 Months</SelectItem>
-                                        <SelectItem value='9 Months' className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 cursor-pointer dark:hover:bg-blue-900/30">9 Months</SelectItem>
-                                        <SelectItem value='12 Months' className="text-gray-600 dark:text-gray-300 hover:bg-gray-100 cursor-pointer dark:hover:bg-blue-900/30">12 Months</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
+                          >
+                            {loadingButtons[plan._id] ? (
+                              <Loader2 className="w-5 h-5 animate-spin" />
+                            ) : (
+                              <>
+                                Pick Plan
+                                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                              </>
+                            )}
+                          </button>
+                        </AlertDialogTrigger>
+                        
+                        <AlertDialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl max-w-md p-6">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+                              Configure Your Plan
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                              Customize your subscription details
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
 
-                                <div>
-                                  <Label>Quantity</Label>
-                                  <Input 
-                                  value={quantity}
-                                  onChange={(e) => setQuantity(e.target.value)}
-                                  type="number" placeholder="Enter quantity" className="bg-gray-100 py-6 rounded-md dark:bg-gray-900 dark:border-none" />
-                                </div>
+                          <form className="space-y-6 mt-4">
+                            <div className="grid grid-cols-2 gap-4">
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</Label>
+                                <Select onValueChange={(value) => setSelectedPlanDuration(value)}>
+                                  <SelectTrigger className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg">
+                                    <SelectValue placeholder="Select duration" />
+                                  </SelectTrigger>
+                                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                                    {['1 Month', '3 Months', '6 Months', '9 Months', '12 Months'].map((option) => (
+                                      <SelectItem 
+                                        key={option}
+                                        value={option}
+                                        className="px-4 py-2 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                                      >
+                                        {option}
+                                      </SelectItem>
+                                    ))}
+                                  </SelectContent>
+                                </Select>
                               </div>
 
-                          <div>
-                            <h1>Summary</h1>
-
-                            <div>
-                              <h1>Plan: {selectedPlan?.subscriptionName}</h1>
-                              <p>Price: {selectedPlan?.currency} {selectedPlan?.subscriptionPrice}</p>
-                              <p>Duration: {selectedPlanDuration}</p>
-                              <p>Quantity: {quantity}</p>
-                              <p>Next Expire Date: {new Date(nextExpireDate).toISOString().split('T')[0]}</p>
-                              <p>Total Price: {selectedPlan?.currency} {selectedPlan?.subscriptionPrice * quantity}</p>
+                              <div className="space-y-2">
+                                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</Label>
+                                <Input
+                                  value={quantity}
+                                  onChange={(e) => setQuantity(e.target.value)}
+                                  type="number"
+                                  min="1"
+                                  placeholder="Enter quantity"
+                                  className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
+                                />
+                              </div>
                             </div>
-                          </div>
 
-                              </form>
-                              <AlertDialogCancel className="bg-gray-100 text-gray-700 dark:border-none hover:bg-gray-200 dark:bg-blue-900 dark:text-white">Cancel</AlertDialogCancel>
-                              <AlertDialogAction className="bg-blue-600 text-white hover:bg-blue-700" onClick={() => handleAddToCart(plan)}>Add to Cart</AlertDialogAction>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                            <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                              <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Order Summary</h3>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Plan:</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">{selectedPlan?.subscriptionName}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Price:</span>
+                                  <span className="font-medium text-xl text-gray-900 dark:text-white">
+                                    {selectedPlan?.currency} {selectedPlan?.subscriptionPrice}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Duration:</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">{selectedPlanDuration || '-'}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Quantity:</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">{quantity || '0'}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Expires:</span>
+                                  <span className="font-medium text-gray-900 dark:text-white">
+                                    {nextExpireDate ? new Date(nextExpireDate).toISOString().split('T')[0] : '-'}
+                                  </span>
+                                </div>
+                                <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
+                                  <span className="text-gray-600 dark:text-gray-400">Total:</span>
+                                  <span className="font-bold text-blue-600 dark:text-blue-400">
+                                    {selectedPlan?.currency} {(selectedPlan?.subscriptionPrice * (quantity || 0)).toFixed(2)}
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </form>
+
+                          <AlertDialogFooter className="mt-6">
+                            <AlertDialogCancel className="px-6 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors">
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction 
+                              className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all"
+                              onClick={() => handleAddToCart(plan)}
+                            >
+                              Add to Cart
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
 
                         {/* Money Back Guarantee */}
                         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
