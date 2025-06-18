@@ -16,13 +16,17 @@ const ClientAreaLayout = ({ children }) => {
     <div className="w-full">
       <LoggedInTenantProvider>
         <ReactQueryClientProvider>
-          <div className={`flex w-full ${clientSidebar ? "flex-row" : "flex-col"}`}>
-            {clientSidebar && <ClientAreaSidebar />}
-            <div className={`w-full ${clientSidebar ? "pl-[280px]" : "pl-0"}`}>
-              {!hideHeader && <ClientAreaHeader />}
-              <div className="w-full">
-                {children}
-              </div>
+          <div>
+            <div className="w-full md:flex hidden">
+              {clientSidebar && <ClientAreaSidebar />}
+            </div>
+            <div
+              className={`w-full ${
+                clientSidebar ? "pl-0 md:pl-[280px]" : "pl-0"
+              }`}
+            >
+              <ClientAreaHeader />
+              {children}
             </div>
           </div>
         </ReactQueryClientProvider>
