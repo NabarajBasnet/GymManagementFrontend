@@ -324,20 +324,18 @@ const ClientAreaSidebar = ({ activeTab }) => {
       </div>
 
       {/* Fixed Footer Section */}
-      <div className="flex-shrink-0 px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-        <div className="flex justify-between items-center">
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-          >
-            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-          </button>
-
+      <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200 dark:border-gray-700">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                <Settings size={20} />
-              </button>
+              <div className="flex justify-between items-center">
+                <div>
+                  <h1 className="text-sm font-medium text-white">{loggedInTenant?.fullName}</h1>
+                  <p className='text-xs font-medium text-white'>{loggedInTenant?.email}</p>
+                </div>
+                <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                  <Settings size={20} />
+                </button>
+              </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end">
               <DropdownMenuLabel>Settings</DropdownMenuLabel>
@@ -357,7 +355,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        </div>
       </div>
     </div>
   );
