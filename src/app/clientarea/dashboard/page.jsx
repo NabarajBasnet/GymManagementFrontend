@@ -1,6 +1,5 @@
 "use client";
 
-import { toast } from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
 import { User, Settings, LogOut, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
@@ -88,13 +87,11 @@ const TenantDashboard = () => {
       const responseBody = await response.json();
       if (response.ok) {
         soonerToast.success(responseBody.message);
-        toast.success(responseBody.message);
         router.push(responseBody.redirectUrl);
       }
     } catch (error) {
       console.log("Error: ", error);
       soonerToast.error(error.message);
-      toast.error(error.message);
     }
   };
 
@@ -139,6 +136,7 @@ const TenantDashboard = () => {
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
+      soonerToast.error(error.message);
       console.log("Error: ", error);
     };
   };
@@ -156,6 +154,7 @@ const TenantDashboard = () => {
       const responseBody = await request.json();
       return responseBody;
     } catch (error) {
+      soonerToast.error(error.message);
       console.log("Error: ", error);
     };
   };
@@ -169,7 +168,6 @@ const TenantDashboard = () => {
   // RUC
   const StatCard = ({ icon: Icon, title, value, className, trend, subtitle, link }) => (
     <motion.div
-      onClick={() => router.push(link)}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}

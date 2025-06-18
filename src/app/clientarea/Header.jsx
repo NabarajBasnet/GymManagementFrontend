@@ -131,7 +131,7 @@ const ClientAreaHeader = ({ activeTab }) => {
       label: "My Orders",
       description: "My Orders",
     },
-       {
+    {
       id: "/clientarea/membershipplans",
       icon: <Package size={20} />,
       label: "Membership Plans",
@@ -249,17 +249,17 @@ const ClientAreaHeader = ({ activeTab }) => {
         <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-18">
             {/* Mobile menu button */}
-            
+
             <button
-            onClick={() => dispatch(ToggleClientSidebar())}
-                    className="inline-flex hidden md:flex items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 dark:focus:bg-indigo-900/20 transition-all duration-200 group"
-                    aria-label="Open menu"
-                  >
-                    <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
-                  </button>
+              onClick={() => dispatch(ToggleClientSidebar())}
+              className="inline-flex hidden md:flex items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 dark:focus:bg-indigo-900/20 transition-all duration-200 group"
+              aria-label="Open menu"
+            >
+              <IoMenu className="block h-6 w-6 group-hover:scale-110 transition-transform duration-200" />
+            </button>
 
             <div className="flex items-center md:hidden">
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+              <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetTrigger asChild>
                   <button
                     className="inline-flex items-center justify-center p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:bg-indigo-50/80 dark:focus:bg-indigo-900/20 transition-all duration-200 group"

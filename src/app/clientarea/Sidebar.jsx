@@ -213,11 +213,11 @@ const ClientAreaSidebar = ({ activeTab }) => {
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-2">
                 <span className="font-medium">
-                {loggedInTenant?.freeTrailStatus==='Active'?'Free Trail':loggedInTenant?.subscription?.subscriptionName}  
+                  {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName}
                 </span>
-                
+
                 <span className="text-xs text-gray-500 dark:text-gray-300 font-medium">
-                ( {loggedInTenant?.freeTrailStatus==='Active'?loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays} Days left )
+                  ( {loggedInTenant?.freeTrailStatus === 'Active' ? loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays} Days left )
                 </span>
               </p>
             </div>
@@ -240,11 +240,10 @@ const ClientAreaSidebar = ({ activeTab }) => {
               <li key={item.id}>
                 <button
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center space-x-3 px-3 py-3 rounded-md text-sm font-medium ${
-                    activeTab === item.id
-                      ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
-                      : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-                  }`}
+                  className={`w-full flex items-center space-x-3 px-3 py-3 rounded-md text-sm font-medium ${activeTab === item.id
+                    ? "bg-blue-50 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400"
+                    : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
+                    }`}
                 >
                   <span className="text-white dark:text-gray-200 bg-blue-700/70 dark:bg-blue-700/50 p-2 rounded-md">
                     {item.icon}
@@ -262,36 +261,36 @@ const ClientAreaSidebar = ({ activeTab }) => {
 
       {/* Fixed Footer Section */}
       <div className="flex-shrink-0 px-4 py-4 border-t border-gray-200 dark:border-gray-700">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1 className="text-sm font-medium dark:text-white text-gray-700">{loggedInTenant?.fullName}</h1>
-                  <p className='text-xs font-medium dark:text-white text-gray-700'>{loggedInTenant?.email}</p>
-                </div>
-                <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
-                  <Settings size={20} />
-                </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-sm font-medium dark:text-white text-gray-700">{loggedInTenant?.fullName}</h1>
+                <p className='text-xs font-medium dark:text-white text-gray-700'>{loggedInTenant?.email}</p>
               </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => handleNavClick("/clientarea/settings")}>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleNavClick("/clientarea/help")}>
-                <HelpCircle className="mr-2 h-4 w-4" />
-                <span>Help</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={logOutTenant}>
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Log out</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+              <button className="p-2 rounded-md text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                <Settings size={20} />
+              </button>
+            </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuLabel>Settings</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => handleNavClick("/clientarea/settings")}>
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleNavClick("/clientarea/help")}>
+              <HelpCircle className="mr-2 h-4 w-4" />
+              <span>Help</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={logOutTenant}>
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Log out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
