@@ -110,7 +110,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
       id: "/clientarea/pricing",
       icon: <CreditCard size={20} />,
       label: "Pricing",
-      description: "View and purchase services & products",
+      description: "Purchase Subscriptions",
     },
     {
       id: "/clientarea/systemusers",
@@ -144,21 +144,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
     }
   ];
 
-  const quickActions = [
-    {
-      icon: <Bell size={16} />,
-      label: "Notifications",
-      count: 3,
-      link: "/clientarea/notifications",
-    },
-    {
-      icon: <ShoppingCart size={16} />,
-      label: "Cart",
-      count: cartLength,
-      link: "/clientarea/cart",
-    },
-  ];
-
   const handleNavClick = (id, tab) => {
     router.push(id);
     setIsSheetOpen(false);
@@ -187,32 +172,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
     }
   };
 
-  // Get subscription tier styling
-  const getSubscriptionStyling = (status) => {
-    switch (status?.toLowerCase()) {
-      case "premium":
-        return {
-          bg: "bg-gradient-to-r from-yellow-400 to-orange-500",
-          icon: <Crown size={12} />,
-        };
-      case "pro":
-        return {
-          bg: "bg-gradient-to-r from-purple-500 to-indigo-600",
-          icon: <Zap size={12} />,
-        };
-      case "basic":
-        return {
-          bg: "bg-gradient-to-r from-blue-500 to-cyan-600",
-          icon: <Shield size={12} />,
-        };
-      default:
-        return {
-          bg: "bg-gradient-to-r from-gray-400 to-gray-600",
-          icon: <Shield size={12} />,
-        };
-    }
-  };
-
   // Theme handling
   useEffect(() => {
     setMounted(true);
@@ -235,12 +194,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
       }
     }
   }, [darkMode, mounted]);
-
-  const toggleTheme = () => {
-    setDarkMode(!darkMode);
-  };
-
-  if (loading) return <Loader />;
 
   return (
     <div className="bg-white/95 dark:bg-gray-900/95 w-[280px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
@@ -293,10 +246,13 @@ const ClientAreaSidebar = ({ activeTab }) => {
                       : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                   }`}
                 >
-                  <span className="text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 p-2 rounded-md">
+                  <span className="text-white dark:text-gray-200 bg-blue-700/70 dark:bg-blue-700/50 p-2 rounded-md">
                     {item.icon}
                   </span>
-                  <span>{item.label}</span>
+                  <div className="flex flex-col items-start">
+                    <span className="text-md font-medium">{item.label}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-300 font-medium">{item.description}</span>
+                  </div>
                 </button>
               </li>
             ))}
