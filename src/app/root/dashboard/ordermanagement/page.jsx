@@ -389,6 +389,9 @@ const OrderManagement = () => {
                         <TableHead className="font-semibold text-slate-700 dark:text-slate-300">
                           Order Date
                         </TableHead>
+                        <TableHead className="font-semibold text-slate-700 dark:text-slate-300">
+                          Expire Date
+                        </TableHead>
                         <TableHead className="font-semibold text-slate-700 dark:text-slate-300 text-right">
                           Actions
                         </TableHead>
@@ -503,8 +506,20 @@ const OrderManagement = () => {
                                   year: "numeric",
                                   month: "short",
                                   day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-slate-700 dark:text-slate-300">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4 text-slate-500" />
+                              {new Date(order?.expireDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
                                   hour12: true,
                                 }
                               )}
@@ -515,36 +530,80 @@ const OrderManagement = () => {
                               {/* Approve Button */}
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button className="h-8 w-8 p-0 bg-transparent hover:dark:bg-gray-900 hover:bg-gray-100">
-                                    <CheckCircle className="w-4 h-4 text-green-600" />
+                                  <Button 
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-9 w-9 rounded-lg hover:bg-green-50/50 dark:hover:bg-green-900/10 transition-all 
+                                              hover:scale-105 active:scale-95 shadow-sm hover:shadow-green-100 dark:hover:shadow-green-900/20"
+                                    aria-label="Attach subscription"
+                                  >
+                                    <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
                                   </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent className="dark:border-none dark:bg-gray-800">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-gray-900 dark:text-gray-200">
-                                      Are you absolutely sure?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      This action will attach the taken
-                                      subscription by tenant to the tenant
-                                      account. And once tenant account status is
-                                      active by administrator then tenant will
-                                      be able to access the subscription
-                                      features and access dashboard.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="text-gray-900 dark:border-none dark:text-gray-200">
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() =>
-                                        handleAttachSubscription(order.orderId)
-                                      }
-                                    >
-                                      Continue
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
+                                
+                                <AlertDialogContent className="max-w-md border-0 bg-white dark:bg-gray-900 rounded-xl shadow-2xl dark:shadow-gray-950/50 p-6 overflow-hidden">
+                                  {/* Gradient accent bar */}
+                                  <div className="absolute top-0 left-0 h-1 w-full bg-gradient-to-r from-green-400 to-emerald-500" />
+                                  
+                                  <div className="flex flex-col space-y-5">
+                                    <div className="flex items-start gap-4">
+                                      {/* Modern icon container */}
+                                      <div className="flex-shrink-0 p-2.5 rounded-xl bg-green-50 dark:bg-green-900/20 backdrop-blur-sm">
+                                        <CheckCircle className="w-6 h-6 text-green-600 dark:text-green-400" />
+                                      </div>
+                                      
+                                      <div className="space-y-2">
+                                        <AlertDialogHeader>
+                                          <AlertDialogTitle className="text-xl font-semibold text-gray-900 dark:text-white tracking-tight">
+                                            Confirm Subscription Activation
+                                          </AlertDialogTitle>
+                                          <AlertDialogDescription className="text-gray-500 dark:text-gray-400">
+                                            This will grant the tenant access to:
+                                          </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        
+                                        {/* Modern feature list */}
+                                        <ul className="space-y-3">
+                                          <li className="flex items-start gap-2">
+                                            <div className="flex-shrink-0 mt-0.5">
+                                              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                              </svg>
+                                            </div>
+                                            <span className="text-sm text-gray-700 dark:text-gray-300">All premium features in their plan</span>
+                                          </li>
+                                          <li className="flex items-start gap-2">
+                                            <div className="flex-shrink-0 mt-0.5">
+                                              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                              </svg>
+                                            </div>
+                                            <span className="text-sm text-gray-700 dark:text-gray-300">Full dashboard access</span>
+                                          </li>
+                                          <li className="flex items-start gap-2">
+                                            <div className="flex-shrink-0 mt-0.5">
+                                              <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                              </svg>
+                                            </div>
+                                            <span className="text-sm text-gray-700 dark:text-gray-300">Service benefits immediately after admin approval</span>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
+                                    
+                                    <AlertDialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3 mt-4">
+                                      <AlertDialogCancel className="px-5 py-2.5 text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                                        Cancel
+                                      </AlertDialogCancel>
+                                      <AlertDialogAction
+                                        onClick={() => handleAttachSubscription(order.orderId)}
+                                        className="px-5 py-2.5 text-sm font-medium rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 text-white shadow-lg hover:shadow-green-500/30 transition-all hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                                      >
+                                        Confirm & Activate
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </div>
                                 </AlertDialogContent>
                               </AlertDialog>
 

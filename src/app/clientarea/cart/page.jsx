@@ -295,7 +295,7 @@ const TenantCartManagement = () => {
                     </div>
                     <div className="hidden sm:flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
                       <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span>Premium Plans</span>
+                      <span>Subscription Plans</span>
                     </div>
                   </div>
                 </CardHeader>

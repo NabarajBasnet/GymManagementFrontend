@@ -222,6 +222,9 @@ const MyOrders = () => {
                         <TableHead className="font-semibold text-slate-700 dark:text-slate-300">
                           Order Date
                         </TableHead>
+                        <TableHead className="font-semibold text-slate-700 dark:text-slate-300">
+                          Expire Date
+                        </TableHead>
                         <TableHead className="font-semibold text-slate-700 dark:text-slate-300 text-right">
                           Actions
                         </TableHead>
@@ -287,8 +290,20 @@ const MyOrders = () => {
                                   year: "numeric",
                                   month: "short",
                                   day: "numeric",
-                                  hour: "2-digit",
-                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-slate-700 dark:text-slate-300">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="w-4 h-4 text-slate-500" />
+                              {new Date(order?.expireDate).toLocaleDateString(
+                                "en-US",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
                                   hour12: true,
                                 }
                               )}
