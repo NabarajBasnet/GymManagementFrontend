@@ -19,6 +19,9 @@ import {
   Minus,
   Plus,
   ShoppingBag,
+  ArrowRight,
+  Calendar,
+  Star,
 } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -209,206 +212,271 @@ const TenantCartManagement = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 flex items-center justify-center">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-blue-200 dark:border-blue-800 rounded-full animate-pulse"></div>
+            <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400 absolute top-4 left-4" />
+          </div>
+          <p className="text-sm text-slate-600 dark:text-slate-400 animate-pulse">Loading your cart...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full p-6 space-y-6 min-h-screen bg-gray-100 dark:bg-gray-900">
-     
-     <div className={`w-full ${!cart ? "h-[25vh]" : "h-[5vh]"} flex items-center justify-center`}>
-      {cart &&(
-        <div className="w-full">
-          <h1 className="text-3xl text-black dark:text-white font-bold mb-2">
-            Shopping Cart
-          </h1>
-          <p className="text-sm font-medium dark:text-gray-100 text-gray-500">
-            Review your subscription plans and proceed to checkout
-          </p>
-        </div>
-      )}
-     </div>
-
-      {cart?.[0]?.items?.length === 0 || !cart ? (
-        <Card className="w-full max-w-md mx-auto bg-white dark:bg-gray-800 dark:border-gray-700 shadow-lg">
-          <CardHeader className="text-center pb-2">
-            <div className="mx-auto mb-4 w-16 h-16 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center">
-              <ShoppingBag className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-            </div>
-            <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
-              Your Cart is Empty
-            </CardTitle>
-            <CardDescription className="text-gray-500 dark:text-gray-400 mt-2 px-4">
-              Discover our subscription plans and find the perfect fit for your
-              needs
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-2 pb-6">
-            <div className="text-center">
-              <Button
-                onClick={() => router.push("/clientarea/pricing")}
-                className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white font-medium py-2.5 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] shadow-sm hover:shadow-md"
-              >
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                Browse Subscription Plans
-              </Button>
-              <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
-                Choose from our variety of plans designed for your success
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+        
+        {/* Header Section */}
+        <div className={`w-full ${!cart ? "h-[25vh]" : "mb-8"} flex items-center justify-center`}>
+          {cart && (
+            <div className="text-center w-full max-w-3xl">
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full mb-4 shadow-lg">
+                <ShoppingBag className="w-8 h-8 text-white" />
+              </div>
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent mb-3">
+                Shopping Cart
+              </h1>
+              <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto">
+                Review your subscription plans and proceed to checkout
               </p>
             </div>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="w-full md:flex space-y-6 md:space-y-0 items-start justify-between gap-10">
-          {/* Cart Items */}
-          <Card className="w-full lg:w-8/12 bg-white dark:bg-gray-800 dark:border-none lg:min-h-80">
-            <CardHeader>
-              <CardTitle>Subscription Plans</CardTitle>
-              <CardDescription>
-                {cart?.[0]?.items?.length || 0} items in your cart
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {cart?.[0]?.items?.map((cartItem) => (
-                  <div
-                    key={cartItem._id}
-                    className="flex items-center justify-between p-4 border rounded-lg dark:border-gray-700"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
-                        <Package className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <div className="flex space-x-3 items-center">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {cartItem?.item?.subscriptionName}
-                        </h3>
-                        <p className="text-xs font-medium text-gray-200">
-                          {cartItem?.selectedPlanDuration}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="dark:border-none dark:outline-none"
-                          onClick={() =>
-                            handleDecreaseQuantity(
-                              cartItem?.item?._id,
-                              cartItem?.item?.subscriptionPrice
-                            )
-                          }
-                          disabled={processing[cartItem?.item?._id]}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </Button>
-                        <span className="w-8 text-center">
-                          {cartItem.quantity}
-                        </span>
-                        <Button
-                          variant="outline"
-                          size="icon"
-                          className="dark:border-none dark:outline-none"
-                          onClick={() =>
-                            handleIncreaseQuantity(
-                              cartItem?.item?._id,
-                              cartItem?.item?.subscriptionPrice
-                            )
-                          }
-                          disabled={processing[cartItem?.item?._id]}
-                        >
-                          <Plus className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold text-gray-900 dark:text-white">
-                          {cartItem?.item?.currency} {cartItem?.price?.toLocaleString()}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          {cartItem?.item?.currency} {cartItem?.item?.subscriptionPrice} each
-                        </p>
-                      </div>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="dark:border-none dark:outline-none"
-                        onClick={() =>
-                          handleRemoveItem(
-                            cartItem?.item?._id,
-                            cartItem?.item?.subscriptionPrice
-                          )
-                        }
-                        disabled={processing[cartItem?.item?._id]}
-                      >
-                        <Trash2 className="w-5 h-5 text-red-500" />
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Order Summary */}
-          <Card className="w-full lg:w-4/12 bg-white dark:bg-gray-800 dark:border-none">
-            <CardHeader>
-              <CardTitle>Order Summary</CardTitle>
-              <CardDescription>Review your order details</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Total Items
-                  </span>
-                  <span className="font-semibold">
-                    {cart?.[0]?.totalItems || 0} items
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-300">
-                    Subtotal
-                  </span>
-                  <span className="font-semibold">
-                    $ {cart?.[0]?.totalPrice?.toLocaleString()}
-                  </span>
-                </div>
-                <div className="border-t pt-4 dark:border-gray-700">
-                <div className="flex justify-between">
-                    <span className="text-lg font-semibold">Next Expire Date</span>
-                    <span className="text-sm font-bold">
-                      {new Date(cart?.[0]?.nextExpireDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-lg font-semibold">Total</span>
-                    <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                      $ {cart?.[0]?.totalPrice?.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <button
-                className="w-full flex items-center justify-center dark:bg-white dark:text-black py-3 rounded-md cursor-pointer bg-gray-900 text-white hover:bg-gray-800 hover:dark:bg-gray-200 transition-all duration-300 font-semibold"
-                onClick={() => handleCreateOrder(cart?.[0]?._id, cart?.[0]?.totalPrice)}
-              >
-                {ordering ? (
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                ) : (
-                  <ShoppingBag className="w-5 h-5 mr-2" />
-                )}
-                Place Order
-              </button>
-            </CardFooter>
-          </Card>
+          )}
         </div>
-      )}
+
+        {/* Empty Cart State */}
+        {cart?.[0]?.items?.length === 0 || !cart ? (
+          <div className="flex items-center justify-center min-h-[60vh]">
+            <Card className="w-full max-w-lg mx-auto bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-2xl rounded-3xl overflow-hidden">
+              <CardHeader className="text-center pb-4 bg-gradient-to-b from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+                <div className="mx-auto mb-6 w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-full flex items-center justify-center shadow-inner">
+                  <ShoppingBag className="w-12 h-12 text-blue-600 dark:text-blue-400" />
+                </div>
+                <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                  Your Cart is Empty
+                </CardTitle>
+                <CardDescription className="text-slate-600 dark:text-slate-400 text-base leading-relaxed px-4">
+                  Discover our subscription plans and find the perfect fit for your business needs
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="p-8">
+                <Button
+                  onClick={() => router.push("/clientarea/pricing")}
+                  className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl group shadow-lg"
+                >
+                  <ShoppingBag className="w-5 h-5 mr-3 group-hover:animate-bounce" />
+                  Browse Subscription Plans
+                  <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <p className="text-sm text-slate-500 dark:text-slate-500 mt-4 text-center">
+                  Choose from our variety of plans designed for your success
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* Cart with Items */
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            
+            {/* Cart Items Section */}
+            <div className="xl:col-span-8">
+              <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
+                <CardHeader className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
+                        <Package className="w-6 h-6 mr-3 text-blue-600" />
+                        Subscription Plans
+                      </CardTitle>
+                      <CardDescription className="text-slate-600 dark:text-slate-400 mt-1">
+                        {cart?.[0]?.items?.length || 0} {cart?.[0]?.items?.length === 1 ? 'item' : 'items'} in your cart
+                      </CardDescription>
+                    </div>
+                    <div className="hidden sm:flex items-center space-x-2 text-sm text-slate-500 dark:text-slate-400">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span>Premium Plans</span>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="space-y-4">
+                    {cart?.[0]?.items?.map((cartItem, index) => (
+                      <div
+                        key={cartItem._id}
+                        className="group relative bg-gradient-to-r from-white to-slate-50 dark:from-slate-700 dark:to-slate-800 rounded-2xl p-6 border border-slate-200 dark:border-slate-600 hover:shadow-lg hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300 hover:-translate-y-1"
+                      >
+                        {/* Premium Badge */}
+                        <div className="absolute -top-2 -right-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                          #{index + 1}
+                        </div>
+                        
+                        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                          {/* Left Section */}
+                          <div className="flex items-start lg:items-center space-x-4 flex-1">
+                            {/* Icon */}
+                            <div className="flex-shrink-0 p-3 bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 rounded-xl shadow-inner">
+                              <Package className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                            </div>
+
+                            {/* Details */}
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                {cartItem?.item?.subscriptionName}
+                              </h3>
+                              
+                              <div className="flex flex-wrap items-center gap-4 text-sm">
+                                <div className="flex items-center space-x-2 bg-slate-100 dark:bg-slate-700 px-3 py-1 rounded-full">
+                                  <Calendar className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                                  <span className="font-medium text-slate-700 dark:text-slate-300">
+                                    {cartItem?.selectedPlanDuration}
+                                  </span>
+                                </div>
+                                
+                                <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/30 px-3 py-1 rounded-full">
+                                  <span className="w-2 h-2 bg-blue-600 rounded-full"></span>
+                                  <span className="font-medium text-blue-700 dark:text-blue-300">
+                                    Qty: {cartItem.quantity}
+                                  </span>
+                                </div>
+                              </div>
+
+                              <div className="mt-3 flex items-baseline space-x-2">
+                                <span className="text-2xl font-bold text-slate-900 dark:text-white">
+                                  {cartItem?.item?.currency} {cartItem?.price?.toLocaleString()}
+                                </span>
+                                <span className="text-sm text-slate-500 dark:text-slate-400">
+                                  {cartItem?.item?.currency} {cartItem?.price?.toLocaleString()} each
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Right Section - Remove Button */}
+                          <div className="flex-shrink-0">
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              className="w-12 h-12 border-red-200 hover:border-red-300 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-900/20 rounded-xl transition-all duration-200 group/btn"
+                              onClick={() =>
+                                handleRemoveItem(
+                                  cartItem?.item?._id,
+                                  cartItem?.item?.subscriptionPrice
+                                )
+                              }
+                              disabled={processing[cartItem?.item?._id]}
+                            >
+                              {processing[cartItem?.item?._id] ? (
+                                <Loader2 className="w-5 h-5 animate-spin text-red-500" />
+                              ) : (
+                                <Trash2 className="w-5 h-5 text-red-500 group-hover/btn:scale-110 transition-transform" />
+                              )}
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Order Summary Section */}
+            <div className="xl:col-span-4">
+              <div className="sticky top-8">
+                <Card className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border-0 shadow-xl rounded-3xl overflow-hidden">
+                  <CardHeader className="bg-gradient-to-r from-slate-50 to-white dark:from-slate-800 dark:to-slate-800">
+                    <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white flex items-center">
+                      <CreditCard className="w-6 h-6 mr-3 text-green-600" />
+                      Order Summary
+                    </CardTitle>
+                    <CardDescription className="text-slate-600 dark:text-slate-400">
+                      Review your order details
+                    </CardDescription>
+                  </CardHeader>
+                  
+                  <CardContent className="p-6">
+                    <div className="space-y-6">
+                      {/* Summary Items */}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center p-4 bg-slate-50 dark:bg-slate-700 rounded-xl">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">Total Items</span>
+                          <span className="font-bold text-lg text-slate-900 dark:text-white">
+                            {cart?.[0]?.totalItems || 0}
+                          </span>
+                        </div>
+                        
+                        <div className="flex justify-between items-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl">
+                          <span className="text-slate-600 dark:text-slate-300 font-medium">Subtotal</span>
+                          <span className="font-bold text-lg text-slate-900 dark:text-white">
+                            $ {cart?.[0]?.totalPrice?.toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Divider */}
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-slate-200 dark:border-slate-600"></div>
+                        </div>
+                        <div className="relative flex justify-center">
+                          <span className="bg-white dark:bg-slate-800 px-4 text-sm text-slate-500">Summary</span>
+                        </div>
+                      </div>
+
+                      {/* Total Section */}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                          <div className="flex items-center space-x-2">
+                            <Calendar className="w-5 h-5 text-green-600" />
+                            <span className="font-semibold text-slate-900 dark:text-white">Next Expire Date</span>
+                          </div>
+                          <span className="font-bold text-green-700 dark:text-green-400">
+                            {new Date(cart?.[0]?.nextExpireDate).toLocaleDateString()}
+                          </span>
+                        </div>
+                        
+                        <div className="p-6 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-lg">
+                          <div className="flex justify-between items-center text-white">
+                            <span className="text-xl font-bold">Total Amount</span>
+                            <span className="text-3xl font-bold">
+                              $ {cart?.[0]?.totalPrice?.toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                  
+                  <CardFooter className="p-6 pt-0">
+                    <button
+                      className="w-full group relative overflow-hidden bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white dark:to-slate-100 text-white dark:text-slate-900 font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={() => handleCreateOrder(cart?.[0]?._id, cart?.[0]?.totalPrice)}
+                      disabled={ordering}
+                    >
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                      <div className="relative flex items-center justify-center">
+                        {ordering ? (
+                          <>
+                            <Loader2 className="w-6 h-6 mr-3 animate-spin" />
+                            Processing Order...
+                          </>
+                        ) : (
+                          <>
+                            <ShoppingBag className="w-6 h-6 mr-3 group-hover:animate-bounce" />
+                            Place Order
+                            <ArrowRight className="w-5 h-5 ml-3 group-hover:translate-x-1 transition-transform" />
+                          </>
+                        )}
+                      </div>
+                    </button>
+                  </CardFooter>
+                </Card>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

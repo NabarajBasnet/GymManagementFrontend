@@ -137,6 +137,7 @@ useEffect(() => {
           quantity: quantity,
           selectedPlanDuration: selectedPlanDuration,
           nextExpireDate: nextExpireDate,
+          totalPrice: totalPrice,
          }),
         credentials: "include",
       });

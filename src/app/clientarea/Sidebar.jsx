@@ -271,25 +271,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
             </div>
           )}
         </div>
-
-        {/* Quick Actions */}
-        {/* <div className="px-4 py-3 flex space-x-2 border-b border-gray-200 dark:border-gray-700">
-          {quickActions.map((action, index) => (
-            <button
-              key={index}
-              onClick={() => handleNavClick(action.link)}
-              className="flex-1 dark:bg-gray-200 flex items-center justify-center space-x-2 py-2 px-3 rounded-md bg-gray-100 hover:bg-gray-200 text-sm font-medium"
-            >
-              {action.icon}
-              <span>{action.label}</span>
-              {action.count > 0 && (
-                <span className="bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {action.count}
-                </span>
-              )}
-            </button>
-          ))}
-        </div> */}
       </div>
 
       {/* Scrollable Navigation Section */}
