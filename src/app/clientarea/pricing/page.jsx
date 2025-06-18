@@ -40,6 +40,7 @@ const TenantSubscriptionPlansManagement = () => {
   const [selectedPlanDuration, setSelectedPlanDuration] = useState();
   const [nextExpireDate, setNextExpireDate] = useState(new Date());
   const [quantity, setQuantity] = useState(1);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const [loadingButtons, setLoadingButtons] = useState({});
   const { tenant, loading: tenantLoading } = useTenant();
@@ -50,7 +51,6 @@ const TenantSubscriptionPlansManagement = () => {
   const dispatch = useDispatch();
   const [orgSetupDialog, setOrgSetupDialog] = useState(false);
   const [resBody, setResBody] = useState();
-
 
   const calculateNextExpireDate = (duration) => {
     switch(duration) {
@@ -72,6 +72,32 @@ const TenantSubscriptionPlansManagement = () => {
       setNextExpireDate(calculateNextExpireDate(selectedPlanDuration));
     }
   }, [selectedPlanDuration, selectedPlan, quantity]);
+
+// Calculate total price
+useEffect(() => {
+  if(selectedPlan && selectedPlanDuration && quantity) {
+    switch(selectedPlanDuration) {
+      case '1 Month':
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
+        break;
+      case '3 Months':
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 3);
+        break;
+      case '6 Months':
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 6);
+        break;
+      case '9 Months':
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 9);
+        break;
+      case '12 Months':
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 12);
+        break;
+      default:
+        setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
+        break;
+    }
+  }
+}, [selectedPlan, selectedPlanDuration, quantity]);
 
   const fetchPlans = async () => {
     try {
@@ -307,7 +333,7 @@ const TenantSubscriptionPlansManagement = () => {
                                       <SelectItem 
                                         key={option}
                                         value={option}
-                                        className="px-4 py-2 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                                        className="px-8 py-2 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
                                       >
                                         {option}
                                       </SelectItem>
@@ -359,7 +385,7 @@ const TenantSubscriptionPlansManagement = () => {
                                 <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
                                   <span className="text-gray-600 dark:text-gray-400">Total:</span>
                                   <span className="font-bold text-blue-600 dark:text-blue-400">
-                                    {selectedPlan?.currency} {(selectedPlan?.subscriptionPrice * quantity).toFixed(2)}
+                                    {selectedPlan?.currency} {totalPrice.toFixed(2)}
                                   </span>
                                 </div>
                               </div>
