@@ -243,7 +243,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
   if (loading) return <Loader />;
 
   return (
-    <div className="bg-white dark:bg-gray-800 w-[280px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
+    <div className="bg-white/95 dark:bg-gray-900/95 w-[280px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
       {/* Fixed Header Section */}
       <div className="flex-shrink-0">
         {/* Tenant Profile Section */}
@@ -258,8 +258,14 @@ const ClientAreaSidebar = ({ activeTab }) => {
               <h3 className="font-medium text-gray-900 dark:text-white">
                 {loggedInTenant?.fullName || "Tenant"}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
-                {loggedInTenant?.freeTrailStatus==='Active'?'Free Trail':loggedInTenant?.subscription?.subscriptionName}
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-2">
+                <span className="font-medium">
+                {loggedInTenant?.freeTrailStatus==='Active'?'Free Trail':loggedInTenant?.subscription?.subscriptionName}  
+                </span>
+                
+                <span className="text-xs text-gray-500 dark:text-gray-300 font-medium">
+                ( {loggedInTenant?.freeTrailStatus==='Active'?loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays} Days left )
+                </span>
               </p>
             </div>
           </div>
