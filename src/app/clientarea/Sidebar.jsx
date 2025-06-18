@@ -281,7 +281,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
 
       {/* Scrollable Navigation Section */}
       <div className="flex-grow overflow-y-auto">
-        <ScrollArea className="h-[70vh] w-full">
+        <ScrollArea className="h-[80vh] w-full">
           <ul className="space-y-1 px-2">
             {navItems.map((item) => (
               <li key={item.id}>
@@ -293,13 +293,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
                       : "text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
                   }`}
                 >
-                  <span
-                    className={`${
-                      activeTab === item.id
-                        ? "text-blue-600 dark:text-blue-400"
-                        : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
+                  <span className="text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 p-2 rounded-md">
                     {item.icon}
                   </span>
                   <span>{item.label}</span>
