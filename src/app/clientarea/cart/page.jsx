@@ -1,6 +1,6 @@
 "use client";
 
-import { toast as sonnertoast } from "sonner";
+import { toast as soonerToast } from "sonner";
 import * as React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -24,7 +24,6 @@ import {
   Star,
 } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
@@ -57,7 +56,7 @@ const TenantCartManagement = () => {
       return responseBody;
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("Failed to fetch cart items");
+      soonerToast.error("Failed to fetch cart items");
       throw error;
     }
   };
@@ -92,14 +91,14 @@ const TenantCartManagement = () => {
 
       const data = await response.json();
       if (response.ok) {
-        toast.success("Item removed from cart");
+        soonerToast.success("Item removed from cart");
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
         dispatch(setCartLength(cart.totalItems));
       } else {
-        toast.error(data.message);
+        soonerToast.error(data.message);
       }
     } catch (error) {
-      toast.error("Failed to remove item");
+      soonerToast.error("Failed to remove item");
     } finally {
       setProcessing((prev) => ({ ...prev, [itemId]: false }));
     }
@@ -119,21 +118,18 @@ const TenantCartManagement = () => {
 
       const responseBody = await response.json();
       if (response.ok) {
-        toast.success(responseBody.message);
-        sonnertoast(responseBody.message, {
-          description: "Redirecting to orders page",
-        });
+        soonerToast.success(responseBody.message);
         setOrdering(false);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
         dispatch(setCartLength(cart.totalItems));
         router.push(responseBody.redirectUrl);
       } else {
-        toast.error(responseBody.error);
+        soonerToast.error(responseBody.error);
         setOrdering(false);
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error("Checkout failed");
+      soonerToast.error("Checkout failed");
       setOrdering(false);
     }
   };
@@ -160,15 +156,15 @@ const TenantCartManagement = () => {
 
       const data = await response.json();
       if (response.ok) {
-        toast.success(data.message);
+        soonerToast.success(data.message);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
         dispatch(setCartLength(cart.totalItems));
       } else {
-        toast.error(data.message);
+        soonerToast.error(data.message);
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error(error.error);
+      soonerToast.error(error.error);
     } finally {
       setProcessing((prev) => ({ ...prev, [itemId]: false }));
     }
@@ -196,15 +192,15 @@ const TenantCartManagement = () => {
 
       const data = await response.json();
       if (response.ok) {
-        toast.success(data.message);
+        soonerToast.success(data.message);
         queryClient.invalidateQueries({ queryKey: ["cartItems"] });
         dispatch(setCartLength(cart.totalItems));
       } else {
-        toast.error(data.message);
+        soonerToast.error(data.message);
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error(error.error);
+      soonerToast.error(error.error);
     } finally {
       setProcessing((prev) => ({ ...prev, [itemId]: false }));
     }

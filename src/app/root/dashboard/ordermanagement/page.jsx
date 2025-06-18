@@ -262,22 +262,15 @@ const OrderManagement = () => {
         },
       });
       const responseBody = await response.json();
-      console.log("Response: ", responseBody);
       if (response.ok) {
-        toast.success(responseBody.message);
         queryClient.invalidateQueries({ queryKey: ["orders"] });
-        soonerToast(responseBody.message, {
-          description: "Order attached to tenant successfully",
-        });
+        soonerToast.success(responseBody.message);
       } else {
-        toast.error(responseBody.error);
-        soonerToast(responseBody.error, {
-          description: "Error attaching order to tenant",
-        });
+        soonerToast.error(responseBody.error);
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error(error.error);
+      soonerToast.error(error.error);
     }
   };
 
