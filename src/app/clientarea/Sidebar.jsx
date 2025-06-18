@@ -278,7 +278,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
             <button
               key={index}
               onClick={() => handleNavClick(action.link)}
-              className="flex-1 flex items-center justify-center space-x-2 py-2 px-3 rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-sm font-medium"
+              className="flex-1 dark:bg-gray-200 flex items-center justify-center space-x-2 py-2 px-3 rounded-md bg-gray-100 hover:bg-gray-200 text-sm font-medium"
             >
               {action.icon}
               <span>{action.label}</span>
