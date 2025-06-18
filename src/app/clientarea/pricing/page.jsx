@@ -232,8 +232,8 @@ const TenantSubscriptionPlansManagement = () => {
                             <span className="text-5xl font-bold text-gray-900 dark:text-white">
                               {plan.currency} {plan.subscriptionPrice}
                             </span>
-                            <span className="text-gray-500 dark:text-gray-400 ml-2">
-                              / per year
+                            <span className="text-gray-500 text-lg font-medium dark:text-gray-400 ml-2">
+                              / mo
                             </span>
                           </div>
                         </div>
@@ -459,8 +459,20 @@ const TenantSubscriptionPlansManagement = () => {
           </div>
         </div>
       ) : (
-        <div className="w-full">
-          <h1 className="text-4xl font-bold text-center">No plans found</h1>
+        <div className="w-full min-h-screen flex items-center justify-center">
+        <div className="p-28 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-xl">
+          <div className="text-center space-y-4">
+            <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+              No Plans Found
+            </h1>
+            <p className="text-gray-500 text-sm font-medium dark:text-gray-300">
+              Looks like the subscription models are not added yet.
+            </p>
+            <Button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" onClick={() => router.push("/clientarea/dashboard")}>
+              Back to dashboard
+            </Button>
+          </div>
+        </div>
         </div>
       )}
     </div>
