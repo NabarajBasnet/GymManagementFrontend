@@ -71,16 +71,16 @@ const MyProfile = () => {
     // Helper components
     const InfoItem = ({ label, value, icon }) => (
         <div className="flex items-center justify-between py-2 border-b border-gray-100">
-            <div className="flex items-center space-x-2 text-gray-500">
+            <div className="flex items-center dark:text-gray-100 space-x-2 text-gray-500">
                 {icon}
                 <span className="text-sm">{label}</span>
             </div>
-            <span className="text-sm font-medium text-gray-700">{value || 'N/A'}</span>
+            <span className="text-sm dark:text-gray-100 font-medium text-gray-700">{value || 'N/A'}</span>
         </div>
     );
 
     const ContactPerson = ({ name, phone }) => (
-        <div className="bg-gray-50 p-4 rounded-lg">
+        <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg">
             <div className="flex items-center space-x-3">
                 <div className="flex-shrink-0">
                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
@@ -88,7 +88,7 @@ const MyProfile = () => {
                     </div>
                 </div>
                 <div>
-                    <h4 className="font-medium text-gray-800">{name}</h4>
+                    <h4 className="font-medium dark:text-gray-100 text-gray-800">{name}</h4>
                     <p className="text-sm text-blue-600 font-medium">{phone}</p>
                 </div>
             </div>
@@ -100,26 +100,26 @@ const MyProfile = () => {
     }
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-6">
+        <div className="w-full dark:bg-gray-900 max-w-4xl mx-auto px-4 py-8 space-y-6">
             {/* QR Code Section */}
-            <div className="w-full bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">My QR Code</h2>
+            <div className="w-full bg-white dark:bg-gray-900 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                <h2 className="text-xl dark:text-white font-bold text-gray-800 mb-4">My QR Code</h2>
                 <div className="flex flex-col items-center space-y-4">
                     {qrData?.qrCode ? (
                         <>
-                            <div className="p-3 bg-white rounded-lg border-2 border-dashed border-blue-100">
+                            <div className="p-3 bg-white rounded-lg border-2 border-dashed dark:border-blue-500 border-blue-100">
                                 <img
                                     src={qrData.qrCode}
                                     alt="QR Code"
                                     className="w-48 h-48 object-contain"
                                 />
                             </div>
-                            <p className="text-sm text-gray-500 text-center">
+                            <p className="text-sm text-gray-500 text-center dark:text-gray-300">
                                 Scan this code for your daily check-in and check-out
                             </p>
                         </>
                     ) : (
-                        <p className="text-sm text-gray-500">QR Code not available</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-300">QR Code not available</p>
                     )}
                 </div>
             </div>
@@ -149,17 +149,15 @@ const MyProfile = () => {
             </div>
 
             {/* Profile Header */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
+            <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl p-6 shadow-lg border border-gray-100">
                 <div className="flex items-center space-x-4">
                     <div className="flex-shrink-0">
-                        <img
-                            src={`http://http://localhost:3000:5000${staffDetails?.imageUrl}`}
-                            alt="Profile"
-                            className="w-20 h-20 rounded-full cursor-pointer"
-                        />
+                        <h1 className="w-20 h-20 rounded-full bg-blue-600 flex justify-center items-center text-2xl font-bold text-white cursor-pointer">
+                            {staffDetails?.fullName?.split(' ').map((word) => word[0]).join('')}
+                        </h1>
                     </div>
                     <div>
-                        <h1 className="text-md md:text-2xl font-bold text-gray-800">
+                        <h1 className="text-md md:text-2xl dark:text-white font-bold text-gray-800">
                             {staffDetails?.fullName}
                             <span className="ml-2 bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
                                 {staffDetails?.role}
@@ -182,10 +180,10 @@ const MyProfile = () => {
             {/* Detailed Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Personal Information Card */}
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Personal Information</h3>
-                    <dl className="space-y-4">
-                        <InfoItem label="Contact Number" value={staffDetails?.contactNo} icon={<FaPhone />} />
+                <div className="bg-white dark:bg-gray-800 dark:text-white rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-4 dark:text-white">Personal Information</h3>
+                    <dl className="space-y-4 dark:text-white">
+                        <InfoItem label="Contact Number" className='dark:text-white' value={staffDetails?.contactNo} icon={<FaPhone />} />
                         <InfoItem label="Email Address" value={staffDetails?.email} icon={<MdEmail />} />
                         <InfoItem
                             label="Date of Birth"
@@ -201,8 +199,8 @@ const MyProfile = () => {
                 </div>
 
                 {/* Employment Information Card */}
-                <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-4">Employment Details</h3>
+                <div className="bg-white dark:bg-gray-800 dark:border-gray-700 rounded-xl p-6 shadow-lg border border-gray-100">
+                    <h3 className="text-lg dark:text-white font-semibold text-gray-800 mb-4">Employment Details</h3>
                     <dl className="space-y-4">
                         <InfoItem
                             label="Join Date"
@@ -216,9 +214,9 @@ const MyProfile = () => {
             </div>
 
             {/* Emergency Contact Section */}
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">Emergency Contact</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white dark:bg-gray-800 dark:border-700 rounded-xl p-6 shadow-lg border border-gray-100 dark:border-gray-700">
+                <h3 className="text-lg dark:text-white font-semibold text-gray-800 mb-4">Emergency Contact</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 dark:bg-gray-800">
                     <ContactPerson
                         name="Emergency Contact"
                         phone={staffDetails?.emergencyContactName}

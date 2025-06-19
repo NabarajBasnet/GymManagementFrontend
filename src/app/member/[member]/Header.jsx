@@ -43,7 +43,6 @@ import {
   QrCode,
 } from "lucide-react";
 import { FaTag } from "react-icons/fa";
-import { RiCustomerServiceFill } from "react-icons/ri";
 import { FaMoneyBillWaveAlt } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
