@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Moon, Sun, Package, Bell, MessageCircle, ShoppingCart } from "lucide-react";
+import { Moon, Sun, Bell, MessageCircle, ShoppingCart } from "lucide-react";
 import { useTheme } from "next-themes";
 import { AiOutlineSchedule } from "react-icons/ai";
 import {
@@ -56,6 +56,8 @@ const MemberHeader = ({ activeTab }) => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
   const member = useMember();
+
+  const loggedInMember = member?.member?.loggedInMember;
 
   // Theme handling
   useEffect(() => {
@@ -182,9 +184,9 @@ const MemberHeader = ({ activeTab }) => {
               </SheetTrigger>
               <SheetContent side="left" className="w-[280px] sm:w-[300px] p-0 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700">
                 <div className="h-full flex flex-col">
-                  <SheetHeader className="px-6 pt-6 pb-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-800">
+                  <SheetHeader className="px-6 py-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-800 dark:to-gray-800">
                     <SheetTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      {gymName}
+                      {loggedInMember?.organization?.name}
                     </SheetTitle>
                   </SheetHeader>
 
@@ -224,8 +226,8 @@ const MemberHeader = ({ activeTab }) => {
                         key={item.id}
                         onClick={() => handleNavClick(item.id)}
                         className={`group flex items-center w-full px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${activeTab === item.id
-                            ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-[1.02]"
-                            : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white hover:translate-x-1"
+                          ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg transform scale-[1.02]"
+                          : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white hover:translate-x-1"
                           }`}
                       >
                         <span className={`mr-4 ${activeTab === item.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-indigo-500'} transition-colors duration-200`}>
@@ -253,7 +255,7 @@ const MemberHeader = ({ activeTab }) => {
               </SheetContent>
             </Sheet>
           </div>
-          
+
           {/* Right side icons */}
           <div className="flex items-center space-x-2">
             {/* Notification Icon */}
@@ -302,14 +304,14 @@ const MemberHeader = ({ activeTab }) => {
               <div className="relative w-5 h-5">
                 <Sun
                   className={`absolute inset-0 w-5 h-5 text-amber-500 transition-all duration-500 ${darkMode
-                      ? "opacity-0 rotate-180 scale-0"
-                      : "opacity-100 rotate-0 scale-100"
+                    ? "opacity-0 rotate-180 scale-0"
+                    : "opacity-100 rotate-0 scale-100"
                     }`}
                 />
                 <Moon
                   className={`absolute inset-0 w-5 h-5 text-indigo-500 transition-all duration-500 ${darkMode
-                      ? "opacity-100 rotate-0 scale-100"
-                      : "opacity-0 -rotate-180 scale-0"
+                    ? "opacity-100 rotate-0 scale-100"
+                    : "opacity-0 -rotate-180 scale-0"
                     }`}
                 />
               </div>
