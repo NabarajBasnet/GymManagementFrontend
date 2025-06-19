@@ -1,5 +1,6 @@
 'use client';
 
+import { FaBuilding } from "react-icons/fa6";
 import { CgProfile } from "react-icons/cg";
 import { MdLocalOffer } from "react-icons/md";
 import { VscFeedback } from "react-icons/vsc";
@@ -61,9 +62,10 @@ const StaffHeader = ({ activeTab }) => {
     const router = useRouter();
     const { staff } = useStaff();
 
+    const loggedInStaff = staff?.loggedInStaff;
+
     const staffName = staff?.loggedInStaff?.fullName || '';
     const staffStatus = staff?.loggedInStaff?.status || '';
-    const gymName = staff?.loggedInStaff?.gymName || '';
     const gymBranchName = staff?.loggedInStaff?.gymBranch || '';
 
     // Theme handling
@@ -131,7 +133,7 @@ const StaffHeader = ({ activeTab }) => {
     };
 
     if (!mounted) {
-        return null; // Prevent hydration mismatch
+        return null;
     }
 
     return (
@@ -152,10 +154,10 @@ const StaffHeader = ({ activeTab }) => {
                             </SheetTrigger>
                             <SheetContent side="left" className="w-[320px] sm:w-[360px] p-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl border-gray-200/30 dark:border-gray-700/30">
                                 <div className="h-full flex flex-col">
-                                    <SheetHeader className="px-6 pt-6 pb-4 border-b border-gray-200/40 dark:border-gray-700/40 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-gray-800/50 dark:to-gray-900/50">
+                                    <SheetHeader className="p-3 border-b border-gray-200/40 dark:border-gray-700/40 bg-gradient-to-br from-blue-50/80 to-indigo-50/80 dark:from-gray-800/50 dark:to-gray-900/50">
                                         <div className="flex items-center justify-between">
                                             <SheetTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                                                {gymName}
+                                                {loggedInStaff?.organization?.name}
                                             </SheetTitle>
                                         </div>
                                     </SheetHeader>
@@ -198,11 +200,10 @@ const StaffHeader = ({ activeTab }) => {
                                             <button
                                                 key={item.id}
                                                 onClick={() => handleNavClick(item.id)}
-                                                className={`relative flex items-center w-full px-4 py-4 rounded-2xl text-sm font-medium transition-all duration-300 group overflow-hidden ${
-                                                    activeTab === item.id
-                                                        ? 'text-white shadow-lg transform scale-[1.02]'
-                                                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:shadow-md hover:scale-[1.01]'
-                                                }`}
+                                                className={`relative flex items-center w-full px-4 py-4 rounded-2xl text-sm font-medium transition-all duration-300 group overflow-hidden ${activeTab === item.id
+                                                    ? 'text-white shadow-lg transform scale-[1.02]'
+                                                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:shadow-md hover:scale-[1.01]'
+                                                    }`}
                                                 style={{
                                                     animationDelay: `${index * 50}ms`
                                                 }}
@@ -213,9 +214,8 @@ const StaffHeader = ({ activeTab }) => {
                                                 {activeTab !== item.id && (
                                                     <div className="absolute inset-0 bg-gray-100/50 dark:bg-gray-800/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                                 )}
-                                                <span className={`relative mr-4 transition-all duration-300 ${
-                                                    activeTab === item.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
-                                                }`}>
+                                                <span className={`relative mr-4 transition-all duration-300 ${activeTab === item.id ? 'text-white' : 'text-gray-500 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300'
+                                                    }`}>
                                                     {item.icon}
                                                 </span>
                                                 <span className="relative">{item.label}</span>
@@ -248,10 +248,10 @@ const StaffHeader = ({ activeTab }) => {
                     <div className="hidden md:flex ml-48 items-center">
                         <div className="flex items-center gap-3">
                             <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-600 dark:from-blue-500 dark:to-indigo-500 flex items-center justify-center shadow-lg">
-                                <Sparkles className="w-4 h-4 text-white animate-pulse" />
+                                <FaBuilding className="w-4 h-4 text-white animate-pulse" />
                             </div>
                             <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                                {gymName}
+                                {loggedInStaff?.organization?.name}
                             </h1>
                         </div>
                     </div>
@@ -265,12 +265,10 @@ const StaffHeader = ({ activeTab }) => {
                             aria-label="Toggle theme"
                         >
                             <div className="relative w-5 h-5">
-                                <Sun className={`absolute inset-0 w-5 h-5 text-yellow-500 transition-all duration-300 ${
-                                    darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
-                                }`} />
-                                <Moon className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${
-                                    darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
-                                }`} />
+                                <Sun className={`absolute inset-0 w-5 h-5 text-yellow-500 transition-all duration-300 ${darkMode ? 'opacity-0 rotate-90 scale-0' : 'opacity-100 rotate-0 scale-100'
+                                    }`} />
+                                <Moon className={`absolute inset-0 w-5 h-5 text-blue-500 transition-all duration-300 ${darkMode ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-0'
+                                    }`} />
                             </div>
                         </button>
 
@@ -302,8 +300,8 @@ const StaffHeader = ({ activeTab }) => {
                                     My Account
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator className="my-2 bg-gray-200/50 dark:bg-gray-700/50" />
-                                <DropdownMenuItem 
-                                    className='cursor-pointer text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl mx-1 px-4 py-3 transition-all duration-200 font-medium' 
+                                <DropdownMenuItem
+                                    className='cursor-pointer text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl mx-1 px-4 py-3 transition-all duration-200 font-medium'
                                     onClick={logOutStaff}
                                 >
                                     <LogOut className="mr-3 h-4 w-4" />
