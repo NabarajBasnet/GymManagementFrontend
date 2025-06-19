@@ -379,7 +379,7 @@ const Sidebar = () => {
         },
         {
           icon: MdFeedback,
-          title: "Feedback",
+          title: "Feedback Management",
           link: "/dashboard/feedbacks",
         },
         // {

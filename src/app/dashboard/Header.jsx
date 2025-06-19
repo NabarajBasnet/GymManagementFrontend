@@ -467,7 +467,7 @@ const Header = () => {
         },
         {
           icon: MdFeedback,
-          title: "Feedback",
+          title: "Feedback Management",
           link: "/dashboard/feedbacks",
         },
         // {
