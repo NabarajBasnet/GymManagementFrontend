@@ -1,6 +1,6 @@
 "use client";
 
-import { TbReport } from "react-icons/tb";
+import { ImUsers } from "react-icons/im";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
@@ -298,6 +298,15 @@ const Header = () => {
           title: "New Member",
           link: "/dashboard/newmember",
         },
+        ...(user?.user?.organizationBranch ?
+          [{
+            icon: ImUsers,
+            title: "Member Transfer",
+            link: "/dashboard/membertransfer",
+            highlight: true,
+          },
+          ] : []
+        ),
         {
           icon: FaUsers,
           title: "Members",

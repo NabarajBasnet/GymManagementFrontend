@@ -1,5 +1,6 @@
 "use client";
 
+import { ImUsers } from "react-icons/im";
 import { TbReport } from "react-icons/tb";
 import Loader from "@/components/Loader/Loader";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
@@ -82,6 +83,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Sidebar = () => {
   const { user, loading: userLoading } = useUser();
+
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -209,6 +211,17 @@ const Sidebar = () => {
           link: "/dashboard/newmember",
           highlight: true,
         },
+        ...(user?.user?.organizationBranch
+          ? [
+            {
+              icon: ImUsers,
+              title: "Member Transfer",
+              link: "/dashboard/membertransfer",
+              highlight: true,
+            },
+          ]
+          : []
+        ),
         {
           icon: FaUsers,
           title: "Members",
@@ -359,7 +372,7 @@ const Sidebar = () => {
               title: "Book Training",
               link: "/dashboard/personaltraining/booktraining",
             },
-      ],
+          ],
         },
         {
           icon: AiOutlineSchedule,
