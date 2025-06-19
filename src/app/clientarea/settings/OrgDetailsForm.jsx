@@ -2,8 +2,6 @@
 
 import { toast as hotToast } from "react-hot-toast";
 import { toast as sonnerToast } from "sonner";
-import { FaBuilding } from "react-icons/fa6";
-import { RiUserSettingsFill } from "react-icons/ri";
 import { useForm, Controller } from "react-hook-form";
 import {
     MapPin,
@@ -58,7 +56,7 @@ const OrgDetailsForm = () => {
     const tenant = useTenant();
     const loggedInTenant = tenant?.tenant?.tenant;
     const onboardAt = loggedInTenant?.onboardingStep;
-    console.log(loggedInTenant)
+
     // React hook form
     const {
         register,

@@ -60,17 +60,14 @@ const TenantLoginForm = ({ className, ...props }) => {
       }
 
       if (response.ok) {
-        toast.success(responseBody.message || "Login successful!");
         soonerToast.success(responseBody.message || "Login successful!");
         router.push(responseBody.redirectUrl);
         reset();
       } else {
-        toast.error(responseBody.message);
         soonerToast.error(responseBody.message || "Login failed!");
         router.push(responseBody.redirectUrl);
       }
     } catch (error) {
-      toast.error("An unexpected error occurred. Please try again.");
       soonerToast.error(error.message || "Login failed!");
       console.log("Error: ", error);
     }
