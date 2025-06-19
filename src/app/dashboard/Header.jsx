@@ -821,6 +821,68 @@ const Header = () => {
           </div>
         </div>
 
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className="relative p-3 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+            >
+              <Bell className="w-4 h-4" />
+              <span className="absolute -top-0 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                {10}
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-80 md:w-96 dark:bg-gray-900 dark:border-none" align="end">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                Profile
+                <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Billing
+                <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Settings
+                <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                Keyboard shortcuts
+                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Invite users</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent>
+                    <DropdownMenuItem>Email</DropdownMenuItem>
+                    <DropdownMenuItem>Message</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>More...</DropdownMenuItem>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuItem>
+                New Team
+                <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>GitHub</DropdownMenuItem>
+            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem disabled>API</DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              Log out
+              <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
         {/* Theme changer */}
         <button
           onClick={toggleTheme}

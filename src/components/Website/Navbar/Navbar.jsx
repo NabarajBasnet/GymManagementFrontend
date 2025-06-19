@@ -109,11 +109,11 @@ const Navbar = () => {
                     {/* Enhanced Logo */}
                     <div className="flex items-center">
                         <a href="#" className="text-2xl font-bold tracking-tight">
-                            <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Fit</span>
+                            <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Lift</span>
                             <span className={cn(
                                 'transition-colors duration-300',
                                 scrolled ? 'text-gray-900 dark:text-white' : 'text-white'
-                            )}>Loft</span>
+                            )}>ora</span>
                         </a>
                     </div>
 
