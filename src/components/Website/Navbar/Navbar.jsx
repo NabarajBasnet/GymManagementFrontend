@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -84,7 +85,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Desktop Navigation */}
-                    <div className="hidden md:flex items-center space-x-4">
+                    <div className="hidden md:flex items-center space-x-6">
                         {navLinks.map((link, index) => (
                             <div key={link.name} className="relative group">
                                 {link.hasDropdown ? (
@@ -130,29 +131,31 @@ const Navbar = () => {
                         ))}
 
                         {/* CTA Button with Icon */}
-                        <a
-                            href="/login"
-                            className={cn(
-                                "px-4 py-2 rounded-full font-medium hover:bg-transparent dark:hover:bg-transparent flex items-center transition-all duration-300",
-                                scrolled
-                                    ? "hover:bg-indigo-700 text-white"
-                                    : "bg-transparent hover:bg-gray-100 text-white"
-                            )}
-                        >
-                            Login
-                        </a>
-                        <a
-                            href="/register"
-                            className={cn(
-                                "px-6 py-2 rounded-full font-medium shadow-lg flex items-center transition-all duration-300",
-                                scrolled
-                                    ? "bg-indigo-600 hover:bg-indigo-700 text-white"
-                                    : "bg-white hover:bg-gray-100 text-indigo-600"
-                            )}
-                        >
-                            Get Started
-                            <ArrowRight size={16} className="ml-2" />
-                        </a>
+                        <div className='flex items-center justify-between space-x-3'>
+                            <Button
+                                href="/login"
+                                className={cn(
+                                    "px-6 py-2 rounded-sm font-medium shadow-lg flex items-center transition-all duration-300",
+                                    scrolled
+                                        ? "bg-white hover:bg-indigo-700 text-indigo-600 hover:text-white"
+                                        : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                )}
+                            >
+                                Login
+                            </Button>
+                            <a
+                                href="/register"
+                                className={cn(
+                                    "px-6 py-2 rounded-sm font-medium shadow-lg flex items-center transition-all duration-300",
+                                    scrolled
+                                        ? "bg-indigo-600 hover:bg-indigo-700 text-white"
+                                        : "bg-white hover:bg-gray-100 text-indigo-600"
+                                )}
+                            >
+                                Get Started for Free
+                                <ArrowRight size={16} className="ml-2" />
+                            </a>
+                        </div>
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -245,7 +248,7 @@ const Navbar = () => {
                                     href="/register"
                                     className="btn-primary w-full bg-gradient-to-r from-indigo-600 to-blue-600 text-center px-6 py-3 rounded-full text-white font-medium shadow-md flex items-center justify-center"
                                 >
-                                    Get Started
+                                    Get Started for Free
                                     <ArrowRight size={16} className="ml-2" />
                                 </a>
                             </div>
