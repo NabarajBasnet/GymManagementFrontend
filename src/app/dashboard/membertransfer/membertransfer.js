@@ -170,7 +170,10 @@ const MemberTransfer = () => {
                   Member
                 </Label>
                 <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger asChild>
+                  <PopoverTrigger
+                    asChild
+                    className="py-6 dark:border-none dark:bg-gray-900"
+                  >
                     <Button
                       variant="outline"
                       role="combobox"
@@ -183,11 +186,11 @@ const MemberTransfer = () => {
                       <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] p-0">
+                  <PopoverContent className="w-full p-0 dark:bg-gray-900 dark:border-none">
                     <Command>
                       <CommandInput
                         placeholder="Search members..."
-                        className="h-9"
+                        className="h-12"
                       />
                       <CommandList>
                         <CommandEmpty>No members found.</CommandEmpty>
@@ -228,17 +231,42 @@ const MemberTransfer = () => {
                   To Branch
                 </Label>
                 <Select>
-                  <SelectTrigger className="w-full h-10">
+                  <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
                     <SelectValue placeholder="Select branch" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
                       <SelectLabel>Branches</SelectLabel>
-                      <SelectItem value="north">North Branch</SelectItem>
-                      <SelectItem value="south">South Branch</SelectItem>
-                      <SelectItem value="east">East Branch</SelectItem>
-                      <SelectItem value="west">West Branch</SelectItem>
-                      <SelectItem value="central">Central Branch</SelectItem>
+                      <SelectItem
+                        value="north"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        North Branch
+                      </SelectItem>
+                      <SelectItem
+                        value="south"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        South Branch
+                      </SelectItem>
+                      <SelectItem
+                        value="east"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        East Branch
+                      </SelectItem>
+                      <SelectItem
+                        value="west"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        West Branch
+                      </SelectItem>
+                      <SelectItem
+                        value="central"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        Central Branch
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -250,13 +278,18 @@ const MemberTransfer = () => {
                   Current Branch
                 </Label>
                 <Select>
-                  <SelectTrigger className="w-full py-6 rounded-sm">
+                  <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
                     <SelectValue placeholder="Current branch" />
                   </SelectTrigger>
-                  <SelectContent className='dark:bg-gray-800 dark:border-none'>
+                  <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
                       <SelectLabel>Current Branch</SelectLabel>
-                      <SelectItem value="north" className='cursor-pointer hover:bg-blue-600/30'>North Branch</SelectItem>
+                      <SelectItem
+                        value="north"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        North Branch
+                      </SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>
@@ -267,7 +300,11 @@ const MemberTransfer = () => {
                 <Label className="text-gray-700 dark:text-gray-300">
                   Member ID
                 </Label>
-                <Input placeholder="Member ID" className="py-6 bg-white dark:bg-gray-900 dark:border-none dark:text-white" disabled/>
+                <Input
+                  placeholder="Member ID"
+                  className="py-6 bg-white dark:bg-gray-900 dark:border-none dark:text-white"
+                  disabled
+                />
               </div>
 
               {/* Submit Button */}
