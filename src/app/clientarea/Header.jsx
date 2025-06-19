@@ -71,7 +71,6 @@ const ClientAreaHeader = ({ activeTab }) => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
 
-  const tenantOnTrail = loggedInTenant?.freeTrailStatus;
   const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
   const today = new Date();
   const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
@@ -79,7 +78,6 @@ const ClientAreaHeader = ({ activeTab }) => {
 
   // Calculate difference in milliseconds
   const diffTime = expireDate.getTime() - todayDate.getTime();
-  const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   // Get the nav items based on features
   const navItems = [
@@ -145,21 +143,6 @@ const ClientAreaHeader = ({ activeTab }) => {
     },
   ];
 
-  const quickActions = [
-    {
-      icon: <Bell size={16} />,
-      label: "Notifications",
-      count: 3,
-      link: "/clientarea/notifications",
-    },
-    {
-      icon: <ShoppingCart size={16} />,
-      label: "Cart",
-      count: cartLength,
-      link: "/clientarea/cart",
-    },
-  ];
-
   const handleNavClick = (id, tab) => {
     router.push(id);
     setIsSheetOpen(false);
@@ -185,32 +168,6 @@ const ClientAreaHeader = ({ activeTab }) => {
     } catch (error) {
       console.log("Error: ", error);
       toast.error(error.message);
-    }
-  };
-
-  // Get subscription tier styling
-  const getSubscriptionStyling = (status) => {
-    switch (status?.toLowerCase()) {
-      case "premium":
-        return {
-          bg: "bg-gradient-to-r from-yellow-400 to-orange-500",
-          icon: <Crown size={12} />,
-        };
-      case "pro":
-        return {
-          bg: "bg-gradient-to-r from-purple-500 to-indigo-600",
-          icon: <Zap size={12} />,
-        };
-      case "basic":
-        return {
-          bg: "bg-gradient-to-r from-blue-500 to-cyan-600",
-          icon: <Shield size={12} />,
-        };
-      default:
-        return {
-          bg: "bg-gradient-to-r from-gray-400 to-gray-600",
-          icon: <Shield size={12} />,
-        };
     }
   };
 
@@ -353,31 +310,6 @@ const ClientAreaHeader = ({ activeTab }) => {
 
                     {/* Enhanced Footer */}
                     <div className="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex flex-col items-start justify-between mb-4">
-                        {/* Quick Actions */}
-                        <div className="border-gray-200 dark:border-gray-700">
-                          <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 mb-3">
-                            Quick Actions
-                          </h4>
-                          <div className="flex items-center space-x-2">
-                            {quickActions.slice(0, 2).map((action, index) => (
-                              <button
-                                key={index}
-                                onClick={() => router.push(action.link)}
-                                className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
-                                title={action.label}
-                              >
-                                {action.icon}
-                                {action.count ? (
-                                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                                    {action.count}
-                                  </span>
-                                ) : null}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <button className="w-full flex items-center p-3 rounded-xl bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 hover:border-indigo-300 dark:hover:border-indigo-500 transition-all duration-200 group">
@@ -464,21 +396,26 @@ const ClientAreaHeader = ({ activeTab }) => {
             <div className="flex items-center space-x-4">
               {/* Quick Action Buttons - Desktop */}
               <div className="flex items-center space-x-2">
-                {quickActions.slice(0, 2).map((action, index) => (
-                  <button
-                    key={index}
-                    onClick={() => router.push(action.link)}
-                    className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
-                    title={action.label}
-                  >
-                    {action.icon}
-                    {action.count ? (
-                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                        {action.count}
-                      </span>
-                    ) : null}
-                  </button>
-                ))}
+                <button
+                  onClick={() => router.push('/clientarea/cart')}
+                  className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+                >
+                  <MdOutlineShoppingCart />
+                  {cartLength ? (
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                      {cartLength}
+                    </span>
+                  ) : null}
+                </button>
+
+                <button
+                  className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"
+                >
+                  <Bell className="w-4 h-4" />
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {10}
+                  </span>
+                </button>
               </div>
 
               {/* Theme Toggle */}
