@@ -526,7 +526,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                               className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white`}
                             >
                               {/* {subscriptionStyle.icon} */}
-                              <span>
+                              <span className="text-black dark:text-white">
                                 {loggedInTenant?.subscriptionStatus}
                               </span>
                             </span>
@@ -556,7 +556,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                             className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white mr-2`}
                           >
                             {/* {subscriptionStyle.icon} */}
-                            <span>
+                            <span className="text-black dark:text-white">
                               {loggedInTenant?.subscriptionStatus}
                             </span>
                           </span>
@@ -668,7 +668,6 @@ const ClientAreaHeader = ({ activeTab }) => {
               </DropdownMenu>
             </div>
           </div>
-
         </div>
       )}
     </header>

@@ -52,7 +52,7 @@ const PasswordComponent = () => {
     };
 
     return (
-        <Card className="w-full dark:border-none shadow-xl mb-8 rounded-xl">
+        <Card className="w-full dark:border-none dark:bg-gray-800 shadow-xl mb-8 rounded-xl">
             {/* Change Password */}
             <div className="px-6 py-4 border-b border-gray-200 rounded-t-xl dark:border-gray-500 bg-gray-50 dark:bg-gray-800">
                 <h3 className="font-medium dark:text-gray-200 text-gray-900 flex items-center">
