@@ -1,5 +1,6 @@
 "use client";
 
+import "./globals.css";
 import "./styles/landing.css";
 import { motion } from "framer-motion";
 import { ChevronDown, ArrowRight, Zap, Shield, Users } from "lucide-react";
@@ -25,7 +26,7 @@ const HeroSection = () => {
           <div className="absolute top-40 left-20 w-72 h-72 bg-white/20 rounded-full blur-3xl"></div>
           <div className="absolute bottom-40 right-20 w-80 h-80 bg-blue-500/30 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl"></div>
-          <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl"></div>
+          <div className="absolute top-20 right-1/4 w-64 h-64 bg-white/15 rounded-full blur-3xl animate-pulse"></div>
         </div>
 
         <div className="container w-full mx-auto px-4 py-20 z-10 relative">
@@ -45,7 +46,8 @@ const HeroSection = () => {
 
             {/* Main Heading */}
             <motion.h1
-              className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
+              style={{ fontFamily: "Oswald-Bold" }}
+              className="text-5xl md:text-6xl lg:text-7xl text-white leading-tight mb-6"
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2, duration: 0.8 }}
@@ -58,7 +60,7 @@ const HeroSection = () => {
 
             {/* Subtitle */}
             <motion.p
-              className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
+              className="text-md font-medium text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
