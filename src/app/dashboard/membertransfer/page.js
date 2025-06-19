@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import MemberTransfer from "./membertransfer";
 
 export async function generateMetadata() {
   const cookieStore = cookies();
@@ -20,12 +21,8 @@ export async function generateMetadata() {
   };
 }
 
-const MemberTransfer = () => {
-  return (
-    <div>
-      <h1>Member Transfer</h1>
-    </div>
-  );
+const MemberTransferSSR = () => {
+  return <MemberTransfer />;
 };
 
-export default MemberTransfer;
+export default MemberTransferSSR;
