@@ -321,7 +321,7 @@ const MemberTransfer = () => {
                   From Branch
                 </Label>
                 <Select>
-                  <SelectTrigger className="w-full py-3 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
+                  <SelectTrigger className="w-full py-5 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
                     <SelectValue placeholder={memberCurrentBranch || "Select member first"} />
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600">
@@ -345,7 +345,7 @@ const MemberTransfer = () => {
                   Member ID
                 </Label>
                 <Select>
-                  <SelectTrigger className="w-full py-3 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
+                  <SelectTrigger className="w-full py-5 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
                     <SelectValue placeholder="Member ID" />
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600">
@@ -369,7 +369,7 @@ const MemberTransfer = () => {
                   To Branch
                 </Label>
                 <Select onValueChange={(value) => setSelectedBranchId(value)}>
-                  <SelectTrigger className="w-full py-3 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
+                  <SelectTrigger className="w-full py-5 px-4 dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600 rounded-lg shadow-sm">
                     <SelectValue placeholder="Select destination" />
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-600">
@@ -400,7 +400,7 @@ const MemberTransfer = () => {
                 <AlertDialog>
                   <AlertDialogTrigger asChild className="dark:bg-gray-800">
                     <Button
-                      className="w-full py-3 px-6 rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+                      className="w-full py-6 px-6 rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                       disabled={!isTransferReady || transfering}
                     >
                       {transfering ? (
