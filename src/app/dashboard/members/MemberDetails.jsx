@@ -191,7 +191,6 @@ const MemberDetails = ({ memberId }) => {
   const updateMemberDetails = async (data) => {
 
     if (!selectedPlanDetails) {
-      hotToast.error('Plan not selected');
       sonnerToast.error('Plan not selected');
     };
 
@@ -268,11 +267,9 @@ const MemberDetails = ({ memberId }) => {
         response.status === 404 ||
         response.status === 500
       ) {
-        hotToast.error(responseBody.message);
         sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
-          hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
           setValue('actionTaker', 'Select');
         }
@@ -306,18 +303,15 @@ const MemberDetails = ({ memberId }) => {
       );
       const responseBody = await response.json();
       if (response.status !== 200) {
-        hotToast.error(responseBody.message);
         sonnerToast.error(responseBody.message);
       } else {
         if (response.status === 200) {
-          hotToast.success(responseBody.message);
           sonnerToast.success(responseBody.message);
         }
         queryClient.invalidateQueries(["members"]);
       }
     } catch (error) {
       console.log("Error: ", error);
-      hotToast.error(error);
       sonnerToast.error(error);
     }
   };
@@ -337,13 +331,11 @@ const MemberDetails = ({ memberId }) => {
 
       const responseBody = await response.json();
       if (response.status === 200) {
-        hotToast.success(responseBody.message);
         sonnerToast.success(responseBody.message);
       };
       queryClient.invalidateQueries(['members']);
     } catch (error) {
       console.error("Error:", error);
-      hotToast.success(responseBody.message);
       sonnerToast.success(responseBody.message);
     }
   };
@@ -367,7 +359,6 @@ const MemberDetails = ({ memberId }) => {
     } catch (error) {
       console.log("Error: ", error);
       if (error) {
-        hotToast.success(error);
         sonnerToast.success(error);
       }
     }

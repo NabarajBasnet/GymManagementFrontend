@@ -55,7 +55,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { usePagination } from "@/hooks/Pagination";
 
 const PaymentHistory = () => {
     const [startDate, setStartDate] = useState("");
@@ -139,6 +138,7 @@ const PaymentHistory = () => {
             const response = await fetch(`http://localhost:3000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
+                toast.error("Failed to fetch payment history");
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
@@ -158,18 +158,6 @@ const PaymentHistory = () => {
     });
 
     const { totalPages, total, paymenthistories } = paymentHistory || { totalPages: 0, total: 0, paymenthistories: [] };
-
-    console.log("Payment histories: ", paymenthistories);
-
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
 
     const searchRef = useRef(null);
 
@@ -390,7 +378,7 @@ const PaymentHistory = () => {
                         <BreadcrumbItem>
                             <TiHome className="w-4 h-4 font-medium dark:text-gray-200" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-200">Home</BreadcrumbLink>
                         </BreadcrumbItem>
-                        <BreadcrumbSeparator className={'font-medium dark:text-gray-200'}/>
+                        <BreadcrumbSeparator className={'font-medium dark:text-gray-200'} />
                         <BreadcrumbItem>
                             <BreadcrumbLink href="/dashboard" className="text-gray-600 font-medium dark:text-gray-200 hover:text-blue-600">Dashboard</BreadcrumbLink>
                         </BreadcrumbItem>
@@ -411,7 +399,7 @@ const PaymentHistory = () => {
                                         size="sm"
                                         onClick={exportToExcel}
                                         disabled={!paymenthistories || paymenthistories.length === 0}
-                                        className="text-gray-700 dark:bg-white dark:border-none border-gray-300"
+                                        className="text-gray-700 dark:hover:text-gray-900 dark:bg-white dark:border-none border-gray-300"
                                     >
                                         <MdFileDownload className="mr-1 h-4 w-4" />
                                         Excel
@@ -429,7 +417,7 @@ const PaymentHistory = () => {
                                         size="sm"
                                         onClick={generatePDF}
                                         disabled={!paymenthistories || paymenthistories.length === 0}
-                                        className="text-gray-700 dark:border-none dark:bg-white border-gray-300"
+                                        className="text-gray-700 dark:hover:text-gray-900 dark:border-none dark:bg-white border-gray-300"
                                     >
                                         <MdPrint className="mr-1 h-4 w-4" />
                                         PDF
@@ -558,7 +546,7 @@ const PaymentHistory = () => {
                                             setTimeframe("custom");
                                             setStartDate(e.target.value);
                                         }}
-                                        className="w-full rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        className="w-full bg-white rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
                                     />
                                 </div>
                             </div>
@@ -574,7 +562,7 @@ const PaymentHistory = () => {
                                             setTimeframe("custom");
                                             setEndDate(e.target.value);
                                         }}
-                                        className="w-full rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                        className="w-full bg-transparent rounded-sm dark:bg-gray-900 dark:border-none border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 accent-black dark:accent-white"
                                     />
                                 </div>
                             </div>
@@ -729,12 +717,12 @@ const PaymentHistory = () => {
                                                     </TooltipProvider>
                                                 </TableCell>
                                                 <TableCell className="dark:text-gray-100">{formatDate(payment.paymentDate)}</TableCell>
-                                                <TableCell className='text-center dark:text-gray-100'>{payment.membershipOption || 'N/A'}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment.membership.servicesIncluded[0] || 'N/A'}</TableCell>
                                                 <TableCell className="dark:text-gray-100">{payment.membershipDuration || 'N/A'}</TableCell>
                                                 <TableCell className="dark:text-gray-100">{formatDate(payment.membershipRenewDate)}</TableCell>
                                                 <TableCell className="dark:text-gray-100">{formatDate(payment.membershipExpireDate)}</TableCell>
                                                 <TableCell className="font-medium dark:text-gray-100">
-                                                    {formatAmount(payment.paidAmmount)}
+                                                    {formatAmount(payment.paidAmount)}
                                                 </TableCell>
                                                 <TableCell className='text-center dark:text-gray-100'>
                                                     {payment.discount ? formatAmount(payment.discount) : 'N/A'}
@@ -744,7 +732,7 @@ const PaymentHistory = () => {
                                                         {payment.paymentMethod || 'N/A'}
                                                     </span>
                                                 </TableCell>
-                                                <TableCell className='text-center dark:text-gray-100'>{payment.actionTaker || 'N/A'}</TableCell>
+                                                <TableCell className='text-center dark:text-gray-100'>{payment.actionTaker.fullName || 'N/A'}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
