@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  Search,
+  InfoIcon,
+  CalendarIcon,
+  Clock,
+  User,
+  UserCheck,
+} from "lucide-react";
+import {
   Select,
   SelectContent,
   SelectGroup,
@@ -57,34 +65,20 @@ import {
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import { useState, useMemo, useRef, useEffect } from "react";
 
 const MemberTransfer = () => {
   const { user, loading } = useUser();
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+  const searchRef = useRef(null);
+  const [selectedMemberId, setSelectedMemberId] = useState("");
+
+  const [memberSearchQuery, setMemberSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [renderDropdown, setRenderDropdown] = useState(false);
+
+  console.log("Member search query: ", memberSearchQuery);
 
   const getMembers = async () => {
     try {
@@ -105,6 +99,24 @@ const MemberTransfer = () => {
   });
 
   const { members } = data || {};
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setRenderDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [searchRef]);
+
+  const handlePersonSelect = (member) => {
+    setSearchQuery(member.fullName);
+    setSelectedMemberId(member._id);
+    setRenderDropdown(false);
+  };
 
   return (
     <div className="w-full bg-gray-50 dark:bg-gray-900 px-4 py-6 md:px-6 lg:px-8">
@@ -165,67 +177,108 @@ const MemberTransfer = () => {
           <CardContent className="p-0">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
               {/* Member Select */}
-              <div className="space-y-2">
+              <div className="space-y-2" ref={searchRef}>
                 <Label className="text-gray-700 dark:text-gray-300">
                   Member
                 </Label>
-                <Popover open={open} onOpenChange={setOpen}>
-                  <PopoverTrigger
-                    asChild
-                    className="py-6 dark:border-none dark:bg-gray-900"
-                  >
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={open}
-                      className="w-full justify-between h-10"
-                    >
-                      {value
-                        ? frameworks.find((f) => f.value === value)?.label
-                        : "Select member..."}
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-full p-0 dark:bg-gray-900 dark:border-none">
-                    <Command>
-                      <CommandInput
-                        placeholder="Search members..."
-                        className="h-12"
-                      />
-                      <CommandList>
-                        <CommandEmpty>No members found.</CommandEmpty>
-                        <CommandGroup>
-                          {frameworks.map((framework) => (
-                            <CommandItem
-                              key={framework.value}
-                              value={framework.value}
-                              onSelect={(currentValue) => {
-                                setValue(
-                                  currentValue === value ? "" : currentValue
-                                );
-                                setOpen(false);
-                              }}
-                              className="cursor-pointer"
+                <div className="relative">
+                  <div className="flex items-center border dark:border-gray-700 rounded-md transition-all focus-within:ring-2 focus-within:ring-blue-200 dark:focus-within:ring-blue-800 focus-within:border-blue-400 dark:focus-within:border-blue-600">
+                    <Search className="h-4 w-4 ml-3 text-gray-400 dark:text-gray-500" />
+                    <Input
+                      id="person-search"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onFocus={() => setRenderDropdown(true)}
+                      className="border-0 focus-visible:ring-0 py-6 focus-visible:ring-offset-0 dark:bg-gray-800 dark:text-gray-300"
+                      placeholder={`Search members...`}
+                      autoComplete="off"
+                    />
+                  </div>
+
+                  {renderDropdown && (
+                    <div className="absolute z-50 w-full mt-1 max-h-64 overflow-y-auto bg-white dark:bg-gray-800 border dark:border-gray-700 rounded-md shadow-lg">
+                      {isLoading ? (
+                        <div className="p-4 space-y-2">
+                          <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                          <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                          <Skeleton className="h-6 w-full dark:bg-gray-700" />
+                        </div>
+                      ) : members?.length > 0 ? (
+                        members
+                          .filter((member) =>
+                            member.fullName
+                              .toLowerCase()
+                              .includes(searchQuery.toLowerCase())
+                          )
+                          .map((member) => (
+                            <div
+                              key={member._id}
+                              onClick={() => handlePersonSelect(member)}
+                              className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                             >
-                              <Check
-                                className={cn(
-                                  "mr-2 h-4 w-4",
-                                  value === framework.value
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {framework.label}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                              <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
+                              <span className="text-gray-900 dark:text-gray-100">
+                                {member.fullName}
+                              </span>
+                            </div>
+                          ))
+                      ) : (
+                        <div className="p-4 text-center text-gray-500 dark:text-gray-400">
+                          No members found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* To Branch */}
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">
+                  From Branch
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
+                    <SelectValue placeholder="Current branch" />
+                  </SelectTrigger>
+                  <SelectContent className="dark:bg-gray-900 dark:border-none">
+                    <SelectGroup>
+                      <SelectLabel>Current Branch</SelectLabel>
+                      <SelectItem
+                        value="north"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        North Branch
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Member ID */}
+              <div className="space-y-2">
+                <Label className="text-gray-700 dark:text-gray-300">
+                  Member ID
+                </Label>
+                <Select>
+                  <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
+                    <SelectValue placeholder="Current branch" />
+                  </SelectTrigger>
+                  <SelectContent className="dark:bg-gray-900 dark:border-none">
+                    <SelectGroup>
+                      <SelectLabel>Current Branch</SelectLabel>
+                      <SelectItem
+                        value="north"
+                        className="cursor-pointer hover:bg-blue-600/30"
+                      >
+                        8878787654564fsdf45sfgf
+                      </SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Current Branch */}
               <div className="space-y-2">
                 <Label className="text-gray-700 dark:text-gray-300">
                   To Branch
@@ -270,41 +323,6 @@ const MemberTransfer = () => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-              </div>
-
-              {/* Current Branch */}
-              <div className="space-y-2">
-                <Label className="text-gray-700 dark:text-gray-300">
-                  Current Branch
-                </Label>
-                <Select>
-                  <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
-                    <SelectValue placeholder="Current branch" />
-                  </SelectTrigger>
-                  <SelectContent className="dark:bg-gray-900 dark:border-none">
-                    <SelectGroup>
-                      <SelectLabel>Current Branch</SelectLabel>
-                      <SelectItem
-                        value="north"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        North Branch
-                      </SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Member ID */}
-              <div className="space-y-2">
-                <Label className="text-gray-700 dark:text-gray-300">
-                  Member ID
-                </Label>
-                <Input
-                  placeholder="Member ID"
-                  className="py-6 bg-white dark:bg-gray-900 dark:border-none dark:text-white"
-                  disabled
-                />
               </div>
 
               {/* Submit Button */}
