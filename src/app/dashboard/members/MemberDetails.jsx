@@ -1,5 +1,6 @@
 "use client";
 
+import { Separator } from "@/components/ui/separator"
 import { TiHome } from "react-icons/ti";
 import { FiSearch } from "react-icons/fi";
 import { RiLoader5Fill } from "react-icons/ri";
@@ -498,7 +499,8 @@ const MemberDetails = ({ memberId }) => {
           Membership Details
         </h1>
       </div>
-      <div className='border-[0.5px] dark:border-gray-500 my-5'></div>
+      
+      <Separator orientation="horizontal" className='my-5 dark:bg-gray-600' />
 
       <div className="w-full md:flex justify-between items-start gap-4 px-4">
         <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
