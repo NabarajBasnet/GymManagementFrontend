@@ -1,5 +1,6 @@
 "use client";
 
+import { FaSpinner, FaArrowRight } from "react-icons/fa";
 import { toast } from "sonner";
 import {
   Search,
@@ -71,28 +72,25 @@ import { useState, useMemo, useRef, useEffect } from "react";
 const MemberTransfer = () => {
   const { user, loading } = useUser();
   const searchRef = useRef(null);
-  const [selectedMemberId, setSelectedMemberId] = useState("");
-  const [selectedBranchId, setSelectedBranchId] = useState("");
-
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [selectedMemberId, setSelectedMemberId] = useState();
+  const [selectedBranchId, setSelectedBranchId] = useState();
   const [searchQuery, setSearchQuery] = useState("");
-  const [renderDropdown, setRenderDropdown] = useState(false);
-
-  const getMembers = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/org-members/by-branch`
-      );
-      const resBody = await response.json();
-      return resBody;
-    } catch (error) {
-      toast.error(error.message);
-      console.log("Error: ", error);
-    }
-  };
+  const [renderDropdown, setRenderDropdown] = useState(false)
+  const [transfering, setTransfering] = useState(false)
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["members"],
-    queryFn: getMembers,
+    queryFn: async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/api/org-members/by-branch`);
+        return await response.json();
+      } catch (error) {
+        toast.error(error.message);
+        console.log("Error: ", error);
+        throw error;
+      }
+    },
   });
 
   const { members } = data || {};
@@ -109,33 +107,53 @@ const MemberTransfer = () => {
     };
   }, [searchRef]);
 
+  const { data: branchesData, isLoading: isBranchLoading } = useQuery({
+    queryKey: ["branches"],
+    queryFn: async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/organizationbranch/by-system-user");
+        return await response.json();
+      } catch (error) {
+        toast.error(error.message);
+        console.log("Error: ", error);
+        throw error;
+      }
+    },
+  });
+
+  const { branches } = branchesData || {};
+
+  // Calculate current branch name based on selected member and branches
+  const memberCurrentBranch = useMemo(() => {
+    if (!selectedMember || !branches) return "";
+    const branch = branches.find(b => b._id === selectedMember.organizationBranch?._id);
+    return branch?.orgBranchName || "N/A";
+  }, [selectedMember, branches]);
+
   const handleMemberSelect = (member) => {
+    setSelectedMember(member);
     setSearchQuery(member.fullName);
     setSelectedMemberId(member._id);
     setRenderDropdown(false);
   };
 
-  const getBranches = async () => {
+  const transferMember = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/organizationbranch/by-system-user"
-      );
+      setTransfering(true);
+      console.log("Calling api...");
+      const response = await fetch(`http://localhost:3000/api/`);
       const resBody = await response.json();
-      return resBody;
+      console.log("Response Body: ", resBody);
+      if (response.ok) {
+        toast.success(resBody.message);
+      } else {
+        toast.error(resBody.message);
+      };
     } catch (error) {
-      console.log("Error: ", error);
       toast.error(error.message);
-    }
+      console.log("Error: ", error);
+    };
   };
-
-  const { data: branchesData, isLoading: isBranchLoading } = useQuery({
-    queryKey: ["branches"],
-    queryFn: getBranches,
-  });
-
-  const { branches } = branchesData || {};
-
-  console.log("Branches: ", branches);
 
   return (
     <div className="w-full bg-gray-50 dark:bg-gray-900 px-4 py-6 md:px-6 lg:px-8">
@@ -258,16 +276,16 @@ const MemberTransfer = () => {
                 </Label>
                 <Select>
                   <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
-                    <SelectValue placeholder="Current branch" />
+                    <SelectValue placeholder={memberCurrentBranch || "N/A"} />
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
                       <SelectLabel>Current Branch</SelectLabel>
                       <SelectItem
-                        value="north"
+                        value={memberCurrentBranch || "N/A"}
                         className="cursor-pointer hover:bg-blue-600/30"
                       >
-                        North Branch
+                        {memberCurrentBranch || "N/A"}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>
@@ -281,7 +299,7 @@ const MemberTransfer = () => {
                 </Label>
                 <Select>
                   <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
-                    <SelectValue placeholder="Current branch" />
+                    <SelectValue placeholder="Member ID" />
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
@@ -302,7 +320,7 @@ const MemberTransfer = () => {
                 <Label className="text-gray-700 dark:text-gray-300">
                   To Branch
                 </Label>
-                <Select>
+                <Select onValueChange={(value) => setSelectedBranchId(value)}>
                   <SelectTrigger className="w-full py-6 dark:bg-gray-900 dark:border-none rounded-sm">
                     <SelectValue placeholder="Select branch" />
                   </SelectTrigger>
@@ -311,7 +329,11 @@ const MemberTransfer = () => {
                       <SelectLabel>Branches</SelectLabel>
                       {Array.isArray(branches) && branches?.length >= 1 ? (
                         branches?.map((branch) => (
-                          <SelectItem key={branch._id} value={branch._id} className='cursor-pointer hover:bg-blue-600/30'>
+                          <SelectItem
+                            key={branch._id}
+                            value={branch._id}
+                            className="cursor-pointer hover:bg-blue-600/30"
+                          >
                             {branch.orgBranchName}
                           </SelectItem>
                         ))
@@ -325,7 +347,23 @@ const MemberTransfer = () => {
 
               {/* Submit Button */}
               <div className="flex items-end">
-                <Button className="w-full h-10 mt-2">Transfer Member</Button>
+                <Button
+                  className="w-full py-6 rounded-sm mt-2 flex items-center justify-center gap-2 text-white bg-blue-600 hover:bg-blue-700 transition"
+                  onClick={transfering ? undefined : () => transferMember()}
+                  disabled={transfering || !selectedMemberId || !selectedBranchId}
+                >
+                  {transfering ? (
+                    <>
+                      <FaSpinner className="animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <FaArrowRight />
+                      Transfer Member
+                    </>
+                  )}
+                </Button>
               </div>
             </div>
           </CardContent>
