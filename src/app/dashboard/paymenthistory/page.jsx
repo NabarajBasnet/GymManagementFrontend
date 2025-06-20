@@ -55,7 +55,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import { usePagination } from "@/hooks/Pagination";
 
 const PaymentHistory = () => {
     const [startDate, setStartDate] = useState("");
@@ -159,16 +158,6 @@ const PaymentHistory = () => {
     });
 
     const { totalPages, total, paymenthistories } = paymentHistory || { totalPages: 0, total: 0, paymenthistories: [] };
-
-    const { range, setPage, active } = usePagination({
-        total: totalPages ? totalPages : 1,
-        siblings: 1,
-        boundaries: 1,
-        page: currentPage,
-        onChange: (page) => {
-            setCurrentPage(page);
-        },
-    });
 
     const searchRef = useRef(null);
 
