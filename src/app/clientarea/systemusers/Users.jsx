@@ -96,7 +96,7 @@ const Users = () => {
 
   const getBranchName = (branchId) => {
     if (!multiBranchSupport && !isOnFreeTrial) return "N/A";
-    const branch = branches.find((branch) => branch?._id.toString() === branchId.toString());
+    const branch = branches?.find((branch) => branch?._id?.toString() === branchId?.toString());
     return branch?.orgBranchName || "Unassigned";
   };
 
@@ -207,19 +207,16 @@ const Users = () => {
       );
       const responseBody = await response.json();
       if (response.ok) {
-        toast.success(responseBody.message);
         soonerToast.success(responseBody.message);
         setEditForm(false);
         queryClient.invalidateQueries(["users"]);
       }
 
       if (response.status !== 200) {
-        toast.error(responseBody.message);
         soonerToast.error(responseBody.message);
       }
     } catch (error) {
       console.log("Error: ", error);
-      toast.error(error.message);
       soonerToast.error(error.message);
     }
   };
@@ -251,7 +248,7 @@ const Users = () => {
     } catch (error) {
       console.log("Error: ", error);
       setIsDeleting(false);
-      toast.error(error);
+      toast.error(error.message);
     }
   };
 
