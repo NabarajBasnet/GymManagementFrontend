@@ -69,16 +69,11 @@ import { useState, useMemo, useRef, useEffect } from "react";
 
 const MemberTransfer = () => {
   const { user, loading } = useUser();
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
   const searchRef = useRef(null);
   const [selectedMemberId, setSelectedMemberId] = useState("");
 
-  const [memberSearchQuery, setMemberSearchQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [renderDropdown, setRenderDropdown] = useState(false);
-
-  console.log("Member search query: ", memberSearchQuery);
 
   const getMembers = async () => {
     try {
@@ -112,7 +107,7 @@ const MemberTransfer = () => {
     };
   }, [searchRef]);
 
-  const handlePersonSelect = (member) => {
+  const handleMemberSelect = (member) => {
     setSearchQuery(member.fullName);
     setSelectedMemberId(member._id);
     setRenderDropdown(false);
@@ -182,14 +177,14 @@ const MemberTransfer = () => {
                   Member
                 </Label>
                 <div className="relative">
-                  <div className="flex items-center border dark:border-gray-700 rounded-md transition-all focus-within:ring-2 focus-within:ring-blue-200 dark:focus-within:ring-blue-800 focus-within:border-blue-400 dark:focus-within:border-blue-600">
+                  <div className="flex items-center bg-white dark:bg-gray-900 border dark:border-none rounded-sm transition-all focus-within:ring-2 focus-within:ring-blue-200 dark:focus-within:ring-blue-800 focus-within:border-blue-400 dark:focus-within:border-blue-600">
                     <Search className="h-4 w-4 ml-3 text-gray-400 dark:text-gray-500" />
                     <Input
-                      id="person-search"
+                      id="member-search"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       onFocus={() => setRenderDropdown(true)}
-                      className="border-0 focus-visible:ring-0 py-6 focus-visible:ring-offset-0 dark:bg-gray-800 dark:text-gray-300"
+                      className="border-0 focus-visible:ring-0 rounded-sm bg-white dark:bg-gray-900 py-6 focus-visible:ring-offset-0 dark:text-gray-300"
                       placeholder={`Search members...`}
                       autoComplete="off"
                     />
@@ -213,7 +208,7 @@ const MemberTransfer = () => {
                           .map((member) => (
                             <div
                               key={member._id}
-                              onClick={() => handlePersonSelect(member)}
+                              onClick={() => handleMemberSelect(member)}
                               className="px-4 py-3 flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                             >
                               <User className="h-4 w-4 text-gray-500 dark:text-gray-400" />
@@ -271,7 +266,7 @@ const MemberTransfer = () => {
                         value="north"
                         className="cursor-pointer hover:bg-blue-600/30"
                       >
-                        8878787654564fsdf45sfgf
+                        {selectedMemberId || "N/A"}
                       </SelectItem>
                     </SelectGroup>
                   </SelectContent>

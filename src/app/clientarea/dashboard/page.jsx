@@ -511,7 +511,7 @@ const TenantDashboard = () => {
                           <div>
                             <p className="text-blue-100 text-xs mb-1">Start Date</p>
                             <p className="font-medium">
-                              {tenantOnTrail ?
+                              {loggedInTenant?.freeTrailStatus === 'Active' ?
                                 new Date(loggedInTenant?.createdAt).toLocaleDateString() :
                                 new Date(loggedInTenant?.subscriptionStartsAt).toLocaleDateString()
                               }
@@ -520,7 +520,7 @@ const TenantDashboard = () => {
                           <div>
                             <p className="text-blue-100 text-xs mb-1">End Date</p>
                             <p className="font-medium">
-                              {tenantOnTrail
+                              {loggedInTenant?.freeTrailStatus === 'Active'
                                 ? new Date(loggedInTenant?.freeTrailEndsAt).toLocaleDateString()
                                 : new Date(loggedInTenant?.subscriptionEndsAt).toLocaleDateString()
                               }
@@ -529,24 +529,24 @@ const TenantDashboard = () => {
                           <div>
                             <p className="text-blue-100 text-xs mb-1">Duration</p>
                             <div className="inline-flex items-center space-x-2 bg-white/20 rounded-full px-4 py-2">
-                          <Clock className="w-4 h-4" />
-                          <span className="text-sm font-bold">
-                          {loggedInTenant?.freeTrailStatus  === 'Active' ? `${loggedInTenant?.freeTrailRemainingDays} days` : `${loggedInTenant?.subscriptionRemainingDays} days left`}
-                          </span>
-                        </div>
+                              <Clock className="w-4 h-4" />
+                              <span className="text-sm font-bold">
+                                {loggedInTenant?.freeTrailStatus === 'Active' ? `${loggedInTenant?.freeTrailRemainingDays} days` : `${loggedInTenant?.subscriptionRemainingDays} days left`}
+                              </span>
+                            </div>
                           </div>
                           <div>
                             <p className="text-blue-100 text-xs mb-1">Price</p>
                             <p className="font-medium">
                               {loggedInTenant?.subscription?.subscriptionPrice ?
-                                `${loggedInTenant?.organization?.currency} ${loggedInTenant?.subscription?.subscriptionPrice}` :
+                                `${loggedInTenant?.organization?.currency} ${loggedInTenant?.subscription?.subscriptionPrice} / Mo` :
                                 'N/A'
                               }
                             </p>
                           </div>
                         </div>
 
-                      
+
                       </div>
                     </div>
 
