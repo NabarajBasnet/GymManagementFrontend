@@ -69,7 +69,7 @@ const PaymentHistory = () => {
     const [timeframe, setTimeframe] = useState("all");
     const tableRef = useRef(null);
 
-    const limit = 1;
+    const limit = 10;
 
     const { control, formState: { errors } } = useForm();
 

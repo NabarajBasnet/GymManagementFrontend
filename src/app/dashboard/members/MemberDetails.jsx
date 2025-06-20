@@ -495,7 +495,7 @@ const MemberDetails = ({ memberId }) => {
 
       <div className="w-full flex flex-col md:flex-row gap-4 items-stretch h-full px-4">
         <div className="w-full md:w-3/12">
-          <Card className="w-full bg-white dark:bg-gray-800 dark:border-none p-4 h-full">
+          <Card className="w-full bg-white dark:bg-gray-800 dark:border-none h-full">
             <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
               <div className="w-full flex flex-col gap-6 md:gap-8">
                 QR Code Section
@@ -706,7 +706,7 @@ const MemberDetails = ({ memberId }) => {
                         </TabsList>
                         <TabsContent value="Personal Details">
                           <div className="p-2 bg-white dark:bg-gray-800">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
                                 <Label>Full Name</Label>
                                 <Input
@@ -832,7 +832,7 @@ const MemberDetails = ({ memberId }) => {
                         </TabsContent>
                         <TabsContent value="Membership Details">
                           <div className="p-2 dark:bg-gray-800 bg-white">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
                                 <Label>Membership Type</Label>
                                 <Controller
@@ -1027,7 +1027,7 @@ const MemberDetails = ({ memberId }) => {
 
                         <TabsContent value="Payment Details">
                           <div className="p-2 dark:bg-gray-800 bg-white">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
                                 <Label>Payment Method</Label>
                                 <Controller

@@ -503,11 +503,11 @@ const Header = () => {
         //     },
         //   ],
         // },
-        {
-          icon: IoChatbubbleEllipsesSharp,
-          title: "Ai Assistant",
-          link: "/dashboard/aiassistant",
-        },
+        // {
+        //   icon: IoChatbubbleEllipsesSharp,
+        //   title: "Ai Assistant",
+        //   link: "/dashboard/aiassistant",
+        // },
       ],
     },
   ];
