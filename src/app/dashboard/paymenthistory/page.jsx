@@ -159,6 +159,8 @@ const PaymentHistory = () => {
 
     const { totalPages, total, paymenthistories } = paymentHistory || { totalPages: 0, total: 0, paymenthistories: [] };
 
+    console.log("Payment histories: ", paymenthistories);
+
     const { range, setPage, active } = usePagination({
         total: totalPages ? totalPages : 1,
         siblings: 1,

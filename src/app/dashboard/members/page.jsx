@@ -107,8 +107,7 @@ const AllMembers = () => {
       return resBody;
     } catch (error) {
       console.error("Error: ", error);
-      hotToast.error(error);
-      sonnerToast.error(error);
+      sonnerToast.error(error.message);
     }
   };
 
@@ -153,8 +152,7 @@ const AllMembers = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      hotToast.error(error);
-      sonnerToast.error(error);
+      sonnerToast.error(error.message);
       setEmailToast(true);
     }
   };

@@ -1,5 +1,6 @@
 "use client";
 
+import { TiHome } from "react-icons/ti";
 import { FiSearch } from "react-icons/fi";
 import { RiLoader5Fill } from "react-icons/ri";
 import { FiSave } from "react-icons/fi";
@@ -471,21 +472,11 @@ const MemberDetails = ({ memberId }) => {
   };
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 px-4 py-6">
-      <Breadcrumb>
+    <div className="w-full bg-gray-100 dark:bg-gray-900 px-0 py-6">
+      <Breadcrumb className='px-4'>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/" className="dark:text-gray-300 font-medium">
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-1">
-                <BreadcrumbEllipsis className="h-4 w-4" />
-              </DropdownMenuTrigger>
-            </DropdownMenu>
+            <TiHome className="w-4 h-4 font-medium dark:text-gray-200" /> <BreadcrumbLink href="/" className="text-gray-600 hover:text-blue-600 font-medium dark:text-gray-200">Home</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
@@ -502,13 +493,14 @@ const MemberDetails = ({ memberId }) => {
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
-      <div className="w-full mb-4">
-        <h1 className="text-xl font-bold my-1 dark:text-gray-200">
+      <div className="w-full mt-4 px-4">
+        <h1 className="text-2xl font-bold my-1 dark:text-gray-200">
           Membership Details
         </h1>
       </div>
+      <div className='border-[0.5px] dark:border-gray-500 my-5'></div>
 
-      <div className="w-full md:flex justify-between items-start gap-4">
+      <div className="w-full md:flex justify-between items-start gap-4 px-4">
         <Card className="w-full md:w-3/12 bg-white dark:bg-gray-800 dark:border-none">
           <div className="rounded-md shadow-sm overflow-hidden p-4 md:p-6">
             <div className="w-full flex flex-col gap-6 md:gap-8">
