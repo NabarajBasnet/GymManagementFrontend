@@ -144,9 +144,9 @@ const MemberTransfer = () => {
         method: "PATCH"
       });
       const resBody = await response.json();
-      console.log("Response Body: ", resBody);
       if (response.ok) {
         toast.success(resBody.message);
+        setTransfering(false);
       } else {
         setTransfering(false);
         toast.error(resBody.message);
