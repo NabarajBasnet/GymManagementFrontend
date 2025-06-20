@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import {
   Search,
   InfoIcon,
@@ -71,6 +72,7 @@ const MemberTransfer = () => {
   const { user, loading } = useUser();
   const searchRef = useRef(null);
   const [selectedMemberId, setSelectedMemberId] = useState("");
+  const [selectedBranchId, setSelectedBranchId] = useState("");
 
   const [searchQuery, setSearchQuery] = useState("");
   const [renderDropdown, setRenderDropdown] = useState(false);
@@ -83,8 +85,8 @@ const MemberTransfer = () => {
       const resBody = await response.json();
       return resBody;
     } catch (error) {
+      toast.error(error.message);
       console.log("Error: ", error);
-      throw error;
     }
   };
 
@@ -112,6 +114,28 @@ const MemberTransfer = () => {
     setSelectedMemberId(member._id);
     setRenderDropdown(false);
   };
+
+  const getBranches = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/organizationbranch/by-system-user"
+      );
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      toast.error(error.message);
+    }
+  };
+
+  const { data: branchesData, isLoading: isBranchLoading } = useQuery({
+    queryKey: ["branches"],
+    queryFn: getBranches,
+  });
+
+  const { branches } = branchesData || {};
+
+  console.log("Branches: ", branches);
 
   return (
     <div className="w-full bg-gray-50 dark:bg-gray-900 px-4 py-6 md:px-6 lg:px-8">
@@ -261,7 +285,7 @@ const MemberTransfer = () => {
                   </SelectTrigger>
                   <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
-                      <SelectLabel>Current Branch</SelectLabel>
+                      <SelectLabel>Member ID</SelectLabel>
                       <SelectItem
                         value="north"
                         className="cursor-pointer hover:bg-blue-600/30"
@@ -285,36 +309,15 @@ const MemberTransfer = () => {
                   <SelectContent className="dark:bg-gray-900 dark:border-none">
                     <SelectGroup>
                       <SelectLabel>Branches</SelectLabel>
-                      <SelectItem
-                        value="north"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        North Branch
-                      </SelectItem>
-                      <SelectItem
-                        value="south"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        South Branch
-                      </SelectItem>
-                      <SelectItem
-                        value="east"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        East Branch
-                      </SelectItem>
-                      <SelectItem
-                        value="west"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        West Branch
-                      </SelectItem>
-                      <SelectItem
-                        value="central"
-                        className="cursor-pointer hover:bg-blue-600/30"
-                      >
-                        Central Branch
-                      </SelectItem>
+                      {Array.isArray(branches) && branches?.length >= 1 ? (
+                        branches?.map((branch) => (
+                          <SelectItem key={branch._id} value={branch._id} className='cursor-pointer hover:bg-blue-600/30'>
+                            {branch.orgBranchName}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <SelectItem>No branches found</SelectItem>
+                      )}
                     </SelectGroup>
                   </SelectContent>
                 </Select>
