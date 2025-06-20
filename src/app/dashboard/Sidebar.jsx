@@ -83,6 +83,7 @@ import { Badge } from "@/components/ui/badge";
 
 const Sidebar = () => {
   const { user, loading: userLoading } = useUser();
+  const loggedInUser = user?.user;
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -211,7 +212,7 @@ const Sidebar = () => {
           link: "/dashboard/newmember",
           highlight: true,
         },
-        ...(user?.user?.organizationBranch
+        ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin'
           ? [
             {
               icon: ImUsers,

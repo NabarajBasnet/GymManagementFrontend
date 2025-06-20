@@ -129,6 +129,8 @@ import { FaUsersGear } from "react-icons/fa6";
 
 const Header = () => {
   const { user, loading: userLoading } = useUser();
+  const loggedInUser = user?.user;
+
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { setTheme } = useTheme();
@@ -298,7 +300,7 @@ const Header = () => {
           title: "New Member",
           link: "/dashboard/newmember",
         },
-        ...(user?.user?.organizationBranch ?
+        ...(user?.user?.organizationBranch && loggedInUser?.role !== 'Gym Admin' ?
           [{
             icon: ImUsers,
             title: "Member Transfer",
