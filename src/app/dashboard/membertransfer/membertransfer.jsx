@@ -398,7 +398,7 @@ const MemberTransfer = () => {
               {/* Submit Button */}
               <div className="flex items-end">
                 <AlertDialog>
-                  <AlertDialogTrigger asChild>
+                  <AlertDialogTrigger asChild className="dark:bg-gray-800">
                     <Button
                       className="w-full py-3 px-6 rounded-lg text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
                       disabled={!isTransferReady || transfering}
@@ -416,13 +416,13 @@ const MemberTransfer = () => {
                       )}
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="sm:max-w-md">
+                  <AlertDialogContent className="sm:max-w-md dark:bg-gray-800 dark:border-none">
                     <AlertDialogHeader>
                       <div className="flex items-center gap-3 mb-2">
                         <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-full">
                           <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
                         </div>
-                        <AlertDialogTitle className="text-lg font-semibold">
+                        <AlertDialogTitle className="text-lg dark:text-white font-semibold">
                           Confirm Member Transfer
                         </AlertDialogTitle>
                       </div>
@@ -430,7 +430,7 @@ const MemberTransfer = () => {
                         Are you sure you want to transfer <span className="font-semibold text-gray-900 dark:text-gray-100">{selectedMember?.fullName}</span> from <span className="font-semibold text-blue-600 dark:text-blue-400">{memberCurrentBranch}</span> to <span className="font-semibold text-green-600 dark:text-green-400">{destinationBranch}</span>?
                       </AlertDialogDescription>
                     </AlertDialogHeader>
-                    <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 my-4">
+                    <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 my-4">
                       <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 mb-2">Transfer Summary:</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
@@ -448,12 +448,12 @@ const MemberTransfer = () => {
                       </div>
                     </div>
                     <AlertDialogFooter>
-                      <AlertDialogCancel className="border-gray-300 dark:border-gray-600">
+                      <AlertDialogCancel className="border-gray-300 dark:border-none dark:text-white dark:hover:bg-gray-900">
                         Cancel
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={transferMember}
-                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+                        className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 dark:border-none dark:text-white"
                       >
                         Confirm Transfer
                       </AlertDialogAction>
