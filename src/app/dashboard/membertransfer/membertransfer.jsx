@@ -140,16 +140,19 @@ const MemberTransfer = () => {
   const transferMember = async () => {
     try {
       setTransfering(true);
-      console.log("Calling api...");
-      const response = await fetch(`http://localhost:3000/api/`);
+      const response = await fetch(`http://localhost:3000/api/organizationbranch/transfer-member?selectedMemberId=${selectedMemberId}&selectedBranchId=${selectedBranchId}`, {
+        method: "PATCH"
+      });
       const resBody = await response.json();
       console.log("Response Body: ", resBody);
       if (response.ok) {
         toast.success(resBody.message);
       } else {
+        setTransfering(false);
         toast.error(resBody.message);
       };
     } catch (error) {
+      setTransfering(false);
       toast.error(error.message);
       console.log("Error: ", error);
     };
