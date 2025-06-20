@@ -55,6 +55,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { usePagination } from "@/hooks/Pagination";
 
 const PaymentHistory = () => {
     const [startDate, setStartDate] = useState("");
@@ -69,7 +70,7 @@ const PaymentHistory = () => {
     const [timeframe, setTimeframe] = useState("all");
     const tableRef = useRef(null);
 
-    const limit = 10;
+    const limit = 1;
 
     const { control, formState: { errors } } = useForm();
 
@@ -158,6 +159,16 @@ const PaymentHistory = () => {
     });
 
     const { totalPages, total, paymenthistories } = paymentHistory || { totalPages: 0, total: 0, paymenthistories: [] };
+
+    const { range, setPage, active } = usePagination({
+        total: totalPages ? totalPages : 1,
+        siblings: 1,
+        boundaries: 1,
+        page: currentPage,
+        onChange: (page) => {
+            setCurrentPage(page);
+        },
+    });
 
     const searchRef = useRef(null);
 
@@ -755,23 +766,21 @@ const PaymentHistory = () => {
                             </div>
                         )}
                     </CardContent>
-                    {paymenthistories && paymenthistories.length > 0 && (
-                        <CardFooter className="flex justify-between border-t pt-4 dark:border-gray-700">
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                                Showing <span className="font-medium dark:text-gray-100">{(currentPage - 1) * limit + 1}</span> to{' '}
-                                <span className="font-medium dark:text-gray-100">
-                                    {Math.min(currentPage * limit, total)}
-                                </span>{' '}
-                                of <span className="font-medium dark:text-gray-100">{total}</span> results
-                            </div>
-                            <Pagination
-                                range={range}
-                                active={active}
-                                setPage={setPage}
-                                totalPages={totalPages}
-                            />
-                        </CardFooter>
-                    )}
+
+                    <div className="flex justify-between items-center p-6">
+                        <div className="text-sm text-gray-500 dark:text-gray-400">
+                            Showing <span className="font-medium dark:text-gray-100">{(currentPage - 1) * limit + 1}</span> to{' '}
+                            <span className="font-medium dark:text-gray-100">
+                                {Math.min(currentPage * limit, total)}
+                            </span>{' '}
+                            of <span className="font-medium dark:text-gray-100">{total}</span> results
+                        </div>
+                        <Pagination
+                            total={totalPages || 0}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                        />
+                    </div>
                 </Card>
             </div>
         </div>
