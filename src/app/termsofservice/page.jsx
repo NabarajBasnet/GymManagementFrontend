@@ -19,7 +19,7 @@ const TermsOfService = () => {
             id: 'acceptance',
             title: 'Acceptance of Terms',
             icon: <FileText className="w-5 h-5" />,
-            content: 'By accessing or using GymFlow Pro ("Service", "Platform", or "Software"), you ("User", "You", or "Customer") agree to be bound by these Terms and our Privacy Policy. If you do not agree, do not use the Service.',
+            content: 'By accessing or using GymFlow ("Service", "Platform", or "Software"), you ("User", "You", or "Customer") agree to be bound by these Terms and our Privacy Policy. If you do not agree, do not use the Service.',
             highlight: true
         },
         {
