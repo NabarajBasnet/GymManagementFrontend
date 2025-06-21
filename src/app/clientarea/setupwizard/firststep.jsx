@@ -158,6 +158,28 @@ const FirstStep = () => {
                         <p className="text-xs text-slate-500 dark:text-slate-400">
                             We'll use this email for important system notifications and client communications.
                         </p>
+                        <Button
+                            onClick={() => {
+                                const CLIENT_ID = "751184591988-gbg1v35tlgk485e6145n9ir1jnrhsagr.apps.googleusercontent.com";
+                                const REDIRECT_URI= 'http://localhost:5000/oauth/callback';
+
+                                const scope = encodeURIComponent("https://www.googleapis.com/auth/gmail.send");
+                                const url = `https://accounts.google.com/o/oauth2/v2/auth?` +
+                                    `scope=${scope}` +
+                                    `&access_type=offline` +
+                                    `&include_granted_scopes=true` +
+                                    `&prompt=consent` +
+                                    `&response_type=code` +
+                                    `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
+                                    `&client_id=${CLIENT_ID}`;
+
+                                window.location.href = url;
+                            }}>
+                            Connect Gmail
+                        </Button>
+                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                            * This is important for sending emails to your members
+                        </p>
                     </div>
 
                     {/* Phone Number */}

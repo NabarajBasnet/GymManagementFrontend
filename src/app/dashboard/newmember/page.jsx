@@ -264,13 +264,11 @@ const NewMemberRegistrationForm = () => {
       const responseBody = await response.json();
 
       if (response.ok) {
-        notify.success(responseBody.message);
         sonnerToast.success("Member registration completed", {
           description: responseBody.message,
         });
         reset();
       } else {
-        notify.error(responseBody.message);
         sonnerToast.error("Coultn't register member", {
           description: responseBody.message,
         });
@@ -284,7 +282,6 @@ const NewMemberRegistrationForm = () => {
       }
 
       if (response.status === 400) {
-        notify.error(responseBody.message);
         sonnerToast.error("Member registration completed", {
           description: responseBody.message,
         });
