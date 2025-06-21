@@ -109,7 +109,7 @@ const CreateLocker = () => {
     const StatusIcon = selectedStatus.icon;
 
     return (
-        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Form Section */}
             <Card className='dark:bg-gray-900 dark:border-none'>
                 <CardHeader>

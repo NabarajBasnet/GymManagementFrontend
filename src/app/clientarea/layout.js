@@ -22,7 +22,7 @@ const ClientAreaLayout = ({ children }) => {
             </div>
             <div
               className={`w-full ${
-                clientSidebar ? "pl-0 md:pl-[280px]" : "pl-0"
+                clientSidebar ? "pl-0 md:pl-[240px]" : "pl-0"
               }`}
             >
               <ClientAreaHeader />

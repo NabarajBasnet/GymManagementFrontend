@@ -14,10 +14,10 @@ import LockerLogs from './logs';
 
 const LockerManagement = () => {
     return (
-        <div className="w-full min-h-screen bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4">
+        <div className="w-full min-h-screen bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-3">
             {/* Header Section */}
             <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
                     <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
                         <FaLockOpen className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                     </div>
@@ -43,15 +43,15 @@ const LockerManagement = () => {
             </div>
 
             {/* Main Tabs Component */}
-            <Tabs defaultValue="lockers" className="w-full mt-6">
-                <div className="flex flex-col md:flex-row gap-4">
+            <Tabs defaultValue="lockers" className="w-full mt-4">
+                <div className="flex flex-col md:flex-row gap-2">
                     {/* Left Side - Tabs List */}
                     <div className="w-full md:w-2/12">
                         <Card className='h-full dark:bg-gray-800 dark:border-none'>
-                            <TabsList className="w-full h-full flex md:flex-col items-start justify-start p-4 gap-1 space-y-0 md:space-y-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+                            <TabsList className="w-full h-full flex md:flex-col items-start justify-start p-2 gap-1 space-y-0 md:space-y-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
                                 <TabsTrigger
                                     value="lockers"
-                                    className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+                                    className="w-full justify-start px-2 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <FaLock className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
@@ -60,16 +60,16 @@ const LockerManagement = () => {
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="register"
-                                    className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+                                    className="w-full justify-start px-2 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <IoMdAdd className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
-                                        Register
+                                        Register Lockers
                                     </span>
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="logs"
-                                    className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+                                    className="w-full justify-start px-2 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <IoDocumentTextOutline className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
@@ -78,11 +78,11 @@ const LockerManagement = () => {
                                 </TabsTrigger>
                                 <TabsTrigger
                                     value="documentation"
-                                    className="w-full justify-start px-4 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
+                                    className="w-full justify-start px-2 py-2 text-sm font-medium rounded-md transition-all data-[state=active]:bg-white data-[state=active]:shadow-sm data-[state=active]:text-blue-600 dark:data-[state=active]:bg-gray-700 dark:data-[state=active]:text-blue-400"
                                 >
                                     <LuLogs className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
-                                        Doc
+                                        Documentation
                                     </span>
                                 </TabsTrigger>
                             </TabsList>
@@ -91,7 +91,7 @@ const LockerManagement = () => {
 
                     {/* Right Side - Tabs Content */}
                     <div className="w-full md:w-10/12">
-                        <Card className="h-full p-3 md:p-6 dark:bg-gray-800 dark:border-none">
+                        <Card className="h-full p-3 md:p-2 dark:bg-gray-800 dark:border-none">
                             <TabsContent value='lockers' className="h-full">
                                 <LockersOverview />
                             </TabsContent>

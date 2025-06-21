@@ -196,14 +196,14 @@ const ClientAreaSidebar = ({ activeTab }) => {
   }, [darkMode, mounted]);
 
   return (
-    <div className="bg-white/95 dark:bg-gray-900/95 w-[280px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
+    <div className="bg-white/95 dark:bg-gray-900/95 w-[240px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
       {/* Fixed Header Section */}
       <div className="flex-shrink-0">
         {/* Tenant Profile Section */}
-        <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+        <div className="px-3 py-2 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
             <div className="relative">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold">
                 {loggedInTenant?.fullName.split(" ").map((name) => name.charAt(0)).join("")}
               </div>
             </div>
@@ -211,8 +211,8 @@ const ClientAreaSidebar = ({ activeTab }) => {
               <h3 className="font-medium text-gray-900 dark:text-white">
                 {loggedInTenant?.fullName || "Tenant"}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-2">
-                <span className="font-medium">
+              <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-1">
+                <span className="font-medium text-xs">
                   {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName}
                 </span>
 
@@ -249,8 +249,8 @@ const ClientAreaSidebar = ({ activeTab }) => {
                     {item.icon}
                   </span>
                   <div className="flex flex-col items-start">
-                    <span className="text-md font-medium">{item.label}</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-300 font-medium">{item.description}</span>
+                    <span className="text-md font-medium text-sky-400">{item.label}</span>
+                    <span className="text-[11px] text-start text-gray-500 dark:text-gray-300 font-medium">{item.description}</span>
                   </div>
                 </button>
               </li>

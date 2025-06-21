@@ -117,7 +117,7 @@ const LockersOverview = () => {
 
     // Filter toolbar component
     const FilterToolbar = () => (
-        <div className="flex flex-col md:flex-row gap-4 mb-8 p-6 bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
+        <div className="flex flex-col md:flex-row gap-4 mb-8 p-4 bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-800 dark:via-gray-800 dark:to-gray-900 rounded-2xl shadow-lg border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm">
             <div className="flex-1">
                 <div className="relative group">
                     <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 group-hover:text-blue-500 h-5 w-5 transition-colors duration-200" />
@@ -212,10 +212,10 @@ const LockersOverview = () => {
     }
 
     return (
-        <div className="space-y-8 p-6 rounded-md bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 min-h-screen">
+        <div className="space-y-4 p-3 rounded-md bg-gradient-to-br from-gray-50 via-white to-blue-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-800 min-h-screen">
             {/* Header Card with Stats */}
-            <Card className="dark:border-gray-700/50 shadow-xl mb-8 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 backdrop-blur-sm">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between p-8 space-y-6 md:space-y-0">
+            <Card className="dark:border-gray-700/50 shadow-md mb-4 dark:bg-gradient-to-br dark:from-gray-900 dark:to-gray-800 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 backdrop-blur-sm">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between p-4 space-y-6 md:space-y-0">
                     <div className="space-y-2">
                         <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 dark:from-white dark:via-blue-200 dark:to-indigo-200 bg-clip-text text-transparent">
                             Locker Management
@@ -224,7 +224,7 @@ const LockersOverview = () => {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4 md:p-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 p-4">
                     {Object.entries({
                         total: { count: totalLockers, label: "Total Lockers", gradient: "from-violet-500 to-purple-600" },
                         available: { count: lockerStats.available, label: "Available", gradient: "from-emerald-500 to-green-600" },
@@ -237,7 +237,7 @@ const LockersOverview = () => {
 
                         return (
                             <Card key={key} className="shadow-lg hover:shadow-xl dark:border-gray-700/50 dark:bg-gradient-to-br dark:from-gray-800 dark:to-gray-700 bg-gradient-to-br from-white to-gray-50 border-gray-200/50 transition-all duration-300 hover:scale-[1.02] group min-w-0">
-                                <CardContent className="p-4 md:p-6">
+                                <CardContent className="p-4">
                                     <div className="flex items-center justify-between space-x-4">
                                         <div className="space-y-1 min-w-0">
                                             <p className="text-xs md:text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider truncate">{label}</p>
@@ -254,21 +254,21 @@ const LockersOverview = () => {
                 </div>
             </Card>
 
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-0">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div className="flex-1">
                         <FilterToolbar />
                     </div>
-                    <TabsList className="grid grid-cols-2 w-full md:w-[240px] dark:bg-gray-800/70 bg-white/80 backdrop-blur-sm shadow-lg rounded-2xl p-2 border border-gray-200/50 dark:border-gray-700/50">
+                    <TabsList className="grid grid-cols-2 w-full md:w-[240px] dark:bg-gray-800/70 bg-white/80 backdrop-blur-sm shadow-lg rounded-md p-2 border border-gray-200/50 dark:border-gray-700/50">
                         <TabsTrigger
                             value="grid"
-                            className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
+                            className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
                         >
                             <Box className="h-4 w-4 mr-2" /> Grid
                         </TabsTrigger>
                         <TabsTrigger
                             value="table"
-                            className="rounded-xl data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
+                            className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-indigo-600 data-[state=active]:text-white transition-all duration-300 data-[state=active]:shadow-lg"
                         >
                             <Table className="h-4 w-4 mr-2" /> Table
                         </TabsTrigger>
@@ -276,7 +276,7 @@ const LockersOverview = () => {
                 </div>
 
                 <TabsContent value="grid" className="mt-0">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {tenantLockers.map((locker) => {
                             const statusKey = locker.isAssigned ? "occupied" :
                                 locker.status.toLowerCase() in statuses ?
