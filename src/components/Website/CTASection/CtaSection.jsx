@@ -31,7 +31,7 @@ const CTASection = () => {
                         Ready to Transform Your Gym Management?
                     </h2>
                     <p className="text-xl mb-8 text-white/95">
-                        Join hundreds of successful fitness businesses that are growing with FitLoft.
+                        Join hundreds of successful fitness businesses that are growing with GeoFit.
                         Start your 14-day free trial today.
                     </p>
 

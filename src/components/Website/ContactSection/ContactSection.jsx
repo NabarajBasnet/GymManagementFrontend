@@ -69,7 +69,7 @@ const ContactSection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        Have questions or need assistance? We're here to help you get the most out of FitLoft.
+                        Have questions or need assistance? We're here to help you get the most out of GeoFit.
                     </motion.p>
                 </motion.div>
 
@@ -175,7 +175,7 @@ const ContactSection = () => {
                                     <div>
                                         <p className="text-sm text-gray-400">Email</p>
                                         <a href="mailto:info@flexgym.com" className="text-lg font-medium text-white hover:text-blue-400 transition-colors">
-                                            info@fitloft.com
+                                            info@geofit.com
                                         </a>
                                     </div>
                                 </motion.div>
@@ -276,7 +276,7 @@ const ContactSection = () => {
                                 <p className="text-gray-400">
                                     For urgent matters outside of business hours, please email{' '}
                                     <a href="mailto:support@flexgym.com" className="text-blue-400 font-medium hover:underline">
-                                        support@fitloft.com
+                                        support@geofit.com
                                     </a>
                                 </p>
                             </motion.div>

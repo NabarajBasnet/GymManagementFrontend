@@ -19,28 +19,24 @@ const FAQSection = () => {
 
     const faqs = [
         {
-            question: "What is FitLoft and how does it help gym businesses?",
-            answer: "FitLoft is a comprehensive gym management software that helps fitness businesses streamline operations, manage members, handle payments, track attendance, generate receipts, invoice, and more. Our platform is designed to reduce administrative burden so you can focus on growing your business and serving your members."
+            question: "What is GeoFit and how does it help gym businesses?",
+            answer: "GeoFit is a comprehensive gym management software that helps fitness businesses streamline operations, manage members, handle payments, track attendance, generate receipts, invoice, and more. Our platform is designed to reduce administrative burden so you can focus on growing your business and serving your members."
         },
         {
-            question: "Is FitLoft suitable for my small gym?",
-            answer: "Absolutely! FitLoft is designed to scale with businesses of all sizes. Our Starter plan is perfect for small gyms, while our more advanced plans offer additional features for larger facilities. The platform grows with your business."
+            question: "Is GeoFit suitable for my small gym?",
+            answer: "Absolutely! GeoFit is designed to scale with businesses of all sizes. Our Starter plan is perfect for small gyms, while our more advanced plans offer additional features for larger facilities. The platform grows with your business."
         },
         {
-            question: "How long does it take to set up FitLoft?",
-            answer: "Most customers are up and running with FitLoft in just a few days. Our onboarding team will guide you through the setup process, help you import your existing data, and provide training for you and your staff to ensure a smooth transition."
+            question: "How long does it take to set up GeoFit?",
+            answer: "Most customers are up and running with GeoFit in just a few days. Our onboarding team will guide you through the setup process, help you import your existing data, and provide training for you and your staff to ensure a smooth transition."
         },
         {
-            question: "Can I migrate my existing member data to FitLoft?",
-            answer: "Yes! We offer data migration services to help you transition from your current system to FitLoft. Our team will work with you to ensure all your member information, payment records, and other important data are properly transferred."
+            question: "Can I migrate my existing member data to GeoFit?",
+            answer: "Yes! We offer data migration services to help you transition from your current system to GeoFit. Our team will work with you to ensure all your member information, payment records, and other important data are properly transferred."
         },
         {
-            question: "Does FitLoft offer a mobile app for members?",
-            answer: "Yes, we provide a customizable mobile app that your members can use to book classes, check in, track their progress, and manage their accounts. The app can be branded with your gym's logo and colors for a seamless experience."
-        },
-        {
-            question: "How secure is payment processing with FitLoft?",
-            answer: "FitLoft uses industry-leading encryption and security protocols to protect sensitive data. We're PCI-DSS compliant and partner with trusted payment processors to ensure that all transactions are secure and protected."
+            question: "How secure is payment processing with GeoFit?",
+            answer: "GeoFit uses industry-leading encryption and security protocols to protect sensitive data. We're PCI-DSS compliant and partner with trusted payment processors to ensure that all transactions are secure and protected."
         },
         {
             question: "Can I cancel my subscription at any time?",

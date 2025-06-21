@@ -114,7 +114,7 @@ const Footer = () => {
                             <div className="flex items-center text-gray-400">
                                 <Mail className="w-5 h-5 mr-3 text-cyan-400" />
                                 <a href="mailto:contact@fitloft.com" className="text-sm hover:text-cyan-400 transition-colors">
-                                    contact@fitloft.com
+                                    contact@geofit.com
                                 </a>
                             </div>
                             <div className="flex items-center text-gray-400">
@@ -227,7 +227,7 @@ const Footer = () => {
                     <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
                         {/* Copyright */}
                         <div className="text-gray-500 text-sm">
-                            © {new Date().getFullYear()} FitLoft. All rights reserved.
+                            © {new Date().getFullYear()} GeoFit. All rights reserved.
                         </div>
 
                         {/* Social Links */}

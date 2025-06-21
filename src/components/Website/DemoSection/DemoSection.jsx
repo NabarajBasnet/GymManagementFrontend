@@ -63,7 +63,7 @@ const DemoSection = () => {
                             animate={inView ? { opacity: 1 } : { opacity: 0 }}
                             transition={{ delay: 0.4 }}
                         >
-                            Request a personalized demo and see how FitLoft can help streamline your operations,
+                            Request a personalized demo and see how GeoFit can help streamline your operations,
                             boost member engagement, and grow your fitness business.
                         </motion.p>
 
@@ -89,7 +89,7 @@ const DemoSection = () => {
                                 </div>
                                 <div>
                                     <h3 className="font-semibold text-white text-lg mb-1">Explore Features</h3>
-                                    <p className="text-gray-400">See how FitLoft can address your specific needs</p>
+                                    <p className="text-gray-400">See how GeoFit can address your specific needs</p>
                                 </div>
                             </div>
 
@@ -119,7 +119,7 @@ const DemoSection = () => {
                             </div>
                             <div>
                                 <p className="text-gray-400 italic mb-2">
-                                    "FlexGym has transformed how we manage our gym. The interface is intuitive, and the support is exceptional."
+                                    "GeoFit has transformed how we manage our gym. The interface is intuitive, and the support is exceptional."
                                 </p>
                                 <p className="text-white font-medium">Sarah Johnson</p>
                                 <p className="text-sm text-gray-500">Fitness Center Owner</p>
