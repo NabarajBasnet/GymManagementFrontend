@@ -70,9 +70,9 @@ const Footer = () => {
     ];
 
     const legal = [
-        { name: "Privacy Policy", href: "#" },
-        { name: "Terms of Service", href: "#" },
-        { name: "Cookie Policy", href: "#" },
+        { name: "Privacy Policy", href: "/privacypolicy" },
+        { name: "Terms of Service", href: "/termsofservice" },
+        { name: "Cookie Policy", href: "/cookiepolicy" },
     ];
 
     return (
