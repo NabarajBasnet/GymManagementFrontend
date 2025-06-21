@@ -108,12 +108,12 @@ const Navbar = () => {
                 <div className="flex justify-between items-center">
                     {/* Enhanced Logo */}
                     <div className="flex items-center">
+                    
                         <a href="#" className="text-2xl font-bold tracking-tight">
-                            <span className="bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">Lift</span>
-                            <span className={cn(
-                                'transition-colors duration-300',
-                                scrolled ? 'text-gray-900 dark:text-white' : 'text-white'
-                            )}>ora</span>
+                            <img
+                            className='w-40'
+                    src='./images/GEOFITLOGO.png'
+                    />
                         </a>
                     </div>
 
