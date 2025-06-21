@@ -448,7 +448,7 @@ export default function TenantSignUpPage() {
                                 />
                                 <label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed">
                                     I agree to the{' '}
-                                    <Link href="/terms" className="text-blue-600 hover:text-blue-800 underline font-medium">
+                                    <Link href="/termsofservice" className="text-blue-600 hover:text-blue-800 underline font-medium">
                                         Terms of Service
                                     </Link>
                                     {' '}and understand the platform's usage policies
@@ -465,7 +465,7 @@ export default function TenantSignUpPage() {
                                 />
                                 <label htmlFor="privacy" className="text-sm text-gray-600 leading-relaxed">
                                     I acknowledge that I have read and accept the{' '}
-                                    <Link href="/privacy" className="text-blue-600 hover:text-blue-800 underline font-medium">
+                                    <Link href="/privacypolicy" className="text-blue-600 hover:text-blue-800 underline font-medium">
                                         Privacy Policy
                                     </Link>
                                 </label>

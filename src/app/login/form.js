@@ -125,7 +125,7 @@ const TenantLoginForm = ({ className, ...props }) => {
 
             {/* Bottom section */}
             <div className="pt-8 border-t border-white/10">
-              <p className="text-blue-200 text-sm mb-4">New to GymFlow?</p>
+              <p className="text-blue-200 text-sm mb-4">New to GeoLift?</p>
               <Link
                 href="/register"
                 className="inline-flex items-center px-6 py-3 bg-white/10 hover:bg-white/20 rounded-lg border border-white/20 text-white font-medium transition-all duration-300 group backdrop-blur-sm"
@@ -147,8 +147,10 @@ const TenantLoginForm = ({ className, ...props }) => {
               <Dumbbell className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Liftora</h1>
-              <p className="text-gray-600 text-sm">Management System</p>
+              <h1 className="text-xl font-bold text-gray-900">GeoLift</h1>
+              <p className="text-gray-600 text-sm">
+                Enterprise Gym Management Platform
+              </p>
             </div>
           </div>
 
@@ -158,7 +160,7 @@ const TenantLoginForm = ({ className, ...props }) => {
               Welcome Back
             </h2>
             <p className="text-gray-600">
-              Sign in to access your gym management dashboard
+              Sign in to access your root dashboard
             </p>
           </div>
 
@@ -202,7 +204,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                 <Input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="pl-10 pr-10 py-6 bg-white border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-900 rounded-sm"
+                  className="pl-10 pr-10 py-6 bg-white autocomplete-bg-white border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-900 rounded-sm"
                   {...register("password", {
                     required: "Password is required",
                   })}
@@ -306,11 +308,17 @@ const TenantLoginForm = ({ className, ...props }) => {
           <div className="mt-8 text-center">
             <p className="text-xs text-gray-500">
               By signing in, you agree to our{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
+              <Link
+                href="/termsofservice"
+                className="text-blue-600 hover:underline"
+              >
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link href="#" className="text-blue-600 hover:underline">
+              <Link
+                href="/privacypolicy"
+                className="text-blue-600 hover:underline"
+              >
                 Privacy Policy
               </Link>
             </p>

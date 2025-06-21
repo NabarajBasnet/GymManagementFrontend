@@ -300,11 +300,11 @@ export function LoginForm({ className, ...props }) {
               <div className="mt-6 text-center">
                 <p className="text-xs text-gray-500">
                   By signing in, you agree to our{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a href="/termsofservice" className="text-blue-600 hover:underline">
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-600 hover:underline">
+                  <a href="/privacypolicy" className="text-blue-600 hover:underline">
                     Privacy Policy
                   </a>
                   .

@@ -7,9 +7,7 @@ import { IoMdAdd } from "react-icons/io";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ChevronRight } from "lucide-react";
-import { MdSettings, MdAdd } from "react-icons/md";
 import { FaLockOpen, FaLock } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
 import { Documentation } from "./documentation";
 import LockersOverview from "./lockers";
 import LockerLogs from './logs';
@@ -66,7 +64,7 @@ const LockerManagement = () => {
                                 >
                                     <IoMdAdd className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
-                                        Register Lockers
+                                        Register
                                     </span>
                                 </TabsTrigger>
                                 <TabsTrigger
@@ -84,7 +82,7 @@ const LockerManagement = () => {
                                 >
                                     <LuLogs className="mr-2 h-4 w-4" />
                                     <span className='hidden md:flex'>
-                                        Documentation
+                                        Doc
                                     </span>
                                 </TabsTrigger>
                             </TabsList>

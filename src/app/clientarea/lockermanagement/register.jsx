@@ -1,6 +1,5 @@
 'use client'
 
-import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { useState } from "react";
 import {
@@ -18,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Box, Lock, Wrench, CircleOff } from "lucide-react";
+import { Lock, Wrench, CircleOff } from "lucide-react";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
 import { useForm } from "react-hook-form";
 import { useQuery } from '@tanstack/react-query';
@@ -48,6 +47,9 @@ const CreateLocker = () => {
     const { tenant } = useTenant()
     const loggedInTenant = tenant?.tenant;
     const onTrail = loggedInTenant?.freeTrailStatus === 'Active';
+    const multiBranchSupport = loggedInTenant?.subscription?.subscriptionFeatures?.find((feature) => {
+        return feature.toString() === 'Multi Branch Support'
+    });
 
     // States
     const [selectedBranch, setSelectedBranch] = useState();
@@ -63,7 +65,6 @@ const CreateLocker = () => {
             return resBody;
         } catch (error) {
             console.log("Error: ", error);
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
         }
     }
@@ -71,7 +72,7 @@ const CreateLocker = () => {
     const { data, isLoading } = useQuery({
         queryKey: ['branches'],
         queryFn: getBranches,
-        enabled: !!onTrail
+        enabled: !!(onTrail || multiBranchSupport)
     });
 
     const { branches: orgBranches } = data || {};
@@ -89,12 +90,10 @@ const CreateLocker = () => {
             const responseBody = await request.json();
 
             if (request.ok) {
-                hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
             }
         } catch (error) {
             console.log("Error: ", error);
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
         };
     };
@@ -118,21 +117,29 @@ const CreateLocker = () => {
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit(onSubmitLockers)} className="space-y-6">
-                        {onTrail && (
+                        {(onTrail || multiBranchSupport) && (
                             <div className="space-y-2">
                                 <Label htmlFor="branch">Select Branch</Label>
-                                <Select onValueChange={(value) => {
-                                    setSelectedBranch(value);
-                                    setValue('branch', value);
-                                }}>
-                                    <SelectTrigger className='py-6 rounded-sm dark:border-none dark:bg-gray-700'>
+                                <Select
+                                    onValueChange={(value) => {
+                                        setSelectedBranch(value);
+                                        setValue('branch', value);
+                                    }}
+                                >
+                                    <SelectTrigger className="py-6 rounded-sm dark:border-none dark:bg-gray-700">
                                         <SelectValue placeholder="Select a branch" />
                                     </SelectTrigger>
-                                    <SelectContent className='dark:bg-gray-800 dark:border-none'>
+                                    <SelectContent className="dark:bg-gray-800 dark:border-none">
                                         <SelectGroup>
                                             <SelectLabel>Select</SelectLabel>
-                                            {orgBranches?.map((branch) =>
-                                            (<SelectItem className='cursor-pointer hover:bg-blue-500 hover:text-white' key={branch._id} value={branch._id}>{branch.orgBranchName}</SelectItem>
+                                            {orgBranches?.map((branch) => (
+                                                <SelectItem
+                                                    className="cursor-pointer hover:bg-blue-500 hover:text-white"
+                                                    key={branch._id}
+                                                    value={branch._id}
+                                                >
+                                                    {branch.orgBranchName}
+                                                </SelectItem>
                                             ))}
                                         </SelectGroup>
                                     </SelectContent>
