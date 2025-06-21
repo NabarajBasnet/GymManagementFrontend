@@ -105,7 +105,7 @@ const TrustedBySection = () => {
                         animate={inView ? { opacity: 1 } : { opacity: 0 }}
                         transition={{ delay: 0.4 }}
                     >
-                        Join 500+ fitness businesses worldwide that trust FitLoft to power their operations
+                        Join 500+ fitness businesses worldwide that trust GeoFit to power their operations
                     </motion.p>
                 </motion.div>
 

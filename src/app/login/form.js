@@ -90,7 +90,7 @@ const TenantLoginForm = ({ className, ...props }) => {
                 <Dumbbell className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold">Liftora</h1>
+                <h1 className="text-2xl font-bold">GeoFit</h1>
                 <p className="text-blue-100 text-sm">Management System</p>
               </div>
             </div>
