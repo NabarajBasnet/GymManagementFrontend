@@ -71,14 +71,6 @@ const ClientAreaHeader = ({ activeTab }) => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
 
-  const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
-  const today = new Date();
-  const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
-  const todayDate = new Date(today.setHours(0, 0, 0, 0));
-
-  // Calculate difference in milliseconds
-  const diffTime = expireDate.getTime() - todayDate.getTime();
-
   // Get the nav items based on features
   const navItems = [
     {
@@ -514,11 +506,15 @@ const ClientAreaHeader = ({ activeTab }) => {
                           </div>
                           <div className="flex items-center space-x-2">
                             <span
-                              className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white`}
+                              className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full ${loggedInTenant?.status === "active"
+                                  ? "bg-green-100 text-green-800"
+                                  : loggedInTenant?.status === "inactive"
+                                    ? "bg-red-100 text-red-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                                }`}
                             >
-                              {/* {subscriptionStyle.icon} */}
-                              <span className="text-black dark:text-white">
-                                {loggedInTenant?.subscriptionStatus}
+                              <span className="capitalize">
+                                Account: {loggedInTenant?.status || "unknown"}
                               </span>
                             </span>
                           </div>
@@ -542,17 +538,17 @@ const ClientAreaHeader = ({ activeTab }) => {
                         <div className="font-semibold text-gray-800 dark:text-gray-200">
                           {loggedInTenant?.fullName}
                         </div>
+
                         <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                           <span
-                            className={`inline-flex items-center space-x-1 text-xs font-medium px-2 py-0.5 rounded-md text-white mr-2`}
+                            className={`font-medium px-2 py-0.5 rounded-full ${loggedInTenant?.freeTrailStatus === "Active"
+                                ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100"
+                                : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+                              }`}
                           >
-                            {/* {subscriptionStyle.icon} */}
-                            <span className="text-black dark:text-white">
-                              {loggedInTenant?.subscriptionStatus}
-                            </span>
-                          </span>
-                          <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                            {loggedInTenant?.subscriptionStatus}
+                            {loggedInTenant?.freeTrailStatus === "Active"
+                              ? `Free Trial • ${loggedInTenant?.freeTrailStatus}`
+                              : `Subscription • ${loggedInTenant?.subscriptionStatus}`}
                           </span>
                         </div>
                       </div>
