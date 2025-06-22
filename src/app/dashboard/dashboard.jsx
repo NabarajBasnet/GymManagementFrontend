@@ -116,21 +116,21 @@ const AdminDashboard = () => {
   // Get Renewed Members
   const getRenewedMembers = async ({ queryKey }) => {
     const [, startDate, endDate, page, limit] = queryKey;
-      try {
-          const response = await fetch(
-              `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
-          );
-          const responseBody = await response.json();
-          return responseBody;
-      } catch (error) {
-          console.error("Error fetching renewed members:", error);
-          return { members: [] };
-      }
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
+      );
+      const responseBody = await response.json();
+      return responseBody;
+    } catch (error) {
+      console.error("Error fetching renewed members:", error);
+      return { members: [] };
+    }
   };
 
   const { data: renewedMembers = { members: [] }, isLoading: isRenewedMembersLoading } = useQuery({
-      queryKey: ['renewedMembers', startDate, endDate, currentPage, limit],
-      queryFn: getRenewedMembers
+    queryKey: ['renewedMembers', startDate, endDate, currentPage, limit],
+    queryFn: getRenewedMembers
   });
 
   const getActiveInactiveMembers = async () => {
@@ -144,31 +144,31 @@ const AdminDashboard = () => {
     }
   }
 
-  const { data: activeInactiveMembersData , isLoading } = useQuery({
+  const { data: activeInactiveMembersData, isLoading } = useQuery({
     queryKey: ["activeinactivemembers"],
     queryFn: getActiveInactiveMembers,
   })
 
-  const { growth  } = activeInactiveMembersData || {};
+  const { growth } = activeInactiveMembersData || {};
   const { activeMembersGrowth, inactiveMembersGrowth } = growth || {};
 
-  const getNewMembersGrowthPercentage = async()=>{
-    try{
+  const getNewMembersGrowthPercentage = async () => {
+    try {
       const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
       const resBody = await response.json();
       return resBody;
-    }catch(error){
-      console.log("Error: ",error);
+    } catch (error) {
+      console.log("Error: ", error);
     }
   }
 
-  const {data:newMembersGrowthPercentageData} = useQuery({
-    queryKey:['newmembersgrowthpercentage'],
-    queryFn:getNewMembersGrowthPercentage
+  const { data: newMembersGrowthPercentageData } = useQuery({
+    queryKey: ['newmembersgrowthpercentage'],
+    queryFn: getNewMembersGrowthPercentage
   });
 
-  const {  newMembers: months,
-    growthPercentage:newMembersGrowthPercentage,
+  const { newMembers: months,
+    growthPercentage: newMembersGrowthPercentage,
     currentCount,
     previousCount, } = newMembersGrowthPercentageData || {};
 
@@ -250,7 +250,7 @@ const AdminDashboard = () => {
           {/* Main Welcome Card */}
           <Card className="lg:col-span-8 dark:border-none relative overflow-hidden rounded-xl shadow-md group transition-all duration-300 hover:shadow-lg bg-white dark:bg-gray-900">
             {/* Sleek gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-indigo/75 to-neutral-900 z-10"></div>
+            <div className="absolute inset-0 bg-white dark:bg-gray-800 z-10"></div>
 
             {/* Geometric pattern overlay */}
             <div className="absolute inset-0 opacity-5 z-10" style={{
@@ -263,13 +263,16 @@ const AdminDashboard = () => {
                 {/* Text content */}
                 <div className="flex-1 space-y-4 text-center lg:text-left">
                   <div className="flex justify-center lg:justify-start items-center gap-2">
-                    <h1 className="text-4xl md:text-5xl font-bold text-white tracking-tight">
-                      {getGreeting()}, <span className="text-cyan-400 font-black">{loggedInUser?.firstName}</span>!
+                    <h1 className="text-4xl md:text-5xl font-bold dark:text-white tracking-tight">
+                      {getGreeting()},{" "}
+                      <span className="bg-gradient-to-r from-cyan-500 to-blue-600 bg-clip-text text-transparent font-black">
+                        {loggedInUser?.firstName}
+                      </span>
                       <span className="ml-2 text-lg">👋</span>
                     </h1>
                   </div>
 
-                  <p className="text-gray-300 text-sm md:text-base font-medium max-w-xl mx-auto lg:mx-0 leading-snug">
+                  <p className="dark:text-gray-300 text-gray-800 text-sm md:text-base font-medium max-w-xl mx-auto lg:mx-0 leading-snug">
                     Streamline your gym operations with intelligent analytics and member management tools.
                   </p>
 
@@ -282,7 +285,13 @@ const AdminDashboard = () => {
                     </Button>
                     <Button
                       variant="outline"
-                      className="bg-white/5 backdrop-blur-sm border border-white/20 text-white hover:bg-white/10 hover:border-white/30 transition-all duration-300 shadow-sm hover:shadow-md px-6 py-2.5 rounded-lg font-semibold text-sm transform hover:scale-105"
+                      className="text-gray-800 dark:text-white bg-white/70 dark:bg-white/5 backdrop-blur-sm 
+             border border-gray-300 dark:border-white/20 
+             hover:bg-gray-100 dark:hover:bg-white/10 
+             hover:border-gray-400 dark:hover:border-white/30 
+             transition-all duration-300 shadow-sm hover:shadow-md 
+             px-6 py-2.5 rounded-lg font-semibold text-sm 
+             transform hover:scale-105"
                     >
                       <span className="mr-2">📚</span> Learn More
                     </Button>
