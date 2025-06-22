@@ -222,13 +222,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
               </p>
             </div>
           </div>
-
-          {tenantOnTrail && remainingDaysOnFreeTrail > 0 && (
-            <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-md text-xs text-yellow-700 dark:text-yellow-300">
-              Free trial ends in {remainingDaysOnFreeTrail} day
-              {remainingDaysOnFreeTrail !== 1 ? "s" : ""}
-            </div>
-          )}
         </div>
       </div>
 
