@@ -212,11 +212,11 @@ const ClientAreaSidebar = ({ activeTab }) => {
                 {loggedInTenant?.fullName || "Tenant"}
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400 flex justify-between items-center space-x-1">
-                <span className="font-medium text-xs">
+                <span className={`font-medium text-xs ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
                   {loggedInTenant?.freeTrailStatus === 'Active' ? 'Free Trail' : loggedInTenant?.subscription?.subscriptionName}
                 </span>
 
-                <span className="text-xs text-gray-500 dark:text-gray-300 font-medium">
+                <span className={`text-xs font-medium ${loggedInTenant?.freeTrailStatus === 'Active' ? 'text-yellow-500' : 'text-green-500'}`}>
                   ( {loggedInTenant?.freeTrailStatus === 'Active' ? loggedInTenant?.freeTrailRemainingDays : loggedInTenant?.subscriptionRemainingDays} Days left )
                 </span>
               </p>
