@@ -253,7 +253,7 @@ const Users = () => {
   };
 
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-900 flex justify-center">
+    <div className="w-full bg-transparent dark:bg-gray-900 flex justify-center">
       <div className="w-full">
         {isDeleting && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
@@ -616,7 +616,7 @@ const Users = () => {
                   <IoSearch className="text-gray-400 dark:text-gray-500" />
                 </div>
                 <Input
-                  className="pl-10 w-full py-6 text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="pl-10 w-full bg-white py-6 text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Search users..."
                   value={searchQuery}
                   onChange={(e) => {

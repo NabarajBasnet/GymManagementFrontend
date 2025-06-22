@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 
 const SystemUsers = () => {
   return (
-    <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+    <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
       <h1 className="text-2xl font-bold dark:text-gray-100">System Users</h1>
       <div className="w-full py-6">
         <Tabs defaultValue="users">
@@ -31,14 +31,12 @@ const SystemUsers = () => {
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="users" className="border-none">
-            <Card className="rounded-md dark:border-none shadow-md dark:shadow-none">
-              <Users />
-            </Card>
+          <TabsContent value="users" className="border-none shadow-none">
+            <Users />
           </TabsContent>
 
-          <TabsContent value="adduser">
-            <Card className="border-none">
+          <TabsContent value="adduser" className='shadow-none'>
+            <Card className="border-none shadow-none">
               <CreateUsers />
             </Card>
           </TabsContent>
