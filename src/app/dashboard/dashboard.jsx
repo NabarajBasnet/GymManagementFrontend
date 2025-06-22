@@ -287,12 +287,12 @@ const AdminDashboard = () => {
                   <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-3 pt-2">
                     <Button
                       onClick={() => router.push('/dashboard')}
-                      className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 hover:from-blue-700 hover:via-purple-700 hover:to-cyan-600 text-white transition-all duration-500 shadow-lg hover:shadow-xl px-6 py-3 rounded-xl font-bold text-sm transform hover:scale-105 border-0 overflow-hidden"
+                      className="group relative bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 hover:from-blue-700 hover:via-purple-700 hover:to-cyan-600 text-white transition-all duration-500 shadow-lg hover:shadow-xl px-6 py-6 rounded-lg font-bold text-sm transform hover:scale-105 border-0 overflow-hidden"
                     >
                       <div className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
                       <span className="relative flex items-center gap-2">
-                        <span className="text-lg">🚀</span>
-                        Launch Dashboard
+                        <span className="text-lg">📝</span>
+                        See Documentation
                       </span>
                     </Button>
                     <Button
@@ -302,7 +302,7 @@ const AdminDashboard = () => {
                          hover:bg-gray-50 dark:hover:bg-gray-700/90 
                          hover:border-gray-300 dark:hover:border-gray-600 
                          transition-all duration-500 shadow-md hover:shadow-lg 
-                         px-6 py-3 rounded-xl font-bold text-sm 
+                         px-6 py-6 rounded-lg font-bold text-sm 
                          transform hover:scale-105 overflow-hidden backdrop-blur-sm"
                     >
                       <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 to-purple-500/10 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
