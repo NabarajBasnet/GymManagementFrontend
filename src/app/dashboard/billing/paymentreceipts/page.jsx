@@ -105,7 +105,7 @@ const PaymentReceipts = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3100/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -124,7 +124,7 @@ const PaymentReceipts = () => {
     // Get all staffs
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3100/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -571,7 +571,7 @@ const PaymentReceipts = () => {
                 return
             };
 
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/paymentreceipts`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/paymentreceipts`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -610,7 +610,7 @@ const PaymentReceipts = () => {
     const getAllPaymentReceipts = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/paymentreceipts?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -634,7 +634,7 @@ const PaymentReceipts = () => {
     // Get Single Receipt Details
     const getSingleReceiptDetails = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/paymentreceipts/${id}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/paymentreceipts/${id}`);
             const responseBody = await response.json();
             if (response.ok && response.status === 200) {
                 toast.success(responseBody.message || '');
@@ -649,7 +649,7 @@ const PaymentReceipts = () => {
 
     const deleteReceipt = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/paymentreceipts/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/paymentreceipts/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();

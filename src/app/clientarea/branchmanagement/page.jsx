@@ -103,8 +103,8 @@ const BranchManagement = () => {
     const tenantId = loggedInTenant?._id;
     try {
       const url = isEditing
-        ? `http://88.198.112.156:8000/api/organizationbranch/${editingBranch._id}`
-        : `http://88.198.112.156:8000/api/organizationbranch`;
+        ? `http://88.198.112.156:3100/api/organizationbranch/${editingBranch._id}`
+        : `http://88.198.112.156:3100/api/organizationbranch`;
 
       const method = isEditing ? "PUT" : "POST";
 
@@ -160,7 +160,7 @@ const BranchManagement = () => {
   const handleDeleteBranch = async (branchId) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:8000/api/organizationbranch/${branchId}`,
+        `http://88.198.112.156:3100/api/organizationbranch/${branchId}`,
         {
           method: "DELETE",
         }
@@ -183,7 +183,7 @@ const BranchManagement = () => {
     const [, page, sortBy, sortOrderDesc, searchQuery] = queryKey;
     try {
       const response = await fetch(
-        `http://88.198.112.156:8000/api/organizationbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
+        `http://88.198.112.156:3100/api/organizationbranch?page=${page}&limit=${limit}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}&search=${encodeURIComponent(
           searchQuery
         )}`
       );

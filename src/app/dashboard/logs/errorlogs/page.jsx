@@ -45,7 +45,7 @@ const ErrorLogs = () => {
     const geterrorlogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/errorlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/errorlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             console.log('Res body: ', resBody);
             return resBody;

@@ -50,7 +50,7 @@ const AuthLogs = () => {
     const getauthlogs = async ({ queryKey }) => {
         const [, page] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/authlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/authlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {

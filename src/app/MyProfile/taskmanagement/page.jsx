@@ -87,7 +87,7 @@ const TaskManagement = () => {
         try {
             if (!staffId) return [];
 
-            const url = new URL(`http://88.198.112.156:8000/api/tasks/get-my-tasks/${staffId}`);
+            const url = new URL(`http://88.198.112.156:3100/api/tasks/get-my-tasks/${staffId}`);
             url.searchParams.append('page', currentPage.toString());
             url.searchParams.append('limit', limit.toString());
 
@@ -124,7 +124,7 @@ const TaskManagement = () => {
 
     const startTask = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/tasks/changestatus/${id}?status=${'In Progress'}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/tasks/changestatus/${id}?status=${'In Progress'}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const TaskManagement = () => {
 
     const completeTask = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/tasks/changestatus/${id}?status=${'Completed'}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/tasks/changestatus/${id}?status=${'Completed'}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',

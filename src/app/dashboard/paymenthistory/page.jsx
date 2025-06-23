@@ -106,7 +106,7 @@ const PaymentHistory = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/org-members/by-branch`);
+            const response = await fetch(`http://88.198.112.156:3100/api/org-members/by-branch`);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -135,7 +135,7 @@ const PaymentHistory = () => {
 
         try {
             const dateParams = start && end ? `&startDate=${start}&endDate=${end}` : "";
-            const response = await fetch(`http://88.198.112.156:8000/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/members/paymenthistory/${memberId}?page=${page}&limit=${limit}${dateParams}`);
 
             if (!response.ok) {
                 toast.error("Failed to fetch payment history");

@@ -23,7 +23,7 @@ const LoggedInTenantProvider = ({ children }) => {
 
     const getLoggedInTenantDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/tenant/details`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/tenant/details`, {
                 credentials: 'include',
             });
             if (response.ok) {

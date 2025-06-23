@@ -82,7 +82,7 @@ const AdminFeedBackManagement = () => {
     // Fetch feedbacks
     const getAllFeedbacks = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/feedbacks?page=${currentPage}&limit=${limit}&search=${searchQuery}&status=${selectedStatus}&category=${selectedCategory}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/feedbacks?page=${currentPage}&limit=${limit}&search=${searchQuery}&status=${selectedStatus}&category=${selectedCategory}`);
             const responseBody = await response.json();
 
             if (!response.ok) toast.error(responseBody.message);
@@ -104,7 +104,7 @@ const AdminFeedBackManagement = () => {
     // Handle feedback status update
     const handleStatusUpdate = async (feedbackId, newStatus) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/feedbacks/${feedbackId}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/feedbacks/${feedbackId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
@@ -122,7 +122,7 @@ const AdminFeedBackManagement = () => {
     // Handle feedback deletion
     const handleDelete = async (feedbackId) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/feedbacks/${feedbackId}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/feedbacks/${feedbackId}`, {
                 method: 'DELETE'
             });
 
@@ -139,7 +139,7 @@ const AdminFeedBackManagement = () => {
     // Handle feedback response
     const handleRespond = async (feedbackId, response) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/feedbacks/${feedbackId}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/feedbacks/${feedbackId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

@@ -132,7 +132,7 @@ const PaymentInvoice = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/members`);
+            const response = await fetch(`http://88.198.112.156:3100/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -151,7 +151,7 @@ const PaymentInvoice = () => {
     // Get all staffs
     const getAllStaffs = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3100/api/staffsmanagement`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -170,7 +170,7 @@ const PaymentInvoice = () => {
     // Get all services and tasks
     const getAllItems = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/serviceandproducts`);
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/serviceandproducts`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -801,7 +801,7 @@ const PaymentInvoice = () => {
 
         try {
 
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/invoicemanagement/`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/invoicemanagement/`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',
@@ -846,7 +846,7 @@ const PaymentInvoice = () => {
     const getAllInvoices = async ({ queryKey }) => {
         const [, page, searchQuery, sortBy, sortOrderDesc] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/invoicemanagement?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/invoicemanagement?page=${page}&limit=${limit}&searchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -870,7 +870,7 @@ const PaymentInvoice = () => {
     // Get Single Receipt Details
     const getSingleSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/invoicemanagement/${id}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/invoicemanagement/${id}`);
             const responseBody = await response.json();
 
             if (response.ok && response.status === 200) {
@@ -887,7 +887,7 @@ const PaymentInvoice = () => {
 
     const deleteSalesInvoice = async (id) => {
         try {
-            const response = await fetch(`http://88.198.112.156:8000/api/accounting/invoicemanagement/${id}`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/accounting/invoicemanagement/${id}`, {
                 method: "DELETE",
             });
             const responseBody = await response.json();

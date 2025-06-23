@@ -7,7 +7,7 @@ const LearnAggregation = () => {
 
   const getData = async () => {
     try {
-      const response = await fetch('http://88.198.112.156:8000/api/aggregation');
+      const response = await fetch('http://88.198.112.156:3100/api/aggregation');
 
       const resBody = await response.json();
       console.log(resBody);
