@@ -92,7 +92,7 @@ const AttendanceHistory = () => {
     const fetchAllMembers = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://localhost:3000/api/members?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:3100/api/members?startDate=${startDate}&endDate=${endDate}`);
             const responseBody = await response.json();
             setPersons(responseBody.members);
             setIsLoading(false);
@@ -107,7 +107,7 @@ const AttendanceHistory = () => {
     const fetchAllStaffs = async () => {
         try {
             setIsLoading(true);
-            const response = await fetch(`http://localhost:3000/api/staffsmanagement`);
+            const response = await fetch(`http://88.198.112.156:3100/api/staffsmanagement`);
             const responseBody = await response.json();
             setPersons(responseBody.staffs);
             setIsLoading(false);
@@ -142,8 +142,8 @@ const AttendanceHistory = () => {
 
         try {
             setIsLoading(true);
-            const staffsAttendanceURL = `http://localhost:3000/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
-            const membersAttendanceURL = `http://localhost:3000/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const staffsAttendanceURL = `http://88.198.112.156:3100/api/staff-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
+            const membersAttendanceURL = `http://88.198.112.156:3100/api/member-attendance-history/${id}?page=${currentPage}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`;
 
             const response = await fetch(membershipType === 'Staffs' ? staffsAttendanceURL : membersAttendanceURL);
             const responseBody = await response.json();

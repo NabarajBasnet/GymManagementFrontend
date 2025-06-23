@@ -34,7 +34,7 @@ const FirstStep = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch(`http://localhost:3000/api/organization/first-step`, {
+            const response = await fetch(`http://88.198.112.156:3100/api/organization/first-step`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
