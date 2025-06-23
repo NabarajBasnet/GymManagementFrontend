@@ -8,6 +8,7 @@ import "@mantine/core/styles.css";
 import LoggedInUserProvider from "@/components/Providers/LoggedInUserProvider";
 import { Toaster } from "react-hot-toast";
 import MainClientLayout from "./clientLayout";
+import LoggedInTenantProvider from "@/components/Providers/LoggedInTenantProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,41 +33,43 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LoggedInUserProvider>
-          <ReactQueryClientProvider>
-            <MantineProvider
-              withGlobalStyles
-              withNormalizeCSS
-              theme={{
-                components: {
-                  Pagination: {
-                    styles: {
-                      item: {
-                        backgroundColor: "#ffff",
-                        color: "white",
-                        "&:hover": {
+          <LoggedInTenantProvider>
+            <ReactQueryClientProvider>
+              <MantineProvider
+                withGlobalStyles
+                withNormalizeCSS
+                theme={{
+                  components: {
+                    Pagination: {
+                      styles: {
+                        item: {
                           backgroundColor: "#ffff",
+                          color: "white",
+                          "&:hover": {
+                            backgroundColor: "#ffff",
+                          },
                         },
-                      },
-                      active: {
-                        backgroundColor: "#ffff",
-                        color: "white",
-                        fontWeight: "bold",
+                        active: {
+                          backgroundColor: "#ffff",
+                          color: "white",
+                          fontWeight: "bold",
+                        },
                       },
                     },
                   },
-                },
-              }}
-            >
-              <RTKProvider>
-                <UserProvider>
-                  <Toaster />
-                  <MainClientLayout>
-                    <div className="w-full">{children}</div>
-                  </MainClientLayout>
-                </UserProvider>
-              </RTKProvider>
-            </MantineProvider>
-          </ReactQueryClientProvider>
+                }}
+              >
+                <RTKProvider>
+                  <UserProvider>
+                    <Toaster />
+                    <MainClientLayout>
+                      <div className="w-full">{children}</div>
+                    </MainClientLayout>
+                  </UserProvider>
+                </RTKProvider>
+              </MantineProvider>
+            </ReactQueryClientProvider>
+          </LoggedInTenantProvider>
         </LoggedInUserProvider>
       </body>
     </html>

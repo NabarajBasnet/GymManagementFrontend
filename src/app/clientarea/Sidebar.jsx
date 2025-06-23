@@ -242,7 +242,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
                     {item.icon}
                   </span>
                   <div className="flex flex-col items-start">
-                    <span className="text-md font-medium text-sky-400">{item.label}</span>
+                    <span className="text-md font-medium text-dark dark:text-sky-400">{item.label}</span>
                     <span className="text-[11px] text-start text-gray-500 dark:text-gray-300 font-medium">{item.description}</span>
                   </div>
                 </button>

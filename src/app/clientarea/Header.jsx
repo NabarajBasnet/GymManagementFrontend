@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { FaLockOpen } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";
@@ -384,6 +385,27 @@ const ClientAreaHeader = ({ activeTab }) => {
               </Sheet>
             </div>
 
+            <div className="flex items-center rounded-lg bg-transparent shadow-sm">
+              {loggedInTenant?.freeTrailStatus === 'Active' ? (
+                <div className="flex items-center space-x-0 justify-between w-full">
+                  <p className="text-sm text-gray-800 dark:text-gray-200">
+                    <span className="font-semibold">{loggedInTenant?.freeTrailRemainingDays}</span> Days left on free trial
+                  </p>
+                  <button
+                    onClick={() => {
+                      window.location.href = '/clientarea/pricing';
+                    }}
+                    className="px-4 text-sm font-semibold text-emerald-600 dark:text-emerald-400 transition-all"
+                  >
+                    Upgrade Now
+                  </button>
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500 dark:text-gray-400">
+                </div>
+              )}
+            </div>
+
             {/* Enhanced User Profile */}
             <div className="flex items-center space-x-4">
               {/* Quick Action Buttons - Desktop */}
@@ -507,10 +529,10 @@ const ClientAreaHeader = ({ activeTab }) => {
                           <div className="flex items-center space-x-2">
                             <span
                               className={`inline-flex items-center text-xs font-medium px-2.5 py-0.5 rounded-full ${loggedInTenant?.status === "active"
-                                  ? "bg-green-100 text-green-800"
-                                  : loggedInTenant?.status === "inactive"
-                                    ? "bg-red-100 text-red-800"
-                                    : "bg-yellow-100 text-yellow-800"
+                                ? "bg-green-100 text-green-800"
+                                : loggedInTenant?.status === "inactive"
+                                  ? "bg-red-100 text-red-800"
+                                  : "bg-yellow-100 text-yellow-800"
                                 }`}
                             >
                               <span className="capitalize">
@@ -542,8 +564,8 @@ const ClientAreaHeader = ({ activeTab }) => {
                         <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center mt-1">
                           <span
                             className={`font-medium px-2 py-0.5 rounded-full ${loggedInTenant?.freeTrailStatus === "Active"
-                                ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100"
-                                : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
+                              ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-800 dark:text-emerald-100"
+                              : "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
                               }`}
                           >
                             {loggedInTenant?.freeTrailStatus === "Active"
