@@ -3,7 +3,7 @@
 import { TiEye } from "react-icons/ti";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader,  FiRefreshCcw, FiSearch } from "react-icons/fi";
+import { FiChevronRight, FiTrash2, FiEdit, FiPlus, FiEye, FiLoader, FiRefreshCcw, FiSearch } from "react-icons/fi";
 import { MdHome } from "react-icons/md";
 import toast from "react-hot-toast";
 import { format } from 'date-fns';
@@ -103,10 +103,10 @@ const ScheduleManagement = () => {
         };
 
         try {
-            const url = isEditing 
+            const url = isEditing
                 ? `http://localhost:3000/api/schedules/${editingScheduleId}`
                 : 'http://localhost:3000/api/schedules';
-            
+
             const method = isEditing ? 'PUT' : 'POST';
 
             const response = await fetch(url, {
@@ -118,7 +118,7 @@ const ScheduleManagement = () => {
             });
 
             const responseBody = await response.json();
-            
+
             if (response.ok) {
                 toast.success(responseBody.message);
                 reset();
@@ -145,13 +145,13 @@ const ScheduleManagement = () => {
         setIsEditing(true);
         setEditingScheduleId(schedule._id);
         setActiveTab("create");
-        
+
         // Set form values
         setValue('className', schedule.className);
         setValue('capacity', schedule.capacity);
         setValue('startTime', format(new Date(schedule.startTime), "yyyy-MM-dd'T'HH:mm"));
         setValue('endTime', format(new Date(schedule.endTime), "yyyy-MM-dd'T'HH:mm"));
-        
+
         // Set trainer and room
         setTrainerId(schedule.trainer._id);
         setTrainerName(schedule.trainer.fullName);
@@ -266,7 +266,7 @@ const ScheduleManagement = () => {
     }
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen px-4 py-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
                 <div className='w-full mb-4'>
@@ -300,8 +300,8 @@ const ScheduleManagement = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 onClick={() => window.location.reload()}
                                 className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                             >
@@ -314,9 +314,9 @@ const ScheduleManagement = () => {
 
                 {/* Improved Tabs with dark mode */}
                 <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 bg-gradient-to-r from-gray-800 via-stone-600 to-neutral-700 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 mb-6 text-white">
-                        <TabsTrigger 
-                            value="create" 
+                    <TabsList className="grid w-full grid-cols-2 mb-6 dark:text-white bg-white dark:bg-gray-800">
+                        <TabsTrigger
+                            value="create"
                             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
                             {isEditing ? (
@@ -331,8 +331,8 @@ const ScheduleManagement = () => {
                                 </>
                             )}
                         </TabsTrigger>
-                        <TabsTrigger 
-                            value="view" 
+                        <TabsTrigger
+                            value="view"
                             className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
                             <FiEye className="h-4 w-4" />
@@ -359,7 +359,7 @@ const ScheduleManagement = () => {
                                                 {...register('className', { required: 'Class Name is required' })}
                                                 placeholder="e.g., Morning Yoga, HIIT Training"
                                                 required
-                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
                                             {errors.className && <p className="text-red-500 dark:text-red-400">{errors.className.message}</p>}
                                         </div>
@@ -382,7 +382,7 @@ const ScheduleManagement = () => {
                                                                         setTrainerName('');
                                                                     }}
                                                                     onFocus={handleTrainerSearchFocus}
-                                                                    className="w-full rounded-md border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm px-4 py-2.5 pl-10 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                                    className="w-full rounded-sm py-6 border border-gray-300 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm px-4 pl-10 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
                                                                     placeholder="Search staff..."
                                                                 />
                                                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 dark:text-gray-500">
@@ -435,17 +435,17 @@ const ScheduleManagement = () => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="space-y-2">
                                             <Label htmlFor="room" className="dark:text-gray-300">Room *</Label>
-                                            <Select onValueChange={(value)=>setSelectedRoom(value)} value={selectedRoom}>
-                                                <SelectTrigger className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
+                                            <Select onValueChange={(value) => setSelectedRoom(value)} value={selectedRoom}>
+                                                <SelectTrigger className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100">
                                                     <SelectValue placeholder="Select Room" />
                                                 </SelectTrigger>
                                                 <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                                                    <SelectItem value="Studio A" className="dark:text-gray-300 dark:hover:bg-gray-700">Studio A</SelectItem>
-                                                    <SelectItem value="Studio B" className="dark:text-gray-300 dark:hover:bg-gray-700">Studio B</SelectItem>
-                                                    <SelectItem value="Gym Floor" className="dark:text-gray-300 dark:hover:bg-gray-700">Gym Floor</SelectItem>
-                                                    <SelectItem value="Cardio Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Cardio Room</SelectItem>
-                                                    <SelectItem value="Weight Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Weight Room</SelectItem>
-                                                    <SelectItem value="Yoga Room" className="dark:text-gray-300 dark:hover:bg-gray-700">Yoga Room</SelectItem>
+                                                    <SelectItem value="Studio A" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Studio A</SelectItem>
+                                                    <SelectItem value="Studio B" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Studio B</SelectItem>
+                                                    <SelectItem value="Gym Floor" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Gym Floor</SelectItem>
+                                                    <SelectItem value="Cardio Room" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Cardio Room</SelectItem>
+                                                    <SelectItem value="Weight Room" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Weight Room</SelectItem>
+                                                    <SelectItem value="Yoga Room" className="hover:bg-blue-600/30 cursor-pointer dark:text-gray-300 dark:hover:bg-gray-700">Yoga Room</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                             {errors.room && <p className="text-red-500 dark:text-red-400">{errors.room.message}</p>}
@@ -461,7 +461,7 @@ const ScheduleManagement = () => {
                                                 min="1"
                                                 max="100"
                                                 required
-                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
+                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100 dark:placeholder:text-gray-500"
                                             />
                                             {errors.capacity && <p className="text-red-500 dark:text-red-400">{errors.capacity.message}</p>}
                                         </div>
@@ -476,7 +476,7 @@ const ScheduleManagement = () => {
                                                 name="startTime"
                                                 {...register('startTime', { required: 'Start Time is required' })}
                                                 required
-                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100"
                                             />
                                             {errors.startTime && <p className="text-red-500 dark:text-red-400">{errors.startTime.message}</p>}
                                         </div>
@@ -488,7 +488,7 @@ const ScheduleManagement = () => {
                                                 name="endTime"
                                                 {...register('endTime', { required: 'End Time is required' })}
                                                 required
-                                                className="dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100"
+                                                className="dark:bg-gray-900 py-6 rounded-sm dark:border-gray-700 dark:text-gray-100"
                                             />
                                             {errors.endTime && <p className="text-red-500 dark:text-red-400">{errors.endTime.message}</p>}
                                         </div>
@@ -500,7 +500,7 @@ const ScheduleManagement = () => {
                                                 type="button"
                                                 variant="outline"
                                                 onClick={handleCancelEdit}
-                                                className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                                className="dark:bg-gray-800 py-6 rounded-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                             >
                                                 Cancel Edit
                                             </Button>
@@ -518,14 +518,14 @@ const ScheduleManagement = () => {
                                                 setIsEditing(false);
                                                 setEditingScheduleId(null);
                                             }}
-                                            className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                            className="dark:bg-gray-800 py-6 rounded-sm dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                         >
                                             Reset
                                         </Button>
-                                        <Button 
-                                            type="submit" 
+                                        <Button
+                                            type="submit"
                                             disabled={isSubmitting}
-                                            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+                                            className="bg-blue-600 py-6 rounded-sm hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
                                         >
                                             {isSubmitting ? (
                                                 <FiLoader className="animate-spin" />
@@ -583,9 +583,9 @@ const ScheduleManagement = () => {
                                                         <TableCell>
                                                             <Badge variant={
                                                                 schedule.status === 'Pending' ? 'secondary' :
-                                                                schedule.status === 'OnGoing' ? 'default' :
-                                                                schedule.status === 'Completed' ? 'success' :
-                                                                'destructive'
+                                                                    schedule.status === 'OnGoing' ? 'default' :
+                                                                        schedule.status === 'Completed' ? 'success' :
+                                                                            'destructive'
                                                             }>
                                                                 {schedule.status}
                                                             </Badge>
@@ -593,9 +593,9 @@ const ScheduleManagement = () => {
                                                         <TableCell>
                                                             <Dialog>
                                                                 <DialogTrigger asChild>
-                                                                    <Button 
-                                                                        variant="outline" 
-                                                                        size="sm" 
+                                                                    <Button
+                                                                        variant="outline"
+                                                                        size="sm"
                                                                         className="flex items-center gap-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                                                     >
                                                                         <TiEye className="h-4 w-4" />
@@ -664,7 +664,7 @@ const ScheduleManagement = () => {
                                                                         </AlertDialogHeader>
                                                                         <AlertDialogFooter>
                                                                             <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction 
+                                                                            <AlertDialogAction
                                                                                 onClick={() => deleteSchedule(schedule._id)}
                                                                                 className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
                                                                             >
@@ -688,21 +688,21 @@ const ScheduleManagement = () => {
                             </div>
                         )}
 
-                            <div className='my-2'>
-                                <div className="mt-4 px-4 md:flex justify-between items-center">
-                                    <p className="font-medium text-center text-sm text-gray-700">
-                                        Showing <span className="font-semibold">{startEntry}</span> to <span className="font-semibold">{endEntry}</span> of <span className="font-semibold">{schedules?.length}</span> entries
-                                    </p>
-                                    <Pagination
-                                        total={totalPages}
-                                        page={currentPage}
-                                        onChange={setCurrentPage}
-                                        withEdges={true}
-                                        siblings={1}
-                                        boundaries={1}
-                                    />
-                                </div>
+                        <div className='my-2'>
+                            <div className="mt-4 px-4 md:flex justify-between items-center">
+                                <p className="font-medium text-center text-sm text-gray-700">
+                                    Showing <span className="font-semibold">{startEntry}</span> to <span className="font-semibold">{endEntry}</span> of <span className="font-semibold">{schedules?.length}</span> entries
+                                </p>
+                                <Pagination
+                                    total={totalPages}
+                                    page={currentPage}
+                                    onChange={setCurrentPage}
+                                    withEdges={true}
+                                    siblings={1}
+                                    boundaries={1}
+                                />
                             </div>
+                        </div>
                     </TabsContent>
                 </Tabs>
             </div>
