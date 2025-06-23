@@ -15,7 +15,6 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast as sonnertoast } from "sonner";
-import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
 import React, { useState, useEffect } from "react";
@@ -53,7 +52,7 @@ const TenantSubscriptionPlansManagement = () => {
   const [resBody, setResBody] = useState();
 
   const calculateNextExpireDate = (duration) => {
-    switch(duration) {
+    switch (duration) {
       case '1 Month':
         return new Date(new Date().setMonth(new Date().getMonth() + 1 * quantity));
       case '3 Months':
@@ -68,36 +67,36 @@ const TenantSubscriptionPlansManagement = () => {
   };
 
   useEffect(() => {
-    if(selectedPlanDuration) {
+    if (selectedPlanDuration) {
       setNextExpireDate(calculateNextExpireDate(selectedPlanDuration));
     }
   }, [selectedPlanDuration, selectedPlan, quantity]);
 
-// Calculate total price
-useEffect(() => {
-  if(selectedPlan && selectedPlanDuration && quantity) {
-    switch(selectedPlanDuration) {
-      case '1 Month':
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
-        break;
-      case '3 Months':
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 3);
-        break;
-      case '6 Months':
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 6);
-        break;
-      case '9 Months':
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 9);
-        break;
-      case '12 Months':
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 12);
-        break;
-      default:
-        setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
-        break;
+  // Calculate total price
+  useEffect(() => {
+    if (selectedPlan && selectedPlanDuration && quantity) {
+      switch (selectedPlanDuration) {
+        case '1 Month':
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
+          break;
+        case '3 Months':
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 3);
+          break;
+        case '6 Months':
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 6);
+          break;
+        case '9 Months':
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 9);
+          break;
+        case '12 Months':
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity * 12);
+          break;
+        default:
+          setTotalPrice(selectedPlan?.subscriptionPrice * quantity);
+          break;
+      }
     }
-  }
-}, [selectedPlan, selectedPlanDuration, quantity]);
+  }, [selectedPlan, selectedPlanDuration, quantity]);
 
   const fetchPlans = async () => {
     try {
@@ -132,13 +131,13 @@ useEffect(() => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           selectedPlan: selectedPlan,
           quantity: quantity,
           selectedPlanDuration: selectedPlanDuration,
           nextExpireDate: nextExpireDate,
           totalPrice: totalPrice,
-         }),
+        }),
         credentials: "include",
       });
 
@@ -219,7 +218,7 @@ useEffect(() => {
           </div>
 
           {/* Plans Grid */}
-          <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+          <div className="w-full mx-auto px-4 py-16 sm:px-6 lg:px-4">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {subscriptions.map((plan, index) => {
                 const Icon = getPlanIcon(index);
@@ -287,125 +286,123 @@ useEffect(() => {
 
                       {/* CTA Button and Guarantee - Always at bottom */}
                       <div className="mt-auto pt-6">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild className="w-full rounded-xl">
-                          <button
-                            onClick={() => setSelectedPlan(plan)}
-                            disabled={loadingButtons[plan._id]}
-                            className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${
-                              isPopular
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild className="w-full rounded-xl">
+                            <button
+                              onClick={() => setSelectedPlan(plan)}
+                              disabled={loadingButtons[plan._id]}
+                              className={`w-full py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 flex items-center justify-center group ${isPopular
                                 ? "bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg"
                                 : "bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white border border-gray-200 dark:border-gray-700"
-                            } ${
-                              loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""
-                            }`}
-                          >
-                            {loadingButtons[plan._id] ? (
-                              <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                              <>
-                                Pick Plan
-                                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-                              </>
-                            )}
-                          </button>
-                        </AlertDialogTrigger>
-                        
-                        <AlertDialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl max-w-md p-6">
-                          <AlertDialogHeader>
-                            <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
-                              Configure Your Plan
-                            </AlertDialogTitle>
-                            <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
-                              Customize your subscription details
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-
-                          <form className="space-y-6 mt-4">
-                            <div className="grid grid-cols-2 gap-4">
-                              <div className="space-y-2">
-                                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</Label>
-                                <Select onValueChange={(value) => setSelectedPlanDuration(value)}>
-                                  <SelectTrigger className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg">
-                                    <SelectValue placeholder="Select duration" />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
-                                    {['1 Month', '3 Months', '6 Months', '9 Months', '12 Months'].map((option) => (
-                                      <SelectItem 
-                                        key={option}
-                                        value={option}
-                                        className="px-8 py-2 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
-                                      >
-                                        {option}
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
-                              </div>
-
-                              <div className="space-y-2">
-                                <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</Label>
-                                <Input
-                                  value={quantity}
-                                  onChange={(e) => setQuantity(e.target.value)}
-                                  type="number"
-                                  min="1"
-                                  placeholder="Enter quantity"
-                                  className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
-                              <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Order Summary</h3>
-                              <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Plan:</span>
-                                  <span className="font-medium text-gray-900 dark:text-white">{selectedPlan?.subscriptionName}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Price:</span>
-                                  <span className="font-medium text-xl text-gray-900 dark:text-white">
-                                    {selectedPlan?.currency} {selectedPlan?.subscriptionPrice}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Duration:</span>
-                                  <span className="font-medium text-gray-900 dark:text-white">{selectedPlanDuration || '-'}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Quantity:</span>
-                                  <span className="font-medium text-gray-900 dark:text-white">{quantity || '0'}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Expires:</span>
-                                  <span className="font-medium text-gray-900 dark:text-white">
-                                    {nextExpireDate ? new Date(nextExpireDate).toISOString().split('T')[0] : '-'}
-                                  </span>
-                                </div>
-                                <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
-                                  <span className="text-gray-600 dark:text-gray-400">Total:</span>
-                                  <span className="font-bold text-blue-600 dark:text-blue-400">
-                                    {selectedPlan?.currency} {totalPrice.toFixed(2)}
-                                  </span>
-                                </div>
-                              </div>
-                            </div>
-                          </form>
-
-                          <AlertDialogFooter className="mt-6">
-                            <AlertDialogCancel className="px-6 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors">
-                              Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction 
-                              className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all"
-                              onClick={() => handleAddToCart(plan)}
+                                } ${loadingButtons[plan._id] ? "opacity-75 cursor-not-allowed" : ""
+                                }`}
                             >
-                              Add to Cart
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
+                              {loadingButtons[plan._id] ? (
+                                <Loader2 className="w-5 h-5 animate-spin" />
+                              ) : (
+                                <>
+                                  Pick Plan
+                                  <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                                </>
+                              )}
+                            </button>
+                          </AlertDialogTrigger>
+
+                          <AlertDialogContent className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl max-w-md p-6">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle className="text-2xl font-bold text-gray-900 dark:text-white">
+                                Configure Your Plan
+                              </AlertDialogTitle>
+                              <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                                Customize your subscription details
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+
+                            <form className="space-y-6 mt-4">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Duration</Label>
+                                  <Select onValueChange={(value) => setSelectedPlanDuration(value)}>
+                                    <SelectTrigger className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg">
+                                      <SelectValue placeholder="Select duration" />
+                                    </SelectTrigger>
+                                    <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg shadow-lg">
+                                      {['1 Month', '3 Months', '6 Months', '9 Months', '12 Months'].map((option) => (
+                                        <SelectItem
+                                          key={option}
+                                          value={option}
+                                          className="px-8 py-2 cursor-pointer dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md transition-colors"
+                                        >
+                                          {option}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                <div className="space-y-2">
+                                  <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">Quantity</Label>
+                                  <Input
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}
+                                    type="number"
+                                    min="1"
+                                    placeholder="Enter quantity"
+                                    className="h-12 bg-gray-50 dark:text-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 rounded-lg"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+                                <h3 className="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Order Summary</h3>
+                                <div className="space-y-2 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Plan:</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{selectedPlan?.subscriptionName}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Price:</span>
+                                    <span className="font-medium text-xl text-gray-900 dark:text-white">
+                                      {selectedPlan?.currency} {selectedPlan?.subscriptionPrice}
+                                    </span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Duration:</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{selectedPlanDuration || '-'}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Quantity:</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">{quantity || '0'}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Expires:</span>
+                                    <span className="font-medium text-gray-900 dark:text-white">
+                                      {nextExpireDate ? new Date(nextExpireDate).toISOString().split('T')[0] : '-'}
+                                    </span>
+                                  </div>
+                                  <div className="border-t border-gray-200 dark:border-gray-700 pt-2 mt-2 flex justify-between">
+                                    <span className="text-gray-600 dark:text-gray-400">Total:</span>
+                                    <span className="font-bold text-blue-600 dark:text-blue-400">
+                                      {selectedPlan?.currency} {totalPrice.toFixed(2)}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+
+                            <AlertDialogFooter className="mt-6">
+                              <AlertDialogCancel className="px-6 py-2.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition-colors">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction
+                                className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-md transition-all"
+                                onClick={() => handleAddToCart(plan)}
+                              >
+                                Add to Cart
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
 
                         {/* Money Back Guarantee */}
                         <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-4">
@@ -419,7 +416,7 @@ useEffect(() => {
             </div>
 
             {/* Trust Indicators */}
-            <div className="mt-16 text-center">
+            {/* <div className="mt-16 text-center">
               <p className="text-gray-600 dark:text-gray-300 mb-8">
                 Trusted by 10,000+ fitness professionals worldwide
               </p>
@@ -437,10 +434,10 @@ useEffect(() => {
                   FlexManage
                 </div>
               </div>
-            </div>
+            </div> */}
 
             {/* FAQ Section */}
-            <div className="mt-20">
+            {/* <div className="mt-20">
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
                 Frequently Asked Questions
               </h2>
@@ -482,24 +479,24 @@ useEffect(() => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       ) : (
         <div className="w-full min-h-screen flex items-center justify-center">
-        <div className="p-28 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-xl">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
-              No Plans Found
-            </h1>
-            <p className="text-gray-500 text-sm font-medium dark:text-gray-300">
-              Looks like the subscription models are not added yet.
-            </p>
-            <Button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" onClick={() => router.push("/clientarea/dashboard")}>
-              Back to dashboard
-            </Button>
+          <div className="p-28 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-xl">
+            <div className="text-center space-y-4">
+              <h1 className="text-4xl font-bold text-gray-800 dark:text-white">
+                No Plans Found
+              </h1>
+              <p className="text-gray-500 text-sm font-medium dark:text-gray-300">
+                Looks like the subscription models are not added yet.
+              </p>
+              <Button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition" onClick={() => router.push("/clientarea/dashboard")}>
+                Back to dashboard
+              </Button>
+            </div>
           </div>
-        </div>
         </div>
       )}
     </div>

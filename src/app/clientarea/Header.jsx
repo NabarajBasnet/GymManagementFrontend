@@ -195,7 +195,7 @@ const ClientAreaHeader = ({ activeTab }) => {
       {loading ? (
         <Loader />
       ) : (
-        <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full mx-auto px-2">
           <div className="flex justify-between items-center h-18">
             {/* Mobile menu button */}
 
@@ -384,7 +384,7 @@ const ClientAreaHeader = ({ activeTab }) => {
               </Sheet>
             </div>
 
-            <div className="flex items-center rounded-lg bg-transparent shadow-sm">
+            <div className="flex items-center rounded-lg bg-transparent">
               {loggedInTenant?.freeTrailStatus === 'Active' ? (
                 <div className="flex items-center space-x-0 justify-between w-full">
                   <p className="text-sm text-gray-800 dark:text-gray-200">
