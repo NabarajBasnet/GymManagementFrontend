@@ -5,7 +5,7 @@ import {
     TooltipTrigger,
     TooltipContent,
     TooltipProvider
-  } from "@/components/ui/tooltip";
+} from "@/components/ui/tooltip";
 import { MdSafetyCheck } from "react-icons/md";
 import { MdStarBorderPurple500 } from "react-icons/md";
 import { FaAddressCard } from "react-icons/fa";
@@ -77,29 +77,29 @@ const AdminFeedBackManagement = () => {
     const [selectedFeedback, setSelectedFeedback] = useState(null);
     const [isRespondModalOpen, setIsRespondModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [limit,setLimit] = useState(10);
+    const [limit, setLimit] = useState(10);
 
     // Fetch feedbacks
     const getAllFeedbacks = async () => {
-        try{
+        try {
             const response = await fetch(`http://localhost:3000/api/feedbacks?page=${currentPage}&limit=${limit}&search=${searchQuery}&status=${selectedStatus}&category=${selectedCategory}`);
             const responseBody = await response.json();
 
-            if(!response.ok) toast.error(responseBody.message);
+            if (!response.ok) toast.error(responseBody.message);
 
             return responseBody;
-        }catch(error){
-            console.log('Error: ',error);
+        } catch (error) {
+            console.log('Error: ', error);
             toast.error(error.message);
         }
     }
 
-    const  {data, isLoading} = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['feedbacks', currentPage, searchQuery, selectedStatus, selectedCategory, limit],
         queryFn: getAllFeedbacks
     })
 
-    const {feedbacks, totalPages, totalFeedbacks} = data || {};
+    const { feedbacks, totalPages, totalFeedbacks } = data || {};
 
     // Handle feedback status update
     const handleStatusUpdate = async (feedbackId, newStatus) => {
@@ -109,9 +109,9 @@ const AdminFeedBackManagement = () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus })
             });
-            
+
             if (!response.ok) throw new Error('Failed to update status');
-            
+
             toast.success('Status updated successfully');
             queryClient.invalidateQueries(['feedbacks']);
         } catch (error) {
@@ -128,7 +128,7 @@ const AdminFeedBackManagement = () => {
 
             const responseBody = await response.json();
             if (!response.ok) throw new Error(responseBody.message);
-            
+
             toast.success(responseBody.message);
             queryClient.invalidateQueries(['feedbacks']);
         } catch (error) {
@@ -142,7 +142,7 @@ const AdminFeedBackManagement = () => {
             const response = await fetch(`http://localhost:3000/api/feedbacks/${feedbackId}`, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
+                body: JSON.stringify({
                     actionTaken: response,
                     status: 'Resolved',
                     resolvedAt: new Date()
@@ -151,7 +151,7 @@ const AdminFeedBackManagement = () => {
 
             const responseBody = await response.json();
             if (!response.ok) throw new Error(responseBody.message);
-            
+
             toast.success(responseBody.message);
             setIsRespondModalOpen(false);
             queryClient.invalidateQueries(['feedbacks']);
@@ -184,7 +184,7 @@ const AdminFeedBackManagement = () => {
     };
 
     return (
-        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-100 dark:bg-gray-900 flex justify-center min-h-screen px-4 py-6'>
             <div className="w-full">
                 {/* Breadcrumb */}
                 <div className='w-full mb-4'>
@@ -218,8 +218,8 @@ const AdminFeedBackManagement = () => {
                             </p>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Button 
-                                variant="outline" 
+                            <Button
+                                variant="outline"
                                 onClick={() => window.location.reload()}
                                 className="dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                             >
@@ -278,7 +278,7 @@ const AdminFeedBackManagement = () => {
                                 </Select>
                             </div>
                             <div className="flex items-center justify-end">
-                                <Button 
+                                <Button
                                     onClick={() => {
                                         setSearchQuery("");
                                         setSelectedStatus("");
@@ -297,14 +297,14 @@ const AdminFeedBackManagement = () => {
 
                 {/* Feedbacks Section */}
                 <Tabs defaultValue="Graph" className="w-full">
-                    <TabsList className="grid w-full bg-gradient-to-r from-gray-700 via-neutral-800 to-stone-600 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-white grid-cols-2">
-                        <TabsTrigger 
+                    <TabsList className="grid w-full bg-white dark:bg-gray-800 dark:text-white grid-cols-2">
+                        <TabsTrigger
                             value="Graph"
                             className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
                             Graph
                         </TabsTrigger>
-                        <TabsTrigger 
+                        <TabsTrigger
                             value="Table"
                             className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white"
                         >
@@ -317,189 +317,189 @@ const AdminFeedBackManagement = () => {
 
                     <TabsContent value="Table">
                         {isLoading ? <Loader /> : (
-                        <Card className="dark:bg-gray-800 dark:border-none">
-                            <CardContent className="p-0">
-                                <div className="p-4">
-                                    <div className="flex items-center gap-2">
-                                        <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Display</p>
-                                        <Select 
-                                            value={limit} 
-                                            onValueChange={(value) => setLimit(Number(value))}
-                                        >
-                                            <SelectTrigger className="rounded-md w-20 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
-                                                <SelectValue>
-                                                    {limit === totalFeedbacks ? 'All' : limit}
-                                                </SelectValue>
-                                            </SelectTrigger>
-                                            <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                                                <SelectItem value="15" className="dark:text-gray-300 dark:hover:bg-gray-700">15</SelectItem>
-                                                <SelectItem value="25" className="dark:text-gray-300 dark:hover:bg-gray-700">25</SelectItem>
-                                                <SelectItem value="50" className="dark:text-gray-300 dark:hover:bg-gray-700">50</SelectItem>
-                                                <SelectItem value={totalFeedbacks} className="dark:text-gray-300 dark:hover:bg-gray-700">All</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                        <p className="dark:text-gray-400">feedbacks.</p>
+                            <Card className="dark:bg-gray-800 dark:border-none">
+                                <CardContent className="p-0">
+                                    <div className="p-4">
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Display</p>
+                                            <Select
+                                                value={limit}
+                                                onValueChange={(value) => setLimit(Number(value))}
+                                            >
+                                                <SelectTrigger className="rounded-md w-20 border dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
+                                                    <SelectValue>
+                                                        {limit === totalFeedbacks ? 'All' : limit}
+                                                    </SelectValue>
+                                                </SelectTrigger>
+                                                <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                    <SelectItem value="15" className="dark:text-gray-300 dark:hover:bg-gray-700">15</SelectItem>
+                                                    <SelectItem value="25" className="dark:text-gray-300 dark:hover:bg-gray-700">25</SelectItem>
+                                                    <SelectItem value="50" className="dark:text-gray-300 dark:hover:bg-gray-700">50</SelectItem>
+                                                    <SelectItem value={totalFeedbacks} className="dark:text-gray-300 dark:hover:bg-gray-700">All</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                            <p className="dark:text-gray-400">feedbacks.</p>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="w-full overflow-x-auto">
-                                    {Array.isArray(feedbacks) && feedbacks.length > 0 ? (
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow className="dark:border-gray-700">
-                                                    <TableHead className="dark:text-gray-300">Category</TableHead>
-                                                    <TableHead className="dark:text-gray-300">Subject</TableHead>
-                                                    <TableHead className="dark:text-gray-300">Member</TableHead>
-                                                    <TableHead className="dark:text-gray-300">Rating</TableHead>
-                                                    <TableHead className="dark:text-gray-300">Status</TableHead>
-                                                    <TableHead className="dark:text-gray-300">Date</TableHead>
-                                                    <TableHead className="dark:text-gray-300 text-center">Actions</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {feedbacks.map((feedback) => (
-                                                    <TableRow key={feedback._id} className="dark:border-gray-700">
-                                                        <TableCell className="dark:text-gray-300">
-                                                            <div className="flex items-center gap-2">
-                                                                <span>{getCategoryIcon(feedback.category)}</span>
-                                                                <span className="truncate">{feedback.category}</span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                        <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger asChild>
-                                                                    <span className="truncate block whitespace-nowrap cursor-default">
-                                                                        {feedback.subject}
-                                                                    </span>
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent side="top">
-                                                                    {feedback.subject}
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                            {feedback.isAnonymous ? (
-                                                                <Badge variant="secondary">Anonymous</Badge>
-                                                            ) : (
-                                                                <span className="truncate block">{feedback.memberId?.fullName || 'N/A'}</span>
-                                                            )}
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                            <div className="flex items-center">
-                                                                {Array.from({ length: feedback.rating }).map((_, i) => (
-                                                                    <span key={i} className="text-yellow-400">★</span>
-                                                                ))}
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                            <Badge className={getStatusColor(feedback.status)}>
-                                                                {feedback.status}
-                                                            </Badge>
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                            {format(new Date(feedback.createdAt), 'MMM d, yyyy')}
-                                                        </TableCell>
-                                                        <TableCell className="dark:text-gray-300">
-                                                            <div className="flex items-center">
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
-                                                                    onClick={() => {
-                                                                        setSelectedFeedback(feedback);
-                                                                        setIsViewModalOpen(true);
-                                                                    }}
-                                                                >
-                                                                    <FiEye className="h-4 w-4" />
-                                                                </Button>
-                                                                <Select
-                                                                    value={feedback.status}
-                                                                    onValueChange={(value) => handleStatusUpdate(feedback._id, value)}
-                                                                >
-                                                                    <SelectTrigger className="w-28 rounded-sm dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
-                                                                        <SelectValue placeholder="Update Status" />
-                                                                    </SelectTrigger>
-                                                                    <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
-                                                                        <SelectItem value="Pending" className="dark:text-gray-300 dark:hover:bg-gray-700">Pending</SelectItem>
-                                                                        <SelectItem value="In Progress" className="dark:text-gray-300 dark:hover:bg-gray-700">In Progress</SelectItem>
-                                                                        <SelectItem value="Resolved" className="dark:text-gray-300 dark:hover:bg-gray-700">Resolved</SelectItem>
-                                                                        <SelectItem value="Closed" className="dark:text-gray-300 dark:hover:bg-gray-700">Closed</SelectItem>
-                                                                    </SelectContent>
-                                                                </Select>
-                                                                <AlertDialog>
-                                                                    <AlertDialogTrigger asChild>
-                                                                        <Button variant="ghost" size="icon" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
-                                                                            <FiTrash2 className="h-4 w-4 text-red-500" />
-                                                                        </Button>
-                                                                    </AlertDialogTrigger>
-                                                                    <AlertDialogContent>
-                                                                        <AlertDialogHeader>
-                                                                            <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
-                                                                            <AlertDialogDescription>
-                                                                                Are you sure you want to delete this feedback? This action cannot be undone.
-                                                                            </AlertDialogDescription>
-                                                                        </AlertDialogHeader>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction
-                                                                                onClick={() => handleDelete(feedback._id)}
-                                                                                className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
-                                                                            >
-                                                                                Delete
-                                                                            </AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </AlertDialogContent>
-                                                                </AlertDialog>
-                                                            </div>
+                                    <div className="w-full overflow-x-auto">
+                                        {Array.isArray(feedbacks) && feedbacks.length > 0 ? (
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow className="dark:border-gray-700">
+                                                        <TableHead className="dark:text-gray-300">Category</TableHead>
+                                                        <TableHead className="dark:text-gray-300">Subject</TableHead>
+                                                        <TableHead className="dark:text-gray-300">Member</TableHead>
+                                                        <TableHead className="dark:text-gray-300">Rating</TableHead>
+                                                        <TableHead className="dark:text-gray-300">Status</TableHead>
+                                                        <TableHead className="dark:text-gray-300">Date</TableHead>
+                                                        <TableHead className="dark:text-gray-300 text-center">Actions</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    {feedbacks.map((feedback) => (
+                                                        <TableRow key={feedback._id} className="dark:border-gray-700">
+                                                            <TableCell className="dark:text-gray-300">
+                                                                <div className="flex items-center gap-2">
+                                                                    <span>{getCategoryIcon(feedback.category)}</span>
+                                                                    <span className="truncate">{feedback.category}</span>
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                <TooltipProvider>
+                                                                    <Tooltip>
+                                                                        <TooltipTrigger asChild>
+                                                                            <span className="truncate block whitespace-nowrap cursor-default">
+                                                                                {feedback.subject}
+                                                                            </span>
+                                                                        </TooltipTrigger>
+                                                                        <TooltipContent side="top">
+                                                                            {feedback.subject}
+                                                                        </TooltipContent>
+                                                                    </Tooltip>
+                                                                </TooltipProvider>
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                {feedback.isAnonymous ? (
+                                                                    <Badge variant="secondary">Anonymous</Badge>
+                                                                ) : (
+                                                                    <span className="truncate block">{feedback.memberId?.fullName || 'N/A'}</span>
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                <div className="flex items-center">
+                                                                    {Array.from({ length: feedback.rating }).map((_, i) => (
+                                                                        <span key={i} className="text-yellow-400">★</span>
+                                                                    ))}
+                                                                </div>
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                <Badge className={getStatusColor(feedback.status)}>
+                                                                    {feedback.status}
+                                                                </Badge>
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                {format(new Date(feedback.createdAt), 'MMM d, yyyy')}
+                                                            </TableCell>
+                                                            <TableCell className="dark:text-gray-300">
+                                                                <div className="flex items-center">
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                                                                        onClick={() => {
+                                                                            setSelectedFeedback(feedback);
+                                                                            setIsViewModalOpen(true);
+                                                                        }}
+                                                                    >
+                                                                        <FiEye className="h-4 w-4" />
+                                                                    </Button>
+                                                                    <Select
+                                                                        value={feedback.status}
+                                                                        onValueChange={(value) => handleStatusUpdate(feedback._id, value)}
+                                                                    >
+                                                                        <SelectTrigger className="w-28 rounded-sm dark:bg-gray-900 dark:border-gray-700 dark:text-gray-100">
+                                                                            <SelectValue placeholder="Update Status" />
+                                                                        </SelectTrigger>
+                                                                        <SelectContent className="dark:bg-gray-800 dark:border-gray-700">
+                                                                            <SelectItem value="Pending" className="dark:text-gray-300 dark:hover:bg-gray-700">Pending</SelectItem>
+                                                                            <SelectItem value="In Progress" className="dark:text-gray-300 dark:hover:bg-gray-700">In Progress</SelectItem>
+                                                                            <SelectItem value="Resolved" className="dark:text-gray-300 dark:hover:bg-gray-700">Resolved</SelectItem>
+                                                                            <SelectItem value="Closed" className="dark:text-gray-300 dark:hover:bg-gray-700">Closed</SelectItem>
+                                                                        </SelectContent>
+                                                                    </Select>
+                                                                    <AlertDialog>
+                                                                        <AlertDialogTrigger asChild>
+                                                                            <Button variant="ghost" size="icon" className="dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white">
+                                                                                <FiTrash2 className="h-4 w-4 text-red-500" />
+                                                                            </Button>
+                                                                        </AlertDialogTrigger>
+                                                                        <AlertDialogContent>
+                                                                            <AlertDialogHeader>
+                                                                                <AlertDialogTitle>Delete Feedback</AlertDialogTitle>
+                                                                                <AlertDialogDescription>
+                                                                                    Are you sure you want to delete this feedback? This action cannot be undone.
+                                                                                </AlertDialogDescription>
+                                                                            </AlertDialogHeader>
+                                                                            <AlertDialogFooter>
+                                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                                <AlertDialogAction
+                                                                                    onClick={() => handleDelete(feedback._id)}
+                                                                                    className="bg-red-500 hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
+                                                                                >
+                                                                                    Delete
+                                                                                </AlertDialogAction>
+                                                                            </AlertDialogFooter>
+                                                                        </AlertDialogContent>
+                                                                    </AlertDialog>
+                                                                </div>
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))}
+                                                </TableBody>
+                                            </Table>
+                                        ) : (
+                                            <Table>
+                                                <TableHeader>
+                                                    <TableRow>
+                                                        <TableHead className="min-w-[150px]">Category</TableHead>
+                                                        <TableHead className="min-w-[200px]">Subject</TableHead>
+                                                        <TableHead className="min-w-[150px]">Member</TableHead>
+                                                        <TableHead className="min-w-[120px]">Rating</TableHead>
+                                                        <TableHead className="min-w-[120px]">Status</TableHead>
+                                                        <TableHead className="min-w-[120px]">Date</TableHead>
+                                                        <TableHead className="min-w-[200px]">Actions</TableHead>
+                                                    </TableRow>
+                                                </TableHeader>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell colSpan={7} className="text-center py-8">
+                                                            <p className="text-center text-sm font-medium">No feedbacks found</p>
                                                         </TableCell>
                                                     </TableRow>
-                                                ))}
-                                            </TableBody>
-                                        </Table>
-                                    ) : (
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="min-w-[150px]">Category</TableHead>
-                                                    <TableHead className="min-w-[200px]">Subject</TableHead>
-                                                    <TableHead className="min-w-[150px]">Member</TableHead>
-                                                    <TableHead className="min-w-[120px]">Rating</TableHead>
-                                                    <TableHead className="min-w-[120px]">Status</TableHead>
-                                                    <TableHead className="min-w-[120px]">Date</TableHead>
-                                                    <TableHead className="min-w-[200px]">Actions</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell colSpan={7} className="text-center py-8">
-                                                        <p className="text-center text-sm font-medium">No feedbacks found</p>
-                                                    </TableCell>
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
+                                                </TableBody>
+                                            </Table>
+                                        )}
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
 
-                    {/* Pagination with dark mode */}
-                    <div className="lg:flex justify-center my-4 items-center space-y-3 lg:space-y-0 lg:justify-between">
-                        <p className="text-sm text-center lg:text-left font-medium text-gray-500 dark:text-gray-400">
-                            Showing {feedbacks?.length || 0} out of {totalFeedbacks?.totalFeedbacks} feedbacks
-                        </p>
-                        <Pagination
-                            total={totalPages}
-                            page={currentPage || 1}
-                            onChange={setCurrentPage}
-                            withEdges={true}
-                            siblings={1}
-                            boundaries={1}
-                        />
-                    </div>
+                        {/* Pagination with dark mode */}
+                        <div className="lg:flex justify-center my-4 items-center space-y-3 lg:space-y-0 lg:justify-between">
+                            <p className="text-sm text-center lg:text-left font-medium text-gray-500 dark:text-gray-400">
+                                Showing {feedbacks?.length || 0} out of {totalFeedbacks?.totalFeedbacks} feedbacks
+                            </p>
+                            <Pagination
+                                total={totalPages}
+                                page={currentPage || 1}
+                                onChange={setCurrentPage}
+                                withEdges={true}
+                                siblings={1}
+                                boundaries={1}
+                            />
+                        </div>
                     </TabsContent>
-                    </Tabs>
+                </Tabs>
 
 
                 {/* View Feedback Modal with dark mode */}
