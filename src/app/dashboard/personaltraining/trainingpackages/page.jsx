@@ -50,8 +50,12 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useForm } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const CreatePersonalTrainingPackages = () => {
+
+    const user = useUser();
+    const loggedInUser = user?.user?.user;
 
     const [packageId, setPackageId] = useState('');
 
@@ -208,7 +212,7 @@ const CreatePersonalTrainingPackages = () => {
     };
 
     return (
-        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6'>
+        <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-6'>
             {/* Breadcrumb with arrows */}
             <div className='w-full mb-4'>
                 <Breadcrumb className="mb-4">
@@ -323,7 +327,7 @@ const CreatePersonalTrainingPackages = () => {
                                         {...register("packagename", { required: true })}
                                         placeholder="e.g., Premium Package"
                                         required
-                                        className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                                        className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100"
                                     />
                                 </div>
 
@@ -337,7 +341,7 @@ const CreatePersonalTrainingPackages = () => {
                                             placeholder="e.g., 12"
                                             min="1"
                                             required
-                                            className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                                            className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100"
                                         />
                                     </div>
                                     <div>
@@ -349,13 +353,13 @@ const CreatePersonalTrainingPackages = () => {
                                             placeholder="e.g., 30"
                                             min="1"
                                             required
-                                            className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                                            className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100"
                                         />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <Label htmlFor="price">Price ($) *</Label>
+                                    <Label htmlFor="price">Price ({loggedInUser?.organization?.currency || '$'}) *</Label>
                                     <Input
                                         id="price"
                                         type="number"
@@ -364,7 +368,7 @@ const CreatePersonalTrainingPackages = () => {
                                         min="0"
                                         step="0.01"
                                         required
-                                        className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                                        className="dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100"
                                     />
                                 </div>
 
@@ -385,7 +389,7 @@ const CreatePersonalTrainingPackages = () => {
                                         value={packageStatus}
                                         onValueChange={(value) => setPackageStatus(value)}
                                     >
-                                        <SelectTrigger className='dark:rounded-sm bg-gray-900 dark:border-none dark:text-gray-100'>
+                                        <SelectTrigger className='dark:rounded-sm bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100'>
                                             <SelectValue placeholder={`${packageStatus ? packageStatus : 'Select Status'}`} />
                                         </SelectTrigger>
                                         <SelectContent className="dark:bg-gray-900 dark:border-none">
@@ -470,7 +474,7 @@ const CreatePersonalTrainingPackages = () => {
                                                 </TableCell>
                                                 <TableCell className="dark:text-gray-100">{pkg.sessions}</TableCell>
                                                 <TableCell className="dark:text-gray-100">{pkg.duration} days</TableCell>
-                                                <TableCell className="dark:text-gray-100">$ {pkg.price.toFixed(2)}</TableCell>
+                                                <TableCell className="dark:text-gray-100">{loggedInUser?.organization?.currency || '$'} {pkg.price.toFixed(2)}</TableCell>
                                                 <TableCell>
                                                     <Badge variant={pkg.packageStatus === "Active" ? "green" : "destructive"}>
                                                         {pkg.packageStatus}
