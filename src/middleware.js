@@ -7,14 +7,21 @@ export const middleware = async (request) => {
   const token = request.cookies.get("loginToken")?.value || "";
   const staffToken = request.cookies.get("staffLoginToken")?.value || "";
   const memberToken = request.cookies.get("memberLoginToken")?.value || "";
+  const tenantToken = request.cookies.get("tenantLoginToken")?.value || "";
+  const rootUserToken = request.cookies.get("rootUserLoginToken")?.value || "";
+
   let user = null;
   let staff = null;
   let member = null;
+  let tenant = null;
+  let rootUser = null;
 
   try {
     if (token) user = jwtDecode(token);
     if (staffToken) staff = jwtDecode(staffToken);
     if (memberToken) member = jwtDecode(memberToken);
+    if (tenantToken) tenant = jwtDecode(tenantToken);
+    if (rootUserToken) rootUser = jwtDecode(rootUserToken);
 
     // 🧿 MEMBER LOGIC
     if (!member && path.startsWith("/member")) {
@@ -50,6 +57,14 @@ export const middleware = async (request) => {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
+    if (!tenant && path.startsWith("/clientarea")) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    if (!rootUser && path.startsWith("/root")) {
+      return NextResponse.redirect(new URL("/root/login", request.url));
+    }
+
     if (
       user?.role === "Gym Admin" &&
       (path.includes("/users") || path.includes("/staffmanagement/staffs"))
@@ -71,5 +86,7 @@ export const config = {
     "/MyProfile",
     "/StaffLogin",
     "/member/:path*",
+    "/root/:path*",
+    "/clientarea/:path*",
   ],
 };
