@@ -234,7 +234,6 @@ const Header = () => {
 
       if (response.ok) {
         setLoading(false);
-        notify.success(responseBody.message);
         soonerToast.success(responseBody.message, {
           description: "Logout successful",
         });
@@ -243,7 +242,6 @@ const Header = () => {
       }
     } catch (error) {
       console.log("Error: ", error);
-      notify.error(error.message);
       soonerToast.error(error.message, {
         description: "Internal server error",
       });

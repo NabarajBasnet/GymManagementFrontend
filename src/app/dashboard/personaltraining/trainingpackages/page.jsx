@@ -251,7 +251,7 @@ const CreatePersonalTrainingPackages = () => {
                     </div>
                     <Button
                         onClick={() => setShowForm(true)}
-                        className="rounded-sm"
+                        className="rounded-sm py-6"
                     >
                         <FiPlus className="h-4 w-4 mr-2" />
                         Create Package
@@ -400,10 +400,10 @@ const CreatePersonalTrainingPackages = () => {
                                 </div>
 
                                 <CardFooter className="flex justify-end gap-2 px-0 pb-0 pt-6">
-                                    <Button variant="outline" onClick={() => resetForm()} className="dark:border-none dark:bg-gray-900 dark:text-gray-100">
+                                    <Button variant="outline" onClick={() => resetForm()} className="dark:border-none py-6 rounded-sm dark:bg-gray-900 dark:text-gray-100">
                                         Cancel
                                     </Button>
-                                    <Button type="submit" className="bg-blue-600 hover:bg-blue-700 dark:text-white" disabled={isSubmitting}>
+                                    <Button type="submit" className="bg-blue-600 py-6 rounded-sm hover:bg-blue-700 dark:text-white" disabled={isSubmitting}>
                                         {isSubmitting ? "Submitting..." : (isEditing ? "Update Package" : "Create Package")}
                                     </Button>
                                 </CardFooter>
@@ -442,7 +442,7 @@ const CreatePersonalTrainingPackages = () => {
                             <div className="mt-6">
                                 <Button
                                     onClick={() => setShowForm(true)}
-                                    className="bg-blue-600 hover:bg-blue-700 dark:text-white"
+                                    className="bg-blue-600 py-6 rounded-sm hover:bg-blue-700 dark:text-white"
                                 >
                                     <FiPlus className="h-4 w-4 mr-2" />
                                     New Package

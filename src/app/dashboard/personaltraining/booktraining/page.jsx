@@ -59,19 +59,21 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import Pagination from "@/components/ui/CustomPagination";
 import { useUser } from '@/components/Providers/LoggedInUserProvider';
+import { toast as sonnerToast } from 'sonner';
 
 const PersonalTrainingBooking = () => {
 
-  // Query
+  // Query hook
   const queryClient = useQueryClient();
-
-  // React hooks
-  const ref = useRef(null);
 
   // Custom Hooks
   const { user } = useUser();
   const loggedInUser = user?.user;
-  console.log("Logged in user: ", loggedInUser);
+  const tenantFreeTrail = loggedInUser?.tenant?.freeTrailStatus === 'Active'
+  const tenantSubscriptionFeatures = loggedInUser?.tenant?.subscription?.subscriptionFeatures;
+  const multiBranchSupport = tenantSubscriptionFeatures?.find((feature) => {
+    return feature.toString() === 'Multi Branch Support'
+  })
 
   // React Hook Form
   const {
@@ -175,6 +177,28 @@ const PersonalTrainingBooking = () => {
       toast.error("Failed to fetch training details");
     }
   };
+
+  const getCurrentBranch = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/organizationbranch/by-system-user`);
+      const resBody = await response.json();
+      return resBody;
+    } catch (error) {
+      console.log("Error: ", error);
+      sonnerToast.error(error.message);
+    }
+  }
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['branch'],
+    queryFn: getCurrentBranch
+  });
+
+  const { branches } = data || {};
+
+  const currentBranch = branches?.find((branch) => {
+    return branch?._id?.toString() === loggedInUser?.organizationBranch?._id?.toString();
+  })
 
   // Modify the handleEditTraining function
   const handleEditTraining = (id) => {
@@ -898,7 +922,7 @@ const PersonalTrainingBooking = () => {
               </CardHeader>
               <CardContent className='flex flex-col gap-4 justify-center items-center'>
                 <div className='flex justify-center items-center'>
-                  <h1 className='text-2xl font-bold rounded-full w-32 h-32 bg-green-200 flex justify-center items-center'>
+                  <h1 className='text-2xl font-bold rounded-full text-black w-32 h-32 bg-green-200 flex justify-center items-center'>
                     {loggedInUser ? `${loggedInUser.firstName.charAt(0)}${loggedInUser.lastName.charAt(0)}`.toUpperCase() : ''}
                   </h1>
                 </div>
@@ -992,7 +1016,7 @@ const PersonalTrainingBooking = () => {
                                         setTrainerId(staff._id);
                                         setRenderStaffDropdown(false);
                                       }}
-                                      className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                      className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200 dark:hover:text-gray-800 hover:bg-blue-50 cursor-pointer transition-colors"
                                       key={staff._id}
                                     >
                                       {staff.fullName}
@@ -1056,7 +1080,7 @@ const PersonalTrainingBooking = () => {
                                       setMemberId(member._id);
                                       setRenderMemberDropdown(false);
                                     }}
-                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                    className="px-4 py-3 text-sm dark:text-gray-300 dark:hover:text-gray-800 text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                     key={member._id}
                                   >
                                     {member.fullName}
@@ -1227,6 +1251,7 @@ const PersonalTrainingBooking = () => {
                     </div>
                   </div>
 
+                  {/* Fifth Row */}
                   <div className='grid grid-cols-2 gap-4'>
                     <div>
                       <Label htmlFor="totalAmount">Total Amount</Label>
@@ -1250,20 +1275,20 @@ const PersonalTrainingBooking = () => {
 
                   {/* Sixth Row */}
                   <div className='grid grid-cols-2 gap-4'>
-                    <div>
-                      <Label htmlFor="branch">Branch</Label>
-                      <Select onValueChange={(value) => setBranchId(value)}>
-                        <SelectTrigger className="rounded-sm p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
-                          <SelectValue placeholder="Select Branch" />
-                        </SelectTrigger>
-                        <SelectContent className="dark:bg-gray-900 dark:border-none">
-                          <SelectItem value="all" className='cursor-pointer hover:bg-blue-600/30'>All Branch</SelectItem>
-                          <SelectItem value="Branch One" className='cursor-pointer hover:bg-blue-600/30'>Branch One</SelectItem>
-                          <SelectItem value="Branch Two" className='cursor-pointer hover:bg-blue-600/30'>Branch Two</SelectItem>
-                          <SelectItem value="Branch Three" className='cursor-pointer hover:bg-blue-600/30'>Branch Three</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {(tenantFreeTrail || multiBranchSupport) &&
+                      <div>
+                        <Label htmlFor="branch">Branch</Label>
+                        <Select onValueChange={(value) => setBranchId(value)}>
+                          <SelectTrigger className="rounded-sm p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                            <SelectValue placeholder={`${currentBranch?.orgBranchName || 'N/A'}`} />
+                          </SelectTrigger>
+                          <SelectContent className="dark:bg-gray-900 dark:border-none">
+                            <SelectItem value="Branch One" className='cursor-pointer hover:bg-blue-600/30'>{currentBranch?.orgBranchName || 'N/A'}</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    }
+
                     <div>
                       <Label htmlFor="paymentStatus">Payment Status</Label>
                       <Select onValueChange={(value) => setPaymentStatus(value)}>
