@@ -71,6 +71,7 @@ const PersonalTrainingBooking = () => {
   // Custom Hooks
   const { user } = useUser();
   const loggedInUser = user?.user;
+  console.log("Logged in user: ", loggedInUser);
 
   // React Hook Form
   const {
@@ -507,7 +508,7 @@ const PersonalTrainingBooking = () => {
   };
 
   return (
-    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6'>
+    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-6'>
       {/* Breadcrumb with arrows */}
       <div className='w-full mb-4'>
         <Breadcrumb className="mb-4">
@@ -556,24 +557,24 @@ const PersonalTrainingBooking = () => {
 
       {/* Tabs with improved styling */}
       <Tabs value={tabValue} onValueChange={setTabValue} className="w-full">
-        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-3 border border-gray-300 dark:border-gray-700 overflow-y-hidden bg-white dark:bg-gray-800 p-1 rounded-lg">
-          <TabsTrigger 
-            value="View Bookings" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+        <TabsList className="flex w-full overflow-x-auto lg:grid lg:grid-cols-3 border border-gray-300 dark:border-gray-700 overflow-y-hidden bg-white dark:bg-gray-800 p-1 rounded-sm">
+          <TabsTrigger
+            value="View Bookings"
+            className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
             <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
             <span className="hidden md:inline">View Bookings</span>
           </TabsTrigger>
-          <TabsTrigger 
-            value="Register Training" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          <TabsTrigger
+            value="Register Training"
+            className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
             <FiPlus className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Register Training</span>
           </TabsTrigger>
-          <TabsTrigger 
-            value="Reports" 
-            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
+          <TabsTrigger
+            value="Reports"
+            className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
             <FiBarChart className="h-4 w-4 lg:mr-2" />
             <span className="hidden md:inline">Reports</span>
@@ -592,52 +593,52 @@ const PersonalTrainingBooking = () => {
                     onChange={(e) => setSearchTraining(e.target.value)}
                     id="search"
                     placeholder="Search here..."
-                    className="dark:bg-gray-900 bg-white dark:border-none dark:text-gray-100"
+                    className="dark:bg-gray-900 py-6 rounded-sm bg-white dark:border-none dark:text-gray-100"
                   />
                 </div>
                 <div>
                   <Label htmlFor="status" className="dark:text-gray-200">Status</Label>
                   <Select onValueChange={(value) => setPackageStatus(value)}>
-                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                    <SelectTrigger className="rounded-sm py-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                       <SelectValue placeholder="Filter by status" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-gray-900 dark:border-none">
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="Active">Active</SelectItem>
-                      <SelectItem value="Inactive">Inactive</SelectItem>
-                      <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
-                      <SelectItem value="Pending">Pending</SelectItem>
-                      <SelectItem value="Refunded">Refunded</SelectItem>
-                      <SelectItem value="Failed">Failed</SelectItem>
-                      <SelectItem value="Expired">Expired</SelectItem>
+                      <SelectItem value="all" className='cursor-pointer hover:bg-blue-600/30'>All Status</SelectItem>
+                      <SelectItem value="Active" className='cursor-pointer hover:bg-blue-600/30'>Active</SelectItem>
+                      <SelectItem value="Inactive" className='cursor-pointer hover:bg-blue-600/30'>Inactive</SelectItem>
+                      <SelectItem value="Cancelled" className='cursor-pointer hover:bg-blue-600/30'>Cancelled</SelectItem>
+                      <SelectItem value="Completed" className='cursor-pointer hover:bg-blue-600/30'>Completed</SelectItem>
+                      <SelectItem value="Pending" className='cursor-pointer hover:bg-blue-600/30'>Pending</SelectItem>
+                      <SelectItem value="Refunded" className='cursor-pointer hover:bg-blue-600/30'>Refunded</SelectItem>
+                      <SelectItem value="Failed" className='cursor-pointer hover:bg-blue-600/30'>Failed</SelectItem>
+                      <SelectItem value="Expired" className='cursor-pointer hover:bg-blue-600/30'>Expired</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div>
                   <Label htmlFor="paymentStatus" className="dark:text-gray-200">Payment Status</Label>
                   <Select onValueChange={(value) => setPaymentStatus(value)}>
-                    <SelectTrigger className="rounded-md dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                    <SelectTrigger className="rounded-sm py-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                       <SelectValue placeholder="Filter by payment status" />
                     </SelectTrigger>
                     <SelectContent className="dark:bg-gray-900 dark:border-none">
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="Full Paid">Full Paid</SelectItem>
-                      <SelectItem value="Unpaid">Unpaid</SelectItem>
-                      <SelectItem value="Partially Paid">Partially Paid</SelectItem>
-                      <SelectItem value="Pending">Pending</SelectItem>
-                      <SelectItem value="Refunded">Refunded</SelectItem>
-                      <SelectItem value="Failed">Failed</SelectItem>
-                      <SelectItem value="Expired">Expired</SelectItem>
-                      <SelectItem value="Cancelled">Cancelled</SelectItem>
-                      <SelectItem value="Completed">Completed</SelectItem>
+                      <SelectItem value="all" className='cursor-pointer hover:bg-blue-600/30'>All Status</SelectItem>
+                      <SelectItem value="Full Paid" className='cursor-pointer hover:bg-blue-600/30'>Full Paid</SelectItem>
+                      <SelectItem value="Unpaid" className='cursor-pointer hover:bg-blue-600/30'>Unpaid</SelectItem>
+                      <SelectItem value="Partially Paid" className='cursor-pointer hover:bg-blue-600/30'>Partially Paid</SelectItem>
+                      <SelectItem value="Pending" className='cursor-pointer hover:bg-blue-600/30'>Pending</SelectItem>
+                      <SelectItem value="Refunded" className='cursor-pointer hover:bg-blue-600/30'>Refunded</SelectItem>
+                      <SelectItem value="Failed" className='cursor-pointer hover:bg-blue-600/30'>Failed</SelectItem>
+                      <SelectItem value="Expired" className='cursor-pointer hover:bg-blue-600/30'>Expired</SelectItem>
+                      <SelectItem value="Cancelled" className='cursor-pointer hover:bg-blue-600/30'>Cancelled</SelectItem>
+                      <SelectItem value="Completed" className='cursor-pointer hover:bg-blue-600/30'>Completed</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="flex items-end">
                   <Button
                     variant="outline"
-                    className="w-full dark:bg-gray-800 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
+                    className="w-full dark:bg-gray-900 dark:border-none rounded-sm py-6 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                     onClick={() => {
                       setSearch('');
                       setPackageStatus('');
@@ -816,8 +817,8 @@ const PersonalTrainingBooking = () => {
                               <TableCell className="py-3 text-right space-x-1 dark:text-gray-100">
                                 <Button
                                   onClick={() => handleEditTraining(personalTraining._id)}
-                                  variant="ghost" 
-                                  size="sm" 
+                                  variant="ghost"
+                                  size="sm"
                                   className="h-8 w-8 p-0 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white"
                                 >
                                   <FiEdit className="h-4 w-4" />
@@ -841,8 +842,8 @@ const PersonalTrainingBooking = () => {
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
                                       <AlertDialogCancel className="dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Cancel</AlertDialogCancel>
-                                      <AlertDialogAction 
-                                        onClick={() => deletePersonalTrainingBooking(personalTraining._id)} 
+                                      <AlertDialogAction
+                                        onClick={() => deletePersonalTrainingBooking(personalTraining._id)}
                                         className="bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
                                       >
                                         Continue
