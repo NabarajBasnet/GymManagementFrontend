@@ -53,7 +53,7 @@ export function NewRadialChart({ startDate, endDate }) {
     const getNewMembers = async ({ queryKey }) => {
         const [, startDate, endDate, page, limit] = queryKey;
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`);
+            const response = await fetch(`http://88.198.112.156:8000/api/memberanalytics/newmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {

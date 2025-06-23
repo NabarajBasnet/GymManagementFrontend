@@ -64,7 +64,7 @@ export default function GymBillingProfileForm() {
 
     const getBillingProfileDetails = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/billingprofile`);
+            const response = await fetch(`http://88.198.112.156:8000/api/accounting/billingprofile`);
             const responseBody = await response.json();
 
             if (response.ok && response.status === 200) {
@@ -159,7 +159,7 @@ export default function GymBillingProfileForm() {
                 userId
             };
 
-            const response = await fetch(`http://88.198.112.156:3100/api/accounting/billingprofile`, {
+            const response = await fetch(`http://88.198.112.156:8000/api/accounting/billingprofile`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json',

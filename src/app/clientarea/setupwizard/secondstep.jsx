@@ -144,7 +144,7 @@ const SecondStep = () => {
 
     const onSubmit = async (data) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/organization/second-step`, {
+            const response = await fetch(`http://88.198.112.156:8000/api/organization/second-step`, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json'

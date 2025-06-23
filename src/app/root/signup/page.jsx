@@ -46,7 +46,7 @@ export default function RootSignUpPage() {
 
     const onSignUp = async (data) => {
         try {
-            const response = await fetch('http://88.198.112.156:3100/api/rootuser/register', {
+            const response = await fetch('http://88.198.112.156:8000/api/rootuser/register', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

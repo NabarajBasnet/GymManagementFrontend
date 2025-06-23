@@ -35,7 +35,7 @@ const Attendance = () => {
     const fetchAttendanceHistory = async ({ queryKey }) => {
         const [, page, id] = queryKey;
         try {
-            const url = `http://88.198.112.156:3100/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
+            const url = `http://88.198.112.156:8000/api/staff-attendance-history/${id}?page=${page}&limit=${limit}`;
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error('Network response was not ok');

@@ -186,7 +186,7 @@ export default function TenantSignUpPage() {
         };
 
         try {
-            const response = await fetch('http://88.198.112.156:3100/api/tenant/signup', {
+            const response = await fetch('http://localhost:8000/api/tenant/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,6 +205,7 @@ export default function TenantSignUpPage() {
         } catch (error) {
             toast.error('An unexpected error occurred. Please try again.');
             console.log("Error: ", error);
+            console.log("Error: ", error.message);
         }
     };
 

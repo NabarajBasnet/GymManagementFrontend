@@ -240,7 +240,7 @@ const EditStaffDetails = ({ staff, editStaff, setEditStaff }) => {
     // Add selectedBranch conditionally
 
     try {
-      const url = `http://88.198.112.156:3100/api/staffsmanagement/changedetails/${staff.staff._id}`;
+      const url = `http://88.198.112.156:8000/api/staffsmanagement/changedetails/${staff.staff._id}`;
       const method = "PATCH";
 
       const response = await fetch(url, {

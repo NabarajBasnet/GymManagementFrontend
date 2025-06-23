@@ -32,7 +32,7 @@ const PasswordComponent = () => {
     // Change basic details
     const changePassword = async (data) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/tenant/change-password`, {
+            const response = await fetch(`http://88.198.112.156:8000/api/tenant/change-password`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ const useMember = () => {
     // Get all members
     const getAllMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/members`);
+            const response = await fetch(`http://88.198.112.156:8000/api/members`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -15,7 +15,7 @@ const useMember = () => {
     // Get single user details
     const getSingleUserDetails = async (memberId) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/members/${memberId}`);
+            const response = await fetch(`http://88.198.112.156:8000/api/members/${memberId}`);
             const responseBody = await response.json();
             return responseBody;
         } catch (error) {
@@ -27,7 +27,7 @@ const useMember = () => {
     // Update member details
     const updateMemberDetails = async ({ memberId, data }) => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/members/${memberId}`, {
+            const response = await fetch(`http://88.198.112.156:8000/api/members/${memberId}`, {
                 method: "PATCH",
                 headers: {
                     'Content-Type': 'application/json'

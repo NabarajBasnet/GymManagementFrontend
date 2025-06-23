@@ -99,7 +99,7 @@ const LockersOverview = () => {
                 lockerSize: selectedSize
             });
 
-            const req = await fetch(`http://88.198.112.156:3100/api/lockers/by-tenant?${queryParams}`);
+            const req = await fetch(`http://88.198.112.156:8000/api/lockers/by-tenant?${queryParams}`);
             const res = await req.json();
             return res;
         } catch (error) {

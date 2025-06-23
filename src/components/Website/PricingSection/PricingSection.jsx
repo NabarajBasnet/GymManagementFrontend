@@ -39,7 +39,7 @@ const PricingSection = () => {
     const fetchPlans = async () => {
         try {
             const response = await fetch(
-                `http://88.198.112.156:3100/api/subscription/getall`
+                `http://88.198.112.156:8000/api/subscription/getall`
             );
             const responseBody = await response.json();
             return responseBody;

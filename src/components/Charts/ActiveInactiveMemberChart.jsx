@@ -42,7 +42,7 @@ export function ActiveInactiveMemberChart() {
 
   const getActiveInactiveMembers = async () => {
     try {
-      const response = await fetch("http://88.198.112.156:3100/api/graphdata/activeinactivemembers")
+      const response = await fetch("http://88.198.112.156:8000/api/graphdata/activeinactivemembers")
       if (!response.ok) throw new Error("Network response was not ok")
       const data = await response.json()
       return Array.isArray(data?.activeInactiveMembers) ? data.activeInactiveMembers : []

@@ -42,7 +42,7 @@ const TenantLoginForm = ({ className, ...props }) => {
   const onLoginUser = async (data) => {
     try {
       const response = await fetch(
-        "http://88.198.112.156:3100/api/tenant/auth/login",
+        "http://88.198.112.156:8000/api/tenant/auth/login",
         {
           method: "POST",
           headers: {

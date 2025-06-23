@@ -42,7 +42,7 @@ const TenantCartManagement = () => {
 
   const getCartItems = async () => {
     try {
-      const response = await fetch(`http://88.198.112.156:3100/api/cart/`, {
+      const response = await fetch(`http://88.198.112.156:8000/api/cart/`, {
         credentials: "include",
       });
 
@@ -73,7 +73,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/cart/remove-item`,
+        `http://88.198.112.156:8000/api/cart/remove-item`,
         {
           method: "DELETE",
           headers: {
@@ -107,7 +107,7 @@ const TenantCartManagement = () => {
   const handleCreateOrder = async (item, subTotal) => {
     setOrdering(true);
     try {
-      const response = await fetch(`http://88.198.112.156:3100/api/order/create`, {
+      const response = await fetch(`http://88.198.112.156:8000/api/order/create`, {
         method: "POST",
         credentials: "include",
         body: JSON.stringify({ item, subTotal }),
@@ -138,7 +138,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/cart/update-item`,
+        `http://88.198.112.156:8000/api/cart/update-item`,
         {
           method: "PUT",
           headers: {
@@ -174,7 +174,7 @@ const TenantCartManagement = () => {
     setProcessing((prev) => ({ ...prev, [itemId]: true }));
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/cart/decrease-item`,
+        `http://88.198.112.156:8000/api/cart/decrease-item`,
         {
           method: "PUT",
           headers: {

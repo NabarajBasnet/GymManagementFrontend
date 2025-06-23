@@ -49,7 +49,7 @@ const AuditLogs = () => {
     const getAuditLogs = async ({ queryKey }) => {
         const [, page] = queryKey
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/auditlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://88.198.112.156:8000/api/auditlogs?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`);
             const resBody = await response.json();
             return resBody;
 

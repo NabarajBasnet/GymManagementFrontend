@@ -138,7 +138,7 @@ const TenantSetting = () => {
   const changePersonalDetails = async (data) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/change-personal-details`,
+        `http://88.198.112.156:8000/api/tenant/change-personal-details`,
         {
           method: "PATCH",
           headers: {
@@ -166,7 +166,7 @@ const TenantSetting = () => {
   const changePassword = async (data) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/tenant/change-password`,
+        `http://88.198.112.156:8000/api/tenant/change-password`,
         {
           method: "PATCH",
           headers: {
@@ -196,7 +196,7 @@ const TenantSetting = () => {
     e.preventDefault();
     try {
       const response = await fetch(
-        "http://88.198.112.156:3100/api/tenant/save-notification-settings",
+        "http://88.198.112.156:8000/api/tenant/save-notification-settings",
         {
           method: "PATCH",
           headers: {

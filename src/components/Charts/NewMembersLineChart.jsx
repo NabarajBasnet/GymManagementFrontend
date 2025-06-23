@@ -27,7 +27,7 @@ const chartConfig = {
 export function NewMembersLineChart() {
     const getNewMembers = async () => {
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/graphdata/newmembers`);
+            const response = await fetch(`http://88.198.112.156:8000/api/graphdata/newmembers`);
             const data = await response.json();
             // Handle both array response and nested newMembers property
             return Array.isArray(data) ? data : data?.newMembers || [];

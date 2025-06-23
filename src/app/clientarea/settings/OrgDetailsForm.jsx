@@ -98,7 +98,7 @@ const OrgDetailsForm = () => {
         try {
             setIsLoading(true);
 
-            const response = await fetch('http://88.198.112.156:3100/api/organization/register-organization', {
+            const response = await fetch('http://88.198.112.156:8000/api/organization/register-organization', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
