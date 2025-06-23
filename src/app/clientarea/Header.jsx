@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { FaLockOpen } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
 import { Moon, Sun, Package } from "lucide-react";

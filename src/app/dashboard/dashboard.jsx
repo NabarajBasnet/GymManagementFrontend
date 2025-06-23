@@ -273,10 +273,8 @@ const AdminDashboard = () => {
                         <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">
                           {loggedInUser?.firstName}
                         </span>
+                        <span className="text-3xl"> 👋</span>
                       </h1>
-                      <div className="flex justify-center lg:justify-start">
-                        <span className="text-3xl animate-bounce">👋</span>
-                      </div>
                     </div>
                   </div>
 

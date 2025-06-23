@@ -266,7 +266,7 @@ const CreatePersonalTrainingPackages = () => {
                                 onChange={(e) => setSearch(e.target.value)}
                                 id="search"
                                 placeholder="Search by name or description..."
-                                className="dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                                className="dark:bg-gray-900 bg-white rounded-sm py-6 dark:border-none dark:text-gray-100"
                             />
                         </div>
                         <div>
@@ -274,20 +274,20 @@ const CreatePersonalTrainingPackages = () => {
                             <Select
                                 onValueChange={(value) => setStatus(value)}
                             >
-                                <SelectTrigger className="dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                                <SelectTrigger className="dark:bg-gray-900 rounded-sm py-6 dark:border-none dark:text-gray-100">
                                     <SelectValue placeholder="Filter by status" />
                                 </SelectTrigger>
                                 <SelectContent className="dark:bg-gray-900 dark:border-none">
-                                    <SelectItem value="all" className="dark:text-gray-100">All Status</SelectItem>
-                                    <SelectItem value="Active" className="dark:text-gray-100">Active</SelectItem>
-                                    <SelectItem value="Inactive" className="dark:text-gray-100">Inactive</SelectItem>
+                                    <SelectItem value="all" className="dark:text-gray-100 cursor-pointer">All Status</SelectItem>
+                                    <SelectItem value="Active" className="dark:text-gray-100 cursor-pointer">Active</SelectItem>
+                                    <SelectItem value="Inactive" className="dark:text-gray-100 cursor-pointer">Inactive</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>
                         <div className="flex items-end">
                             <Button
                                 variant="outline"
-                                className="w-full dark:border-none dark:bg-gray-900 dark:text-gray-100"
+                                className="w-full dark:border-none rounded-sm py-6 dark:bg-gray-900 dark:text-gray-100"
                                 onClick={() => {
                                     setSearch('');
                                     setStatus('');
@@ -476,31 +476,30 @@ const CreatePersonalTrainingPackages = () => {
                                                         {pkg.packageStatus}
                                                     </Badge>
                                                 </TableCell>
-                                                <TableCell className="text-right space-x-2">
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
+                                                <TableCell className="text-right space-x-1">
+                                                    <span
+                                                        className="inline-flex items-center justify-center p-1.5 rounded-md border border-transparent hover:border-gray-200 cursor-pointer"
                                                         onClick={() => toggleStatus(pkg._id)}
                                                     >
-                                                        {pkg.packageStatus === "Active" ? <FiX className="h-4 w-4" /> : <FiCheck className="h-4 w-4" />}
-                                                    </Button>
-                                                    <Button
-                                                        variant="outline"
-                                                        size="sm"
+                                                        {pkg.packageStatus === "Active" ? (
+                                                            <FiX className="h-4 w-4" />
+                                                        ) : (
+                                                            <FiCheck className="h-4 w-4" />
+                                                        )}
+                                                    </span>
+
+                                                    <span
+                                                        className="inline-flex items-center justify-center p-1.5 rounded-md border border-transparent hover:border-gray-200 cursor-pointer"
                                                         onClick={() => handleEdit(pkg)}
                                                     >
                                                         <FiEdit className="h-4 w-4" />
-                                                    </Button>
+                                                    </span>
 
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                className="text-red-600 hover:text-red-800 hover:bg-red-50"
-                                                            >
+                                                            <span className="inline-flex items-center justify-center p-1.5 rounded-md border border-transparent hover:border-red-200 cursor-pointer text-red-600 hover:text-red-800">
                                                                 <FiTrash2 className="h-4 w-4" />
-                                                            </Button>
+                                                            </span>
                                                         </AlertDialogTrigger>
                                                         <AlertDialogContent>
                                                             <AlertDialogHeader>
@@ -511,11 +510,12 @@ const CreatePersonalTrainingPackages = () => {
                                                             </AlertDialogHeader>
                                                             <AlertDialogFooter>
                                                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => deletePackage(pkg._id)}>Continue</AlertDialogAction>
+                                                                <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={() => deletePackage(pkg._id)}>
+                                                                    Continue
+                                                                </AlertDialogAction>
                                                             </AlertDialogFooter>
                                                         </AlertDialogContent>
                                                     </AlertDialog>
-
                                                 </TableCell>
                                             </TableRow>
                                         ))}
