@@ -788,17 +788,19 @@ const PersonalTrainingBooking = () => {
                             </TableHead>
 
                             {/* Branch */}
-                            <TableHead className="py-3 cursor-pointer">
-                              <div className="flex items-center gap-1">
-                                Branch
-                                <ArrowUpDown
-                                  onClick={() => {
-                                    setSortBy('branch');
-                                    setSortOrderDesc(!sortOrderDesc);
-                                  }}
-                                  className="w-4 h-4 flex-shrink-0" />
-                              </div>
-                            </TableHead>
+                            {(tenantFreeTrail || multiBranchSupport) &&
+                              <TableHead className="py-3 cursor-pointer">
+                                <div className="flex items-center gap-1">
+                                  Branch
+                                  <ArrowUpDown
+                                    onClick={() => {
+                                      setSortBy('branch');
+                                      setSortOrderDesc(!sortOrderDesc);
+                                    }}
+                                    className="w-4 h-4 flex-shrink-0" />
+                                </div>
+                              </TableHead>
+                            }
 
                             {/* Payment Status */}
                             <TableHead className="py-3 cursor-pointer">
@@ -832,7 +834,9 @@ const PersonalTrainingBooking = () => {
                                 </Badge>
                               </TableCell>
                               <TableCell className="text-center py-3 dark:text-gray-100">${personalTraining.totalAmount}</TableCell>
-                              <TableCell className="py-3 dark:text-gray-100">{personalTraining.branchId}</TableCell>
+                              {(tenantFreeTrail || multiBranchSupport) &&
+                                <TableCell className="py-3 dark:text-gray-100">{currentBranch?.orgBranchName || 'N/A'}</TableCell>
+                              }
                               <TableCell className="py-3 dark:text-gray-100">
                                 <Badge className={`${getPaymentStatusColor(personalTraining.paymentStatus)} text-center hover:bg-transparent`}>
                                   {personalTraining.paymentStatus}
@@ -1148,7 +1152,7 @@ const PersonalTrainingBooking = () => {
                                       setPackageId(pkg._id);
                                       setRenderPackageDropdown(false);
                                     }}
-                                    className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
+                                    className="px-4 py-3 text-sm text-gray-700 dark:text-gray-200 dark:hover:text-gray-900 hover:bg-blue-50 cursor-pointer transition-colors"
                                     key={pkg._id}
                                   >
                                     {pkg.packagename} - {loggedInUser?.organization?.currency} {pkg.price}

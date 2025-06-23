@@ -389,12 +389,12 @@ const CreatePersonalTrainingPackages = () => {
                                         value={packageStatus}
                                         onValueChange={(value) => setPackageStatus(value)}
                                     >
-                                        <SelectTrigger className='dark:rounded-sm bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100'>
+                                        <SelectTrigger className='dark:rounded-sm dark:bg-gray-900 bg-white py-6 rounded-sm dark:border-none dark:text-gray-100'>
                                             <SelectValue placeholder={`${packageStatus ? packageStatus : 'Select Status'}`} />
                                         </SelectTrigger>
                                         <SelectContent className="dark:bg-gray-900 dark:border-none">
-                                            <SelectItem value="Active" className="dark:text-gray-100 cursor-pointer bg-blue-500 hover:bg-blue-600">Active</SelectItem>
-                                            <SelectItem value="Inactive" className="dark:text-gray-100 cursor-pointer bg-red-500 hover:bg-red-600">Inactive</SelectItem>
+                                            <SelectItem value="Active" className="dark:text-gray-100 cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-sm">Active</SelectItem>
+                                            <SelectItem value="Inactive" className="dark:text-gray-100 cursor-pointer bg-red-600 hover:bg-red-700 rounded-sm">Inactive</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
