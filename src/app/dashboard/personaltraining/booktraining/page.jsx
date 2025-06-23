@@ -833,7 +833,7 @@ const PersonalTrainingBooking = () => {
                                   {personalTraining.status}
                                 </Badge>
                               </TableCell>
-                              <TableCell className="text-center py-3 dark:text-gray-100">${personalTraining.totalAmount}</TableCell>
+                              <TableCell className="text-center py-3 dark:text-gray-100">{loggedInUser?.organization?.currency || 'N/A'} {personalTraining.totalAmount}</TableCell>
                               {(tenantFreeTrail || multiBranchSupport) &&
                                 <TableCell className="py-3 dark:text-gray-100">{currentBranch?.orgBranchName || 'N/A'}</TableCell>
                               }
