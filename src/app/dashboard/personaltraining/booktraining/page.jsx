@@ -532,7 +532,7 @@ const PersonalTrainingBooking = () => {
   };
 
   return (
-    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 py-6'>
+    <div className='w-full bg-gray-50 dark:bg-gray-900 min-h-screen px-4 md:py-6 py-10'>
       {/* Breadcrumb with arrows */}
       <div className='w-full mb-4'>
         <Breadcrumb className="mb-4">
@@ -586,22 +586,22 @@ const PersonalTrainingBooking = () => {
             value="View Bookings"
             className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
-            <span><FiEye className="h-4 w-4 lg:mr-2" /></span>
-            <span className="hidden md:inline">View Bookings</span>
+            <span><FiEye className="h-4 w-4 mr-2" /></span>
+            <span className="inline">View Bookings</span>
           </TabsTrigger>
           <TabsTrigger
             value="Register Training"
             className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
-            <FiPlus className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Register Training</span>
+            <FiPlus className="h-4 w-4 mr-2" />
+            <span className="inline">Register Training</span>
           </TabsTrigger>
           <TabsTrigger
             value="Reports"
             className="p-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white dark:data-[state=active]:bg-blue-600 dark:data-[state=active]:text-white dark:text-gray-300 dark:hover:text-white whitespace-nowrap"
           >
-            <FiBarChart className="h-4 w-4 lg:mr-2" />
-            <span className="hidden md:inline">Reports</span>
+            <FiBarChart className="h-4 w-4 mr-2" />
+            <span className="inline">Reports</span>
           </TabsTrigger>
         </TabsList>
 
@@ -687,12 +687,12 @@ const PersonalTrainingBooking = () => {
 
             {/* Table Section */}
             <CardContent className="space-y-2">
-              <div className="overflow-x-auto rounded-lg border dark:border-gray-700">
+              <div className="overflow-x-auto rounded-md shadow-sm border dark:border-gray-700">
                 {personalTrainingBookingsLoading ? (
                   <Loader />
                 ) : (
                   <>
-                    {Array.isArray(personalTrainings) && personalTrainings.length > 0 ? (
+                    {Array.isArray(personalTrainings) && personalTrainings?.length > 0 ? (
                       <Table>
                         <TableHeader className="bg-gray-50 dark:bg-gray-900">
                           <TableRow className="whitespace-nowrap dark:border-gray-700">
