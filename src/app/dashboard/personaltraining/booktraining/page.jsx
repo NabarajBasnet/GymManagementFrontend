@@ -960,7 +960,7 @@ const PersonalTrainingBooking = () => {
                                     setStaffName('');
                                   }}
                                   onFocus={handleStaffSearchFocus}
-                                  className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                  className="w-full p-6 bg-white rounded-sm border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
                                   placeholder="Search staff..."
                                 />
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -1024,7 +1024,7 @@ const PersonalTrainingBooking = () => {
                                   setMemberName('');
                                 }}
                                 onFocus={handleMemberSearchFocus}
-                                className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
+                                className="w-full p-6 bg-white rounded-sm border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm pl-10"
                                 placeholder="Search members..."
                               />
                               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -1091,7 +1091,7 @@ const PersonalTrainingBooking = () => {
                                   setPackageName('');
                                 }}
                                 onFocus={handlePackageSearchFocus}
-                                className="w-full p-6 rounded-md border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
+                                className="w-full p-6 bg-white rounded-sm border border-gray-300 dark:bg-gray-900 dark:border-none dark:text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 text-sm p-6 pl-10"
                                 placeholder="Search package..."
                               />
                               <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
@@ -1127,7 +1127,7 @@ const PersonalTrainingBooking = () => {
                                     className="px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer transition-colors"
                                     key={pkg._id}
                                   >
-                                    {pkg.packagename} - ${pkg.price}
+                                    {pkg.packagename} - {loggedInUser?.organization?.currency} {pkg.price}
                                   </div>
                                 ))
                             ) : (
@@ -1141,17 +1141,17 @@ const PersonalTrainingBooking = () => {
                     <div>
                       <Label htmlFor="address" className="dark:text-gray-200">Status</Label>
                       <Select onValueChange={(value) => setPackageStatus(value)}>
-                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                        <SelectTrigger className="rounded-sm p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Status" />
                         </SelectTrigger>
                         <SelectContent className="dark:bg-gray-900 dark:border-none">
-                          <SelectItem value="Active">Active</SelectItem>
-                          <SelectItem value="Inactive">Inactive</SelectItem>
-                          <SelectItem value="Cancelled">Cancelled</SelectItem>
-                          <SelectItem value="Completed">Completed</SelectItem>
-                          <SelectItem value="Pending">Pending</SelectItem>
-                          <SelectItem value="Refunded">Refunded</SelectItem>
-                          <SelectItem value="Expired">Expired</SelectItem>
+                          <SelectItem value="Active" className='cursor-pointer hover:bg-blue-600/30'>Active</SelectItem>
+                          <SelectItem value="Inactive" className='cursor-pointer hover:bg-blue-600/30'>Inactive</SelectItem>
+                          <SelectItem value="Cancelled" className='cursor-pointer hover:bg-blue-600/30'>Cancelled</SelectItem>
+                          <SelectItem value="Completed" className='cursor-pointer hover:bg-blue-600/30'>Completed</SelectItem>
+                          <SelectItem value="Pending" className='cursor-pointer hover:bg-blue-600/30'>Pending</SelectItem>
+                          <SelectItem value="Refunded" className='cursor-pointer hover:bg-blue-600/30'>Refunded</SelectItem>
+                          <SelectItem value="Expired" className='cursor-pointer hover:bg-blue-600/30'>Expired</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -1165,7 +1165,7 @@ const PersonalTrainingBooking = () => {
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         id="startDate"
-                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                        className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="date"
                       />
                     </div>
@@ -1179,7 +1179,7 @@ const PersonalTrainingBooking = () => {
                             setIsEndDateAuto(false);
                           }}
                           id="endDate"
-                          className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                          className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                           type="date"
                         />
                         {!isEndDateAuto && (
@@ -1213,7 +1213,7 @@ const PersonalTrainingBooking = () => {
                         id="paidAmount"
                         {...register("paidAmount", { required: "Paid Amount is required" })}
                         placeholder='Paid amount'
-                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                        className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                     <div>
@@ -1222,7 +1222,7 @@ const PersonalTrainingBooking = () => {
                         id="discount"
                         {...register("discount")}
                         placeholder='Discount amount'
-                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                        className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                   </div>
@@ -1234,14 +1234,14 @@ const PersonalTrainingBooking = () => {
                         id="totalAmount"
                         {...register("totalAmount", { required: "Total Amount is required" })}
                         placeholder='Total amount'
-                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                        className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         type="number" />
                     </div>
                     <div>
                       <Label htmlFor="user">Register By</Label>
                       <Input
                         id="user"
-                        className="p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100"
+                        className="p-6 bg-white rounded-sm dark:bg-gray-900 dark:border-none dark:text-gray-100"
                         {...register("registerBy", { required: "Register By is required" })}
                         placeholder='Your name'
                         type="text" />
@@ -1253,32 +1253,32 @@ const PersonalTrainingBooking = () => {
                     <div>
                       <Label htmlFor="branch">Branch</Label>
                       <Select onValueChange={(value) => setBranchId(value)}>
-                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                        <SelectTrigger className="rounded-sm p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Branch" />
                         </SelectTrigger>
                         <SelectContent className="dark:bg-gray-900 dark:border-none">
-                          <SelectItem value="all">All Branch</SelectItem>
-                          <SelectItem value="Branch One">Branch One</SelectItem>
-                          <SelectItem value="Branch Two">Branch Two</SelectItem>
-                          <SelectItem value="Branch Three">Branch Three</SelectItem>
+                          <SelectItem value="all" className='cursor-pointer hover:bg-blue-600/30'>All Branch</SelectItem>
+                          <SelectItem value="Branch One" className='cursor-pointer hover:bg-blue-600/30'>Branch One</SelectItem>
+                          <SelectItem value="Branch Two" className='cursor-pointer hover:bg-blue-600/30'>Branch Two</SelectItem>
+                          <SelectItem value="Branch Three" className='cursor-pointer hover:bg-blue-600/30'>Branch Three</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div>
                       <Label htmlFor="paymentStatus">Payment Status</Label>
                       <Select onValueChange={(value) => setPaymentStatus(value)}>
-                        <SelectTrigger className="rounded-md p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
+                        <SelectTrigger className="rounded-sm p-6 dark:bg-gray-900 dark:border-none dark:text-gray-100">
                           <SelectValue placeholder="Select Payment Status" />
                         </SelectTrigger>
                         <SelectContent className="dark:bg-gray-900 dark:border-none">
-                          <SelectItem value="all">All Payment Status</SelectItem>
-                          <SelectItem value="Full Paid">Full Paid</SelectItem>
-                          <SelectItem value="Partial Paid">Partial Paid</SelectItem>
-                          <SelectItem value="Pending">Pending</SelectItem>
-                          <SelectItem value="Unpaid">Unpaid</SelectItem>
-                          <SelectItem value="Refunded">Refunded</SelectItem>
-                          <SelectItem value="Failed">Failed</SelectItem>
-                          <SelectItem value="Expired">Expired</SelectItem>
+                          <SelectItem value="all" className='cursor-pointer hover:bg-blue-600/30'>All Payment Status</SelectItem>
+                          <SelectItem value="Full Paid" className='cursor-pointer hover:bg-blue-600/30'>Full Paid</SelectItem>
+                          <SelectItem value="Partial Paid" className='cursor-pointer hover:bg-blue-600/30'>Partial Paid</SelectItem>
+                          <SelectItem value="Pending" className='cursor-pointer hover:bg-blue-600/30'>Pending</SelectItem>
+                          <SelectItem value="Unpaid" className='cursor-pointer hover:bg-blue-600/30'>Unpaid</SelectItem>
+                          <SelectItem value="Refunded" className='cursor-pointer hover:bg-blue-600/30'>Refunded</SelectItem>
+                          <SelectItem value="Failed" className='cursor-pointer hover:bg-blue-600/30'>Failed</SelectItem>
+                          <SelectItem value="Expired" className='cursor-pointer hover:bg-blue-600/30'>Expired</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
