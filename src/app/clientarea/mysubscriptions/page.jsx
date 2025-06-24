@@ -1,5 +1,9 @@
 "use client";
 
+import { MdSubscriptions } from "react-icons/md";
+import {
+  ChevronRight,
+} from "lucide-react";
 import {
   Tabs,
   TabsContent,
@@ -62,7 +66,7 @@ const MyServiceAndProductManagement = () => {
   const startDate = safeDate(loggedInTenant?.tenantSubscriptionStartDate);
   const endDate = safeDate(loggedInTenant?.tenantSubscriptionEndDate);
   const today = new Date();
-  
+
   const daysRemaining = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
   const totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
   const daysUsed = totalDays - daysRemaining;
@@ -146,15 +150,33 @@ const MyServiceAndProductManagement = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 space-y-6 dark:bg-gray-900">
+    <div className="p-4 space-y-6 dark:bg-gray-900">
       {/* Header Section */}
-      <div className="space-y-2">
-        <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-          Service & Product Management
-        </h1>
-        <p className="text-gray-600 dark:text-gray-400">
-          Manage your subscription, features, and billing information
-        </p>
+
+      <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center space-x-2">
+          <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+            <MdSubscriptions className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              My Subscriptions
+            </h1>
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Portal
+              </span>
+              <ChevronRight className="w-4 h-4 mx-2" />
+              <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Client Area
+              </span>
+              <ChevronRight className="w-4 h-4 mx-2" />
+              <span className="text-blue-600 dark:text-blue-400 font-medium">
+                My Subscriptions
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Organization Overview Card */}
@@ -404,7 +426,7 @@ const MyServiceAndProductManagement = () => {
                       </div>
                       <Badge variant="outline">{loggedInTenant?.tenantSubscriptionPaymentMethod}</Badge>
                     </div>
-                    
+
                     <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                       <div className="flex items-center gap-2">
                         <DollarSign className="h-4 w-4 text-gray-600" />
@@ -414,7 +436,7 @@ const MyServiceAndProductManagement = () => {
                         {loggedInTenant?.tenantCurrency} {loggedInTenant?.tenantSubscriptionPaymentAmount?.toLocaleString()}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                       <div className="flex items-center gap-2">
                         <Calendar className="h-4 w-4 text-gray-600" />
@@ -449,7 +471,7 @@ const MyServiceAndProductManagement = () => {
                         {loggedInTenant?.tenantStatus}
                       </Badge>
                     </div>
-                    
+
                     <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                       <div className="flex items-center gap-2">
                         <Globe className="h-4 w-4 text-gray-600" />
@@ -457,7 +479,7 @@ const MyServiceAndProductManagement = () => {
                       </div>
                       <span>{loggedInTenant?.tenantLanguage}</span>
                     </div>
-                    
+
                     <div className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
                       <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4 text-gray-600" />
@@ -486,7 +508,7 @@ const MyServiceAndProductManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200 dark:from-gray-800 dark:to-gray-800 dark:border-none">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -498,7 +520,7 @@ const MyServiceAndProductManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200 dark:from-gray-800 dark:to-gray-800 dark:border-none">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -510,7 +532,7 @@ const MyServiceAndProductManagement = () => {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 dark:from-gray-800 dark:to-gray-800 dark:border-none">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
@@ -525,7 +547,7 @@ const MyServiceAndProductManagement = () => {
                 </CardContent>
               </Card>
             </div>
-            
+
             <Card className="dark:bg-gray-800 dark:border-none">
               <CardHeader>
                 <CardTitle>Usage Timeline</CardTitle>
