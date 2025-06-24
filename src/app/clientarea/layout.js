@@ -9,21 +9,31 @@ import { useSelector } from "react-redux";
 const ClientAreaLayout = ({ children }) => {
   const pathname = usePathname();
   const clientSidebar = useSelector((state) => state.rtkreducer.clientSidebar);
+
   const hideHeader = pathname === "/clientarea/setupwizard";
   const hideSidebar = pathname === "/clientarea/setupwizard";
+
   return (
     <div className="w-full">
       <ReactQueryClientProvider>
         <div>
-          <div className="w-full md:flex hidden">
-            {clientSidebar && <ClientAreaSidebar />}
+          {/* Sidebar */}
+          <div
+            className={`w-full md:flex hidden ${hideSidebar ? "hidden" : ""}`}
+          >
+            {clientSidebar && !hideSidebar && <ClientAreaSidebar />}
           </div>
+
+          {/* Main Content Area */}
           <div
             className={`w-full ${
-              clientSidebar ? "pl-0 md:pl-[240px]" : "pl-0"
-            }`}
+              clientSidebar && !hideSidebar ? "pl-0 md:pl-[240px]" : "pl-0"
+            } ${hideSidebar ? "!pl-0" : ""}`}
           >
-            <ClientAreaHeader />
+            {/* Header */}
+            {!hideHeader && <ClientAreaHeader />}
+
+            {/* Children */}
             {children}
           </div>
         </div>

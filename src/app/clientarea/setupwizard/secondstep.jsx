@@ -1,7 +1,6 @@
 'use client';
 
 import { BiLoaderCircle } from "react-icons/bi";
-import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { FiSave, FiMapPin, FiGlobe, FiDollarSign, FiClock, FiType } from "react-icons/fi";
 import { Input } from "@/components/ui/input";
@@ -203,15 +202,12 @@ const SecondStep = () => {
                                 Country
                                 <span className="text-red-500 ml-1">*</span>
                             </Label>
-                            <Select
-                                onValueChange={(value) => setValue('country', value)}
-                                required
-                            >
+                            <Select>
                                 <SelectTrigger className="h-12 dark:text-white border-slate-300 dark:border-slate-600 dark:bg-slate-800 rounded-xl shadow-sm">
                                     <SelectValue placeholder="Select your country" />
                                 </SelectTrigger>
-                                <SelectContent className="border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-xl shadow-xl max-h-80">
-                                    <div className="sticky top-0 bg-white dark:bg-slate-800 px-3 py-2 border-b border-slate-200 dark:border-slate-600">
+                                <SelectContent className="border-slate-200 dark:border-slate-600 dark:bg-slate-800 rounded-xl shadow-xl max-h-[300px] overflow-y-auto">
+                                    <div className="sticky top-0 z-10 bg-white dark:bg-slate-800 px-3 py-2 border-b border-slate-200 dark:border-slate-600">
                                         <div className="flex items-center">
                                             <Search className="h-4 w-4 mr-2 text-slate-400" />
                                             <input
@@ -219,7 +215,26 @@ const SecondStep = () => {
                                                 placeholder="Search countries..."
                                                 className="bg-transparent outline-none w-full text-sm placeholder:text-slate-400 dark:text-white"
                                                 value={countrySearch}
-                                                onChange={(e) => setCountrySearch(e.target.value)}
+                                                onChange={(e) => {
+                                                    const input = e.target;
+                                                    const currentStart = input.selectionStart;
+                                                    const currentEnd = input.selectionEnd;
+
+                                                    setCountrySearch(e.target.value);
+
+                                                    // Restore cursor position after state update
+                                                    requestAnimationFrame(() => {
+                                                        input.setSelectionRange(currentStart, currentEnd);
+                                                        input.focus();
+                                                    });
+                                                }}
+                                                autoFocus
+                                                ref={(el) => {
+                                                    if (el) {
+                                                        // Focus immediately when mounted
+                                                        el.focus();
+                                                    }
+                                                }}
                                             />
                                         </div>
                                     </div>
@@ -239,11 +254,6 @@ const SecondStep = () => {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-                            {errors.country && (
-                                <span className="text-xs font-medium text-red-600 flex items-center gap-1">
-                                    <span>⚠</span> {`${errors.country.message}`}
-                                </span>
-                            )}
                         </div>
 
                         {/* State/Province */}
@@ -254,7 +264,7 @@ const SecondStep = () => {
                             </Label>
                             <Input
                                 {...register('state')}
-                                className="h-12 border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 rounded-xl shadow-sm"
+                                className="h-12 border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 rounded-xl shadow-sm"
                                 id="state"
                                 placeholder="e.g., California, Ontario, etc."
                                 required
@@ -274,7 +284,7 @@ const SecondStep = () => {
                             </Label>
                             <Input
                                 {...register('city')}
-                                className="h-12 border-slate-300 dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 rounded-xl shadow-sm"
+                                className="h-12 border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-800 dark:text-white focus:border-blue-500 dark:focus:border-blue-400 rounded-xl shadow-sm"
                                 id="city"
                                 placeholder="e.g., Los Angeles, Toronto, etc."
                                 required

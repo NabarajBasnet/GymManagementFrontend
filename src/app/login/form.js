@@ -62,6 +62,8 @@ const TenantLoginForm = ({ className, ...props }) => {
       if (response.ok) {
         soonerToast.success(responseBody.message || "Login successful!");
         router.push(responseBody.redirectUrl);
+        window.location.href = responseBody.redirectUrl;
+        console.log(responseBody.redirectUrl);
         reset();
       } else {
         soonerToast.error(responseBody.message || "Login failed!");

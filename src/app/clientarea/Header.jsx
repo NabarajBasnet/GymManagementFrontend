@@ -195,7 +195,7 @@ const ClientAreaHeader = ({ activeTab }) => {
       {loading ? (
         <Loader />
       ) : (
-        <div className="w-full mx-auto px-2">
+        <div className="w-full mx-auto md:px-2">
           <div className="flex justify-between items-center h-18">
             {/* Mobile menu button */}
 
@@ -386,7 +386,7 @@ const ClientAreaHeader = ({ activeTab }) => {
 
             <div className="flex items-center rounded-lg bg-transparent">
               {loggedInTenant?.freeTrailStatus === 'Active' ? (
-                <div className="flex items-center space-x-0 justify-between w-full">
+                <div className="md:flex text-center items-center md:space-x-2 space-x-1 justify-between w-full">
                   <p className="text-sm text-gray-800 dark:text-gray-200">
                     <span className="font-semibold">{loggedInTenant?.freeTrailRemainingDays}</span> Days left on free trial
                   </p>
@@ -394,7 +394,7 @@ const ClientAreaHeader = ({ activeTab }) => {
                     onClick={() => {
                       window.location.href = '/clientarea/pricing';
                     }}
-                    className="px-4 text-sm font-semibold text-emerald-600 dark:text-emerald-400 transition-all"
+                    className="md:px-4 text-sm font-semibold text-emerald-600 dark:text-emerald-400 transition-all"
                   >
                     Upgrade Now
                   </button>
@@ -406,9 +406,9 @@ const ClientAreaHeader = ({ activeTab }) => {
             </div>
 
             {/* Enhanced User Profile */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1 md:space-x-4">
               {/* Quick Action Buttons - Desktop */}
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center md:space-x-2">
                 <button
                   onClick={() => router.push('/clientarea/cart')}
                   className="relative p-2.5 rounded-xl text-gray-600 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 hover:bg-indigo-50/80 dark:hover:bg-indigo-900/20 transition-all duration-200 group"

@@ -44,7 +44,7 @@ const ClientOnboardingPage = () => {
 
     const stepTitles = [
         "Business Information",
-        "Configuration Settings", 
+        "Configuration Settings",
         "Final Setup"
     ];
 
@@ -60,7 +60,7 @@ const ClientOnboardingPage = () => {
                         Welcome to Liftora
                     </h1>
                     <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
-                        Transform your fitness business with our comprehensive management platform. 
+                        Transform your fitness business with our comprehensive management platform.
                         Let's configure your workspace to match your unique needs.
                     </p>
                 </div>
@@ -90,11 +90,11 @@ const ClientOnboardingPage = () => {
                             </p>
                         </div>
                     </div>
-                    
+
                     <div className="relative">
-                        <Progress 
-                            value={(currentStep / totalSteps) * 100} 
-                            className="h-3 bg-slate-200 dark:bg-slate-700" 
+                        <Progress
+                            value={(currentStep / totalSteps) * 100}
+                            className="h-3 bg-slate-200 dark:bg-slate-700"
                         />
                         <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 opacity-20"></div>
                     </div>
@@ -109,41 +109,48 @@ const ClientOnboardingPage = () => {
                     </div>
 
                     {/* Navigation Footer */}
-                    <div className="px-8 lg:px-12 py-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
-                        <div className="flex items-center justify-between">
+                    <div className="px-4 sm:px-6 lg:px-12 py-4 sm:py-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
+                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
+                            {/* Previous Button - Always visible but full width on mobile */}
                             <Button
                                 onClick={goPrevious}
                                 disabled={currentStep === 1}
                                 variant="outline"
-                                className="px-6 py-3 dark:bg-white font-medium border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 dark:bg-white font-medium border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             >
                                 ← Previous
                             </Button>
 
-                            <Button
-                                variant="ghost"
-                                onClick={skipOnboarding}
-                                className="px-6 py-3 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium"
-                            >
-                                Skip setup for now
-                            </Button>
+                            {/* Middle section - changes order on mobile */}
+                            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 order-last sm:order-none w-full sm:w-auto justify-between sm:justify-normal">
+                                {/* Skip button - moves to bottom on mobile */}
+                                <Button
+                                    variant="ghost"
+                                    onClick={skipOnboarding}
+                                    className="px-4 sm:px-6 py-2 sm:py-3 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium w-full sm:w-auto text-center"
+                                >
+                                    Skip setup for now
+                                </Button>
 
-                            <Button
-                                onClick={goNext}
-                                className="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
-                            >
-                                {currentStep === totalSteps ? 'Complete Setup →' : 'Continue →'}
-                            </Button>
+                                {/* Next/Complete button - full width on mobile */}
+                                <Button
+                                    onClick={goNext}
+                                    className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                                >
+                                    {currentStep === totalSteps ? 'Complete Setup →' : 'Continue →'}
+                                </Button>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
                 {/* Support Section */}
                 <div className="mt-8 text-center">
                     <p className="text-sm text-slate-500 dark:text-slate-400">
                         Need assistance with setup? Our team is here to help.{' '}
-                        <a 
-                            href="#" 
+                        <a
+                            href="#"
                             className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:underline transition-colors"
                         >
                             Contact Support →
