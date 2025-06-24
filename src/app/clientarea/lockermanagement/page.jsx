@@ -14,7 +14,7 @@ import LockerLogs from './logs';
 
 const LockerManagement = () => {
     return (
-        <div className="w-full min-h-screen bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-3">
+        <div className="w-full min-h-screen bg-gray-100 dark:bg-gray-900 p-4">
             {/* Header Section */}
             <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
                 <div className="flex items-center space-x-2">
