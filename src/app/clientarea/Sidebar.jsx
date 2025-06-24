@@ -78,7 +78,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
 
   // Calculate difference in milliseconds
   const diffTime = expireDate.getTime() - todayDate.getTime();
-  const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
   // Get the nav items based on features
   const navItems = [
@@ -242,8 +241,8 @@ const ClientAreaSidebar = ({ activeTab }) => {
                     {item.icon}
                   </span>
                   <div className="flex flex-col items-start">
-                    <span className="text-md font-medium text-dark dark:text-sky-400">{item.label}</span>
-                    <span className="text-[11px] text-start text-gray-500 dark:text-gray-300 font-medium">{item.description}</span>
+                    <span className="text-md font-medium text-dark dark:text-white">{item.label}</span>
+                    <span className="text-[11px] text-start text-gray-500 dark:text-gray-400 font-medium">{item.description}</span>
                   </div>
                 </button>
               </li>
