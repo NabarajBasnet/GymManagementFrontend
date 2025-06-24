@@ -1,5 +1,9 @@
 "use client";
 
+import { MdShoppingBag } from "react-icons/md";
+import {
+  ChevronRight,
+} from "lucide-react";
 import { toast as soonerToast } from "sonner";
 import { User, Settings, LogOut, Clock, Shield, Activity, CreditCard, Globe, Mail, Phone, MapPin, DollarSign, FileText, CheckCircle } from "lucide-react";
 import Loader from "@/components/Loader/Loader";
@@ -17,23 +21,6 @@ const TenantDashboard = () => {
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
   const router = useRouter();
-
-  const tenantOnTrail = loggedInTenant?.freeTrailStatus;
-  const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
-  const today = new Date();
-  const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
-  const todayDate = new Date(today.setHours(0, 0, 0, 0));
-
-  const diffTime = expireDate.getTime() - todayDate.getTime();
-  const remainingDaysOnFreeTrail = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-  const calculateRemainingDays = () => {
-    const endDate = new Date(loggedInTenant?.tenantSubscriptionEndDate);
-    const today = new Date();
-    const diffTime = endDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    return diffDays;
-  };
 
   if (loading) {
     return <Loader />;
@@ -228,28 +215,32 @@ const TenantDashboard = () => {
 
       <div className="relative z-10 w-full px-4 sm:px-6 lg:px-4 py-4">
         {/* Header */}
-        <div
-          className="mb-4"
-        >
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="flex flex-col space-y-3 pb-6">
+          <div className="flex items-center space-x-4">
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+              <MdShoppingBag className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Dashboard Overview
               </h1>
-              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-                <span>Portal</span>
-                <span>/</span>
-                <span>Client Area</span>
-                <span>/</span>
-                <span className="text-blue-600 dark:text-blue-400 font-medium">Dashboard</span>
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Portal
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Client Area
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="text-blue-600 dark:text-blue-400 font-medium">
+                  Dashboard
+                </span>
               </div>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-300">
-              <Clock className="w-4 h-4" />
-              <span>{new Date().toLocaleDateString()}</span>
             </div>
           </div>
         </div>
+
 
         <div className="flex flex-col xl:flex-row gap-4">
           {/* Enhanced Profile Card */}

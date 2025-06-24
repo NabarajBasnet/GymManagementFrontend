@@ -1,5 +1,9 @@
 "use client";
 
+import { MdHouse } from "react-icons/md";
+import {
+  ChevronRight,
+} from "lucide-react";
 import { toast as soonerToast } from "sonner";
 import { useRouter } from "next/navigation";
 import { ArrowUpDown } from "lucide-react";
@@ -232,6 +236,33 @@ const BranchManagement = () => {
 
   return (
     <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-4">
+
+      <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700 mb-4">
+        <div className="flex items-center space-x-4">
+          <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+            <MdHouse className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+          </div>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Branch Management
+            </h1>
+            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+              <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Portal
+              </span>
+              <ChevronRight className="w-4 h-4 mx-2" />
+              <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                Client Area
+              </span>
+              <ChevronRight className="w-4 h-4 mx-2" />
+              <span className="text-blue-600 dark:text-blue-400 font-medium">
+                Branch Management
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {loading ? (
         <Loader />
       ) : (
@@ -239,14 +270,14 @@ const BranchManagement = () => {
 
           {/* Header - Branch Management */}
           <header className="bg-white dark:bg-gray-800 shadow-sm rounded-sm mb-4">
-            <div className="px-4 py-5 sm:px-6 lg:px-8">
+            <div className="px-4 py-5 px-4">
               <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
                 {/* Title Section */}
                 <div className="min-w-0 flex-1">
                   <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
                     Branch Management
                   </h1>
-                  <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                  <p className="mt-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                     Manage your gym branches efficiently
                   </p>
                 </div>
@@ -294,14 +325,14 @@ const BranchManagement = () => {
             <TabsList className="grid w-full grid-cols-2 bg-gray-100 border dark:border-none dark:bg-gray-800 rounded-sm p-1.5 h-16 mb-4">
               <TabsTrigger
                 value="view"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
+                className="data-[state=active]:bg-white py-3 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
               >
                 <MdBusiness className="mr-2 h-5 w-5" />
                 View Branches
               </TabsTrigger>
               <TabsTrigger
                 value="register"
-                className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
+                className="data-[state=active]:bg-white py-3 data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
               >
                 {isEditing ? (
                   <>

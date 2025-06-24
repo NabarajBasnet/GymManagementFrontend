@@ -1,10 +1,12 @@
 "use client";
 
-import toast from "react-hot-toast";
+import { MdShoppingBag } from "react-icons/md";
+import {
+  ChevronRight,
+} from "lucide-react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -15,7 +17,7 @@ import Loader from "@/components/Loader/Loader";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -27,7 +29,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Eye,
   Filter,
-  MoreVertical,
   RefreshCcw,
   Package,
   X,
@@ -35,17 +36,7 @@ import {
   Calendar,
   CreditCard,
   Building2,
-  CheckCircle,
-  XCircle,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,10 +48,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useRouter } from "next/navigation";
 
 const MyOrders = () => {
-  const router = useRouter();
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -118,9 +107,36 @@ const MyOrders = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gradient-to-br dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
-      <div className="w-full mx-auto p-6 space-y-8">
+      <div className="w-full mx-auto p-4 space-y-4">
+
+        <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
+          <div className="flex items-center space-x-4">
+            <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+              <MdShoppingBag className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                My Orders
+              </h1>
+              <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Portal
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                  Client Area
+                </span>
+                <ChevronRight className="w-4 h-4 mx-2" />
+                <span className="text-blue-600 dark:text-blue-400 font-medium">
+                  My Orders
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Header Section */}
-        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 p-8 shadow-lg shadow-slate-900/5">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg border border-slate-200/50 dark:border-slate-800/50 py-6 px-4 shadow-lg shadow-slate-900/5">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="space-y-2">
               <div className="flex items-center gap-3">

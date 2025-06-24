@@ -273,7 +273,7 @@ const TenantSetting = () => {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-gray-50 to-white dark:from-gray-900 dark:to-gray-800">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="w-full mx-auto p-4">
         {/* Header Section */}
         <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center space-x-4">
@@ -302,7 +302,7 @@ const TenantSetting = () => {
         </div>
 
         {/* Tabs Section */}
-        <Tabs defaultValue="orgsetup" className="w-full mt-6">
+        <Tabs defaultValue="accountdetails" className="w-full mt-6">
           <TabsList className="w-full flex justify-center gap-1 p-1 mb-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
             <TabsTrigger
               value="accountdetails"

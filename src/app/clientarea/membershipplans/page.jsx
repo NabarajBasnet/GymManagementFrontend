@@ -1,5 +1,9 @@
 "use client";
 
+import { MdSettings, MdCardMembership } from "react-icons/md";
+import {
+    ChevronRight,
+} from "lucide-react";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import Loader from "@/components/Loader/Loader";
 import { FaList } from "react-icons/fa6";
@@ -320,25 +324,33 @@ const MembershipPlanManagement = () => {
     };
 
     return (
-        <div className="w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4 md:p-6">
+        <div className="w-full bg-gray-50 dark:bg-gray-900 min-h-screen p-4">
             {/* Breadcrumb with arrows */}
             <div className="w-full mb-4">
-                <div className="flex flex-col dark:bg-gray-800 dark:border-none md:flex-row justify-between items-start bg-white p-4 py-4 border border-gray-200 shadow-sm rounded-md md:items-center gap-4">
-                    <div>
-                        <h1 className="text-xl font-bold mb-2 dark:text-white">
-                            Membership Plans Management
-                        </h1>
-                        <p className="text-xs text-gray-500 font-medium dark:text-gray-200">
-                            Create and manage your gym membership plans.
-                        </p>
+                <div className="flex flex-col space-y-3 pb-6 border-b border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center space-x-4">
+                        <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/30">
+                            <MdCardMembership className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <div>
+                            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                                Membership Plans
+                            </h1>
+                            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    Portal
+                                </span>
+                                <ChevronRight className="w-4 h-4 mx-2" />
+                                <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                                    Client Area
+                                </span>
+                                <ChevronRight className="w-4 h-4 mx-2" />
+                                <span className="text-blue-600 dark:text-blue-400 font-medium">
+                                    Membership Plans
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <Button
-                        className="rounded-sm dark:bg-gray-900 hover:dark:bg-black dark:text-white transition-all duration-500"
-                        onClick={() => setTabValue("Create Plans")}
-                    >
-                        <FiPlus className="h-4 w-4 mr-2" />
-                        Create Package
-                    </Button>
                 </div>
             </div>
 
