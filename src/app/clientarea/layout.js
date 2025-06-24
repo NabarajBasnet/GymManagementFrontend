@@ -27,7 +27,7 @@ const ClientAreaLayout = ({ children }) => {
           {/* Main Content Area */}
           <div
             className={`w-full ${
-              clientSidebar && !hideSidebar ? "pl-0 md:pl-[240px]" : "pl-0"
+              clientSidebar && !hideSidebar ? "pl-0 md:pl-[235px]" : "pl-0"
             } ${hideSidebar ? "!pl-0" : ""}`}
           >
             {/* Header */}

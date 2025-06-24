@@ -2,7 +2,7 @@
 
 import { toast as soonerToast } from "sonner";
 import { useRouter } from "next/navigation";
-import { ArrowUpDown, MoreHorizontal, Trash2, Edit } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 import Pagination from "@/components/ui/CustomPagination.jsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -69,7 +69,6 @@ const BranchManagement = () => {
   const loggedInTenant = tenant?.tenant;
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("view");
-  const [searchTerm, setSearchTerm] = useState("");
   const [editingBranch, setEditingBranch] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -84,7 +83,7 @@ const BranchManagement = () => {
   useEffect(() => {
     const delayedTimerId = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-      setCurrentPage(1); // Reset to first page when searching
+      setCurrentPage(1);
     }, 300);
 
     return () => clearTimeout(delayedTimerId);
@@ -191,7 +190,6 @@ const BranchManagement = () => {
 
       if (response.status === 201) {
         router.push(responseBody.redirect);
-        toast.error(responseBody.message);
         soonerToast.error(responseBody.message);
         return { branches: [], totalPages: 0, totalBranches: 0 };
       }
@@ -235,7 +233,7 @@ const BranchManagement = () => {
   };
 
   return (
-    <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-6">
+    <div className="w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 min-h-screen p-4">
       {loading ? (
         <Loader />
       ) : (
@@ -497,12 +495,12 @@ const BranchManagement = () => {
                                 <SelectValue placeholder="Select status" />
                               </SelectTrigger>
                               <SelectContent className="py-6 px-4 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-blue-500 rounded-sm">
-                                <SelectItem value="Active">Active</SelectItem>
-                                <SelectItem value="Inactive">
+                                <SelectItem value="Active" className='cursor-pointer hover:bg-blue-600/30'>Active</SelectItem>
+                                <SelectItem value="Inactive" className='cursor-pointer hover:bg-blue-600/30'>
                                   Inactive
                                 </SelectItem>
-                                <SelectItem value="Closed">Closed</SelectItem>
-                                <SelectItem value="Maintenance">
+                                <SelectItem value="Closed" className='cursor-pointer hover:bg-blue-600/30'>Closed</SelectItem>
+                                <SelectItem value="Maintenance" className='cursor-pointer hover:bg-blue-600/30'>
                                   Maintenance
                                 </SelectItem>
                               </SelectContent>

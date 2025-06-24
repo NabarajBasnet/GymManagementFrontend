@@ -3,81 +3,40 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FaLockOpen } from "react-icons/fa";
 import { MdOutlineShoppingCart } from "react-icons/md";
-import { Moon, Sun, Package } from "lucide-react";
-import { useTheme } from "next-themes";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import toast from "react-hot-toast";
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { useState, useEffect } from "react";
 import {
   Home,
-  MessageSquare,
-  Star,
-  LineChart,
   Settings,
   LogOut,
-  Menu,
-  X,
   User,
   QrCode,
-  Shield,
-  Crown,
-  Zap,
-  Bell,
   HelpCircle,
   CreditCard,
   Building2,
-  Calendar,
-  TrendingUp,
-  Award,
-  ShoppingCart,
+  Package
 } from "lucide-react";
-import { IoMenu } from "react-icons/io5";
 import { useRouter } from "next/navigation";
 import { useTenant } from "@/components/Providers/LoggedInTenantProvider";
-import Loader from "@/components/Loader/Loader";
-import { useSelector } from "react-redux";
 
 const ClientAreaSidebar = ({ activeTab }) => {
-  const cartLength = useSelector((state) => state.rtkreducer.cartLength);
   const [darkMode, setDarkMode] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const { setTheme } = useTheme();
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const router = useRouter();
   const { tenant, loading } = useTenant();
   const loggedInTenant = tenant?.tenant;
-
-  const tenantOnTrail = loggedInTenant?.freeTrailStatus;
-  const freeTrailExpireAt = new Date(loggedInTenant?.freeTrailEndsAt);
-  const today = new Date();
-  const expireDate = new Date(freeTrailExpireAt.setHours(0, 0, 0, 0));
-  const todayDate = new Date(today.setHours(0, 0, 0, 0));
-
-  // Calculate difference in milliseconds
-  const diffTime = expireDate.getTime() - todayDate.getTime();
+  const tenantSubscriptionFeatures = loggedInTenant?.subscription?.subscriptionFeatures;
+  const multiBranchSupport = tenantSubscriptionFeatures?.find((feature) => {
+    return feature.toString() === 'Multi Branch Support'
+  });
 
   // Get the nav items based on features
   const navItems = [
@@ -93,12 +52,14 @@ const ClientAreaSidebar = ({ activeTab }) => {
       label: "Gym Dashboard",
       description: "Access Control & Monitoring",
     },
-    {
-      id: "/clientarea/branchmanagement",
-      icon: <Building2 size={20} />,
-      label: "Branch Management",
-      description: "Manage Branch",
-    },
+    ...(multiBranchSupport || loggedInTenant?.freeTrailStatus === 'Active' ? [
+      {
+        id: "/clientarea/branchmanagement",
+        icon: <Building2 size={20} />,
+        label: "Branch Management",
+        description: "Manage Branch",
+      },
+    ] : []),
     {
       id: "/clientarea/mysubscriptions",
       icon: <MdOutlineShoppingCart size={20} />,
@@ -145,7 +106,6 @@ const ClientAreaSidebar = ({ activeTab }) => {
 
   const handleNavClick = (id, tab) => {
     router.push(id);
-    setIsSheetOpen(false);
   };
 
   const logOutTenant = async () => {
@@ -195,7 +155,7 @@ const ClientAreaSidebar = ({ activeTab }) => {
   }, [darkMode, mounted]);
 
   return (
-    <div className="bg-white/95 dark:bg-gray-900/95 w-[240px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
+    <div className="bg-white/95 dark:bg-gray-900/95 w-[235px] min-h-screen py-2 shadow-md border-b border-gray-100/50 dark:border-gray-800/50 fixed left-0 top-0 z-50 flex flex-col">
       {/* Fixed Header Section */}
       <div className="flex-shrink-0">
         {/* Tenant Profile Section */}
