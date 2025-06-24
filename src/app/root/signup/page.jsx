@@ -33,7 +33,7 @@ export default function RootSignUpPage() {
     const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    
+
     const {
         register,
         reset,
@@ -56,18 +56,15 @@ export default function RootSignUpPage() {
             });
             const responseBody = await response.json();
             if (response.ok) {
-                toast.success('Account created successfully!');
-                soonerToast.success('Account created successfully!');
+                soonerToast.success(responseBody.message);
                 reset();
                 router.push('/root/login');
             } else {
-                toast.error(responseBody.message || 'Failed to create account');
                 soonerToast.error(responseBody.message || 'Failed to create account');
             }
         } catch (error) {
-            toast.error('An unexpected error occurred. Please try again.');
-            soonerToast.error('An unexpected error occurred. Please try again.');
-            console.log("Error: ", error);
+            soonerToast.error(error.message);
+            console.log("Error: ", error.message);
         }
     };
 
@@ -90,8 +87,8 @@ export default function RootSignUpPage() {
                         className="absolute inset-y-0 right-0 flex items-center pr-4"
                         onClick={onTogglePassword}
                     >
-                        {passwordVisible ? 
-                            <EyeOff className="w-5 h-5 text-gray-400 hover:text-red-400 transition-colors duration-200" /> : 
+                        {passwordVisible ?
+                            <EyeOff className="w-5 h-5 text-gray-400 hover:text-red-400 transition-colors duration-200" /> :
                             <Eye className="w-5 h-5 text-gray-400 hover:text-red-400 transition-colors duration-200" />
                         }
                     </button>

@@ -51,16 +51,13 @@ const RootLoginForm = ({ className, ...props }) => {
       const responseBody = await response.json();
 
       if (response.ok) {
-        toast.success(responseBody.message || "Login successful!");
         soonerToast.success(responseBody.message || "Login successful!");
         router.push(responseBody.redirectUrl);
         reset();
       } else {
-        toast.error(responseBody.message);
-        soonerToast.error(error.message || "Login failed!");
+        soonerToast.error(responseBody.message || "Login failed!");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred. Please try again.");
       soonerToast.error(error.message || "Login failed!");
       console.log("Error: ", error);
     }
