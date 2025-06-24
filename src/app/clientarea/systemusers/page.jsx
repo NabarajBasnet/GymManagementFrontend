@@ -4,7 +4,6 @@ import CreateUsers from "./CreateUsers";
 import Users from "./Users";
 import { User, UserPlus, Settings, Shield } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card } from "@/components/ui/card";
 
 const SystemUsers = () => {
   return (
@@ -60,17 +59,13 @@ const SystemUsers = () => {
             </TabsTrigger>
           </TabsList>
 
-          <div className="mt-4">
+          <div className="mt-4 bg-transparent">
             <TabsContent value="users">
-              <Card className="border-0 bg-transparent shadow-sm">
-                <Users />
-              </Card>
+              <Users />
             </TabsContent>
 
             <TabsContent value="adduser">
-              <Card className="border-0 bg-transparent shadow-sm">
-                <CreateUsers />
-              </Card>
+              <CreateUsers />
             </TabsContent>
           </div>
         </Tabs>

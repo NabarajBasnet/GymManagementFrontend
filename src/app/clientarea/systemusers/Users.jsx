@@ -253,7 +253,7 @@ const Users = () => {
   };
 
   return (
-    <div className="w-full bg-transparent dark:bg-gray-900 flex justify-center">
+    <div className="w-full flex justify-center">
       <div className="w-full">
         {isDeleting && (
           <div className="fixed inset-0 flex items-center justify-center z-50">
