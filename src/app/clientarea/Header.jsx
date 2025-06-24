@@ -80,7 +80,7 @@ const ClientAreaHeader = ({ activeTab }) => {
       description: "Overview & Analytics",
     },
     {
-      id: "/login",
+      id: "/userlogin",
       icon: <QrCode size={20} />,
       label: "Gym Dashboard",
       description: "Access Control & Monitoring",

@@ -2,8 +2,6 @@
 
 import { toast as soonerToast } from "sonner";
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
-import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -77,21 +75,17 @@ const CreateUsers = () => {
       });
       const responseBody = await response.json();
       if (response.ok) {
-        toast.success(responseBody.message);
         soonerToast.success(responseBody.message);
         reset();
-      } else if(responseBody.redirect){
+      } else if (responseBody.redirect) {
         window.location.href = responseBody.redirectUrl;
-        toast.error(responseBody.message);
         soonerToast.error(responseBody.message);
       } else {
-        toast.error(responseBody.message || "Failed to create account");
         soonerToast.error(responseBody.message || "Failed to create account");
       }
     } catch (error) {
       console.error("Error: ", error);
-      toast.error("An unexpected error occurred. Please try again.");
-      soonerToast.error("An unexpected error occurred. Please try again.");
+      soonerToast.error(error.message);
     }
   };
 
