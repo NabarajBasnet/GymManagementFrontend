@@ -101,19 +101,19 @@ const Navbar = () => {
         <nav
             className={cn(
                 'fixed w-full z-50 transition-all duration-300 py-3',
-                scrolled ? 'bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl border-b border-gray-200/20 dark:border-gray-700/20' : 'bg-transparent'
+                scrolled ? 'bg-gray-900/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl border-b border-gray-200/20 dark:border-gray-700/20' : 'bg-transparent'
             )}
         >
             <div className="container w-full mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center">
                     {/* Enhanced Logo */}
                     <div className="flex items-center">
-                    
+
                         <a href="#" className="text-2xl font-bold tracking-tight">
                             <img
-                            className='w-40'
-                    src='./images/GEOFITLOGO.png'
-                    />
+                                className='w-40'
+                                src='./images/GEOFITLOGO.png'
+                            />
                         </a>
                     </div>
 
@@ -125,7 +125,7 @@ const Navbar = () => {
                                     <button
                                         className={cn(
                                             'navbar-link text-sm font-medium transition-all duration-200 flex items-center hover:scale-105',
-                                            scrolled ? 'text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400' : 'text-white/90 hover:text-white'
+                                            scrolled ? 'text-gray-300 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400' : 'text-white/90 hover:text-white'
                                         )}
                                         onClick={() => toggleDropdown(index)}
                                     >
@@ -137,7 +137,7 @@ const Navbar = () => {
                                         href={link.href}
                                         className={cn(
                                             'navbar-link text-sm font-medium transition-all duration-200 hover:scale-105 relative',
-                                            scrolled ? 'text-gray-700 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400' : 'text-white/90 hover:text-white'
+                                            scrolled ? 'text-gray-300 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400' : 'text-white/90 hover:text-white'
                                         )}
                                     >
                                         {link.name}
@@ -147,7 +147,7 @@ const Navbar = () => {
 
                                 {/* Enhanced Dropdown Menu */}
                                 {link.hasDropdown && (
-                                    <div className="absolute left-0 mt-3 w-96 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/20 dark:border-gray-700/20 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                                    <div className="absolute left-0 mt-3 w-96 bg-white dark:bg-gray-800 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200/20 dark:border-gray-700/20 invisible group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                                         <div className="p-6">
                                             <div className="space-y-4">
                                                 {link.dropdownItems.map((item) => {
@@ -188,7 +188,7 @@ const Navbar = () => {
                                 className={cn(
                                     "px-6 py-2.5 rounded-sm font-medium shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-xl",
                                     scrolled
-                                        ? "bg-transparent hover:bg-gray-100 text-gray-700 border border-gray-300 dark:bg-transparent dark:hover:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
+                                        ? "bg-transparent hover:bg-gray-100 text-gray-300 border border-gray-300 dark:bg-transparent dark:hover:bg-gray-800 dark:text-gray-200 dark:border-gray-600"
                                         : "bg-white/10 hover:bg-white/20 text-white backdrop-blur border border-white/20"
                                 )}
                             >
