@@ -25,8 +25,6 @@ import {
   FiTrash2,
   FiEdit,
   FiSearch,
-  FiChevronRight,
-  FiHome,
   FiPhone,
   FiMail,
   FiGlobe,
@@ -240,7 +238,7 @@ const BranchManagement = () => {
         <div className="w-full mx-auto">
 
           {/* Header - Branch Management */}
-          <header className="bg-white dark:bg-gray-800 shadow-sm rounded-sm mb-8">
+          <header className="bg-white dark:bg-gray-800 shadow-sm rounded-sm mb-4">
             <div className="px-4 py-5 sm:px-6 lg:px-8">
               <div className="flex flex-col space-y-4 md:space-y-0 md:flex-row md:items-center md:justify-between">
                 {/* Title Section */}
@@ -293,7 +291,7 @@ const BranchManagement = () => {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-2 bg-gray-100 border dark:border-none dark:bg-gray-800 rounded-sm p-1.5 h-16 mb-8">
+            <TabsList className="grid w-full grid-cols-2 bg-gray-100 border dark:border-none dark:bg-gray-800 rounded-sm p-1.5 h-16 mb-4">
               <TabsTrigger
                 value="view"
                 className="data-[state=active]:bg-white data-[state=active]:shadow-sm dark:data-[state=active]:bg-gray-700 rounded-sm text-base font-medium"
@@ -320,9 +318,9 @@ const BranchManagement = () => {
             </TabsList>
 
             {/* Register Branch Tab */}
-            <TabsContent value="register" className="mt-8">
-              <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
-                <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+            <TabsContent value="register" className="mt-4">
+              <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-sm overflow-hidden">
+                <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6">
                   <CardTitle className="flex items-center text-xl">
                     {isEditing ? (
                       <>
@@ -536,12 +534,12 @@ const BranchManagement = () => {
             </TabsContent>
 
             {/* View Branches Tab */}
-            <TabsContent value="view" className="mt-8">
+            <TabsContent value="view" className="mt-4">
               {isLoading ? (
                 <Loader />
               ) : (
-                <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-xl overflow-hidden">
-                  <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
+                <Card className="border-0 shadow-sm bg-white dark:bg-gray-800 rounded-sm overflow-hidden">
+                  <CardHeader className="border-b border-gray-100 dark:border-gray-700 pb-6">
                     <CardTitle className="flex items-center text-xl">
                       <MdBusiness className="h-6 w-6 mr-2 text-blue-600" />
                       All Branches
