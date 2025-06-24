@@ -42,120 +42,191 @@ const ClientOnboardingPage = () => {
         }
     };
 
-    const stepTitles = [
-        "Business Information",
-        "Configuration Settings",
-        "Final Setup"
+    const stepData = [
+        {
+            title: "Business Information",
+            description: "Tell us about your fitness business",
+            icon: "🏢"
+        },
+        {
+            title: "Configuration Settings",
+            description: "Customize your platform preferences",
+            icon: "⚙️"
+        },
+        {
+            title: "Final Setup",
+            description: "Complete your workspace setup",
+            icon: "✨"
+        }
     ];
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-            <div className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50 dark:from-slate-950 dark:via-slate-900 dark:to-indigo-950">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(99,102,241,0.05)_1px,transparent_0)] [background-size:24px_24px]"></div>
+
+            <div className="relative container mx-auto px-4 py-8 max-w-6xl">
                 {/* Header Section */}
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl mb-6 shadow-lg">
-                        <span className="text-2xl">🚀</span>
+                <div className="text-center mb-16">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 rounded-3xl mb-8 shadow-2xl shadow-indigo-500/25 transform hover:scale-105 transition-transform duration-300">
+                        <div className="text-3xl">🚀</div>
                     </div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-300 bg-clip-text text-transparent mb-4">
+                    <h1 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent mb-6 leading-tight">
                         Welcome to Liftora
                     </h1>
-                    <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-xl text-slate-600 dark:text-slate-300 max-w-3xl mx-auto leading-relaxed font-medium">
                         Transform your fitness business with our comprehensive management platform.
-                        Let's configure your workspace to match your unique needs.
+                        <br />
+                        <span className="text-indigo-600 dark:text-indigo-400 font-semibold">Let's get you set up in just 3 simple steps.</span>
                     </p>
                 </div>
 
-                {/* Progress Section */}
-                <div className="mb-10">
-                    <div className="flex items-center justify-between mb-6">
-                        <div className="flex items-center space-x-4">
-                            <div className="flex items-center space-x-2">
-                                <div className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                                    {currentStep}
+                {/* Progress Steps Visualization */}
+                <div className="mb-16">
+                    <div className="flex items-center justify-center mb-8">
+                        {stepData.map((step, index) => (
+                            <div key={index} className="flex items-center">
+                                {/* Step Circle */}
+                                <div className={`relative flex items-center justify-center w-16 h-16 rounded-2xl transition-all duration-500 ${index + 1 <= currentStep
+                                        ? 'bg-gradient-to-r from-indigo-600 to-purple-600 shadow-lg shadow-indigo-500/25 scale-110'
+                                        : index + 1 === currentStep + 1
+                                            ? 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-600'
+                                            : 'bg-slate-100 dark:bg-slate-800'
+                                    }`}>
+                                    {index + 1 < currentStep ? (
+                                        <div className="text-white text-xl">✓</div>
+                                    ) : index + 1 === currentStep ? (
+                                        <div className="text-white text-xl font-bold">{index + 1}</div>
+                                    ) : (
+                                        <div className="text-slate-400 dark:text-slate-500 text-xl font-bold">{index + 1}</div>
+                                    )}
+
+                                    {/* Pulsing ring for current step */}
+                                    {index + 1 === currentStep && (
+                                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 animate-pulse opacity-20"></div>
+                                    )}
                                 </div>
-                                <div>
-                                    <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                                        Step {currentStep} of {totalSteps}
-                                    </p>
-                                    <p className="text-lg font-semibold text-slate-900 dark:text-white">
-                                        {stepTitles[currentStep - 1]}
-                                    </p>
-                                </div>
+
+                                {/* Connector Line */}
+                                {index < stepData.length - 1 && (
+                                    <div className={`h-1 w-20 mx-4 rounded-full transition-all duration-500 ${index + 1 < currentStep
+                                            ? 'bg-gradient-to-r from-indigo-600 to-purple-600'
+                                            : 'bg-slate-200 dark:bg-slate-700'
+                                        }`}></div>
+                                )}
                             </div>
-                        </div>
-                        <div className="text-right">
-                            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">Progress</p>
-                            <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                                {Math.round((currentStep / totalSteps) * 100)}%
-                            </p>
-                        </div>
+                        ))}
                     </div>
 
+                    {/* Step Labels */}
+                    <div className="grid grid-cols-3 gap-4 max-w-4xl mx-auto">
+                        {stepData.map((step, index) => (
+                            <div key={index} className="text-center">
+                                <div className="text-2xl mb-2">{step.icon}</div>
+                                <h3 className={`font-bold text-lg mb-1 transition-colors duration-300 ${index + 1 === currentStep
+                                        ? 'text-indigo-600 dark:text-indigo-400'
+                                        : 'text-slate-600 dark:text-slate-400'
+                                    }`}>
+                                    {step.title}
+                                </h3>
+                                <p className="text-sm text-slate-500 dark:text-slate-500 leading-relaxed">
+                                    {step.description}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="mb-12 max-w-2xl mx-auto">
+                    <div className="flex items-center justify-between mb-4">
+                        <span className="text-sm font-semibold text-slate-600 dark:text-slate-400">
+                            Progress
+                        </span>
+                        <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">
+                            {Math.round((currentStep / totalSteps) * 100)}%
+                        </span>
+                    </div>
                     <div className="relative">
-                        <Progress
-                            value={(currentStep / totalSteps) * 100}
-                            className="h-3 bg-slate-200 dark:bg-slate-700"
-                        />
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 opacity-20"></div>
+                        <div className="h-3 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                                className="h-full bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 rounded-full transition-all duration-700 ease-out shadow-lg"
+                                style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+                            ></div>
+                        </div>
+                        <div className="absolute inset-0 h-3 bg-gradient-to-r from-indigo-600/20 via-purple-600/20 to-cyan-600/20 rounded-full animate-pulse"></div>
                     </div>
                 </div>
 
                 {/* Main Content Card */}
-                <div className="bg-white dark:bg-slate-800 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <div className="p-8 lg:p-12">
-                        {currentStep === 1 && <FirstStep />}
-                        {currentStep === 2 && <SecondStep />}
-                        {currentStep === 3 && <ThirdStep />}
+                <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 dark:border-slate-700/50 overflow-hidden">
+                    {/* Content Area */}
+                    <div className="p-8 lg:p-16">
+                        <div className="transform transition-all duration-500">
+                            {currentStep === 1 && <FirstStep />}
+                            {currentStep === 2 && <SecondStep />}
+                            {currentStep === 3 && <ThirdStep />}
+                        </div>
                     </div>
 
                     {/* Navigation Footer */}
-                    <div className="px-4 sm:px-6 lg:px-12 py-4 sm:py-6 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-200 dark:border-slate-700">
-                        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 sm:gap-6">
-                            {/* Previous Button - Always visible but full width on mobile */}
+                    <div className="px-8 lg:px-16 py-8 bg-gradient-to-r from-slate-50/50 to-indigo-50/50 dark:from-slate-800/50 dark:to-slate-900/50 border-t border-slate-200/50 dark:border-slate-700/50">
+                        <div className="flex flex-col lg:flex-row items-center justify-between gap-6">
+                            {/* Previous Button */}
                             <Button
                                 onClick={goPrevious}
                                 disabled={currentStep === 1}
                                 variant="outline"
-                                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 dark:bg-white font-medium border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-full lg:w-auto px-8 py-4 font-semibold border-2 border-slate-300 dark:border-slate-600 hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-950/30 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300 rounded-xl"
                             >
-                                ← Previous
+                                <span className="flex items-center gap-2">
+                                    ← Previous Step
+                                </span>
                             </Button>
 
-                            {/* Middle section - changes order on mobile */}
-                            <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 order-last sm:order-none w-full sm:w-auto justify-between sm:justify-normal">
-                                {/* Skip button - moves to bottom on mobile */}
+                            {/* Center Actions */}
+                            <div className="flex flex-col lg:flex-row items-center gap-4">
+                                {/* Skip Button */}
                                 <Button
                                     variant="ghost"
                                     onClick={skipOnboarding}
-                                    className="px-4 sm:px-6 py-2 sm:py-3 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium w-full sm:w-auto text-center"
+                                    className="px-6 py-3 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-all duration-300"
                                 >
                                     Skip setup for now
                                 </Button>
 
-                                {/* Next/Complete button - full width on mobile */}
+                                {/* Next/Complete Button */}
                                 <Button
                                     onClick={goNext}
-                                    className="w-full sm:w-auto px-6 sm:px-8 py-2 sm:py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-medium shadow-lg hover:shadow-xl transition-all duration-200"
+                                    className="w-full lg:w-auto px-8 py-4 bg-gradient-to-r from-indigo-600 via-purple-600 to-cyan-600 hover:from-indigo-700 hover:via-purple-700 hover:to-cyan-700 text-white font-bold shadow-xl shadow-indigo-500/25 hover:shadow-2xl hover:shadow-indigo-500/40 transition-all duration-300 rounded-xl transform hover:scale-105"
                                 >
-                                    {currentStep === totalSteps ? 'Complete Setup →' : 'Continue →'}
+                                    <span className="flex items-center gap-2">
+                                        {currentStep === totalSteps ? (
+                                            <>Complete Setup <span className="text-xl">🎉</span></>
+                                        ) : (
+                                            <>Continue <span className="text-lg">→</span></>
+                                        )}
+                                    </span>
                                 </Button>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
                 {/* Support Section */}
-                <div className="mt-8 text-center">
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                        Need assistance with setup? Our team is here to help.{' '}
+                <div className="mt-12 text-center">
+                    <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-white/20 dark:border-slate-700/50 shadow-lg">
+                        <span className="text-lg">🤝</span>
+                        <span className="text-slate-600 dark:text-slate-300 font-medium">
+                            Need help?
+                        </span>
                         <a
                             href="#"
-                            className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-medium hover:underline transition-colors"
+                            className="text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 font-bold hover:underline transition-colors duration-300"
                         >
                             Contact Support →
                         </a>
-                    </p>
+                    </div>
                 </div>
             </div>
         </div>
