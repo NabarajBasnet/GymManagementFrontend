@@ -52,7 +52,7 @@ export function RenewRadialChart({ startDate, endDate }) {
         const [, startDate, endDate, page, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://88.198.112.156:3100/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
+                `http://localhost:3000/api/memberanalytics/renewedmembers?startDate=${startDate}&endDate=${endDate}&page=${page}&limit=${limit}`
             );
             const responseBody = await response.json();
             return responseBody;

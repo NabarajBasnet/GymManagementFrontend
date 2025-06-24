@@ -45,7 +45,7 @@ const AllMembersAreaChart = () => {
 
   const getNewMembers = async () => {
     try {
-        const response = await fetch(`http://88.198.112.156:3100/api/graphdata/newmembers`);
+        const response = await fetch(`http://localhost:3000/api/graphdata/newmembers`);
         const data = await response.json();
         return Array.isArray(data) ? data : (data?.newMembers || []);
     } catch (error) {
@@ -61,7 +61,7 @@ const AllMembersAreaChart = () => {
 
   const getRenewedMembers = async () => {
       try {
-          const response = await fetch(`http://88.198.112.156:3100/api/graphdata/renewedmembers`);
+          const response = await fetch(`http://localhost:3000/api/graphdata/renewedmembers`);
           const data = await response.json();
           return Array.isArray(data) ? data : (data?.renewedMembers || []);
       } catch (error) {

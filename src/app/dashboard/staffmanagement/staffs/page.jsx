@@ -231,7 +231,7 @@ const StaffManagement = () => {
     const [, page, searchQuery, limit] = queryKey;
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
+        `http://localhost:3000/api/staffsmanagement?page=${page}&limit=${limit}&staffSearchQuery=${searchQuery}`
       );
       const responseBody = await response.json();
       if (!response.ok) {
@@ -317,8 +317,8 @@ const StaffManagement = () => {
 
     try {
       const url = currentStaffId
-        ? `http://88.198.112.156:3100/api/staffsmanagement/changedetails/${currentStaffId}`
-        : "http://88.198.112.156:3100/api/staffsmanagement/create";
+        ? `http://localhost:3000/api/staffsmanagement/changedetails/${currentStaffId}`
+        : "http://localhost:3000/api/staffsmanagement/create";
 
       const method = currentStaffId ? "PATCH" : "POST";
 
@@ -346,7 +346,7 @@ const StaffManagement = () => {
   const deleteStaff = async (id) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/staffsmanagement/remove/${id}`,
+        `http://localhost:3000/api/staffsmanagement/remove/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -374,7 +374,7 @@ const StaffManagement = () => {
   const editStaffDetails = async (id) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -389,7 +389,7 @@ const StaffManagement = () => {
   const populateAddressDetails = async (id) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
       if (response.ok) {
@@ -444,7 +444,7 @@ const StaffManagement = () => {
   const populateShiftDetails = async (id) => {
     try {
       const response = await fetch(
-        `http://88.198.112.156:3100/api/staffsmanagement/${id}`
+        `http://localhost:3000/api/staffsmanagement/${id}`
       );
       const responseBody = await response.json();
 

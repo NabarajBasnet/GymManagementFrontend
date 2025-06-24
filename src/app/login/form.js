@@ -1,7 +1,6 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
 import { toast as soonerToast } from "sonner";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
@@ -42,7 +41,7 @@ const TenantLoginForm = ({ className, ...props }) => {
   const onLoginUser = async (data) => {
     try {
       const response = await fetch(
-        "http://88.198.112.156:3100/api/tenant/auth/login",
+        "http://localhost:3000/api/tenant/auth/login",
         {
           method: "POST",
           headers: {

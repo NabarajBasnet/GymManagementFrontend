@@ -102,7 +102,7 @@ const PausedMembers = () => {
         const [, page, searchQuery, sortBy, sortOrderDesc, limit] = queryKey;
         try {
             const response = await fetch(
-                `http://88.198.112.156:3100/api/org-members/onhold-by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
+                `http://localhost:3000/api/org-members/onhold-by-branch?page=${page}&limit=${limit}&memberSearchQuery=${searchQuery}&sortBy=${sortBy}&sortOrderDesc=${sortOrderDesc}`
             );
             const resBody = await response.json();
             return resBody;
@@ -131,7 +131,7 @@ const PausedMembers = () => {
     const sendQrInEmail = async (id) => {
         setEmailSending(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/send-qr`, {
+            const response = await fetch(`http://localhost:3000/api/send-qr`, {
                 method: "POST",
                 headers: {
                     'Content-Type': 'application/json'
@@ -159,7 +159,7 @@ const PausedMembers = () => {
     const deleteMember = async (id) => {
         setIsDeleting(true);
         try {
-            const response = await fetch(`http://88.198.112.156:3100/api/members/deleteMember/${id}`, {
+            const response = await fetch(`http://localhost:3000/api/members/deleteMember/${id}`, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': "application/json"

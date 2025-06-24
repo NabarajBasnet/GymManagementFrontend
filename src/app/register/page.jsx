@@ -186,7 +186,7 @@ export default function TenantSignUpPage() {
         };
 
         try {
-            const response = await fetch('http://88.198.112.156:3100/api/tenant/signup', {
+            const response = await fetch('http://localhost:3000/api/tenant/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -203,9 +203,8 @@ export default function TenantSignUpPage() {
                 toast.error(responseBody.message || 'Failed to create account');
             }
         } catch (error) {
-            toast.error('An unexpected error occurred. Please try again.');
+            toast.error(error.message || 'Internal server error');
             console.log("Error: ", error);
-            console.log("Error: ", error.message);
         }
     };
 
@@ -445,7 +444,7 @@ export default function TenantSignUpPage() {
                                     id="terms"
                                     checked={acceptTerms}
                                     onChange={(e) => setAcceptTerms(e.target.checked)}
-                                    className="mt-1 w-5 h-5 text-blue-600 cursor-pointer border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                    className="mt-1 w-6 h-6 text-blue-600 cursor-pointer border-2 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                                 />
                                 <label htmlFor="terms" className="text-sm text-gray-600 leading-relaxed">
                                     I agree to the{' '}
