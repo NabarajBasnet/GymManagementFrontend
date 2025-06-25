@@ -69,7 +69,7 @@ const RevenewDashboard = () => {
 
 
     return (
-        <div className="w-full space-y-6">
+        <div className="w-full space-y-4">
             <Card className='dark:bg-gray-900 dark:border-none grid grid-cols-1 lg:grid-cols-2 gap-4 p-4'>
                 <div>
                     <Label>Start Date</Label>
@@ -225,7 +225,7 @@ const RevenewDashboard = () => {
                     </TabsTrigger>
                 </TabsList>
 
-                <div className="mt-8">
+                <div className="mt-4">
                     <TabsContent value="newadmissionrenewal" className="mt-0">
                         <NewMemberRevenew data={newmemberrevenewdata} isLoading={isNewMemberDataLoading} />
                     </TabsContent>
