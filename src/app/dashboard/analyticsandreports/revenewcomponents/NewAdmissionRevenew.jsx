@@ -45,6 +45,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { useQuery } from "@tanstack/react-query"
 
 const invoices = [
     {
@@ -91,7 +92,28 @@ const invoices = [
     },
 ]
 
+
 const NewMemberRevenew = () => {
+
+
+    const getNewMemberRevenewData = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/api/revenew/new-admission-revenew');
+            const resBody = await response.json();
+            console.log('resbody',resBody);
+            return resBody;
+        } catch (error) {
+            console.log("Error: ", error);
+        };
+    };
+
+    const { data, isLoading } = useQuery({
+        queryKey: ['revenewdata'],
+        queryFn: getNewMemberRevenewData
+    });
+
+    console.log("Data: ", data);
+
     return (
         <div className="w-full">
             <div className="w-full md:flex">

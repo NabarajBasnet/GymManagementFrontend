@@ -25,10 +25,28 @@ import NewMemberRevenew from "./revenewcomponents/NewAdmissionRevenew";
 import MembershipRenewal from "./revenewcomponents/MembershipRenewal";
 import LockerRevenew from "./revenewcomponents/LockerRevenew";
 import TotalRevenew from "./revenewcomponents/TotalRevenew";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const RevenewDashboard = () => {
     return (
         <div className="w-full space-y-6">
+            <Card className='dark:bg-gray-900 dark:border-none grid grid-cols-1 lg:grid-cols-2 gap-4 p-4'>
+                <div>
+                    <Label>Start Date</Label>
+                    <Input
+                        type='date'
+                        className='dark:bg-gray-800 bg-white'
+                    />
+                </div>
+                <div>
+                    <Label>End Date</Label>
+                    <Input
+                        type='date'
+                        className='dark:bg-gray-800 bg-white'
+                    />
+                </div>
+            </Card>
             <Tabs defaultValue="newadmissionrenewal" className="w-full">
                 <TabsList className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 h-auto bg-transparent p-0'>
                     <TabsTrigger
