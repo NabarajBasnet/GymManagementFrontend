@@ -26,12 +26,8 @@ import { useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useState } from "react"
 
-const NewMemberRevenue = ({ data, isLoading }) => {
+const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalPages, totalMembers }) => {
     const { count, members, totalRevenue } = data?.data || {};
-
-    // Pagination
-    const [currentPage, setCurrentPage] = useState(1)
-    const limit = 6;
 
     // Fetch all membership plans upfront
     const { data: membershipPlans, isLoading: isLoadingPlans } = useQuery({
@@ -336,7 +332,7 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                     )}
                     <div className="w-full flex justify-end my-2">
                         <Pagination
-                            total={1}
+                            total={totalPages}
                             page={currentPage}
                             onChange={setCurrentPage}
                         />

@@ -35,6 +35,10 @@ import { useQuery } from "@tanstack/react-query";
 
 const RevenewDashboard = () => {
 
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const limit = 1;
+
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();
         today.setDate(today.getDate() - 7);
@@ -51,7 +55,7 @@ const RevenewDashboard = () => {
     const getNewMembersRevenewData = async ({ queryKey }) => {
         const [, startDate, endDate] = queryKey;
         try {
-            const response = await fetch(`http://localhost:3000/api/revenew/new-admission-revenew?startDate=${startDate}&endDate=${endDate}`);
+            const response = await fetch(`http://localhost:3000/api/revenew/new-admission-revenew?startDate=${startDate}&endDate=${endDate}&page=${currentPage}&limit=${limit}`);
             const resBody = await response.json();
             return resBody;
         } catch (error) {
@@ -60,13 +64,12 @@ const RevenewDashboard = () => {
         };
     };
 
-    const { data: newmemberrevenewdata, isLoading:isNewMemberDataLoading } = useQuery({
-        queryKey: ['newmemberrevenew', startDate, endDate],
+    const { data: newmemberrevenewdata, isLoading: isNewMemberDataLoading } = useQuery({
+        queryKey: ['newmemberrevenew', startDate, endDate, currentPage, limit],
         queryFn: getNewMembersRevenewData,
     });
 
-    const { count, members, totalRevenue: totalNewMemberRevenue } = newmemberrevenewdata || {};
-
+    const { count, members, totalRevenue: totalNewMemberRevenue, totalMembers, totalPages } = newmemberrevenewdata || {};
 
     return (
         <div className="w-full space-y-4">
@@ -227,7 +230,7 @@ const RevenewDashboard = () => {
 
                 <div className="mt-4">
                     <TabsContent value="newadmissionrenewal" className="mt-0">
-                        <NewMemberRevenew data={newmemberrevenewdata} isLoading={isNewMemberDataLoading} />
+                        <NewMemberRevenew data={newmemberrevenewdata} isLoading={isNewMemberDataLoading} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} totalMembers={totalMembers} />
                     </TabsContent>
                     <TabsContent value="membershiprenewal" className="mt-0">
                         <MembershipRenewal />
