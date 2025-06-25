@@ -13,7 +13,7 @@ export const middleware = async (request) => {
   let staff = null;
   let member = null;
   let tenant = null;
- 
+
   try {
     if (token) user = jwtDecode(token);
     if (staffToken) staff = jwtDecode(staffToken);
@@ -54,9 +54,9 @@ export const middleware = async (request) => {
       return NextResponse.redirect(new URL("/dashboard", request.url));
     }
 
-    // if (!tenant && path.startsWith("/clientarea")) {
-    //   return NextResponse.redirect(new URL("/login", request.url));
-    // }
+    if (!tenant && path.startsWith("/clientarea")) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
 
     if (
       user?.role === "Gym Admin" &&
