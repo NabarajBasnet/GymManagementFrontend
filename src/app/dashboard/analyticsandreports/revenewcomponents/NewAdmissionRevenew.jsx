@@ -315,7 +315,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                         </TableRow>
                                     )}
                                 </TableBody>
-                                {Array.isArray(members) && members.length >= 1 && (
+                                {Array.isArray(data?.members) && data?.members.length >= 1 && (
                                     <TableFooter>
                                         <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600">
                                             <TableCell colSpan={6} className="font-semibold text-gray-700 dark:text-gray-300">
