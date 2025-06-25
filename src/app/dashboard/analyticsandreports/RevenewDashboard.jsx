@@ -3,8 +3,7 @@ import {
     TabsContent,
     TabsList,
     TabsTrigger,
-} from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
+} from "@/components/ui/tabs";
 import {
     Card,
     CardAction,
@@ -13,9 +12,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+} from "@/components/ui/card";
 import {
     UserPlus,
     RefreshCw,
@@ -23,11 +20,11 @@ import {
     DollarSign,
     TrendingUp,
     ArrowUpRight
-} from "lucide-react"
-import NewMemberRevenew from "./revenewcomponents/NewAdmissionRevenew"
-import MembershipRenewal from "./revenewcomponents/MembershipRenewal"
-import LockerRevenew from "./revenewcomponents/LockerRevenew"
-import TotalRevenew from "./revenewcomponents/TotalRevenew"
+} from "lucide-react";
+import NewMemberRevenew from "./revenewcomponents/NewAdmissionRevenew";
+import MembershipRenewal from "./revenewcomponents/MembershipRenewal";
+import LockerRevenew from "./revenewcomponents/LockerRevenew";
+import TotalRevenew from "./revenewcomponents/TotalRevenew";
 
 const RevenewDashboard = () => {
     return (
@@ -38,7 +35,7 @@ const RevenewDashboard = () => {
                         value="newadmissionrenewal"
                         className="p-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none h-auto w-full"
                     >
-                        <Card className="w-full h-full bg-gray-50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:shadow-lg group">
+                        <Card className="w-full h-full bg-gray-50 dark:bg-gray-900 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:shadow-lg group">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/20 group-hover:bg-blue-100 dark:group-hover:bg-blue-900/30 transition-colors">
@@ -71,7 +68,7 @@ const RevenewDashboard = () => {
                         value="membershiprenewal"
                         className="p-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none h-auto w-full"
                     >
-                        <Card className="w-full h-full bg-gray-50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:shadow-lg group">
+                        <Card className="w-full h-full bg-gray-50 dark:bg-gray-900 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-green-500 data-[state=active]:shadow-lg group">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="p-3 rounded-xl bg-green-50 dark:bg-green-900/20 group-hover:bg-green-100 dark:group-hover:bg-green-900/30 transition-colors">
@@ -104,7 +101,7 @@ const RevenewDashboard = () => {
                         value="lockerrenewal"
                         className="p-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none h-auto w-full"
                     >
-                        <Card className="w-full h-full bg-gray-50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:shadow-lg group">
+                        <Card className="w-full h-full bg-gray-50 dark:bg-gray-900 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-purple-500 data-[state=active]:shadow-lg group">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 group-hover:bg-purple-100 dark:group-hover:bg-purple-900/30 transition-colors">
@@ -137,7 +134,7 @@ const RevenewDashboard = () => {
                         value="totalrevenew"
                         className="p-0 data-[state=active]:bg-transparent data-[state=active]:shadow-none h-auto w-full"
                     >
-                        <Card className="w-full h-full bg-gray-50 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:shadow-lg group">
+                        <Card className="w-full h-full bg-gray-50 dark:bg-gray-900 cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 border-transparent data-[state=active]:border-orange-500 data-[state=active]:shadow-lg group">
                             <CardContent className="p-6">
                                 <div className="flex items-start justify-between mb-4">
                                     <div className="p-3 rounded-xl bg-gradient-to-br from-orange-50 to-yellow-50 dark:from-orange-900/20 dark:to-yellow-900/20 group-hover:from-orange-100 group-hover:to-yellow-100 dark:group-hover:from-orange-900/30 dark:group-hover:to-yellow-900/30 transition-all">
