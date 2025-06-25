@@ -1,5 +1,6 @@
 "use client"
 
+import Pagination from "@/components/ui/CustomPagination"
 import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash } from "lucide-react"
 import {
     Card,
@@ -23,9 +24,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
+import { useState } from "react"
 
 const NewMemberRevenue = ({ data, isLoading }) => {
     const { count, members, totalRevenue } = data?.data || {};
+
+    // Pagination
+    const [currentPage, setCurrentPage] = useState(1)
+    const limit = 6;
 
     // Fetch all membership plans upfront
     const { data: membershipPlans, isLoading: isLoadingPlans } = useQuery({
@@ -283,7 +289,7 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                                                             -{formatCurrency(member.discountAmmount)}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-gray-400 dark:text-gray-600 text-sm">—</span>
+                                                        <span className="text-gray-600 dark:text-gray-300 text-sm">Null</span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-bold text-gray-900 dark:text-white">
@@ -328,6 +334,13 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                             </Table>
                         </div>
                     )}
+                    <div className="w-full flex justify-end my-2">
+                        <Pagination
+                            total={1}
+                            page={currentPage}
+                            onChange={setCurrentPage}
+                        />
+                    </div>
                 </CardContent>
                 <CardFooter className="bg-gray-50/50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 py-3">
                     <div className="flex items-center justify-between w-full text-xs text-gray-500 dark:text-gray-400">
