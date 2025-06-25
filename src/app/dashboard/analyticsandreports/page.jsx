@@ -21,7 +21,7 @@ import RevenewDashboard from "./RevenewDashboard";
 const AnalyticsAndReports = () => {
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
-            <div className="p-6 lg:p-8">
+            <div className="px-4 py-6">
                 {/* Header Section */}
                 <div className="mb-8">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
@@ -66,7 +66,7 @@ const AnalyticsAndReports = () => {
                 </div>
 
                 {/* Tabs Section */}
-                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
                     <Tabs defaultValue="analyticsdashboard" className="w-full">
                         <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
                             <TabsList className="bg-transparent h-auto p-0 space-x-0 w-full justify-start overflow-x-auto">
