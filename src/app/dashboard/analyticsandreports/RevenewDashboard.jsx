@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from "react";
 import {
     Tabs,
     TabsContent,
@@ -27,23 +30,63 @@ import LockerRevenew from "./revenewcomponents/LockerRevenew";
 import TotalRevenew from "./revenewcomponents/TotalRevenew";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
 
 const RevenewDashboard = () => {
+
+    const [startDate, setStartDate] = useState(() => {
+        const today = new Date();
+        today.setDate(today.getDate() - 7);
+        return today.toISOString().split('T')[0];
+    });
+
+    const [endDate, setEndDate] = useState(() => {
+        const today = new Date();
+        today.setDate(today.getDate() + 1);
+        return today.toISOString().split('T')[0];
+    });
+
+    // @GET Get new members revenew
+    const getNewMembersRevenewData = async ({ queryKey }) => {
+        const [, startDate, endDate] = queryKey;
+        try {
+            const response = await fetch(`http://localhost:3000/api/revenew/new-admission-revenew?startDate=${startDate}&endDate=${endDate}`);
+            const resBody = await response.json();
+            return resBody;
+        } catch (error) {
+            console.log("Error: ", error);
+            toast.error(error.message || 'Internal server error');
+        };
+    };
+
+    const { data: newmemberrevenewdata, isLoading:isNewMemberDataLoading } = useQuery({
+        queryKey: ['newmemberrevenew', startDate, endDate],
+        queryFn: getNewMembersRevenewData,
+    });
+
+    const { count, members, totalRevenue: totalNewMemberRevenue } = newmemberrevenewdata || {};
+
+
     return (
         <div className="w-full space-y-6">
             <Card className='dark:bg-gray-900 dark:border-none grid grid-cols-1 lg:grid-cols-2 gap-4 p-4'>
                 <div>
                     <Label>Start Date</Label>
                     <Input
+                        value={startDate}
+                        onChange={(e) => setStartDate(new Date(e.target.value).toISOString().split("T")[0])}
                         type='date'
-                        className='dark:bg-gray-800 bg-white'
+                        className='dark:bg-gray-800 bg-white py-6 rounded-sm dark:border-none'
                     />
                 </div>
                 <div>
                     <Label>End Date</Label>
                     <Input
+                        value={endDate}
+                        onChange={(e) => setEndDate(new Date(e.target.value).toISOString().split("T")[0])}
                         type='date'
-                        className='dark:bg-gray-800 bg-white'
+                        className='dark:bg-gray-800 bg-white py-6 rounded-sm dark:border-none'
                     />
                 </div>
             </Card>
@@ -70,7 +113,7 @@ const RevenewDashboard = () => {
                                     </h3>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            NPR 500,000
+                                            {totalNewMemberRevenue ? totalNewMemberRevenue : 'N/A'}
                                         </span>
                                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                                     </div>
@@ -184,7 +227,7 @@ const RevenewDashboard = () => {
 
                 <div className="mt-8">
                     <TabsContent value="newadmissionrenewal" className="mt-0">
-                        <NewMemberRevenew />
+                        <NewMemberRevenew data={newmemberrevenewdata} isLoading={isNewMemberDataLoading} />
                     </TabsContent>
                     <TabsContent value="membershiprenewal" className="mt-0">
                         <MembershipRenewal />

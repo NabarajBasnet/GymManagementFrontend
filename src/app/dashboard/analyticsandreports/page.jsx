@@ -101,7 +101,7 @@ const AnalyticsAndReports = () => {
                             </TabsList>
                         </div>
 
-                        <div className="p-6 lg:p-8">
+                        <div className="p-4">
                             <TabsContent value="analyticsdashboard" className="mt-0">
                                 <AnalyticsDashboard />
                             </TabsContent>

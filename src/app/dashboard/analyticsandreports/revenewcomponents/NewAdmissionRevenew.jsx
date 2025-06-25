@@ -46,6 +46,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { useQuery } from "@tanstack/react-query"
+import Loader from "@/components/Loader/Loader"
 
 const invoices = [
     {
@@ -93,107 +94,67 @@ const invoices = [
 ]
 
 
-const NewMemberRevenew = () => {
+const NewMemberRevenew = ({ data, isLoading }) => {
 
-
-    const getNewMemberRevenewData = async () => {
-        try {
-            const response = await fetch('http://localhost:3000/api/revenew/new-admission-revenew');
-            const resBody = await response.json();
-            console.log('resbody',resBody);
-            return resBody;
-        } catch (error) {
-            console.log("Error: ", error);
-        };
-    };
-
-    const { data, isLoading } = useQuery({
-        queryKey: ['revenewdata'],
-        queryFn: getNewMemberRevenewData
-    });
-
-    console.log("Data: ", data);
+    const { count, members, totalRevenue } = data?.data || {};
+    console.log(data)
+    console.log('Members: ', members);
 
     return (
         <div className="w-full">
             <div className="w-full md:flex">
                 <div className="w-full">
-                    <Table>
-                        <TableCaption>A list of your recent invoices.</TableCaption>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="w-[100px]">Invoice</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Method</TableHead>
-                                <TableHead className="text-right">Amount</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {invoices.map((invoice) => (
-                                <TableRow key={invoice.invoice}>
-                                    <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                                    <TableCell>{invoice.paymentStatus}</TableCell>
-                                    <TableCell>{invoice.paymentMethod}</TableCell>
-                                    <TableCell className="text-right">{invoice.totalAmount}</TableCell>
+                    {isLoading ? (
+                        <Loader />
+                    ) : (
+                        <Table>
+                            <TableCaption>A list of new members.</TableCaption>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="">Id</TableHead>
+                                    <TableHead>Full Name</TableHead>
+                                    <TableHead>Email</TableHead>
+                                    <TableHead>Payment Date</TableHead>
+                                    <TableHead>Membership</TableHead>
+                                    <TableHead>Discount</TableHead>
+                                    <TableHead>Total Paid</TableHead>
+                                    <TableHead>Payment Method</TableHead>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                        <TableFooter>
-                            <TableRow>
-                                <TableCell colSpan={3}>Total</TableCell>
-                                <TableCell className="text-right">$2,500.00</TableCell>
-                            </TableRow>
-                        </TableFooter>
-                    </Table>
-                </div>
-
-                <div>
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Line Chart</CardTitle>
-                            <CardDescription>January - June 2024</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <ChartContainer config={chartConfig}>
-                                <LineChart
-                                    accessibilityLayer
-                                    data={chartData}
-                                    margin={{
-                                        left: 12,
-                                        right: 12,
-                                    }}
-                                >
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis
-                                        dataKey="month"
-                                        tickLine={false}
-                                        axisLine={false}
-                                        tickMargin={8}
-                                        tickFormatter={(value) => value.slice(0, 3)}
-                                    />
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent hideLabel />}
-                                    />
-                                    <Line
-                                        dataKey="desktop"
-                                        type="natural"
-                                        stroke="var(--color-desktop)"
-                                        strokeWidth={2}
-                                        dot={false}
-                                    />
-                                </LineChart>
-                            </ChartContainer>
-                        </CardContent>
-                        <CardFooter className="flex-col items-start gap-2 text-sm">
-                            <div className="flex gap-2 leading-none font-medium">
-                                Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                            </div>
-                            <div className="text-muted-foreground leading-none">
-                                Showing total visitors for the last 6 months
-                            </div>
-                        </CardFooter>
-                    </Card>
+                            </TableHeader>
+                            <TableBody>
+                                {Array.isArray(data?.members) && data?.members?.length >= 1 ? (
+                                    <>
+                                        {data?.members?.map((member) => (
+                                            <TableRow key={member?._id}>
+                                                <TableCell className="font-medium">{member?._id}</TableCell>
+                                                <TableCell className="font-medium">{member?.fullName}</TableCell>
+                                                <TableCell className="font-medium">{member?.email}</TableCell>
+                                                <TableCell className="font-medium">{new Date(member?.membershipRenewDate).toISOString().split('T')[0]}</TableCell>
+                                                <TableCell className="font-medium">{member?.membership}</TableCell>
+                                                <TableCell>{member?.discountAmmount}</TableCell>
+                                                <TableCell>{member?.paidAmmount}</TableCell>
+                                                <TableCell className="text-right">{member?.paymentMethod}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        <TableRow>
+                                            <TableCell colSpan={4} className="text-center text-gray-500">
+                                                No members found.
+                                            </TableCell>
+                                        </TableRow>
+                                    </>
+                                )}
+                            </TableBody>
+                            <TableFooter>
+                                <TableRow>
+                                    <TableCell colSpan={3}>Total</TableCell>
+                                    <TableCell className="text-right">$2,500.00</TableCell>
+                                </TableRow>
+                            </TableFooter>
+                        </Table>
+                    )}
                 </div>
             </div>
         </div>
