@@ -22,9 +22,27 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { useQuery } from "@tanstack/react-query"
+import { toast } from "sonner"
 
 const NewMemberRevenue = ({ data, isLoading }) => {
     const { count, members, totalRevenue } = data?.data || {};
+
+    // Fetch all membership plans upfront
+    const { data: membershipPlans, isLoading: isLoadingPlans } = useQuery({
+        queryKey: ['membershipPlans'],
+        queryFn: async () => {
+            try {
+                const response = await fetch('http://localhost:3000/api/membershipplans');
+                if (!response.ok) throw new Error('Failed to fetch plans');
+                const resbody = await response.json();
+                return resbody?.membershipPlans;
+            } catch (error) {
+                toast.error(error.message || 'Failed to load membership plans');
+                return [];
+            }
+        },
+        staleTime: 60 * 1000
+    });
 
     // Format currency
     const formatCurrency = (amount) => {
@@ -32,6 +50,13 @@ const NewMemberRevenue = ({ data, isLoading }) => {
             style: 'currency',
             currency: 'USD',
         }).format(amount || 0);
+    };
+
+    // Get membership name by ID
+    const getMembershipName = (id) => {
+        if (!id || !membershipPlans) return 'Unknown';
+        const plan = membershipPlans.find(plan => plan._id.toString() === id.toString());
+        return plan?.planName || 'Unknown';
     };
 
     // Enhanced loading skeleton for cards
@@ -52,7 +77,6 @@ const NewMemberRevenue = ({ data, isLoading }) => {
 
     return (
         <div className="w-full space-y-4 p-1">
-
             {/* Enhanced Summary Cards */}
             <div className="grid gap-6 md:grid-cols-3">
                 {isLoading ? (
@@ -101,7 +125,7 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                             </CardHeader>
                             <CardContent className="relative">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                                    {formatCurrency(data?.totalRevenue || 'N/A')}
+                                    {formatCurrency(data?.totalRevenue || 0)}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     From new members
@@ -153,7 +177,7 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                     </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                    {isLoading ? (
+                    {isLoading || isLoadingPlans ? (
                         <div className="p-6 space-y-4">
                             {[...Array(5)].map((_, i) => (
                                 <div key={i} className="flex items-center space-x-4">
@@ -250,7 +274,7 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                                                         variant="outline"
                                                         className="bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950 dark:text-blue-300 dark:border-blue-800 font-medium"
                                                     >
-                                                        {member?.membership}
+                                                        {getMembershipName(member?.membership)}
                                                     </Badge>
                                                 </TableCell>
                                                 <TableCell>
@@ -289,14 +313,14 @@ const NewMemberRevenue = ({ data, isLoading }) => {
                                         </TableRow>
                                     )}
                                 </TableBody>
-                                {Array.isArray(data?.members) && data?.members?.length >= 1 && (
+                                {Array.isArray(members) && members.length >= 1 && (
                                     <TableFooter>
                                         <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600">
                                             <TableCell colSpan={6} className="font-semibold text-gray-700 dark:text-gray-300">
                                                 Total Revenue
                                             </TableCell>
                                             <TableCell colSpan={2} className="text-right font-bold text-lg text-gray-900 dark:text-white">
-                                                {formatCurrency(data?.totalRevenue || 0)}
+                                                {formatCurrency(totalRevenue || 0)}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>
