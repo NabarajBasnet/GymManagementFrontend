@@ -37,7 +37,7 @@ const RevenewDashboard = () => {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
-    const limit = 1;
+    const limit = 6;
 
     const [startDate, setStartDate] = useState(() => {
         const today = new Date();

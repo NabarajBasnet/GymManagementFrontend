@@ -322,7 +322,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                                 Total Revenue
                                             </TableCell>
                                             <TableCell colSpan={2} className="text-right font-bold text-lg text-gray-900 dark:text-white">
-                                                {formatCurrency(totalRevenue || 0)}
+                                                {formatCurrency(data?.totalRevenue || 0)}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>
