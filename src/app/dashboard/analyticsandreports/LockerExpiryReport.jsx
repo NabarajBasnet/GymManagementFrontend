@@ -29,7 +29,7 @@ const LockerExpiryReport = () => {
   // State initialization
 
   const [currentPage, setCurrentPage] = useState(1);
-  const limit = 1;
+  const limit = 10;
 
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();

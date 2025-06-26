@@ -109,7 +109,7 @@ const MemberExpiryReport = () => {
     const matchesSearch =
       member.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.contactNo.includes(searchQuery);
-    
+
     if (selectedStatus === "all") return matchesSearch;
     if (selectedStatus === "Expired") return matchesSearch && member.status === "Inactive";
     if (selectedStatus === "Expiring") {
@@ -120,7 +120,7 @@ const MemberExpiryReport = () => {
       const daysLeft = getDaysLeft(member.membershipExpireDate);
       return matchesSearch && daysLeft > 14 && member.status === "Active";
     }
-    
+
     return matchesSearch;
   });
 
@@ -174,13 +174,13 @@ const MemberExpiryReport = () => {
                   type="date"
                   value={dateRange.from.toISOString().split('T')[0]}
                   onChange={(e) => setDateRange({ ...dateRange, from: new Date(e.target.value) })}
-                  className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                  className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
                 />
                 <span className="text-sm text-muted-foreground">to</span>
                 <Input
                   type="date"
                   value={dateRange.to.toISOString().split('T')[0]}
-                  className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                  className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
                   onChange={(e) => setDateRange({ ...dateRange, to: new Date(e.target.value) })}
                 />
               </div>
@@ -191,14 +191,14 @@ const MemberExpiryReport = () => {
                 value={selectedStatus}
                 onValueChange={setSelectedStatus}
               >
-                <SelectTrigger className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+                <SelectTrigger className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white">
                   <SelectValue placeholder="Select status" />
                 </SelectTrigger>
                 <SelectContent className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                  <SelectItem value="all" className="dark:text-white cursor-pointer">All Status</SelectItem>
-                  <SelectItem value="Expired" className="dark:text-white cursor-pointer">Expired</SelectItem>
-                  <SelectItem value="Expiring" className="dark:text-white cursor-pointer">Expiring</SelectItem>
-                  <SelectItem value="Active" className="dark:text-white cursor-pointer">Active</SelectItem>
+                  <SelectItem value="all" className="dark:text-white cursor-pointer hover:bg-blue-600/30">All Status</SelectItem>
+                  <SelectItem value="Expired" className="dark:text-white cursor-pointer hover:bg-blue-600/30">Expired</SelectItem>
+                  <SelectItem value="Expiring" className="dark:text-white cursor-pointer hover:bg-blue-600/30">Expiring</SelectItem>
+                  <SelectItem value="Active" className="dark:text-white cursor-pointer hover:bg-blue-600/30">Active</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -208,7 +208,7 @@ const MemberExpiryReport = () => {
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Member name or phone"
-                  className="pl-9 bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                  className="pl-9 bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -218,11 +218,11 @@ const MemberExpiryReport = () => {
 
           {/* Export Buttons */}
           <div className="flex justify-end gap-2 mb-4">
-            <Button variant="outline" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+            <Button variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
               Export to PDF
             </Button>
-            <Button variant="outline" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+            <Button variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
               Export to Excel
             </Button>
@@ -286,14 +286,14 @@ const MemberExpiryReport = () => {
               </TableBody>
             </Table>
           </div>
-         
+
           {/* Pagination */}
           <div className="flex items-center justify-end p-4 border-t dark:border-none">
-          <Pagination
-            total={totalPages ? totalPages : 1}
-            page={currentPage}
-            onChange={setCurrentPage}
-          />
+            <Pagination
+              total={totalPages ? totalPages : 1}
+              page={currentPage}
+              onChange={setCurrentPage}
+            />
           </div>
         </Card>
       </div>
