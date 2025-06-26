@@ -32,8 +32,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const RevenewDashboard = () => {
+
+    const { user } = useUser();
+    const loggedInUser = user?.user;
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1)
@@ -116,7 +120,7 @@ const RevenewDashboard = () => {
                                     </h3>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            {totalNewMemberRevenue ? totalNewMemberRevenue : 'N/A'}
+                                            {loggedInUser?.organization?.currency || 'N/A'} {totalNewMemberRevenue ? totalNewMemberRevenue : 'N/A'}
                                         </span>
                                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                                     </div>
@@ -149,7 +153,7 @@ const RevenewDashboard = () => {
                                     </h3>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            NPR 500,000
+                                            {loggedInUser?.organization?.currency || 'N/A'} NPR 500,000
                                         </span>
                                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                                     </div>
@@ -182,7 +186,7 @@ const RevenewDashboard = () => {
                                     </h3>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                                            NPR 500,000
+                                            {loggedInUser?.organization?.currency || 'N/A'} NPR 500,000
                                         </span>
                                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                                     </div>
@@ -215,7 +219,7 @@ const RevenewDashboard = () => {
                                     </h3>
                                     <div className="flex items-baseline space-x-2">
                                         <span className="text-2xl font-bold bg-gradient-to-r from-orange-600 to-yellow-600 dark:from-orange-400 dark:to-yellow-400 bg-clip-text text-transparent">
-                                            NPR 1,500,000
+                                            {loggedInUser?.organization?.currency || 'N/A'} NPR 1,500,000
                                         </span>
                                         <ArrowUpRight className="w-4 h-4 text-green-500" />
                                     </div>
