@@ -18,29 +18,22 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
-import { Calendar } from "@/components/ui/calendar";
-import { CalendarIcon, Download, Search, Send } from "lucide-react";
+import { Download, Search, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { format } from "date-fns";
 
 const LockerExpiryReport = () => {
-  const [dateRange, setDateRange] = useState({
-    from: undefined,
-    to: undefined,
+
+  const [fromDate, setFromDate] = useState(() => {
+    const today = new Date();
+    today.setDate(today.getDate() - 7);
+    return today.toISOString().split("T")[0];
+  })
+  const [toDate, setToDate] = useState(() => {
+    const today = new Date();
+    today.setDate(today.getDate() + 7);
+    return today.toISOString().split("T")[0];
   });
-  const [selectedBranch, setSelectedBranch] = useState("all");
+
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sample data
@@ -147,81 +140,26 @@ const LockerExpiryReport = () => {
           </div>
 
           {/* Filters */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="col-span-1 md:col-span-2 space-y-1">
               <label className="text-sm font-medium leading-none">
                 Date Range
               </label>
               <div className="flex items-center gap-2">
-                <Popover>
-                  <PopoverTrigger asChild className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.from ? (
-                        format(dateRange.from, "PPP")
-                      ) : (
-                        <span>From</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.from}
-                      onSelect={(date) =>
-                        setDateRange({ ...dateRange, from: date })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Input
+                  type='date'
+                  value={new Date(fromDate).toISOString().split("T")[0]}
+                  onChange={(e) => setFromDate(new Date(e.target.value).toISOString().split("T")[0])}
+                  className='py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none'
+                />
                 <span className="text-sm text-muted-foreground">to</span>
-                <Popover>
-                  <PopoverTrigger asChild className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                    <Button
-                      variant="outline"
-                      className="w-full justify-start text-left font-normal"
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {dateRange.to ? (
-                        format(dateRange.to, "PPP")
-                      ) : (
-                        <span>To</span>
-                      )}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dateRange.to}
-                      onSelect={(date) =>
-                        setDateRange({ ...dateRange, to: date })
-                      }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                <Input
+                  type='date'
+                  value={new Date(toDate).toISOString().split("T")[0]}
+                  onChange={(e) => setToDate(new Date(e.target.value).toISOString().split("T")[0])}
+                  className='py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none'
+                />
               </div>
-            </div>
-            <div className="space-y-1">
-              <label className="text-sm font-medium leading-none">Branch</label>
-              <Select
-                value={selectedBranch}
-                onValueChange={setSelectedBranch}
-              >
-                <SelectTrigger className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                  <SelectValue placeholder="Select branch" />
-                </SelectTrigger>
-                <SelectContent className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                  <SelectItem value="all" className="dark:text-white cursor-pointer">All Branches</SelectItem>
-                  <SelectItem value="downtown" className="dark:text-white cursor-pointer">Downtown</SelectItem>
-                  <SelectItem value="uptown" className="dark:text-white cursor-pointer">Uptown</SelectItem>
-                  <SelectItem value="westside" className="dark:text-white cursor-pointer">Westside</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
             <div className="space-y-1">
               <label className="text-sm font-medium leading-none">Search</label>
@@ -229,7 +167,7 @@ const LockerExpiryReport = () => {
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   placeholder="Locker number or member"
-                  className="pl-9 bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+                  className="pl-9 py-6 bg-white rounded-sm dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -239,11 +177,11 @@ const LockerExpiryReport = () => {
 
           {/* Export Buttons */}
           <div className="flex justify-end gap-2 mb-4">
-            <Button variant="outline" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+            <Button variant="outline" className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
               Export to PDF
             </Button>
-            <Button variant="outline" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+            <Button variant="outline" className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
               Export to Excel
             </Button>

@@ -9,12 +9,7 @@ import {
 } from "@/components/ui/tabs";
 import {
     Card,
-    CardAction,
     CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
 } from "@/components/ui/card";
 import {
     UserPlus,
@@ -27,7 +22,6 @@ import {
 import NewMemberRevenew from "./revenewcomponents/NewAdmissionRevenew";
 import MembershipRenewal from "./revenewcomponents/MembershipRenewal";
 import LockerRevenew from "./revenewcomponents/LockerRevenew";
-import TotalRevenew from "./revenewcomponents/TotalRevenew";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
