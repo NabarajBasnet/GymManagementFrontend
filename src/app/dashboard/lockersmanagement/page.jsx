@@ -287,7 +287,7 @@ const Lockers = () => {
     };
 
     return (
-        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-7 px-4">
+        <div className="w-full bg-gray-100 dark:bg-gradient-to-br from-gray-800 via-slate-700 to-neutral-800 py-5 px-4">
             <Breadcrumb>
                 <BreadcrumbList>
                     <BreadcrumbItem>
