@@ -1,6 +1,5 @@
 'use client';
 
-import { toast as hotToast } from 'react-hot-toast';
 import { toast as sonnerToast } from 'sonner';
 import { LiaHomeSolid } from "react-icons/lia";
 import { RiResetRightFill } from "react-icons/ri";
@@ -105,7 +104,6 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-            hotToast.error(error.message || 'Unexpected error');
             sonnerToast.error(error.message || 'Unexpected error');
             throw error;
         };
@@ -129,7 +127,6 @@ const Lockers = () => {
             return responseBody;
         } catch (error) {
             console.log("Error: ", error);
-            hotToast.error(error.message || 'Unexpected error');
             sonnerToast.error(error.message || 'Unexpected error');
             throw error;
         };
@@ -212,7 +209,6 @@ const Lockers = () => {
             const responseBody = await response.json();
 
             if (response.ok) {
-                hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
                 setLockerFormState(false);
                 const updatedLockers = await getAllLockers();
@@ -222,14 +218,12 @@ const Lockers = () => {
                     exact: true
                 });
             } else {
-                hotToast.error(responseBody.message);
                 sonnerToast.error(responseBody.message);
                 setLockerFormState(false);
             };
 
         } catch (error) {
             console.log("Error: ", error);
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
         }
     };
@@ -255,7 +249,6 @@ const Lockers = () => {
             }
             return responseBody;
         } catch (error) {
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
             console.log('Error: ', error);
         }
@@ -272,7 +265,6 @@ const Lockers = () => {
                 const updatedLockers = await getAllLockers();
                 setLockers(updatedLockers.lockers);
                 setLockerFormState(false);
-                hotToast.success(responseBody.message);
                 sonnerToast.success(responseBody.message);
                 queryClient.invalidateQueries({
                     queryKey: ['lockers'],
@@ -280,7 +272,6 @@ const Lockers = () => {
                 });
             }
         } catch (error) {
-            hotToast.error(error.message);
             sonnerToast.error(error.message);
             console.log("Error: ", error);
         }
