@@ -1,5 +1,7 @@
 "use client";
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import { TbLoader2 } from "react-icons/tb";
 import { useReactToPrint } from 'react-to-print';
 import { useState, useRef } from "react";
@@ -167,6 +169,48 @@ const MemberExpiryReport = () => {
     }, 100);
   };
 
+  // Export table to excel
+  const handleOnExportExcel = () => {
+    // Check if there's data to export
+    if (!filteredMemberData || filteredMemberData.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+
+    try {
+      // Prepare the data for Excel
+      const excelData = filteredMemberData.map(member => ({
+        'Member Name': member.fullName,
+        'Contact Number': member.contactNo,
+        'Membership Plan': member.membershipType,
+        'Start Date': formatDate(member.membershipDate),
+        'Expiry Date': formatDate(member.membershipExpireDate),
+        'Days Left': getDaysLeft(member.membershipExpireDate),
+        'Status': member.status === "Inactive" ? "Expired" :
+          getDaysLeft(member.membershipExpireDate) <= 14 ? "Expiring Soon" : "Active"
+      }));
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Member Expiry Report");
+
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+      // Save the file
+      saveAs(blob, `Member_Expiry_Report_${new Date().toISOString().split('T')[0]}.xlsx`);
+
+      toast.success('Excel file exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export Excel file');
+    }
+  };
+
   return (
     <div className="w-full bg-transparent">
       <div className="bg-transparent rounded-lg space-y-4 border-none dark:text-white">
@@ -274,7 +318,11 @@ const MemberExpiryReport = () => {
               )}
               {isGeneratingPDF ? 'Generating...' : 'Export to PDF'}
             </Button>
-            <Button variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
+            <Button
+              onClick={() => {
+                handleOnExportExcel()
+              }}
+              variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
               Export to Excel
             </Button>
