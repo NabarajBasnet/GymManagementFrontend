@@ -2,7 +2,7 @@
 
 import Pagination from "@/components/ui/CustomPagination";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -20,13 +20,17 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
-import { Download, Search, Send } from "lucide-react";
+import { Download, Search, Send, Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "@/components/Loader/Loader";
+import { useReactToPrint } from "react-to-print";
 
 const LockerExpiryReport = () => {
   // State initialization
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const [refPrint, setRefPrnt] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(1);
   const limit = 10;
@@ -43,6 +47,23 @@ const LockerExpiryReport = () => {
   });
   const [searchQuery, setSearchQuery] = useState("");
 
+  // Save in PDF
+  const generatePDF = useReactToPrint({
+    contentRef: { current: refPrint },
+    documentTitle: "Locker Expiry List",
+    onAfterPrint: () => {
+      toast.success('Locker expiry list saved in PDF');
+    }
+  });
+
+  const handleGeneratePDF = async () => {
+    try {
+      setIsGeneratingPDF(true);
+      generatePDF();
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
   // Helper functions
   const calculateDaysLeft = (expireDate) => {
     if (!expireDate) return Infinity;
@@ -215,11 +236,22 @@ const LockerExpiryReport = () => {
               {/* Export Buttons */}
               <div className="flex justify-end gap-2 mb-4">
                 <Button
+                  onClick={handleGeneratePDF}
                   variant="outline"
-                  className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
+                  className={`bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white flex items-center justify-center`}
+                  disabled={isGeneratingPDF}
                 >
-                  <Download className="mr-2 h-4 w-4" />
-                  Export to PDF
+                  {isGeneratingPDF ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Export to PDF
+                    </>
+                  )}
                 </Button>
                 <Button
                   variant="outline"
@@ -231,7 +263,7 @@ const LockerExpiryReport = () => {
               </div>
 
               {/* Data Table */}
-              <div className="rounded-md border">
+              <div className="rounded-md border" ref={setRefPrnt}>
                 <Table className="rounded-lg dark:border-none shadow-md dark:text-white">
                   <TableHeader className="dark:border-none">
                     <TableRow className="dark:border-none">
