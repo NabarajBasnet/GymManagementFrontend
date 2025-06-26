@@ -1,6 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { TbLoader2 } from "react-icons/tb";
+import { useReactToPrint } from 'react-to-print';
+import { useState, useRef } from "react";
 import {
   Card,
   CardHeader,
@@ -29,8 +31,13 @@ import { CalendarIcon, Download, Search, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/ui/CustomPagination";
+import { toast } from 'sonner';
 
 const MemberExpiryReport = () => {
+
+  const componentPDF = useRef(null);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
   const [dateRange, setDateRange] = useState({
     from: new Date(new Date().setDate(new Date().getDate() - 7)),
     to: new Date(new Date().setDate(new Date().getDate() + 7)),
@@ -123,6 +130,42 @@ const MemberExpiryReport = () => {
 
     return matchesSearch;
   });
+
+  // Initialize useReactToPrint hook
+  const handlePrint = useReactToPrint({
+    contentRef: componentPDF,
+    documentTitle: "Members expiry list",
+    onAfterPrint: () => {
+      setIsGeneratingPDF(false);
+      toast.success('Expiry list saved in PDF');
+    },
+    onPrintError: (error) => {
+      setIsGeneratingPDF(false);
+      console.error('Print error:', error);
+      toast.error('Failed to generate PDF');
+    }
+  });
+
+  const handleGeneratePDF = () => {
+    // Check if there's data to print
+    if (!filteredMemberData || filteredMemberData.length === 0) {
+      toast.error('No data available to print');
+      return;
+    }
+
+    // Check if ref is properly attached
+    if (!componentPDF.current) {
+      toast.error('Print component not ready. Please try again.');
+      return;
+    }
+
+    setIsGeneratingPDF(true);
+
+    // Add a small delay to ensure DOM is ready
+    setTimeout(() => {
+      handlePrint();
+    }, 100);
+  };
 
   return (
     <div className="w-full bg-transparent">
@@ -218,9 +261,18 @@ const MemberExpiryReport = () => {
 
           {/* Export Buttons */}
           <div className="flex justify-end gap-2 mb-4">
-            <Button variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
-              <Download className="mr-2 h-4 w-4" />
-              Export to PDF
+            <Button
+              onClick={handleGeneratePDF}
+              disabled={isGeneratingPDF || isLoading}
+              variant="outline"
+              className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white"
+            >
+              {isGeneratingPDF ? (
+                <TbLoader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Download className="mr-2 h-4 w-4" />
+              )}
+              {isGeneratingPDF ? 'Generating...' : 'Export to PDF'}
             </Button>
             <Button variant="outline" className="bg-white rounded-sm dark:border-none shadow-sm py-6 dark:bg-gray-900 dark:text-white">
               <Download className="mr-2 h-4 w-4" />
@@ -228,63 +280,75 @@ const MemberExpiryReport = () => {
             </Button>
           </div>
 
-          {/* Data Table */}
+          {/* Data Table - Wrap the table in a div with the ref */}
           <div className="rounded-md border">
-            <Table className="rounded-lg dark:border-none shadow-md dark:text-white">
-              <TableHeader className="dark:border-none">
-                <TableRow className="dark:border-none">
-                  <TableHead>Member Name</TableHead>
-                  <TableHead>Contact Number</TableHead>
-                  <TableHead>Membership Plan</TableHead>
-                  <TableHead>Start Date</TableHead>
-                  <TableHead>Expiry Date</TableHead>
-                  <TableHead>Days Left</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody className="dark:border-none">
-                {isLoading ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center">
-                      Loading...
-                    </TableCell>
+            <div ref={componentPDF}>
+              {/* Add header for PDF */}
+              <div className="print-only" style={{ display: 'none' }}>
+                <h2 style={{ textAlign: 'center', marginBottom: '20px', fontSize: '18px', fontWeight: 'bold' }}>
+                  Member Expiry Report
+                </h2>
+                <p style={{ textAlign: 'center', marginBottom: '20px', fontSize: '14px' }}>
+                  Generated on: {new Date().toLocaleDateString()}
+                </p>
+              </div>
+
+              <Table className="rounded-lg dark:border-none shadow-md dark:text-white">
+                <TableHeader className="dark:border-none">
+                  <TableRow className="dark:border-none">
+                    <TableHead>Member Name</TableHead>
+                    <TableHead>Contact Number</TableHead>
+                    <TableHead>Membership Plan</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>Expiry Date</TableHead>
+                    <TableHead>Days Left</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right actions-column">Actions</TableHead>
                   </TableRow>
-                ) : filteredMemberData.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={8} className="text-center">
-                      No members found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  filteredMemberData.map((member) => (
-                    <TableRow key={member._id} className="dark:border-none">
-                      <TableCell className="font-medium">{member.fullName}</TableCell>
-                      <TableCell>{member.contactNo}</TableCell>
-                      <TableCell>{member.membershipType}</TableCell>
-                      <TableCell>{formatDate(member.membershipDate)}</TableCell>
-                      <TableCell>{formatDate(member.membershipExpireDate)}</TableCell>
-                      <TableCell>
-                        {getDaysLeft(member.membershipExpireDate)}
-                      </TableCell>
-                      <TableCell>
-                        {getStatusBadge(member.status, member.membershipExpireDate)}
-                      </TableCell>
-                      <TableCell className="text-right dark:border-none">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleSendReminder(member._id)}
-                        >
-                          <Send className="mr-2 h-4 w-4" />
-                          Remind
-                        </Button>
+                </TableHeader>
+                <TableBody className="dark:border-none">
+                  {isLoading ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center">
+                        Loading...
                       </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+                  ) : filteredMemberData.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} className="text-center">
+                        No members found
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredMemberData.map((member) => (
+                      <TableRow key={member._id} className="dark:border-none">
+                        <TableCell className="font-medium">{member.fullName}</TableCell>
+                        <TableCell>{member.contactNo}</TableCell>
+                        <TableCell>{member.membershipType}</TableCell>
+                        <TableCell>{formatDate(member.membershipDate)}</TableCell>
+                        <TableCell>{formatDate(member.membershipExpireDate)}</TableCell>
+                        <TableCell>
+                          {getDaysLeft(member.membershipExpireDate)}
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(member.status, member.membershipExpireDate)}
+                        </TableCell>
+                        <TableCell className="text-right dark:border-none actions-column">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleSendReminder(member._id)}
+                          >
+                            <Send className="mr-2 h-4 w-4" />
+                            Remind
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
           </div>
 
           {/* Pagination */}
@@ -297,6 +361,24 @@ const MemberExpiryReport = () => {
           </div>
         </Card>
       </div>
+
+      {/* Add print-specific styles */}
+      <style jsx global>{`
+        @media print {
+          .print-only {
+            display: block !important;
+          }
+          .actions-column {
+            display: none !important;
+          }
+          body {
+            font-size: 12px;
+          }
+          table {
+            font-size: 10px;
+          }
+        }
+      `}</style>
     </div>
   );
 };

@@ -86,6 +86,7 @@
     "react-resizable-panels": "^2.1.4",
     "react-select": "^5.10.1",
     "react-time-picker": "^7.0.0",
+    "react-to-print": "^3.1.0",
     "recharts": "^2.15.3",
     "sonner": "^2.0.3",
     "tailwind-merge": "^2.5.2",
