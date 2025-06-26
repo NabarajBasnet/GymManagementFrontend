@@ -1,7 +1,7 @@
 "use client"
 
-import Pagination from "@/components/ui/CustomPagination"
-import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash } from "lucide-react"
+import Pagination from "@/components/ui/CustomPagination";
+import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -9,7 +9,7 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 import {
     Table,
     TableBody,
@@ -19,15 +19,18 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Badge } from "@/components/ui/badge"
-import { useQuery } from "@tanstack/react-query"
-import { toast } from "sonner"
-import { useState } from "react"
+} from "@/components/ui/table";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
 const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalPages, totalMembers }) => {
-    const { count, members, totalRevenue } = data?.data || {};
+
+    const user = useUser();
+    const loggedInUser = user?.user;
 
     // Fetch all membership plans upfront
     const { data: membershipPlans, isLoading: isLoadingPlans } = useQuery({
@@ -127,7 +130,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                             </CardHeader>
                             <CardContent className="relative">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                                    {formatCurrency(data?.totalRevenue || 0)}
+                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     From new members
@@ -282,14 +285,14 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                                 <TableCell>
                                                     {member?.discountAmmount ? (
                                                         <span className="text-red-600 dark:text-red-400 font-medium">
-                                                            -{formatCurrency(member.discountAmmount)}
+                                                            {loggedInUser?.user?.organization?.currency || 'N/A'} -{(member.discountAmmount)}
                                                         </span>
                                                     ) : (
                                                         <span className="text-gray-600 dark:text-gray-300 text-sm">Null</span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-bold text-gray-900 dark:text-white">
-                                                    {formatCurrency(member?.paidAmmount)}
+                                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(member?.paidAmmount)}
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <Badge
@@ -322,7 +325,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                                 Total Revenue
                                             </TableCell>
                                             <TableCell colSpan={2} className="text-right font-bold text-lg text-gray-900 dark:text-white">
-                                                {formatCurrency(data?.totalRevenue || 0)}
+                                                {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>
