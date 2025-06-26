@@ -1,7 +1,7 @@
 "use client"
 
 import Pagination from "@/components/ui/CustomPagination";
-import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash } from "lucide-react";
+import { Users, DollarSign, Calendar, CreditCard, Mail, User, Hash, Clock } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -13,7 +13,6 @@ import {
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -24,12 +23,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useState } from "react";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
-const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalPages, totalMembers }) => {
-
-    const user = useUser();
+const NewMemberRevenue = ({
+    data,
+    isLoading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalMembers
+}) => {
+    const { user } = useUser();
     const loggedInUser = user?.user;
 
     // Fetch all membership plans upfront
@@ -49,19 +53,20 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
         staleTime: 60 * 1000
     });
 
-    // Format currency
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(amount || 0);
-    };
-
     // Get membership name by ID
     const getMembershipName = (id) => {
         if (!id || !membershipPlans) return 'Unknown';
         const plan = membershipPlans.find(plan => plan._id.toString() === id.toString());
         return plan?.planName || 'Unknown';
+    };
+
+    // Get latest member
+    const getLatestMember = () => {
+        if (!data?.members || data.members.length === 0) return 'No new members';
+        const latest = data.members.reduce((prev, current) =>
+            new Date(prev.membershipRenewDate) > new Date(current.membershipRenewDate) ? prev : current
+        );
+        return latest.fullName;
     };
 
     // Enhanced loading skeleton for cards
@@ -130,7 +135,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                             </CardHeader>
                             <CardContent className="relative">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
+                                    {loggedInUser?.organization?.currency || 'N/A'} {data?.totalRevenue || 0}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     From new members
@@ -138,25 +143,25 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                             </CardContent>
                         </Card>
 
-                        {/* Growth Card */}
+                        {/* Latest Member Card */}
                         <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <CardHeader className="pb-3 relative">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
-                                        Growth Rate
+                                        Latest Member
                                     </CardTitle>
                                     <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                                        <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                        <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                                     </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="relative">
-                                <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">
-                                    +12.5%
+                                <div className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate">
+                                    {getLatestMember()}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                                    vs last month
+                                    Most recent signup
                                 </div>
                             </CardContent>
                         </Card>
@@ -242,7 +247,6 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                             <TableRow
                                                 key={member?._id}
                                                 className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors duration-200 border-b border-gray-100 dark:border-gray-700"
-                                                style={{ animationDelay: `${index * 50}ms` }}
                                             >
                                                 <TableCell className="font-mono text-sm text-gray-600 dark:text-gray-400">
                                                     <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs">
@@ -285,14 +289,14 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                                 <TableCell>
                                                     {member?.discountAmmount ? (
                                                         <span className="text-red-600 dark:text-red-400 font-medium">
-                                                            {loggedInUser?.user?.organization?.currency || 'N/A'} -{(member.discountAmmount)}
+                                                            {loggedInUser?.organization?.currency || 'N/A'} -{member.discountAmmount}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-gray-600 dark:text-gray-300 text-sm">Null</span>
+                                                        <span className="text-gray-600 dark:text-gray-300 text-sm">None</span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-bold text-gray-900 dark:text-white">
-                                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(member?.paidAmmount)}
+                                                    {loggedInUser?.organization?.currency || 'N/A'} {member?.paidAmmount}
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <Badge
@@ -325,7 +329,7 @@ const NewMemberRevenue = ({ data, isLoading, currentPage, setCurrentPage, totalP
                                                 Total Revenue
                                             </TableCell>
                                             <TableCell colSpan={2} className="text-right font-bold text-lg text-gray-900 dark:text-white">
-                                                {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
+                                                {loggedInUser?.organization?.currency || 'N/A'} {data?.totalRevenue || 0}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>
