@@ -289,9 +289,6 @@ const RevenewDashboard = () => {
                     <TabsContent value="lockerrenewal" className="mt-0">
                         <LockerRevenew data={revenueByLockers} isLoading={isLockersLoading} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalLockerPages} totalLockers={totalLockers} />
                     </TabsContent>
-                    <TabsContent value="totalrevenew" className="mt-0">
-                        <TotalRevenew />
-                    </TabsContent>
                 </div>
             </Tabs>
         </div>

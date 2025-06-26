@@ -66,7 +66,7 @@ const NewMemberGrowthChart = () => {
   const dateRange = `January - December ${year}`
 
   return (
-    <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
+    <Card className="bg-white rounded-2xl dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
       <CardHeader>
         <CardTitle>New Member Growth</CardTitle>
         <CardDescription>{dateRange}</CardDescription>
