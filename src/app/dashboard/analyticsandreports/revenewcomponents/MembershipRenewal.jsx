@@ -1,7 +1,7 @@
 "use client"
 
 import Pagination from "@/components/ui/CustomPagination";
-import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash } from "lucide-react";
+import { TrendingUp, Users, DollarSign, Calendar, CreditCard, Mail, User, Hash, Clock } from "lucide-react";
 import {
     Card,
     CardContent,
@@ -13,7 +13,6 @@ import {
 import {
     Table,
     TableBody,
-    TableCaption,
     TableCell,
     TableFooter,
     TableHead,
@@ -24,15 +23,20 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { useState } from "react";
 import { useUser } from "@/components/Providers/LoggedInUserProvider";
 
-const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, totalPages, totalMembers }) => {
-
-    const user = useUser();
+const MembershipRenewal = ({
+    data,
+    isLoading,
+    currentPage,
+    setCurrentPage,
+    totalPages,
+    totalMembers
+}) => {
+    const { user } = useUser();
     const loggedInUser = user?.user;
 
-    // Fetch all membership plans upfront
+    // Fetch all membership plans
     const { data: membershipPlans, isLoading: isLoadingPlans } = useQuery({
         queryKey: ['membershipPlans'],
         queryFn: async () => {
@@ -49,14 +53,6 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
         staleTime: 60 * 1000
     });
 
-    // Format currency
-    const formatCurrency = (amount) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-        }).format(amount || 0);
-    };
-
     // Get membership name by ID
     const getMembershipName = (id) => {
         if (!id || !membershipPlans) return 'Unknown';
@@ -64,7 +60,16 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
         return plan?.planName || 'Unknown';
     };
 
-    // Enhanced loading skeleton for cards
+    // Get latest member
+    const getLatestMember = () => {
+        if (!data?.members || data.members.length === 0) return 'No new members';
+        const latest = data.members.reduce((prev, current) =>
+            new Date(prev.membershipRenewDate) > new Date(current.membershipRenewDate) ? prev : current
+        );
+        return latest.fullName;
+    };
+
+    // Loading skeleton for cards
     const CardSkeleton = () => (
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-white to-gray-50/50 dark:from-gray-900 dark:to-gray-800/50 shadow-lg backdrop-blur-sm">
             <CardHeader className="pb-3">
@@ -82,7 +87,7 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
 
     return (
         <div className="w-full space-y-4 p-1">
-            {/* Enhanced Summary Cards */}
+            {/* Summary Cards */}
             <div className="grid gap-6 md:grid-cols-3">
                 {isLoading ? (
                     <>
@@ -130,7 +135,7 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                             </CardHeader>
                             <CardContent className="relative">
                                 <div className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
+                                    {loggedInUser?.organization?.currency || 'N/A'} {data?.totalRevenue || 0}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
                                     From new members
@@ -138,25 +143,25 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                             </CardContent>
                         </Card>
 
-                        {/* Growth Card */}
+                        {/* Latest Member Card */}
                         <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             <CardHeader className="pb-3 relative">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
-                                        Growth Rate
+                                        Latest Member
                                     </CardTitle>
                                     <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg group-hover:scale-110 transition-transform duration-300">
-                                        <TrendingUp className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                                        <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                                     </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="relative">
-                                <div className="text-3xl font-bold text-emerald-600 dark:text-emerald-400 mb-1">
-                                    +12.5%
+                                <div className="text-xl font-bold text-gray-900 dark:text-white mb-1 truncate">
+                                    {getLatestMember()}
                                 </div>
                                 <div className="text-xs text-gray-500 dark:text-gray-400">
-                                    vs last month
+                                    Most recent signup
                                 </div>
                             </CardContent>
                         </Card>
@@ -164,7 +169,7 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                 )}
             </div>
 
-            {/* Enhanced Members Table */}
+            {/* Members Table */}
             <Card className="border-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm overflow-hidden">
                 <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 border-b border-gray-200 dark:border-gray-600">
                     <div className="flex items-center gap-3">
@@ -238,11 +243,10 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                                 </TableHeader>
                                 <TableBody>
                                     {Array.isArray(data?.members) && data?.members?.length >= 1 ? (
-                                        data?.members?.map((member, index) => (
+                                        data?.members?.map((member) => (
                                             <TableRow
                                                 key={member?._id}
-                                                className="group hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors duration-200 border-b border-gray-100 dark:border-gray-700"
-                                                style={{ animationDelay: `${index * 50}ms` }}
+                                                className="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 border-b border-gray-100 dark:border-gray-700"
                                             >
                                                 <TableCell className="font-mono text-sm text-gray-600 dark:text-gray-400">
                                                     <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded-md text-xs">
@@ -285,14 +289,14 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                                                 <TableCell>
                                                     {member?.discountAmmount ? (
                                                         <span className="text-red-600 dark:text-red-400 font-medium">
-                                                            {loggedInUser?.user?.organization?.currency || 'N/A'} -{(member.discountAmmount)}
+                                                            {loggedInUser?.organization?.currency || 'N/A'} -{member.discountAmmount}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-gray-600 dark:text-gray-300 text-sm">Null</span>
+                                                        <span className="text-gray-600 dark:text-gray-300 text-sm">None</span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="font-bold text-gray-900 dark:text-white">
-                                                    {loggedInUser?.user?.organization?.currency || 'N/A'} {(member?.paidAmmount)}
+                                                    {loggedInUser?.organization?.currency || 'N/A'} {member?.paidAmmount}
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <Badge
@@ -320,12 +324,12 @@ const MembershipRenewal = ({ data, isLoading, currentPage, setCurrentPage, total
                                 </TableBody>
                                 {Array.isArray(data?.members) && data?.members.length >= 1 && (
                                     <TableFooter>
-                                        <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600">
+                                        <TableRow className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
                                             <TableCell colSpan={6} className="font-semibold text-gray-700 dark:text-gray-300">
                                                 Total Revenue
                                             </TableCell>
                                             <TableCell colSpan={2} className="text-right font-bold text-lg text-gray-900 dark:text-white">
-                                                {loggedInUser?.user?.organization?.currency || 'N/A'} {(data?.totalRevenue || 0)}
+                                                {loggedInUser?.organization?.currency || 'N/A'} {data?.totalRevenue || 0}
                                             </TableCell>
                                         </TableRow>
                                     </TableFooter>
