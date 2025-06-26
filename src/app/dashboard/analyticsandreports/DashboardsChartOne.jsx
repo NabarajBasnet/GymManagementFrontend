@@ -79,7 +79,7 @@ const NewMemberGrowthChart = () => {
               left: 12,
               right: 12,
             }}
-            width={800} // Increased width to accommodate all 12 months
+            width={800}
             height={300}
           >
             <CartesianGrid vertical={false} />

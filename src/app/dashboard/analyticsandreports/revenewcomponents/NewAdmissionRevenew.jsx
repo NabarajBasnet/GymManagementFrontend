@@ -31,7 +31,6 @@ const NewMemberRevenue = ({
     currentPage,
     setCurrentPage,
     totalPages,
-    totalMembers
 }) => {
     const { user } = useUser();
     const loggedInUser = user?.user;
@@ -41,7 +40,7 @@ const NewMemberRevenue = ({
         queryKey: ['membershipPlans'],
         queryFn: async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/membershipplans');
+                const response = await fetch('http://localhost:3000/api/membershipplans/by-org');
                 if (!response.ok) throw new Error('Failed to fetch plans');
                 const resbody = await response.json();
                 return resbody?.membershipPlans;

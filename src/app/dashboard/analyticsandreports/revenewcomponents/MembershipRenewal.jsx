@@ -31,7 +31,6 @@ const MembershipRenewal = ({
     currentPage,
     setCurrentPage,
     totalPages,
-    totalMembers
 }) => {
     const { user } = useUser();
     const loggedInUser = user?.user;
@@ -41,7 +40,7 @@ const MembershipRenewal = ({
         queryKey: ['membershipPlans'],
         queryFn: async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/membershipplans');
+                const response = await fetch('http://localhost:3000/api/membershipplans/by-org');
                 if (!response.ok) throw new Error('Failed to fetch plans');
                 const resbody = await response.json();
                 return resbody?.membershipPlans;
@@ -103,7 +102,7 @@ const MembershipRenewal = ({
                             <CardHeader className="pb-3 relative">
                                 <div className="flex items-center justify-between">
                                     <CardTitle className="text-sm font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wide">
-                                        New Members
+                                        Membership Renewal
                                     </CardTitle>
                                     <div className="p-2 bg-blue-100 dark:bg-blue-900/50 rounded-lg group-hover:scale-110 transition-transform duration-300">
                                         <Users className="h-4 w-4 text-blue-600 dark:text-blue-400" />
