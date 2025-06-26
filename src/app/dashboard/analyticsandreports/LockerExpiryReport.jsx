@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Card,
@@ -20,92 +21,129 @@ import {
 } from "@/components/ui/table";
 import { Download, Search, Send } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useQuery } from "@tanstack/react-query";
 
 const LockerExpiryReport = () => {
-
+  // State initialization
   const [fromDate, setFromDate] = useState(() => {
     const today = new Date();
     today.setDate(today.getDate() - 7);
     return today.toISOString().split("T")[0];
-  })
+  });
   const [toDate, setToDate] = useState(() => {
     const today = new Date();
     today.setDate(today.getDate() + 7);
     return today.toISOString().split("T")[0];
   });
-
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Sample data
-  const lockerData = [
-    {
-      id: 1,
-      number: "L-101",
-      member: "John Doe",
-      contact: "+1 555-123-4567",
-      startDate: "2023-06-01",
-      expiryDate: "2023-12-01",
-      daysLeft: 5,
-      status: "expiring",
-    },
-    {
-      id: 2,
-      number: "L-205",
-      member: "Sarah Williams",
-      contact: "+1 555-789-0123",
-      startDate: "2023-09-01",
-      expiryDate: "2023-11-15",
-      daysLeft: -3,
-      status: "expired",
-    },
-    {
-      id: 3,
-      number: "L-302",
-      member: "Mike Johnson",
-      contact: "+1 555-456-7890",
-      startDate: "2023-10-01",
-      expiryDate: "2024-01-01",
-      daysLeft: 45,
-      status: "active",
-    },
-    {
-      id: 4,
-      number: "L-410",
-      member: "Emily Chen",
-      contact: "+1 555-321-6547",
-      startDate: "2023-08-15",
-      expiryDate: "2023-12-15",
-      daysLeft: 10,
-      status: "expiring",
-    },
-  ];
+  // Helper functions
+  const calculateDaysLeft = (expireDate) => {
+    if (!expireDate) return Infinity;
+    const today = new Date();
+    const expiry = new Date(expireDate);
+    const diffTime = expiry - today;
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
 
-  const getStatusBadge = (status, daysLeft) => {
-    if (status === "expired" || daysLeft < 0) {
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return date.toLocaleDateString();
+  };
+
+  const getStatusBadge = (expireDate) => {
+    const daysLeft = calculateDaysLeft(expireDate);
+    if (daysLeft < 0) {
       return <Badge variant="destructive">Expired</Badge>;
-    } else if (status === "expiring" || daysLeft <= 14) {
+    } else if (daysLeft <= 14) {
       return <Badge variant="warning">Expiring Soon</Badge>;
     } else {
       return <Badge variant="success">Active</Badge>;
     }
   };
 
+  const calculateSummary = (lockers) => {
+    let expiringSoon = 0;
+    let expired = 0;
+
+    lockers?.forEach((locker) => {
+      const daysLeft = calculateDaysLeft(locker.expireDate);
+      if (daysLeft < 0) {
+        expired++;
+      } else if (daysLeft <= 14) {
+        expiringSoon++;
+      }
+    });
+
+    return { expiringSoon, expired };
+  };
+
+  // Data fetching
+  const getLockersData = async ({ queryKey }) => {
+    const [, fromDate, toDate] = queryKey;
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/reports/lockerexpiryreport?fromDate=${fromDate}&toDate=${toDate}`
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch locker data");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching locker data:", error);
+      toast.error(error.message);
+      return { lockers: [] };
+    }
+  };
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["lockersdata", fromDate, toDate],
+    queryFn: getLockersData,
+  });
+
+  const lockers = data?.lockers || [];
+  const { expiringSoon, expired } = calculateSummary(lockers);
+
+  // Handlers
   const handleSendReminder = (id) => {
     console.log(`Sending reminder for locker ID: ${id}`);
+    toast.success(`Reminder sent for locker ${id}`);
     // Implement actual reminder logic here
   };
 
-  const filteredLockerData = lockerData.filter((locker) => {
-    const matchesSearch =
-      locker.number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      locker.member.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      locker.contact.includes(searchQuery);
-    return matchesSearch;
+  const filteredLockerData = lockers.filter((locker) => {
+    if (!locker) return false;
+
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      locker.lockerNumber?.toString().includes(searchQuery) ||
+      locker.member?.fullName?.toLowerCase().includes(searchLower) ||
+      locker.member?.contactNo?.includes(searchQuery)
+    );
   });
+
+  // Loading and error states
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-red-500">Failed to load locker data</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full">
-      <Card className="bg-white rounded-lg dark:border-none shadow-xl dark:bg-gray-800 dark:text-white">
+      <Card className="bg-white rounded-lg dark:border-none dark:bg-gray-800 dark:text-white">
         <CardHeader>
           <CardTitle>Locker Expiry Report</CardTitle>
           <CardDescription>
@@ -118,7 +156,9 @@ const LockerExpiryReport = () => {
             <Card className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
               <CardHeader className="pb-2">
                 <CardDescription>Expiring Lockers</CardDescription>
-                <CardTitle className="text-2xl text-yellow-600">5</CardTitle>
+                <CardTitle className="text-2xl text-yellow-600">
+                  {expiringSoon}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
@@ -129,7 +169,9 @@ const LockerExpiryReport = () => {
             <Card className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
               <CardHeader className="pb-2">
                 <CardDescription>Expired Lockers</CardDescription>
-                <CardTitle className="text-2xl text-red-600">2</CardTitle>
+                <CardTitle className="text-2xl text-red-600">
+                  {expired}
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-xs text-muted-foreground">
@@ -147,17 +189,17 @@ const LockerExpiryReport = () => {
               </label>
               <div className="flex items-center gap-2">
                 <Input
-                  type='date'
-                  value={new Date(fromDate).toISOString().split("T")[0]}
-                  onChange={(e) => setFromDate(new Date(e.target.value).toISOString().split("T")[0])}
-                  className='py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none'
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none"
                 />
                 <span className="text-sm text-muted-foreground">to</span>
                 <Input
-                  type='date'
-                  value={new Date(toDate).toISOString().split("T")[0]}
-                  onChange={(e) => setToDate(new Date(e.target.value).toISOString().split("T")[0])}
-                  className='py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none'
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="py-6 rounded-sm shadow-sm bg-white dark:bg-gray-900 dark:text-white dark:border-none"
                 />
               </div>
             </div>
@@ -177,11 +219,17 @@ const LockerExpiryReport = () => {
 
           {/* Export Buttons */}
           <div className="flex justify-end gap-2 mb-4">
-            <Button variant="outline" className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white">
+            <Button
+              variant="outline"
+              className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
+            >
               <Download className="mr-2 h-4 w-4" />
               Export to PDF
             </Button>
-            <Button variant="outline" className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white">
+            <Button
+              variant="outline"
+              className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
+            >
               <Download className="mr-2 h-4 w-4" />
               Export to Excel
             </Button>
@@ -203,31 +251,52 @@ const LockerExpiryReport = () => {
                 </TableRow>
               </TableHeader>
               <TableBody className="dark:border-none">
-                {filteredLockerData.map((locker) => (
-                  <TableRow key={locker.id} className="dark:border-none">
-                    <TableCell className="font-medium">{locker.number}</TableCell>
-                    <TableCell>{locker.member}</TableCell>
-                    <TableCell>{locker.contact}</TableCell>
-                    <TableCell>{locker.startDate}</TableCell>
-                    <TableCell>{locker.expiryDate}</TableCell>
-                    <TableCell>
-                      {locker.daysLeft > 0 ? locker.daysLeft : 0}
-                    </TableCell>
-                    <TableCell>
-                      {getStatusBadge(locker.status, locker.daysLeft)}
-                    </TableCell>
-                    <TableCell className="text-right dark:border-none">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleSendReminder(locker.id)}
-                      >
-                        <Send className="mr-2 h-4 w-4" />
-                        Remind
-                      </Button>
+                {filteredLockerData.length > 0 ? (
+                  filteredLockerData.map((locker) => {
+                    const daysLeft = calculateDaysLeft(locker.expireDate);
+                    return (
+                      <TableRow key={locker._id} className="dark:border-none">
+                        <TableCell className="font-medium">
+                          {locker.lockerNumber} {locker.lockerSize && `(${locker.lockerSize})`}
+                        </TableCell>
+                        <TableCell>
+                          {locker.member?.fullName || "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {locker.member?.contactNo || "N/A"}
+                        </TableCell>
+                        <TableCell>
+                          {formatDate(locker.renewDate)}
+                        </TableCell>
+                        <TableCell>
+                          {formatDate(locker.expireDate)}
+                        </TableCell>
+                        <TableCell>
+                          {daysLeft > 0 ? daysLeft : 0}
+                        </TableCell>
+                        <TableCell>
+                          {getStatusBadge(locker.expireDate)}
+                        </TableCell>
+                        <TableCell className="text-right dark:border-none">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleSendReminder(locker._id)}
+                          >
+                            <Send className="mr-2 h-4 w-4" />
+                            Remind
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      No lockers found matching your criteria
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </div>
@@ -236,23 +305,29 @@ const LockerExpiryReport = () => {
           <div className="flex items-center justify-between p-4 border-t dark:border-none">
             <div className="text-sm text-muted-foreground">
               Showing <span className="font-medium">1</span> to{" "}
-              <span className="font-medium">10</span> of{" "}
-              <span className="font-medium">100</span> entries
+              <span className="font-medium">{filteredLockerData.length}</span> of{" "}
+              <span className="font-medium">{lockers.length}</span> entries
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+              >
                 Previous
               </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+              >
                 1
               </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                2
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
-                3
-              </Button>
-              <Button variant="outline" size="sm" className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white">
+              <Button
+                variant="outline"
+                size="sm"
+                className="bg-white rounded-lg dark:border-none shadow-md dark:bg-gray-900 dark:text-white"
+              >
                 Next
               </Button>
             </div>
