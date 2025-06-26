@@ -1,5 +1,7 @@
 "use client";
 
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
 import Pagination from "@/components/ui/CustomPagination";
 import { toast } from "sonner";
 import { useRef, useState } from "react";
@@ -153,6 +155,74 @@ const LockerExpiryReport = () => {
     );
   });
 
+  const handleExportExcel = () => {
+    // Check if there's data to export
+    if (!filteredLockerData || filteredLockerData.length === 0) {
+      toast.error('No data available to export');
+      return;
+    }
+
+    try {
+      // Prepare the data for Excel
+      const excelData = filteredLockerData.map(locker => ({
+        'Locker Number': locker.lockerNumber,
+        'Locker Size': locker.lockerSize || 'N/A',
+        'Member Name': locker.member?.fullName || 'N/A',
+        'Contact Number': locker.member?.contactNo || 'N/A',
+        'Start Date': formatDate(locker.renewDate),
+        'Expiry Date': formatDate(locker.expireDate),
+        'Days Left': calculateDaysLeft(locker.expireDate) > 0
+          ? calculateDaysLeft(locker.expireDate)
+          : 0,
+        'Status': calculateDaysLeft(locker.expireDate) < 0
+          ? 'Expired'
+          : calculateDaysLeft(locker.expireDate) <= 14
+            ? 'Expiring Soon'
+            : 'Active'
+      }));
+
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+
+      // Set column widths
+      worksheet['!cols'] = [
+        { width: 15 }, // Locker Number
+        { width: 15 }, // Locker Size
+        { width: 25 }, // Member Name
+        { width: 15 }, // Contact Number
+        { width: 12 }, // Start Date
+        { width: 12 }, // Expiry Date
+        { width: 10 }, // Days Left
+        { width: 15 }  // Status
+      ];
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Locker Expiry Report");
+
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array'
+      });
+
+      // Create blob and save
+      const blob = new Blob([excelBuffer], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+
+      // Generate filename with current date
+      const today = new Date();
+      const formattedDate = today.toISOString().split('T')[0];
+      saveAs(blob, `Locker_Expiry_Report_${formattedDate}.xlsx`);
+
+      toast.success('Excel file exported successfully');
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Failed to export Excel file');
+    }
+  };
+
   return (
     <div className="w-full">
       <Card className="bg-white rounded-lg dark:border-none dark:bg-gray-800 dark:text-white">
@@ -254,8 +324,10 @@ const LockerExpiryReport = () => {
                   )}
                 </Button>
                 <Button
+                  onClick={handleExportExcel}
                   variant="outline"
                   className="bg-white rounded-sm py-6 dark:border-none shadow-sm dark:bg-gray-900 dark:text-white"
+                  disabled={isLoading || filteredLockerData.length === 0}
                 >
                   <Download className="mr-2 h-4 w-4" />
                   Export to Excel
