@@ -33,9 +33,6 @@ const AnalyticsAndReports = () => {
                                 <h1 className="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-200 bg-clip-text text-transparent">
                                     Reports & Analytics
                                 </h1>
-                                <p className="text-gray-600 dark:text-gray-400 text-sm lg:text-base max-w-2xl">
-                                    Comprehensive insights and detailed reports to help you make data-driven decisions
-                                </p>
                                 {/* Breadcrumb */}
                                 <div className="flex items-center text-sm text-gray-500 dark:text-gray-400">
                                     <span className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer">
@@ -50,16 +47,6 @@ const AnalyticsAndReports = () => {
                                         Reports & Analytics
                                     </span>
                                 </div>
-                            </div>
-                        </div>
-
-                        {/* Quick Stats */}
-                        <div className="flex items-center space-x-4">
-                            <div className="hidden lg:flex items-center space-x-2 px-4 py-2 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                                <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    Last updated: Today
-                                </span>
                             </div>
                         </div>
                     </div>
