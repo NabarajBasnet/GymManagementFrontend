@@ -230,7 +230,7 @@ const MemberTransfer = () => {
             </h1>
           </div>
           <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-            Seamlessly transfer members between branches in your organization with our intuitive transfer system
+            Seamlessly transfer members between branches in your organization
           </p>
         </div>
 

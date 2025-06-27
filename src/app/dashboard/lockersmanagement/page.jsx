@@ -339,7 +339,7 @@ const Lockers = () => {
                 </Breadcrumb>
 
                 {/* Enhanced Card */}
-                <div className="w-full dark:border-none bg-white dark:bg-gray-700 p-6 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+                <div className="w-full dark:border-none bg-white dark:bg-gray-700 p-6 rounded-md shadow-sm border border-gray-100 dark:border-gray-700">
                     <div className="w-full flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <div className="flex items-center gap-3">
                             <div className="p-2 rounded-lg">
@@ -674,7 +674,7 @@ const Lockers = () => {
                     <div className="w-full">
                         {!isLoading && (
                             <div className="max-w-full">
-                                <div className="bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 dark:border-none rounded-xl mt-4 shadow-sm border p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
+                                <div className="bg-white dark:bg-gradient-to-br from-gray-700 to-gray-600 dark:border-none rounded-md mt-4 shadow-sm border p-4 md:p-6 space-y-6 md:space-y-0 md:flex md:gap-6 items-end">
                                     <div className="flex-1">
                                         <Label className="text-sm font-semibold text-gray-600 dark:text-gray-200 mb-2 block">
                                             Locker Number
@@ -795,12 +795,12 @@ const Lockers = () => {
                                                 <div className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300">
                                                     {/* Clean status indicator */}
                                                     <div className={`h-2 ${locker.status === 'Expired'
-                                                            ? 'bg-red-500'
-                                                            : locker.status === 'Booked'
-                                                                ? 'bg-green-500'
-                                                                : locker.status === 'Empty'
-                                                                    ? 'bg-orange-500'
-                                                                    : 'bg-blue-500'
+                                                        ? 'bg-red-500'
+                                                        : locker.status === 'Booked'
+                                                            ? 'bg-green-500'
+                                                            : locker.status === 'Empty'
+                                                                ? 'bg-orange-500'
+                                                                : 'bg-blue-500'
                                                         }`} />
 
                                                     <div className="p-4">
@@ -812,12 +812,12 @@ const Lockers = () => {
                                                                 </h2>
                                                                 <div className="flex items-center mt-1">
                                                                     <div className={`w-2 h-2 rounded-full mr-2 ${locker.status === 'Expired'
-                                                                            ? 'bg-red-500'
-                                                                            : locker.status === 'Booked'
-                                                                                ? 'bg-green-500'
-                                                                                : locker.status === 'Empty'
-                                                                                    ? 'bg-orange-500'
-                                                                                    : 'bg-blue-500'
+                                                                        ? 'bg-red-500'
+                                                                        : locker.status === 'Booked'
+                                                                            ? 'bg-green-500'
+                                                                            : locker.status === 'Empty'
+                                                                                ? 'bg-orange-500'
+                                                                                : 'bg-blue-500'
                                                                         }`} />
                                                                     <span className="text-sm text-gray-600 dark:text-gray-400">
                                                                         {locker.isAssigned ? 'Assigned' : 'Not Assigned'}
@@ -827,12 +827,12 @@ const Lockers = () => {
 
                                                             {/* Status badge */}
                                                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${locker.status === 'Expired'
-                                                                    ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
-                                                                    : locker.status === 'Booked'
-                                                                        ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
-                                                                        : locker.status === 'Empty'
-                                                                            ? 'bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800'
-                                                                            : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
+                                                                ? 'bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800'
+                                                                : locker.status === 'Booked'
+                                                                    ? 'bg-green-50 text-green-700 border border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800'
+                                                                    : locker.status === 'Empty'
+                                                                        ? 'bg-orange-50 text-orange-700 border border-orange-200 dark:bg-orange-900/20 dark:text-orange-300 dark:border-orange-800'
+                                                                        : 'bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800'
                                                                 }`}>
                                                                 {locker.status}
                                                             </span>
@@ -872,12 +872,12 @@ const Lockers = () => {
                                                                 getSingleLockerInfo(locker._id);
                                                             }}
                                                             className={`w-full py-2.5 px-4 rounded-lg font-medium text-white transition-all duration-200 flex items-center justify-center gap-2 ${locker.status === 'Expired'
-                                                                    ? 'bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-200 dark:focus:ring-red-800'
-                                                                    : locker.status === 'Booked'
-                                                                        ? 'bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800'
-                                                                        : locker.status === 'Empty'
-                                                                            ? 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800'
-                                                                            : 'bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700'
+                                                                ? 'bg-red-600 hover:bg-red-700 focus:ring-4 focus:ring-red-200 dark:focus:ring-red-800'
+                                                                : locker.status === 'Booked'
+                                                                    ? 'bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-200 dark:focus:ring-green-800'
+                                                                    : locker.status === 'Empty'
+                                                                        ? 'bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800'
+                                                                        : 'bg-gray-800 hover:bg-gray-900 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-700'
                                                                 } focus:outline-none active:scale-95`}
                                                         >
                                                             <FaLock className="text-sm" />
